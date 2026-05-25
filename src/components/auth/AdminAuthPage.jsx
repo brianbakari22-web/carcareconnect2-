@@ -1,12 +1,11 @@
-import { useState, useEffect, useRef, memo } from "react"
+import { useState, useEffect, useRef, memo, useMemo } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
 import { supabase } from "../../lib/supabase"
-import { useTheme } from "../../contexts/ThemeContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
-function NetworkCanvas() {
+const NetworkCanvas = memo(function NetworkCanvas() {
   const canvasRef = useRef(null)
   useEffect(() => {
     const canvas = canvasRef.current
@@ -49,12 +48,17 @@ function NetworkCanvas() {
     return () => { cancelAnimationFrame(animId); window.removeEventListener("resize", resize) }
   }, [])
   return <canvas ref={canvasRef} style={{ position:"absolute", inset:0, width:"100%", height:"100%" }}/>
-}
+})
 
-function LogoBg() {
+const LogoBg = memo(function LogoBg({ isMobile }) {
   return (
     <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", zIndex:1, pointerEvents:"none" }}>
-      <svg width="95vw" height="90vh" viewBox="0 0 680 400" xmlns="http://www.w3.org/2000/svg" style={{ opacity:0.18, maxWidth:"95vw", maxHeight:"90vh" }}>
+      <svg
+        width={isMobile?"95vw":"95vw"}
+        height={isMobile?"60vw":"90vh"}
+        viewBox="0 0 680 400"
+        xmlns="http://www.w3.org/2000/svg"
+        style={{ opacity:0.18, maxWidth:"95vw" }}>
         <circle cx="230" cy="200" r="90" fill="none" stroke="#e6821e" strokeWidth="1.5"/>
         <circle cx="230" cy="200" r="82" fill="none" stroke="#e6821e" strokeWidth="0.5" opacity="0.4"/>
         <rect x="170" y="195" width="120" height="36" rx="8" fill="#e6821e"/>
@@ -75,26 +79,25 @@ function LogoBg() {
       </svg>
     </div>
   )
-}
+})
 
-function LiveClock() {
+const LiveClock = memo(function LiveClock({ isMobile }) {
   const [time, setTime] = useState(new Date())
-  const isMobile = useIsMobile()
   useEffect(() => {
     const tick = setInterval(() => setTime(new Date()), 1000)
     return () => clearInterval(tick)
   }, [])
   return (
-    <div style={{ textAlign:"center", marginBottom:"2rem" }}>
-      <div style={{ fontFamily:"Syne", fontSize:isMobile?36:56, fontWeight:800, color:"#8b5cf6", letterSpacing:isMobile?2:4, marginBottom:8 }}>
+    <div style={{ textAlign:"center", marginBottom:"1.5rem" }}>
+      <div style={{ fontFamily:"Syne", fontSize:isMobile?32:56, fontWeight:800, color:"#8b5cf6", letterSpacing:isMobile?2:4, marginBottom:6 }}>
         {time.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",second:"2-digit"})}
       </div>
-      <div style={{ fontSize:12, color:"#444" }}>
+      <div style={{ fontSize:11, color:"#444" }}>
         {time.toLocaleDateString("default",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}
       </div>
     </div>
   )
-}
+})
 
 const LoginSheet = memo(function LoginSheet({ isMobile, onClose }) {
   const { signIn } = useAuth()
@@ -133,13 +136,16 @@ const LoginSheet = memo(function LoginSheet({ isMobile, onClose }) {
   })
 
   return (
-    <div style={{ position:"fixed", inset:0, zIndex:200, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:isMobile?"flex-end":"center" }}
+    <div
+      style={{ position:"fixed", inset:0, zIndex:200, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:isMobile?"flex-end":"center" }}
       onClick={e=>{ if(e.target===e.currentTarget) onClose() }}>
       <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.75)" }} onClick={onClose}/>
       <div style={{
-        position:"relative", zIndex:1, background:"#0f0f0f",
+        position:"relative", zIndex:1,
+        background:"#0f0f0f",
         borderRadius: isMobile?"20px 20px 0 0":"16px",
-        padding:"2rem", width: isMobile?"100%":"420px",
+        padding:"2rem",
+        width: isMobile?"100%":"420px",
         border:"1px solid #2a2a2a",
         borderBottom: isMobile?"none":"1px solid #2a2a2a",
       }}>
@@ -195,6 +201,13 @@ export default function AdminAuthPage() {
   const isMobile = useIsMobile()
   const [sheetOpen, setSheetOpen] = useState(false)
 
+  const bg = useMemo(() => (
+    <>
+      <NetworkCanvas />
+      <LogoBg isMobile={isMobile} />
+    </>
+  ), [isMobile])
+
   const features = [
     {icon:"🔐", text:"Two-factor authentication"},
     {icon:"🛡️", text:"Role-based access control"},
@@ -206,43 +219,42 @@ export default function AdminAuthPage() {
     <div style={{ minHeight:"100vh", background:"#0a0a0a", position:"relative", overflow:"hidden", fontFamily:"'DM Sans',sans-serif" }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap'); @keyframes spin{to{transform:rotate(360deg)}}`}</style>
 
-      <NetworkCanvas />
-      <LogoBg />
+      {bg}
 
       <div style={{ position:"relative", zIndex:2, minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"2rem" }}>
 
-        <div style={{ position:"absolute", top:"2rem", left:"2rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#f0ede6" }}>
+        <div style={{ position:"absolute", top:"1.5rem", left:"1.5rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:isMobile?15:20, fontWeight:800, color:"#f0ede6" }}>
             Car<span style={{ color:"#e6821e" }}>Care</span> Connect
           </div>
-          <div style={{ fontSize:11, color:"#555", marginTop:2 }}>Admin Control Center</div>
+          <div style={{ fontSize:10, color:"#555", marginTop:2 }}>Admin Control Center</div>
         </div>
 
-        <div style={{ position:"absolute", top:"2rem", right:"2rem", textAlign:"right" }}>
-          <div style={{ display:"flex", alignItems:"center", gap:6, justifyContent:"flex-end", marginBottom:4 }}>
+        <div style={{ position:"absolute", top:"1.5rem", right:"1.5rem", textAlign:"right" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:5, justifyContent:"flex-end" }}>
             <div style={{ width:6, height:6, borderRadius:"50%", background:"#1d9e75" }}/>
             <span style={{ fontSize:10, color:"#1d9e75", fontWeight:600 }}>Platform live</span>
           </div>
         </div>
 
-        <div style={{ textAlign:"center", maxWidth:500 }}>
-          <LiveClock />
+        <div style={{ textAlign:"center", width:"100%", maxWidth:isMobile?340:500 }}>
+          <LiveClock isMobile={isMobile} />
 
-          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4,1fr)", gap:10, marginBottom:"2.5rem" }}>
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4,1fr)", gap:8, marginBottom:"2rem" }}>
             {features.map(f=>(
-              <div key={f.text} style={{ background:"rgba(22,10,46,0.85)", border:"1px solid #8b5cf620", borderRadius:10, padding:"0.75rem", textAlign:"center" }}>
-                <div style={{ fontSize:20, marginBottom:4 }}>{f.icon}</div>
-                <div style={{ fontSize:10, color:"#666", lineHeight:1.4 }}>{f.text}</div>
+              <div key={f.text} style={{ background:"rgba(22,10,46,0.85)", border:"1px solid #8b5cf620", borderRadius:10, padding:isMobile?"0.6rem":"0.75rem", textAlign:"center" }}>
+                <div style={{ fontSize:isMobile?18:20, marginBottom:4 }}>{f.icon}</div>
+                <div style={{ fontSize:isMobile?9:10, color:"#666", lineHeight:1.4 }}>{f.text}</div>
               </div>
             ))}
           </div>
 
           <button onClick={()=>setSheetOpen(true)}
-            style={{ background:"#8b5cf6", border:"none", borderRadius:14, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:isMobile?15:16, fontWeight:700, padding:isMobile?"14px 36px":"16px 48px", cursor:"pointer", display:"inline-flex", alignItems:"center", gap:10 }}>
+            style={{ background:"#8b5cf6", border:"none", borderRadius:14, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:isMobile?14:16, fontWeight:700, padding:isMobile?"12px 32px":"16px 48px", cursor:"pointer", display:"inline-flex", alignItems:"center", gap:10 }}>
             🔐 Admin Sign In
           </button>
 
-          <div style={{ marginTop:16, fontSize:11, color:"#333" }}>
+          <div style={{ marginTop:12, fontSize:10, color:"#333" }}>
             Authorized personnel only · Access is logged
           </div>
         </div>
@@ -252,4 +264,3 @@ export default function AdminAuthPage() {
     </div>
   )
 }
-
