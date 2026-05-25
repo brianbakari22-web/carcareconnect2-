@@ -62,7 +62,7 @@ export default function ProviderChat() {
   const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", completed:"#1d9e75", cancelled:"#e24b4a" }
 
   return (
-    <div style={{ display:"grid", gridTemplateColumns:selected&&!isMobile?"300px 1fr":"1fr", gap:10, height:"calc(100vh - 120px)" }}>
+    <div style={{ display:"grid", gridTemplateColumns:"1fr", gap:10, height:"calc(100vh - 120px)" }}>
       <div style={{ background:"#111", borderRadius:12, border:"1px solid #1e1e1e", overflow:"hidden", display:"flex", flexDirection:"column" }}>
         <div style={{ padding:"1rem", borderBottom:"1px solid #1e1e1e", flexShrink:0 }}>
           <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#f0ede6" }}>Customer Messages</div>
@@ -101,12 +101,19 @@ export default function ProviderChat() {
       </div>
 
       {selected ? (
-        <ChatWindow
+        <div style={{ display:"flex", flexDirection:"column", height:"100%" }}>
+          {isMobile&&(
+            <button onClick={()=>setSelected(null)} style={{ background:"none", border:"none", color:"#666", cursor:"pointer", fontSize:13, padding:"8px 0", textAlign:"left", fontFamily:"DM Sans,sans-serif" }}>
+              ← Back to conversations
+            </button>
+          )}
+          <ChatWindow
           bookingId={selected.bookingId}
           otherUserId={selected.otherUserId}
           otherUserName={selected.otherUserName}
           onClose={()=>setSelected(null)}
-        />
+          />
+        </div>
       ) : (
         <div style={{ background:"#111", borderRadius:12, border:"1px solid #1e1e1e", display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:10 }}>
           <div style={{ fontSize:32 }}>💬</div>
@@ -116,5 +123,7 @@ export default function ProviderChat() {
     </div>
   )
 }
+
+
 
 
