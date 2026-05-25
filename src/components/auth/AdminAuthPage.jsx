@@ -1,3 +1,4 @@
+import useIsMobile from "../../lib/useIsMobile"
 import { useState, useEffect, useRef } from "react"
 import { useTheme } from "../../contexts/ThemeContext"
 import { useAuth } from "../../contexts/AuthContext"
@@ -57,6 +58,7 @@ function NetworkCanvas() {
 }
 
 export default function AdminAuthPage() {
+  const isMobile = useIsMobile()
   const { theme } = useTheme()
   const { signIn } = useAuth()
   const navigate = useNavigate()
@@ -136,7 +138,7 @@ export default function AdminAuthPage() {
       </div>
 
       {/* Right — login form */}
-      <div style={{ width:440, display:"flex", alignItems:"center", justifyContent:"center", padding:"2rem", animation:"fadeUp 0.5s ease forwards" }}>
+      <div style={{ width:isMobile?"100%":440, display:"flex", alignItems:"center", justifyContent:"center", padding:"2rem", animation:"fadeUp 0.5s ease forwards" }}>
         <div style={{ width:"100%" }}>
           <div style={{ marginBottom:"2.5rem" }}>
             <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:"1.5rem" }}>
@@ -196,6 +198,7 @@ export default function AdminAuthPage() {
     </div>
   )
 }
+
 
 
 
