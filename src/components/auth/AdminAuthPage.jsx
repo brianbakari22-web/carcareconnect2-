@@ -16,7 +16,7 @@ function NetworkCanvas() {
     const resize = () => { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight }
     resize()
     window.addEventListener("resize", resize)
-    const dots = Array.from({ length: 50 }, () => ({
+    const dots = Array.from({ length: 60 }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
       vx: (Math.random() - 0.5) * 0.3,
@@ -30,16 +30,16 @@ function NetworkCanvas() {
         if (d.x < 0 || d.x > canvas.width) d.vx *= -1
         if (d.y < 0 || d.y > canvas.height) d.vy *= -1
         ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2)
-        ctx.fillStyle = "rgba(139,92,246,0.7)"; ctx.fill()
+        ctx.fillStyle = "rgba(139,92,246,0.8)"; ctx.fill()
       })
       for (let i = 0; i < dots.length; i++) {
         for (let j = i + 1; j < dots.length; j++) {
           const dx = dots[i].x - dots[j].x
           const dy = dots[i].y - dots[j].y
           const dist = Math.sqrt(dx*dx + dy*dy)
-          if (dist < 120) {
+          if (dist < 100) {
             ctx.beginPath(); ctx.moveTo(dots[i].x, dots[i].y); ctx.lineTo(dots[j].x, dots[j].y)
-            ctx.strokeStyle = `rgba(139,92,246,${0.15*(1-dist/120)})`; ctx.lineWidth = 0.5; ctx.stroke()
+            ctx.strokeStyle = `rgba(139,92,246,${0.2*(1-dist/100)})`; ctx.lineWidth = 0.5; ctx.stroke()
           }
         }
       }
@@ -48,7 +48,33 @@ function NetworkCanvas() {
     draw()
     return () => { cancelAnimationFrame(animId); window.removeEventListener("resize", resize) }
   }, [])
-  return <canvas ref={canvasRef} style={{ position:"absolute", inset:0, width:"100%", height:"100%", opacity:0.5 }}/>
+  return <canvas ref={canvasRef} style={{ position:"absolute", inset:0, width:"100%", height:"100%" }}/>
+}
+
+function LogoBg({ opacity=0.18 }) {
+  return (
+    <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", zIndex:1, pointerEvents:"none" }}>
+      <svg width="520" height="320" viewBox="0 0 680 400" xmlns="http://www.w3.org/2000/svg" style={{ opacity }}>
+        <circle cx="230" cy="200" r="90" fill="none" stroke="#e6821e" strokeWidth="1.5"/>
+        <circle cx="230" cy="200" r="82" fill="none" stroke="#e6821e" strokeWidth="0.5" opacity="0.4"/>
+        <rect x="170" y="195" width="120" height="36" rx="8" fill="#e6821e"/>
+        <path d="M188 195 Q196 172 214 168 L246 168 Q264 172 272 195 Z" fill="#e6821e"/>
+        <path d="M193 195 Q199 178 213 175 L235 175 Q249 178 255 195 Z" fill="#0a0a0a" opacity="0.5"/>
+        <line x1="230" y1="175" x2="230" y2="195" stroke="#0a0a0a" strokeWidth="1" opacity="0.4"/>
+        <circle cx="196" cy="231" r="14" fill="#1a1a1a" stroke="#e6821e" strokeWidth="2"/>
+        <circle cx="196" cy="231" r="6" fill="#e6821e"/>
+        <circle cx="264" cy="231" r="14" fill="#1a1a1a" stroke="#e6821e" strokeWidth="2"/>
+        <circle cx="264" cy="231" r="6" fill="#e6821e"/>
+        <rect x="285" y="204" width="8" height="6" rx="2" fill="#fff" opacity="0.8"/>
+        <rect x="167" y="204" width="6" height="6" rx="2" fill="#ff4444" opacity="0.8"/>
+        <text x="350" y="175" fontFamily="Arial Black, Arial, sans-serif" fontSize="42" fontWeight="900" fill="#f0ede6" letterSpacing="-1">Car<tspan fill="#e6821e">Care</tspan></text>
+        <text x="350" y="225" fontFamily="Arial Black, Arial, sans-serif" fontSize="42" fontWeight="900" fill="#f0ede6" letterSpacing="-1">Connect</text>
+        <text x="350" y="258" fontFamily="Arial, sans-serif" fontSize="12" fill="#888" letterSpacing="2">DRIVE CONFIDENTLY · SERVICE SIMPLY</text>
+        <line x1="350" y1="272" x2="620" y2="272" stroke="#e6821e" strokeWidth="0.5" opacity="0.4"/>
+        <text x="350" y="294" fontFamily="Arial, sans-serif" fontSize="11" fill="#555" letterSpacing="1">Nairobi's trusted auto care network</text>
+      </svg>
+    </div>
+  )
 }
 
 export default function AdminAuthPage() {
@@ -90,169 +116,150 @@ export default function AdminAuthPage() {
     }
   }
 
-  const inp = { width:"100%", background:"#111", border:"1px solid #2a2a2a", borderRadius:10, padding:"13px 16px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", transition:"border-color 0.15s" }
+  const inp = (extra={}) => ({
+    width:"100%", background:"#111", border:"1px solid #2a2a2a", borderRadius:10,
+    padding:"13px 16px", color:"#f0ede6", fontSize:13, outline:"none",
+    fontFamily:"'DM Sans',sans-serif", transition:"border-color 0.15s", ...extra
+  })
 
-  const LoginForm = () => (
-    <form onSubmit={handleSubmit}>
-      <div style={{ marginBottom:16 }}>
-        <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.08em", display:"block", marginBottom:6 }}>Email address</label>
-        <input type="email" value={form.email} onChange={e=>setForm(f=>({...f,email:e.target.value}))} required autoFocus
-          placeholder="admin@carcareconnect.com" style={inp}/>
-      </div>
-      <div style={{ marginBottom:24 }}>
-        <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.08em", display:"block", marginBottom:6 }}>Password</label>
-        <div style={{ position:"relative" }}>
-          <input type={showPassword?"text":"password"} value={form.password} onChange={e=>setForm(f=>({...f,password:e.target.value}))} required
-            placeholder="Enter your password"
-            style={{ ...inp, paddingRight:44 }}/>
-          <button type="button" onClick={()=>setShowPassword(s=>!s)}
-            style={{ position:"absolute", right:14, top:"50%", transform:"translateY(-50%)", background:"none", border:"none", color:"#555", cursor:"pointer", fontSize:16 }}>
-            {showPassword?"🙈":"👁️"}
+  const features = [
+    {icon:"🔐", text:"Two-factor authentication"},
+    {icon:"🛡️", text:"Role-based access control"},
+    {icon:"📊", text:"Full platform oversight"},
+    {icon:"⚡", text:"Real-time monitoring"},
+  ]
+
+  const LoginSheet = () => (
+    <div style={{ position:"fixed", inset:0, zIndex:200, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:isMobile?"flex-end":"center" }}
+      onClick={e=>{ if(e.target===e.currentTarget) setSheetOpen(false) }}>
+      <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.7)" }} onClick={()=>setSheetOpen(false)}/>
+      <div style={{
+        position:"relative", zIndex:1,
+        background:"#0f0f0f",
+        borderRadius: isMobile?"20px 20px 0 0":"16px",
+        padding:"2rem",
+        width: isMobile?"100%":"420px",
+        border:"1px solid #2a2a2a",
+        borderBottom: isMobile?"none":"1px solid #2a2a2a",
+        animation:"slideUp 0.3s ease",
+      }}>
+        {isMobile&&<div style={{ width:40, height:4, background:"#333", borderRadius:2, margin:"0 auto 1.5rem" }}/>}
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"1.5rem" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+            <div style={{ width:40, height:40, background:"#160a2e", borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, border:"1px solid #8b5cf630" }}>🔐</div>
+            <div>
+              <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#f0ede6" }}>Admin Access</div>
+              <div style={{ fontSize:11, color:"#555" }}>Restricted area</div>
+            </div>
+          </div>
+          {!isMobile&&(
+            <button onClick={()=>setSheetOpen(false)}
+              style={{ background:"#1a1a1a", border:"none", borderRadius:"50%", width:32, height:32, color:"#666", cursor:"pointer", fontSize:18, display:"flex", alignItems:"center", justifyContent:"center" }}>
+              ×
+            </button>
+          )}
+        </div>
+
+        <div style={{ height:1, background:"linear-gradient(90deg,#8b5cf640,transparent)", marginBottom:"1.5rem" }}/>
+
+        <form onSubmit={handleSubmit}>
+          <div style={{ marginBottom:16 }}>
+            <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.08em", display:"block", marginBottom:6 }}>Email address</label>
+            <input type="email" value={form.email} onChange={e=>setForm(f=>({...f,email:e.target.value}))} required autoFocus placeholder="admin@carcareconnect.com" style={inp()}/>
+          </div>
+          <div style={{ marginBottom:24 }}>
+            <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.08em", display:"block", marginBottom:6 }}>Password</label>
+            <div style={{ position:"relative" }}>
+              <input type={showPassword?"text":"password"} value={form.password} onChange={e=>setForm(f=>({...f,password:e.target.value}))} required placeholder="Enter your password" style={inp({ paddingRight:44 })}/>
+              <button type="button" onClick={()=>setShowPassword(s=>!s)}
+                style={{ position:"absolute", right:14, top:"50%", transform:"translateY(-50%)", background:"none", border:"none", color:"#555", cursor:"pointer", fontSize:16 }}>
+                {showPassword?"🙈":"👁️"}
+              </button>
+            </div>
+          </div>
+          <button type="submit" disabled={loading}
+            style={{ width:"100%", background:loading?"#333":"#8b5cf6", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:loading?"not-allowed":"pointer", transition:"all 0.15s", marginBottom:16 }}>
+            {loading?(
+              <span style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8 }}>
+                <span style={{ width:14, height:14, border:"2px solid #fff", borderTopColor:"transparent", borderRadius:"50%", display:"inline-block", animation:"spin 0.8s linear infinite" }}/>
+                Signing in...
+              </span>
+            ):"Sign in →"}
           </button>
-        </div>
+          <div style={{ display:"flex", gap:8, alignItems:"flex-start" }}>
+            <span style={{ fontSize:14 }}>⚠️</span>
+            <div style={{ fontSize:11, color:"#444", lineHeight:1.6 }}>Restricted area. Unauthorized access attempts are logged.</div>
+          </div>
+        </form>
       </div>
-      <button type="submit" disabled={loading}
-        style={{ width:"100%", background:loading?"#333":"#8b5cf6", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:loading?"not-allowed":"pointer", transition:"all 0.15s", marginBottom:16 }}>
-        {loading?(
-          <span style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8 }}>
-            <span style={{ width:14, height:14, border:"2px solid #fff", borderTopColor:"transparent", borderRadius:"50%", display:"inline-block", animation:"spin 0.8s linear infinite" }}/>
-            Signing in...
-          </span>
-        ):"Sign in →"}
-      </button>
-      <div style={{ display:"flex", gap:8, alignItems:"flex-start" }}>
-        <span style={{ fontSize:14 }}>⚠️</span>
-        <div style={{ fontSize:11, color:"#444", lineHeight:1.6 }}>
-          Restricted area. Unauthorized access attempts are logged.
-        </div>
-      </div>
-    </form>
+    </div>
   )
 
-  // Mobile layout — full screen animation + bottom sheet
-  if (isMobile) return (
+  return (
     <div style={{ minHeight:"100vh", background:"#0a0a0a", position:"relative", overflow:"hidden", fontFamily:"'DM Sans',sans-serif" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
         @keyframes spin { to { transform: rotate(360deg) } }
-        @keyframes slideUp { from { transform:translateY(100%) } to { transform:translateY(0) } }
+        @keyframes slideUp { from { transform:translateY(40px); opacity:0 } to { transform:translateY(0); opacity:1 } }
+        @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
       `}</style>
 
-      {/* Full screen animation background */}
+      {/* Full screen background */}
       <NetworkCanvas />
+      <LogoBg opacity={0.18} />
 
-      {/* Center content */}
-      <div style={{ position:"relative", zIndex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:"100vh", padding:"2rem" }}>
-        <div style={{ textAlign:"center", marginBottom:"2rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:28, fontWeight:800, color:"#f0ede6", marginBottom:6 }}>
+      {/* Content overlay */}
+      <div style={{ position:"relative", zIndex:2, minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"2rem" }}>
+
+        {/* Brand top */}
+        <div style={{ position:"absolute", top:"2rem", left:"2rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#f0ede6" }}>
             Car<span style={{ color:"#e6821e" }}>Care</span> Connect
           </div>
-          <div style={{ fontSize:12, color:"#555", marginBottom:"1.5rem" }}>Admin Control Center</div>
-          <div style={{ fontFamily:"Syne", fontSize:36, fontWeight:800, color:"#8b5cf6", letterSpacing:2, marginBottom:4 }}>
+          <div style={{ fontSize:11, color:"#555", marginTop:2 }}>Admin Control Center</div>
+        </div>
+
+        {/* Live status top right */}
+        <div style={{ position:"absolute", top:"2rem", right:"2rem", textAlign:"right" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:6, justifyContent:"flex-end", marginBottom:4 }}>
+            <div style={{ width:6, height:6, borderRadius:"50%", background:"#1d9e75", boxShadow:"0 0 6px #1d9e75" }}/>
+            <span style={{ fontSize:10, color:"#1d9e75", fontWeight:600 }}>Platform live</span>
+          </div>
+          <div style={{ fontSize:10, color:"#444" }}>
+            {time.toLocaleDateString("default",{weekday:"short",day:"numeric",month:"short"})}
+          </div>
+        </div>
+
+        {/* Center — clock + features + button */}
+        <div style={{ textAlign:"center", maxWidth:480 }}>
+          <div style={{ fontFamily:"Syne", fontSize:isMobile?36:56, fontWeight:800, color:"#8b5cf6", letterSpacing:isMobile?2:4, marginBottom:8 }}>
             {time.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",second:"2-digit"})}
           </div>
-          <div style={{ fontSize:11, color:"#555" }}>
-            {time.toLocaleDateString("default",{weekday:"long",day:"numeric",month:"long"})}
-          </div>
-        </div>
-
-        <div style={{ display:"flex", flexDirection:"column", gap:10, width:"100%", maxWidth:300 }}>
-          {[
-            { icon:"🔐", text:"Two-factor authentication" },
-            { icon:"🛡️", text:"Role-based access control" },
-            { icon:"📊", text:"Full platform oversight" },
-            { icon:"⚡", text:"Real-time monitoring" },
-          ].map(f=>(
-            <div key={f.text} style={{ display:"flex", alignItems:"center", gap:10 }}>
-              <div style={{ width:32, height:32, borderRadius:8, background:"#160a2e", border:"1px solid #8b5cf630", display:"flex", alignItems:"center", justifyContent:"center", fontSize:14, flexShrink:0 }}>{f.icon}</div>
-              <div style={{ fontSize:12, color:"#555" }}>{f.text}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Sign in button */}
-        <button onClick={()=>setSheetOpen(true)}
-          style={{ marginTop:"2.5rem", background:"#8b5cf6", border:"none", borderRadius:14, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:15, fontWeight:700, padding:"14px 40px", cursor:"pointer", display:"flex", alignItems:"center", gap:10, boxShadow:"0 8px 30px rgba(139,92,246,0.4)" }}>
-          🔐 Admin Sign In
-        </button>
-      </div>
-
-      {/* Bottom sheet overlay */}
-      {sheetOpen&&(
-        <div style={{ position:"fixed", inset:0, zIndex:100, display:"flex", flexDirection:"column" }}
-          onClick={e=>{ if(e.target===e.currentTarget) setSheetOpen(false) }}>
-          <div style={{ flex:1, background:"rgba(0,0,0,0.6)" }} onClick={()=>setSheetOpen(false)}/>
-          <div style={{ background:"#0f0f0f", borderRadius:"20px 20px 0 0", padding:"1.5rem", animation:"slideUp 0.3s ease", border:"1px solid #2a2a2a", borderBottom:"none" }}>
-            {/* Handle */}
-            <div style={{ width:40, height:4, background:"#333", borderRadius:2, margin:"0 auto 1.5rem" }}/>
-            <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:"1.5rem" }}>
-              <div style={{ width:40, height:40, background:"#160a2e", borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, border:"1px solid #8b5cf630" }}>🔐</div>
-              <div>
-                <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#f0ede6" }}>Admin Access</div>
-                <div style={{ fontSize:11, color:"#555" }}>Restricted area</div>
-              </div>
-            </div>
-            <LoginForm />
-          </div>
-        </div>
-      )}
-    </div>
-  )
-
-  // Desktop layout — unchanged
-  return (
-    <div style={{ minHeight:"100vh", background:"#0a0a0a", display:"flex", fontFamily:"'DM Sans',sans-serif" }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
-        @keyframes fadeUp { from { opacity:0; transform:translateY(20px) } to { opacity:1; transform:translateY(0) } }
-        @keyframes spin { to { transform: rotate(360deg) } }
-        .admin-inp:focus { border-color: #8b5cf6 !important; }
-      `}</style>
-
-      <div style={{ flex:1, position:"relative", background:"#0f0f0f", borderRight:"1px solid #1e1e1e", display:"flex", flexDirection:"column", justifyContent:"space-between", padding:"3rem", overflow:"hidden" }}>
-        <NetworkCanvas />
-        <div style={{ position:"relative", zIndex:1 }}>
-          <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#f0ede6" }}>Car<span style={{ color:"#e6821e" }}>Care</span> Connect</div>
-          <div style={{ fontSize:12, color:"#555", marginTop:4 }}>Admin Control Center</div>
-        </div>
-        <div style={{ position:"relative", zIndex:1 }}>
-          <div style={{ fontFamily:"Syne", fontSize:40, fontWeight:800, color:"#8b5cf6", letterSpacing:2, marginBottom:4 }}>
-            {time.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",second:"2-digit"})}
-          </div>
-          <div style={{ fontSize:12, color:"#555" }}>
+          <div style={{ fontSize:12, color:"#444", marginBottom:"2.5rem" }}>
             {time.toLocaleDateString("default",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}
           </div>
-        </div>
-        <div style={{ position:"relative", zIndex:1 }}>
-          {[
-            { icon:"🔐", text:"Two-factor authentication supported" },
-            { icon:"🛡️", text:"Role-based access control" },
-            { icon:"📊", text:"Full platform oversight" },
-            { icon:"⚡", text:"Real-time monitoring" },
-          ].map(f=>(
-            <div key={f.text} style={{ display:"flex", alignItems:"center", gap:10, marginBottom:10 }}>
-              <div style={{ width:32, height:32, borderRadius:8, background:"#160a2e", border:"1px solid #8b5cf630", display:"flex", alignItems:"center", justifyContent:"center", fontSize:14, flexShrink:0 }}>{f.icon}</div>
-              <div style={{ fontSize:12, color:"#555" }}>{f.text}</div>
-            </div>
-          ))}
+
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4,1fr)", gap:10, marginBottom:"2.5rem" }}>
+            {features.map(f=>(
+              <div key={f.text} style={{ background:"rgba(22,10,46,0.8)", border:"1px solid #8b5cf620", borderRadius:10, padding:"0.75rem", textAlign:"center", backdropFilter:"blur(4px)" }}>
+                <div style={{ fontSize:20, marginBottom:4 }}>{f.icon}</div>
+                <div style={{ fontSize:10, color:"#666", lineHeight:1.4 }}>{f.text}</div>
+              </div>
+            ))}
+          </div>
+
+          <button onClick={()=>setSheetOpen(true)}
+            style={{ background:"#8b5cf6", border:"none", borderRadius:14, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:isMobile?15:16, fontWeight:700, padding:isMobile?"14px 36px":"16px 48px", cursor:"pointer", display:"inline-flex", alignItems:"center", gap:10 }}>
+            🔐 Admin Sign In
+          </button>
+
+          <div style={{ marginTop:16, fontSize:11, color:"#333" }}>
+            Authorized personnel only · Access is logged
+          </div>
         </div>
       </div>
 
-      <div style={{ width:440, display:"flex", alignItems:"center", justifyContent:"center", padding:"2rem", animation:"fadeUp 0.5s ease forwards" }}>
-        <div style={{ width:"100%" }}>
-          <div style={{ marginBottom:"2.5rem" }}>
-            <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:"1.5rem" }}>
-              <div style={{ width:44, height:44, background:"#160a2e", borderRadius:12, display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, border:"1px solid #8b5cf630" }}>🔐</div>
-              <div>
-                <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#f0ede6" }}>Admin Access</div>
-                <div style={{ fontSize:11, color:"#555" }}>Restricted area</div>
-              </div>
-            </div>
-            <div style={{ height:1, background:"linear-gradient(90deg,#8b5cf640,transparent)" }}/>
-          </div>
-          <LoginForm />
-        </div>
-      </div>
+      {sheetOpen&&<LoginSheet />}
     </div>
   )
 }
