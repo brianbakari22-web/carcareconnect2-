@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+}
+
+input, textarea, select, button {
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* Prevent horizontal overflow on mobile */
+html, body, #root {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Mobile responsive helpers */
+@media (max-width: 768px) {
+  /* 2-column on mobile instead of 3-4 */
+  .grid-4 { grid-template-columns: repeat(2, 1fr) !important; }
+  .grid-3 { grid-template-columns: repeat(2, 1fr) !important; }
+  .grid-2 { grid-template-columns: 1fr !important; }
+
+  /* Stack flex rows on mobile */
+  .flex-row-mobile { flex-direction: column !important; }
+
+  /* Full width on mobile */
+  .full-mobile { width: 100% !important; max-width: 100% !important; }
+
+  /* Reduce padding on mobile */
+  .pad-mobile { padding: 0.75rem !important; }
+
+  /* Hide desktop only elements */
+  .desktop-only { display: none !important; }
+
+  /* Smaller font on mobile */
+  .font-mobile { font-size: 12px !important; }
+}
