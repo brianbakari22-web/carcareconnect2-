@@ -221,7 +221,7 @@ export default function AdminAuthPage() {
 
       {bg}
 
-      <div style={{ position:"relative", zIndex:2, minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"2rem" }}>
+      <div style={{ position:"relative", zIndex:2, minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"flex-end", paddingBottom:"3rem", padding:"2rem" }}>
 
         <div style={{ position:"absolute", top:"1.5rem", left:"1.5rem" }}>
           <div style={{ fontFamily:"Syne", fontSize:isMobile?15:20, fontWeight:800, color:"#f0ede6" }}>
@@ -264,3 +264,4 @@ export default function AdminAuthPage() {
     </div>
   )
 }
+
