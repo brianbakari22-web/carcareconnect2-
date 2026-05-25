@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, memo, useCallback } from "react"
+import { useState, useEffect, useRef, memo } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
 import { supabase } from "../../lib/supabase"
@@ -51,10 +51,10 @@ function NetworkCanvas() {
   return <canvas ref={canvasRef} style={{ position:"absolute", inset:0, width:"100%", height:"100%" }}/>
 }
 
-function LogoBg({ opacity=0.18 }) {
+function LogoBg() {
   return (
     <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", zIndex:1, pointerEvents:"none" }}>
-      <svg width="700" height="440" viewBox="0 0 680 400" xmlns="http://www.w3.org/2000/svg" style={{ opacity }}>
+      <svg width="700" height="440" viewBox="0 0 680 400" xmlns="http://www.w3.org/2000/svg" style={{ opacity:0.18 }}>
         <circle cx="230" cy="200" r="90" fill="none" stroke="#e6821e" strokeWidth="1.5"/>
         <circle cx="230" cy="200" r="82" fill="none" stroke="#e6821e" strokeWidth="0.5" opacity="0.4"/>
         <rect x="170" y="195" width="120" height="36" rx="8" fill="#e6821e"/>
@@ -78,11 +78,15 @@ function LogoBg({ opacity=0.18 }) {
 }
 
 function LiveClock() {
+  const [time, setTime] = useState(new Date())
+  const isMobile = useIsMobile()
   useEffect(() => {
-    }, [])
+    const tick = setInterval(() => setTime(new Date()), 1000)
+    return () => clearInterval(tick)
+  }, [])
   return (
-    <div style={{ textAlign:"center" }}>
-      <div style={{ fontFamily:"Syne", fontSize:56, fontWeight:800, color:"#8b5cf6", letterSpacing:4, marginBottom:8 }}>
+    <div style={{ textAlign:"center", marginBottom:"2rem" }}>
+      <div style={{ fontFamily:"Syne", fontSize:isMobile?36:56, fontWeight:800, color:"#8b5cf6", letterSpacing:isMobile?2:4, marginBottom:8 }}>
         {time.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",second:"2-digit"})}
       </div>
       <div style={{ fontSize:12, color:"#444" }}>
@@ -92,18 +96,12 @@ function LiveClock() {
   )
 }
 
-export default function AdminAuthPage() {
+const LoginSheet = memo(function LoginSheet({ isMobile, onClose }) {
   const { signIn } = useAuth()
   const navigate = useNavigate()
-  const { theme } = useTheme()
-  const isMobile = useIsMobile()
   const [form, setForm] = useState({ email:"", password:"" })
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  const [sheetOpen, setSheetOpen] = useState(false)
-
-  useEffect(() => {
-    }, [])
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -131,29 +129,19 @@ export default function AdminAuthPage() {
   const inp = (extra={}) => ({
     width:"100%", background:"#111", border:"1px solid #2a2a2a", borderRadius:10,
     padding:"13px 16px", color:"#f0ede6", fontSize:13, outline:"none",
-    fontFamily:"'DM Sans',sans-serif", transition:"border-color 0.15s", ...extra
+    fontFamily:"'DM Sans',sans-serif", ...extra
   })
 
-  const features = [
-    {icon:"🔐", text:"Two-factor authentication"},
-    {icon:"🛡️", text:"Role-based access control"},
-    {icon:"📊", text:"Full platform oversight"},
-    {icon:"⚡", text:"Real-time monitoring"},
-  ]
-
-  const LoginSheet = memo(() => (
+  return (
     <div style={{ position:"fixed", inset:0, zIndex:200, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:isMobile?"flex-end":"center" }}
-      onClick={e=>{ if(e.target===e.currentTarget) setSheetOpen(false) }}>
-      <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.7)" }} onClick={()=>setSheetOpen(false)}/>
+      onClick={e=>{ if(e.target===e.currentTarget) onClose() }}>
+      <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.75)" }} onClick={onClose}/>
       <div style={{
-        position:"relative", zIndex:1,
-        background:"#0f0f0f",
+        position:"relative", zIndex:1, background:"#0f0f0f",
         borderRadius: isMobile?"20px 20px 0 0":"16px",
-        padding:"2rem",
-        width: isMobile?"100%":"420px",
+        padding:"2rem", width: isMobile?"100%":"420px",
         border:"1px solid #2a2a2a",
         borderBottom: isMobile?"none":"1px solid #2a2a2a",
-        animation:isMobile?"slideUp 0.3s ease":"fadeIn 0.2s ease",
       }}>
         {isMobile&&<div style={{ width:40, height:4, background:"#333", borderRadius:2, margin:"0 auto 1.5rem" }}/>}
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"1.5rem" }}>
@@ -165,15 +153,10 @@ export default function AdminAuthPage() {
             </div>
           </div>
           {!isMobile&&(
-            <button onClick={()=>setSheetOpen(false)}
-              style={{ background:"#1a1a1a", border:"none", borderRadius:"50%", width:32, height:32, color:"#666", cursor:"pointer", fontSize:18, display:"flex", alignItems:"center", justifyContent:"center" }}>
-              ×
-            </button>
+            <button onClick={onClose} style={{ background:"#1a1a1a", border:"none", borderRadius:"50%", width:32, height:32, color:"#666", cursor:"pointer", fontSize:18, display:"flex", alignItems:"center", justifyContent:"center" }}>×</button>
           )}
         </div>
-
         <div style={{ height:1, background:"linear-gradient(90deg,#8b5cf640,transparent)", marginBottom:"1.5rem" }}/>
-
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom:16 }}>
             <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.08em", display:"block", marginBottom:6 }}>Email address</label>
@@ -190,7 +173,7 @@ export default function AdminAuthPage() {
             </div>
           </div>
           <button type="submit" disabled={loading}
-            style={{ width:"100%", background:loading?"#333":"#8b5cf6", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:loading?"not-allowed":"pointer", transition:"all 0.15s", marginBottom:16 }}>
+            style={{ width:"100%", background:loading?"#333":"#8b5cf6", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:loading?"not-allowed":"pointer", marginBottom:16 }}>
             {loading?(
               <span style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8 }}>
                 <span style={{ width:14, height:14, border:"2px solid #fff", borderTopColor:"transparent", borderRadius:"50%", display:"inline-block", animation:"spin 0.8s linear infinite" }}/>
@@ -206,24 +189,28 @@ export default function AdminAuthPage() {
       </div>
     </div>
   )
+})
+
+export default function AdminAuthPage() {
+  const isMobile = useIsMobile()
+  const [sheetOpen, setSheetOpen] = useState(false)
+
+  const features = [
+    {icon:"🔐", text:"Two-factor authentication"},
+    {icon:"🛡️", text:"Role-based access control"},
+    {icon:"📊", text:"Full platform oversight"},
+    {icon:"⚡", text:"Real-time monitoring"},
+  ]
 
   return (
     <div style={{ minHeight:"100vh", background:"#0a0a0a", position:"relative", overflow:"hidden", fontFamily:"'DM Sans',sans-serif" }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
-        @keyframes spin { to { transform: rotate(360deg) } }
-        @keyframes slideUp { from { transform:translateY(60px); opacity:0 } to { transform:translateY(0); opacity:1 } }
-        @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
-      `}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap'); @keyframes spin{to{transform:rotate(360deg)}}`}</style>
 
-      {/* Full screen background */}
       <NetworkCanvas />
-      <LogoBg opacity={0.18} />
+      <LogoBg />
 
-      {/* Content overlay */}
       <div style={{ position:"relative", zIndex:2, minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"2rem" }}>
 
-        {/* Brand top */}
         <div style={{ position:"absolute", top:"2rem", left:"2rem" }}>
           <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#f0ede6" }}>
             Car<span style={{ color:"#e6821e" }}>Care</span> Connect
@@ -231,24 +218,19 @@ export default function AdminAuthPage() {
           <div style={{ fontSize:11, color:"#555", marginTop:2 }}>Admin Control Center</div>
         </div>
 
-        {/* Live status top right */}
         <div style={{ position:"absolute", top:"2rem", right:"2rem", textAlign:"right" }}>
           <div style={{ display:"flex", alignItems:"center", gap:6, justifyContent:"flex-end", marginBottom:4 }}>
-            <div style={{ width:6, height:6, borderRadius:"50%", background:"#1d9e75", boxShadow:"0 0 6px #1d9e75" }}/>
+            <div style={{ width:6, height:6, borderRadius:"50%", background:"#1d9e75" }}/>
             <span style={{ fontSize:10, color:"#1d9e75", fontWeight:600 }}>Platform live</span>
-          </div>
-          <div style={{ fontSize:10, color:"#444" }}>
-            {time.toLocaleDateString("default",{weekday:"short",day:"numeric",month:"short"})}
           </div>
         </div>
 
-        {/* Center — clock + features + button */}
-        <div style={{ textAlign:"center", maxWidth:480 }}>
+        <div style={{ textAlign:"center", maxWidth:500 }}>
           <LiveClock />
 
           <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4,1fr)", gap:10, marginBottom:"2.5rem" }}>
             {features.map(f=>(
-              <div key={f.text} style={{ background:"rgba(22,10,46,0.8)", border:"1px solid #8b5cf620", borderRadius:10, padding:"0.75rem", textAlign:"center", backdropFilter:"blur(4px)" }}>
+              <div key={f.text} style={{ background:"rgba(22,10,46,0.85)", border:"1px solid #8b5cf620", borderRadius:10, padding:"0.75rem", textAlign:"center" }}>
                 <div style={{ fontSize:20, marginBottom:4 }}>{f.icon}</div>
                 <div style={{ fontSize:10, color:"#666", lineHeight:1.4 }}>{f.text}</div>
               </div>
@@ -266,10 +248,7 @@ export default function AdminAuthPage() {
         </div>
       </div>
 
-      {sheetOpen&&<LoginSheet />}
+      {sheetOpen&&<LoginSheet isMobile={isMobile} onClose={()=>setSheetOpen(false)} />}
     </div>
   )
 }
-
-
-
