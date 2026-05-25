@@ -54,7 +54,7 @@ function NetworkCanvas() {
 function LogoBg({ opacity=0.18 }) {
   return (
     <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", zIndex:1, pointerEvents:"none" }}>
-      <svg width="520" height="320" viewBox="0 0 680 400" xmlns="http://www.w3.org/2000/svg" style={{ opacity }}>
+      <svg width="700" height="440" viewBox="0 0 680 400" xmlns="http://www.w3.org/2000/svg" style={{ opacity }}>
         <circle cx="230" cy="200" r="90" fill="none" stroke="#e6821e" strokeWidth="1.5"/>
         <circle cx="230" cy="200" r="82" fill="none" stroke="#e6821e" strokeWidth="0.5" opacity="0.4"/>
         <rect x="170" y="195" width="120" height="36" rx="8" fill="#e6821e"/>
@@ -141,7 +141,7 @@ export default function AdminAuthPage() {
         width: isMobile?"100%":"420px",
         border:"1px solid #2a2a2a",
         borderBottom: isMobile?"none":"1px solid #2a2a2a",
-        animation:"slideUp 0.3s ease",
+        animation:isMobile?"slideUp 0.3s ease":"fadeIn 0.2s ease",
       }}>
         {isMobile&&<div style={{ width:40, height:4, background:"#333", borderRadius:2, margin:"0 auto 1.5rem" }}/>}
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"1.5rem" }}>
@@ -200,7 +200,7 @@ export default function AdminAuthPage() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
         @keyframes spin { to { transform: rotate(360deg) } }
-        @keyframes slideUp { from { transform:translateY(40px); opacity:0 } to { transform:translateY(0); opacity:1 } }
+        @keyframes slideUp { from { transform:translateY(60px); opacity:0 } to { transform:translateY(0); opacity:1 } }
         @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
       `}</style>
 
@@ -263,3 +263,4 @@ export default function AdminAuthPage() {
     </div>
   )
 }
+
