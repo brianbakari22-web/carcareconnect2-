@@ -137,6 +137,8 @@ function DashboardRouter() {
   const role = profile.role
   if (role === "admin") return <Navigate to="/not-found" replace />
   if (!role || !["customer","provider","driver"].includes(role)) return <Loader text="Loading your dashboard..." />
+  // Extra safety check - never show wrong role dashboard
+  if (loading) return <Loader text="Loading..." />
 
   return (
     <Layout>
@@ -247,6 +249,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 
