@@ -54,7 +54,7 @@ function NetworkCanvas() {
 function LogoBg() {
   return (
     <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", zIndex:1, pointerEvents:"none" }}>
-      <svg width="700" height="440" viewBox="0 0 680 400" xmlns="http://www.w3.org/2000/svg" style={{ opacity:0.18 }}>
+      <svg width="95vw" height="90vh" viewBox="0 0 680 400" xmlns="http://www.w3.org/2000/svg" style={{ opacity:0.18, maxWidth:"95vw", maxHeight:"90vh" }}>
         <circle cx="230" cy="200" r="90" fill="none" stroke="#e6821e" strokeWidth="1.5"/>
         <circle cx="230" cy="200" r="82" fill="none" stroke="#e6821e" strokeWidth="0.5" opacity="0.4"/>
         <rect x="170" y="195" width="120" height="36" rx="8" fill="#e6821e"/>
@@ -252,3 +252,4 @@ export default function AdminAuthPage() {
     </div>
   )
 }
+
