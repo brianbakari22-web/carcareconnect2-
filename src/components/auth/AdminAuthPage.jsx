@@ -75,8 +75,11 @@ export default function AdminAuthPage() {
     setLoading(true)
     try {
       await signIn({ email: form.email, password: form.password })
-      const { data: { user } } = await supabase.auth.getUser()
-      const { data: profile } = await supabase.from("profiles").select("role").eq("id", user?.id).single()
+        // Wait for session to be ready on mobile
+        await new Promise(r => setTimeout(r, 500))
+        const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { toast.error("Session error — try again"); setLoading(false); return }
+        const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single()
       if (profile?.role !== "admin") {
         await supabase.auth.signOut()
         toast.error("Access denied — not an admin account")
@@ -193,5 +196,7 @@ export default function AdminAuthPage() {
     </div>
   )
 }
+
+
 
 
