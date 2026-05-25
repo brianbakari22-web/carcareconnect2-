@@ -1,12 +1,12 @@
-import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
+import useIsMobile from "../../lib/useIsMobile"
 import ChatWindow from "../shared/ChatWindow"
 
 export default function ProviderChat() {
-  const isMobile = useIsMobile()
   const { user } = useAuth()
+  const isMobile = useIsMobile()
   const [conversations, setConversations] = useState([])
   const [selected, setSelected] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -61,8 +61,47 @@ export default function ProviderChat() {
 
   const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", completed:"#1d9e75", cancelled:"#e24b4a" }
 
+  if (isMobile && selected) return (
+    <div style={{ display:"flex", flexDirection:"column", height:"calc(100vh - 130px)" }}>
+      <button onClick={()=>setSelected(null)}
+        style={{ background:"none", border:"none", color:"#378add", cursor:"pointer", fontSize:13, padding:"8px 0 12px", textAlign:"left", fontFamily:"DM Sans,sans-serif", flexShrink:0 }}>
+        ← Back to messages
+      </button>
+      <div style={{ flex:1, minHeight:0 }}>
+        <ChatWindow bookingId={selected.bookingId} otherUserId={selected.otherUserId} otherUserName={selected.otherUserName} onClose={()=>setSelected(null)}/>
+      </div>
+    </div>
+  )
+
+  if (isMobile) return (
+    <div>
+      <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>Customer Messages</div>
+      <div style={{ fontSize:11, color:"#555", marginBottom:"1rem" }}>{conversations.length} active conversation{conversations.length!==1?"s":""}</div>
+      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {!loading&&conversations.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}><div style={{ fontSize:28, marginBottom:8 }}>💬</div>No active bookings</div>}
+      {conversations.map(c=>(
+        <div key={c.bookingId} onClick={()=>setSelected(c)}
+          style={{ background:"#111", border:"1px solid #1a1a1a", borderRadius:10, padding:"0.9rem", marginBottom:8, cursor:"pointer" }}>
+          <div style={{ display:"flex", alignItems:"flex-start", gap:10 }}>
+            <div style={{ width:42, height:42, borderRadius:"50%", background:"#0c1f2e", border:"1px solid #378add30", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#378add", flexShrink:0 }}>
+              {c.otherUserName[0]?.toUpperCase()}
+            </div>
+            <div style={{ flex:1, minWidth:0 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:2 }}>
+                <div style={{ fontSize:13, fontWeight:c.unread>0?700:500, color:"#f0ede6", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.otherUserName}</div>
+                {c.unread>0&&<div style={{ width:20, height:20, borderRadius:"50%", background:"#378add", color:"#fff", fontSize:10, fontWeight:700, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>{c.unread}</div>}
+              </div>
+              <div style={{ fontSize:11, color:"#666", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", marginBottom:2 }}>{c.lastMessage}</div>
+              <div style={{ fontSize:10, color:SC[c.status]||"#555" }}>● {c.status} · {c.serviceName}</div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+
   return (
-    <div style={{ display:"grid", gridTemplateColumns:"1fr", gap:10, height:"calc(100vh - 120px)" }}>
+    <div style={{ display:"grid", gridTemplateColumns:selected?"300px 1fr":"1fr", gap:10, height:"calc(100vh - 120px)" }}>
       <div style={{ background:"#111", borderRadius:12, border:"1px solid #1e1e1e", overflow:"hidden", display:"flex", flexDirection:"column" }}>
         <div style={{ padding:"1rem", borderBottom:"1px solid #1e1e1e", flexShrink:0 }}>
           <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#f0ede6" }}>Customer Messages</div>
@@ -70,15 +109,10 @@ export default function ProviderChat() {
         </div>
         <div style={{ flex:1, overflowY:"auto" }}>
           {loading&&<div style={{ color:"#555", fontSize:13, padding:"1rem" }}>Loading...</div>}
-          {!loading&&conversations.length===0&&(
-            <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>
-              <div style={{ fontSize:28, marginBottom:8 }}>💬</div>
-              No active bookings
-            </div>
-          )}
+          {!loading&&conversations.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}><div style={{ fontSize:28, marginBottom:8 }}>💬</div>No active bookings</div>}
           {conversations.map(c=>(
             <div key={c.bookingId} onClick={()=>setSelected(c)}
-              style={{ padding:"0.9rem 1rem", borderBottom:"1px solid #1a1a1a", cursor:"pointer", background:selected?.bookingId===c.bookingId?"#0c1f2e":"transparent", transition:"background 0.12s" }}>
+              style={{ padding:"0.9rem 1rem", borderBottom:"1px solid #1a1a1a", cursor:"pointer", background:selected?.bookingId===c.bookingId?"#0c1f2e":"transparent" }}>
               <div style={{ display:"flex", alignItems:"flex-start", gap:10 }}>
                 <div style={{ width:38, height:38, borderRadius:"50%", background:"#0c1f2e", border:"1px solid #378add30", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#378add", flexShrink:0 }}>
                   {c.otherUserName[0]?.toUpperCase()}
@@ -89,31 +123,15 @@ export default function ProviderChat() {
                     {c.unread>0&&<div style={{ width:18, height:18, borderRadius:"50%", background:"#378add", color:"#fff", fontSize:10, fontWeight:700, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>{c.unread}</div>}
                   </div>
                   <div style={{ fontSize:11, color:"#666", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", marginBottom:2 }}>{c.lastMessage}</div>
-                  <div style={{ display:"flex", gap:6, alignItems:"center" }}>
-                    <span style={{ fontSize:10, color:SC[c.status]||"#555" }}>● {c.status}</span>
-                    <span style={{ fontSize:10, color:"#444" }}>· {c.serviceName}</span>
-                  </div>
+                  <div style={{ fontSize:10, color:SC[c.status]||"#555" }}>● {c.status} · {c.serviceName}</div>
                 </div>
               </div>
             </div>
           ))}
         </div>
       </div>
-
       {selected ? (
-        <div style={{ display:"flex", flexDirection:"column", height:"100%" }}>
-          {isMobile&&(
-            <button onClick={()=>setSelected(null)} style={{ background:"none", border:"none", color:"#666", cursor:"pointer", fontSize:13, padding:"8px 0", textAlign:"left", fontFamily:"DM Sans,sans-serif" }}>
-              ← Back to conversations
-            </button>
-          )}
-          <ChatWindow
-          bookingId={selected.bookingId}
-          otherUserId={selected.otherUserId}
-          otherUserName={selected.otherUserName}
-          onClose={()=>setSelected(null)}
-          />
-        </div>
+        <ChatWindow bookingId={selected.bookingId} otherUserId={selected.otherUserId} otherUserName={selected.otherUserName} onClose={()=>setSelected(null)}/>
       ) : (
         <div style={{ background:"#111", borderRadius:12, border:"1px solid #1e1e1e", display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:10 }}>
           <div style={{ fontSize:32 }}>💬</div>
@@ -123,7 +141,3 @@ export default function ProviderChat() {
     </div>
   )
 }
-
-
-
-
