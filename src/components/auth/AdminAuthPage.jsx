@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, memo, useCallback } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
 import { supabase } from "../../lib/supabase"
@@ -77,6 +77,21 @@ function LogoBg({ opacity=0.18 }) {
   )
 }
 
+function LiveClock() {
+  useEffect(() => {
+    }, [])
+  return (
+    <div style={{ textAlign:"center" }}>
+      <div style={{ fontFamily:"Syne", fontSize:56, fontWeight:800, color:"#8b5cf6", letterSpacing:4, marginBottom:8 }}>
+        {time.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",second:"2-digit"})}
+      </div>
+      <div style={{ fontSize:12, color:"#444" }}>
+        {time.toLocaleDateString("default",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}
+      </div>
+    </div>
+  )
+}
+
 export default function AdminAuthPage() {
   const { signIn } = useAuth()
   const navigate = useNavigate()
@@ -85,13 +100,10 @@ export default function AdminAuthPage() {
   const [form, setForm] = useState({ email:"", password:"" })
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  const [time, setTime] = useState(new Date())
   const [sheetOpen, setSheetOpen] = useState(false)
 
   useEffect(() => {
-    const tick = setInterval(() => setTime(new Date()), 1000)
-    return () => clearInterval(tick)
-  }, [])
+    }, [])
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -129,7 +141,7 @@ export default function AdminAuthPage() {
     {icon:"⚡", text:"Real-time monitoring"},
   ]
 
-  const LoginSheet = () => (
+  const LoginSheet = memo(() => (
     <div style={{ position:"fixed", inset:0, zIndex:200, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:isMobile?"flex-end":"center" }}
       onClick={e=>{ if(e.target===e.currentTarget) setSheetOpen(false) }}>
       <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.7)" }} onClick={()=>setSheetOpen(false)}/>
@@ -232,12 +244,7 @@ export default function AdminAuthPage() {
 
         {/* Center — clock + features + button */}
         <div style={{ textAlign:"center", maxWidth:480 }}>
-          <div style={{ fontFamily:"Syne", fontSize:isMobile?36:56, fontWeight:800, color:"#8b5cf6", letterSpacing:isMobile?2:4, marginBottom:8 }}>
-            {time.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",second:"2-digit"})}
-          </div>
-          <div style={{ fontSize:12, color:"#444", marginBottom:"2.5rem" }}>
-            {time.toLocaleDateString("default",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}
-          </div>
+          <LiveClock />
 
           <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4,1fr)", gap:10, marginBottom:"2.5rem" }}>
             {features.map(f=>(
@@ -263,4 +270,6 @@ export default function AdminAuthPage() {
     </div>
   )
 }
+
+
 
