@@ -1,3 +1,4 @@
+import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
@@ -21,6 +22,7 @@ const STATUS_NEXT = {
 }
 
 export default function DriverActiveDelivery() {
+  const isMobile = useIsMobile()
   const { user, profile } = useAuth()
   const { t, language } = useLanguage()
   const [activeJobs, setActiveJobs] = useState([])
@@ -142,7 +144,7 @@ export default function DriverActiveDelivery() {
               ))}
             </div>
 
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:"1rem" }}>
+            <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:8, marginBottom:"1rem" }}>
               <div style={{ background:"#0f0f0f", borderRadius:8, padding:"0.75rem" }}>
                 <div style={{ fontSize:10, color:"#555", marginBottom:3 }}>PICKUP ADDRESS</div>
                 <div style={{ fontSize:12, color:"#f0ede6" }}>{j.pickup_address||"Customer location"}</div>
@@ -184,3 +186,5 @@ export default function DriverActiveDelivery() {
     </div>
   )
 }
+
+

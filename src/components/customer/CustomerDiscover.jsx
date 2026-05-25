@@ -1,3 +1,4 @@
+import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
@@ -9,6 +10,7 @@ const DAYS_EN = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Sa
 const DAYS_SW = ["Jumapili","Jumatatu","Jumanne","Jumatano","Alhamisi","Ijumaa","Jumamosi"]
 
 export default function CustomerDiscover() {
+  const isMobile = useIsMobile()
   const { user } = useAuth()
   const { t, language } = useLanguage()
   const navigate = useNavigate()
@@ -234,7 +236,7 @@ export default function CustomerDiscover() {
       </div>
 
       {showFilters&&(
-        <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem", marginBottom:"1rem", display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(180px,1fr))", gap:12 }}>
+        <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem", marginBottom:"1rem", display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(180px,1fr))", gap:12 }}>
           <div>
             <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", marginBottom:6 }}>{t("sortBy")}</div>
             <select value={sortBy} onChange={e=>setSortBy(e.target.value)} style={{ ...inp, padding:"7px 10px" }}>
@@ -423,7 +425,7 @@ export default function CustomerDiscover() {
           {providerServices(selectedProvider.id).length===0&&(
             <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"1.5rem" }}>{t("noDataYet")}</div>
           )}
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))", gap:10 }}>
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(200px,1fr))", gap:10 }}>
             {providerServices(selectedProvider.id).map(s=>(
               <div key={s.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem" }}>
                 <div style={{ fontSize:11, color:"#555", marginBottom:4 }}>{s.category}</div>
@@ -450,7 +452,7 @@ export default function CustomerDiscover() {
       )}
 
       {tab==="services"&&(
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(180px,1fr))", gap:10 }}>
+        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(180px,1fr))", gap:10 }}>
           {filteredServices.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem", gridColumn:"1/-1" }}>{t("noServicesFound")}</div>}
           {filteredServices.map(s=>(
             <div key={s.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem" }}>
@@ -498,3 +500,5 @@ export default function CustomerDiscover() {
     </div>
   )
 }
+
+

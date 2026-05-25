@@ -1,3 +1,4 @@
+import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { exportUserData, downloadJSON, downloadCSV, downloadPDF } from "../../lib/dataExport"
@@ -88,7 +89,7 @@ export default function AdminUserDetail({ userId, onBack }) {
           </div>
         </div>
 
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:10 }}>
+        <div style={{ display:"grid", gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)", gap:10 }}>
           {[
             { label:"Total bookings", value:data?.bookings?.length||0 },
             { label:"Completed", value:completedBookings, color:"#1d9e75" },
@@ -113,7 +114,7 @@ export default function AdminUserDetail({ userId, onBack }) {
       </div>
 
       {tab==="overview"&&(
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
           <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>Profile info</div>
             {[
@@ -241,4 +242,5 @@ export default function AdminUserDetail({ userId, onBack }) {
     </div>
   )
 }
+
 

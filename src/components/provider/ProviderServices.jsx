@@ -1,3 +1,4 @@
+import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
@@ -9,6 +10,7 @@ const CATEGORIES = ["Oil Change","Brake Repair","Tire Service","Engine Repair","
 const EMPTY_FORM = { name:"", description:"", category:"Oil Change", price:"", discounted_price:"", duration:60, is_active:true, tags:"", requirements:"", inclusions:"" }
 
 export default function ProviderServices() {
+  const isMobile = useIsMobile()
   const { user } = useAuth()
   const { t } = useLanguage()
   const [services, setServices] = useState([])
@@ -171,3 +173,5 @@ export default function ProviderServices() {
     </div>
   )
 }
+
+

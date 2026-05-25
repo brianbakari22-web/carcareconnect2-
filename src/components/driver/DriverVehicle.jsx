@@ -1,9 +1,11 @@
+import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
 
 export default function DriverVehicle() {
+  const isMobile = useIsMobile()
   const { user, profile, updateProfile } = useAuth()
   const [docs, setDocs] = useState([])
   const [form, setForm] = useState({ vehicle_model:"", vehicle_color:"", vehicle_plate:"", vehicle_year:"" })
@@ -68,7 +70,7 @@ export default function DriverVehicle() {
       <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
         <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>Vehicle information</div>
         <form onSubmit={saveVehicle}>
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
             <div><label style={lbl}>Model</label><input style={inp} placeholder="e.g. Toyota Fielder" value={form.vehicle_model} onChange={e=>setForm(f=>({...f,vehicle_model:e.target.value}))}/></div>
             <div><label style={lbl}>Color</label><input style={inp} placeholder="e.g. White" value={form.vehicle_color} onChange={e=>setForm(f=>({...f,vehicle_color:e.target.value}))}/></div>
             <div><label style={lbl}>License plate</label><input style={inp} placeholder="e.g. KDA 123A" value={form.vehicle_plate} onChange={e=>setForm(f=>({...f,vehicle_plate:e.target.value}))}/></div>
@@ -106,7 +108,7 @@ export default function DriverVehicle() {
         <div style={{ marginTop:"1rem", paddingTop:"1rem", borderTop:"1px solid #1e1e1e" }}>
           <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:"0.75rem", color:"#f0ede6" }}>Add document</div>
           <form onSubmit={addDocument}>
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+            <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
               <div>
                 <label style={lbl}>Document type</label>
                 <select style={inp} value={docForm.type} onChange={e=>setDocForm(f=>({...f,type:e.target.value}))}>
@@ -131,3 +133,5 @@ export default function DriverVehicle() {
     </div>
   )
 }
+
+

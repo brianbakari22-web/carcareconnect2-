@@ -1,3 +1,4 @@
+import useIsMobile from "../../lib/useIsMobile"
 import { useState, useEffect } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
@@ -44,6 +45,7 @@ const STATS = [
 ]
 
 export default function AuthPage() {
+  const isMobile = useIsMobile()
   const { signIn, signUp } = useAuth()
   const { profile } = useAuth()
   const navigate = useNavigate()
@@ -104,7 +106,7 @@ export default function AuthPage() {
 
   // Auth form
   if (step === "auth") return (
-    <div style={{ minHeight:"100vh", background:"#0a0a0a", display:"flex", fontFamily:"'DM Sans',sans-serif" }}>
+    <div style={{ minHeight:"100vh", background:"#0a0a0a", display:"flex", flexDirection:isMobile?"column":"row", fontFamily:"'DM Sans',sans-serif" }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');`}</style>
 
       <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", padding:"2rem" }}>
@@ -144,7 +146,7 @@ export default function AuthPage() {
           <form onSubmit={handleAuth}>
             {mode==="signup"&&(
               <>
-                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+                <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
                   <div>
                     <label style={lbl}>First name</label>
                     <input style={inp} placeholder="John" value={form.firstName} onChange={e=>setForm(f=>({...f,firstName:e.target.value}))} required/>
@@ -205,7 +207,7 @@ export default function AuthPage() {
         </div>
       </div>
 
-      <div style={{ width:420, background:"#0f0f0f", borderLeft:"1px solid #1e1e1e", display:"flex", flexDirection:"column", justifyContent:"space-between", padding:"3rem 2.5rem" }}>
+      <div style={{ width:isMobile?"100%":420, background:"#0f0f0f", borderLeft:"1px solid #1e1e1e", display:"flex", flexDirection:"column", justifyContent:"space-between", padding:"3rem 2.5rem" }}>
         <div>
           <div style={{ fontFamily:"Syne", fontSize:28, fontWeight:800, color:"#f0ede6", marginBottom:8, lineHeight:1.2 }}>
             Car<span style={{ color:"#e6821e" }}>Care</span> Connect
@@ -224,7 +226,7 @@ export default function AuthPage() {
           ))}
         </div>
         <div style={{ paddingTop:"2rem", borderTop:"1px solid #1a1a1a" }}>
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:"1.5rem" }}>
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:12, marginBottom:"1.5rem" }}>
             {STATS.map(s=>(
               <div key={s.label}>
                 <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#e6821e" }}>{s.value}</div>
@@ -253,7 +255,7 @@ export default function AuthPage() {
           <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#f0ede6", marginBottom:6 }}>Who are you?</div>
           <div style={{ fontSize:13, color:"#555" }}>Choose your role to get started</div>
         </div>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:12, marginBottom:"1.5rem" }}>
+        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:12, marginBottom:"1.5rem" }}>
           {ROLES.map(r=>(
             <div key={r.key} onClick={()=>setSelectedRole(r.key)}
               style={{ background:selectedRole===r.key?r.bg:"#111", border:`2px solid ${selectedRole===r.key?r.color:"#1e1e1e"}`, borderRadius:14, padding:"1.5rem 1rem", cursor:"pointer", textAlign:"center", transition:"all 0.15s" }}
@@ -318,7 +320,7 @@ export default function AuthPage() {
       </nav>
 
       {/* Hero */}
-      <div style={{ textAlign:"center", padding:"5rem 2rem 3rem", animation:"fadeUp 0.6s ease forwards" }}>
+      <div style={{ textAlign:"center", padding:isMobile?"2rem 1rem 2rem":"5rem 2rem 3rem", animation:"fadeUp 0.6s ease forwards" }}>
         <div style={{ display:"inline-block", background:"#1a1208", border:"1px solid #e6821e40", borderRadius:20, padding:"6px 16px", fontSize:12, color:"#e6821e", marginBottom:"1.5rem", fontWeight:500 }}>
           🇰🇪 Proudly serving Nairobi & beyond
         </div>
@@ -342,7 +344,7 @@ export default function AuthPage() {
       </div>
 
       {/* Stats */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:1, background:"#1a1a1a", margin:"0 auto", borderRadius:12, overflow:"hidden", maxWidth:700 }}>
+      <div style={{ display:"grid", gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)", gap:1, background:"#1a1a1a", margin:"0 auto", borderRadius:12, overflow:"hidden", maxWidth:700 }}>
         {STATS.map(s=>(
           <div key={s.label} style={{ background:"#111", padding:"1.25rem", textAlign:"center" }}>
             <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#e6821e" }}>{s.value}</div>
@@ -382,7 +384,7 @@ export default function AuthPage() {
 
       {/* Vision & Mission */}
       <div style={{ padding:"2rem 2rem", maxWidth:900, margin:"0 auto" }}>
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
+        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:16 }}>
           <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:14, padding:"1.75rem" }}>
             <div style={{ fontSize:24, marginBottom:10 }}>🌟</div>
             <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#f0ede6", marginBottom:8 }}>Our Vision</div>
@@ -406,7 +408,7 @@ export default function AuthPage() {
           <div style={{ fontFamily:"Syne", fontSize:"clamp(20px,3vw,28px)", fontWeight:800, color:"#f0ede6", marginBottom:8 }}>How it works</div>
           <div style={{ fontSize:13, color:"#555" }}>Get started in 3 simple steps</div>
         </div>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }}>
+        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:16 }}>
           {[
             { step:"01", title:"Create account", desc:"Sign up as a customer, provider, or driver in under 2 minutes", icon:"👤" },
             { step:"02", title:"Browse & book", desc:"Find verified service providers near you and book instantly", icon:"🔍" },
@@ -461,6 +463,7 @@ export default function AuthPage() {
     </div>
   )
 }
+
 
 
 

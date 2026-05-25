@@ -1,3 +1,4 @@
+import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
@@ -10,6 +11,7 @@ const SB = { pending:"#1a1208", confirmed:"#0c1f2e", "in-progress":"#160a2e", co
 const PC = { pending:"#e6821e", paid:"#1d9e75", cash:"#555" }
 
 export default function ProviderBookings() {
+  const isMobile = useIsMobile()
   const { user, profile } = useAuth()
   const { t } = useLanguage()
   const [bookings, setBookings] = useState([])
@@ -159,7 +161,7 @@ export default function ProviderBookings() {
 
             {isExpanded&&(
               <div style={{ borderTop:"1px solid #1e1e1e", paddingTop:10, marginBottom:10 }}>
-                <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:8, marginBottom:8 }}>
+                <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:8, marginBottom:8 }}>
                   {[
                     { l:"Your earnings", v:`$${Number(b.provider_earnings||0).toFixed(2)}`, c:"#1d9e75" },
                     { l:"Platform 15%", v:`$${Number(b.platform_commission||0).toFixed(2)}` },
@@ -222,7 +224,7 @@ export default function ProviderBookings() {
               <div style={{ marginTop:10, background:"#0f0f0f", borderRadius:8, padding:"1rem", border:"1px solid #222" }}>
                 <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:10, color:"#f0ede6" }}>Reschedule booking</div>
                 <form onSubmit={reschedule}>
-                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:10 }}>
+                  <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10, marginBottom:10 }}>
                     <div>
                       <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", display:"block", marginBottom:4 }}>New date</label>
                       <input type="date" value={rescheduleForm.date} onChange={e=>setRescheduleForm(f=>({...f,date:e.target.value}))} required min={new Date().toISOString().split("T")[0]} style={inp}/>
@@ -261,3 +263,5 @@ export default function ProviderBookings() {
     </div>
   )
 }
+
+

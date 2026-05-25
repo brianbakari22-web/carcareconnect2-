@@ -1,3 +1,4 @@
+import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
@@ -45,6 +46,7 @@ function Calendar({ selected, onChange }) {
 }
 
 export default function CustomerServices() {
+  const isMobile = useIsMobile()
   const { user, profile } = useAuth()
   const { t } = useLanguage()
   const [services, setServices] = useState([])
@@ -259,7 +261,7 @@ export default function CustomerServices() {
                   {bookForm.date&&(
                     <>
                       <div style={{fontFamily:"Syne",fontSize:13,fontWeight:700,margin:"1rem 0 10px",color:"#f0ede6"}}>Pick a time</div>
-                      <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
+                      <div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)",gap:6}}>
                         {TIMES.map(t=>(
                           <button key={t} onClick={()=>setBookForm(f=>({...f,time:t}))} style={{padding:"8px 4px",borderRadius:7,border:`1px solid ${bookForm.time===t?"#e6821e":"#222"}`,background:bookForm.time===t?"#1a1208":"#0f0f0f",color:bookForm.time===t?"#e6821e":"#888",fontSize:12,cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>
                             {t}
@@ -392,3 +394,5 @@ export default function CustomerServices() {
     </div>
   )
 }
+
+

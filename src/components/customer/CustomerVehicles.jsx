@@ -1,9 +1,11 @@
+import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
 
 export default function CustomerVehicles() {
+  const isMobile = useIsMobile()
   const { user } = useAuth()
   const [vehicles, setVehicles] = useState([])
   const [form, setForm] = useState({make:"",model:"",year:"",color:"",license_plate:""})
@@ -68,7 +70,7 @@ export default function CustomerVehicles() {
       <div style={{background:"#111",border:"1px solid #1e1e1e",borderRadius:10,padding:"1.25rem",marginTop:"1rem"}}>
         <div style={{fontFamily:"Syne",fontSize:14,fontWeight:700,marginBottom:"1rem"}}>{editing?"Edit vehicle":"Add a vehicle"}</div>
         <form onSubmit={save}>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+          <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:10}}>
             <div><label style={lbl}>Make</label><input style={inp} placeholder="Toyota" value={form.make} onChange={e=>setForm(f=>({...f,make:e.target.value}))} required/></div>
             <div><label style={lbl}>Model</label><input style={inp} placeholder="Camry" value={form.model} onChange={e=>setForm(f=>({...f,model:e.target.value}))} required/></div>
             <div><label style={lbl}>Year</label><input style={inp} placeholder="2020" type="number" min="1990" max="2026" value={form.year} onChange={e=>setForm(f=>({...f,year:e.target.value}))} required/></div>
@@ -84,3 +86,5 @@ export default function CustomerVehicles() {
     </div>
   )
 }
+
+

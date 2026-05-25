@@ -1,3 +1,4 @@
+import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
@@ -6,6 +7,7 @@ import { exportUserData, downloadJSON, downloadCSV, downloadPDF } from "../../li
 import toast from "react-hot-toast"
 
 export default function CustomerProfile() {
+  const isMobile = useIsMobile()
   const { profile, updateProfile, user } = useAuth()
   const { t } = useLanguage()
   const [form, setForm] = useState({ first_name:"", last_name:"", city:"" })
@@ -85,7 +87,7 @@ export default function CustomerProfile() {
   const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
 
   return (
-    <div style={{ maxWidth:520 }}>
+    <div style={{ maxWidth:isMobile?"100%":520 }}>
       <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:"1.5rem" }}>
         <div style={{ width:60, height:60, borderRadius:14, background:"#1a1208", border:"2px solid #e6821e40", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#e6821e" }}>
           {initials}
@@ -114,7 +116,7 @@ export default function CustomerProfile() {
         <form onSubmit={saveProfile}>
           <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>{t("profile")}</div>
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+            <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
               <div><label style={lbl}>{t("firstName")}</label><input style={inp} value={form.first_name} onChange={e=>setForm(f=>({...f,first_name:e.target.value}))} required/></div>
               <div><label style={lbl}>{t("lastName")}</label><input style={inp} value={form.last_name} onChange={e=>setForm(f=>({...f,last_name:e.target.value}))} required/></div>
             </div>
@@ -172,7 +174,7 @@ export default function CustomerProfile() {
 
             {exportData&&(
               <div style={{ marginBottom:"1.25rem" }}>
-                <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:8, marginBottom:"1rem" }}>
+                <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:8, marginBottom:"1rem" }}>
                   {[
                     { label:"Bookings", value:exportData.bookings.length },
                     { label:"Payments", value:exportData.payments.length },
@@ -228,4 +230,6 @@ export default function CustomerProfile() {
     </div>
   )
 }
+
+
 

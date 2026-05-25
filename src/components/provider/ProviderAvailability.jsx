@@ -1,3 +1,4 @@
+import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
@@ -6,6 +7,7 @@ import toast from "react-hot-toast"
 const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
 
 export default function ProviderAvailability() {
+  const isMobile = useIsMobile()
   const { user } = useAuth()
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const [availability, setAvailability] = useState({})
@@ -183,7 +185,7 @@ export default function ProviderAvailability() {
       </div>
 
       {tab==="calendar"&&(
-        <div style={{ display:"grid", gridTemplateColumns:selected?"1fr 320px":"1fr", gap:10 }}>
+        <div style={{ display:"grid", gridTemplateColumns:selected&&!isMobile?"1fr 320px":"1fr", gap:10 }}>
           <div>
             <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
@@ -351,3 +353,5 @@ export default function ProviderAvailability() {
     </div>
   )
 }
+
+

@@ -93,7 +93,7 @@ export default function ProviderProfile() {
   const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
 
   return (
-    <div style={{ maxWidth:520 }}>
+    <div style={{ maxWidth:isMobile?"100%":520 }}>
       <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:"1.5rem" }}>
         <div style={{ width:60, height:60, borderRadius:14, background:"#0c1f2e", border:"2px solid #378add40", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#378add" }}>
           {initials}
@@ -120,7 +120,7 @@ export default function ProviderProfile() {
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>Business information</div>
             <label style={lbl}>Business name</label>
             <input style={inp} placeholder="Your business name" value={form.business_name} onChange={e=>setForm(f=>({...f,business_name:e.target.value}))}/>
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+            <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
               <div><label style={lbl}>First name</label><input style={inp} value={form.first_name} onChange={e=>setForm(f=>({...f,first_name:e.target.value}))} required/></div>
               <div><label style={lbl}>Last name</label><input style={inp} value={form.last_name} onChange={e=>setForm(f=>({...f,last_name:e.target.value}))} required/></div>
             </div>
@@ -173,7 +173,7 @@ export default function ProviderProfile() {
 
           <div style={{ marginBottom:12 }}>
             <label style={lbl}>Or enter coordinates manually</label>
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+            <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
               <div>
                 <label style={{ ...lbl, marginBottom:4 }}>Latitude</label>
                 <input style={inp} type="number" step="any" placeholder="-1.2921" value={location.latitude||""} onChange={e=>setLocation(l=>({...l,latitude:parseFloat(e.target.value)||null}))}/>
@@ -210,6 +210,8 @@ export default function ProviderProfile() {
     </div>
   )
 }
+
+
 
 
 
