@@ -111,8 +111,13 @@ const LoginSheet = memo(function LoginSheet({ isMobile, onClose }) {
     setLoading(true)
     try {
       await signIn({ email: form.email, password: form.password })
-      await new Promise(r => setTimeout(r, 500))
-      const { data: { user } } = await supabase.auth.getUser()
+      await new Promise(r => setTimeout(r, 1000))
+      let { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        await new Promise(r => setTimeout(r, 1000))
+        const retry = await supabase.auth.getUser()
+        user = retry.data.user
+      }
       if (!user) { toast.error("Session error — try again"); setLoading(false); return }
       const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single()
       if (profile?.role !== "admin") {
@@ -264,4 +269,5 @@ export default function AdminAuthPage() {
     </div>
   )
 }
+
 
