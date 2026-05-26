@@ -66,7 +66,7 @@ export function AuthProvider({ children }) {
     }
   }
 
-  async function signUp({ email, password, firstName, lastName, phone, role, businessName }) {
+  async function signUp({ email, password, firstName, lastName, phone, role, businessName }, referralCode="") {
     let referrerId = null
     if (referralCode) {
       const { data: refProfile } = await supabase.from("profiles").select("id").eq("referral_code", referralCode.toUpperCase()).single()
@@ -124,4 +124,5 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   )
 }
+
 
