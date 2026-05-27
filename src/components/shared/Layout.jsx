@@ -56,6 +56,7 @@ const NAV = {
     { path:"/admin-dashboard/users", label:"Users", icon:"👥" },
     { path:"/admin-dashboard/providers", label:"Providers", icon:"🔧" },
     { path:"/admin-dashboard/drivers", label:"Drivers", icon:"🚗" },
+    { path:"/admin-dashboard/mechanics", label:"Mechanics & Services", icon:"👨‍🔧" },
     { path:"/admin-dashboard/bookings", key:"bookings", icon:"📅" },
     { path:"/admin-dashboard/services", label:"Services", icon:"⚙️" },
     { path:"/admin-dashboard/revenue", label:"Revenue", icon:"💰" },
@@ -298,5 +299,6 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 

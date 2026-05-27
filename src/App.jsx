@@ -60,6 +60,7 @@ import AdminReviews from "./components/admin/AdminReviews"
 import AdminLoyalty from "./components/admin/AdminLoyalty"
 import AdminProviders from "./components/admin/AdminProviders"
 import AdminDrivers from "./components/admin/AdminDrivers"
+import AdminMechanics from "./components/admin/AdminMechanics"
 import AdminCategories from "./components/admin/AdminCategories"
 import Admin2FA from "./components/admin/Admin2FA"
 import Admin2FAVerify from "./components/admin/Admin2FAVerify"
@@ -215,6 +216,7 @@ function AdminDashboardRouter() {
           <Route path="support" element={<AdminSupport />} />
           <Route path="providers" element={<AdminProviders />} />
           <Route path="drivers" element={<AdminDrivers />} />
+              <Route path="mechanics" element={<AdminMechanics />} />
           <Route path="*" element={<Navigate to="/admin-dashboard" replace />} />
         </Routes>
       </Admin2FAGate>
@@ -249,6 +251,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 
