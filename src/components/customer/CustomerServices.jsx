@@ -15,7 +15,6 @@ export default function CustomerServices() {
   const isMobile = useIsMobile()
   const { user } = useAuth()
   const { t } = useLanguage()
-  const isMobile = useIsMobile()
   const [services, setServices] = useState([])
   const [providers, setProviders] = useState([])
   const [loading, setLoading] = useState(true)
@@ -256,5 +255,6 @@ export default function CustomerServices() {
     </div>
   )
 }
+
 
 
