@@ -24,8 +24,8 @@ export default function AdminMechanics() {
     loadGoRequests()
     const sub = supabase.channel("admin-mechanics-live")
       .on("postgres_changes", { event:"*", schema:"public", table:"mechanics" }, () => load())
-      .on("postgres_changes", { event:"*", schema:"public", table:"bookings" }, () => loadBookings()
-    loadGoRequests())
+      .on("postgres_changes", { event:"*", schema:"public", table:"bookings" }, () => loadBookings())
+      .on("postgres_changes", { event:"*", schema:"public", table:"go_service_requests" }, () => loadGoRequests())
       .subscribe()
     return () => supabase.removeChannel(sub)
   }, [])
@@ -366,6 +366,7 @@ export default function AdminMechanics() {
     </div>
   )
 }
+
 
 
 
