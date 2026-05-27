@@ -1,29 +1,36 @@
 import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import useIsMobile from "../../lib/useIsMobile"
-import toast from "react-hot-toast"
+
+const CATEGORIES = {
+  shop_standard: { label:"Shop Standard", icon:"🏪", color:"#378add", bg:"#0c1f2e" },
+  shop_premium: { label:"Shop Premium", icon:"🏡", color:"#8b5cf6", bg:"#160a2e" },
+  go_service: { label:"GO Service", icon:"🚨", color:"#e24b4a", bg:"#1a0808" },
+}
+
+const EICONS = { flat_tire:"🛞", dead_battery:"🔋", out_of_fuel:"⛽", car_wont_start:"🔑", overheating:"🌡️", towing:"🚚", other:"🆘" }
+const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", completed:"#1d9e75", cancelled:"#e24b4a" }
+const GC = { pending:"#e6821e", accepted:"#1d9e75", declined:"#e24b4a", timeout:"#555" }
 
 export default function AdminMechanics() {
   const isMobile = useIsMobile()
   const [mechanics, setMechanics] = useState([])
   const [providers, setProviders] = useState([])
+  const [services, setServices] = useState([])
+  const [bookings, setBookings] = useState([])
+  const [goRequests, setGoRequests] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
   const [filter, setFilter] = useState("all")
   const [tab, setTab] = useState("mechanics")
-  const [services, setServices] = useState([])
-  const [bookings, setBookings] = useState([])
   const [categoryFilter, setCategoryFilter] = useState("all")
-  const [goRequests, setGoRequests] = useState([])
-  
   const mapRef = useRef(null)
   const mapInstanceRef = useRef(null)
 
   useEffect(() => {
     load()
-    loadGoRequests()
     const sub = supabase.channel("admin-mechanics-live")
-      .on("postgres_changes", { event:"*", schema:"public", table:"mechanics" }, () => load())
+      .on("postgres_changes", { event:"*", schema:"public", table:"mechanics" }, () => loadMechanics())
       .on("postgres_changes", { event:"*", schema:"public", table:"bookings" }, () => loadBookings())
       .on("postgres_changes", { event:"*", schema:"public", table:"go_service_requests" }, () => loadGoRequests())
       .subscribe()
@@ -36,28 +43,35 @@ export default function AdminMechanics() {
   }, [tab])
 
   async function load() {
-    const [{ data: mechs }, { data: provs }, { data: svcs }] = await Promise.all([
-      supabase.from("mechanics").select("*").order("created_at", { ascending:false }),
-      supabase.from("profiles").select("id,first_name,last_name,business_name,city").eq("role","provider"),
-      supabase.from("services").select("*").order("created_at", { ascending:false }),
-    ])
-    setMechanics(mechs||[])
-    setProviders(provs||[])
-    setServices(svcs||[])
+    await Promise.all([loadMechanics(), loadProviders(), loadServices(), loadBookings(), loadGoRequests()])
     setLoading(false)
-    loadBookings()
-    loadGoRequests()
+  }
+
+  async function loadMechanics() {
+    const { data } = await supabase.from("mechanics").select("*").order("created_at", { ascending:false })
+    setMechanics(data||[])
+  }
+
+  async function loadProviders() {
+    const { data } = await supabase.from("profiles").select("id,first_name,last_name,business_name,city").eq("role","provider")
+    setProviders(data||[])
+  }
+
+  async function loadServices() {
+    const { data } = await supabase.from("services").select("*").order("created_at", { ascending:false })
+    setServices(data||[])
+  }
+
+  async function loadBookings() {
+    const { data } = await supabase.from("bookings").select("*").order("created_at", { ascending:false }).limit(100)
+    setBookings(data||[])
   }
 
   async function loadGoRequests() {
-    const { data } = await supabase.from("go_service_requests").select("*, bookings(*), profiles(first_name,last_name,business_name)").order("sent_at", { ascending:false }).limit(50)
+    const { data } = await supabase.from("go_service_requests")
+      .select("*, bookings(emergency_type,emergency_location_address,total_amount,service_name), profiles(first_name,last_name,business_name)")
+      .order("sent_at", { ascending:false }).limit(50)
     setGoRequests(data||[])
-  }
-
-  async function loadBookings()
-    loadGoRequests() {
-    const { data } = await supabase.from("bookings").select("*").order("created_at", { ascending:false }).limit(100)
-    setBookings(data||[])
   }
 
   function initMap() {
@@ -72,7 +86,7 @@ export default function AdminMechanics() {
         const icon = L.divIcon({ className:"", html:`<div style="background:${m.is_available?"#1d9e75":"#e6821e"};width:32px;height:32px;border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:14px;">👨‍🔧</div>`, iconSize:[32,32], iconAnchor:[16,16] })
         L.marker([m.current_latitude, m.current_longitude], { icon })
           .addTo(map)
-          .bindPopup(`<b>${m.first_name} ${m.last_name}</b><br>${m.specialization}<br>${provider?.business_name||"Unknown provider"}<br>Status: ${m.is_available?"Available":"On job"}`)
+          .bindPopup(`<b>${m.first_name} ${m.last_name}</b><br>${m.specialization}<br>${provider?.business_name||"Unknown"}<br>${m.is_available?"Available":"On job"}`)
       })
       mapInstanceRef.current = map
     }, 200)
@@ -83,15 +97,9 @@ export default function AdminMechanics() {
     return p ? (p.business_name||`${p.first_name} ${p.last_name}`) : "Unknown"
   }
 
-  const CATEGORIES = {
-    shop_standard: { label:"Shop Standard", icon:"🏪", color:"#378add", bg:"#0c1f2e" },
-    shop_premium: { label:"Shop Premium", icon:"🏡", color:"#8b5cf6", bg:"#160a2e" },
-    go_service: { label:"GO Service", icon:"🚨", color:"#e24b4a", bg:"#1a0808" },
-  }
-
   const filteredMechanics = mechanics.filter(m => {
     const matchSearch = `${m.first_name} ${m.last_name} ${m.specialization||""} ${m.phone||""}`.toLowerCase().includes(search.toLowerCase())
-    const matchFilter = filter==="all" || (filter==="available"&&m.is_available&&m.is_active) || (filter==="on_job"&&!m.is_available&&m.is_active) || (filter==="inactive"&&!m.is_active)
+    const matchFilter = filter==="all"||(filter==="available"&&m.is_available&&m.is_active)||(filter==="on_job"&&!m.is_available&&m.is_active)||(filter==="inactive"&&!m.is_active)
     return matchSearch && matchFilter
   })
 
@@ -102,7 +110,13 @@ export default function AdminMechanics() {
   const onJob = mechanics.filter(m=>!m.is_available&&m.is_active).length
   const liveCount = mechanics.filter(m=>m.current_latitude).length
 
-  const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", completed:"#1d9e75", cancelled:"#e24b4a" }
+  const TABS = [
+    { k:"mechanics", l:"👨‍🔧 Mechanics" },
+    { k:"services", l:"🔧 Services" },
+    { k:"bookings", l:"📅 Bookings" },
+    { k:"go", l:"🚨 GO Requests" },
+    { k:"map", l:"🗺️ Live map" },
+  ]
 
   return (
     <div>
@@ -113,7 +127,7 @@ export default function AdminMechanics() {
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {[
           { label:"Total mechanics", value:mechanics.length, color:"#f0ede6" },
-          { label:"Available now", value:available, color:"#1d9e75" },
+          { label:"Available", value:available, color:"#1d9e75" },
           { label:"On job", value:onJob, color:"#e6821e" },
           { label:"Live tracking", value:liveCount, color:"#8b5cf6" },
         ].map(s=>(
@@ -124,7 +138,7 @@ export default function AdminMechanics() {
         ))}
       </div>
 
-      {/* Service category stats */}
+      {/* Category stats */}
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {Object.entries(CATEGORIES).map(([key, cat])=>(
           <div key={key} style={{ background:cat.bg, border:`1px solid ${cat.color}30`, borderRadius:12, padding:"1rem" }}>
@@ -148,14 +162,7 @@ export default function AdminMechanics() {
 
       {/* Tabs */}
       <div style={{ display:"flex", gap:6, marginBottom:"1.25rem", flexWrap:"wrap" }}>
-        {[
-          { k:"mechanics", l:"👨‍🔧 Mechanics" },
-          { k:"services", l:"🔧 Services by category" },
-          { k:"bookings", l:"📅 Bookings by category" },
-          { k:"map", l:"🗺️ Live map" },
-          { k:"go", l:"🚨 GO Requests" },
-          { k:"go", l:"🚨 GO Requests" },
-        ].map(t=>(
+        {TABS.map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
             style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#8b5cf6":"#111", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
             {t.l}
@@ -176,10 +183,8 @@ export default function AdminMechanics() {
               </button>
             ))}
           </div>
-
           {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
           {!loading&&filteredMechanics.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No mechanics found</div>}
-
           {filteredMechanics.map(m=>(
             <div key={m.id} style={{ background:"#111", border:`1px solid ${m.is_active?m.is_available?"#1d9e7530":"#e6821e30":"#1e1e1e"}`, borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8, opacity:m.is_active?1:0.6 }}>
               <div style={{ display:"flex", alignItems:"flex-start", gap:12 }}>
@@ -202,8 +207,7 @@ export default function AdminMechanics() {
                 {m.current_latitude&&(
                   <div style={{ textAlign:"right", flexShrink:0 }}>
                     <div style={{ fontSize:10, color:"#555", marginBottom:2 }}>Location</div>
-                    <div style={{ fontSize:10, color:"#8b5cf6", fontFamily:"monospace" }}>{m.current_latitude?.toFixed(4)}</div>
-                    <div style={{ fontSize:10, color:"#8b5cf6", fontFamily:"monospace" }}>{m.current_longitude?.toFixed(4)}</div>
+                    <div style={{ fontSize:10, color:"#8b5cf6", fontFamily:"monospace" }}>{m.current_latitude?.toFixed(4)}, {m.current_longitude?.toFixed(4)}</div>
                   </div>
                 )}
               </div>
@@ -238,11 +242,11 @@ export default function AdminMechanics() {
                       {!s.is_active&&<span style={{ fontSize:10, color:"#555" }}>Inactive</span>}
                     </div>
                     <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>🏪 {provider?.business_name||`${provider?.first_name} ${provider?.last_name}`}</div>
-                    {s.description&&<div style={{ fontSize:11, color:"#444", marginBottom:2 }}>{s.description}</div>}
+                    {s.description&&<div style={{ fontSize:11, color:"#444" }}>{s.description}</div>}
                   </div>
                   <div style={{ textAlign:"right", flexShrink:0 }}>
                     <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>KES {Number(s.price).toLocaleString()}</div>
-                    <div style={{ fontSize:10, color:cat.color, marginTop:2 }}>{Math.round((s.platform_commission_rate||0.1)*100)}% platform fee</div>
+                    <div style={{ fontSize:10, color:cat.color, marginTop:2 }}>{Math.round((s.platform_commission_rate||0.1)*100)}% platform</div>
                     <div style={{ fontSize:10, color:"#555" }}>⏱ {s.duration_minutes||60} min</div>
                   </div>
                 </div>
@@ -278,6 +282,7 @@ export default function AdminMechanics() {
                     </div>
                     <div style={{ fontSize:11, color:"#555" }}>#{b.booking_number} · {b.booking_date}</div>
                     {b.assigned_mechanic_id&&<div style={{ fontSize:11, color:"#1d9e75", marginTop:2 }}>👨‍🔧 Mechanic assigned</div>}
+                    {b.is_emergency&&<div style={{ fontSize:11, color:"#e24b4a", marginTop:2 }}>🚨 Emergency</div>}
                   </div>
                   <div style={{ textAlign:"right", flexShrink:0 }}>
                     <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:800, color:"#e6821e" }}>KES {Number(b.total_amount).toLocaleString()}</div>
@@ -290,6 +295,7 @@ export default function AdminMechanics() {
         </div>
       )}
 
+      {/* GO REQUESTS TAB */}
       {tab==="go"&&(
         <div>
           <div style={{ display:"grid", gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)", gap:10, marginBottom:"1.25rem" }}>
@@ -306,31 +312,27 @@ export default function AdminMechanics() {
             ))}
           </div>
           {goRequests.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No GO requests yet</div>}
-          {goRequests.map(r=>{
-            const EICONS = { flat_tire:"🛞", dead_battery:"🔋", out_of_fuel:"⛽", car_wont_start:"🔑", overheating:"🌡️", towing:"🚚", other:"🆘" }
-            const SC = { pending:"#e6821e", accepted:"#1d9e75", declined:"#e24b4a", timeout:"#555" }
-            return (
-              <div key={r.id} style={{ background:"#111", border:`1px solid ${SC[r.status]||"#1e1e1e"}30`, borderRadius:10, padding:"0.9rem", marginBottom:8 }}>
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10 }}>
-                  <div style={{ flex:1, minWidth:0 }}>
-                    <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
-                      <span style={{ fontSize:18 }}>{EICONS[r.bookings?.emergency_type]||"🆘"}</span>
-                      <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6" }}>{r.bookings?.emergency_type?.replace(/_/g," ")}</div>
-                      <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:`${SC[r.status]||"#888"}20`, color:SC[r.status]||"#888" }}>{r.status}</span>
-                      <span style={{ fontSize:10, color:"#555" }}>Attempt {r.attempt_number} of 5</span>
-                    </div>
-                    <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>📍 {r.bookings?.emergency_location_address}</div>
-                    <div style={{ fontSize:11, color:"#378add" }}>🏪 {r.profiles?.business_name||`${r.profiles?.first_name} ${r.profiles?.last_name}`}</div>
-                    <div style={{ fontSize:10, color:"#444", marginTop:2 }}>{new Date(r.sent_at).toLocaleString()}</div>
+          {goRequests.map(r=>(
+            <div key={r.id} style={{ background:"#111", border:`1px solid ${GC[r.status]||"#1e1e1e"}30`, borderRadius:10, padding:"0.9rem", marginBottom:8 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10 }}>
+                <div style={{ flex:1, minWidth:0 }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
+                    <span style={{ fontSize:18 }}>{EICONS[r.bookings?.emergency_type]||"🆘"}</span>
+                    <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6" }}>{r.bookings?.emergency_type?.replace(/_/g," ")||r.bookings?.service_name}</div>
+                    <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:`${GC[r.status]||"#888"}20`, color:GC[r.status]||"#888" }}>{r.status}</span>
+                    <span style={{ fontSize:10, color:"#555" }}>Attempt {r.attempt_number}/5</span>
                   </div>
-                  <div style={{ textAlign:"right", flexShrink:0 }}>
-                    <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:800, color:"#e6821e" }}>KES {Number(r.bookings?.total_amount||0).toLocaleString()}</div>
-                    {r.responded_at&&<div style={{ fontSize:10, color:"#444", marginTop:2 }}>Responded: {new Date(r.responded_at).toLocaleTimeString()}</div>}
-                  </div>
+                  <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>📍 {r.bookings?.emergency_location_address||"—"}</div>
+                  <div style={{ fontSize:11, color:"#378add" }}>🏪 {r.profiles?.business_name||`${r.profiles?.first_name||""} ${r.profiles?.last_name||""}`}</div>
+                  <div style={{ fontSize:10, color:"#444", marginTop:2 }}>{new Date(r.sent_at).toLocaleString()}</div>
+                </div>
+                <div style={{ textAlign:"right", flexShrink:0 }}>
+                  <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:800, color:"#e6821e" }}>KES {Number(r.bookings?.total_amount||0).toLocaleString()}</div>
+                  {r.responded_at&&<div style={{ fontSize:10, color:"#444", marginTop:2 }}>{new Date(r.responded_at).toLocaleTimeString()}</div>}
                 </div>
               </div>
-            )
-          })}
+            </div>
+          ))}
         </div>
       )}
 
@@ -348,15 +350,13 @@ export default function AdminMechanics() {
                 <div style={{ width:12, height:12, borderRadius:"50%", background:"#e6821e" }}/>
                 <span style={{ fontSize:11, color:"#555" }}>On job ({onJob})</span>
               </div>
-              <div style={{ fontSize:11, color:"#444" }}>
-                {liveCount} mechanic{liveCount!==1?"s":""} sharing live location
-              </div>
+              <div style={{ fontSize:11, color:"#444" }}>{liveCount} live location{liveCount!==1?"s":""}</div>
             </div>
             <div ref={mapRef} style={{ height:isMobile?300:450, borderRadius:10, overflow:"hidden", background:"#1a1a1a" }}>
               {liveCount===0&&(
                 <div style={{ height:"100%", display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:8 }}>
                   <div style={{ fontSize:32 }}>🗺️</div>
-                  <div style={{ fontSize:12, color:"#555" }}>No mechanics sharing location currently</div>
+                  <div style={{ fontSize:12, color:"#555" }}>No mechanics sharing location</div>
                 </div>
               )}
             </div>
@@ -366,9 +366,3 @@ export default function AdminMechanics() {
     </div>
   )
 }
-
-
-
-
-
-
