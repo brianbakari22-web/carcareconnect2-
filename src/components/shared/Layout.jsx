@@ -19,6 +19,7 @@ const NAV = {
     { path:"/dashboard/favorites", key:"favorites", icon:"❤️" },
     { path:"/dashboard/referral", key:"referEarn", icon:"🎁" },
     { path:"/dashboard/support", label:"Support", icon:"🎫" },
+    { path:"/dashboard/emergency", label:"GO Service 🚨", icon:"🚨" },
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
@@ -34,6 +35,7 @@ const NAV = {
     { path:"/dashboard/availability", key:"availability", icon:"📆" },
     { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
     { path:"/dashboard/mechanics", label:"My Mechanics", icon:"👨‍🔧" },
+    { path:"/dashboard/go-requests", label:"GO Requests 🚨", icon:"🚨" },
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
@@ -299,6 +301,7 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 
 

@@ -25,6 +25,7 @@ import CustomerChat from "./components/customer/CustomerChat"
 import CustomerFavorites from "./components/customer/CustomerFavorites"
 import CustomerReferral from "./components/customer/CustomerReferral"
 import CustomerSupport from "./components/customer/CustomerSupport"
+import CustomerGoService from "./components/customer/CustomerGoService"
 import ProviderChat from "./components/provider/ProviderChat"
 import DriverChat from "./components/driver/DriverChat"
 import ProviderDashboard from "./components/provider/ProviderDashboard"
@@ -39,6 +40,7 @@ import ProviderNotifications from "./components/provider/ProviderNotifications"
 import ProviderAvailability from "./components/provider/ProviderAvailability"
 import ProviderProfile from "./components/provider/ProviderProfile"
 import ProviderMechanics from "./components/provider/ProviderMechanics"
+import ProviderGoRequests from "./components/provider/ProviderGoRequests"
 import DriverOverview from "./components/driver/DriverOverview"
 import DriverAvailableJobs from "./components/driver/DriverAvailableJobs"
 import DriverActiveDelivery from "./components/driver/DriverActiveDelivery"
@@ -158,6 +160,7 @@ function DashboardRouter() {
           <Route path="favorites" element={<CustomerFavorites />} />
           <Route path="referral" element={<CustomerReferral />} />
           <Route path="support" element={<CustomerSupport />} />
+          <Route path="emergency" element={<CustomerGoService />} />
           <Route path="profile" element={<CustomerProfile />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </>}
@@ -175,6 +178,7 @@ function DashboardRouter() {
           <Route path="chat" element={<ProviderChat />} />
           <Route path="profile" element={<ProviderProfile />} />
           <Route path="mechanics" element={<ProviderMechanics />} />
+          <Route path="go-requests" element={<ProviderGoRequests />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </>}
         {role === "driver" && <>
@@ -251,6 +255,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 

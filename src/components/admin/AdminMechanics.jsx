@@ -14,14 +14,18 @@ export default function AdminMechanics() {
   const [services, setServices] = useState([])
   const [bookings, setBookings] = useState([])
   const [categoryFilter, setCategoryFilter] = useState("all")
+  const [goRequests, setGoRequests] = useState([])
+  
   const mapRef = useRef(null)
   const mapInstanceRef = useRef(null)
 
   useEffect(() => {
     load()
+    loadGoRequests()
     const sub = supabase.channel("admin-mechanics-live")
       .on("postgres_changes", { event:"*", schema:"public", table:"mechanics" }, () => load())
-      .on("postgres_changes", { event:"*", schema:"public", table:"bookings" }, () => loadBookings())
+      .on("postgres_changes", { event:"*", schema:"public", table:"bookings" }, () => loadBookings()
+    loadGoRequests())
       .subscribe()
     return () => supabase.removeChannel(sub)
   }, [])
@@ -42,9 +46,16 @@ export default function AdminMechanics() {
     setServices(svcs||[])
     setLoading(false)
     loadBookings()
+    loadGoRequests()
   }
 
-  async function loadBookings() {
+  async function loadGoRequests() {
+    const { data } = await supabase.from("go_service_requests").select("*, bookings(*), profiles(first_name,last_name,business_name)").order("sent_at", { ascending:false }).limit(50)
+    setGoRequests(data||[])
+  }
+
+  async function loadBookings()
+    loadGoRequests() {
     const { data } = await supabase.from("bookings").select("*").order("created_at", { ascending:false }).limit(100)
     setBookings(data||[])
   }
@@ -142,6 +153,8 @@ export default function AdminMechanics() {
           { k:"services", l:"🔧 Services by category" },
           { k:"bookings", l:"📅 Bookings by category" },
           { k:"map", l:"🗺️ Live map" },
+          { k:"go", l:"🚨 GO Requests" },
+          { k:"go", l:"🚨 GO Requests" },
         ].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
             style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#8b5cf6":"#111", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
@@ -277,6 +290,50 @@ export default function AdminMechanics() {
         </div>
       )}
 
+      {tab==="go"&&(
+        <div>
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)", gap:10, marginBottom:"1.25rem" }}>
+            {[
+              { label:"Total", value:goRequests.length, color:"#e24b4a" },
+              { label:"Pending", value:goRequests.filter(r=>r.status==="pending").length, color:"#e6821e" },
+              { label:"Accepted", value:goRequests.filter(r=>r.status==="accepted").length, color:"#1d9e75" },
+              { label:"Timed out", value:goRequests.filter(r=>r.status==="timeout").length, color:"#555" },
+            ].map(s=>(
+              <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"0.9rem", border:"1px solid #1e1e1e" }}>
+                <div style={{ fontSize:10, color:"#555", textTransform:"uppercase", marginBottom:4 }}>{s.label}</div>
+                <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:s.color }}>{s.value}</div>
+              </div>
+            ))}
+          </div>
+          {goRequests.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No GO requests yet</div>}
+          {goRequests.map(r=>{
+            const EICONS = { flat_tire:"🛞", dead_battery:"🔋", out_of_fuel:"⛽", car_wont_start:"🔑", overheating:"🌡️", towing:"🚚", other:"🆘" }
+            const SC = { pending:"#e6821e", accepted:"#1d9e75", declined:"#e24b4a", timeout:"#555" }
+            return (
+              <div key={r.id} style={{ background:"#111", border:`1px solid ${SC[r.status]||"#1e1e1e"}30`, borderRadius:10, padding:"0.9rem", marginBottom:8 }}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10 }}>
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
+                      <span style={{ fontSize:18 }}>{EICONS[r.bookings?.emergency_type]||"🆘"}</span>
+                      <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6" }}>{r.bookings?.emergency_type?.replace(/_/g," ")}</div>
+                      <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:`${SC[r.status]||"#888"}20`, color:SC[r.status]||"#888" }}>{r.status}</span>
+                      <span style={{ fontSize:10, color:"#555" }}>Attempt {r.attempt_number} of 5</span>
+                    </div>
+                    <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>📍 {r.bookings?.emergency_location_address}</div>
+                    <div style={{ fontSize:11, color:"#378add" }}>🏪 {r.profiles?.business_name||`${r.profiles?.first_name} ${r.profiles?.last_name}`}</div>
+                    <div style={{ fontSize:10, color:"#444", marginTop:2 }}>{new Date(r.sent_at).toLocaleString()}</div>
+                  </div>
+                  <div style={{ textAlign:"right", flexShrink:0 }}>
+                    <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:800, color:"#e6821e" }}>KES {Number(r.bookings?.total_amount||0).toLocaleString()}</div>
+                    {r.responded_at&&<div style={{ fontSize:10, color:"#444", marginTop:2 }}>Responded: {new Date(r.responded_at).toLocaleTimeString()}</div>}
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
       {/* MAP TAB */}
       {tab==="map"&&(
         <div>
@@ -309,3 +366,8 @@ export default function AdminMechanics() {
     </div>
   )
 }
+
+
+
+
+
