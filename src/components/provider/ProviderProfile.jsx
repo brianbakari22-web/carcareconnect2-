@@ -15,7 +15,7 @@ export default function ProviderProfile() {
   const [location, setLocation] = useState({ latitude:null, longitude:null, address:"" })
   const [saving, setSaving] = useState(false)
   const [locating, setLocating] = useState(false)
-  const [tab, setTab] = useState(t("businessInfo"))
+  const [tab, setTab] = useState("business")
 
   useEffect(() => {
     if (profile) {
@@ -108,7 +108,7 @@ export default function ProviderProfile() {
       </div>
 
       <div style={{ display:"flex", gap:6, marginBottom:"1.5rem" }}>
-        {[{k:t("businessInfo"),l:t("businessInfo")},{k:t("contactDetails"),l:t("contactDetails")},{k:"location",l:"Location"},{k:t("security"),l:t("security")}].map(t=>(
+        {[{k:"business",l:t("businessInfo")},{k:"contact",l:t("contactDetails")},{k:"location",l:"Location"},{k:"security",l:t("security")}].map(t=>(
           <button key={tab2.k} onClick={()=>{ setTab(tab2.k); if(tab2.k==="data"&&!exportData) loadExportData() }}
             style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===tab2.k?"#378add":"#111", color:tab===tab2.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===tab2.k?700:400 }}>
             {tab2.l}
@@ -116,7 +116,7 @@ export default function ProviderProfile() {
         ))}
       </div>
 
-      {tab===t("businessInfo")&&(
+      {tab==="business"&&(
         <form onSubmit={saveProfile}>
           <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>Business information</div>
@@ -136,7 +136,7 @@ export default function ProviderProfile() {
         </form>
       )}
 
-      {tab===t("contactDetails")&&(
+      {tab==="contact"&&(
         <form onSubmit={saveContact}>
           <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>Contact details</div>
@@ -194,7 +194,7 @@ export default function ProviderProfile() {
         </div>
       )}
 
-      {tab===t("security")&&(
+      {tab==="security"&&(
         <form onSubmit={changePassword}>
           <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>Change password</div>
@@ -212,6 +212,7 @@ export default function ProviderProfile() {
     </div>
   )
 }
+
 
 
 
