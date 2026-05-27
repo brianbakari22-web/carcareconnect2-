@@ -38,6 +38,7 @@ import ProviderPayouts from "./components/provider/ProviderPayouts"
 import ProviderNotifications from "./components/provider/ProviderNotifications"
 import ProviderAvailability from "./components/provider/ProviderAvailability"
 import ProviderProfile from "./components/provider/ProviderProfile"
+import ProviderMechanics from "./components/provider/ProviderMechanics"
 import DriverOverview from "./components/driver/DriverOverview"
 import DriverAvailableJobs from "./components/driver/DriverAvailableJobs"
 import DriverActiveDelivery from "./components/driver/DriverActiveDelivery"
@@ -172,6 +173,7 @@ function DashboardRouter() {
           <Route path="notifications" element={<ProviderNotifications />} />
           <Route path="chat" element={<ProviderChat />} />
           <Route path="profile" element={<ProviderProfile />} />
+          <Route path="mechanics" element={<ProviderMechanics />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </>}
         {role === "driver" && <>
@@ -247,6 +249,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 

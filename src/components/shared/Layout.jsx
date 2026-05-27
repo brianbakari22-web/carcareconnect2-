@@ -33,6 +33,7 @@ const NAV = {
     { path:"/dashboard/hours", key:"businessHours", icon:"🕐" },
     { path:"/dashboard/availability", key:"availability", icon:"📆" },
     { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
+    { path:"/dashboard/mechanics", label:"My Mechanics", icon:"👨‍🔧" },
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
@@ -81,6 +82,7 @@ const BOTTOM_NAV = {
     { path:"/dashboard", key:"overview", icon:"🏠" },
     { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
     { path:"/dashboard/services", key:"myServices", icon:"🔧" },
+    { path:"/dashboard/mechanics", label:"Mechanics", icon:"👨‍🔧" },
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
   ],
@@ -296,3 +298,5 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
+
