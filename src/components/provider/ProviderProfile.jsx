@@ -4,8 +4,10 @@ import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
 import { exportUserData, downloadJSON, downloadCSV, downloadPDF } from "../../lib/dataExport"
 import { useLanguage } from "../../contexts/LanguageContext"
+import useIsMobile from "../../lib/useIsMobile"
 
 export default function ProviderProfile() {
+  const isMobile = useIsMobile()
   const { profile, updateProfile, user } = useAuth()
   const { t } = useLanguage()
   const [form, setForm] = useState({ first_name:"", last_name:"", business_name:"", city:"" })
@@ -107,9 +109,9 @@ export default function ProviderProfile() {
 
       <div style={{ display:"flex", gap:6, marginBottom:"1.5rem" }}>
         {[{k:t("businessInfo"),l:t("businessInfo")},{k:t("contactDetails"),l:t("contactDetails")},{k:"location",l:"Location"},{k:t("security"),l:t("security")}].map(t=>(
-          <button key={t.k} onClick={()=>{ setTab(t2.k); if(t2.k==="data"&&!exportData) loadExportData() }}
-            style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#378add":"#111", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
-            {t.l}
+          <button key={tab2.k} onClick={()=>{ setTab(tab2.k); if(tab2.k==="data"&&!exportData) loadExportData() }}
+            style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===tab2.k?"#378add":"#111", color:tab===tab2.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===tab2.k?700:400 }}>
+            {tab2.l}
           </button>
         ))}
       </div>
@@ -210,6 +212,7 @@ export default function ProviderProfile() {
     </div>
   )
 }
+
 
 
 

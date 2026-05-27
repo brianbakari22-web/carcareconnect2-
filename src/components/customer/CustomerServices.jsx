@@ -12,6 +12,7 @@ const CATEGORIES = [
 ]
 
 export default function CustomerServices() {
+  const isMobile = useIsMobile()
   const { user } = useAuth()
   const { t } = useLanguage()
   const isMobile = useIsMobile()
@@ -255,3 +256,4 @@ export default function CustomerServices() {
     </div>
   )
 }
+
