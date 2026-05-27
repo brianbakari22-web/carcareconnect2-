@@ -1,66 +1,120 @@
-import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
-import toast from "react-hot-toast"
 import { useLanguage } from "../../contexts/LanguageContext"
+import useIsMobile from "../../lib/useIsMobile"
+import toast from "react-hot-toast"
 
-const CATEGORIES = ["Oil Change","Brake Repair","Tire Service","Engine Repair","AC Repair","Transmission","Detailing","Maintenance","Electrical","Body Repair"]
+const CATEGORIES = [
+  {
+    key: "shop_standard",
+    label: "Shop Standard",
+    icon: "🏪",
+    desc: "Customer brings car to your shop",
+    commission: "You keep 90% · Platform 10%",
+    color: "#378add",
+    bg: "#0c1f2e",
+    border: "#378add40",
+  },
+  {
+    key: "shop_premium",
+    label: "Shop Premium",
+    icon: "🏡",
+    desc: "Your mechanic drives to customer home",
+    commission: "You keep 80% · Platform 20%",
+    color: "#8b5cf6",
+    bg: "#160a2e",
+    border: "#8b5cf640",
+  },
+  {
+    key: "go_service",
+    label: "GO Service",
+    icon: "🚨",
+    desc: "Emergency roadside assistance",
+    commission: "You keep 85% · Platform 15%",
+    color: "#e24b4a",
+    bg: "#1a0808",
+    border: "#e24b4a40",
+  },
+]
 
-const EMPTY_FORM = { name:"", description:"", category:"Oil Change", price:"", discounted_price:"", duration:60, is_active:true, tags:"", requirements:"", inclusions:"" }
+const EMPTY = { name:"", description:"", price:"", duration_minutes:"", category:"shop_standard" }
 
 export default function ProviderServices() {
-  const isMobile = useIsMobile()
   const { user } = useAuth()
   const { t } = useLanguage()
+  const isMobile = useIsMobile()
   const [services, setServices] = useState([])
-  const [editing, setEditing] = useState(null)
-  const [form, setForm] = useState(EMPTY_FORM)
   const [loading, setLoading] = useState(true)
-  const [expanded, setExpanded] = useState(null)
+  const [showForm, setShowForm] = useState(false)
+  const [editing, setEditing] = useState(null)
+  const [form, setForm] = useState(EMPTY)
+  const [saving, setSaving] = useState(false)
+  const [activeCategory, setActiveCategory] = useState("all")
 
   useEffect(() => { if (user) load() }, [user])
 
   async function load() {
-    const { data } = await supabase.from("services").select("*").eq("provider_id", user.id).order("created_at",{ascending:false})
+    const { data } = await supabase.from("services").select("*").eq("provider_id", user.id).order("created_at", { ascending:false })
     setServices(data||[])
     setLoading(false)
   }
 
   async function save(e) {
     e.preventDefault()
-    const payload = {
-      name: form.name,
-      description: form.description,
-      category: form.category,
-      price: Number(form.price),
-      discounted_price: form.discounted_price ? Number(form.discounted_price) : null,
-      duration: Number(form.duration),
-      is_active: form.is_active,
-      tags: form.tags ? form.tags.split(",").map(t=>t.trim()).filter(Boolean) : [],
-      requirements: form.requirements ? form.requirements.split("\n").map(r=>r.trim()).filter(Boolean) : [],
-      inclusions: form.inclusions ? form.inclusions.split("\n").map(r=>r.trim()).filter(Boolean) : [],
-    }
-    if (editing) {
-      const { error } = await supabase.from("services").update(payload).eq("id",editing).eq("provider_id",user.id)
-      if (error) return toast.error(error.message)
-      toast.success("Service updated")
+    if (!form.name||!form.price) return toast.error("Name and price required")
+    setSaving(true)
+
+    const cat = CATEGORIES.find(c=>c.key===form.category)
+    const commissionRates = { shop_standard:0.10, shop_premium:0.20, go_service:0.15 }
+    const platformRate = commissionRates[form.category]
+    const providerRate = 1 - platformRate
+
+    try {
+      if (editing) {
+        const { error } = await supabase.from("services").update({
+          name: form.name,
+          description: form.description,
+          price: parseFloat(form.price),
+          duration_minutes: parseInt(form.duration_minutes)||60,
+          category: form.category,
+          platform_commission_rate: platformRate,
+          provider_commission_rate: providerRate,
+        }).eq("id", editing).eq("provider_id", user.id)
+        if (error) throw error
+        toast.success("Service updated")
+      } else {
+        const { error } = await supabase.from("services").insert({
+          provider_id: user.id,
+          name: form.name,
+          description: form.description,
+          price: parseFloat(form.price),
+          duration_minutes: parseInt(form.duration_minutes)||60,
+          category: form.category,
+          platform_commission_rate: platformRate,
+          provider_commission_rate: providerRate,
+          is_active: true,
+        })
+        if (error) throw error
+        toast.success("Service added")
+      }
+      setForm(EMPTY)
+      setShowForm(false)
       setEditing(null)
-    } else {
-      const { error } = await supabase.from("services").insert({ ...payload, provider_id:user.id })
-      if (error) return toast.error(error.message)
-      toast.success("Service created")
+      load()
+    } catch(err) {
+      toast.error(err.message)
+    } finally {
+      setSaving(false)
     }
-    setForm(EMPTY_FORM)
+  }
+
+  async function toggleActive(id, is_active) {
+    await supabase.from("services").update({ is_active:!is_active }).eq("id",id).eq("provider_id",user.id)
     load()
   }
 
-  async function toggle(id, is_active) {
-    await supabase.from("services").update({ is_active:!is_active }).eq("id",id)
-    load()
-  }
-
-  async function remove(id) {
+  async function deleteService(id) {
     if (!confirm("Delete this service?")) return
     await supabase.from("services").delete().eq("id",id).eq("provider_id",user.id)
     toast.success("Service deleted")
@@ -69,109 +123,165 @@ export default function ProviderServices() {
 
   function startEdit(s) {
     setEditing(s.id)
-    setForm({
-      name:s.name, description:s.description||"", category:s.category,
-      price:String(s.price), discounted_price:s.discounted_price?String(s.discounted_price):"",
-      duration:s.duration, is_active:s.is_active,
-      tags: Array.isArray(s.tags) ? s.tags.join(", ") : "",
-      requirements: Array.isArray(s.requirements) ? s.requirements.join("\n") : "",
-      inclusions: Array.isArray(s.inclusions) ? s.inclusions.join("\n") : "",
-    })
-    window.scrollTo({ top: document.body.scrollHeight, behavior:"smooth" })
+    setForm({ name:s.name, description:s.description||"", price:s.price, duration_minutes:s.duration_minutes||60, category:s.category||"shop_standard" })
+    setShowForm(true)
   }
 
-  const inp = { width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"10px 12px", color:"#f0ede6", fontSize:13, outline:"none", marginBottom:10, fontFamily:"'DM Sans',sans-serif" }
+  const filtered = activeCategory==="all" ? services : services.filter(s=>s.category===activeCategory)
+  const inp = { width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"11px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }
   const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
 
   return (
     <div>
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
-      {!loading&&services.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"1.5rem" }}>No services yet. Add your first service below.</div>}
-
-      {services.map(s=>(
-        <div key={s.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem", marginBottom:10 }}>
-          <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-            <div style={{ flex:1 }}>
-              <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
-                <div style={{ fontSize:14, fontWeight:500, color:"#f0ede6" }}>{s.name}</div>
-                <span style={{ fontSize:10, padding:"2px 8px", borderRadius:20, background:s.is_active?"#071a12":"#1a1a1a", color:s.is_active?"#1d9e75":"#555" }}>
-                  {s.is_active?"Active":"Inactive"}
-                </span>
-              </div>
-              <div style={{ fontSize:11, color:"#555" }}>{s.category} · {s.duration}min · ${Number(s.discounted_price||s.price).toFixed(2)}</div>
+      {/* Category overview cards */}
+      <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:10, marginBottom:"1.5rem" }}>
+        {CATEGORIES.map(c=>(
+          <div key={c.key} style={{ background:c.bg, border:`1px solid ${c.border}`, borderRadius:12, padding:"1rem" }}>
+            <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
+              <span style={{ fontSize:20 }}>{c.icon}</span>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:c.color }}>{c.label}</div>
             </div>
-            <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
-              <button onClick={()=>setExpanded(expanded===s.id?null:s.id)} style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#888", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                {expanded===s.id?"Less":"Details"}
-              </button>
-              <button onClick={()=>startEdit(s)} style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#888", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Edit</button>
-              <button onClick={()=>toggle(s.id,s.is_active)} style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#888", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                {s.is_active?"Deactivate":"Activate"}
-              </button>
-              <button onClick={()=>remove(s.id)} style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Delete</button>
+            <div style={{ fontSize:11, color:"#666", marginBottom:4 }}>{c.desc}</div>
+            <div style={{ fontSize:10, color:c.color, fontWeight:600 }}>{c.commission}</div>
+            <div style={{ fontSize:10, color:"#444", marginTop:4 }}>
+              {services.filter(s=>s.category===c.key).length} service{services.filter(s=>s.category===c.key).length!==1?"s":""}
             </div>
           </div>
-
-          {expanded===s.id&&(
-            <div style={{ marginTop:12, paddingTop:12, borderTop:"1px solid #1e1e1e" }}>
-              {s.description&&<div style={{ fontSize:12, color:"#888", lineHeight:1.6, marginBottom:8 }}>{s.description}</div>}
-              {Array.isArray(s.tags)&&s.tags.length>0&&(
-                <div style={{ marginBottom:8 }}>
-                  <div style={{ fontSize:10, color:"#555", textTransform:"uppercase", marginBottom:6 }}>Tags</div>
-                  <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
-                    {s.tags.map(t=><span key={t} style={{ fontSize:10, padding:"3px 8px", borderRadius:6, background:"#1a1a1a", color:"#888", border:"1px solid #222" }}>{t}</span>)}
-                  </div>
-                </div>
-              )}
-              {Array.isArray(s.inclusions)&&s.inclusions.length>0&&(
-                <div style={{ marginBottom:8 }}>
-                  <div style={{ fontSize:10, color:"#555", textTransform:"uppercase", marginBottom:6 }}>What's included</div>
-                  {s.inclusions.map((inc,i)=><div key={i} style={{ fontSize:12, color:"#888", marginBottom:2 }}>✓ {inc}</div>)}
-                </div>
-              )}
-              {Array.isArray(s.requirements)&&s.requirements.length>0&&(
-                <div>
-                  <div style={{ fontSize:10, color:"#555", textTransform:"uppercase", marginBottom:6 }}>Requirements</div>
-                  {s.requirements.map((req,i)=><div key={i} style={{ fontSize:12, color:"#888", marginBottom:2 }}>• {req}</div>)}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      ))}
-
-      <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1.25rem", marginTop:"1rem" }}>
-        <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem" }}>{editing?t("editService"):"Add a service"}</div>
-        <form onSubmit={save}>
-          <label style={lbl}>Service name</label>
-          <input style={inp} placeholder="e.g. Full Oil Change" value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))} required/>
-          <label style={lbl}>Description</label>
-          <textarea style={{...inp,resize:"vertical"}} rows={3} placeholder="Describe what is included..." value={form.description} onChange={e=>setForm(f=>({...f,description:e.target.value}))}/>
-          <label style={lbl}>Category</label>
-          <select style={inp} value={form.category} onChange={e=>setForm(f=>({...f,category:e.target.value}))}>
-            {CATEGORIES.map(c=><option key={c}>{c}</option>)}
-          </select>
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:10 }}>
-            <div><label style={lbl}>Price ($)</label><input style={inp} type="number" step="0.01" min="0" placeholder="50.00" value={form.price} onChange={e=>setForm(f=>({...f,price:e.target.value}))} required/></div>
-            <div><label style={lbl}>Discounted ($)</label><input style={inp} type="number" step="0.01" min="0" placeholder="Optional" value={form.discounted_price} onChange={e=>setForm(f=>({...f,discounted_price:e.target.value}))}/></div>
-            <div><label style={lbl}>Duration (min)</label><input style={inp} type="number" min="15" step="15" value={form.duration} onChange={e=>setForm(f=>({...f,duration:e.target.value}))} required/></div>
-          </div>
-          <label style={lbl}>Tags (comma separated)</label>
-          <input style={inp} placeholder="e.g. synthetic, quick service, walk-in" value={form.tags} onChange={e=>setForm(f=>({...f,tags:e.target.value}))}/>
-          <label style={lbl}>What is included (one per line)</label>
-          <textarea style={{...inp,resize:"vertical"}} rows={3} placeholder={"Oil filter replacement\nEngine oil top up\n5 point inspection"} value={form.inclusions} onChange={e=>setForm(f=>({...f,inclusions:e.target.value}))}/>
-          <label style={lbl}>Customer requirements (one per line)</label>
-          <textarea style={{...inp,resize:"vertical"}} rows={3} placeholder={"Vehicle must be driveable\nBring service log book"} value={form.requirements} onChange={e=>setForm(f=>({...f,requirements:e.target.value}))}/>
-          <div style={{ display:"flex", gap:8, marginTop:4 }}>
-            <button type="submit" style={{ background:"#378add", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:"pointer" }}>
-              {editing?"Update service":t("addService")}
-            </button>
-            {editing&&<button type="button" onClick={()=>{ setEditing(null); setForm(EMPTY_FORM) }} style={{ background:"none", border:"1px solid #333", borderRadius:8, color:"#888", fontSize:13, padding:"10px 20px", cursor:"pointer" }}>Cancel</button>}
-          </div>
-        </form>
+        ))}
       </div>
+
+      {/* Header */}
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem", flexWrap:"wrap", gap:10 }}>
+        <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+          {["all",...CATEGORIES.map(c=>c.key)].map(k=>(
+            <button key={k} onClick={()=>setActiveCategory(k)}
+              style={{ padding:"6px 12px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:activeCategory===k?"#e6821e":"#111", color:activeCategory===k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif" }}>
+              {k==="all"?"All":CATEGORIES.find(c=>c.key===k)?.label}
+            </button>
+          ))}
+        </div>
+        <button onClick={()=>{ setShowForm(true); setEditing(null); setForm(EMPTY) }}
+          style={{ background:"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"9px 18px", cursor:"pointer" }}>
+          + Add service
+        </button>
+      </div>
+
+      {/* Add/Edit form */}
+      {showForm&&(
+        <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>
+            {editing?"Edit service":"Add new service"}
+          </div>
+
+          {/* Category selector */}
+          <div style={{ marginBottom:16 }}>
+            <label style={lbl}>Service category</label>
+            <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:8 }}>
+              {CATEGORIES.map(c=>(
+                <button key={c.key} type="button" onClick={()=>setForm(f=>({...f,category:c.key}))}
+                  style={{ background:form.category===c.key?c.bg:"#0f0f0f", border:`1px solid ${form.category===c.key?c.color:"#222"}`, borderRadius:9, padding:"0.75rem", cursor:"pointer", textAlign:"left" }}>
+                  <div style={{ fontSize:16, marginBottom:4 }}>{c.icon}</div>
+                  <div style={{ fontSize:12, fontWeight:600, color:form.category===c.key?c.color:"#666", marginBottom:2 }}>{c.label}</div>
+                  <div style={{ fontSize:10, color:"#444" }}>{c.commission}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <form onSubmit={save}>
+            <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:12, marginBottom:12 }}>
+              <div>
+                <label style={lbl}>Service name</label>
+                <input style={inp} placeholder="e.g. Oil Change" value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))} required/>
+              </div>
+              <div>
+                <label style={lbl}>Price (KES)</label>
+                <input style={inp} type="number" placeholder="e.g. 2500" value={form.price} onChange={e=>setForm(f=>({...f,price:e.target.value}))} required min="0" step="0.01"/>
+              </div>
+            </div>
+            <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:12, marginBottom:12 }}>
+              <div>
+                <label style={lbl}>Duration (minutes)</label>
+                <input style={inp} type="number" placeholder="60" value={form.duration_minutes} onChange={e=>setForm(f=>({...f,duration_minutes:e.target.value}))} min="15"/>
+              </div>
+              <div style={{ display:"flex", flexDirection:"column", justifyContent:"flex-end" }}>
+                {form.category&&(
+                  <div style={{ background:CATEGORIES.find(c=>c.key===form.category)?.bg||"#111", border:`1px solid ${CATEGORIES.find(c=>c.key===form.category)?.border||"#222"}`, borderRadius:8, padding:"0.6rem 0.75rem" }}>
+                    <div style={{ fontSize:10, color:"#555", marginBottom:2 }}>Commission preview</div>
+                    <div style={{ fontSize:12, color:CATEGORIES.find(c=>c.key===form.category)?.color||"#888", fontWeight:600 }}>
+                      {CATEGORIES.find(c=>c.key===form.category)?.commission}
+                    </div>
+                    {form.price&&<div style={{ fontSize:11, color:"#555", marginTop:2 }}>
+                      Your earnings: KES {(parseFloat(form.price||0)*(1-{shop_standard:0.10,shop_premium:0.20,go_service:0.15}[form.category])).toFixed(0)}
+                    </div>}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div style={{ marginBottom:14 }}>
+              <label style={lbl}>Description</label>
+              <textarea style={{ ...inp, resize:"vertical", minHeight:70 }} placeholder="Describe what this service includes..." value={form.description} onChange={e=>setForm(f=>({...f,description:e.target.value}))}/>
+            </div>
+            <div style={{ display:"flex", gap:8 }}>
+              <button type="submit" disabled={saving}
+                style={{ background:saving?"#333":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 24px", cursor:saving?"not-allowed":"pointer" }}>
+                {saving?"Saving...":editing?"Update service":"Add service"}
+              </button>
+              <button type="button" onClick={()=>{ setShowForm(false); setEditing(null); setForm(EMPTY) }}
+                style={{ background:"none", border:"1px solid #333", borderRadius:9, color:"#666", fontSize:13, padding:"10px 18px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Services list */}
+      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {!loading&&filtered.length===0&&(
+        <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"3rem" }}>
+          <div style={{ fontSize:32, marginBottom:10 }}>🔧</div>
+          No services yet. Add your first service above.
+        </div>
+      )}
+
+      {filtered.map(s=>{
+        const cat = CATEGORIES.find(c=>c.key===s.category)||CATEGORIES[0]
+        return (
+          <div key={s.id} style={{ background:"#111", border:`1px solid ${s.is_active?cat.border:"#1e1e1e"}`, borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8, opacity:s.is_active?1:0.6 }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10 }}>
+              <div style={{ flex:1, minWidth:0 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
+                  <span style={{ fontSize:16 }}>{cat.icon}</span>
+                  <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6" }}>{s.name}</div>
+                  <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:cat.bg, color:cat.color, border:`1px solid ${cat.border}` }}>{cat.label}</span>
+                  {!s.is_active&&<span style={{ fontSize:10, color:"#555", background:"#1a1a1a", padding:"2px 8px", borderRadius:10 }}>Inactive</span>}
+                </div>
+                {s.description&&<div style={{ fontSize:11, color:"#666", marginBottom:4, lineHeight:1.5 }}>{s.description}</div>}
+                <div style={{ display:"flex", gap:12, flexWrap:"wrap" }}>
+                  <span style={{ fontSize:12, color:"#e6821e", fontFamily:"Syne", fontWeight:700 }}>KES {Number(s.price).toLocaleString()}</span>
+                  <span style={{ fontSize:11, color:"#555" }}>⏱ {s.duration_minutes||60} min</span>
+                  <span style={{ fontSize:11, color:cat.color }}>{cat.commission}</span>
+                </div>
+              </div>
+              <div style={{ display:"flex", gap:6, flexShrink:0, flexWrap:"wrap", justifyContent:"flex-end" }}>
+                <button onClick={()=>startEdit(s)}
+                  style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  Edit
+                </button>
+                <button onClick={()=>toggleActive(s.id, s.is_active)}
+                  style={{ background:s.is_active?"#1a0808":"#071a12", border:`1px solid ${s.is_active?"#e24b4a40":"#1d9e7540"}`, borderRadius:7, color:s.is_active?"#e24b4a":"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  {s.is_active?"Deactivate":"Activate"}
+                </button>
+                <button onClick={()=>deleteService(s.id)}
+                  style={{ background:"none", border:"1px solid #e24b4a20", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }
-
-
