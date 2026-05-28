@@ -10,7 +10,6 @@ import ProviderPartsManager from "./ProviderPartsManager"
 
 const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", completed:"#1d9e75", cancelled:"#e24b4a" }
 const SB = { pending:"#1a1208", confirmed:"#0c1f2e", "in-progress":"#160a2e", completed:"#071a12", cancelled:"#1a0808" }
-
 const CATEGORIES = {
   shop_standard: { label:"Shop Standard", icon:"🏪", color:"#378add" },
   shop_premium: { label:"Shop Premium", icon:"🏡", color:"#8b5cf6" },
@@ -31,6 +30,7 @@ export default function ProviderBookings() {
   const [reportType, setReportType] = useState("pickup")
   const [existingReports, setExistingReports] = useState({})
   const [selectedMechanic, setSelectedMechanic] = useState("")
+  const [showParts, setShowParts] = useState(null)
 
   useEffect(() => {
     if (!user) return
@@ -48,6 +48,20 @@ export default function ProviderBookings() {
     ])
     setBookings(bks||[])
     setMechanics(mechs||[])
+
+    if (bks?.length) {
+      const premiumGoBookings = bks.filter(b=>b.service_category==="shop_premium"||b.service_category==="go_service")
+      if (premiumGoBookings.length) {
+        const ids = premiumGoBookings.map(b=>b.id)
+        const { data: reps } = await supabase.from("vehicle_condition_reports").select("booking_id,report_type").in("booking_id", ids)
+        const repMap = {}
+        reps?.forEach(r => {
+          if (!repMap[r.booking_id]) repMap[r.booking_id] = {}
+          repMap[r.booking_id][r.report_type] = true
+        })
+        setExistingReports(repMap)
+      }
+    }
     setLoading(false)
   }
 
@@ -59,33 +73,17 @@ export default function ProviderBookings() {
   }
 
   async function assignMechanic(bookingId) {
-    if (!selectedMechanic) return toast.error("Please select a mechanic")
-    const { error } = await supabase.from("bookings")
-      .update({ assigned_mechanic_id: selectedMechanic, status:"in-progress" })
-      .eq("id", bookingId)
-      .eq("provider_id", user.id)
-    if (error) return toast.error(error.message)
-
-    await supabase.from("mechanics").update({ is_available:false, current_booking_id:bookingId }).eq("id", selectedMechanic)
-
-    toast.success("Mechanic assigned — customer notified! 👨‍🔧")
-    setAssigningMechanic(null)
-    setSelectedMechanic("")
-    load()
-  }
-
-  async function downloadBookingInvoice(booking) {
+    if (!selectedMechanic && mechanics.length > 0) return toast.error("Please select a mechanic")
     try {
-      const [{ data: provider }, { data: customer }, { data: mechanic }] = await Promise.all([
-        supabase.from("profiles").select("*").eq("id", booking.provider_id).single(),
-        supabase.from("profiles").select("*").eq("id", booking.customer_id).single(),
-        booking.assigned_mechanic_id ? supabase.from("mechanics").select("*").eq("id", booking.assigned_mechanic_id).single() : Promise.resolve({ data:null }),
-      ])
-      downloadInvoice(booking, provider, customer, mechanic, null)
-      toast.success("Invoice downloaded")
-    } catch(err) {
-      toast.error("Could not generate invoice")
-    }
+      await supabase.from("bookings").update({ assigned_mechanic_id: selectedMechanic||null, status:"in-progress" }).eq("id", bookingId).eq("provider_id", user.id)
+      if (selectedMechanic) {
+        await supabase.from("mechanics").update({ is_available:false, current_booking_id:bookingId }).eq("id", selectedMechanic)
+      }
+      toast.success("Mechanic assigned — customer notified! 👨‍🔧")
+      setAssigningMechanic(null)
+      setSelectedMechanic("")
+      load()
+    } catch(err) { toast.error(err.message) }
   }
 
   async function markPaid(id) {
@@ -104,6 +102,20 @@ export default function ProviderBookings() {
     load()
   }
 
+  async function downloadBookingInvoice(booking) {
+    try {
+      const [{ data: provider }, { data: customer }, { data: mechanic }] = await Promise.all([
+        supabase.from("profiles").select("*").eq("id", booking.provider_id).single(),
+        supabase.from("profiles").select("*").eq("id", booking.customer_id).single(),
+        booking.assigned_mechanic_id ? supabase.from("mechanics").select("*").eq("id", booking.assigned_mechanic_id).single() : Promise.resolve({ data:null }),
+      ])
+      downloadInvoice(booking, provider, customer, mechanic, null)
+      toast.success("Invoice downloaded")
+    } catch(err) { toast.error("Could not generate invoice") }
+  }
+
+  const filtered = filter==="all" ? bookings : bookings.filter(b=>b.status===filter)
+
   if (showReport) return (
     <div>
       <button onClick={()=>setShowReport(null)} style={{ background:"none", border:"none", color:"#378add", cursor:"pointer", fontSize:13, marginBottom:"1rem", fontFamily:"DM Sans,sans-serif", padding:0 }}>
@@ -116,8 +128,6 @@ export default function ProviderBookings() {
       />
     </div>
   )
-
-  const filtered = filter==="all" ? bookings : bookings.filter(b=>b.status===filter)
 
   return (
     <div>
@@ -149,6 +159,7 @@ export default function ProviderBookings() {
 
       {filtered.map(b=>{
         const cat = CATEGORIES[b.service_category]||CATEGORIES.shop_standard
+        const reports = existingReports[b.id]||{}
         return (
           <div key={b.id} style={{ background:"#111", border:`1px solid ${SB[b.status]||"#1e1e1e"}`, borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8 }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
@@ -160,15 +171,19 @@ export default function ProviderBookings() {
                 </div>
                 <div style={{ fontSize:11, color:"#555" }}>{b.booking_date} · {b.booking_time?.slice(0,5)}</div>
                 {b.booking_number&&<div style={{ fontSize:10, color:"#444", marginTop:2 }}>#{b.booking_number}</div>}
-                {b.assigned_mechanic_id&&(
-                  <div style={{ fontSize:11, color:"#1d9e75", marginTop:4 }}>
-                    👨‍🔧 Mechanic assigned
+                {b.problem_description&&<div style={{ fontSize:11, color:"#888", marginTop:4, fontStyle:"italic" }}>"{b.problem_description}"</div>}
+                {b.assigned_mechanic_id&&<div style={{ fontSize:11, color:"#1d9e75", marginTop:2 }}>👨‍🔧 Mechanic assigned</div>}
+                {b.parts_details?.length>0&&(
+                  <div style={{ fontSize:11, color:b.parts_approved?"#1d9e75":"#e6821e", marginTop:2 }}>
+                    🔧 Parts: {b.parts_details.length} item{b.parts_details.length!==1?"s":""} · {b.parts_approved?"✓ Approved":"Awaiting approval"}
                   </div>
                 )}
               </div>
               <div style={{ textAlign:"right", flexShrink:0 }}>
                 <span style={{ fontSize:10, fontWeight:500, padding:"2px 8px", borderRadius:20, background:SB[b.status]||"#111", color:SC[b.status]||"#888", border:`1px solid ${SC[b.status]||"#888"}40`, display:"inline-block" }}>{b.status}</span>
-                <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e", marginTop:4 }}>KES {Number(b.total_amount).toLocaleString()}</div>
+                <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e", marginTop:4 }}>
+                  KES {Number(b.updated_total||b.total_amount).toLocaleString()}
+                </div>
               </div>
             </div>
 
@@ -178,41 +193,44 @@ export default function ProviderBookings() {
                 <button onClick={()=>updateStatus(b.id,"cancelled")} style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Decline</button>
               </>}
 
-              {b.status==="confirmed"&&(
-                <>
-                  <button onClick={()=>{ setAssigningMechanic(b.id); setSelectedMechanic("") }}
-                    style={{ background:"#160a2e", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                    👨‍🔧 Assign mechanic
-                  </button>
-                  <button onClick={()=>updateStatus(b.id,"in-progress")} style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Start without mechanic</button>
-                </>
-              )}
+              {b.status==="confirmed"&&<>
+                <button onClick={()=>{ setAssigningMechanic(b.id); setSelectedMechanic("") }}
+                  style={{ background:"#160a2e", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  👨‍🔧 Assign mechanic
+                </button>
+                <button onClick={()=>updateStatus(b.id,"in-progress")}
+                  style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  Start
+                </button>
+              </>}
 
               {b.status==="in-progress"&&(
                 <button onClick={()=>completeAndFreeMechanic(b.id, b.assigned_mechanic_id)}
                   style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                  ✓ Complete booking
+                  ✓ Complete
                 </button>
               )}
 
-              {(b.service_category==="shop_premium"||b.service_category==="go_service")&&b.assigned_mechanic_id&&(
-                <>
-                  {!existingReports[b.id]?.pickup&&(
-                    <button onClick={()=>{ setShowReport(b.id); setReportType("pickup") }}
-                      style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                      📋 Pickup report
-                    </button>
-                  )}
-                  {existingReports[b.id]?.pickup&&!existingReports[b.id]?.dropoff&&(
-                    <button onClick={()=>{ setShowReport(b.id); setReportType("dropoff") }}
-                      style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                      📋 Dropoff report
-                    </button>
-                  )}
-                  {existingReports[b.id]?.pickup&&existingReports[b.id]?.dropoff&&(
-                    <span style={{ fontSize:10, color:"#1d9e75" }}>✓ Reports done</span>
-                  )}
-                </>
+              {(b.service_category==="shop_premium"||b.service_category==="go_service")&&b.assigned_mechanic_id&&<>
+                {!reports.pickup&&(
+                  <button onClick={()=>{ setShowReport(b.id); setReportType("pickup") }}
+                    style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                    📋 Pickup report
+                  </button>
+                )}
+                {reports.pickup&&!reports.dropoff&&(
+                  <button onClick={()=>{ setShowReport(b.id); setReportType("dropoff") }}
+                    style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                    📋 Dropoff report
+                  </button>
+                )}
+              </>}
+
+              {["confirmed","in-progress"].includes(b.status)&&(
+                <button onClick={()=>setShowParts(showParts===b.id?null:b.id)}
+                  style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  🔧 {b.parts_details?.length>0?"Edit parts":"Add parts"}
+                </button>
               )}
 
               {b.status==="completed"&&(
@@ -221,15 +239,15 @@ export default function ProviderBookings() {
                   ⬇ Invoice
                 </button>
               )}
+
               {b.status==="completed"&&b.payment_status!=="paid"&&(
-                <button onClick={()=>markPaid(b.id)} style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Mark paid</button>
+                <button onClick={()=>markPaid(b.id)}
+                  style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  Mark paid
+                </button>
               )}
 
-              <button onClick={()=>setShowParts(showParts===b.id?null:b.id)}
-                  style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                  🔧 {b.parts_details?.length>0?"Edit parts":"Add parts"}
-                </button>
-                <button onClick={()=>setExpanded(expanded===b.id?null:b.id)}
+              <button onClick={()=>setExpanded(expanded===b.id?null:b.id)}
                 style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#666", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                 {expanded===b.id?"Less":"Details"}
               </button>
@@ -240,7 +258,7 @@ export default function ProviderBookings() {
               <div style={{ marginTop:10, background:"#160a2e", border:"1px solid #8b5cf630", borderRadius:10, padding:"1rem" }}>
                 <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#8b5cf6", marginBottom:8 }}>Assign mechanic</div>
                 {mechanics.length===0?(
-                  <div style={{ fontSize:12, color:"#555", marginBottom:8 }}>No available mechanics. Go to My Mechanics to update availability.</div>
+                  <div style={{ fontSize:12, color:"#555", marginBottom:8 }}>No available mechanics.</div>
                 ):(
                   <div style={{ marginBottom:10 }}>
                     {mechanics.map(m=>(
@@ -250,8 +268,8 @@ export default function ProviderBookings() {
                           {m.first_name[0]}{m.last_name[0]}
                         </div>
                         <div>
-                          <div style={{ fontSize:12, fontWeight:600, color:"#f0ede6" }}>{m.first_name} {m.last_name}</div>
-                          <div style={{ fontSize:10, color:"#555" }}>🔧 {m.specialization}</div>
+                          <div style={{ fontSize:12, color:"#f0ede6" }}>{m.first_name} {m.last_name}</div>
+                          <div style={{ fontSize:10, color:"#555" }}>{m.specialization}</div>
                         </div>
                         {selectedMechanic===m.id&&<div style={{ marginLeft:"auto", fontSize:14, color:"#8b5cf6" }}>✓</div>}
                       </div>
@@ -259,8 +277,8 @@ export default function ProviderBookings() {
                   </div>
                 )}
                 <div style={{ display:"flex", gap:8 }}>
-                  <button onClick={()=>assignMechanic(b.id)} disabled={!selectedMechanic}
-                    style={{ background:selectedMechanic?"#8b5cf6":"#333", border:"none", borderRadius:8, color:selectedMechanic?"#fff":"#555", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:selectedMechanic?"pointer":"not-allowed" }}>
+                  <button onClick={()=>assignMechanic(b.id)} disabled={mechanics.length>0&&!selectedMechanic}
+                    style={{ background:mechanics.length>0&&!selectedMechanic?"#333":"#8b5cf6", border:"none", borderRadius:8, color:mechanics.length>0&&!selectedMechanic?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:mechanics.length>0&&!selectedMechanic?"not-allowed":"pointer" }}>
                     Assign & notify customer
                   </button>
                   <button onClick={()=>{ setAssigningMechanic(null); setSelectedMechanic("") }}
@@ -271,12 +289,15 @@ export default function ProviderBookings() {
               </div>
             )}
 
+            {/* Parts manager */}
             {showParts===b.id&&(
               <ProviderPartsManager booking={b} onUpdate={()=>{ setShowParts(null); load() }}/>
             )}
+
+            {/* Expanded details */}
             {expanded===b.id&&(
               <div style={{ marginTop:10, paddingTop:10, borderTop:"1px solid #1e1e1e" }}>
-                <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(3,1fr)", gap:8 }}>
+                <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(3,1fr)", gap:8, marginBottom:8 }}>
                   {[
                     { l:"Your earnings", v:`KES ${Number(b.provider_earnings||0).toFixed(0)}`, c:"#1d9e75" },
                     { l:"Platform fee", v:`KES ${Number(b.platform_commission||0).toFixed(0)}` },
@@ -291,7 +312,23 @@ export default function ProviderBookings() {
                     </div>
                   ))}
                 </div>
+                {b.parts_details?.length>0&&(
+                  <div style={{ marginTop:8 }}>
+                    <div style={{ fontSize:11, color:"#378add", marginBottom:4 }}>Parts breakdown:</div>
+                    {b.parts_details.map((p,i)=>(
+                      <div key={i} style={{ display:"flex", justifyContent:"space-between", fontSize:11, color:"#666", padding:"3px 0" }}>
+                        <span>{p.name} × {p.quantity}</span>
+                        <span>KES {p.total?.toLocaleString()}</span>
+                      </div>
+                    ))}
+                    <div style={{ display:"flex", justifyContent:"space-between", fontSize:11, color:"#e6821e", marginTop:4, fontWeight:600 }}>
+                      <span>Parts total</span>
+                      <span>KES {Number(b.parts_cost||0).toLocaleString()}</span>
+                    </div>
+                  </div>
+                )}
                 {b.notes&&<div style={{ fontSize:11, color:"#666", fontStyle:"italic", marginTop:8 }}>Note: "{b.notes}"</div>}
+                {b.problem_description&&<div style={{ fontSize:11, color:"#888", fontStyle:"italic", marginTop:4 }}>Problem: "{b.problem_description}"</div>}
               </div>
             )}
           </div>
@@ -300,13 +337,3 @@ export default function ProviderBookings() {
     </div>
   )
 }
-
-
-
-
-
-
-
-
-
-
