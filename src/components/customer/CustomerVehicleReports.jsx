@@ -25,10 +25,8 @@ export default function CustomerVehicleReports() {
     const { data: bks } = await supabase.from("bookings")
       .select("id,service_name,booking_date,booking_number,status,is_concierge,service_category,vehicles(make,model,license_plate)")
       .eq("customer_id", user.id)
-      .in("service_category", ["shop_premium","go_service"])
-      .or("is_concierge.eq.true")
       .order("created_at", { ascending:false })
-      .limit(20)
+      .limit(30)
 
     setBookings(bks||[])
 
@@ -219,3 +217,4 @@ export default function CustomerVehicleReports() {
     </div>
   )
 }
+
