@@ -101,6 +101,8 @@ function ProtectedRoute({ children }) {
 
 
 
+
+
 function AdminProtectedRoute({ children }) {
   const { user, profile, loading } = useAuth()
   if (loading) return <Loader text="Loading..." />
@@ -261,6 +263,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 

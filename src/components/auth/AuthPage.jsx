@@ -72,15 +72,8 @@ export default function AuthPage() {
     try {
       if (mode === "signin") {
         await signIn({ email: form.email, password: form.password })
-        // wait for profile to load
-        let attempts = 0
-        const waitForProfile = setInterval(() => {
-          attempts++
-          const p = document.getElementById("profile-role-detector")
-          if (attempts > 20) { clearInterval(waitForProfile); navigate("/dashboard") }
-        }, 200)
-        navigate("/dashboard")
-      } else {
+          navigate("/dashboard")
+        } else {
         await signUp({
           email: form.email,
           password: form.password,
@@ -463,6 +456,7 @@ export default function AuthPage() {
     </div>
   )
 }
+
 
 
 
