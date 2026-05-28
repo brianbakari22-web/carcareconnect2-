@@ -25,6 +25,7 @@ import CustomerChat from "./components/customer/CustomerChat"
 import CustomerFavorites from "./components/customer/CustomerFavorites"
 import CustomerReferral from "./components/customer/CustomerReferral"
 import CustomerSupport from "./components/customer/CustomerSupport"
+import CustomerVehicleReports from "./components/customer/CustomerVehicleReports"
 import CustomerGoService from "./components/customer/CustomerGoService"
 import ProviderChat from "./components/provider/ProviderChat"
 import DriverChat from "./components/driver/DriverChat"
@@ -67,6 +68,8 @@ import AdminCategories from "./components/admin/AdminCategories"
 import Admin2FA from "./components/admin/Admin2FA"
 import Admin2FAVerify from "./components/admin/Admin2FAVerify"
 import AdminSupport from "./components/admin/AdminSupport"
+import AdminDisputes from "./components/admin/AdminDisputes"
+import AdminMechanics from "./components/admin/AdminMechanics"
 
 const ADMIN_SECRET = "ccc-admin-x7k9m2p4q8"
 
@@ -161,6 +164,8 @@ function DashboardRouter() {
           <Route path="referral" element={<CustomerReferral />} />
           <Route path="support" element={<CustomerSupport />} />
           <Route path="emergency" element={<CustomerGoService />} />
+          <Route path="vehicle-reports" element={<CustomerVehicleReports />} />
+          <Route path="emergency" element={<CustomerGoService />} />
           <Route path="profile" element={<CustomerProfile />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </>}
@@ -218,10 +223,12 @@ function AdminDashboardRouter() {
           <Route path="categories" element={<AdminCategories />} />
           <Route path="security" element={<Admin2FA />} />
           <Route path="support" element={<AdminSupport />} />
-          <Route path="providers" element={<AdminProviders />} />
+              <Route path="disputes" element={<AdminDisputes />} />
+              <Route path="mechanics" element={<AdminMechanics />} />
+              <Route path="providers" element={<AdminProviders />} />
           <Route path="drivers" element={<AdminDrivers />} />
               <Route path="mechanics" element={<AdminMechanics />} />
-          <Route path="*" element={<Navigate to="/admin-dashboard" replace />} />
+              <Route path="*" element={<Navigate to="/admin-dashboard" replace />} />
         </Routes>
       </Admin2FAGate>
     </Layout>
@@ -255,6 +262,8 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
+
 
 
 
