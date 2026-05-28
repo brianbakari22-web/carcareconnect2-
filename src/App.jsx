@@ -25,10 +25,9 @@ import CustomerChat from "./components/customer/CustomerChat"
 import CustomerFavorites from "./components/customer/CustomerFavorites"
 import CustomerReferral from "./components/customer/CustomerReferral"
 import CustomerSupport from "./components/customer/CustomerSupport"
-import CustomerVehicleReports from "./components/customer/CustomerVehicleReports"
 import CustomerGoService from "./components/customer/CustomerGoService"
+import CustomerVehicleReports from "./components/customer/CustomerVehicleReports"
 import ProviderChat from "./components/provider/ProviderChat"
-import DriverChat from "./components/driver/DriverChat"
 import ProviderDashboard from "./components/provider/ProviderDashboard"
 import ProviderBookings from "./components/provider/ProviderBookings"
 import ProviderServices from "./components/provider/ProviderServices"
@@ -42,6 +41,7 @@ import ProviderAvailability from "./components/provider/ProviderAvailability"
 import ProviderProfile from "./components/provider/ProviderProfile"
 import ProviderMechanics from "./components/provider/ProviderMechanics"
 import ProviderGoRequests from "./components/provider/ProviderGoRequests"
+import DriverChat from "./components/driver/DriverChat"
 import DriverOverview from "./components/driver/DriverOverview"
 import DriverAvailableJobs from "./components/driver/DriverAvailableJobs"
 import DriverActiveDelivery from "./components/driver/DriverActiveDelivery"
@@ -63,11 +63,11 @@ import AdminReviews from "./components/admin/AdminReviews"
 import AdminLoyalty from "./components/admin/AdminLoyalty"
 import AdminProviders from "./components/admin/AdminProviders"
 import AdminDrivers from "./components/admin/AdminDrivers"
-import AdminMechanics from "./components/admin/AdminMechanics"
 import AdminCategories from "./components/admin/AdminCategories"
 import Admin2FA from "./components/admin/Admin2FA"
 import Admin2FAVerify from "./components/admin/Admin2FAVerify"
 import AdminSupport from "./components/admin/AdminSupport"
+import AdminMechanics from "./components/admin/AdminMechanics"
 import AdminDisputes from "./components/admin/AdminDisputes"
 
 const ADMIN_SECRET = "ccc-admin-x7k9m2p4q8"
@@ -93,24 +93,16 @@ function NotFound() {
 
 function ProtectedRoute({ children }) {
   const { user, loading, profile } = useAuth()
-  if (loading) return <Loader text="Loading..." />
+  if (loading || (user && !profile)) return <Loader text="Loading..." />
   if (!user) return <Navigate to="/auth" replace />
-  if (!profile) return <Loader text="Setting up your account..." />
   return children
 }
 
-
-
-
-
-
-
-
 function AdminProtectedRoute({ children }) {
   const { user, profile, loading } = useAuth()
-  if (loading) return <Loader text="Loading..." />
+  if (loading || (user && !profile)) return <Loader text="Loading..." />
   if (!user) return <Navigate to={`/${ADMIN_SECRET}`} replace />
-  if (profile && profile.role !== "admin") return <Navigate to="/not-found" replace />
+  if (profile && profile.role !== "admin") return <Navigate to="/auth" replace />
   return children
 }
 
@@ -143,11 +135,9 @@ function Admin2FAGate({ children }) {
 
 function DashboardRouter() {
   const { profile, loading } = useAuth()
-  if (loading) return <Loader text="Loading your dashboard..." />
-  if (!profile) return <Loader text="Setting up your account..." />
-  if (!profile.role) return <Loader text="Loading your dashboard..." />
+  if (loading || !profile) return <Loader text="Loading your dashboard..." />
   const role = profile.role
-  if (role === "admin") return <Navigate to="/not-found" replace />
+  if (role === "admin") return <Navigate to={`/${ADMIN_SECRET}`} replace />
   if (!["customer","provider","driver"].includes(role)) return <Loader text="Loading your dashboard..." />
 
   return (
@@ -170,7 +160,6 @@ function DashboardRouter() {
           <Route path="support" element={<CustomerSupport />} />
           <Route path="emergency" element={<CustomerGoService />} />
           <Route path="vehicle-reports" element={<CustomerVehicleReports />} />
-          <Route path="emergency" element={<CustomerGoService />} />
           <Route path="profile" element={<CustomerProfile />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </>}
@@ -186,9 +175,9 @@ function DashboardRouter() {
           <Route path="payouts" element={<ProviderPayouts />} />
           <Route path="notifications" element={<ProviderNotifications />} />
           <Route path="chat" element={<ProviderChat />} />
-          <Route path="profile" element={<ProviderProfile />} />
           <Route path="mechanics" element={<ProviderMechanics />} />
           <Route path="go-requests" element={<ProviderGoRequests />} />
+          <Route path="profile" element={<ProviderProfile />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </>}
         {role === "driver" && <>
@@ -228,12 +217,11 @@ function AdminDashboardRouter() {
           <Route path="categories" element={<AdminCategories />} />
           <Route path="security" element={<Admin2FA />} />
           <Route path="support" element={<AdminSupport />} />
-              <Route path="disputes" element={<AdminDisputes />} />
-              <Route path="mechanics" element={<AdminMechanics />} />
-              <Route path="providers" element={<AdminProviders />} />
+          <Route path="providers" element={<AdminProviders />} />
           <Route path="drivers" element={<AdminDrivers />} />
-              <Route path="mechanics" element={<AdminMechanics />} />
-              <Route path="*" element={<Navigate to="/admin-dashboard" replace />} />
+          <Route path="mechanics" element={<AdminMechanics />} />
+          <Route path="disputes" element={<AdminDisputes />} />
+          <Route path="*" element={<Navigate to="/admin-dashboard" replace />} />
         </Routes>
       </Admin2FAGate>
     </Layout>
@@ -243,7 +231,7 @@ function AdminDashboardRouter() {
 export default function App() {
   return (
     <ThemeProvider>
-    <LanguageProvider>
+      <LanguageProvider>
         <AuthProvider>
           <BrowserRouter>
             <Toaster position="top-right" toastOptions={{ style:{ background:"#1a1a1a", color:"#f0ede6", border:"1px solid #2a2a2a", borderRadius:8, fontSize:13 } }} />
@@ -255,9 +243,8 @@ export default function App() {
               <Route path="/admin-dashboard/*" element={<AdminProtectedRoute><AdminDashboardRouter /></AdminProtectedRoute>} />
               <Route path="/dashboard/*" element={<ProtectedRoute><DashboardRouter /></ProtectedRoute>} />
               <Route path="/not-found" element={<NotFound />} />
-              <Route path="/admin" element={<Navigate to="/not-found" replace />} />
               <Route path="/" element={<Navigate to="/auth" replace />} />
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+              <Route path="*" element={<Navigate to="/auth" replace />} />
             </Routes>
           </BrowserRouter>
         </AuthProvider>
@@ -265,25 +252,3 @@ export default function App() {
     </ThemeProvider>
   )
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
