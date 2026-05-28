@@ -20,6 +20,7 @@ const NAV = {
     { path:"/dashboard/referral", key:"referEarn", icon:"🎁" },
     { path:"/dashboard/support", label:"Support", icon:"🎫" },
     { path:"/dashboard/emergency", label:"GO Service 🚨", icon:"🚨" },
+    { path:"/dashboard/vehicle-reports", label:"Vehicle Reports", icon:"📋" },
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
@@ -59,6 +60,7 @@ const NAV = {
     { path:"/admin-dashboard/providers", label:"Providers", icon:"🔧" },
     { path:"/admin-dashboard/drivers", label:"Drivers", icon:"🚗" },
     { path:"/admin-dashboard/mechanics", label:"Mechanics & Services", icon:"👨‍🔧" },
+    { path:"/admin-dashboard/disputes", label:"Disputes & Reports", icon:"⚠️" },
     { path:"/admin-dashboard/bookings", key:"bookings", icon:"📅" },
     { path:"/admin-dashboard/services", label:"Services", icon:"⚙️" },
     { path:"/admin-dashboard/revenue", label:"Revenue", icon:"💰" },
@@ -301,6 +303,7 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 
 

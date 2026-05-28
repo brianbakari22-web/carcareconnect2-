@@ -1,190 +1,204 @@
-import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
-import { contactViaWhatsApp, contactViaEmail } from "../../lib/contact"
-import toast from "react-hot-toast"
 import { useLanguage } from "../../contexts/LanguageContext"
-
-const DELIVERY_STEPS = [
-  { status:"driver-assigned", label:"Job accepted", icon:"✓", desc:"Head to pickup location" },
-  { status:"arrived-for-pickup", label:"Arrived at pickup", icon:"📍", desc:"Pick up the vehicle" },
-  { status:"in-progress", label:"Vehicle picked up", icon:"🚗", desc:"Drive to service center" },
-  { status:"arrived-at-dropoff", label:"Arrived at dropoff", icon:"📍", desc:"Hand over the vehicle" },
-  { status:"completed", label:"Delivered", icon:"✅", desc:"Job complete!" },
-]
-
-const STATUS_NEXT = {
-  "driver-assigned": { next:"arrived-for-pickup", label:"Mark arrived at pickup", color:"#378add" },
-  "arrived-for-pickup": { next:"in-progress", label:"Mark vehicle picked up", color:"#8b5cf6" },
-  "in-progress": { next:"arrived-at-dropoff", label:"Mark arrived at dropoff", color:"#e6821e" },
-  "arrived-at-dropoff": { next:"completed", label:"Mark delivered", color:"#1d9e75" },
-}
+import useIsMobile from "../../lib/useIsMobile"
+import VehicleConditionReport from "../shared/VehicleConditionReport"
+import toast from "react-hot-toast"
 
 export default function DriverActiveDelivery() {
-  const isMobile = useIsMobile()
-  const { user, profile } = useAuth()
+  const { user } = useAuth()
   const { t, language } = useLanguage()
-  const [activeJobs, setActiveJobs] = useState([])
-  const [customers, setCustomers] = useState({})
+  const isMobile = useIsMobile()
+  const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(true)
+  const [expanded, setExpanded] = useState(null)
+  const [showReport, setShowReport] = useState(null)
+  const [reportType, setReportType] = useState("pickup")
+  const [existingReports, setExistingReports] = useState({})
 
   useEffect(() => {
     if (!user) return
     load()
-    const sub = supabase.channel("active-delivery")
-      .on("postgres_changes", { event:"UPDATE", schema:"public", table:"bookings", filter:`driver_id=eq.${user.id}` }, () => load())
+    const sub = supabase.channel("driver-active")
+      .on("postgres_changes", { event:"*", schema:"public", table:"bookings", filter:`driver_id=eq.${user.id}` }, () => load())
       .subscribe()
     return () => supabase.removeChannel(sub)
   }, [user])
 
   async function load() {
     const { data } = await supabase.from("bookings")
-      .select("*")
+      .select("*, vehicles(make,model,year,license_plate,color)")
       .eq("driver_id", user.id)
       .not("status", "in", '("completed","cancelled")')
       .order("created_at", { ascending:false })
-    setActiveJobs(data||[])
-    if (data&&data.length>0) {
-      const ids = [...new Set(data.map(b=>b.customer_id))]
-      const { data: profs } = await supabase.from("profile_public").select("id,first_name,last_name").in("id", ids)
-      const map = {}
-      ids.forEach(id=>{ map[id] = profs?.find(p=>p.id===id) })
-      setCustomers(map)
+    setJobs(data||[])
+
+    if (data?.length) {
+      const bookingIds = data.map(b=>b.id)
+      const { data: reports } = await supabase.from("vehicle_condition_reports")
+        .select("booking_id,report_type").in("booking_id", bookingIds)
+      const reportMap = {}
+      reports?.forEach(r => {
+        if (!reportMap[r.booking_id]) reportMap[r.booking_id] = {}
+        reportMap[r.booking_id][r.report_type] = true
+      })
+      setExistingReports(reportMap)
     }
     setLoading(false)
   }
 
-  async function updateStatus(bookingId, newStatus) {
-    const { error } = await supabase.from("bookings").update({ status:newStatus }).eq("id",bookingId).eq("driver_id",user.id)
-    if (error) return toast.error(error.message)
-    const booking = activeJobs.find(j=>j.id===bookingId)
-    const msgs = {
-      "arrived-for-pickup": "Your driver has arrived at the pickup location",
-      "in-progress": "Your vehicle has been picked up and is on the way",
-      "arrived-at-dropoff": "Your driver has arrived at the service center",
-      "completed": "Your vehicle has been delivered successfully! 🎉"
-    }
-    if (booking&&msgs[newStatus]) {
-      await supabase.from("notifications").insert({
-        user_id: booking.customer_id,
-        title: DELIVERY_STEPS.find(s=>s.status===newStatus)?.label||newStatus,
-        message: msgs[newStatus],
-        type: newStatus==="completed"?"success":"info"
-      })
-    }
-    toast.success(DELIVERY_STEPS.find(s=>s.status===newStatus)?.label||"Status updated")
+  async function updateStatus(id, status) {
+    await supabase.from("bookings").update({ status }).eq("id",id).eq("driver_id",user.id)
+    toast.success(`Status updated to ${status}`)
     load()
   }
 
-  function openMaps(address) {
-    if (!address) return toast.error("No address available")
-    window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`, "_blank")
+  async function shareLocation(bookingId) {
+    navigator.geolocation.getCurrentPosition(async pos => {
+      const { data: booking } = await supabase.from("bookings").select("assigned_mechanic_id").eq("id",bookingId).single()
+      if (booking?.assigned_mechanic_id) {
+        await supabase.from("mechanic_location_history").insert({
+          mechanic_id: booking.assigned_mechanic_id,
+          booking_id: bookingId,
+          latitude: pos.coords.latitude,
+          longitude: pos.coords.longitude,
+        })
+        await supabase.from("mechanics").update({
+          current_latitude: pos.coords.latitude,
+          current_longitude: pos.coords.longitude,
+          last_location_update: new Date().toISOString(),
+        }).eq("id", booking.assigned_mechanic_id)
+      }
+      toast.success("Location shared")
+    }, () => toast.error("Could not get location"))
   }
 
-  function openWaze(address) {
-    if (!address) return toast.error("No address available")
-    window.open(`https://waze.com/ul?q=${encodeURIComponent(address)}`, "_blank")
-  }
+  const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", "driver-assigned":"#1d9e75", "arrived-for-pickup":"#e6821e", "arrived-at-dropoff":"#8b5cf6" }
 
-  const driverName = profile?.first_name || "Your driver"
-
-  if (loading) return <div style={{ color:"#555", fontSize:13 }}>Loading...</div>
+  if (showReport) return (
+    <div>
+      <button onClick={()=>setShowReport(null)} style={{ background:"none", border:"none", color:"#1d9e75", cursor:"pointer", fontSize:13, marginBottom:"1rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
+        ← Back to active jobs
+      </button>
+      <VehicleConditionReport
+        bookingId={showReport}
+        reportType={reportType}
+        vehicleInfo={jobs.find(j=>j.id===showReport)?.vehicles ? `${jobs.find(j=>j.id===showReport).vehicles.make} ${jobs.find(j=>j.id===showReport).vehicles.model} — ${jobs.find(j=>j.id===showReport).vehicles.license_plate}` : ""}
+        onComplete={()=>{ setShowReport(null); load() }}
+      />
+    </div>
+  )
 
   return (
     <div>
-      <div style={{ marginBottom:"1.5rem" }}>
-        <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#f0ede6" }}>Active Deliveries</div>
-        <div style={{ fontSize:12, color:"#555", marginTop:2 }}>{activeJobs.length} active job{activeJobs.length!==1?"s":""}</div>
+      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:18, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>
+        {language==="sw"?"Usafirishaji Unaoendelea":"Active Deliveries"}
+      </div>
+      <div style={{ fontSize:12, color:"#555", marginBottom:"1.25rem" }}>
+        {jobs.length} active job{jobs.length!==1?"s":""}
       </div>
 
-      {activeJobs.length===0&&(
-        <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"2rem", textAlign:"center" }}>
-          <div style={{ fontSize:32, marginBottom:10 }}>📭</div>
-          <div style={{ fontSize:14, color:"#555", marginBottom:4 }}>No active deliveries</div>
-          <div style={{ fontSize:12, color:"#444" }}>Accept a job from Available Jobs to get started</div>
+      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {!loading&&jobs.length===0&&(
+        <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"3rem" }}>
+          <div style={{ fontSize:32, marginBottom:10 }}>🚗</div>
+          No active deliveries
         </div>
       )}
 
-      {activeJobs.map(j=>{
-        const customer = customers[j.customer_id]
-        const nextStep = STATUS_NEXT[j.status]
-        const currentStepIndex = DELIVERY_STEPS.findIndex(s=>s.status===j.status)
-        const currentStep = DELIVERY_STEPS[currentStepIndex]
-        const customerName = `${customer?.first_name||""} ${customer?.last_name||""}`.trim() || "Customer"
-
+      {jobs.map(job=>{
+        const reports = existingReports[job.id]||{}
+        const hasPickup = reports.pickup
+        const hasDropoff = reports.dropoff
+        const vehicle = job.vehicles
         return (
-          <div key={j.id} style={{ background:"#111", border:"1px solid #e6821e30", borderRadius:12, padding:"1.25rem", marginBottom:"1rem" }}>
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:"1rem" }}>
-              <div>
-                <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#f0ede6" }}>{j.service_name}</div>
-                <div style={{ fontSize:12, color:"#555", marginTop:2 }}>{customerName}</div>
-                <div style={{ fontSize:10, color:"#444", marginTop:2 }}>#{j.booking_number}</div>
-              </div>
-              <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#e6821e" }}>+$15</div>
-            </div>
-
-            <div style={{ background:"#0f0f0f", borderRadius:10, padding:"1rem", marginBottom:"1rem" }}>
-              <div style={{ fontSize:11, color:"#e6821e", fontWeight:600, marginBottom:4, textTransform:"uppercase", letterSpacing:"0.05em" }}>Current status</div>
-              <div style={{ fontSize:14, fontWeight:600, color:"#f0ede6", marginBottom:2 }}>{currentStep?.label||j.status}</div>
-              <div style={{ fontSize:12, color:"#555" }}>{currentStep?.desc}</div>
-            </div>
-
-            <div style={{ display:"flex", alignItems:"center", gap:4, marginBottom:"1rem", overflowX:"auto", paddingBottom:4 }}>
-              {DELIVERY_STEPS.map((step,i)=>(
-                <div key={step.status} style={{ display:"flex", alignItems:"center", gap:4, flexShrink:0 }}>
-                  <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:2 }}>
-                    <div style={{ width:30, height:30, borderRadius:"50%", background:i<currentStepIndex?"#1d9e75":i===currentStepIndex?"#e6821e":"#222", color:i<=currentStepIndex?"#fff":"#555", fontSize:i<currentStepIndex?12:11, fontWeight:700, display:"flex", alignItems:"center", justifyContent:"center", border:i===currentStepIndex?"2px solid #e6821e40":"none" }}>
-                      {i<currentStepIndex?"✓":step.icon}
-                    </div>
-                    <div style={{ fontSize:9, color:i===currentStepIndex?"#e6821e":i<currentStepIndex?"#1d9e75":"#444", textAlign:"center", maxWidth:48, lineHeight:1.2 }}>{step.label}</div>
+          <div key={job.id} style={{ background:"#111", border:`1px solid ${SC[job.status]||"#1e1e1e"}30`, borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10 }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
+              <div style={{ flex:1, minWidth:0 }}>
+                <div style={{ fontSize:isMobile?14:15, fontWeight:600, color:"#f0ede6", marginBottom:4 }}>{job.service_name}</div>
+                <div style={{ fontSize:11, color:"#555", marginBottom:4 }}>#{job.booking_number} · {job.booking_date}</div>
+                {vehicle&&(
+                  <div style={{ fontSize:11, color:"#378add", marginBottom:4 }}>
+                    🚗 {vehicle.make} {vehicle.model} {vehicle.year} — {vehicle.license_plate}
+                    {vehicle.color&&` · ${vehicle.color}`}
                   </div>
-                  {i<DELIVERY_STEPS.length-1&&<div style={{ width:14, height:2, background:i<currentStepIndex?"#1d9e75":"#222", marginBottom:16, flexShrink:0 }}/>}
-                </div>
-              ))}
-            </div>
-
-            <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:8, marginBottom:"1rem" }}>
-              <div style={{ background:"#0f0f0f", borderRadius:8, padding:"0.75rem" }}>
-                <div style={{ fontSize:10, color:"#555", marginBottom:3 }}>PICKUP ADDRESS</div>
-                <div style={{ fontSize:12, color:"#f0ede6" }}>{j.pickup_address||"Customer location"}</div>
+                )}
+                <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:`${SC[job.status]||"#888"}20`, color:SC[job.status]||"#888" }}>{job.status}</span>
               </div>
-              <div style={{ background:"#0f0f0f", borderRadius:8, padding:"0.75rem" }}>
-                <div style={{ fontSize:10, color:"#555", marginBottom:3 }}>DATE & TIME</div>
-                <div style={{ fontSize:12, color:"#f0ede6" }}>{j.booking_date} · {j.booking_time?.slice(0,5)}</div>
+              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75", flexShrink:0 }}>
+                KES {Number(job.driver_earnings||0).toLocaleString()}
               </div>
             </div>
 
-            {nextStep&&(
-              <button onClick={()=>updateStatus(j.id, nextStep.next)}
-                style={{ width:"100%", background:nextStep.color, border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:"pointer", marginBottom:10 }}>
-                {nextStep.label}
+            {/* Condition report status */}
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:10 }}>
+              <div style={{ background:hasPickup?"#071a12":"#0f0f0f", border:`1px solid ${hasPickup?"#1d9e7540":"#222"}`, borderRadius:8, padding:"0.6rem", textAlign:"center" }}>
+                <div style={{ fontSize:10, color:hasPickup?"#1d9e75":"#555" }}>Pickup report</div>
+                <div style={{ fontSize:12, fontWeight:600, color:hasPickup?"#1d9e75":"#444" }}>{hasPickup?"✓ Done":"Pending"}</div>
+              </div>
+              <div style={{ background:hasDropoff?"#071a12":"#0f0f0f", border:`1px solid ${hasDropoff?"#1d9e7540":"#222"}`, borderRadius:8, padding:"0.6rem", textAlign:"center" }}>
+                <div style={{ fontSize:10, color:hasDropoff?"#1d9e75":"#555" }}>Dropoff report</div>
+                <div style={{ fontSize:12, fontWeight:600, color:hasDropoff?"#1d9e75":"#444" }}>{hasDropoff?"✓ Done":"Pending"}</div>
+              </div>
+            </div>
+
+            <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+              {!hasPickup&&(
+                <button onClick={()=>{ setShowReport(job.id); setReportType("pickup") }}
+                  style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
+                  📋 Pickup report
+                </button>
+              )}
+              {hasPickup&&!hasDropoff&&(
+                <button onClick={()=>{ setShowReport(job.id); setReportType("dropoff") }}
+                  style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
+                  📋 Dropoff report
+                </button>
+              )}
+              <button onClick={()=>shareLocation(job.id)}
+                style={{ background:"#160a2e", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
+                📍 Share location
               </button>
+              {job.status==="driver-assigned"&&(
+                <button onClick={()=>updateStatus(job.id,"arrived-for-pickup")}
+                  style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
+                  Arrived for pickup
+                </button>
+              )}
+              {job.status==="arrived-for-pickup"&&hasPickup&&(
+                <button onClick={()=>updateStatus(job.id,"in-progress")}
+                  style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
+                  Start delivery
+                </button>
+              )}
+              {job.status==="in-progress"&&(
+                <button onClick={()=>updateStatus(job.id,"arrived-at-dropoff")}
+                  style={{ background:"#160a2e", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
+                  Arrived at dropoff
+                </button>
+              )}
+              {job.status==="arrived-at-dropoff"&&hasDropoff&&(
+                <button onClick={()=>updateStatus(job.id,"completed")}
+                  style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
+                  ✓ Complete delivery
+                </button>
+              )}
+            </div>
+
+            {!hasPickup&&job.status!=="pending"&&(
+              <div style={{ marginTop:8, padding:"6px 10px", background:"#1a1208", borderRadius:7, fontSize:11, color:"#e6821e" }}>
+                ⚠️ Please complete pickup condition report before starting delivery
+              </div>
             )}
-
-            <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
-              <button onClick={()=>openMaps(j.pickup_address)}
-                style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
-                Google Maps
-              </button>
-              <button onClick={()=>openWaze(j.pickup_address)}
-                style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
-                Waze
-              </button>
-              <button onClick={()=>contactViaWhatsApp(j.id, customerName, j.service_name, driverName)}
-                style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
-                WhatsApp
-              </button>
-              <button onClick={()=>contactViaEmail(j.id, customerName, j.service_name, driverName)}
-                style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
-                Email
-              </button>
-            </div>
+            {hasPickup&&!hasDropoff&&job.status==="arrived-at-dropoff"&&(
+              <div style={{ marginTop:8, padding:"6px 10px", background:"#0c1f2e", borderRadius:7, fontSize:11, color:"#378add" }}>
+                📋 Please complete dropoff condition report to finish delivery
+              </div>
+            )}
           </div>
         )
       })}
     </div>
   )
 }
-
-
