@@ -142,9 +142,10 @@ function DashboardRouter() {
   const { profile, loading } = useAuth()
   if (loading) return <Loader text="Loading your dashboard..." />
   if (!profile) return <Loader text="Setting up your account..." />
+  if (!profile.role) return <Loader text="Loading your dashboard..." />
   const role = profile.role
   if (role === "admin") return <Navigate to="/not-found" replace />
-  if (!role || !["customer","provider","driver"].includes(role)) return <Loader text="Loading your dashboard..." />
+  if (!["customer","provider","driver"].includes(role)) return <Loader text="Loading your dashboard..." />
 
   return (
     <Layout>
@@ -263,6 +264,8 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
+
 
 
 
