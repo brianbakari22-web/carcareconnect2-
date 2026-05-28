@@ -93,10 +93,12 @@ function NotFound() {
 
 function ProtectedRoute({ children }) {
   const { user, loading, profile } = useAuth()
-  if (loading || (user && !profile)) return <Loader text="Loading..." />
+  if (loading) return <Loader text="Loading..." />
   if (!user) return <Navigate to="/auth" replace />
+  if (!profile) return <Loader text="Setting up your account..." />
   return children
 }
+
 
 
 
@@ -241,7 +243,6 @@ function AdminDashboardRouter() {
 export default function App() {
   return (
     <ThemeProvider>
-      <ThemeProvider>
     <LanguageProvider>
         <AuthProvider>
           <BrowserRouter>
@@ -262,9 +263,11 @@ export default function App() {
         </AuthProvider>
       </LanguageProvider>
     </ThemeProvider>
-    </ThemeProvider>
   )
 }
+
+
+
 
 
 
