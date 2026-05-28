@@ -4,6 +4,7 @@ import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
+import { downloadInvoice } from "../../lib/invoice"
 
 const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", completed:"#1d9e75", cancelled:"#e24b4a" }
 const SB = { pending:"#1a1208", confirmed:"#0c1f2e", "in-progress":"#160a2e", completed:"#071a12", cancelled:"#1a0808" }
@@ -17,6 +18,25 @@ export default function CustomerBookings() {
   const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState(null)
   const [rebooking, setRebooking] = useState(null)
+  const [invoiceLoading, setInvoiceLoading] = useState(null)
+
+  async function downloadBookingInvoice(booking) {
+    setInvoiceLoading(booking.id)
+    try {
+      const [{ data: provider }, { data: customer }, { data: mechanic }] = await Promise.all([
+        supabase.from("profiles").select("*").eq("id", booking.provider_id).single(),
+        supabase.from("profiles").select("*").eq("id", booking.customer_id).single(),
+        booking.assigned_mechanic_id ? supabase.from("mechanics").select("*").eq("id", booking.assigned_mechanic_id).single() : Promise.resolve({ data:null }),
+      ])
+      downloadInvoice(booking, provider, customer, mechanic, null)
+      toast.success("Invoice downloaded")
+    } catch(err) {
+      toast.error("Could not generate invoice")
+    } finally {
+      setInvoiceLoading(null)
+    }
+  }
+
   const [rebookForm, setRebookForm] = useState({ date:"", time:"" })
 
   useEffect(() => { if (user) load() }, [user])
@@ -96,11 +116,17 @@ export default function CustomerBookings() {
               </button>
             )}
             {b.status==="completed"&&(
-              <button onClick={()=>{ setRebooking(b.id); setRebookForm({ date:"", time:"" }) }}
+              <>
+                <button onClick={()=>downloadBookingInvoice(b)} disabled={invoiceLoading===b.id}
+                  style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  {invoiceLoading===b.id?"...":"⬇ Invoice"}
+                </button>
+                <button onClick={()=>{ setRebooking(b.id); setRebookForm({ date:"", time:"" }) }}
                 style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                 {t("rebookService")}
-              </button>
-            )}
+                </button>
+              </>
+              )}
             <button onClick={()=>setExpanded(expanded===b.id?null:b.id)}
               style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#666", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
               {expanded===b.id?t("less"):t("details")}
@@ -154,5 +180,7 @@ export default function CustomerBookings() {
     </div>
   )
 }
+
+
 
 

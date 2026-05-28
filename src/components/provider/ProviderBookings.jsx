@@ -4,6 +4,7 @@ import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
+import { downloadInvoice } from "../../lib/invoice"
 import VehicleConditionReport from "../shared/VehicleConditionReport"
 
 const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", completed:"#1d9e75", cancelled:"#e24b4a" }
@@ -70,6 +71,20 @@ export default function ProviderBookings() {
     setAssigningMechanic(null)
     setSelectedMechanic("")
     load()
+  }
+
+  async function downloadBookingInvoice(booking) {
+    try {
+      const [{ data: provider }, { data: customer }, { data: mechanic }] = await Promise.all([
+        supabase.from("profiles").select("*").eq("id", booking.provider_id).single(),
+        supabase.from("profiles").select("*").eq("id", booking.customer_id).single(),
+        booking.assigned_mechanic_id ? supabase.from("mechanics").select("*").eq("id", booking.assigned_mechanic_id).single() : Promise.resolve({ data:null }),
+      ])
+      downloadInvoice(booking, provider, customer, mechanic, null)
+      toast.success("Invoice downloaded")
+    } catch(err) {
+      toast.error("Could not generate invoice")
+    }
   }
 
   async function markPaid(id) {
@@ -199,6 +214,12 @@ export default function ProviderBookings() {
                 </>
               )}
 
+              {b.status==="completed"&&(
+                <button onClick={()=>downloadBookingInvoice(b)}
+                  style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  ⬇ Invoice
+                </button>
+              )}
               {b.status==="completed"&&b.payment_status!=="paid"&&(
                 <button onClick={()=>markPaid(b.id)} style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Mark paid</button>
               )}
@@ -271,6 +292,8 @@ export default function ProviderBookings() {
     </div>
   )
 }
+
+
 
 
 

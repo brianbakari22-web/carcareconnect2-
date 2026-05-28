@@ -1,119 +1,238 @@
-export function generateInvoice(booking, profile, role) {
-  const total = Number(booking.total_amount).toFixed(2)
-  const platform = Number(booking.platform_commission||booking.total_amount*0.15).toFixed(2)
-  const providerEarnings = Number(booking.provider_earnings||0).toFixed(2)
-  const driverEarnings = Number(booking.driver_earnings||0).toFixed(2)
-  const discount = Number(booking.discount_amount||0).toFixed(2)
-  const date = new Date().toLocaleDateString("default", { year:"numeric", month:"long", day:"numeric" })
+import jsPDF from "jspdf"
 
-  const earningsRow = role === "driver"
-    ? `<tr><td>Your earnings (driver)</td><td style="text-align:right;color:#e6821e;font-weight:700">$${driverEarnings}</td></tr>`
-    : role === "provider"
-    ? `<tr><td>Your earnings (provider 70%)</td><td style="text-align:right;color:#e6821e;font-weight:700">$${providerEarnings}</td></tr>`
-    : ""
+export function generateInvoice(booking, provider, customer, mechanic, driver) {
+  const doc = new jsPDF()
+  const pageW = doc.internal.pageSize.getWidth()
+  let y = 20
 
-  const html = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="UTF-8"/>
-      <title>Invoice ${booking.booking_number}</title>
-      <style>
-        * { box-sizing:border-box; margin:0; padding:0; }
-        body { font-family:Arial,sans-serif; background:#fff; color:#111; padding:40px; max-width:700px; margin:0 auto; }
-        .header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:40px; padding-bottom:20px; border-bottom:3px solid #e6821e; }
-        .brand { font-size:24px; font-weight:800; }
-        .brand span { color:#e6821e; }
-        .invoice-label { font-size:30px; font-weight:800; color:#e6821e; }
-        .meta { font-size:12px; color:#555; margin-top:4px; }
-        .section { margin-bottom:28px; }
-        .section-title { font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:#888; margin-bottom:10px; font-weight:700; border-bottom:1px solid #eee; padding-bottom:6px; }
-        table { width:100%; border-collapse:collapse; }
-        th { background:#f8f8f8; padding:10px 12px; text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:#555; }
-        td { padding:10px 12px; font-size:13px; border-bottom:1px solid #f0f0f0; }
-        .total-row td { font-weight:700; font-size:16px; color:#e6821e; border-bottom:none; border-top:2px solid #e6821e; padding-top:14px; }
-        .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; background:#e8f5e9; color:#2e7d32; }
-        .footer { margin-top:48px; padding-top:20px; border-top:1px solid #eee; font-size:11px; color:#aaa; text-align:center; line-height:1.8; }
-        .highlight { background:#fff8f0; border:1px solid #e6821e30; border-radius:8px; padding:12px 16px; margin-bottom:20px; }
-        @media print { body { padding:20px; } }
-      </style>
-    </head>
-    <body>
-      <div class="header">
-        <div>
-          <div class="brand">Car<span>Care</span> Connect</div>
-          <div class="meta">Automotive Service Platform · Nairobi, Kenya</div>
-        </div>
-        <div style="text-align:right">
-          <div class="invoice-label">INVOICE</div>
-          <div class="meta">Ref: ${booking.booking_number}</div>
-          <div class="meta">Issued: ${date}</div>
-        </div>
-      </div>
+  function checkPage() {
+    if (y > 270) { doc.addPage(); y = 20 }
+  }
 
-      <div class="section">
-        <div class="section-title">Issued to</div>
-        <div style="font-size:15px;font-weight:700">${profile?.first_name||""} ${profile?.last_name||""}</div>
-        ${profile?.business_name ? `<div style="font-size:13px;color:#555;margin-top:2px">${profile.business_name}</div>` : ""}
-        <div style="font-size:12px;color:#888;margin-top:2px;text-transform:capitalize">${role||"customer"}</div>
-      </div>
+  function line(x1, y1, x2, y2, color=[220,220,220]) {
+    doc.setDrawColor(...color)
+    doc.line(x1, y1, x2, y2)
+  }
 
-      <div class="section">
-        <div class="section-title">Service details</div>
-        <table>
-          <tr><th>Description</th><th>Date</th><th>Time</th><th>Status</th><th style="text-align:right">Total</th></tr>
-          <tr>
-            <td><strong>${booking.service_name}</strong></td>
-            <td>${booking.booking_date}</td>
-            <td>${booking.booking_time?.slice(0,5)||""}</td>
-            <td><span class="badge">${booking.status}</span></td>
-            <td style="text-align:right;font-weight:600">$${total}</td>
-          </tr>
-          ${booking.is_concierge ? `<tr><td colspan="4" style="color:#555;font-size:12px">Concierge pickup/delivery included</td><td style="text-align:right;font-size:12px">+$20</td></tr>` : ""}
-          ${Number(discount)>0 ? `<tr><td colspan="4" style="color:#2e7d32;font-size:12px">Promo code: ${booking.promo_code||""}</td><td style="text-align:right;font-size:12px;color:#2e7d32">-$${discount}</td></tr>` : ""}
-          <tr class="total-row"><td colspan="4">Total</td><td style="text-align:right">$${total}</td></tr>
-        </table>
-      </div>
+  function text(str, x, yPos, opts={}) {
+    doc.text(String(str||""), x, yPos, opts)
+  }
 
-      <div class="section">
-        <div class="section-title">Commission breakdown</div>
-        <table>
-          <tr><th>Party</th><th>Rate</th><th style="text-align:right">Amount</th></tr>
-          <tr><td>Platform fee</td><td>15%</td><td style="text-align:right">$${platform}</td></tr>
-          <tr><td>Service provider</td><td>70%</td><td style="text-align:right">$${providerEarnings}</td></tr>
-          ${booking.is_concierge ? `<tr><td>Driver</td><td>15%</td><td style="text-align:right">$${driverEarnings}</td></tr>` : ""}
-        </table>
-      </div>
+  // Header background
+  doc.setFillColor(15, 15, 15)
+  doc.rect(0, 0, pageW, 35, "F")
 
-      ${earningsRow ? `
-      <div class="highlight">
-        <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Your earnings this transaction</div>
-        <table><tr>${earningsRow}</tr></table>
-      </div>` : ""}
+  // Brand
+  doc.setFontSize(18)
+  doc.setFont("helvetica", "bold")
+  doc.setTextColor(230, 130, 30)
+  text("CarCare", 14, 18)
+  doc.setTextColor(240, 237, 230)
+  text("Connect", 51, 18)
 
-      <div class="section">
-        <div class="section-title">Payment information</div>
-        <table>
-          <tr><td style="color:#555">Payment status</td><td style="font-weight:500">${booking.payment_status}</td></tr>
-          <tr><td style="color:#555">Booking reference</td><td style="font-weight:500">${booking.booking_number}</td></tr>
-          ${booking.promo_code ? `<tr><td style="color:#555">Promo code used</td><td style="font-weight:500">${booking.promo_code}</td></tr>` : ""}
-        </table>
-      </div>
+  // Invoice label
+  doc.setFontSize(10)
+  doc.setTextColor(150, 150, 150)
+  text("SERVICE INVOICE", pageW - 14, 15, { align:"right" })
+  doc.setFontSize(8)
+  text(`#${booking.booking_number||booking.id?.slice(0,8).toUpperCase()}`, pageW - 14, 22, { align:"right" })
+  text(new Date(booking.created_at||Date.now()).toLocaleDateString("default",{ day:"numeric", month:"long", year:"numeric" }), pageW - 14, 29, { align:"right" })
 
-      <div class="footer">
-        <p><strong>Car Care Connect</strong> · Nairobi, Kenya</p>
-        <p>support@carcareconnect.com · carcareconnect.com</p>
-        <p style="margin-top:8px">This is a system-generated invoice. Thank you for using Car Care Connect.</p>
-      </div>
-    </body>
-    </html>
-  `
+  y = 48
 
-  const blob = new Blob([html], { type:"text/html" })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement("a")
-  a.href = url
-  a.download = `Invoice-${booking.booking_number}.html`
-  a.click()
-  URL.revokeObjectURL(url)
+  // Customer + Provider info
+  doc.setFontSize(9)
+  doc.setFont("helvetica", "bold")
+  doc.setTextColor(150, 150, 150)
+  text("BILLED TO", 14, y)
+  text("SERVICE PROVIDER", pageW/2, y)
+  y += 6
+
+  doc.setFont("helvetica", "normal")
+  doc.setTextColor(240, 237, 230)
+  doc.setFontSize(10)
+  text(`${customer?.first_name||""} ${customer?.last_name||""}`, 14, y)
+  text(provider?.business_name||`${provider?.first_name||""} ${provider?.last_name||""}`, pageW/2, y)
+  y += 5
+
+  doc.setFontSize(9)
+  doc.setTextColor(130, 130, 130)
+  if (customer?.phone) { text(customer.phone, 14, y); y += 5 }
+  if (provider?.city) { text(provider.city, pageW/2, y); y += 5 } else y += 5
+  if (customer?.city) text(customer.city, 14, y)
+  y += 10
+
+  line(14, y, pageW - 14, y)
+  y += 8
+
+  // Service category badge
+  const CATS = {
+    shop_standard: { label:"Shop Standard", color:[55, 138, 221] },
+    shop_premium: { label:"Shop Premium", color:[139, 92, 246] },
+    go_service: { label:"GO Service — Emergency", color:[226, 75, 74] },
+  }
+  const cat = CATS[booking.service_category]||CATS.shop_standard
+  doc.setFillColor(...cat.color)
+  doc.roundedRect(14, y-4, 50, 8, 2, 2, "F")
+  doc.setFontSize(8)
+  doc.setFont("helvetica", "bold")
+  doc.setTextColor(255, 255, 255)
+  text(cat.label, 39, y+1, { align:"center" })
+  y += 10
+
+  // Service details table header
+  doc.setFillColor(26, 26, 26)
+  doc.rect(14, y-4, pageW-28, 10, "F")
+  doc.setFontSize(9)
+  doc.setFont("helvetica", "bold")
+  doc.setTextColor(150, 150, 150)
+  text("SERVICE", 16, y+2)
+  text("DATE", pageW/2 - 10, y+2)
+  text("AMOUNT", pageW - 16, y+2, { align:"right" })
+  y += 12
+
+  // Service row
+  doc.setFont("helvetica", "normal")
+  doc.setTextColor(240, 237, 230)
+  doc.setFontSize(10)
+  text(booking.service_name||"Service", 16, y)
+  doc.setFontSize(9)
+  doc.setTextColor(150, 150, 150)
+  text(booking.booking_date||"", pageW/2 - 10, y)
+  doc.setFontSize(11)
+  doc.setFont("helvetica", "bold")
+  doc.setTextColor(230, 130, 30)
+  text(`KES ${Number(booking.total_amount||0).toLocaleString()}`, pageW - 16, y, { align:"right" })
+  y += 8
+
+  if (booking.booking_time) {
+    doc.setFontSize(8)
+    doc.setFont("helvetica", "normal")
+    doc.setTextColor(100, 100, 100)
+    text(`Time: ${booking.booking_time?.slice(0,5)}`, 16, y)
+    y += 6
+  }
+
+  if (booking.notes) {
+    doc.setFontSize(8)
+    doc.setTextColor(100, 100, 100)
+    const noteLines = doc.splitTextToSize(`Note: ${booking.notes}`, pageW - 40)
+    noteLines.forEach(l => { text(l, 16, y); y += 4 })
+  }
+
+  y += 4
+  line(14, y, pageW - 14, y)
+  y += 10
+
+  // ACCOUNTABILITY SECTION
+  doc.setFillColor(10, 26, 18)
+  doc.rect(14, y-4, pageW-28, booking.is_concierge && driver ? 36 : 24, "F")
+
+  doc.setFontSize(9)
+  doc.setFont("helvetica", "bold")
+  doc.setTextColor(29, 158, 117)
+  text("SERVICE ACCOUNTABILITY", 16, y+2)
+  y += 8
+
+  doc.setFont("helvetica", "normal")
+  doc.setTextColor(134, 184, 150)
+  doc.setFontSize(9)
+
+  if (mechanic) {
+    text(`Service performed by: ${mechanic.first_name} ${mechanic.last_name} (${mechanic.specialization||"Mechanic"})`, 16, y)
+    y += 6
+    if (mechanic.phone) { text(`Mechanic contact: ${mechanic.phone}`, 16, y); y += 6 }
+  } else {
+    text(`Service performed by: ${provider?.business_name||`${provider?.first_name||""} ${provider?.last_name||""}`}`, 16, y)
+    y += 6
+  }
+
+  if (booking.is_concierge && driver) {
+    text(`Vehicle transported by: ${driver.first_name} ${driver.last_name} (Concierge Driver)`, 16, y)
+    y += 6
+    if (driver.phone) { text(`Driver contact: ${driver.phone}`, 16, y); y += 6 }
+  }
+
+  y += 6
+
+  // Payment summary
+  line(14, y, pageW - 14, y)
+  y += 10
+
+  const commRate = booking.platform_commission_rate||0.10
+  const isGoService = booking.service_category==="go_service"
+  const isPremium = booking.service_category==="shop_premium"
+
+  const rows = [
+    { label:"Service total", value:`KES ${Number(booking.total_amount||0).toLocaleString()}` },
+  ]
+
+  if (booking.is_concierge) {
+    rows.push({ label:"Concierge fee (15%)", value:`KES ${(Number(booking.total_amount)*0.15).toFixed(0)}` })
+  }
+
+  rows.push({ label:`Platform fee (${Math.round(commRate*100)}%)`, value:`KES ${Number(booking.platform_commission||0).toFixed(0)}` })
+  rows.push({ label:`Provider earnings (${Math.round((1-commRate)*100)}%)`, value:`KES ${Number(booking.provider_earnings||0).toFixed(0)}` })
+
+  rows.forEach(r => {
+    doc.setFontSize(9)
+    doc.setFont("helvetica", "normal")
+    doc.setTextColor(130, 130, 130)
+    text(r.label, 14, y)
+    doc.setTextColor(200, 200, 200)
+    text(r.value, pageW - 14, y, { align:"right" })
+    y += 7
+  })
+
+  line(pageW/2, y, pageW - 14, y)
+  y += 6
+
+  doc.setFontSize(12)
+  doc.setFont("helvetica", "bold")
+  doc.setTextColor(230, 130, 30)
+  text("TOTAL PAID", 14, y)
+  text(`KES ${Number(booking.total_amount||0).toLocaleString()}`, pageW - 14, y, { align:"right" })
+  y += 10
+
+  // Payment method + status
+  doc.setFontSize(9)
+  doc.setFont("helvetica", "normal")
+  doc.setTextColor(100, 100, 100)
+  text(`Payment method: ${booking.payment_method?.toUpperCase()||"—"}`, 14, y)
+  const paidColor = booking.payment_status==="paid" ? [29,158,117] : [230,130,30]
+  doc.setTextColor(...paidColor)
+  text(`Status: ${booking.payment_status?.toUpperCase()||"PENDING"}`, pageW - 14, y, { align:"right" })
+  y += 14
+
+  // Mileage section if applicable
+  if (booking.service_category==="shop_premium"||booking.service_category==="go_service"||booking.is_concierge) {
+    line(14, y, pageW - 14, y, [40, 40, 40])
+    y += 8
+    doc.setFontSize(8)
+    doc.setTextColor(100, 100, 100)
+    text("Vehicle condition reports and mileage records are available in your Car Care Connect account.", 14, y)
+    y += 5
+    text("Any mileage disputes must be raised within 24 hours of service completion.", 14, y)
+    y += 10
+  }
+
+  // Footer
+  const pageCount = doc.internal.getNumberOfPages()
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i)
+    doc.setFillColor(15, 15, 15)
+    doc.rect(0, 283, pageW, 14, "F")
+    doc.setFontSize(7)
+    doc.setTextColor(80, 80, 80)
+    text("Car Care Connect · Nairobi, Kenya · carcareconnect254@gmail.com · 0113858966", pageW/2, 289, { align:"center" })
+    text("This invoice is computer generated and valid without signature.", pageW/2, 293, { align:"center" })
+    text(`Page ${i} of ${pageCount}`, pageW - 14, 293, { align:"right" })
+  }
+
+  return doc
+}
+
+export function downloadInvoice(booking, provider, customer, mechanic, driver) {
+  const doc = generateInvoice(booking, provider, customer, mechanic, driver)
+  doc.save(`invoice-${booking.booking_number||booking.id?.slice(0,8)}.pdf`)
 }
