@@ -21,7 +21,7 @@ export default function CustomerServices() {
   const [activeCategory, setActiveCategory] = useState("all")
   const [search, setSearch] = useState("")
   const [booking, setBooking] = useState(null)
-  const [bookForm, setBookForm] = useState({ date:"", time:"", notes:"", payment_method:"mpesa", is_concierge:false })
+  const [bookForm, setBookForm] = useState({ date:"", time:"", notes:"", payment_method:"mpesa", is_concierge:false, problem_description:"", parts_needed:false, parts_description:"" })
   const [bookingLoading, setBookingLoading] = useState(false)
   const [vehicles, setVehicles] = useState([])
   const [selectedVehicle, setSelectedVehicle] = useState("")
@@ -69,6 +69,9 @@ export default function CustomerServices() {
         payment_status: "pending",
         status: "pending",
         notes: bookForm.notes,
+        problem_description: bookForm.problem_description,
+        parts_needed: bookForm.parts_needed||false,
+        parts_description: bookForm.parts_description||"",
         is_concierge: bookingLoading.is_concierge||false,
         vehicle_id: selectedVehicle||null,
       })
@@ -208,7 +211,25 @@ export default function CustomerServices() {
                   </div>
 
                   <div style={{ marginBottom:14 }}>
-                    <label style={lbl}>Notes {s.category==="shop_premium"?"(include your address)":""}</label>
+                    <div style={{ marginBottom:10 }}>
+                    <label style={lbl}>Describe your problem <span style={{ color:"#e24b4a" }}>*</span></label>
+                    <textarea value={bookForm.problem_description} onChange={e=>setBookForm(f=>({...f,problem_description:e.target.value}))}
+                      placeholder="e.g. My car makes a grinding noise when braking, brake pads may need replacing..."
+                      style={{ ...inp, resize:"vertical", minHeight:70 }} required/>
+                  </div>
+                  {(s.category==="shop_premium"||s.category==="go_service")&&(
+                    <label style={{ display:"flex", alignItems:"center", gap:8, marginBottom:10, cursor:"pointer" }}>
+                      <input type="checkbox" checked={bookForm.parts_needed} onChange={e=>setBookForm(f=>({...f,parts_needed:e.target.checked}))} style={{ accentColor:"#e6821e" }}/>
+                      <span style={{ fontSize:12, color:"#666" }}>I think parts/materials may be needed</span>
+                    </label>
+                  )}
+                  {bookForm.parts_needed&&(
+                    <div style={{ marginBottom:10 }}>
+                      <label style={lbl}>What parts might be needed?</label>
+                      <input style={inp} placeholder="e.g. brake pads, battery, oil filter..." value={bookForm.parts_description} onChange={e=>setBookForm(f=>({...f,parts_description:e.target.value}))}/>
+                    </div>
+                  )}
+                  <label style={lbl}>Additional notes {s.category==="shop_premium"?"(include your address)":""}</label>
                     <textarea value={bookForm.notes} onChange={e=>setBookForm(f=>({...f,notes:e.target.value}))} placeholder={s.category==="shop_premium"?"Your home/office address...":s.category==="go_service"?"Your exact location and emergency details...":"Any special instructions..."} style={{ ...inp, resize:"vertical", minHeight:60 }}/>
                   </div>
 
@@ -255,6 +276,8 @@ export default function CustomerServices() {
     </div>
   )
 }
+
+
 
 
 

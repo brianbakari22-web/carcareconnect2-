@@ -47,6 +47,19 @@ export default function CustomerBookings() {
     setLoading(false)
   }
 
+  async function approveParts(booking) {
+    const { error } = await supabase.from("bookings").update({ parts_approved:true }).eq("id",booking.id).eq("customer_id",user.id)
+    if (error) return toast.error(error.message)
+    await supabase.from("notifications").insert({
+      user_id: booking.provider_id,
+      title: "Parts approved by customer ✅",
+      message: `Customer has approved the parts for booking ${booking.booking_number}. Total: KES ${Number(booking.updated_total||booking.total_amount).toLocaleString()}`,
+      type: "success",
+    })
+    toast.success("Parts approved — provider notified")
+    load()
+  }
+
   async function cancelBooking(id) {
     if (!confirm("Cancel this booking?")) return
     const { error } = await supabase.from("bookings").update({ status:"cancelled" }).eq("id",id).eq("customer_id",user.id)
@@ -133,6 +146,31 @@ export default function CustomerBookings() {
             </button>
           </div>
 
+          {b.parts_details?.length>0&&!b.parts_approved&&(
+            <div style={{ marginTop:10, background:"#0c1f2e", border:"1px solid #378add40", borderRadius:10, padding:"0.9rem" }}>
+              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#378add", marginBottom:8 }}>🔧 Parts added by provider</div>
+              {b.parts_details.map((p,i)=>(
+                <div key={i} style={{ display:"flex", justifyContent:"space-between", fontSize:12, padding:"4px 0", borderBottom:"1px solid #1a1a1a" }}>
+                  <span style={{ color:"#888" }}>{p.name} × {p.quantity}</span>
+                  <span style={{ color:"#f0ede6" }}>KES {p.total?.toLocaleString()}</span>
+                </div>
+              ))}
+              <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, fontWeight:700, color:"#e6821e", marginTop:8 }}>
+                <span>New total</span><span>KES {Number(b.updated_total||b.total_amount).toLocaleString()}</span>
+              </div>
+              <div style={{ display:"flex", gap:8, marginTop:10 }}>
+                <button onClick={()=>approveParts(b)}
+                  style={{ background:"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>
+                  ✓ Approve parts
+                </button>
+                <button onClick={()=>cancelBooking(b.id)}
+                  style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
+                  Decline & cancel
+                </button>
+              </div>
+            </div>
+          )}
+
           {expanded===b.id&&(
             <div style={{ marginTop:10, paddingTop:10, borderTop:"1px solid #1e1e1e" }}>
               <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(3,1fr)", gap:8 }}>
@@ -180,6 +218,8 @@ export default function CustomerBookings() {
     </div>
   )
 }
+
+
 
 
 

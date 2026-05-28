@@ -6,6 +6,7 @@ import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 import { downloadInvoice } from "../../lib/invoice"
 import VehicleConditionReport from "../shared/VehicleConditionReport"
+import ProviderPartsManager from "./ProviderPartsManager"
 
 const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", completed:"#1d9e75", cancelled:"#e24b4a" }
 const SB = { pending:"#1a1208", confirmed:"#0c1f2e", "in-progress":"#160a2e", completed:"#071a12", cancelled:"#1a0808" }
@@ -224,7 +225,11 @@ export default function ProviderBookings() {
                 <button onClick={()=>markPaid(b.id)} style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Mark paid</button>
               )}
 
-              <button onClick={()=>setExpanded(expanded===b.id?null:b.id)}
+              <button onClick={()=>setShowParts(showParts===b.id?null:b.id)}
+                  style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  🔧 {b.parts_details?.length>0?"Edit parts":"Add parts"}
+                </button>
+                <button onClick={()=>setExpanded(expanded===b.id?null:b.id)}
                 style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#666", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                 {expanded===b.id?"Less":"Details"}
               </button>
@@ -266,6 +271,9 @@ export default function ProviderBookings() {
               </div>
             )}
 
+            {showParts===b.id&&(
+              <ProviderPartsManager booking={b} onUpdate={()=>{ setShowParts(null); load() }}/>
+            )}
             {expanded===b.id&&(
               <div style={{ marginTop:10, paddingTop:10, borderTop:"1px solid #1e1e1e" }}>
                 <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(3,1fr)", gap:8 }}>
@@ -292,6 +300,9 @@ export default function ProviderBookings() {
     </div>
   )
 }
+
+
+
 
 
 
