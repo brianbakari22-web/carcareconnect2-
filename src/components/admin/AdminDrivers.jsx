@@ -60,15 +60,40 @@ export default function AdminDrivers() {
   }
 
   async function suspendDriver(driverId, suspend) {
-    const { error } = await supabase.from("profiles")
-      .update({ is_active:!suspend })
-      .eq("id", driverId)
+    const { error } = await supabase.from("profiles").update({ is_active:!suspend }).eq("id", driverId)
     if (error) return toast.error(error.message)
-    if (suspend) {
-      await supabase.from("driver_status").update({ is_online:false }).eq("driver_id", driverId)
-    }
+    if (suspend) await supabase.from("driver_status").update({ is_online:false }).eq("driver_id", driverId)
     toast.success(suspend?"Driver suspended":"Driver reactivated")
     loadDrivers()
+  }
+
+  async function recordNoShow(driverId, bookingId) {
+    if (!confirm("Record a no-show for this driver?")) return
+    const { data: status } = await supabase.from("driver_status").select("no_show_count").eq("driver_id", driverId).single()
+    const noShowCount = (status?.no_show_count||0) + 1
+    let penaltyType = "warning"
+    let suspendUntil = null
+    if (noShowCount === 2) { penaltyType = "suspension_24h"; suspendUntil = new Date(Date.now()+24*60*60*1000).toISOString() }
+    if (noShowCount === 3) { penaltyType = "suspension_72h"; suspendUntil = new Date(Date.now()+72*60*60*1000).toISOString() }
+    if (noShowCount >= 4) { penaltyType = "permanent_ban"; suspendUntil = null }
+
+    await Promise.all([
+      supabase.from("driver_penalties").insert({ driver_id:driverId, booking_id:bookingId||null, penalty_type:penaltyType, reason:"No-show — failed to complete accepted job", is_active:true, expires_at:suspendUntil }),
+      supabase.from("driver_status").update({ no_show_count:noShowCount, is_suspended:noShowCount>=2, suspension_expires_at:suspendUntil, is_online:false }).eq("driver_id", driverId),
+      supabase.from("notifications").insert({ user_id:driverId, title:"Penalty recorded ⚠️", message:`A no-show penalty has been recorded on your account. No-show count: ${noShowCount}. ${noShowCount>=2?"Your account has been suspended.":"Please ensure you complete accepted jobs."}`, type:"error" }),
+    ])
+    toast.success(`No-show recorded — penalty: ${penaltyType.replace("_"," ")}`)
+    load()
+  }
+
+  async function clearPenalties(driverId) {
+    if (!confirm("Clear all penalties for this driver?")) return
+    await Promise.all([
+      supabase.from("driver_penalties").update({ is_active:false }).eq("driver_id", driverId),
+      supabase.from("driver_status").update({ no_show_count:0, is_suspended:false, suspension_expires_at:null }).eq("driver_id", driverId),
+    ])
+    toast.success("Penalties cleared")
+    load()
   }
 
   function initMap() {
@@ -188,6 +213,8 @@ export default function AdminDrivers() {
                       {!d.documents_verified&&<span style={{ fontSize:10, color:"#e6821e", background:"#1a1208", padding:"2px 7px", borderRadius:10 }}>⏳ Pending</span>}
                       {!d.is_active&&<span style={{ fontSize:10, color:"#e24b4a", background:"#1a0808", padding:"2px 7px", borderRadius:10 }}>Suspended</span>}
                       {isOnline&&<span style={{ fontSize:10, color:"#1d9e75" }}>🟢 Online{onJob?" · On job":""}</span>}
+                      {status?.is_suspended&&<span style={{ fontSize:10, color:"#e24b4a", background:"#1a0808", padding:"2px 7px", borderRadius:10 }}>🚫 Suspended</span>}
+                      {status?.no_show_count>0&&<span style={{ fontSize:10, color:"#e6821e", background:"#1a1208", padding:"2px 7px", borderRadius:10 }}>⚠️ {status.no_show_count} no-show{status.no_show_count>1?"s":""}</span>}
                     </div>
 
                     <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:6, marginBottom:8 }}>
@@ -241,6 +268,16 @@ export default function AdminDrivers() {
                         <button onClick={()=>suspendDriver(d.id, false)}
                           style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
                           Reactivate
+                        </button>
+                      )}
+                      <button onClick={()=>recordNoShow(d.id, null)}
+                        style={{ background:"#1a0808", border:"1px solid #e24b4a30", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+                        🚫 No-show
+                      </button>
+                      {(status?.no_show_count>0||status?.is_suspended)&&(
+                        <button onClick={()=>clearPenalties(d.id)}
+                          style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+                          Clear penalties
                         </button>
                       )}
                       <button onClick={()=>setSelected(selected===d.id?null:d.id)}
@@ -299,3 +336,6 @@ function DriverStats({ driverId, isMobile }) {
     </div>
   )
 }
+
+
+
