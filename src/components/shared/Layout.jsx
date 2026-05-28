@@ -44,14 +44,12 @@ const NAV = {
   driver: [
     { path:"/dashboard", key:"overview", icon:"🏠" },
     { path:"/dashboard/jobs", key:"availableJobs", icon:"📦" },
-    { path:"/dashboard/active", key:"activeDelivery", icon:"📍" },
-    { path:"/dashboard/history", key:"history", icon:"📋" },
-    { path:"/dashboard/reviews", key:"myRatings", icon:"⭐" },
+    { path:"/dashboard/active", key:"activeDelivery", icon:"🚗" },
     { path:"/dashboard/earnings", key:"earnings", icon:"💰" },
+    { path:"/dashboard/reviews", key:"myRatings", icon:"⭐" },
     { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
-    { path:"/dashboard/vehicle", key:"myVehicle", icon:"🚗" },
-    { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
+    { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
   ],
   admin: [
@@ -88,14 +86,13 @@ const BOTTOM_NAV = {
     { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
     { path:"/dashboard/services", key:"myServices", icon:"🔧" },
     { path:"/dashboard/mechanics", label:"Mechanics", icon:"👨‍🔧" },
-    { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
   ],
   driver: [
     { path:"/dashboard", key:"overview", icon:"🏠" },
     { path:"/dashboard/jobs", key:"availableJobs", icon:"📦" },
-    { path:"/dashboard/active", key:"activeDelivery", icon:"📍" },
-    { path:"/dashboard/chat", key:"messages", icon:"✉️" },
+    { path:"/dashboard/active", key:"activeDelivery", icon:"🚗" },
+    { path:"/dashboard/earnings", key:"earnings", icon:"💰" },
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
   ],
   admin: [
@@ -143,16 +140,17 @@ export default function Layout({ children }) {
   }
 
   function isActive(item) {
+    if (item.path === "/dashboard" || item.path === "/admin-dashboard") {
+      return location.pathname === item.path
+    }
     return location.pathname === item.path || location.pathname.startsWith(item.path + "/")
   }
 
   if (isMobile) return (
     <div style={{ display:"flex", flexDirection:"column", minHeight:"100vh", background:theme.bg, fontFamily:"'DM Sans',sans-serif", color:theme.text }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
-      ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:${theme.border};border-radius:2px;}
-      `}</style>
+      ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:${theme.border};border-radius:2px;}`}</style>
 
-      {/* Mobile top bar */}
       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0.75rem 1rem", borderBottom:`1px solid ${theme.border}`, background:theme.bgSecondary, position:"sticky", top:0, zIndex:50 }}>
         <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:theme.text }}>
           🚗 Car<span style={{ color:"#e6821e" }}>Care</span>
@@ -168,7 +166,6 @@ export default function Layout({ children }) {
         </div>
       </div>
 
-      {/* Mobile drawer menu */}
       {mobileMenuOpen&&(
         <div style={{ position:"fixed", inset:0, zIndex:100, display:"flex" }}>
           <div style={{ flex:1, background:"rgba(0,0,0,0.6)" }} onClick={()=>setMobileMenuOpen(false)}/>
@@ -209,12 +206,10 @@ export default function Layout({ children }) {
         </div>
       )}
 
-      {/* Page content */}
       <div style={{ flex:1, padding:"1rem", overflowY:"auto", paddingBottom:80 }}>
         {children}
       </div>
 
-      {/* Mobile bottom nav */}
       <div style={{ position:"fixed", bottom:0, left:0, right:0, background:theme.bgSecondary, borderTop:`1px solid ${theme.border}`, display:"flex", zIndex:40, paddingBottom:"env(safe-area-inset-bottom)" }}>
         {bottomNav.map(item=>(
           <button key={item.path}
@@ -228,7 +223,6 @@ export default function Layout({ children }) {
     </div>
   )
 
-  // Desktop layout
   return (
     <div style={{ display:"flex", minHeight:"100vh", background:theme.bg, fontFamily:"'DM Sans',sans-serif", color:theme.text }}>
       <style>{`
@@ -303,8 +297,3 @@ export default function Layout({ children }) {
     </div>
   )
 }
-
-
-
-
-
