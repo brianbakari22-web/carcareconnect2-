@@ -4,6 +4,7 @@ import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
+import VehicleConditionReport from "../shared/VehicleConditionReport"
 
 const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", completed:"#1d9e75", cancelled:"#e24b4a" }
 const SB = { pending:"#1a1208", confirmed:"#0c1f2e", "in-progress":"#160a2e", completed:"#071a12", cancelled:"#1a0808" }
@@ -24,6 +25,9 @@ export default function ProviderBookings() {
   const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState(null)
   const [assigningMechanic, setAssigningMechanic] = useState(null)
+  const [showReport, setShowReport] = useState(null)
+  const [reportType, setReportType] = useState("pickup")
+  const [existingReports, setExistingReports] = useState({})
   const [selectedMechanic, setSelectedMechanic] = useState("")
 
   useEffect(() => {
@@ -83,6 +87,19 @@ export default function ProviderBookings() {
     toast.success("Booking completed — mechanic freed")
     load()
   }
+
+  if (showReport) return (
+    <div>
+      <button onClick={()=>setShowReport(null)} style={{ background:"none", border:"none", color:"#378add", cursor:"pointer", fontSize:13, marginBottom:"1rem", fontFamily:"DM Sans,sans-serif", padding:0 }}>
+        ← Back to bookings
+      </button>
+      <VehicleConditionReport
+        bookingId={showReport}
+        reportType={reportType}
+        onComplete={()=>{ setShowReport(null); load() }}
+      />
+    </div>
+  )
 
   const filtered = filter==="all" ? bookings : bookings.filter(b=>b.status===filter)
 
@@ -162,6 +179,26 @@ export default function ProviderBookings() {
                 </button>
               )}
 
+              {(b.service_category==="shop_premium"||b.service_category==="go_service")&&b.assigned_mechanic_id&&(
+                <>
+                  {!existingReports[b.id]?.pickup&&(
+                    <button onClick={()=>{ setShowReport(b.id); setReportType("pickup") }}
+                      style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                      📋 Pickup report
+                    </button>
+                  )}
+                  {existingReports[b.id]?.pickup&&!existingReports[b.id]?.dropoff&&(
+                    <button onClick={()=>{ setShowReport(b.id); setReportType("dropoff") }}
+                      style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                      📋 Dropoff report
+                    </button>
+                  )}
+                  {existingReports[b.id]?.pickup&&existingReports[b.id]?.dropoff&&(
+                    <span style={{ fontSize:10, color:"#1d9e75" }}>✓ Reports done</span>
+                  )}
+                </>
+              )}
+
               {b.status==="completed"&&b.payment_status!=="paid"&&(
                 <button onClick={()=>markPaid(b.id)} style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Mark paid</button>
               )}
@@ -234,3 +271,7 @@ export default function ProviderBookings() {
     </div>
   )
 }
+
+
+
+
