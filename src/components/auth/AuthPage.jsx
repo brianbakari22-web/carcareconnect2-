@@ -48,7 +48,6 @@ const STATS = [
 export default function AuthPage() {
   const isMobile = useIsMobile()
   const { signIn, signUp, profile, user } = useAuth()
-  const { profile } = useAuth()
   const navigate = useNavigate()
   const [step, setStep] = useState("landing")
   const [selectedRole, setSelectedRole] = useState(null)
