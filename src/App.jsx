@@ -69,7 +69,6 @@ import Admin2FA from "./components/admin/Admin2FA"
 import Admin2FAVerify from "./components/admin/Admin2FAVerify"
 import AdminSupport from "./components/admin/AdminSupport"
 import AdminDisputes from "./components/admin/AdminDisputes"
-import AdminMechanics from "./components/admin/AdminMechanics"
 
 const ADMIN_SECRET = "ccc-admin-x7k9m2p4q8"
 
@@ -262,6 +261,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 
