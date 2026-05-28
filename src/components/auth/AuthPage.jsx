@@ -71,9 +71,22 @@ export default function AuthPage() {
     setLoading(true)
     try {
       if (mode === "signin") {
-        await signIn({ email: form.email, password: form.password })
-          navigate("/dashboard")
-        } else {
+        const { data, error } = await supabase.auth.signInWithPassword({ email: form.email, password: form.password })
+        if (error) throw error
+        // Wait for profile to load before navigating
+        let tries = 0
+        const checkProfile = async () => {
+          const { data: prof } = await supabase.from("profiles").select("role").eq("id", data.user.id).single()
+          if (prof?.role) {
+            navigate("/dashboard")
+          } else if (tries++ < 15) {
+            setTimeout(checkProfile, 300)
+          } else {
+            navigate("/dashboard")
+          }
+        }
+        checkProfile()
+      } else {
         await signUp({
           email: form.email,
           password: form.password,
@@ -84,7 +97,20 @@ export default function AuthPage() {
           businessName: form.businessName,
         }, refCode)
         toast.success("Welcome to Car Care Connect! 🎉")
-        navigate("/dashboard")
+        let tries = 0
+        const checkProfile = async () => {
+          const { data: { user: u } } = await supabase.auth.getUser()
+          if (!u) return setTimeout(checkProfile, 300)
+          const { data: prof } = await supabase.from("profiles").select("role").eq("id", u.id).single()
+          if (prof?.role) {
+            navigate("/dashboard")
+          } else if (tries++ < 15) {
+            setTimeout(checkProfile, 300)
+          } else {
+            navigate("/dashboard")
+          }
+        }
+        checkProfile()
       }
     } catch(err) {
       toast.error(err.message || "Something went wrong")
@@ -456,6 +482,7 @@ export default function AuthPage() {
     </div>
   )
 }
+
 
 
 
