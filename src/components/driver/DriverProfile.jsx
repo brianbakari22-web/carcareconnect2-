@@ -1,119 +1,276 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
-import toast from "react-hot-toast"
-import { exportUserData, downloadJSON, downloadCSV, downloadPDF } from "../../lib/dataExport"
 import { useLanguage } from "../../contexts/LanguageContext"
+import useIsMobile from "../../lib/useIsMobile"
+import toast from "react-hot-toast"
+
+const LICENSE_CLASSES = ["Class B - Light Motor Vehicle", "Class C - Heavy Motor Vehicle", "Class D - Motorcycle", "Class E - PSV", "Class F - Special Vehicle"]
 
 export default function DriverProfile() {
   const { user, profile, updateProfile } = useAuth()
   const { t } = useLanguage()
-  const [sensitive, setSensitive] = useState({ phone:"", email:"", drivers_license:"" })
-  const [form, setForm] = useState({ first_name:"", last_name:"", city:"" })
-  const [reviews, setReviews] = useState([])
+  const isMobile = useIsMobile()
+  const [tab, setTab] = useState("personal")
   const [saving, setSaving] = useState(false)
-  const [tab, setTab] = useState("info")
+  const [stats, setStats] = useState({ total:0, completed:0, rating:0, earnings:0 })
+  const [sensitive, setSensitive] = useState({ phone:"", email:"" })
+
+  const [personalForm, setPersonalForm] = useState({
+    first_name:"", last_name:"", city:""
+  })
+
+  const [credentialsForm, setCredentialsForm] = useState({
+    id_number:"",
+    license_number:"",
+    license_expiry:"",
+    license_class:"Class B - Light Motor Vehicle",
+    years_experience:"",
+    emergency_contact_name:"",
+    emergency_contact_phone:"",
+  })
+
+  const [passwordForm, setPasswordForm] = useState({ password:"", confirm:"" })
 
   useEffect(() => {
-    if (profile) setForm({ first_name:profile.first_name||"", last_name:profile.last_name||"", city:profile.city||"" })
-    if (user) { loadSensitive(); loadReviews() }
+    if (profile) {
+      setPersonalForm({
+        first_name: profile.first_name||"",
+        last_name: profile.last_name||"",
+        city: profile.city||"",
+      })
+      setCredentialsForm({
+        id_number: profile.id_number||"",
+        license_number: profile.license_number||"",
+        license_expiry: profile.license_expiry||"",
+        license_class: profile.license_class||"Class B - Light Motor Vehicle",
+        years_experience: profile.years_experience||"",
+        emergency_contact_name: profile.emergency_contact_name||"",
+        emergency_contact_phone: profile.emergency_contact_phone||"",
+      })
+    }
+    if (user) { loadSensitive(); loadStats() }
   }, [profile, user])
 
   async function loadSensitive() {
-    const { data } = await supabase.from("profile_sensitive").select("phone,email,drivers_license").eq("id",user.id).single()
-    if (data) setSensitive({ phone:data.phone||"", email:data.email||"", drivers_license:data.drivers_license||"" })
+    const { data } = await supabase.from("profile_sensitive").select("phone,email").eq("id", user.id).maybeSingle()
+    if (data) setSensitive({ phone:data.phone||"", email:data.email||"" })
   }
 
-  async function loadReviews() {
-    const { data } = await supabase.from("reviews").select("driver_rating,driver_review,created_at,profile_public!reviews_customer_id_fkey(first_name,last_name)").eq("driver_id",user.id).not("driver_rating","is",null).order("created_at",{ascending:false})
-    setReviews(data||[])
+  async function loadStats() {
+    const [{ data: bks }, { data: revs }] = await Promise.all([
+      supabase.from("bookings").select("id,status,driver_earnings").eq("driver_id", user.id),
+      supabase.from("reviews").select("driver_rating").eq("driver_id", user.id).not("driver_rating","is",null),
+    ])
+    const completed = bks?.filter(b=>b.status==="completed")||[]
+    const totalEarnings = completed.reduce((s,b)=>s+Number(b.driver_earnings||0),0)
+    const avgRating = revs?.length ? (revs.reduce((s,r)=>s+Number(r.driver_rating||0),0)/revs.length).toFixed(1) : "—"
+    setStats({ total:bks?.length||0, completed:completed.length, rating:avgRating, earnings:totalEarnings })
   }
 
-  async function saveProfile(e) {
+  async function savePersonal(e) {
     e.preventDefault()
     setSaving(true)
     try {
-      await updateProfile(form)
-      await supabase.from("profile_sensitive").update({ phone:sensitive.phone, drivers_license:sensitive.drivers_license }).eq("id",user.id)
-      toast.success("Profile updated")
+      await updateProfile(personalForm)
+      toast.success("Personal info saved")
+    } catch(err) { toast.error(err.message) }
+    finally { setSaving(false) }
+  }
+
+  async function saveCredentials(e) {
+    e.preventDefault()
+    setSaving(true)
+    try {
+      await updateProfile({
+        ...credentialsForm,
+        years_experience: parseInt(credentialsForm.years_experience)||0,
+      })
+      toast.success("Credentials saved — pending admin verification")
+    } catch(err) { toast.error(err.message) }
+    finally { setSaving(false) }
+  }
+
+  async function saveContact(e) {
+    e.preventDefault()
+    setSaving(true)
+    try {
+      await supabase.from("profile_sensitive").update({ phone:sensitive.phone }).eq("id", user.id)
+      toast.success("Contact saved")
     } catch(err) { toast.error(err.message) }
     finally { setSaving(false) }
   }
 
   async function changePassword(e) {
     e.preventDefault()
-    const pw = e.target.password.value
-    const confirm = e.target.confirm.value
-    if (pw!==confirm) return toast.error("Passwords do not match")
-    const { error } = await supabase.auth.updateUser({ password:pw })
+    if (passwordForm.password !== passwordForm.confirm) return toast.error("Passwords do not match")
+    if (passwordForm.password.length < 6) return toast.error("Min 6 characters")
+    const { error } = await supabase.auth.updateUser({ password: passwordForm.password })
     if (error) return toast.error(error.message)
     toast.success("Password changed")
-    e.target.reset()
+    setPasswordForm({ password:"", confirm:"" })
   }
 
-  const avgRating = reviews.length>0 ? (reviews.reduce((s,r)=>s+(r.driver_rating||0),0)/reviews.length).toFixed(1) : "0.0"
   const initials = `${profile?.first_name?.[0]||""}${profile?.last_name?.[0]||""}`.toUpperCase()
-  const inp = { width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"10px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:10 }
+  const inp = { width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"11px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:12 }
   const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
 
+  const TABS = [
+    { k:"personal", l:"Personal" },
+    { k:"credentials", l:"Credentials" },
+    { k:"contact", l:"Contact" },
+    { k:"security", l:"Security" },
+  ]
+
   return (
-    <div style={{ maxWidth:520 }}>
-      <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:"1.5rem" }}>
-        <div style={{ width:60, height:60, borderRadius:"50%", background:"#071a12", border:"2px solid #1d9e7540", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#1d9e75" }}>
-          {initials}
-        </div>
-        <div>
-          <div style={{ fontFamily:"Syne", fontSize:17, fontWeight:800, color:"#f0ede6" }}>{profile?.first_name} {profile?.last_name}</div>
-          <div style={{ fontSize:12, color:"#555", marginTop:2 }}>Driver · {profile?.city||"Location not set"}</div>
-          <div style={{ display:"flex", alignItems:"center", gap:6, marginTop:4 }}>
-            <span style={{ color:"#e6821e", fontSize:14 }}>★</span>
-            <span style={{ fontSize:13, fontWeight:600, color:"#f0ede6" }}>{avgRating}</span>
-            <span style={{ fontSize:11, color:"#555" }}>({reviews.length} ratings)</span>
+    <div style={{ maxWidth:isMobile?"100%":540 }}>
+      {/* Profile header */}
+      <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", marginBottom:"1.25rem" }}>
+        <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:"1.25rem" }}>
+          <div style={{ width:60, height:60, borderRadius:14, background:"#071a12", border:"2px solid #1d9e7540", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#1d9e75", flexShrink:0 }}>
+            {initials||"🚗"}
           </div>
+          <div>
+            <div style={{ fontFamily:"Syne", fontSize:17, fontWeight:800, color:"#f0ede6" }}>{profile?.first_name} {profile?.last_name}</div>
+            <div style={{ fontSize:12, color:"#555", marginTop:2 }}>Concierge Driver · {profile?.city||"Location not set"}</div>
+            <div style={{ display:"flex", alignItems:"center", gap:6, marginTop:4 }}>
+              {profile?.documents_verified ? (
+                <span style={{ fontSize:10, color:"#1d9e75", background:"#071a12", padding:"2px 8px", borderRadius:10, border:"1px solid #1d9e7540" }}>✓ Verified driver</span>
+              ) : (
+                <span style={{ fontSize:10, color:"#e6821e", background:"#1a1208", padding:"2px 8px", borderRadius:10, border:"1px solid #e6821e40" }}>⏳ Pending verification</span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8 }}>
+          {[
+            { label:"Total jobs", value:stats.total, color:"#f0ede6" },
+            { label:"Completed", value:stats.completed, color:"#1d9e75" },
+            { label:"Rating", value:stats.rating, color:"#e6821e" },
+            { label:"Earned", value:`${Number(stats.earnings).toLocaleString()}`, color:"#8b5cf6" },
+          ].map(s=>(
+            <div key={s.label} style={{ background:"#0f0f0f", borderRadius:8, padding:"0.6rem", textAlign:"center", border:"1px solid #1a1a1a" }}>
+              <div style={{ fontFamily:"Syne", fontSize:isMobile?13:16, fontWeight:800, color:s.color }}>{s.value}</div>
+              <div style={{ fontSize:9, color:"#444", marginTop:2 }}>{s.label}</div>
+            </div>
+          ))}
         </div>
       </div>
 
-      <div style={{ display:"flex", gap:6, marginBottom:"1.5rem" }}>
-        {[{k:"info",l:"Profile"},{k:t("security"),l:t("security")},{k:"ratings",l:`Ratings (${reviews.length})`}].map(t=>(
-          <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#1d9e75":"#111", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
-            {t.l}
+      {/* Tabs */}
+      <div style={{ display:"flex", gap:6, marginBottom:"1.25rem", flexWrap:"wrap" }}>
+        {TABS.map(tb=>(
+          <button key={tb.k} onClick={()=>setTab(tb.k)}
+            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===tb.k?"#1d9e75":"#111", color:tab===tb.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===tb.k?700:400 }}>
+            {tb.l}
           </button>
         ))}
       </div>
 
-      {tab==="info"&&(
-        <form onSubmit={saveProfile}>
+      {/* PERSONAL TAB */}
+      {tab==="personal"&&(
+        <form onSubmit={savePersonal}>
           <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>Personal information</div>
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
-              <div><label style={lbl}>First name</label><input style={inp} value={form.first_name} onChange={e=>setForm(f=>({...f,first_name:e.target.value}))} required/></div>
-              <div><label style={lbl}>Last name</label><input style={inp} value={form.last_name} onChange={e=>setForm(f=>({...f,last_name:e.target.value}))} required/></div>
+            <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
+              <div><label style={lbl}>First name</label><input style={inp} value={personalForm.first_name} onChange={e=>setPersonalForm(f=>({...f,first_name:e.target.value}))} required/></div>
+              <div><label style={lbl}>Last name</label><input style={inp} value={personalForm.last_name} onChange={e=>setPersonalForm(f=>({...f,last_name:e.target.value}))} required/></div>
             </div>
             <label style={lbl}>City</label>
-            <input style={inp} placeholder="e.g. Nairobi" value={form.city} onChange={e=>setForm(f=>({...f,city:e.target.value}))}/>
-            <label style={lbl}>Phone</label>
-            <input style={inp} placeholder="+254 700 000 000" value={sensitive.phone} onChange={e=>setSensitive(s=>({...s,phone:e.target.value}))}/>
-            <label style={lbl}>Email</label>
-            <input style={{ ...inp, color:"#555", cursor:"not-allowed" }} value={sensitive.email} readOnly/>
-            <label style={lbl}>Driver license number</label>
-            <input style={inp} placeholder="License number" value={sensitive.drivers_license} onChange={e=>setSensitive(s=>({...s,drivers_license:e.target.value}))}/>
+            <input style={inp} placeholder="e.g. Nairobi" value={personalForm.city} onChange={e=>setPersonalForm(f=>({...f,city:e.target.value}))}/>
             <button type="submit" disabled={saving}
               style={{ background:saving?"#333":"#1d9e75", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
-              {saving?t("loading"):t("saveChanges")}
+              {saving?"Saving...":"Save changes"}
             </button>
           </div>
         </form>
       )}
 
-      {tab===t("security")&&(
+      {/* CREDENTIALS TAB */}
+      {tab==="credentials"&&(
+        <form onSubmit={saveCredentials}>
+          <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#f0ede6" }}>Driver credentials</div>
+            <div style={{ fontSize:11, color:"#555", marginBottom:"1rem" }}>Your credentials will be reviewed by admin before you can go online.</div>
+
+            {!profile?.documents_verified&&(
+              <div style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:8, padding:"0.75rem", marginBottom:"1rem" }}>
+                <div style={{ fontSize:12, color:"#e6821e" }}>⏳ Pending verification — fill in all fields and submit for admin review</div>
+              </div>
+            )}
+
+            <label style={lbl}>National ID number *</label>
+            <input style={inp} placeholder="e.g. 12345678" value={credentialsForm.id_number} onChange={e=>setCredentialsForm(f=>({...f,id_number:e.target.value}))} required/>
+
+            <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
+              <div>
+                <label style={lbl}>Driver's license number *</label>
+                <input style={inp} placeholder="e.g. DL123456" value={credentialsForm.license_number} onChange={e=>setCredentialsForm(f=>({...f,license_number:e.target.value}))} required/>
+              </div>
+              <div>
+                <label style={lbl}>License expiry date *</label>
+                <input style={inp} type="date" value={credentialsForm.license_expiry} onChange={e=>setCredentialsForm(f=>({...f,license_expiry:e.target.value}))} required/>
+              </div>
+            </div>
+
+            <label style={lbl}>License class *</label>
+            <select style={inp} value={credentialsForm.license_class} onChange={e=>setCredentialsForm(f=>({...f,license_class:e.target.value}))}>
+              {LICENSE_CLASSES.map(c=><option key={c} value={c}>{c}</option>)}
+            </select>
+
+            <label style={lbl}>Years of driving experience *</label>
+            <input style={inp} type="number" min="0" max="50" placeholder="e.g. 5" value={credentialsForm.years_experience} onChange={e=>setCredentialsForm(f=>({...f,years_experience:e.target.value}))} required/>
+
+            <div style={{ height:1, background:"#1e1e1e", margin:"8px 0 16px" }}/>
+            <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:"0.75rem", color:"#f0ede6" }}>Emergency contact</div>
+
+            <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
+              <div>
+                <label style={lbl}>Contact name</label>
+                <input style={inp} placeholder="Full name" value={credentialsForm.emergency_contact_name} onChange={e=>setCredentialsForm(f=>({...f,emergency_contact_name:e.target.value}))}/>
+              </div>
+              <div>
+                <label style={lbl}>Contact phone</label>
+                <input style={inp} placeholder="+254 700 000 000" value={credentialsForm.emergency_contact_phone} onChange={e=>setCredentialsForm(f=>({...f,emergency_contact_phone:e.target.value}))}/>
+              </div>
+            </div>
+
+            <button type="submit" disabled={saving}
+              style={{ background:saving?"#333":"#1d9e75", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
+              {saving?"Saving...":"Save credentials"}
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* CONTACT TAB */}
+      {tab==="contact"&&(
+        <form onSubmit={saveContact}>
+          <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>Contact details</div>
+            <label style={lbl}>Email</label>
+            <input style={{ ...inp, color:"#555", cursor:"not-allowed" }} value={sensitive.email} readOnly/>
+            <label style={lbl}>Phone number</label>
+            <input style={inp} placeholder="+254 700 000 000" value={sensitive.phone} onChange={e=>setSensitive(s=>({...s,phone:e.target.value}))}/>
+            <button type="submit" disabled={saving}
+              style={{ background:saving?"#333":"#1d9e75", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
+              {saving?"Saving...":"Save contact"}
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* SECURITY TAB */}
+      {tab==="security"&&(
         <form onSubmit={changePassword}>
           <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>Change password</div>
             <label style={lbl}>New password</label>
-            <input style={inp} type="password" name="password" placeholder="Min 6 characters" required/>
+            <input style={inp} type="password" placeholder="Min 6 characters" value={passwordForm.password} onChange={e=>setPasswordForm(f=>({...f,password:e.target.value}))} required/>
             <label style={lbl}>Confirm password</label>
-            <input style={inp} type="password" name="confirm" placeholder="Repeat password" required/>
+            <input style={inp} type="password" placeholder="Repeat password" value={passwordForm.confirm} onChange={e=>setPasswordForm(f=>({...f,confirm:e.target.value}))} required/>
             <button type="submit"
               style={{ background:"#1d9e75", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:"pointer" }}>
               Change password
@@ -121,25 +278,6 @@ export default function DriverProfile() {
           </div>
         </form>
       )}
-
-      {tab==="ratings"&&(
-        <div>
-          {reviews.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No ratings yet</div>}
-          {reviews.map((r,i)=>(
-            <div key={i} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem", marginBottom:8 }}>
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
-                <div style={{ fontSize:13, fontWeight:500, color:"#f0ede6" }}>{r.profile_public?.first_name} {r.profile_public?.last_name}</div>
-                <div style={{ display:"flex", gap:1 }}>
-                  {[1,2,3,4,5].map(s=><span key={s} style={{ color:s<=r.driver_rating?"#e6821e":"#333", fontSize:15 }}>★</span>)}
-                </div>
-              </div>
-              {r.driver_review&&<div style={{ fontSize:12, color:"#888", fontStyle:"italic" }}>"{r.driver_review}"</div>}
-              <div style={{ fontSize:10, color:"#444", marginTop:6 }}>{new Date(r.created_at).toLocaleDateString()}</div>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   )
 }
-
