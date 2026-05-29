@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
+import ChatWindow from "../shared/ChatWindow"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
@@ -210,6 +211,7 @@ export default function Marketplace() {
 
 function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInfo, offers, user, isMobile, onBack, onOffer }) {
   const [showOffer, setShowOffer] = useState(false)
+  const [showChat, setShowChat] = useState(false)
   const [offerPrice, setOfferPrice] = useState("")
   const [offerMessage, setOfferMessage] = useState("")
   const [submitting, setSubmitting] = useState(false)
@@ -348,10 +350,20 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
                   💰 Make an offer
                 </button>
               )}
-              <button onClick={()=>navigate("/dashboard/chat")}
-                style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:10, color:"#378add", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:600, padding:"12px", cursor:"pointer" }}>
-                💬 Message seller
-              </button>
+              <button onClick={()=>setShowChat(s=>!s)}
+              style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:10, color:"#378add", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:600, padding:"12px", cursor:"pointer" }}>
+                💬 {showChat?"Close chat":"Message seller"}
+            </button>
+            {showChat&&(
+              <div style={{ marginTop:8, height:400 }}>
+                <ChatWindow
+                  listingId={listing.id}
+                  otherUserId={listing.seller_id}
+                  otherUserName={sellerInfo?.business_name||`${sellerInfo?.first_name} ${sellerInfo?.last_name}`}
+                  onClose={()=>setShowChat(false)}
+                />
+              </div>
+            )}
             </div>
           )}
 
@@ -399,4 +411,5 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
     </div>
   )
 }
+
 
