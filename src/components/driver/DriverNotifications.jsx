@@ -14,32 +14,33 @@ export default function DriverNotifications() {
     if (!user) return
     load()
     const sub = supabase.channel("driver-notifs")
-      .on("postgres_changes", { event:"INSERT", schema:"public", table:t("notifications"), filter:`user_id=eq.${user.id}` }, payload => {
-        setNotifications(n=>[payload.new,...n])
-        toast(payload.new.title, { icon:"🔔" })
+      .on("postgres_changes", { event:"INSERT", schema:"public", table:"notifications", filter:`user_id=eq.${user.id}` }, payload => {
+        setNotifications(prev=>[payload.new,...prev])
+        toast(payload.new.title, { icon: payload.new.type==="success"?"✅":payload.new.type==="error"?"❌":payload.new.type==="warning"?"⚠️":"🔔", duration:5000 })
+      })
       }).subscribe()
     return () => supabase.removeChannel(sub)
   }, [user])
 
   async function load() {
-    const { data } = await supabase.from(t("notifications")).select("*").eq("user_id",user.id).order("created_at",{ascending:false})
+    const { data } = await supabase.from("notifications").select("*").eq("user_id",user.id).order("created_at",{ascending:false})
     setNotifications(data||[])
     setLoading(false)
   }
 
   async function markRead(id) {
-    await supabase.from(t("notifications")).update({ is_read:true }).eq("id",id).eq("user_id",user.id)
+    await supabase.from("notifications").update({ is_read:true }).eq("id",id).eq("user_id",user.id)
     setNotifications(n=>n.map(x=>x.id===id?{...x,is_read:true}:x))
   }
 
   async function markAllRead() {
-    await supabase.from(t("notifications")).update({ is_read:true }).eq("user_id",user.id).eq("is_read",false)
+    await supabase.from("notifications").update({ is_read:true }).eq("user_id",user.id).eq("is_read",false)
     setNotifications(n=>n.map(x=>({...x,is_read:true})))
     toast.success("All marked as read")
   }
 
   async function deleteNotif(id) {
-    await supabase.from(t("notifications")).delete().eq("id",id).eq("user_id",user.id)
+    await supabase.from("notifications").delete().eq("id",id).eq("user_id",user.id)
     setNotifications(n=>n.filter(x=>x.id!==id))
   }
 
@@ -79,3 +80,5 @@ export default function DriverNotifications() {
     </div>
   )
 }
+
+

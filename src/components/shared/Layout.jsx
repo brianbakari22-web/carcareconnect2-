@@ -120,6 +120,8 @@ export default function Layout({ children }) {
   const [collapsed, setCollapsed] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
+  const [unreadCount, setUnreadCount] = useState(0)
+  const { user } = useAuth()
 
   useEffect(() => {
     const handler = () => setIsMobile(window.innerWidth < 768)
@@ -128,6 +130,18 @@ export default function Layout({ children }) {
   }, [])
 
   const role = profile?.role || "customer"
+
+  useEffect(() => {
+    if (!user) return
+    supabase.from("notifications").select("id",{count:"exact"}).eq("user_id",user.id).eq("is_read",false).then(({count})=>setUnreadCount(count||0))
+    const sub = supabase.channel(`layout-notifs-${user.id}`)
+      .on("postgres_changes",{event:"INSERT",schema:"public",table:"notifications",filter:`user_id=eq.${user.id}`},()=>setUnreadCount(c=>c+1))
+      .on("postgres_changes",{event:"UPDATE",schema:"public",table:"notifications",filter:`user_id=eq.${user.id}`},()=>{
+        supabase.from("notifications").select("id",{count:"exact"}).eq("user_id",user.id).eq("is_read",false).then(({count})=>setUnreadCount(count||0))
+      })
+      .subscribe()
+    return () => supabase.removeChannel(sub)
+  }, [user?.id])
   const nav = NAV[role] || []
   const bottomNav = BOTTOM_NAV[role] || []
   const initials = `${profile?.first_name?.[0]||""}${profile?.last_name?.[0]||""}`.toUpperCase()
@@ -222,7 +236,12 @@ export default function Layout({ children }) {
           <button key={item.path}
             onClick={()=>navigate(item.path)}
             style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:3, padding:"8px 4px", background:"transparent", border:"none", cursor:"pointer", color:isActive(item)?activeColor:theme.textFaint, borderTop:`2px solid ${isActive(item)?activeColor:"transparent"}` }}>
-            <span style={{ fontSize:20 }}>{item.icon}</span>
+            <span style={{ position:"relative", display:"inline-block" }}>
+              <span style={{ fontSize:20 }}>{item.icon}</span>
+              {item.key==="notifications"&&unreadCount>0&&(
+                <span style={{ position:"absolute", top:-4, right:-4, background:"#e24b4a", color:"#fff", borderRadius:"50%", fontSize:8, fontWeight:800, minWidth:14, height:14, display:"flex", alignItems:"center", justifyContent:"center" }}>{unreadCount>9?"9+":unreadCount}</span>
+              )}
+            </span>
             <span style={{ fontSize:9, fontFamily:"'DM Sans',sans-serif", fontWeight:isActive(item)?600:400 }}>{getLabel(item)}</span>
           </button>
         ))}
@@ -304,6 +323,9 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
+
+
 
 
 

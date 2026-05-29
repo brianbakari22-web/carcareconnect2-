@@ -17,8 +17,9 @@ export default function CustomerNotifications() {
     load()
     const sub = supabase.channel("notifs-live")
       .on("postgres_changes", { event:"INSERT", schema:"public", table:"notifications", filter:`user_id=eq.${user.id}` }, payload => {
-        setNotifications(n=>[payload.new,...n])
-        toast(payload.new.title, { icon: payload.new.type==="success"?"✅":payload.new.type==="error"?"❌":"🔔" })
+        setNotifications(prev=>[payload.new,...prev])
+        toast(payload.new.title, { icon: payload.new.type==="success"?"✅":payload.new.type==="error"?"❌":payload.new.type==="warning"?"⚠️":"🔔", duration:5000 })
+      })
       }).subscribe()
     return () => supabase.removeChannel(sub)
   }, [user])
@@ -92,3 +93,5 @@ export default function CustomerNotifications() {
     </div>
   )
 }
+
+
