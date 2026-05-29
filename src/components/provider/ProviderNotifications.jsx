@@ -16,7 +16,7 @@ export default function ProviderNotifications() {
         setNotifications(prev=>[payload.new,...prev])
         toast(payload.new.title, { icon: payload.new.type==="success"?"✅":payload.new.type==="error"?"❌":payload.new.type==="warning"?"⚠️":"🔔", duration:5000 })
       })
-      }).subscribe()
+      .subscribe()
     return () => supabase.removeChannel(sub)
   }, [user])
 
@@ -84,5 +84,3 @@ export default function ProviderNotifications() {
     </div>
   )
 }
-
-
