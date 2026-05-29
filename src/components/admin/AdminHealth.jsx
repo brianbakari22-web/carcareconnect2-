@@ -5,16 +5,15 @@ import toast from "react-hot-toast"
 
 const CHECKS = [
   { key:"stuck_bookings", label:"Stuck bookings", desc:"Bookings pending >24hrs", icon:"📅", category:"business" },
-  { key:"go_service_timeout", label:"GO Service timeouts", desc:"Emergency requests with no provider response", icon:"🚨", category:"business" },
+  { key:"go_service_timeout", label:"GO Service timeouts", desc:"Emergency requests with no response", icon:"🚨", category:"business" },
   { key:"pending_claims", label:"Pending claims", desc:"Service claims awaiting review >24hrs", icon:"🛡️", category:"business" },
-  { key:"unanswered_tickets", label:"Unanswered support tickets", desc:"Support tickets open >24hrs", icon:"🎫", category:"business" },
+  { key:"unanswered_tickets", label:"Unanswered tickets", desc:"Support tickets open >24hrs", icon:"🎫", category:"business" },
   { key:"mileage_alerts", label:"Unresolved mileage alerts", desc:"Mileage alerts not resolved >48hrs", icon:"🚗", category:"business" },
   { key:"pending_payouts", label:"Pending payouts", desc:"Payout requests older than 7 days", icon:"💰", category:"payments" },
-  { key:"unpaid_bookings", label:"Unpaid completed bookings", desc:"Completed bookings still unpaid >24hrs", icon:"💳", category:"payments" },
-  { key:"unverified_drivers", label:"Unverified drivers", desc:"Drivers with credentials not yet verified", icon:"🚗", category:"users" },
+  { key:"unpaid_bookings", label:"Unpaid completed bookings", desc:"Completed bookings unpaid >24hrs", icon:"💳", category:"payments" },
+  { key:"unverified_drivers", label:"Unverified drivers", desc:"Drivers with credentials not yet verified", icon:"🪪", category:"users" },
   { key:"expiring_vouchers", label:"Expiring vouchers", desc:"Active vouchers expiring within 3 days", icon:"🎟️", category:"users" },
-  { key:"online_drivers", label:"Idle online drivers", desc:"Drivers online >4hrs with no job", icon:"🟢", category:"users" },
-  { key:"provider_services", label:"Providers without services", desc:"Active providers with no services listed", icon:"🏪", category:"users" },
+  { key:"idle_drivers", label:"Idle online drivers", desc:"Drivers online >4hrs with no job", icon:"🟢", category:"users" },
   { key:"database", label:"Database connection", desc:"Supabase connection and response time", icon:"🗄️", category:"system" },
 ]
 
@@ -24,50 +23,59 @@ const CATEGORY_COLORS = {
 
 const DIAGNOSTICS = {
   stuck_bookings: {
-    causes:["Provider has not confirmed the booking","Customer booked but provider is offline","Provider may have missed the notification"],
+    causes:["Provider has not confirmed the booking","Provider may be offline","Provider missed the notification"],
     resolution:"Send reminder notification to provider",
     link:"/admin-dashboard/bookings",
     autoFix: async () => {
       const dayAgo = new Date(Date.now()-24*60*60*1000).toISOString()
       const { data } = await supabase.from("bookings").select("provider_id,service_name,booking_number").eq("status","pending").lt("created_at",dayAgo)
       if (!data?.length) return "No stuck bookings found"
-      await Promise.all(data.map(b=>supabase.from("notifications").insert({ user_id:b.provider_id, title:"⏰ Booking needs attention", message:`Booking #${b.booking_number} for ${b.service_name} has been pending over 24 hours. Please confirm or decline.`, type:"warning" })))
+      for (const b of data) {
+        await supabase.from("notifications").insert({ user_id:b.provider_id, title:"⏰ Booking needs attention", message:`Booking #${b.booking_number} for ${b.service_name} has been pending over 24 hours. Please confirm or decline.`, type:"warning" })
+      }
       return `Reminder sent to ${data.length} provider(s)`
     }
   },
   go_service_timeout: {
-    causes:["No providers currently online","All nearby providers declined","Provider accepted but mechanic not dispatched"],
-    resolution:"Notify all online providers of pending emergency",
+    causes:["No providers currently online","All nearby providers declined","Provider not checking app"],
+    resolution:"Notify all active providers of pending emergency",
     link:"/admin-dashboard/mechanics",
     autoFix: async () => {
       const { data: providers } = await supabase.from("profiles").select("id").eq("role","provider").eq("is_active",true)
       if (!providers?.length) return "No providers found"
-      await Promise.all(providers.map(p=>supabase.from("notifications").insert({ user_id:p.id, title:"🚨 Emergency request waiting", message:"A customer has an emergency GO Service request with no provider response. Check your GO Requests tab.", type:"error" })))
+      for (const p of providers) {
+        await supabase.from("notifications").insert({ user_id:p.id, title:"🚨 Emergency request waiting", message:"A customer has an emergency GO Service request with no provider response. Check your GO Requests tab.", type:"error" })
+      }
       return `Alert sent to ${providers.length} provider(s)`
     }
   },
   pending_claims: {
-    causes:["Admin has not reviewed the claim","Claim requires more investigation","High volume of claims"],
+    causes:["Admin has not reviewed the claim","High volume of claims","Claim requires investigation"],
     resolution:"Mark claims as under review to acknowledge them",
     link:"/admin-dashboard/claims",
     autoFix: async () => {
       const dayAgo = new Date(Date.now()-24*60*60*1000).toISOString()
       const { data } = await supabase.from("service_claims").select("id,customer_id").eq("status","pending").lt("created_at",dayAgo)
       if (!data?.length) return "No pending claims found"
-      await supabase.from("service_claims").update({ status:"under_review" }).in("id",data.map(c=>c.id))
-      await Promise.all(data.map(c=>supabase.from("notifications").insert({ user_id:c.customer_id, title:"Claim update 📋", message:"Your service claim is now under review. We will respond within 24 hours.", type:"info" })))
+      const ids = data.map(c=>c.id)
+      await supabase.from("service_claims").update({ status:"under_review" }).in("id",ids)
+      for (const c of data) {
+        await supabase.from("notifications").insert({ user_id:c.customer_id, title:"Claim update 📋", message:"Your service claim is now under review. We will respond within 24 hours.", type:"info" })
+      }
       return `${data.length} claim(s) marked under review`
     }
   },
   unanswered_tickets: {
-    causes:["Support team has not reviewed tickets","High volume of support requests","Ticket notification missed"],
+    causes:["Support team missed tickets","High volume of requests","Notification not seen"],
     resolution:"Send acknowledgement to customers with open tickets",
     link:"/admin-dashboard/support",
     autoFix: async () => {
       const dayAgo = new Date(Date.now()-24*60*60*1000).toISOString()
       const { data } = await supabase.from("support_tickets").select("id,customer_id,subject").eq("status","open").lt("created_at",dayAgo)
       if (!data?.length) return "No open tickets found"
-      await Promise.all(data.map(t=>supabase.from("notifications").insert({ user_id:t.customer_id, title:"Support update", message:`Your ticket "${t.subject}" is being reviewed. We apologize for the delay.`, type:"info" })))
+      for (const t of data) {
+        await supabase.from("notifications").insert({ user_id:t.customer_id, title:"Support update", message:`Your ticket "${t.subject}" is being reviewed. We apologize for the delay.`, type:"info" })
+      }
       return `Acknowledgement sent for ${data.length} ticket(s)`
     }
   },
@@ -78,13 +86,13 @@ const DIAGNOSTICS = {
     autoFix: null
   },
   pending_payouts: {
-    causes:["Payout not processed manually","Provider banking details incomplete","Insufficient platform balance"],
+    causes:["Payout not processed manually","Provider banking details incomplete"],
     resolution:"Go to Payouts page to process manually",
     link:"/admin-dashboard/payouts",
     autoFix: null
   },
   unpaid_bookings: {
-    causes:["Customer paid cash but not marked as paid","Payment gateway issue","Provider forgot to mark as paid"],
+    causes:["Customer paid cash but not marked paid","Payment gateway issue","Provider forgot to mark paid"],
     resolution:"Review and mark completed bookings as paid",
     link:"/admin-dashboard/bookings",
     autoFix: null
@@ -101,34 +109,34 @@ const DIAGNOSTICS = {
     link:"/admin-dashboard/claims",
     autoFix: async () => {
       const threeDays = new Date(Date.now()+3*24*60*60*1000).toISOString()
-      const { data } = await supabase.from("service_vouchers").select("customer_id,voucher_code,amount,expires_at").eq("is_used",false).lt("expires_at",threeDays).gt("expires_at",new Date().toISOString())
+      const now = new Date().toISOString()
+      const { data } = await supabase.from("service_vouchers").select("customer_id,voucher_code,amount,expires_at").eq("is_used",false).lt("expires_at",threeDays).gt("expires_at",now)
       if (!data?.length) return "No expiring vouchers"
-      await Promise.all(data.map(v=>supabase.from("notifications").insert({ user_id:v.customer_id, title:"⏰ Voucher expiring soon!", message:`Your voucher ${v.voucher_code} worth KES ${Number(v.amount).toLocaleString()} expires ${new Date(v.expires_at).toLocaleDateString()}. Use it before it expires!`, type:"warning" })))
+      for (const v of data) {
+        await supabase.from("notifications").insert({ user_id:v.customer_id, title:"⏰ Voucher expiring soon!", message:`Your voucher ${v.voucher_code} worth KES ${Number(v.amount).toLocaleString()} expires ${new Date(v.expires_at).toLocaleDateString()}. Use it before it expires!`, type:"warning" })
+      }
       return `Reminder sent for ${data.length} voucher(s)`
     }
   },
-  online_drivers: {
-    causes:["Driver forgot to go offline","No concierge bookings in their area","Driver waiting for jobs"],
+  idle_drivers: {
+    causes:["Driver forgot to go offline","No concierge bookings available","Driver waiting for jobs"],
     resolution:"Send reminder to go offline if not available",
     link:"/admin-dashboard/drivers",
     autoFix: async () => {
+      const { data } = await supabase.from("driver_status").select("driver_id,is_online,current_booking_id,last_seen").eq("is_online",true)
       const fourHrsAgo = new Date(Date.now()-4*60*60*1000).toISOString()
-      const { data } = await supabase.from("driver_status").select("driver_id").eq("is_online",true).is("current_booking_id",null).lt("last_seen",fourHrsAgo)
-      if (!data?.length) return "No idle drivers found"
-      await Promise.all(data.map(d=>supabase.from("notifications").insert({ user_id:d.driver_id, title:"Reminder", message:"You have been online for over 4 hours with no active job. Please go offline if you are no longer available.", type:"info" })))
-      return `Reminder sent to ${data.length} driver(s)`
+      const idle = data?.filter(d=>!d.current_booking_id&&d.last_seen<fourHrsAgo)||[]
+      if (!idle.length) return "No idle drivers found"
+      for (const d of idle) {
+        await supabase.from("notifications").insert({ user_id:d.driver_id, title:"Reminder", message:"You have been online for over 4 hours with no active job. Please go offline if you are no longer available.", type:"info" })
+      }
+      return `Reminder sent to ${idle.length} driver(s)`
     }
-  },
-  provider_services: {
-    causes:["Provider registered but not added services yet","Provider deactivated all services","New provider needs onboarding"],
-    resolution:"Contact providers to add their services",
-    link:"/admin-dashboard/providers",
-    autoFix: null
   },
   database: {
     causes:["High server load","Network latency","Supabase free tier limitations"],
     resolution:"Monitor response times — consider upgrading to Supabase Pro",
-    link:"https://supabase.com/dashboard/project/gcnefnqtjxtqbhynyoxe",
+    link:"https://supabase.com/dashboard",
     autoFix: null
   },
 }
@@ -191,9 +199,6 @@ function DiagnosticPanel({ checkKey, onResolved }) {
   )
 }
 
-
-
-
 export default function AdminHealth() {
   const isMobile = useIsMobile()
   const [results, setResults] = useState({})
@@ -221,6 +226,7 @@ export default function AdminHealth() {
       const fourHrsAgo = new Date(now-4*60*60*1000).toISOString()
       const threeDays = new Date(now.getTime()+3*24*60*60*1000).toISOString()
 
+      // Database check
       const dbStart = Date.now()
       const { error: dbError } = await supabase.from("profiles").select("id").limit(1)
       const dbTime = Date.now() - dbStart
@@ -228,6 +234,7 @@ export default function AdminHealth() {
         ? { status:"critical", count:0, message:`Database error: ${dbError.message}`, details:[] }
         : { status:dbTime>2000?"warning":"healthy", count:0, message:`Response time: ${dbTime}ms`, details:[] }
 
+      // All other checks
       const [
         { data: stuckBks },
         { data: goTimeouts },
@@ -238,9 +245,7 @@ export default function AdminHealth() {
         { data: unpaidBks },
         { data: unverifiedDrivers },
         { data: expiringVouchers },
-        { data: idleDrivers },
-        { data: allProviders },
-        { data: activeServices },
+        { data: onlineDrivers },
       ] = await Promise.all([
         supabase.from("bookings").select("id,booking_number,service_name,created_at").eq("status","pending").lt("created_at",dayAgo),
         supabase.from("go_service_requests").select("id,attempt_number,sent_at").eq("status","pending"),
@@ -251,36 +256,28 @@ export default function AdminHealth() {
         supabase.from("bookings").select("id,booking_number,total_amount,created_at").eq("status","completed").eq("payment_status","pending").lt("created_at",dayAgo),
         supabase.from("profiles").select("id,first_name,last_name,created_at").eq("role","driver").eq("documents_verified",false).eq("is_active",true).not("license_number","is",null),
         supabase.from("service_vouchers").select("id,voucher_code,amount,expires_at").eq("is_used",false).lt("expires_at",threeDays).gt("expires_at",now.toISOString()),
-        supabase.from("driver_status").select("driver_id,last_seen,is_online,current_booking_id").eq("is_online",true),
-        supabase.from("profiles").select("id").eq("role","provider").eq("is_active",true),
-        supabase.from("services").select("provider_id").eq("is_active",true),
+        supabase.from("driver_status").select("driver_id,is_online,current_booking_id,last_seen").eq("is_online",true),
       ])
 
-      const activeProviderIds = [...new Set(activeServices?.map(s=>s.provider_id)||[])]
-      const providersNoServices = allProviders?.filter(p=>!activeProviderIds.includes(p.id))||[]
+      const idleDrivers = onlineDrivers?.filter(d=>!d.current_booking_id&&(d.last_seen||"")< fourHrsAgo)||[]
 
-      const add = (key, data, criticalThreshold, warningThreshold, goodMsg, badMsg, detailFn) => {
-        const count = data?.length||0
-        checkResults[key] = {
-          status: count>=criticalThreshold?"critical":count>=warningThreshold?"warning":"healthy",
-          count,
-          message: count>0?`${count} ${badMsg}`:`✓ ${goodMsg}`,
-          details: data?.slice(0,5).map(detailFn)||[]
-        }
-      }
+      const mk = (data, crit, warn, goodMsg, badMsg, detailFn) => ({
+        status: (data?.length||0)>=crit?"critical":(data?.length||0)>=warn?"warning":"healthy",
+        count: data?.length||0,
+        message: (data?.length||0)>0?`${data.length} ${badMsg}`:`✓ ${goodMsg}`,
+        details: data?.slice(0,5).map(detailFn)||[]
+      })
 
-      add("stuck_bookings", stuckBks, 5, 1, "All bookings processing normally", "booking(s) stuck in pending", b=>({label:`#${b.booking_number} — ${b.service_name}`,time:b.created_at}))
-      add("go_service_timeout", goTimeouts, 1, 1, "No pending emergency requests", "emergency request(s) awaiting response", r=>({label:`Attempt ${r.attempt_number}/5`,time:r.sent_at}))
-      add("pending_claims", pendingClaims, 3, 1, "All claims reviewed", "claim(s) awaiting review", c=>({label:c.reason,time:c.created_at}))
-      add("unanswered_tickets", openTickets, 5, 1, "All tickets answered", "ticket(s) unanswered >24hrs", t=>({label:t.subject,time:t.created_at}))
-      add("mileage_alerts", mileageAlerts, 5, 1, "All mileage alerts resolved", "mileage alert(s) unresolved", a=>({label:`${a.difference}km over threshold`,time:a.created_at}))
-      add("pending_payouts", pendingPayouts, 3, 1, "All payouts processed", "payout(s) pending >7 days", p=>({label:`KES ${Number(p.amount).toLocaleString()}`,time:p.created_at}))
-      add("unpaid_bookings", unpaidBks, 10, 1, "All payments up to date", "completed booking(s) unpaid", b=>({label:`#${b.booking_number} — KES ${Number(b.total_amount).toLocaleString()}`,time:b.created_at}))
-      add("unverified_drivers", unverifiedDrivers, 5, 1, "All drivers verified", "driver(s) awaiting verification", d=>({label:`${d.first_name} ${d.last_name}`,time:d.created_at}))
-      add("expiring_vouchers", expiringVouchers, 5, 1, "No vouchers expiring soon", "voucher(s) expiring within 3 days", v=>({label:`${v.voucher_code} — KES ${Number(v.amount).toLocaleString()}`,time:v.expires_at}))
-      const filteredIdleDrivers = idleDrivers?.filter(d=>!d.current_booking_id&&d.last_seen<fourHrsAgo)||[]
-      add("online_drivers", filteredIdleDrivers, 3, 1, "All online drivers active", "driver(s) idle online >4hrs", d=>({label:`Driver: ${d.driver_id?.slice(0,8)}`,time:d.last_seen}))
-      add("provider_services", providersNoServices, 5, 1, "All providers have active services", "provider(s) with no active services", p=>({label:`Provider ID: ${p.id?.slice(0,8)}`,time:""}))
+      checkResults.stuck_bookings = mk(stuckBks,5,1,"All bookings processing","booking(s) stuck in pending",b=>({label:`#${b.booking_number} — ${b.service_name}`,time:b.created_at}))
+      checkResults.go_service_timeout = mk(goTimeouts,1,1,"No pending emergencies","emergency request(s) awaiting response",r=>({label:`Attempt ${r.attempt_number}/5`,time:r.sent_at}))
+      checkResults.pending_claims = mk(pendingClaims,3,1,"All claims reviewed","claim(s) awaiting review >24hrs",c=>({label:c.reason,time:c.created_at}))
+      checkResults.unanswered_tickets = mk(openTickets,5,1,"All tickets answered","ticket(s) unanswered >24hrs",t=>({label:t.subject,time:t.created_at}))
+      checkResults.mileage_alerts = mk(mileageAlerts,5,1,"All mileage alerts resolved","mileage alert(s) unresolved >48hrs",a=>({label:`${a.difference}km over threshold`,time:a.created_at}))
+      checkResults.pending_payouts = mk(pendingPayouts,3,1,"All payouts processed","payout(s) pending >7 days",p=>({label:`KES ${Number(p.amount).toLocaleString()}`,time:p.created_at}))
+      checkResults.unpaid_bookings = mk(unpaidBks,10,1,"All payments up to date","completed booking(s) unpaid",b=>({label:`#${b.booking_number} — KES ${Number(b.total_amount).toLocaleString()}`,time:b.created_at}))
+      checkResults.unverified_drivers = mk(unverifiedDrivers,5,1,"All drivers verified","driver(s) awaiting verification",d=>({label:`${d.first_name} ${d.last_name}`,time:d.created_at}))
+      checkResults.expiring_vouchers = mk(expiringVouchers,5,1,"No vouchers expiring soon","voucher(s) expiring within 3 days",v=>({label:`${v.voucher_code} — KES ${Number(v.amount).toLocaleString()}`,time:v.expires_at}))
+      checkResults.idle_drivers = mk(idleDrivers,3,1,"All online drivers active","driver(s) idle online >4hrs",d=>({label:`Driver: ${d.driver_id?.slice(0,8)}`,time:d.last_seen}))
 
       setResults(checkResults)
       setLastChecked(new Date())
@@ -299,7 +296,6 @@ export default function AdminHealth() {
       if (criticalCount>0) toast.error(`🔴 ${criticalCount} critical issue(s) found`,{duration:8000})
       else if (warningCount>0) toast(`⚠️ ${warningCount} warning(s) found`,{duration:5000})
       else toast.success("✅ All systems healthy")
-
       loadLogs()
     } catch(err) {
       toast.error("Health check failed: "+err.message)
@@ -332,10 +328,10 @@ export default function AdminHealth() {
       {/* Overall status */}
       <div style={{ background:overallStatus==="critical"?"#1a0808":overallStatus==="warning"?"#1a1208":"#071a12", border:`2px solid ${overallColor}`, borderRadius:14, padding:"1.25rem", marginBottom:"1.5rem", textAlign:"center" }}>
         <div style={{ fontSize:40, marginBottom:8 }}>{overallStatus==="critical"?"🔴":overallStatus==="warning"?"🟡":"🟢"}</div>
-        <div style={{ fontFamily:"Syne", fontSize:isMobile?18:24, fontWeight:800, color:overallColor, marginBottom:4 }}>
+        <div style={{ fontFamily:"Syne", fontSize:isMobile?18:22, fontWeight:800, color:overallColor, marginBottom:4 }}>
           {overallStatus==="critical"?"CRITICAL ISSUES FOUND":overallStatus==="warning"?"WARNINGS DETECTED":"ALL SYSTEMS HEALTHY"}
         </div>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginTop:12, maxWidth:400, margin:"12px auto 0" }}>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginTop:12, maxWidth:360, margin:"12px auto 0" }}>
           {[
             { label:"Critical", value:critical, color:"#e24b4a" },
             { label:"Warnings", value:warnings, color:"#e6821e" },
@@ -362,7 +358,12 @@ export default function AdminHealth() {
       {/* DASHBOARD */}
       {tab==="dashboard"&&(
         <div>
-          {loading&&<div style={{ textAlign:"center", padding:"3rem", color:"#555", fontSize:13 }}><div style={{ fontSize:32, marginBottom:10 }}>⏳</div>Running system checks...</div>}
+          {loading&&(
+            <div style={{ textAlign:"center", padding:"3rem", color:"#555", fontSize:13 }}>
+              <div style={{ fontSize:32, marginBottom:10 }}>⏳</div>
+              Running system checks...
+            </div>
+          )}
           {!loading&&categories.map(cat=>(
             <div key={cat} style={{ marginBottom:"1.5rem" }}>
               <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.05em", color:CATEGORY_COLORS[cat], marginBottom:8 }}>
@@ -386,7 +387,6 @@ export default function AdminHealth() {
                       </div>
                       <div style={{ width:10, height:10, borderRadius:"50%", background:color, boxShadow:`0 0 6px ${color}`, flexShrink:0, marginTop:4 }}/>
                     </div>
-
                     {result.details?.length>0&&(
                       <div style={{ marginTop:8, paddingTop:8, borderTop:`1px solid ${color}20` }}>
                         {result.details.map((d,i)=>(
@@ -397,7 +397,6 @@ export default function AdminHealth() {
                         ))}
                       </div>
                     )}
-
                     {result.status!=="healthy"&&<DiagnosticPanel checkKey={check.key} onResolved={runChecks}/>}
                   </div>
                 )
@@ -434,5 +433,3 @@ export default function AdminHealth() {
     </div>
   )
 }
-
-
