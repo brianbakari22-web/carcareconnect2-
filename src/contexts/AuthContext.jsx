@@ -12,6 +12,9 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     // Refresh session when tab becomes visible again
     const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible" && user) {
+        fetchProfile(user.id)
+      }
       if (document.visibilityState === "visible") {
         supabase.auth.getSession().then(({ data: { session } }) => {
           if (session?.user) {
@@ -22,6 +25,17 @@ export function AuthProvider({ children }) {
       }
     }
     document.addEventListener("visibilitychange", handleVisibilityChange)
+    // Realtime profile refresh
+    if (user) {
+      const profileSub = supabase.channel("profile-changes")
+        .on("postgres_changes", { event:"UPDATE", schema:"public", table:"profiles", filter:`id=eq.${user.id}` },
+          () => fetchProfile(user.id))
+        .subscribe()
+      return () => {
+        document.removeEventListener("visibilitychange", handleVisibilityChange)
+        supabase.removeChannel(profileSub)
+      }
+    }
     return () => document.removeEventListener("visibilitychange", handleVisibilityChange)
   }, [])
 
@@ -149,6 +163,8 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   )
 }
+
+
 
 
 

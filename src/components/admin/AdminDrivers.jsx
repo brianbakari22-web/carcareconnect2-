@@ -50,6 +50,12 @@ export default function AdminDrivers() {
   async function verifyDriver(driverId, verified) {
     const { error } = await supabase.from("profiles").update({ documents_verified:verified, is_active:verified }).eq("id",driverId)
     if (error) return toast.error(error.message)
+    await supabase.from("notifications").insert({
+      user_id: driverId,
+      title: verified?"Account verified! ✅":"Verification revoked ⚠️",
+      message: verified?"Your documents have been verified. You can now go online and accept jobs!":"Your account verification has been revoked. Contact support for details.",
+      type: verified?"success":"warning",
+    })
     toast.success(verified?"Driver verified ✓":"Verification revoked")
     loadDrivers()
   }
@@ -350,3 +356,4 @@ function DriverStats({ driverId, isMobile }) {
     </div>
   )
 }
+
