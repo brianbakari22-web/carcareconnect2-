@@ -373,7 +373,7 @@ export default function AuthPage() {
 
   // Landing page
   return (
-    <div style={{ minHeight:"100vh", background:isDark?"#0a0a0a":"#f7f5f0", fontFamily:"DM Sans,sans-serif", opacity:visible?1:0, transition:"opacity 0.5s", color:isDark?"#f0ede6":"#1a1208" }}>
+    <div style={{ minHeight:"100vh", background:isDark?"#0a0a0a":"#f0ede6", fontFamily:"DM Sans,sans-serif", opacity:visible?1:0, transition:"opacity 0.5s" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
         @keyframes fadeUp { from { opacity:0; transform:translateY(24px) } to { opacity:1; transform:translateY(0) } }
@@ -388,7 +388,7 @@ export default function AuthPage() {
 
       {/* Nav */}
       <nav style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"1.25rem 2rem", borderBottom:isDark?"1px solid #1a1a1a":"1px solid #e5e2dc", position:"sticky", top:0, background:isDark?"#0a0a0a":"#ffffff", zIndex:10 }}>
-        <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:isDark?"#f0ede6":"#1a1208" }}>
+        <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#f0ede6" }}>
           🚗 Car<span style={{ color:"#e6821e" }}>Care</span> Connect
         </div>
           <div style={{ display:"flex", alignItems:"center", gap:8 }}>
@@ -559,6 +559,7 @@ export default function AuthPage() {
     </div>
   )
 }
+
 
 
 
