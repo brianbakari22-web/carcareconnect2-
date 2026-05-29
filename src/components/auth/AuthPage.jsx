@@ -156,7 +156,7 @@ export default function AuthPage() {
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleAuth}>
             <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>Email address</label>
             <input type="email" required value={form.email} onChange={e=>setForm(f=>({...f,email:e.target.value}))}
               placeholder="your@email.com"
@@ -546,6 +546,7 @@ export default function AuthPage() {
     </div>
   )
 }
+
 
 
 
