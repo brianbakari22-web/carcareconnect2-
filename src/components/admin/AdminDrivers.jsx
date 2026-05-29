@@ -229,6 +229,8 @@ export default function AdminDrivers() {
                     <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(3,1fr)", gap:6, marginBottom:10 }}>
                       {[
                         { l:"National ID", v:d.id_number||"—" },
+                        { l:"ID Document", v:d.id_document_url?"✓ Uploaded":"✗ Missing" },
+                        { l:"License Doc", v:d.license_document_url?"✓ Uploaded":"✗ Missing" },
                         { l:"License No.", v:d.license_number||"—" },
                         { l:"License class", v:d.license_class||"—" },
                         { l:"Expiry", v:d.license_expiry||"—" },
@@ -364,5 +366,6 @@ function DriverStats({ driverId, isMobile }) {
     </div>
   )
 }
+
 
 

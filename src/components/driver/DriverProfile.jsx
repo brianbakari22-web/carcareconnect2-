@@ -20,6 +20,10 @@ export default function DriverProfile() {
     first_name:"", last_name:"", city:""
   })
 
+  const [idDocFile, setIdDocFile] = useState(null)
+  const [licenseDocFile, setLicenseDocFile] = useState(null)
+  const [profilePhotoFile, setProfilePhotoFile] = useState(null)
+  const [uploading, setUploading] = useState(false)
   const [credentialsForm, setCredentialsForm] = useState({
     id_number:"",
     license_number:"",
@@ -78,14 +82,34 @@ export default function DriverProfile() {
     finally { setSaving(false) }
   }
 
+  async function uploadDocument(file, type) {
+    if (!file) return null
+    const ext = file.name.split(".").pop()
+    const path = `${user.id}/${type}-${Date.now()}.${ext}`
+    const { error } = await supabase.storage.from("driver-documents").upload(path, file, { upsert:true })
+    if (error) throw error
+    const { data } = supabase.storage.from("driver-documents").getPublicUrl(path)
+    return data.publicUrl
+  }
+
   async function saveCredentials(e) {
     e.preventDefault()
     setSaving(true)
-    try {
-      await updateProfile({
+      setUploading(true)
+      try {
+        let idDocUrl = profile.id_document_url
+        let licenseDocUrl = profile.license_document_url
+        let profilePhotoUrl = profile.profile_photo_url
+        if (idDocFile) idDocUrl = await uploadDocument(idDocFile, "id")
+        if (licenseDocFile) licenseDocUrl = await uploadDocument(licenseDocFile, "license")
+        if (profilePhotoFile) profilePhotoUrl = await uploadDocument(profilePhotoFile, "profile")
+        await updateProfile({
         ...credentialsForm,
         years_experience: parseInt(credentialsForm.years_experience)||0,
-      })
+          id_document_url: idDocUrl,
+          license_document_url: licenseDocUrl,
+          profile_photo_url: profilePhotoUrl,
+        })
       toast.success("Credentials saved — pending admin verification")
     } catch(err) { toast.error(err.message) }
     finally { setSaving(false) }
@@ -201,6 +225,25 @@ export default function DriverProfile() {
               </div>
             )}
 
+            
+            {/* Profile photo upload */}
+            <div style={{ marginBottom:16 }}>
+              <label style={lbl}>Profile photo</label>
+              <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+                {(profile?.profile_photo_url||profilePhotoFile)&&(
+                  <img src={profilePhotoFile?URL.createObjectURL(profilePhotoFile):profile.profile_photo_url} alt="Profile" style={{ width:56, height:56, borderRadius:"50%", objectFit:"cover", border:"2px solid #1d9e75" }}/>
+                )}
+                <div>
+                  <input type="file" accept="image/*" id="profile-photo" style={{ display:"none" }} onChange={e=>setProfilePhotoFile(e.target.files[0])}/>
+                  <label htmlFor="profile-photo" style={{ background:"#111", border:"1px solid #333", borderRadius:8, color:"#888", fontSize:11, padding:"7px 14px", cursor:"pointer", display:"inline-block" }}>
+                    {profile?.profile_photo_url?"Change photo":"Upload photo"}
+                  </label>
+                  {profilePhotoFile&&<div style={{ fontSize:10, color:"#1d9e75", marginTop:4 }}>✓ {profilePhotoFile.name}</div>}
+                </div>
+              </div>
+            </div>
+
+            <div style={{ height:1, background:"#1e1e1e", margin:"8px 0 16px" }}/>
             <label style={lbl}>National ID number *</label>
             <input style={inp} placeholder="e.g. 12345678" value={credentialsForm.id_number} onChange={e=>setCredentialsForm(f=>({...f,id_number:e.target.value}))} required/>
 
@@ -281,3 +324,5 @@ export default function DriverProfile() {
     </div>
   )
 }
+
+
