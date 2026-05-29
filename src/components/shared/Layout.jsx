@@ -4,8 +4,6 @@ import { useLanguage } from "../../contexts/LanguageContext"
 import { useTheme } from "../../contexts/ThemeContext"
 import { useNavigate, useLocation } from "react-router-dom"
 import ThemeSwitcher from "./ThemeSwitcher"
-import { useEffect, useState as useStateNotif } from "react"
-import { supabase as supabaseNotif } from "../../lib/supabase"
 
 const NAV = {
   customer: [
@@ -300,5 +298,6 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 
