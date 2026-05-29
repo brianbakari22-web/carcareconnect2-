@@ -19,6 +19,16 @@ export default function CustomerBookings() {
   const [expanded, setExpanded] = useState(null)
   const [rebooking, setRebooking] = useState(null)
   const [invoiceLoading, setInvoiceLoading] = useState(null)
+  const [driverInfo, setDriverInfo] = useState({})
+
+  async function loadDriverInfo(driverId, bookingId) {
+    if (!driverId || driverInfo[bookingId]) return
+    const [{ data: driver }, { data: status }] = await Promise.all([
+      supabase.from("profiles").select("first_name,last_name").eq("id",driverId).single(),
+      supabase.from("driver_status").select("is_online,current_booking_id").eq("driver_id",driverId).maybeSingle(),
+    ])
+    if (driver) setDriverInfo(prev=>({...prev,[bookingId]:{...driver,...status}}))
+  }
 
   async function downloadBookingInvoice(booking) {
     setInvoiceLoading(booking.id)
@@ -146,6 +156,52 @@ export default function CustomerBookings() {
             </button>
           </div>
 
+          {b.is_concierge&&b.driver_id&&(
+            <div style={{ marginTop:10, background:"#0c1f2e", border:"1px solid #378add30", borderRadius:10, padding:"0.9rem" }}>
+              <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#378add", marginBottom:8 }}>🚗 Concierge delivery</div>
+              {/* Driver info */}
+              {b.driver_id&&(
+                <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:10 }}
+                  ref={el=>{ if(el&&!driverInfo[b.id]) loadDriverInfo(b.driver_id,b.id) }}>
+                  <div style={{ width:32, height:32, borderRadius:"50%", background:"#071a12", border:"1px solid #1d9e7540", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:12, fontWeight:800, color:"#1d9e75", flexShrink:0 }}>
+                    {driverInfo[b.id]?.first_name?.[0]}{driverInfo[b.id]?.last_name?.[0]}
+                  </div>
+                  <div>
+                    <div style={{ fontSize:12, color:"#f0ede6" }}>Driver: {driverInfo[b.id]?.first_name} {driverInfo[b.id]?.last_name}</div>
+                    <div style={{ fontSize:10, color:"#555" }}>Concierge driver assigned</div>
+                  </div>
+                </div>
+              )}
+              {/* Concierge progress */}
+              <div style={{ display:"flex", gap:4, flexWrap:"wrap" }}>
+                {[
+                  { k:"accepted", l:"Assigned" },
+                  { k:"pickup", l:"At pickup" },
+                  { k:"in_transit", l:"To provider" },
+                  { k:"at_provider", l:"At provider" },
+                  { k:"return_transit", l:"Returning" },
+                  { k:"dropoff", l:"At dropoff" },
+                  { k:"completed", l:"Done" },
+                ].map((step,i)=>{
+                  const steps = ["accepted","pickup","in_transit","at_provider","return_transit","dropoff","completed"]
+                  const currentIdx = steps.indexOf(b.concierge_status)
+                  const isDone = i<=currentIdx
+                  return (
+                    <div key={step.k} style={{ fontSize:9, padding:"2px 7px", borderRadius:6, background:isDone?"#071a12":"#1a1a1a", color:isDone?"#1d9e75":"#333", border:`1px solid ${isDone?"#1d9e7530":"#222"}` }}>
+                      {isDone?"✓ ":""}{step.l}
+                    </div>
+                  )
+                })}
+              </div>
+              {/* Transport allowance */}
+              {b.transport_allowance>0&&(
+                <div style={{ fontSize:11, color:"#555", marginTop:8 }}>
+                  🚌 Transport allowance: KES {Number(b.transport_allowance).toLocaleString()} included
+                </div>
+              )}
+            </div>
+          )}
+
           {b.parts_details?.length>0&&!b.parts_approved&&(
             <div style={{ marginTop:10, background:"#0c1f2e", border:"1px solid #378add40", borderRadius:10, padding:"0.9rem" }}>
               <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#378add", marginBottom:8 }}>🔧 Parts added by provider</div>
@@ -218,6 +274,10 @@ export default function CustomerBookings() {
     </div>
   )
 }
+
+
+
+
 
 
 
