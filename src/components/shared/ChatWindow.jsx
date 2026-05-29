@@ -118,12 +118,14 @@ export default function ChatWindow({ bookingId, listingId, otherUserId, otherUse
     setMessages(prev => prev.map(m => m.id===tempId ? {...m, _pending:false} : m))
     setSending(false)
 
-    supabase.from("notifications").insert({
-      user_id: otherUserId,
-      title: listingId ? "New message about your listing 💬" : "New message",
-      message: messageText.slice(0, 60),
-      type: "info"
-    }).catch(()=>{})
+    try {
+      await supabase.from("notifications").insert({
+        user_id: otherUserId,
+        title: listingId ? "New message about your listing 💬" : "New message",
+        message: messageText.slice(0, 60),
+        type: "info"
+      })
+    } catch(_) {}
   }
 
   function handleKeyDown(e) {
@@ -191,3 +193,4 @@ export default function ChatWindow({ bookingId, listingId, otherUserId, otherUse
     </div>
   )
 }
+
