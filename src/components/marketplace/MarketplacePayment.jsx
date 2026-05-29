@@ -137,7 +137,7 @@ export default function MarketplacePayment({ offer, listing, onSuccess, onCancel
       <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
         <button onClick={initPayment} disabled={paying}
           style={{ background:paying?"#333":"#e6821e", border:"none", borderRadius:10, color:paying?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:paying?"not-allowed":"pointer" }}>
-          {paying?"Processing...`":"💳 Pay KES "+Number(salePrice).toLocaleString()}
+          {paying?"Processing...":"💳 Pay KES "+Number(salePrice).toLocaleString()}
         </button>
         <button onClick={onCancel}
           style={{ background:"none", border:"1px solid #333", borderRadius:10, color:"#666", fontSize:13, padding:"12px", cursor:"pointer" }}>
@@ -147,3 +147,4 @@ export default function MarketplacePayment({ offer, listing, onSuccess, onCancel
     </div>
   )
 }
+
