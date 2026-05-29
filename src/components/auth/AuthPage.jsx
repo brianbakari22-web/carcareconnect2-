@@ -132,6 +132,49 @@ export default function AuthPage() {
   const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
   const roleData = ROLES.find(r=>r.key===selectedRole)
 
+  // Forgot password
+  if (mode === "forgot") return (
+    <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", background:"#0a0a0a", padding:"1rem" }}>
+      <div style={{ width:"100%", maxWidth:400, background:"#111", border:"1px solid #1e1e1e", borderRadius:16, padding:"2rem" }}>
+        <div style={{ textAlign:"center", marginBottom:"1.5rem" }}>
+          <div style={{ fontSize:36, marginBottom:8 }}>🔐</div>
+          <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>Reset password</div>
+          <div style={{ fontSize:12, color:"#555" }}>Enter your email to receive a reset link</div>
+        </div>
+        {resetSent ? (
+          <div>
+            <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:10, padding:"1.25rem", marginBottom:"1.5rem", textAlign:"center" }}>
+              <div style={{ fontSize:32, marginBottom:8 }}>📧</div>
+              <div style={{ fontSize:13, color:"#1d9e75", fontWeight:600, marginBottom:4 }}>Reset link sent!</div>
+              <div style={{ fontSize:12, color:"#888", lineHeight:1.6 }}>
+                Check your email at <strong style={{ color:"#f0ede6" }}>{form.email}</strong>. Check spam if you dont see it.
+              </div>
+            </div>
+            <button onClick={()=>{ setMode("signin"); setResetSent(false) }}
+              style={{ width:"100%", background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:"pointer" }}>
+              Back to sign in
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>Email address</label>
+            <input type="email" required value={form.email} onChange={e=>setForm(f=>({...f,email:e.target.value}))}
+              placeholder="your@email.com"
+              style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"11px 12px", color:"#f0ede6", fontSize:13, outline:"none", marginBottom:16 }}/>
+            <button type="submit" disabled={loading}
+              style={{ width:"100%", background:loading?"#333":"#e6821e", border:"none", borderRadius:10, color:loading?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:loading?"not-allowed":"pointer", marginBottom:12 }}>
+              {loading ? "Sending..." : "Send reset link"}
+            </button>
+            <button type="button" onClick={()=>setMode("signin")}
+              style={{ width:"100%", background:"none", border:"1px solid #333", borderRadius:10, color:"#666", fontSize:13, padding:"12px", cursor:"pointer" }}>
+              Back to sign in
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  )
+
   // Auth form
   if (step === "auth") return (
     <div style={{ minHeight:"100vh", background:"#0a0a0a", display:"flex", flexDirection:isMobile?"column":"row", fontFamily:"'DM Sans',sans-serif" }}>
@@ -503,6 +546,7 @@ export default function AuthPage() {
     </div>
   )
 }
+
 
 
 
