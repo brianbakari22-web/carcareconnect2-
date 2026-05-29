@@ -52,6 +52,7 @@ export default function AuthPage() {
   const [step, setStep] = useState("landing")
   const [selectedRole, setSelectedRole] = useState(null)
   const [mode, setMode] = useState("signin")
+  const [resetSent, setResetSent] = useState(false)
   const [form, setForm] = useState({ email:"", password:"", firstName:"", lastName:"", phone:"", businessName:"" })
   const [loading, setLoading] = useState(false)
   const [refCode, setRefCode] = useState("")
@@ -70,6 +71,14 @@ export default function AuthPage() {
     if (mode === "signup" && !agreed) return toast.error("Please agree to the Terms and Privacy Policy")
     setLoading(true)
     try {
+      if (mode === "forgot") {
+        const { error } = await supabase.auth.resetPasswordForEmail(form.email, {
+          redirectTo: window.location.origin + "/reset-password"
+        })
+        if (error) throw error
+        setResetSent(true)
+        return
+      }
       if (mode === "signin") {
         const { data, error } = await supabase.auth.signInWithPassword({ email: form.email, password: form.password })
         if (error) throw error
@@ -163,6 +172,12 @@ export default function AuthPage() {
           </div>
 
           <form onSubmit={handleAuth}>
+            {mode==="signin"&&(
+              <button type="button" onClick={()=>{ setMode("forgot"); setResetSent(false) }}
+                style={{ background:"none", border:"none", color:"#e6821e", fontSize:11, cursor:"pointer", padding:"0 0 12px", width:"100%", textAlign:"right", display:"block", fontFamily:"DM Sans,sans-serif" }}>
+                Forgot password?
+              </button>
+            )}
             {mode==="signup"&&(
               <>
                 <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
@@ -192,6 +207,12 @@ export default function AuthPage() {
             <label style={lbl}>Password</label>
             <input style={{ ...inp, marginBottom:mode==="signup"?12:20 }} type="password" placeholder="Min 6 characters" value={form.password} onChange={e=>setForm(f=>({...f,password:e.target.value}))} required/>
 
+            {mode==="signin"&&(
+              <button type="button" onClick={()=>{ setMode("forgot"); setResetSent(false) }}
+                style={{ background:"none", border:"none", color:"#e6821e", fontSize:11, cursor:"pointer", padding:"0 0 12px", width:"100%", textAlign:"right", display:"block", fontFamily:"DM Sans,sans-serif" }}>
+                Forgot password?
+              </button>
+            )}
             {mode==="signup"&&(
               <>
                 <label style={lbl}>Referral code (optional)</label>
@@ -482,6 +503,7 @@ export default function AuthPage() {
     </div>
   )
 }
+
 
 
 

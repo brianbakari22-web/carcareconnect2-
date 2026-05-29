@@ -9,6 +9,7 @@ import AuthPage from "./components/auth/AuthPage"
 import PrivacyPolicy from "./components/legal/PrivacyPolicy"
 import TermsOfService from "./components/legal/TermsOfService"
 import AdminAuthPage from "./components/auth/AdminAuthPage"
+import ResetPassword from "./components/auth/ResetPassword"
 import Layout from "./components/shared/Layout"
 import CustomerDashboard from "./components/customer/CustomerDashboard"
 import CustomerBookings from "./components/customer/CustomerBookings"
@@ -260,6 +261,7 @@ export default function App() {
             <Toaster position="top-right" toastOptions={{ style:{ background:"#1a1a1a", color:"#f0ede6", border:"1px solid #2a2a2a", borderRadius:8, fontSize:13 } }} />
             <Routes>
               <Route path="/auth" element={<AuthPage />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<TermsOfService />} />
               <Route path={`/${ADMIN_SECRET}`} element={<AdminAuthPage />} />
@@ -275,6 +277,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 
