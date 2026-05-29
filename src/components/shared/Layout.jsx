@@ -24,8 +24,9 @@ const NAV = {
     { path:"/dashboard/vehicle-reports", label:"Vehicle Reports", icon:"📋" },
     { path:"/dashboard/claims", label:"Service Guarantee", icon:"🛡️" },
     { path:"/dashboard/marketplace", label:"Marketplace", icon:"🛒" },
-    { path:"/dashboard/claims", label:"Service Guarantee", icon:"🛡️" },
-    { path:"/dashboard/marketplace", label:"Marketplace", icon:"🛒" },
+    { path:"/dashboard/marketplace/my-listings", label:"My Listings", icon:"📦" },
+    { path:"/dashboard/marketplace/my-offers", label:"My Offers", icon:"💰" },
+    { path:"/dashboard/marketplace/transactions", label:"My Transactions", icon:"💳" },
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
@@ -44,6 +45,9 @@ const NAV = {
     { path:"/dashboard/go-requests", label:"GO Requests 🚨", icon:"🚨" },
     { path:"/dashboard/claims", label:"Service Claims", icon:"🛡️" },
     { path:"/dashboard/marketplace", label:"Marketplace", icon:"🛒" },
+    { path:"/dashboard/marketplace/my-listings", label:"My Listings", icon:"📦" },
+    { path:"/dashboard/marketplace/my-offers", label:"My Offers", icon:"💰" },
+    { path:"/dashboard/marketplace/transactions", label:"My Transactions", icon:"💳" },
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
@@ -55,6 +59,10 @@ const NAV = {
     { path:"/dashboard/earnings", key:"earnings", icon:"💰" },
     { path:"/dashboard/reviews", key:"myRatings", icon:"⭐" },
     { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
+    { path:"/dashboard/marketplace", label:"Marketplace", icon:"🛒" },
+    { path:"/dashboard/marketplace/my-listings", label:"My Listings", icon:"📦" },
+    { path:"/dashboard/marketplace/my-offers", label:"My Offers", icon:"💰" },
+    { path:"/dashboard/marketplace/transactions", label:"My Transactions", icon:"💳" },
     { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
@@ -71,8 +79,6 @@ const NAV = {
     { path:"/admin-dashboard/services", label:"Services", icon:"⚙️" },
     { path:"/admin-dashboard/revenue", label:"Revenue", icon:"💰" },
     { path:"/admin-dashboard/payouts", label:"Payouts", icon:"🏦" },
-    { path:"/admin-dashboard/refunds", label:"Refunds (Legacy)", icon:"↩️" },
-    { path:"/admin-dashboard/claims", label:"Service Claims 🛡️", icon:"🛡️" },
     { path:"/admin-dashboard/promos", label:"Promo Codes", icon:"🎟️" },
     { path:"/admin-dashboard/reviews", key:"reviews", icon:"⭐" },
     { path:"/admin-dashboard/loyalty", key:"loyalty", icon:"🏆" },
@@ -84,7 +90,6 @@ const NAV = {
     { path:"/admin-dashboard/marketplace", label:"Marketplace", icon:"🛒" },
   ],
 }
-
 const BOTTOM_NAV = {
   customer: [
     { path:"/dashboard", key:"overview", icon:"🏠" },
@@ -328,6 +333,8 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
+
 
 
 
