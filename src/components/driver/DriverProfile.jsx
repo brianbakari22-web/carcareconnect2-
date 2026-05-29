@@ -22,10 +22,10 @@ export default function DriverProfile() {
 
   const [idDocFile, setIdDocFile] = useState(null)
   const [idDocBackFile, setIdDocBackFile] = useState(null)
+  const [goodConductFile, setGoodConductFile] = useState(null)
   const [licenseDocFile, setLicenseDocFile] = useState(null)
   const [profilePhotoFile, setProfilePhotoFile] = useState(null)
   const [uploading, setUploading] = useState(false)
-  const [goodConductFile, setGoodConductFile] = useState(null)
   const [kraPinFile, setKraPinFile] = useState(null)
   const [medicalCertFile, setMedicalCertFile] = useState(null)
   const [psvBadgeFile, setPsvBadgeFile] = useState(null)
