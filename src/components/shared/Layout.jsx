@@ -81,6 +81,7 @@ const NAV = {
     { path:"/admin-dashboard/support", label:"Support Tickets", icon:"🎫" },
     { path:"/admin-dashboard/notifications", label:"Notifications", icon:"🔔" },
     { path:"/admin-dashboard/health", label:"System Health", icon:"🩺" },
+    { path:"/admin-dashboard/marketplace", label:"Marketplace", icon:"🛒" },
   ],
 }
 
@@ -327,6 +328,7 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 
 
