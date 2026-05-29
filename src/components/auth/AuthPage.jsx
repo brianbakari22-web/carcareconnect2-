@@ -135,7 +135,7 @@ export default function AuthPage() {
 
   // Forgot password
   if (mode === "forgot") return (
-    <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", background:"#0a0a0a", padding:"1rem" }}>
+    <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", background:isDark?"#0a0a0a":"#f0ede6", padding:"1rem" }}>
       <div style={{ width:"100%", maxWidth:400, background:"#111", border:"1px solid #1e1e1e", borderRadius:16, padding:"2rem" }}>
         <div style={{ textAlign:"center", marginBottom:"1.5rem" }}>
           <div style={{ fontSize:36, marginBottom:8 }}>🔐</div>
@@ -332,7 +332,8 @@ export default function AuthPage() {
     <div style={{ minHeight:"100vh", background:"#0a0a0a", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"'DM Sans',sans-serif", padding:"1rem" }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');`}</style>
       <div style={{ width:"100%", maxWidth:640 }}>
-        <button onClick={()=>setStep("landing")} style={{ background:"none", border:"none", color:"#555", cursor:"pointer", fontSize:13, marginBottom:"1.5rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", width:"100%" }}>
+            <button onClick={()=>setStep("landing")} style={{ background:"none", border:"none", color:"#555", cursor:"pointer", fontSize:13, marginBottom:"1.5rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
           ← Back
         </button>
         <div style={{ textAlign:"center", marginBottom:"2rem" }}>
@@ -559,6 +560,8 @@ export default function AuthPage() {
     </div>
   )
 }
+
+
 
 
 
