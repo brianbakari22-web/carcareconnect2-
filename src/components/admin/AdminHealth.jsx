@@ -318,7 +318,7 @@ export default function AdminHealth() {
 
                     {result.status!=="healthy"&&(
                       <div style={{ marginTop:8 }}>
-                        <ActionButton checkKey={check.key} />
+                        <DiagnosticPanel checkKey={check.key} result={result} onResolved={runChecks}/>
                       </div>
                     )}
                   </div>
@@ -382,3 +382,6 @@ function ActionButton({ checkKey }) {
     </a>
   )
 }
+
+
+
