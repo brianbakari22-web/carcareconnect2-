@@ -133,6 +133,67 @@ const DIAGNOSTICS = {
   },
 }
 
+function DiagnosticPanel({ checkKey, onResolved }) {
+  const [expanded, setExpanded] = useState(false)
+  const [resolving, setResolving] = useState(false)
+  const diag = DIAGNOSTICS[checkKey]
+  if (!diag) return null
+
+  async function handleAutoFix() {
+    if (!diag.autoFix) return
+    setResolving(true)
+    try {
+      const msg = await diag.autoFix()
+      toast.success(msg||"Action completed")
+      if (onResolved) onResolved()
+    } catch(err) { toast.error(err.message) }
+    finally { setResolving(false) }
+  }
+
+  return (
+    <div style={{ marginTop:8 }}>
+      <button onClick={()=>setExpanded(e=>!e)}
+        style={{ background:"none", border:"none", color:"#8b5cf6", fontSize:11, cursor:"pointer", padding:0, fontWeight:600 }}>
+        {expanded?"▲ Hide diagnosis":"▼ Show diagnosis & fix"}
+      </button>
+      {expanded&&(
+        <div style={{ marginTop:8, background:"#0f0f0f", borderRadius:8, padding:"0.9rem" }}>
+          <div style={{ marginBottom:10 }}>
+            <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", marginBottom:6 }}>Possible causes:</div>
+            {diag.causes.map((c,i)=>(
+              <div key={i} style={{ display:"flex", gap:8, marginBottom:4 }}>
+                <span style={{ color:"#555", flexShrink:0 }}>•</span>
+                <span style={{ fontSize:11, color:"#888" }}>{c}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginBottom:10 }}>
+            <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", marginBottom:4 }}>Recommended action:</div>
+            <div style={{ fontSize:12, color:"#e6821e" }}>→ {diag.resolution}</div>
+          </div>
+          <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
+            {diag.autoFix&&(
+              <button onClick={handleAutoFix} disabled={resolving}
+                style={{ background:resolving?"#333":"#1d9e75", border:"none", borderRadius:7, color:resolving?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"7px 14px", cursor:resolving?"not-allowed":"pointer" }}>
+                {resolving?"Processing...":"⚡ Auto-fix"}
+              </button>
+            )}
+            {diag.link&&(
+              <a href={diag.link} target={diag.link.startsWith("http")?"_blank":"_self"}
+                style={{ background:"#160a2e", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, fontWeight:600, padding:"7px 14px", textDecoration:"none" }}>
+                Go fix it →
+              </a>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+
+
+
 export default function AdminHealth() {
   const isMobile = useIsMobile()
   const [results, setResults] = useState({})
@@ -190,7 +251,7 @@ export default function AdminHealth() {
         supabase.from("bookings").select("id,booking_number,total_amount,created_at").eq("status","completed").eq("payment_status","pending").lt("created_at",dayAgo),
         supabase.from("profiles").select("id,first_name,last_name,created_at").eq("role","driver").eq("documents_verified",false).eq("is_active",true).not("license_number","is",null),
         supabase.from("service_vouchers").select("id,voucher_code,amount,expires_at").eq("is_used",false).lt("expires_at",threeDays).gt("expires_at",now.toISOString()),
-        supabase.from("driver_status").select("driver_id,last_seen").eq("is_online",true).is("current_booking_id",null).lt("last_seen",fourHrsAgo),
+        supabase.from("driver_status").select("driver_id,last_seen,is_online,current_booking_id").eq("is_online",true),
         supabase.from("profiles").select("id").eq("role","provider").eq("is_active",true),
         supabase.from("services").select("provider_id").eq("is_active",true),
       ])
@@ -217,7 +278,8 @@ export default function AdminHealth() {
       add("unpaid_bookings", unpaidBks, 10, 1, "All payments up to date", "completed booking(s) unpaid", b=>({label:`#${b.booking_number} — KES ${Number(b.total_amount).toLocaleString()}`,time:b.created_at}))
       add("unverified_drivers", unverifiedDrivers, 5, 1, "All drivers verified", "driver(s) awaiting verification", d=>({label:`${d.first_name} ${d.last_name}`,time:d.created_at}))
       add("expiring_vouchers", expiringVouchers, 5, 1, "No vouchers expiring soon", "voucher(s) expiring within 3 days", v=>({label:`${v.voucher_code} — KES ${Number(v.amount).toLocaleString()}`,time:v.expires_at}))
-      add("online_drivers", idleDrivers, 3, 1, "All online drivers active", "driver(s) idle online >4hrs", d=>({label:`Driver: ${d.driver_id?.slice(0,8)}`,time:d.last_seen}))
+      const filteredIdleDrivers = idleDrivers?.filter(d=>!d.current_booking_id&&d.last_seen<fourHrsAgo)||[]
+      add("online_drivers", filteredIdleDrivers, 3, 1, "All online drivers active", "driver(s) idle online >4hrs", d=>({label:`Driver: ${d.driver_id?.slice(0,8)}`,time:d.last_seen}))
       add("provider_services", providersNoServices, 5, 1, "All providers have active services", "provider(s) with no active services", p=>({label:`Provider ID: ${p.id?.slice(0,8)}`,time:""}))
 
       setResults(checkResults)
@@ -373,60 +435,4 @@ export default function AdminHealth() {
   )
 }
 
-function DiagnosticPanel({ checkKey, onResolved }) {
-  const [expanded, setExpanded] = useState(false)
-  const [resolving, setResolving] = useState(false)
-  const diag = DIAGNOSTICS[checkKey]
-  if (!diag) return null
 
-  async function handleAutoFix() {
-    if (!diag.autoFix) return
-    setResolving(true)
-    try {
-      const msg = await diag.autoFix()
-      toast.success(msg||"Action completed")
-      if (onResolved) onResolved()
-    } catch(err) { toast.error(err.message) }
-    finally { setResolving(false) }
-  }
-
-  return (
-    <div style={{ marginTop:8 }}>
-      <button onClick={()=>setExpanded(e=>!e)}
-        style={{ background:"none", border:"none", color:"#8b5cf6", fontSize:11, cursor:"pointer", padding:0, fontWeight:600 }}>
-        {expanded?"▲ Hide diagnosis":"▼ Show diagnosis & fix"}
-      </button>
-      {expanded&&(
-        <div style={{ marginTop:8, background:"#0f0f0f", borderRadius:8, padding:"0.9rem" }}>
-          <div style={{ marginBottom:10 }}>
-            <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", marginBottom:6 }}>Possible causes:</div>
-            {diag.causes.map((c,i)=>(
-              <div key={i} style={{ display:"flex", gap:8, marginBottom:4 }}>
-                <span style={{ color:"#555", flexShrink:0 }}>•</span>
-                <span style={{ fontSize:11, color:"#888" }}>{c}</span>
-              </div>
-            ))}
-          </div>
-          <div style={{ marginBottom:10 }}>
-            <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", marginBottom:4 }}>Recommended action:</div>
-            <div style={{ fontSize:12, color:"#e6821e" }}>→ {diag.resolution}</div>
-          </div>
-          <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
-            {diag.autoFix&&(
-              <button onClick={handleAutoFix} disabled={resolving}
-                style={{ background:resolving?"#333":"#1d9e75", border:"none", borderRadius:7, color:resolving?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"7px 14px", cursor:resolving?"not-allowed":"pointer" }}>
-                {resolving?"Processing...":"⚡ Auto-fix"}
-              </button>
-            )}
-            {diag.link&&(
-              <a href={diag.link} target={diag.link.startsWith("http")?"_blank":"_self"}
-                style={{ background:"#160a2e", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, fontWeight:600, padding:"7px 14px", textDecoration:"none" }}>
-                Go fix it →
-              </a>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
