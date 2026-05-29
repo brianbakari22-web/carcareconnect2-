@@ -76,6 +76,7 @@ const NAV = {
     { path:"/admin-dashboard/security", label:"2FA Security", icon:"🔐" },
     { path:"/admin-dashboard/support", label:"Support Tickets", icon:"🎫" },
     { path:"/admin-dashboard/notifications", label:"Notifications", icon:"🔔" },
+    { path:"/admin-dashboard/health", label:"System Health", icon:"🩺" },
   ],
 }
 
@@ -303,6 +304,7 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 
 
