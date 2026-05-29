@@ -1,5 +1,5 @@
-import { createContext, useContext, useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase'
+import { createContext, useContext, useEffect, useState } from "react"
+import { supabase } from "../lib/supabase"
 
 const AuthContext = createContext({})
 export const useAuth = () => useContext(AuthContext)
@@ -9,36 +9,7 @@ export function AuthProvider({ children }) {
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    // Refresh session when tab becomes visible again
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible" && user) {
-        fetchProfile(user.id)
-      }
-      if (document.visibilityState === "visible") {
-        supabase.auth.getSession().then(({ data: { session } }) => {
-          if (session?.user) {
-            setUser(session.user)
-            fetchProfile(session.user.id)
-          }
-        })
-      }
-    }
-    document.addEventListener("visibilitychange", handleVisibilityChange)
-    // Realtime profile refresh
-    if (user) {
-      const profileSub = supabase.channel("profile-changes")
-        .on("postgres_changes", { event:"UPDATE", schema:"public", table:"profiles", filter:`id=eq.${user.id}` },
-          () => fetchProfile(user.id))
-        .subscribe()
-      return () => {
-        document.removeEventListener("visibilitychange", handleVisibilityChange)
-        supabase.removeChannel(profileSub)
-      }
-    }
-    return () => document.removeEventListener("visibilitychange", handleVisibilityChange)
-  }, [])
-
+  // Initial session load
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
@@ -63,46 +34,58 @@ export function AuthProvider({ children }) {
     return () => subscription.unsubscribe()
   }, [])
 
+  // Realtime profile updates — single subscription
   useEffect(() => {
-    if (!user) return
-    const sub = supabase.channel(`profile-${user.id}`)
-      .on("postgres_changes", { event:"UPDATE", schema:"public", table:"profiles", filter:`id=eq.${user.id}` },
-        payload => { setProfile(prev=>({...prev,...payload.new})) })
+    if (!user?.id) return
+    const sub = supabase.channel(`profile-live-${user.id}`)
+      .on("postgres_changes", {
+        event: "UPDATE",
+        schema: "public",
+        table: "profiles",
+        filter: `id=eq.${user.id}`
+      }, payload => {
+        setProfile(prev => ({ ...prev, ...payload.new }))
+      })
       .subscribe()
     return () => supabase.removeChannel(sub)
   }, [user?.id])
 
+  // Refresh profile on tab focus
+  useEffect(() => {
+    function handleVisibility() {
+      if (document.visibilityState === "visible") {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+          if (session?.user) {
+            setUser(session.user)
+            fetchProfile(session.user.id)
+          }
+        })
+      }
+    }
+    document.addEventListener("visibilitychange", handleVisibility)
+    return () => document.removeEventListener("visibilitychange", handleVisibility)
+  }, [])
+
   async function fetchProfile(userId) {
     try {
       const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
         .single()
-
-      if (error || !data) {
-        const { data: { user: u } } = await supabase.auth.getUser()
-        const meta = u?.user_metadata || {}
-        const { data: created } = await supabase
-          .from('profiles')
-          .insert({
-            id: userId,
-            first_name: meta.first_name || 'User',
-            last_name: meta.last_name || '',
-            role: meta.role || 'customer',
-            business_name: meta.business_name || null,
-          })
-          .select()
-          .single()
-        setProfile(created)
-      } else {
-        setProfile(data)
-      }
+      if (error) throw error
+      setProfile(data)
     } catch (err) {
-      console.error('fetchProfile error:', err)
+      console.error("fetchProfile error:", err)
     } finally {
       setLoading(false)
     }
+  }
+
+  async function signIn({ email, password }) {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) throw error
+    return data
   }
 
   async function signUp({ email, password, firstName, lastName, phone, role, businessName }, referralCode="") {
@@ -111,26 +94,34 @@ export function AuthProvider({ children }) {
       const { data: refProfile } = await supabase.from("profiles").select("id").eq("referral_code", referralCode.toUpperCase()).single()
       if (refProfile) referrerId = refProfile.id
     }
-
     const { data, error } = await supabase.auth.signUp({
       email, password,
       options: {
         data: {
           first_name: firstName,
           last_name: lastName,
-          phone,
-          role: role || 'customer',
-          business_name: businessName || null,
+          role: role || "customer",
+          business_name: businessName || "",
         }
       }
     })
     if (error) throw error
-    return data
-  }
-
-  async function signIn({ email, password }) {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) throw error
+    if (data.user) {
+      const { error: profileError } = await supabase.from("profiles").upsert({
+        id: data.user.id,
+        first_name: firstName,
+        last_name: lastName,
+        role: role || "customer",
+        business_name: businessName || "",
+        referred_by: referrerId,
+        is_active: true,
+      })
+      if (profileError) console.error("Profile upsert error:", profileError)
+      await supabase.from("profile_sensitive").upsert({
+        id: data.user.id,
+        email, phone: phone || "",
+      })
+    }
     return data
   }
 
@@ -141,11 +132,10 @@ export function AuthProvider({ children }) {
   }
 
   async function updateProfile(updates) {
-    console.log("updateProfile called with:", updates)
     const { data, error } = await supabase
-      .from('profiles')
+      .from("profiles")
       .update(updates)
-      .eq('id', user.id)
+      .eq("id", user.id)
       .select()
       .single()
     if (error) throw error
@@ -163,13 +153,3 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   )
 }
-
-
-
-
-
-
-
-
-
-
