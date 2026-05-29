@@ -5,7 +5,7 @@ const ThemeContext = createContext({})
 
 export const THEMES = {
   dark: { name:"Dark", icon:"🌙", bg:"#0a0a0a", bgSecondary:"#0f0f0f", bgCard:"#111", bgCardHover:"#161616", border:"#1e1e1e", borderLight:"#2a2a2a", text:"#f0ede6", textMuted:"#888", textFaint:"#555", textVeryFaint:"#444", primary:"#e6821e", primaryBg:"#1a1208", primaryBorder:"#e6821e40" },
-  light: { name:"Light", icon:"☀️", bg:"#f5f5f5", bgSecondary:"#efefef", bgCard:"#ffffff", bgCardHover:"#f9f9f9", border:"#e5e5e5", borderLight:"#d5d5d5", text:"#1a1a1a", textMuted:"#555", textFaint:"#888", textVeryFaint:"#aaa", primary:"#e6821e", primaryBg:"#fff3e6", primaryBorder:"#e6821e40" },
+  light: { name:"Light", icon:"☀️", bg:"#f7f7f5", bgSecondary:"#ffffff", bgCard:"#ffffff", bgCardHover:"#f0ede6", border:"#e5e2dc", borderLight:"#d5d2cc", text:"#1a1208", textMuted:"#555", textFaint:"#888", textVeryFaint:"#aaa", primary:"#e6821e", primaryBg:"#fff3e6", primaryBorder:"#e6821e40" },
   ocean: { name:"Ocean", icon:"🌊", bg:"#0a1628", bgSecondary:"#0d1e35", bgCard:"#112240", bgCardHover:"#1a3050", border:"#1e3a5f", borderLight:"#2a4a70", text:"#e2e8f0", textMuted:"#94a3b8", textFaint:"#64748b", textVeryFaint:"#475569", primary:"#0ea5e9", primaryBg:"#0c2340", primaryBorder:"#0ea5e940" },
   forest: { name:"Forest", icon:"🌿", bg:"#0a1a0f", bgSecondary:"#0d2014", bgCard:"#112918", bgCardHover:"#1a3a22", border:"#1e4028", borderLight:"#2a5035", text:"#e2f0e8", textMuted:"#86b896", textFaint:"#5a8a6a", textVeryFaint:"#4a7a5a", primary:"#10b981", primaryBg:"#0a2818", primaryBorder:"#10b98140" },
   royal: { name:"Royal", icon:"👑", bg:"#0f0a1a", bgSecondary:"#140e22", bgCard:"#1a1230", bgCardHover:"#221840", border:"#2a1e50", borderLight:"#3a2a60", text:"#ede8f5", textMuted:"#a890c8", textFaint:"#7860a0", textVeryFaint:"#604880", primary:"#8b5cf6", primaryBg:"#1a0f35", primaryBorder:"#8b5cf640" },
@@ -67,3 +67,5 @@ export function ThemeProvider({ children }) {
 export function useTheme() {
   return useContext(ThemeContext)
 }
+
+
