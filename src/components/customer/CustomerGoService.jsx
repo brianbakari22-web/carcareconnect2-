@@ -221,6 +221,40 @@ export default function CustomerGoService() {
           {details&&<div style={{ fontSize:11, color:"#555", marginTop:4 }}>📝 {details}</div>}
         </div>
 
+        </div>
+
+      {/* Safety checklist */}
+      <div style={{ background:"#111", border:"1px solid #e6821e40", borderRadius:16, padding:"1.25rem", marginBottom:"1rem" }}>
+        <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e", marginBottom:12 }}>
+          ⚠️ Stay safe while you wait
+        </div>
+        <div style={{ fontSize:12, color:"#888", marginBottom:12, lineHeight:1.6 }}>
+          Please take the following safety measures immediately while our mechanic is on the way:
+        </div>
+        {[
+          { icon:"🔴", text:"Turn on your hazard lights immediately", priority:"high" },
+          { icon:"⚠️", text:"Place warning triangles at least 50 metres behind your vehicle", priority:"high" },
+          { icon:"🚗", text:"Move your vehicle to the hard shoulder or road side if possible", priority:"high" },
+          { icon:"👥", text:"Keep all passengers away from the road — move to safety barrier side", priority:"high" },
+          { icon:"📱", text:"Stay in your vehicle if you are on a highway or fast road", priority:"medium" },
+          { icon:"🔦", text:"If at night — use your phone torch to stay visible to other drivers", priority:"medium" },
+          { icon:"🚫", text:"Do not attempt to repair the vehicle yourself on a busy road", priority:"medium" },
+          { icon:"📞", text:"If blocking traffic — call NTSA: 0800 723 573", priority:"emergency" },
+          { icon:"🚔", text:"If you are in danger — call Police: 999", priority:"emergency" },
+        ].map(item=>(
+          <div key={item.text} style={{ display:"flex", gap:10, alignItems:"flex-start", marginBottom:10, padding:"0.6rem", background:item.priority==="emergency"?"#1a0808":item.priority==="high"?"#1a1208":"#0f0f0f", borderRadius:8, border:`1px solid ${item.priority==="emergency"?"#e24b4a30":item.priority==="high"?"#e6821e30":"#1e1e1e"}` }}>
+            <span style={{ fontSize:18, flexShrink:0 }}>{item.icon}</span>
+            <span style={{ fontSize:12, color:item.priority==="emergency"?"#e24b4a":item.priority==="high"?"#e6821e":"#888", lineHeight:1.5 }}>{item.text}</span>
+          </div>
+        ))}
+        <div style={{ background:"#0f0f0f", borderRadius:8, padding:"0.75rem", marginTop:4 }}>
+          <div style={{ fontSize:11, color:"#555", lineHeight:1.6 }}>
+            🇰🇪 Kenya Road Safety — In case of accident or emergency on a public road, you are required by law to place warning signs and alert other road users. Failure to do so may result in further accidents.
+          </div>
+        </div>
+      </div>
+
+      <div style={{ background:"#1a0808", border:"1px solid #e24b4a40", borderRadius:16, padding:"1.5rem", marginBottom:"1rem", textAlign:"center" }}>
         <button onClick={cancelRequest}
           style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:10, color:"#e24b4a", fontSize:13, padding:"10px 24px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
           Cancel request
@@ -398,3 +432,5 @@ export default function CustomerGoService() {
     </div>
   )
 }
+
+
