@@ -67,6 +67,7 @@ import AdminCategories from "./components/admin/AdminCategories"
 import Admin2FA from "./components/admin/Admin2FA"
 import Admin2FAVerify from "./components/admin/Admin2FAVerify"
 import AdminSupport from "./components/admin/AdminSupport"
+import AdminNotifications from "./components/admin/AdminNotifications"
 import AdminMechanics from "./components/admin/AdminMechanics"
 import AdminDisputes from "./components/admin/AdminDisputes"
 
@@ -217,6 +218,7 @@ function AdminDashboardRouter() {
           <Route path="categories" element={<AdminCategories />} />
           <Route path="security" element={<Admin2FA />} />
           <Route path="support" element={<AdminSupport />} />
+              <Route path="notifications" element={<AdminNotifications />} />
           <Route path="providers" element={<AdminProviders />} />
           <Route path="drivers" element={<AdminDrivers />} />
           <Route path="mechanics" element={<AdminMechanics />} />
@@ -252,3 +254,4 @@ export default function App() {
     </ThemeProvider>
   )
 }
+

@@ -4,6 +4,8 @@ import { useLanguage } from "../../contexts/LanguageContext"
 import { useTheme } from "../../contexts/ThemeContext"
 import { useNavigate, useLocation } from "react-router-dom"
 import ThemeSwitcher from "./ThemeSwitcher"
+import { useEffect, useState as useStateNotif } from "react"
+import { supabase as supabaseNotif } from "../../lib/supabase"
 
 const NAV = {
   customer: [
@@ -70,6 +72,7 @@ const NAV = {
     { path:"/admin-dashboard/categories", label:"Categories", icon:"📂" },
     { path:"/admin-dashboard/security", label:"2FA Security", icon:"🔐" },
     { path:"/admin-dashboard/support", label:"Support Tickets", icon:"🎫" },
+    { path:"/admin-dashboard/notifications", label:"Notifications", icon:"🔔" },
   ],
 }
 
@@ -297,3 +300,5 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
+
