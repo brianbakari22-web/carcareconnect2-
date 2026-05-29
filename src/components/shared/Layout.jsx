@@ -23,7 +23,9 @@ const NAV = {
     { path:"/dashboard/emergency", label:"GO Service 🚨", icon:"🚨" },
     { path:"/dashboard/vehicle-reports", label:"Vehicle Reports", icon:"📋" },
     { path:"/dashboard/claims", label:"Service Guarantee", icon:"🛡️" },
+    { path:"/dashboard/marketplace", label:"Marketplace", icon:"🛒" },
     { path:"/dashboard/claims", label:"Service Guarantee", icon:"🛡️" },
+    { path:"/dashboard/marketplace", label:"Marketplace", icon:"🛒" },
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
@@ -41,6 +43,7 @@ const NAV = {
     { path:"/dashboard/mechanics", label:"My Mechanics", icon:"👨‍🔧" },
     { path:"/dashboard/go-requests", label:"GO Requests 🚨", icon:"🚨" },
     { path:"/dashboard/claims", label:"Service Claims", icon:"🛡️" },
+    { path:"/dashboard/marketplace", label:"Marketplace", icon:"🛒" },
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
@@ -324,6 +327,7 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 
 

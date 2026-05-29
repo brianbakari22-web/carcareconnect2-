@@ -26,6 +26,8 @@ import CustomerFavorites from "./components/customer/CustomerFavorites"
 import CustomerReferral from "./components/customer/CustomerReferral"
 import CustomerSupport from "./components/customer/CustomerSupport"
 import CustomerClaims from "./components/customer/CustomerClaims"
+import Marketplace from "./components/marketplace/Marketplace"
+import CreateListing from "./components/marketplace/CreateListing"
 import CustomerGoService from "./components/customer/CustomerGoService"
 import CustomerVehicleReports from "./components/customer/CustomerVehicleReports"
 import ProviderChat from "./components/provider/ProviderChat"
@@ -166,6 +168,8 @@ function DashboardRouter() {
           <Route path="emergency" element={<CustomerGoService />} />
           <Route path="vehicle-reports" element={<CustomerVehicleReports />} />
           <Route path="claims" element={<CustomerClaims />} />
+          <Route path="marketplace" element={<Marketplace />} />
+          <Route path="marketplace/new" element={<CreateListing />} />
           <Route path="profile" element={<CustomerProfile />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </>}
@@ -184,6 +188,8 @@ function DashboardRouter() {
           <Route path="mechanics" element={<ProviderMechanics />} />
           <Route path="go-requests" element={<ProviderGoRequests />} />
           <Route path="claims" element={<ProviderClaims />} />
+          <Route path="marketplace" element={<Marketplace />} />
+          <Route path="marketplace/new" element={<CreateListing />} />
           <Route path="profile" element={<ProviderProfile />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </>}
@@ -199,6 +205,8 @@ function DashboardRouter() {
           <Route path="notifications" element={<DriverNotifications />} />
           <Route path="chat" element={<DriverChat />} />
           <Route path="profile" element={<DriverProfile />} />
+          <Route path="marketplace" element={<Marketplace />} />
+          <Route path="marketplace/new" element={<CreateListing />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </>}
       </Routes>
@@ -262,6 +270,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 
