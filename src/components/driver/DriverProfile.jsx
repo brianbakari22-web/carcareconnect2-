@@ -23,13 +23,13 @@ export default function DriverProfile() {
   const [idDocFile, setIdDocFile] = useState(null)
   const [idDocBackFile, setIdDocBackFile] = useState(null)
   const [licenseDocFile, setLicenseDocFile] = useState(null)
-  const [goodConductFile, setGoodConductFile] = useState(null)
-  const [kraPinFile, setKraPinFile] = useState(null)
-  const [logbookFile, setLogbookFile] = useState(null)
-  const [psvBadgeFile, setPsvBadgeFile] = useState(null)
-  const [licenseDocFile, setLicenseDocFile] = useState(null)
   const [profilePhotoFile, setProfilePhotoFile] = useState(null)
   const [uploading, setUploading] = useState(false)
+  const [goodConductFile, setGoodConductFile] = useState(null)
+  const [kraPinFile, setKraPinFile] = useState(null)
+  const [medicalCertFile, setMedicalCertFile] = useState(null)
+  const [psvBadgeFile, setPsvBadgeFile] = useState(null)
+  
   const [credentialsForm, setCredentialsForm] = useState({
     id_number:"",
     license_number:"",
@@ -111,7 +111,7 @@ export default function DriverProfile() {
         let licenseDocUrl = profile.license_document_url
         let goodConductUrl = profile.good_conduct_url
         let kraPinUrl = profile.kra_pin_url
-        let logbookUrl = profile.vehicle_logbook_url
+        let medicalCertUrl = profile.medical_cert_url
         let psvBadgeUrl = profile.psv_badge_url
         let profilePhotoUrl = profile.profile_photo_url
         if (idDocFile) idDocUrl = await uploadDocument(idDocFile, "id-front")
@@ -119,7 +119,7 @@ export default function DriverProfile() {
         if (licenseDocFile) licenseDocUrl = await uploadDocument(licenseDocFile, "license")
         if (goodConductFile) goodConductUrl = await uploadDocument(goodConductFile, "good-conduct")
         if (kraPinFile) kraPinUrl = await uploadDocument(kraPinFile, "kra-pin")
-        if (logbookFile) logbookUrl = await uploadDocument(logbookFile, "logbook")
+        if (medicalCertFile) medicalCertUrl = await uploadDocument(medicalCertFile, "medical-cert")
         if (psvBadgeFile) psvBadgeUrl = await uploadDocument(psvBadgeFile, "psv-badge")
         if (profilePhotoFile) profilePhotoUrl = await uploadDocument(profilePhotoFile, "profile")
         await updateProfile({
@@ -130,7 +130,7 @@ export default function DriverProfile() {
           license_document_url: licenseDocUrl,
           good_conduct_url: goodConductUrl,
           kra_pin_url: kraPinUrl,
-          vehicle_logbook_url: logbookUrl,
+          medical_cert_url: medicalCertUrl,
           psv_badge_url: psvBadgeUrl,
           profile_photo_url: profilePhotoUrl,
           kra_pin_number: credentialsForm.kra_pin_number,
@@ -350,6 +350,9 @@ export default function DriverProfile() {
     </div>
   )
 }
+
+
+
 
 
 
