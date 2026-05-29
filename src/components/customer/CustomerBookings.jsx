@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
+import { useNavigate } from "react-router-dom"
 import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
@@ -11,6 +12,7 @@ const SB = { pending:"#1a1208", confirmed:"#0c1f2e", "in-progress":"#160a2e", co
 
 export default function CustomerBookings() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const { t } = useLanguage()
   const isMobile = useIsMobile()
   const [bookings, setBookings] = useState([])
@@ -140,6 +142,10 @@ export default function CustomerBookings() {
             )}
             {b.status==="completed"&&(
               <>
+                <button onClick={()=>navigate(`/dashboard/claims?booking=${b.id}`)}
+                  style={{ background:"#1a0808", border:"1px solid #e24b4a30", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  🛡️ Service guarantee
+                </button>
                 <button onClick={()=>downloadBookingInvoice(b)} disabled={invoiceLoading===b.id}
                   style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                   {invoiceLoading===b.id?"...":"⬇ Invoice"}
@@ -274,6 +280,9 @@ export default function CustomerBookings() {
     </div>
   )
 }
+
+
+
 
 
 

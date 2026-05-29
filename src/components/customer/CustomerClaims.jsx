@@ -3,6 +3,7 @@ import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
+import { useLocation } from "react-router-dom"
 
 const CLAIM_REASONS = [
   "Service not completed properly",
@@ -22,10 +23,12 @@ export default function CustomerClaims() {
   const [vouchers, setVouchers] = useState([])
   const [bookings, setBookings] = useState([])
   const [loading, setLoading] = useState(true)
-  const [showForm, setShowForm] = useState(false)
-  const [form, setForm] = useState({ booking_id:"", reason:"", description:"" })
+  const [showForm, setShowForm] = useState(!!preselectedBooking)
+  const [form, setForm] = useState({ booking_id:preselectedBooking||"", reason:"", description:"" })
   const [submitting, setSubmitting] = useState(false)
-  const [tab, setTab] = useState("claims")
+  const location = useLocation()
+  const preselectedBooking = new URLSearchParams(location.search).get("booking")
+  const [tab, setTab] = useState(preselectedBooking?"claims":"claims")
 
   useEffect(() => { if (user) load() }, [user])
 
@@ -280,3 +283,4 @@ export default function CustomerClaims() {
     </div>
   )
 }
+
