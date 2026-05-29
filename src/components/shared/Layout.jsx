@@ -39,6 +39,7 @@ const NAV = {
     { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
     { path:"/dashboard/mechanics", label:"My Mechanics", icon:"👨‍🔧" },
     { path:"/dashboard/go-requests", label:"GO Requests 🚨", icon:"🚨" },
+    { path:"/dashboard/claims", label:"Service Claims", icon:"🛡️" },
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
@@ -66,7 +67,8 @@ const NAV = {
     { path:"/admin-dashboard/services", label:"Services", icon:"⚙️" },
     { path:"/admin-dashboard/revenue", label:"Revenue", icon:"💰" },
     { path:"/admin-dashboard/payouts", label:"Payouts", icon:"🏦" },
-    { path:"/admin-dashboard/refunds", label:"Refunds", icon:"↩️" },
+    { path:"/admin-dashboard/refunds", label:"Refunds (Legacy)", icon:"↩️" },
+    { path:"/admin-dashboard/claims", label:"Service Claims 🛡️", icon:"🛡️" },
     { path:"/admin-dashboard/promos", label:"Promo Codes", icon:"🎟️" },
     { path:"/admin-dashboard/reviews", key:"reviews", icon:"⭐" },
     { path:"/admin-dashboard/loyalty", key:"loyalty", icon:"🏆" },
@@ -301,6 +303,8 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
+
 
 
 

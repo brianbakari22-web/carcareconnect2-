@@ -42,6 +42,7 @@ import ProviderAvailability from "./components/provider/ProviderAvailability"
 import ProviderProfile from "./components/provider/ProviderProfile"
 import ProviderMechanics from "./components/provider/ProviderMechanics"
 import ProviderGoRequests from "./components/provider/ProviderGoRequests"
+import ProviderClaims from "./components/provider/ProviderClaims"
 import DriverChat from "./components/driver/DriverChat"
 import DriverOverview from "./components/driver/DriverOverview"
 import DriverAvailableJobs from "./components/driver/DriverAvailableJobs"
@@ -181,6 +182,7 @@ function DashboardRouter() {
           <Route path="chat" element={<ProviderChat />} />
           <Route path="mechanics" element={<ProviderMechanics />} />
           <Route path="go-requests" element={<ProviderGoRequests />} />
+          <Route path="claims" element={<ProviderClaims />} />
           <Route path="profile" element={<ProviderProfile />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </>}
@@ -258,5 +260,6 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 

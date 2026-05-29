@@ -144,6 +144,81 @@ export default function AdminClaims() {
     }
   }
 
+  async function issueCashRefund(claim) {
+    if (!adminNotes) return toast.error("Please add reason for cash refund exception")
+    if (!confirm(`Issue cash refund of KES ${Number(claim.bookings?.total_amount||0).toLocaleString()} to customer? This is an exception — use only when voucher is not appropriate.`)) return
+    setProcessing(true)
+    try {
+      const amount = Number(claim.bookings?.total_amount||0)
+      await Promise.all([
+        supabase.from("service_claims").update({ status:"approved", admin_notes:`CASH REFUND EXCEPTION: ${adminNotes}`, resolved_by:user.id, resolved_at:new Date().toISOString() }).eq("id",claim.id),
+        supabase.from("refunds").insert({
+          booking_id: claim.booking_id,
+          customer_id: claim.customer_id,
+          amount: amount,
+          reason: `Service Guarantee cash refund exception: ${adminNotes}`,
+          status: "approved",
+          approved_by: user.id,
+        }),
+        supabase.from("notifications").insert({
+          user_id: claim.customer_id,
+          title: "Cash refund approved 💰",
+          message: `As an exception, a cash refund of KES ${amount.toLocaleString()} has been approved for your claim. Please allow 3-5 business days for processing.`,
+          type: "success",
+        }),
+        supabase.from("provider_penalties").insert({
+          provider_id: claim.provider_id,
+          claim_id: claim.id,
+          penalty_type: "deduction",
+          amount_deducted: amount,
+          reason: `Cash refund issued to customer — ${claim.reason}`,
+          is_active: true,
+          applied_by: user.id,
+        }),
+        supabase.from("notifications").insert({
+          user_id: claim.provider_id,
+          title: "Cash refund issued against you ⚠️",
+          message: `A cash refund of KES ${amount.toLocaleString()} has been issued to a customer due to: ${claim.reason}. This amount will be deducted from your earnings.`,
+          type: "error",
+        }),
+      ])
+      toast.success("Cash refund approved and recorded")
+      setSelected(null)
+      setAdminNotes("")
+      load()
+    } catch(err) {
+      toast.error(err.message)
+    } finally {
+      setProcessing(false)
+    }
+  }
+
+  async function rejectClaimOLD(claimId) {
+    try {} catch(err) {
+      toast.error(err.message)
+    } finally {
+      setProcessing(false)
+    }
+  }
+
+  async function issueCashRefund(claim) {
+    if (!adminNotes) return toast.error("Please add reason for cash refund exception")
+    if (!confirm("Issue cash refund? This is an exception — use only when voucher is not appropriate.")) return
+    setProcessing(true)
+    try {
+      const amount = Number(claim.bookings?.total_amount||0)
+      await Promise.all([
+        supabase.from("service_claims").update({ status:"approved", admin_notes:`CASH REFUND: ${adminNotes}`, resolved_by:user.id, resolved_at:new Date().toISOString() }).eq("id",claim.id),
+        supabase.from("notifications").insert({ user_id:claim.customer_id, title:"Cash refund approved 💰", message:`A cash refund of KES ${amount.toLocaleString()} has been approved. Allow 3-5 business days for processing.`, type:"success" }),
+        supabase.from("notifications").insert({ user_id:claim.provider_id, title:"Cash refund issued against you ⚠️", message:`A cash refund of KES ${amount.toLocaleString()} was issued due to: ${claim.reason}. Deducted from your earnings.`, type:"error" }),
+        supabase.from("provider_penalties").insert({ provider_id:claim.provider_id, claim_id:claim.id, penalty_type:"deduction", amount_deducted:amount, reason:`Cash refund exception — ${claim.reason}`, is_active:true, applied_by:user.id }),
+      ])
+      toast.success("Cash refund approved")
+      setSelected(null); setAdminNotes(""); load()
+    } catch(err) { toast.error(err.message) }
+    finally { setProcessing(false) }
+  }
+
   const pending = claims.filter(c=>c.status==="pending")
   const underReview = claims.filter(c=>c.status==="under_review")
   const approved = claims.filter(c=>c.status==="approved")
@@ -243,6 +318,10 @@ export default function AdminClaims() {
                       style={{ background:processing?"#333":"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 18px", cursor:processing?"not-allowed":"pointer" }}>
                       ✓ Approve & issue voucher
                     </button>
+                    <button onClick={()=>issueCashRefund(c)} disabled={processing}
+                      style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:8, color:"#1d9e75", fontSize:12, padding:"9px 14px", cursor:processing?"not-allowed":"pointer" }}>
+                      💰 Cash refund (exception)
+                    </button>
                     <button onClick={()=>rejectClaim(c.id)} disabled={processing}
                       style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", fontSize:12, padding:"9px 14px", cursor:processing?"not-allowed":"pointer" }}>
                       Reject claim
@@ -289,3 +368,6 @@ export default function AdminClaims() {
     </div>
   )
 }
+
+
+

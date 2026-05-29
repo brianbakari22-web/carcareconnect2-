@@ -9,6 +9,7 @@ const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", co
 const SB = { pending:"#1a1208", confirmed:"#0c1f2e", "in-progress":"#160a2e", completed:"#071a12", cancelled:"#1a0808" }
 
 export default function ProviderDashboard() {
+  const [showPolicy, setShowPolicy] = useState(!localStorage.getItem("ccc_policy_acknowledged"))
   const { user, profile } = useAuth()
   const { t, language } = useLanguage()
   const isMobile = useIsMobile()
@@ -48,6 +49,54 @@ export default function ProviderDashboard() {
 
   return (
     <div>
+      {/* Service Guarantee Policy Banner */}
+      {showPolicy&&(
+        <div style={{ background:"#1a0808", border:"2px solid #e24b4a", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e24b4a", marginBottom:8 }}>
+            🛡️ Important — Service Guarantee Policy
+          </div>
+          <div style={{ fontSize:12, color:"#888", lineHeight:1.8, marginBottom:"1rem" }}>
+            Car Care Connect operates a <strong style={{ color:"#f0ede6" }}>Service Guarantee</strong> for all customers.
+            As a provider, you must be aware of the following:
+          </div>
+          {[
+            { icon:"1️⃣", text:"If a customer is unhappy with your service, they can submit a Service Guarantee claim within 7 days." },
+            { icon:"2️⃣", text:"If the claim is approved, the full service cost is deducted from your earnings and a voucher is issued to the customer." },
+            { icon:"3️⃣", text:"1st approved claim → Warning + cost deduction." },
+            { icon:"4️⃣", text:"2nd approved claim → 7 day suspension + cost deduction." },
+            { icon:"5️⃣", text:"3rd approved claim → Permanent ban from the platform." },
+            { icon:"✅", text:"The best protection is to always deliver excellent, professional service." },
+          ].map(item=>(
+            <div key={item.icon} style={{ display:"flex", gap:10, alignItems:"flex-start", marginBottom:6 }}>
+              <span style={{ fontSize:14, flexShrink:0 }}>{item.icon}</span>
+              <span style={{ fontSize:12, color:"#888", lineHeight:1.5 }}>{item.text}</span>
+            </div>
+          ))}
+          <div style={{ display:"flex", gap:8, marginTop:"1rem" }}>
+            <button onClick={()=>{ localStorage.setItem("ccc_policy_acknowledged","true"); setShowPolicy(false) }}
+              style={{ background:"#e24b4a", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 18px", cursor:"pointer" }}>
+              I understand — got it
+            </button>
+            <button onClick={()=>{ window.open("/terms","_blank") }}
+              style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", fontSize:12, padding:"9px 14px", cursor:"pointer" }}>
+              Read full policy
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Permanent policy reminder */}
+      {!showPolicy&&(
+        <div style={{ background:"#111", border:"1px solid #e24b4a20", borderRadius:10, padding:"0.75rem", marginBottom:"1.25rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+          <div style={{ fontSize:11, color:"#555" }}>🛡️ Service Guarantee active — deliver quality service to avoid claims</div>
+          <button onClick={()=>setShowPolicy(true)}
+            style={{ background:"none", border:"none", color:"#e24b4a", fontSize:11, cursor:"pointer" }}>
+            View policy
+          </button>
+        </div>
+      )}
+
+      <div>
       <div style={{ marginBottom:"1.25rem" }}>
         <div style={{ fontFamily:"Syne", fontSize:isMobile?18:22, fontWeight:800, color:"#f0ede6" }}>
           {language==="sw"?"Karibu":"Welcome"}, <span style={{ color:"#378add" }}>{profile?.business_name||profile?.first_name}</span>
@@ -122,3 +171,5 @@ export default function ProviderDashboard() {
     </div>
   )
 }
+
+
