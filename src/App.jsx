@@ -29,6 +29,7 @@ import CustomerClaims from "./components/customer/CustomerClaims"
 import Marketplace from "./components/marketplace/Marketplace"
 import MyListings from "./components/marketplace/MyListings"
 import MyOffers from "./components/marketplace/MyOffers"
+import EscrowManager from "./components/marketplace/EscrowManager"
 import CreateListing from "./components/marketplace/CreateListing"
 import CustomerGoService from "./components/customer/CustomerGoService"
 import CustomerVehicleReports from "./components/customer/CustomerVehicleReports"
@@ -274,6 +275,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 

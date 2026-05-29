@@ -4,6 +4,7 @@ import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
+import PhotoUpload from "./PhotoUpload"
 
 const PART_CATEGORIES = ["Engine","Brakes","Suspension","Electrical","Body & Panel","Tyres & Wheels","Exhaust","Cooling","Transmission","Interior","Exterior","Accessories","Other"]
 const MAKES = ["Toyota","Nissan","Honda","Mitsubishi","Subaru","Mazda","BMW","Mercedes","Volkswagen","Ford","Chevrolet","Isuzu","Suzuki","Hyundai","Kia","Peugeot","Renault","Other"]
@@ -14,6 +15,8 @@ export default function CreateListing() {
   const navigate = useNavigate()
   const isMobile = useIsMobile()
   const [saving, setSaving] = useState(false)
+  const [listingId, setListingId] = useState(null)
+  const [step, setStep] = useState("form")
   const [agreed, setAgreed] = useState(false)
   const [form, setForm] = useState({
     listing_type:"vehicle", title:"", description:"", price:"", negotiable:true,
@@ -41,16 +44,42 @@ export default function CreateListing() {
       if (form.listing_type==="part"||form.listing_type==="accessory") {
         Object.assign(payload,{ part_category:form.part_category, part_number:form.part_number, quantity:parseInt(form.quantity)||1, compatible_makes:form.compatible_makes })
       }
-      const { error } = await supabase.from("marketplace_listings").insert(payload)
+      const { data, error } = await supabase.from("marketplace_listings").insert(payload).select().single()
       if (error) throw error
-      toast.success("Listing submitted! We will review within 24 hours.")
-      navigate("/dashboard/marketplace")
+      setListingId(data.id)
+      setStep("photos")
+      toast.success("Listing created! Now add photos.")
     } catch(err) { toast.error(err.message) }
     finally { setSaving(false) }
   }
 
   const inp = { width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"11px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:12 }
   const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
+
+  if (step==="photos") return (
+    <div style={{ maxWidth:600 }}>
+      <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>Add photos 📸</div>
+      <div style={{ fontSize:12, color:"#555", marginBottom:"1.5rem" }}>
+        Listings with photos get 5x more views. Add up to 10 photos.
+      </div>
+      <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", marginBottom:"1.25rem" }}>
+        <PhotoUpload listingId={listingId} existingPhotos={[]} onUploaded={()=>{}}/>
+      </div>
+      <div style={{ display:"flex", gap:8 }}>
+        <button onClick={()=>navigate("/dashboard/marketplace")}
+          style={{ flex:1, background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:"pointer" }}>
+          Done — view listing →
+        </button>
+        <button onClick={()=>navigate("/dashboard/marketplace")}
+          style={{ background:"none", border:"1px solid #333", borderRadius:10, color:"#666", fontSize:13, padding:"14px 18px", cursor:"pointer" }}>
+          Skip
+        </button>
+      </div>
+      <div style={{ fontSize:11, color:"#444", textAlign:"center", marginTop:8 }}>
+        Your listing is submitted for review. Photos help admin approve faster.
+      </div>
+    </div>
+  )
 
   return (
     <div style={{ maxWidth:600 }}>
@@ -193,3 +222,5 @@ export default function CreateListing() {
     </div>
   )
 }
+
+

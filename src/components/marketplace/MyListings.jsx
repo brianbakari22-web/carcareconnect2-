@@ -4,6 +4,9 @@ import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
+import PhotoUpload from "./PhotoUpload"
+import InspectionRequest from "./InspectionRequest"
+import FeaturedListing from "./FeaturedListing"
 
 export default function MyListings() {
   const { user } = useAuth()
@@ -14,6 +17,10 @@ export default function MyListings() {
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState("listings")
   const [expanded, setExpanded] = useState(null)
+  const [photoListing, setPhotoListing] = useState(null)
+  const [featureListing, setFeatureListing] = useState(null)
+  const [inspectListing, setInspectListing] = useState(null)
+  const [listingPhotos, setListingPhotos] = useState([])
   const [counterPrice, setCounterPrice] = useState("")
   const [processing, setProcessing] = useState(null)
 
@@ -112,6 +119,12 @@ export default function MyListings() {
       load()
     } catch(err) { toast.error(err.message) }
     finally { setProcessing(null) }
+  }
+
+  async function openPhotos(listing) {
+    const { data } = await supabase.from("marketplace_photos").select("*").eq("listing_id",listing.id).order("display_order")
+    setListingPhotos(data||[])
+    setPhotoListing(listing.id)
   }
 
   async function deleteListing(id) {
@@ -214,6 +227,20 @@ export default function MyListings() {
                         Delete
                       </button>
                     )}
+                    <button onClick={()=>setInspectListing(inspectListing===l.id?null:l.id)}
+                      style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:6, color:"#1d9e75", fontSize:10, padding:"4px 8px", cursor:"pointer" }}>
+                      🔍 Inspect
+                    </button>
+                    {l.listing_type==="vehicle"&&(
+                      <button onClick={()=>setFeatureListing(featureListing===l.id?null:l.id)}
+                        style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:6, color:"#e6821e", fontSize:10, padding:"4px 8px", cursor:"pointer" }}>
+                        ⭐ Feature
+                      </button>
+                    )}
+                    <button onClick={()=>openPhotos(l)}
+                      style={{ background:"#111", border:"1px solid #333", borderRadius:6, color:"#666", fontSize:10, padding:"4px 8px", cursor:"pointer" }}>
+                      📸 Photos
+                    </button>
                     <button onClick={()=>navigate("/dashboard/marketplace")}
                       style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:6, color:"#378add", fontSize:10, padding:"4px 8px", cursor:"pointer" }}>
                       View
@@ -298,3 +325,5 @@ export default function MyListings() {
     </div>
   )
 }
+
+

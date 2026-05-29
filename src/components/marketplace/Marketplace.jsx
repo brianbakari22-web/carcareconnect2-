@@ -30,7 +30,7 @@ export default function Marketplace() {
   async function load() {
     setLoading(true)
     let query = supabase.from("marketplace_listings")
-      .select("*, profiles(first_name,last_name,role,business_name,is_verified)")
+      .select("*, profiles(first_name,last_name,role,business_name), marketplace_photos(photo_url,is_primary)")
       .eq("status","active")
       .order("is_featured",{ascending:false})
       .order("created_at",{ascending:false})
@@ -38,7 +38,7 @@ export default function Marketplace() {
     else if (tab==="part") query = query.eq("listing_type","part")
     else if (tab==="accessory") query = query.eq("listing_type","accessory")
     const { data } = await query
-    setListings(data||[])
+    setListings((data||[]).map(l=>({...l, primary_photo:l.marketplace_photos?.find(p=>p.is_primary)?.photo_url||l.marketplace_photos?.[0]?.photo_url})))
     setLoading(false)
   }
 
@@ -175,7 +175,11 @@ export default function Marketplace() {
               <div style={{ height:isMobile?120:160, background:"#1a1a1a", position:"relative", display:"flex", alignItems:"center", justifyContent:"center" }}>
                 {l.is_featured&&<div style={{ position:"absolute", top:8, left:8, background:"#e6821e", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10 }}>⭐ FEATURED</div>}
                 {l.is_inspected&&<div style={{ position:"absolute", top:8, right:8, background:"#1d9e75", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10 }}>✓ INSPECTED</div>}
-                <div style={{ fontSize:40 }}>{l.listing_type==="vehicle"?"🚗":l.listing_type==="part"?"🔧":"✨"}</div>
+                {l.primary_photo ? (
+                  <img src={l.primary_photo} alt={l.title} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
+                ) : (
+                  <div style={{ fontSize:40 }}>{l.listing_type==="vehicle"?"🚗":l.listing_type==="part"?"🔧":"✨"}</div>
+                )}
               </div>
               <div style={{ padding:"0.75rem" }}>
                 <div style={{ fontFamily:"Syne", fontSize:isMobile?12:13, fontWeight:700, color:"#f0ede6", marginBottom:4, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{l.title}</div>
@@ -395,3 +399,4 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
     </div>
   )
 }
+

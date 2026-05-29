@@ -9,6 +9,7 @@ export default function AdminMarketplace() {
   const [offers, setOffers] = useState([])
   const [transactions, setTransactions] = useState([])
   const [disputes, setDisputes] = useState([])
+  const [inspections, setInspections] = useState([])
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState("pending")
   const [selected, setSelected] = useState(null)
@@ -26,7 +27,7 @@ export default function AdminMarketplace() {
   }, [])
 
   async function load() {
-    await Promise.all([loadListings(), loadOffers(), loadTransactions(), loadDisputes()])
+    await Promise.all([loadListings(), loadOffers(), loadTransactions(), loadDisputes(), loadInspections()])
     setLoading(false)
   }
 
@@ -49,6 +50,13 @@ export default function AdminMarketplace() {
       .select("*, marketplace_listings(title), buyer:profiles!marketplace_transactions_buyer_id_fkey(first_name,last_name), seller:profiles!marketplace_transactions_seller_id_fkey(first_name,last_name)")
       .order("created_at", { ascending:false })
     setTransactions(data||[])
+  }
+
+  async function loadInspections() {
+    const { data } = await supabase.from("inspection_requests")
+      .select("*, marketplace_listings(title), profiles(first_name,last_name)")
+      .order("created_at",{ascending:false})
+    setInspections(data||[])
   }
 
   async function loadDisputes() {
@@ -125,6 +133,7 @@ export default function AdminMarketplace() {
     { k:"rejected", l:`Rejected (${rejectedListings.length})` },
     { k:"offers", l:`Offers (${offers.length})` },
     { k:"transactions", l:`Transactions (${transactions.length})` },
+    { k:"inspections", l:`Inspections (${inspections.filter(i=>i.status==="pending").length})` },
     { k:"disputes", l:`Disputes (${disputes.filter(d=>d.status==="open").length})` },
   ]
 
@@ -328,6 +337,52 @@ export default function AdminMarketplace() {
         </div>
       )}
 
+      {tab==="inspections"&&(
+        <div>
+          {inspections.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No inspection requests</div>}
+          {inspections.map(insp=>(
+            <div key={insp.id} style={{ background:"#111", border:`1px solid ${insp.status==="pending"?"#e6821e20":"#1e1e1e"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+                <div>
+                  <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6", marginBottom:4 }}>{insp.marketplace_listings?.title}</div>
+                  <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>Seller: {insp.profiles?.first_name} {insp.profiles?.last_name}</div>
+                  <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>Preferred date: {insp.scheduled_date}</div>
+                  <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:"#1a1208", color:"#e6821e" }}>{insp.status}</span>
+                </div>
+                <div style={{ textAlign:"right" }}>
+                  <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75" }}>KES {Number(insp.amount).toLocaleString()}</div>
+                  <div style={{ fontSize:10, color:insp.payment_status==="paid"?"#1d9e75":"#e24b4a", marginTop:2 }}>{insp.payment_status}</div>
+                  {insp.status==="pending"&&(
+                    <button onClick={async()=>{
+                      await supabase.from("inspection_requests").update({ status:"assigned" }).eq("id",insp.id)
+                      await supabase.from("notifications").insert({ user_id:insp.seller_id, title:"Inspection assigned 🔍", message:`A mechanic has been assigned to inspect "${insp.marketplace_listings?.title}". Scheduled: ${insp.scheduled_date}`, type:"info" })
+                      loadInspections()
+                    }}
+                      style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:10, padding:"4px 10px", cursor:"pointer", marginTop:6 }}>
+                      Assign mechanic
+                    </button>
+                  )}
+                  {insp.status==="assigned"&&(
+                    <button onClick={async()=>{
+                      const result = prompt("Inspection result (passed/failed/conditional):")
+                      const notes = prompt("Inspection notes:")
+                      if (!result) return
+                      await supabase.from("inspection_requests").update({ status:"completed", inspection_result:result, inspection_notes:notes, completed_at:new Date().toISOString() }).eq("id",insp.id)
+                      if (result==="passed") await supabase.from("marketplace_listings").update({ is_inspected:true }).eq("id",insp.listing_id)
+                      await supabase.from("notifications").insert({ user_id:insp.seller_id, title:"Inspection complete ✅", message:`Your vehicle inspection is complete. Result: ${result?.toUpperCase()}. ${notes}`, type:result==="passed"?"success":"warning" })
+                      loadInspections()
+                    }}
+                      style={{ background:"#160a2e", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:10, padding:"4px 10px", cursor:"pointer", marginTop:6 }}>
+                      Complete inspection
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* DISPUTES TAB */}
       {tab==="disputes"&&(
         <div>
@@ -355,3 +410,4 @@ export default function AdminMarketplace() {
     </div>
   )
 }
+

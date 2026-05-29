@@ -4,12 +4,14 @@ import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
+import MarketplacePayment from "./MarketplacePayment"
 
 export default function MyOffers() {
   const { user } = useAuth()
   const isMobile = useIsMobile()
   const navigate = useNavigate()
   const [offers, setOffers] = useState([])
+  const [payingOffer, setPayingOffer] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -125,6 +127,25 @@ export default function MyOffers() {
           {/* Accepted — proceed to payment */}
           {o.status==="accepted"&&o.marketplace_listings?.status!=="sold"&&(
             <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:8, padding:"0.75rem" }}>
+              <div style={{ fontSize:12, color:"#1d9e75", fontWeight:600, marginBottom:6 }}>✓ Offer accepted — proceed to payment</div>
+              <button onClick={()=>setPayingOffer(payingOffer===o.id?null:o.id)}
+                style={{ background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>
+                💳 Pay now
+              </button>
+            </div>
+          )}
+          {payingOffer===o.id&&o.status==="accepted"&&(
+            <div style={{ marginTop:10 }}>
+              <MarketplacePayment
+                offer={o}
+                listing={o.marketplace_listings}
+                onSuccess={()=>{ setPayingOffer(null); load() }}
+                onCancel={()=>setPayingOffer(null)}
+              />
+            </div>
+          )}
+          {o.status==="accepted_old"&&o.marketplace_listings?.status!=="sold"&&(
+            <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:8, padding:"0.75rem" }}>
               <div style={{ fontSize:12, color:"#1d9e75", fontWeight:600, marginBottom:4 }}>✓ Offer accepted! Proceed to payment</div>
               <div style={{ fontSize:11, color:"#555" }}>Contact support to complete the transaction securely through Car Care Connect.</div>
             </div>
@@ -141,3 +162,4 @@ export default function MyOffers() {
     </div>
   )
 }
+
