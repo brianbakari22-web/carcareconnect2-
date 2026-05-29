@@ -33,19 +33,39 @@ export default function CreateListing() {
     setSaving(true)
     try {
       const payload = {
-        seller_id:user.id, listing_type:form.listing_type, title:form.title,
-        description:form.description, price:parseFloat(form.price), negotiable:form.negotiable,
-        condition:form.condition, city:form.city, location:form.location, status:"pending",
-        commission_rate:form.listing_type==="vehicle"?0.02:0.08,
+        seller_id: user.id,
+        listing_type: form.listing_type,
+        title: form.title,
+        description: form.description,
+        price: parseFloat(form.price),
+        negotiable: form.negotiable,
+        condition: form.condition,
+        city: form.city,
+        location: form.location,
+        status: "pending",
+        commission_rate: form.listing_type==="vehicle" ? 0.02 : 0.08,
       }
       if (form.listing_type==="vehicle") {
-        Object.assign(payload,{ make:form.make, model:form.model, year:parseInt(form.year)||null, mileage:parseInt(form.mileage)||null, color:form.color, transmission:form.transmission, fuel_type:form.fuel_type, engine_size:form.engine_size, body_type:form.body_type, drive_type:form.drive_type })
+        Object.assign(payload, {
+          make:form.make, model:form.model,
+          year:parseInt(form.year)||null,
+          mileage:parseInt(form.mileage)||null,
+          color:form.color, transmission:form.transmission,
+          fuel_type:form.fuel_type, engine_size:form.engine_size,
+          body_type:form.body_type, drive_type:form.drive_type,
+        })
       }
       if (form.listing_type==="part"||form.listing_type==="accessory") {
-        Object.assign(payload,{ part_category:form.part_category, part_number:form.part_number, quantity:parseInt(form.quantity)||1, compatible_makes:form.compatible_makes })
+        Object.assign(payload, {
+          part_category:form.part_category,
+          part_number:form.part_number,
+          quantity:parseInt(form.quantity)||1,
+          compatible_makes:form.compatible_makes,
+        })
       }
       const { data, error } = await supabase.from("marketplace_listings").insert(payload).select().single()
       if (error) throw error
+      if (!data?.id) throw new Error("Failed to create listing")
       setListingId(data.id)
       setStep("photos")
       toast.success("Listing created! Now add photos.")
@@ -222,5 +242,6 @@ export default function CreateListing() {
     </div>
   )
 }
+
 
 
