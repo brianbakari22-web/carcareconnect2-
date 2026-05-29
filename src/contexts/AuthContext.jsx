@@ -49,6 +49,15 @@ export function AuthProvider({ children }) {
     return () => subscription.unsubscribe()
   }, [])
 
+  useEffect(() => {
+    if (!user) return
+    const sub = supabase.channel(`profile-${user.id}`)
+      .on("postgres_changes", { event:"UPDATE", schema:"public", table:"profiles", filter:`id=eq.${user.id}` },
+        payload => { setProfile(prev=>({...prev,...payload.new})) })
+      .subscribe()
+    return () => supabase.removeChannel(sub)
+  }, [user?.id])
+
   async function fetchProfile(userId) {
     try {
       const { data, error } = await supabase
@@ -140,6 +149,10 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   )
 }
+
+
+
+
 
 
 
