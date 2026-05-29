@@ -21,6 +21,12 @@ export default function DriverProfile() {
   })
 
   const [idDocFile, setIdDocFile] = useState(null)
+  const [idDocBackFile, setIdDocBackFile] = useState(null)
+  const [licenseDocFile, setLicenseDocFile] = useState(null)
+  const [goodConductFile, setGoodConductFile] = useState(null)
+  const [kraPinFile, setKraPinFile] = useState(null)
+  const [logbookFile, setLogbookFile] = useState(null)
+  const [psvBadgeFile, setPsvBadgeFile] = useState(null)
   const [licenseDocFile, setLicenseDocFile] = useState(null)
   const [profilePhotoFile, setProfilePhotoFile] = useState(null)
   const [uploading, setUploading] = useState(false)
@@ -50,6 +56,9 @@ export default function DriverProfile() {
         license_class: profile.license_class||"Class B - Light Motor Vehicle",
         years_experience: profile.years_experience||"",
         emergency_contact_name: profile.emergency_contact_name||"",
+        emergency_contact_phone: profile.emergency_contact_phone||"",
+        kra_pin_number: profile.kra_pin_number||"",
+        psv_badge_number: profile.psv_badge_number||"",
         emergency_contact_phone: profile.emergency_contact_phone||"",
       })
     }
@@ -98,17 +107,34 @@ export default function DriverProfile() {
       setUploading(true)
       try {
         let idDocUrl = profile.id_document_url
+        let idDocBackUrl = profile.id_document_back_url
         let licenseDocUrl = profile.license_document_url
+        let goodConductUrl = profile.good_conduct_url
+        let kraPinUrl = profile.kra_pin_url
+        let logbookUrl = profile.vehicle_logbook_url
+        let psvBadgeUrl = profile.psv_badge_url
         let profilePhotoUrl = profile.profile_photo_url
-        if (idDocFile) idDocUrl = await uploadDocument(idDocFile, "id")
+        if (idDocFile) idDocUrl = await uploadDocument(idDocFile, "id-front")
+        if (idDocBackFile) idDocBackUrl = await uploadDocument(idDocBackFile, "id-back")
         if (licenseDocFile) licenseDocUrl = await uploadDocument(licenseDocFile, "license")
+        if (goodConductFile) goodConductUrl = await uploadDocument(goodConductFile, "good-conduct")
+        if (kraPinFile) kraPinUrl = await uploadDocument(kraPinFile, "kra-pin")
+        if (logbookFile) logbookUrl = await uploadDocument(logbookFile, "logbook")
+        if (psvBadgeFile) psvBadgeUrl = await uploadDocument(psvBadgeFile, "psv-badge")
         if (profilePhotoFile) profilePhotoUrl = await uploadDocument(profilePhotoFile, "profile")
         await updateProfile({
         ...credentialsForm,
         years_experience: parseInt(credentialsForm.years_experience)||0,
           id_document_url: idDocUrl,
+          id_document_back_url: idDocBackUrl,
           license_document_url: licenseDocUrl,
+          good_conduct_url: goodConductUrl,
+          kra_pin_url: kraPinUrl,
+          vehicle_logbook_url: logbookUrl,
+          psv_badge_url: psvBadgeUrl,
           profile_photo_url: profilePhotoUrl,
+          kra_pin_number: credentialsForm.kra_pin_number,
+          psv_badge_number: credentialsForm.psv_badge_number,
         })
       toast.success("Credentials saved — pending admin verification")
     } catch(err) { toast.error(err.message) }
@@ -324,5 +350,8 @@ export default function DriverProfile() {
     </div>
   )
 }
+
+
+
 
 
