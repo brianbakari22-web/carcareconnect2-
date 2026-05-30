@@ -247,13 +247,13 @@ export default function Layout({ children }) {
       <AIAssistant />
       {showMore&&(
         <>
-          <div onClick={()=>setShowMore(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",zIndex:48}}/>
-          <div style={{position:"fixed",bottom:56,left:0,right:0,background:theme.bgCard,borderTop:"1px solid "+theme.border,borderTopLeftRadius:20,borderTopRightRadius:20,zIndex:49,maxHeight:"75vh",overflowY:"auto",padding:"1rem 1rem 2rem"}}>
+          <div onClick={()=>setShowMore(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",zIndex:98}}/>
+          <div style={{position:"fixed",bottom:56,left:0,right:0,background:theme.bgCard,borderTop:"1px solid "+theme.border,borderTopLeftRadius:20,borderTopRightRadius:20,zIndex:99,maxHeight:"75vh",overflowY:"auto",padding:"1rem 1rem 2rem"}}>
             <div style={{width:40,height:4,background:theme.border,borderRadius:2,margin:"0 auto 1rem"}}/>
             <div style={{fontFamily:"Syne",fontSize:14,fontWeight:800,color:theme.text,marginBottom:"1rem"}}>All Features</div>
             <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
-              {NAV[role]?.map(item=>(
-                <button key={item.path} onClick={()=>{navigate(item.path);setShowMore(false)}}
+              {NAV[role]?.map((item,idx)=>(
+                <button key={item.path+idx} onClick={()=>{navigate(item.path);setShowMore(false)}}
                   style={{background:location.pathname===item.path?activeBg:"transparent",border:"1px solid "+(location.pathname===item.path?activeColor:theme.border),borderRadius:10,padding:"0.75rem 0.5rem",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
                   <span style={{fontSize:22}}>{item.icon}</span>
                   <span style={{fontSize:9,color:location.pathname===item.path?activeColor:theme.textMuted,textAlign:"center",lineHeight:1.3}}>{item.label||item.key}</span>
@@ -356,6 +356,8 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
+
 
 
 
