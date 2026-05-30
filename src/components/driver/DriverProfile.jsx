@@ -59,7 +59,6 @@ export default function DriverProfile() {
         emergency_contact_phone: profile.emergency_contact_phone||"",
         kra_pin_number: profile.kra_pin_number||"",
         psv_badge_number: profile.psv_badge_number||"",
-        emergency_contact_phone: profile.emergency_contact_phone||"",
       })
     }
     if (user) { loadSensitive(); loadStats() }
