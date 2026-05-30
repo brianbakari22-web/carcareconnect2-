@@ -5,6 +5,7 @@ import { useTheme } from "../../contexts/ThemeContext"
 import { useNavigate, useLocation } from "react-router-dom"
 import ThemeSwitcher from "./ThemeSwitcher"
 import { supabase } from "../../lib/supabase"
+import AIAssistant from "./AIAssistant"
 
 const NAV = {
   customer: [
@@ -330,10 +331,12 @@ export default function Layout({ children }) {
           <div style={{ fontSize:11, color:theme.textFaint }}>{new Date().toDateString()}</div>
         </div>
         <div style={{ flex:1, padding:"1.5rem", overflowY:"auto", background:theme.bg }}>{children}</div>
+        <AIAssistant />
       </div>
     </div>
   )
 }
+
 
 
 
