@@ -244,7 +244,7 @@ export default function Layout({ children }) {
       </div>
 
       <AIAssistant />
-      <div style={{ position:ixed, bottom:0, left:0, right:0, background:theme.bgSecondary, borderTop:1px solid , display:lex, zIndex:40, paddingBottom:nv(safe-area-inset-bottom) }}>
+      <div style={{ position:"fixed", bottom:0, left:0, right:0, background:theme.bgSecondary, borderTop:`1px solid ${theme.border}`, display:"flex", zIndex:40, paddingBottom:"env(safe-area-inset-bottom)" }}>
         {bottomNav.map(item=>(
           <button key={item.path}
             onClick={()=>navigate(item.path)}
