@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
+import ChatWindow from "../shared/ChatWindow"
 
 const SC = { pending:"#e6821e", under_review:"#8b5cf6", approved:"#1d9e75", rejected:"#e24b4a" }
 
@@ -170,5 +171,6 @@ export default function ProviderClaims() {
     </div>
   )
 }
+
 
 
