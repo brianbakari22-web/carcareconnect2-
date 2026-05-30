@@ -73,10 +73,14 @@ export default function CustomerBookings() {
   }
 
   async function cancelBooking(id) {
-    if (!confirm("Cancel this booking?")) return
+    if (!confirm("Are you sure you want to cancel this booking?")) return
     const { error } = await supabase.from("bookings").update({ status:"cancelled" }).eq("id",id).eq("customer_id",user.id)
     if (error) return toast.error(error.message)
-    toast.success(t("cancelBooking"))
+    toast.success("Booking cancelled")
+    const remove = confirm("Remove this booking from your list? It will still be kept in our records.")
+    if (remove) {
+      await supabase.from("bookings").update({ hidden_from_customer:true }).eq("id",id).eq("customer_id",user.id)
+    }
     load()
   }
 
@@ -280,6 +284,7 @@ export default function CustomerBookings() {
     </div>
   )
 }
+
 
 
 
