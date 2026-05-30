@@ -27,9 +27,24 @@ export default function AdminClaims() {
     load()
     const sub = supabase.channel("admin-claims-live")
       .on("postgres_changes", { event:"*", schema:"public", table:"service_claims" }, () => load())
+      .on("postgres_changes", { event:"INSERT", schema:"public", table:"chat_messages", filter:`receiver_id=eq.${user.id}` }, () => { loadClaimMessages(); toast("New message on a claim 💬", { icon:"📋" }) })
       .subscribe()
     return () => supabase.removeChannel(sub)
   }, [])
+
+  async function loadClaimMessages() {
+    const { data } = await supabase.from("chat_messages")
+      .select("*, profiles!chat_messages_sender_id_fkey(first_name,last_name,role)")
+      .not("claim_id","is",null)
+      .eq("is_read",false)
+      .neq("sender_id",user.id)
+      .order("created_at",{ascending:false})
+    setClaimMessages(data||[])
+  }
+
+  async function loadClaimMessages() {
+    supabase.from("chat_messages").select("*, profiles!chat_messages_sender_id_fkey(first_name,last_name,role)").not("claim_id","is",null).eq("is_read",false).neq("sender_id",user.id).order("created_at",{ascending:false}).then(({data})=>setClaimMessages(data||[]))
+  }
 
   async function load() {
     const [{ data: cls }, { data: pens }] = await Promise.all([
@@ -397,6 +412,9 @@ export default function AdminClaims() {
     </div>
   )
 }
+
+
+
 
 
 
