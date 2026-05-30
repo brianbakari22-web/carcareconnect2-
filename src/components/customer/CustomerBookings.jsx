@@ -72,6 +72,14 @@ export default function CustomerBookings() {
     load()
   }
 
+  async function hideBooking(id) {
+    if (!confirm("Remove this booking from your list?")) return
+    const { error } = await supabase.from("bookings").update({ hidden_from_customer:true }).eq("id",id).eq("customer_id",user.id)
+    if (error) return toast.error(error.message)
+    toast.success("Booking removed from your list")
+    load()
+  }
+
   async function cancelBooking(id) {
     if (!confirm("Are you sure you want to cancel this booking?")) return
     const { error } = await supabase.from("bookings").update({ status:"cancelled" }).eq("id",id).eq("customer_id",user.id)
@@ -159,6 +167,12 @@ export default function CustomerBookings() {
                 {t("rebookService")}
                 </button>
               </>
+              )}
+              {(b.status==="completed"||b.status==="cancelled")&&(
+                <button onClick={()=>hideBooking(b.id)}
+                  style={{ background:"none", border:"1px solid #55540", borderRadius:7, color:"#555", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  🗑️ Hide
+                </button>
               )}
             <button onClick={()=>setExpanded(expanded===b.id?null:b.id)}
               style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#666", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
@@ -284,6 +298,8 @@ export default function CustomerBookings() {
     </div>
   )
 }
+
+
 
 
 
