@@ -28,26 +28,33 @@ serve(async (req) => {
           {
             type: "web_search_20250305",
             name: "web_search",
-            max_uses: 3
+            max_uses: 5
           }
         ],
+        tool_choice: { type: "auto" },
         messages,
       }),
     })
 
     const data = await response.json()
 
-    // Extract text from all content blocks including tool results
-    const text = data.content
-      ?.filter((b) => b.type === "text")
-      ?.map((b) => b.text)
-      ?.join("\n") || "Sorry I could not process that."
+    // Extract all text blocks including after tool use
+    let text = ""
+    if (data.content && Array.isArray(data.content)) {
+      for (const block of data.content) {
+        if (block.type === "text") {
+          text += block.text
+        }
+      }
+    }
+
+    if (!text) text = "Sorry I could not process that. Please try again."
 
     return new Response(JSON.stringify({ text }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     })
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), {
+    return new Response(JSON.stringify({ error: err.message, text: "Connection error: " + err.message }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     })
