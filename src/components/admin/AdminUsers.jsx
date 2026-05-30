@@ -25,7 +25,15 @@ export default function AdminUsers() {
 
   async function toggleActive(id, is_active) {
     await supabase.from("profiles").update({ is_active:!is_active }).eq("id",id)
-    toast.success(is_active?"User suspended":"User activated")
+    await supabase.from("notifications").insert({
+      user_id: id,
+      title: is_active ? "Account suspended ⚠️" : "Account reactivated ✅",
+      message: is_active
+        ? "Your Car Care Connect account has been suspended by admin. Contact support if you believe this is an error."
+        : "Your Car Care Connect account has been reactivated. You can now sign in normally.",
+      type: is_active ? "error" : "success"
+    })
+    toast.success(is_active ? "User suspended — notified" : "User activated — notified")
     load()
   }
 
@@ -35,13 +43,28 @@ export default function AdminUsers() {
     load()
   }
 
-  async function deleteUser(id, name) {
-    if (!confirm(`Delete ${name}? This cannot be undone.`)) return
-    const { error } = await supabase.from("profiles").delete().eq("id",id)
-    if (error) return toast.error(error.message)
-    toast.success("User deleted")
-    setSelected(null)
-    load()
+  async function deleteUser(id, name, email) {
+    if (!confirm(`Delete ${name}? This will permanently remove their account and cannot be undone.`)) return
+    if (!confirm(`Are you absolutely sure you want to delete ${name}? All their data will be lost.`)) return
+    try {
+      // Notify user before deletion
+      await supabase.from("notifications").insert({
+        user_id: id,
+        title: "Account deleted",
+        message: "Your Car Care Connect account has been permanently deleted by admin. Contact carcareconnect254@gmail.com if you have questions.",
+        type: "error"
+      })
+      // Delete from profiles (cascades to related data)
+      const { error } = await supabase.from("profiles").delete().eq("id", id)
+      if (error) throw error
+      // Delete from auth via RPC
+      await supabase.rpc("delete_user_account", { user_id: id })
+      toast.success(`${name} deleted permanently`)
+      setSelected(null)
+      load()
+    } catch(err) {
+      toast.error(err.message)
+    }
   }
 
   async function resetPassword(email) {
@@ -131,7 +154,7 @@ export default function AdminUsers() {
                 style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:12, padding:"6px 12px", cursor:"pointer" }}>
                 Reset password
               </button>
-              <button onClick={()=>deleteUser(u.id, `${u.first_name} ${u.last_name}`)}
+              <button onClick={()=>deleteUser(u.id, `${u.first_name} ${u.last_name}`, u.email)}
                 style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:12, padding:"6px 12px", cursor:"pointer" }}>
                 Delete user
               </button>
@@ -142,5 +165,8 @@ export default function AdminUsers() {
     </div>
   )
 }
+
+
+
 
 
