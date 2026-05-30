@@ -60,6 +60,15 @@ REFERRAL SYSTEM:
 - Refer friends and earn bonus points
 - Referrer tracked in database
 
+CLAIM INVESTIGATION CHAT:
+- When a service claim is filed, admin can message both provider and customer directly
+- All parties can communicate through the platform for fair investigation
+- Admin sees unread claim messages at top of Service Claims page
+- Provider can respond to admin via Respond to admin button in their Service Claims page
+- Customer can add evidence via Add evidence button in their Service Guarantee page
+- All messages stored against the claim ID for full audit trail
+- Admin makes decision only after hearing both sides
+
 SERVICE GUARANTEE POLICY:
 - Customer submits claim within 7 days of completed service
 - Admin reviews within 24 hours
@@ -397,3 +406,4 @@ export default function AIAssistant() {
     </>
   )
 }
+
