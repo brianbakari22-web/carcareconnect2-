@@ -3,6 +3,7 @@ import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
+import ChatWindow from "../shared/ChatWindow"
 
 function generateVoucherCode() {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -20,6 +21,7 @@ export default function AdminClaims() {
   const [selected, setSelected] = useState(null)
   const [adminNotes, setAdminNotes] = useState("")
   const [processing, setProcessing] = useState(false)
+  const [chattingWith, setChattingWith] = useState(null) // {claimId, userId, name, role}
 
   useEffect(() => {
     load()
@@ -313,6 +315,33 @@ export default function AdminClaims() {
                       style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:12, outline:"none", resize:"vertical", minHeight:60, fontFamily:"'DM Sans',sans-serif" }}/>
                   </div>
 
+                  
+                  {/* Investigation chat */}
+                  <div style={{ marginBottom:12 }}>
+                    <div style={{ fontSize:11, color:"#555", marginBottom:6, fontWeight:600 }}>📋 Investigation — Message parties</div>
+                    <div style={{ display:"flex", gap:6, marginBottom:8 }}>
+                      <button onClick={()=>setChattingWith(chattingWith?.claimId===c.id&&chattingWith?.userId===c.provider_id?null:{ claimId:c.id, userId:c.provider_id, name:c.provider?.business_name||`${c.provider?.first_name} ${c.provider?.last_name}`, role:"provider" })}
+                        style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+                        💬 Message provider
+                      </button>
+                      <button onClick={()=>setChattingWith(chattingWith?.claimId===c.id&&chattingWith?.userId===c.customer_id?null:{ claimId:c.id, userId:c.customer_id, name:`${c.customer?.first_name} ${c.customer?.last_name}`, role:"customer" })}
+                        style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+                        💬 Message customer
+                      </button>
+                    </div>
+                    {chattingWith?.claimId===c.id&&(
+                      <div style={{ height:300, marginBottom:8 }}>
+                        <ChatWindow
+                          claimId={c.id}
+                          otherUserId={chattingWith.userId}
+                          otherUserName={chattingWith.name}
+                          title={`Claim investigation — ${chattingWith.role}`}
+                          onClose={()=>setChattingWith(null)}
+                        />
+                      </div>
+                    )}
+                  </div>
+
                   <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
                     <button onClick={()=>approveClaim(c)} disabled={processing}
                       style={{ background:processing?"#333":"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 18px", cursor:processing?"not-allowed":"pointer" }}>
@@ -368,6 +397,7 @@ export default function AdminClaims() {
     </div>
   )
 }
+
 
 
 

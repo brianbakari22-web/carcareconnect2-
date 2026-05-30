@@ -3,7 +3,7 @@ import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 
-export default function ChatWindow({ bookingId, listingId, otherUserId, otherUserName, onClose }) {
+export default function ChatWindow({ bookingId, listingId, claimId, otherUserId, otherUserName, onClose, title }) {
   const { user } = useAuth()
   const { t } = useLanguage()
   const [messages, setMessages] = useState([])
@@ -13,7 +13,7 @@ export default function ChatWindow({ bookingId, listingId, otherUserId, otherUse
   const bottomRef = useRef(null)
   const typingRef = useRef(null)
   const channelRef = useRef(null)
-  const chatId = bookingId || listingId
+  const chatId = bookingId || listingId || claimId
 
   useEffect(() => {
     if (!user || !chatId) return
@@ -22,7 +22,9 @@ export default function ChatWindow({ bookingId, listingId, otherUserId, otherUse
 
     const filterStr = bookingId
       ? `booking_id=eq.${bookingId}`
-      : `listing_id=eq.${listingId}`
+      : listingId
+      ? `listing_id=eq.${listingId}`
+      : `claim_id=eq.${claimId}`
 
     const channel = supabase.channel(`chat-${chatId}`)
       .on("postgres_changes", {
@@ -62,6 +64,7 @@ export default function ChatWindow({ bookingId, listingId, otherUserId, otherUse
     let query = supabase.from("chat_messages").select("*")
     if (bookingId) query = query.eq("booking_id", bookingId)
     else if (listingId) query = query.eq("listing_id", listingId)
+    else if (claimId) query = query.eq("claim_id", claimId)
     const { data } = await query.order("created_at", { ascending:true })
     setMessages(data||[])
   }
@@ -70,6 +73,7 @@ export default function ChatWindow({ bookingId, listingId, otherUserId, otherUse
     let query = supabase.from("chat_messages").update({ is_read:true }).eq("receiver_id", user.id).eq("is_read", false)
     if (bookingId) query = query.eq("booking_id", bookingId)
     else if (listingId) query = query.eq("listing_id", listingId)
+    else if (claimId) query = query.eq("claim_id", claimId)
     await query
   }
 
@@ -90,6 +94,7 @@ export default function ChatWindow({ bookingId, listingId, otherUserId, otherUse
       id: tempId, _tempId: tempId,
       booking_id: bookingId||null,
       listing_id: listingId||null,
+      claim_id: claimId||null,
       sender_id: user.id,
       receiver_id: otherUserId,
       message: messageText,
@@ -102,6 +107,7 @@ export default function ChatWindow({ bookingId, listingId, otherUserId, otherUse
     const { error } = await supabase.from("chat_messages").insert({
       booking_id: bookingId||null,
       listing_id: listingId||null,
+      claim_id: claimId||null,
       sender_id: user.id,
       receiver_id: otherUserId,
       message: messageText,
@@ -121,7 +127,7 @@ export default function ChatWindow({ bookingId, listingId, otherUserId, otherUse
     try {
       await supabase.from("notifications").insert({
         user_id: otherUserId,
-        title: listingId ? "New message about your listing 💬" : "New message",
+        title: claimId ? "New message about your claim 📋" : listingId ? "New message about your listing 💬" : "New message",
         message: messageText.slice(0, 60),
         type: "info"
       })
@@ -143,7 +149,7 @@ export default function ChatWindow({ bookingId, listingId, otherUserId, otherUse
           <div>
             <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6" }}>{otherUserName}</div>
             <div style={{ fontSize:10, color:otherTyping?"#1d9e75":"#555", transition:"color 0.2s" }}>
-              {otherTyping?"typing...":listingId?"Marketplace chat":"Chat"}
+              {otherTyping?"typing...":claimId?"Claim investigation":listingId?"Marketplace chat":"Chat"}
             </div>
           </div>
         </div>
@@ -193,4 +199,5 @@ export default function ChatWindow({ bookingId, listingId, otherUserId, otherUse
     </div>
   )
 }
+
 

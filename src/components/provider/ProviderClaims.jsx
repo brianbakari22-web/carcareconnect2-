@@ -12,6 +12,7 @@ export default function ProviderClaims() {
   const [penalties, setPenalties] = useState([])
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState("claims")
+  const [chatClaim, setChatClaim] = useState(null)
 
   useEffect(() => { if (user) load() }, [user])
 
@@ -111,6 +112,24 @@ export default function ProviderClaims() {
                   <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e24b4a" }}>KES {Number(c.bookings?.total_amount||0).toLocaleString()}</div>
                 </div>
               </div>
+              {(c.status==="pending"||c.status==="under_review")&&(
+                <div style={{ marginTop:8 }}>
+                  <button onClick={()=>setChatClaim(chatClaim===c.id?null:c.id)}
+                    style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+                    💬 {chatClaim===c.id?"Close":"Respond to admin"}
+                  </button>
+                  {chatClaim===c.id&&(
+                    <div style={{ height:280, marginTop:8 }}>
+                      <ChatWindow
+                        claimId={c.id}
+                        otherUserId={null}
+                        otherUserName="CCC Admin"
+                        onClose={()=>setChatClaim(null)}
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
               {c.status==="approved"&&(
                 <div style={{ marginTop:8, padding:"0.6rem", background:"#1a0808", borderRadius:7, fontSize:11, color:"#e24b4a" }}>
                   ❌ Claim approved — KES {Number(c.bookings?.total_amount||0).toLocaleString()} deducted from your earnings. Contact support within 48 hours to dispute.
@@ -151,3 +170,4 @@ export default function ProviderClaims() {
     </div>
   )
 }
+

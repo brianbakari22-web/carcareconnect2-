@@ -4,6 +4,7 @@ import { useAuth } from "../../contexts/AuthContext"
 import { useLocation } from "react-router-dom"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
+import ChatWindow from "../shared/ChatWindow"
 
 const CLAIM_REASONS = [
   "Service not completed properly",
@@ -30,6 +31,7 @@ export default function CustomerClaims() {
   const [form, setForm] = useState({ booking_id:preselectedBooking||"", reason:"", description:"" })
   const [submitting, setSubmitting] = useState(false)
   const [tab, setTab] = useState("claims")
+  const [chatClaim, setChatClaim] = useState(null)
 
   useEffect(() => { if (user) load() }, [user])
 
@@ -232,7 +234,25 @@ export default function CustomerClaims() {
                   <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e" }}>KES {Number(c.bookings?.total_amount||0).toLocaleString()}</div>
                 </div>
               </div>
-              {c.status==="approved"&&(
+              {(c.status==="pending"||c.status==="under_review")&&(
+              <div style={{ marginTop:8 }}>
+                <button onClick={()=>setChatClaim(chatClaim===c.id?null:c.id)}
+                  style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+                  💬 {chatClaim===c.id?"Close":"Add evidence / message admin"}
+                </button>
+                {chatClaim===c.id&&(
+                  <div style={{ height:280, marginTop:8 }}>
+                    <ChatWindow
+                      claimId={c.id}
+                      otherUserId={null}
+                      otherUserName="CCC Admin"
+                      onClose={()=>setChatClaim(null)}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+            {c.status==="approved"&&(
                 <div style={{ marginTop:8, padding:"0.6rem", background:"#071a12", borderRadius:7, fontSize:12, color:"#1d9e75" }}>
                   ✅ Claim approved — check your vouchers tab
                 </div>
@@ -295,3 +315,4 @@ export default function CustomerClaims() {
     </div>
   )
 }
+
