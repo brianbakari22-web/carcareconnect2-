@@ -60,6 +60,7 @@ const NAV = {
     { path:"/dashboard/earnings", key:"earnings", icon:"💰" },
     { path:"/dashboard/reviews", key:"myRatings", icon:"⭐" },
     { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
+    { path:"/dashboard/claims", label:"My Claims", icon:"🛡️" },
     { path:"/dashboard/marketplace", label:"Marketplace", icon:"🛒" },
     { path:"/dashboard/marketplace/my-listings", label:"My Listings", icon:"📦" },
     { path:"/dashboard/marketplace/my-offers", label:"My Offers", icon:"💰" },
