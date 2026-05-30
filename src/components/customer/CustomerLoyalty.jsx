@@ -80,12 +80,12 @@ export default function CustomerLoyalty() {
           <div style={{ textAlign:"right" }}>
             <span style={{ background:"#1a1208", border:`1px solid ${tierColor}40`, color:tierColor, fontSize:12, padding:"4px 12px", borderRadius:20, fontWeight:600 }}>{tier}</span>
             <div style={{ fontSize:11, color:"#555", marginTop:6 }}>
-              {tier !== "Platinum" ? `${(tierNext-points).toLocaleString()} pts to ${TIERS[TIERS.findIndex(t=>t.name===tier)+1]?.name}` : "Max tier reached"}
+              {tier !== "Platinum" ? `KES {(tierNext-points).toLocaleString()} pts to ${TIERS[TIERS.findIndex(t=>t.name===tier)+1]?.name}` : "Max tier reached"}
             </div>
           </div>
         </div>
         <div style={{ height:6, background:"#1e1e1e", borderRadius:3, overflow:"hidden", marginBottom:6 }}>
-          <div style={{ height:"100%", background:tierColor, borderRadius:3, width:`${progress}%`, transition:"width 0.5s" }}/>
+          <div style={{ height:"100%", background:tierColor, borderRadius:3, width:`KES {progress}%`, transition:"width 0.5s" }}/>
         </div>
         <div style={{ display:"flex", justifyContent:"space-between", fontSize:10, color:"#444" }}>
           <span>{tier} {tierBase.toLocaleString()}</span>
@@ -97,7 +97,7 @@ export default function CustomerLoyalty() {
         {[
           { label:t("pointsBalance"), value:points.toLocaleString(), color:tierColor },
           { label:t("cashValue"), value:`KES \${(points/redemptionRate).toFixed(2)}` },
-          { label:t("redemptionRate"), value:`${redemptionRate} pts = $1` },
+          { label:t("redemptionRate"), value:`KES {redemptionRate} pts = KES 1` },
         ].map(s=>(
           <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"1rem", border:"1px solid #1e1e1e" }}>
             <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
@@ -113,9 +113,9 @@ export default function CustomerLoyalty() {
             <div key={t.name} style={{ background: tier===t.name?"#161208":"#0f0f0f", border:`1px solid ${tier===t.name?t.color+"40":"#222"}`, borderRadius:10, padding:"0.9rem", textAlign:"center" }}>
               <div style={{ fontSize:13, fontWeight:700, color:t.color, marginBottom:4 }}>{t.name}</div>
               <div style={{ fontSize:10, color:"#555", marginBottom:6 }}>
-                {t.max ? `${t.min.toLocaleString()}–${t.max.toLocaleString()}` : `${t.min.toLocaleString()}+`} pts
+                {t.max ? `KES {t.min.toLocaleString()}–${t.max.toLocaleString()}` : `KES {t.min.toLocaleString()}+`} pts
               </div>
-              <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color: tier===t.name?t.color:"#888" }}>{t.rate} pts = $1</div>
+              <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color: tier===t.name?t.color:"#888" }}>{t.rate} pts = KES 1</div>
               {tier===t.name&&<div style={{ fontSize:9, color:t.color, marginTop:4 }}>Your tier</div>}
             </div>
           ))}
@@ -146,13 +146,13 @@ export default function CustomerLoyalty() {
               <div style={{ textAlign:"right", flexShrink:0 }}>
                 <div style={{ fontSize:11, color:"#555", marginBottom:6 }}>Value</div>
                 <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:tierColor }}>
-                  ${redeemAmount ? (parseInt(redeemAmount||0)/redemptionRate).toFixed(2) : "0.00"}
+                  KES ${redeemAmount ? Math.floor(parseInt(redeemAmount||0)/redemptionRate).toLocaleString() : "0"}
                 </div>
               </div>
             </div>
             <button type="submit" disabled={redeeming||!redeemAmount||parseInt(redeemAmount)<redemptionRate}
               style={{ width:"100%", marginTop:12, background: redeemAmount&&parseInt(redeemAmount)>=redemptionRate?"#e6821e":"#333", border:"none", borderRadius:9, color: redeemAmount&&parseInt(redeemAmount)>=redemptionRate?"#fff":"#666", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px", cursor: redeemAmount&&parseInt(redeemAmount)>=redemptionRate?"pointer":"not-allowed" }}>
-              {redeeming ? "Redeeming..." : `Redeem ${redeemAmount||0} points for KES ${(parseInt(redeemAmount||0)/redemptionRate).toFixed(2)}`}
+              {redeeming ? "Redeeming..." : `Redeem ${redeemAmount||0} points for KES ${Math.floor(parseInt(redeemAmount||0)/redemptionRate).toLocaleString()}`}
             </button>
           </form>
         </div>
@@ -182,6 +182,10 @@ export default function CustomerLoyalty() {
     </div>
   )
 }
+
+
+
+
 
 
 
