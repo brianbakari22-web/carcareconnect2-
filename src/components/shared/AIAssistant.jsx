@@ -23,8 +23,8 @@ export default function AIAssistant() {
   const role = profile?.role || "customer"
   const systemPrompt = SYSTEM_PROMPTS[role] || SYSTEM_PROMPTS.customer
 
-  const ROLE_${color}S = { customer:"#e6821e", provider:"#378add", driver:"#1d9e75", admin:"#8b5cf6" }
-  const ${color} = ROLE_${color}S[role] || "#e6821e"
+  const ROLE_COLORS = { customer:"#e6821e", provider:"#378add", driver:"#1d9e75", admin:"#8b5cf6" }
+  const color = ROLE_COLORS[role] || "#e6821e"
 
   const GREETINGS = {
     customer: "Hi! I am your Car Care Connect AI assistant. I can help with car problems, service advice, booking help, and anything about our platform. What can I help you with today?",
@@ -158,3 +158,4 @@ export default function AIAssistant() {
     </>
   )
 }
+
