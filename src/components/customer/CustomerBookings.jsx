@@ -23,7 +23,6 @@ export default function CustomerBookings() {
   const [invoiceLoading, setInvoiceLoading] = useState(null)
   const [driverInfo, setDriverInfo] = useState({})
   const [providerPhones, setProviderPhones] = useState({})
-  const [providerPhones, setProviderPhones] = useState({})
 
   async function loadProviderPhone(providerId, bookingId) {
     if (!providerId || providerPhones[bookingId]) return
