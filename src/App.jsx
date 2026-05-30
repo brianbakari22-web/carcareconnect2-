@@ -50,6 +50,7 @@ import ProviderMechanics from "./components/provider/ProviderMechanics"
 import ProviderGoRequests from "./components/provider/ProviderGoRequests"
 import ProviderClaims from "./components/provider/ProviderClaims"
 import DriverChat from "./components/driver/DriverChat"
+import DriverClaims from "./components/driver/DriverClaims"
 import DriverOverview from "./components/driver/DriverOverview"
 import DriverAvailableJobs from "./components/driver/DriverAvailableJobs"
 import DriverActiveDelivery from "./components/driver/DriverActiveDelivery"
@@ -209,6 +210,7 @@ function DashboardRouter() {
           <Route path="vehicle" element={<DriverVehicle />} />
           <Route path="notifications" element={<DriverNotifications />} />
           <Route path="chat" element={<DriverChat />} />
+              <Route path="claims" element={<DriverClaims />} />
           <Route path="profile" element={<DriverProfile />} />
           <Route path="marketplace" element={<Marketplace />} />
           <Route path="marketplace/new" element={<CreateListing />} />
@@ -277,6 +279,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 
