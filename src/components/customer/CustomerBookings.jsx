@@ -54,7 +54,7 @@ export default function CustomerBookings() {
   useEffect(() => { if (user) load() }, [user])
 
   async function load() {
-    const { data } = await supabase.from("bookings").select("*").eq("customer_id", user.id).order("created_at",{ascending:false})
+    const { data } = await supabase.from("bookings").select("*").eq("customer_id", user.id).eq("hidden_from_customer", false).order("created_at",{ascending:false})
     setBookings(data||[])
     setLoading(false)
   }
@@ -280,6 +280,9 @@ export default function CustomerBookings() {
     </div>
   )
 }
+
+
+
 
 
 
