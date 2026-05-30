@@ -129,6 +129,7 @@ export default function Layout({ children }) {
   const navigate = useNavigate()
   const location = useLocation()
   const [collapsed, setCollapsed] = useState(false)
+  const [showMore, setShowMore] = useState(false)
   const [showThemeBanner, setShowThemeBanner] = useState(!localStorage.getItem("ccc_theme_banner_seen"))
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
@@ -337,6 +338,8 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
+
 
 
 
