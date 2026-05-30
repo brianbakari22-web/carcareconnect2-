@@ -97,31 +97,31 @@ const BOTTOM_NAV = {
     { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
     { path:"/dashboard/services", key:"findServices", icon:"🔍" },
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
-    { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
+    { path:"more", label:"More", icon:"⋯" },
   ],
   provider: [
     { path:"/dashboard", key:"overview", icon:"🏠" },
     { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
     { path:"/dashboard/services", key:"myServices", icon:"🔧" },
     { path:"/dashboard/mechanics", label:"Mechanics", icon:"👨‍🔧" },
-    { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
+    { path:"more", label:"More", icon:"⋯" },
   ],
   driver: [
     { path:"/dashboard", key:"overview", icon:"🏠" },
     { path:"/dashboard/jobs", key:"availableJobs", icon:"📦" },
     { path:"/dashboard/active", key:"activeDelivery", icon:"🚗" },
     { path:"/dashboard/earnings", key:"earnings", icon:"💰" },
-    { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
+    { path:"more", label:"More", icon:"⋯" },
+
   ],
   admin: [
     { path:"/admin-dashboard", key:"overview", icon:"🏠" },
     { path:"/admin-dashboard/users", label:"Users", icon:"👥" },
     { path:"/admin-dashboard/bookings", key:"bookings", icon:"📅" },
     { path:"/admin-dashboard/revenue", label:"Revenue", icon:"💰" },
-    { path:"/admin-dashboard/support", label:"Support", icon:"🎫" },
+    { path:"more", label:"More", icon:"⋯" },
   ],
 }
-
 export default function Layout({ children }) {
   const { profile, signOut } = useAuth()
   const { t, language, toggleLanguage } = useLanguage()
