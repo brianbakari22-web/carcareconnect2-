@@ -19,8 +19,8 @@ export default function ProviderClaims() {
   useEffect(() => {
     if (!user) return
     load()
-    supabase.from("profiles").select("id").eq("role","admin").limit(1).single()
-      .then(({ data }) => { if (data) setAdminId(data.id) })
+    supabase.from("profiles").select("id").eq("role","admin").limit(1)
+      .then(({ data }) => { if (data?.length) setAdminId(data[0].id) })
   }, [user])
 
   async function load() {
@@ -177,6 +177,7 @@ export default function ProviderClaims() {
     </div>
   )
 }
+
 
 
 

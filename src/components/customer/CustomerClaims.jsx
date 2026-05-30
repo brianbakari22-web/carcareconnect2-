@@ -37,8 +37,8 @@ export default function CustomerClaims() {
   useEffect(() => {
     if (user) {
       load()
-      supabase.from("profiles").select("id").eq("role","admin").limit(1).single()
-        .then(({ data }) => { if (data) setAdminId(data.id) })
+      supabase.from("profiles").select("id").eq("role","admin").limit(1)
+        .then(({ data }) => { if (data?.length) setAdminId(data[0].id) })
     }
   }, [user])
 
@@ -322,5 +322,6 @@ export default function CustomerClaims() {
     </div>
   )
 }
+
 
 
