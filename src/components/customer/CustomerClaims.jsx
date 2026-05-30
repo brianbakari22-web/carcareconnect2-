@@ -32,8 +32,15 @@ export default function CustomerClaims() {
   const [submitting, setSubmitting] = useState(false)
   const [tab, setTab] = useState("claims")
   const [chatClaim, setChatClaim] = useState(null)
+  const [adminId, setAdminId] = useState(null)
 
-  useEffect(() => { if (user) load() }, [user])
+  useEffect(() => {
+    if (user) {
+      load()
+      supabase.from("profiles").select("id").eq("role","admin").limit(1).single()
+        .then(({ data }) => { if (data) setAdminId(data.id) })
+    }
+  }, [user])
 
   async function load() {
     const [{ data: cls }, { data: vchs }, { data: bks }] = await Promise.all([
@@ -315,4 +322,5 @@ export default function CustomerClaims() {
     </div>
   )
 }
+
 
