@@ -21,7 +21,7 @@ serve(async (req) => {
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: "claude-haiku-4-5-20251001",
+        model: "claude-sonnet-4-20250514",
         max_tokens: 1024,
         system,
         tools: [
@@ -31,14 +31,12 @@ serve(async (req) => {
             max_uses: 5
           }
         ],
-        tool_choice: { type: "auto" },
         messages,
       }),
     })
 
     const data = await response.json()
 
-    // Extract all text blocks including after tool use
     let text = ""
     if (data.content && Array.isArray(data.content)) {
       for (const block of data.content) {
@@ -54,7 +52,7 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     })
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message, text: "Connection error: " + err.message }), {
+    return new Response(JSON.stringify({ error: err.message, text: "Error: " + err.message }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     })
