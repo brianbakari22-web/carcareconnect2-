@@ -24,7 +24,7 @@ export default function ProviderChat() {
     const { data: bookings } = await supabase.from("bookings")
       .select("id,service_name,customer_id,status,booking_date")
       .eq("provider_id", user.id)
-      .in("status", ["pending","confirmed","in-progress","driver-assigned","arrived-for-pickup","arrived-at-dropoff"])
+      .not("status","eq","deleted")
       .order("created_at", { ascending:false })
 
     if (!bookings||bookings.length===0) { setConversations([]); setLoading(false); return }
@@ -109,3 +109,4 @@ export default function ProviderChat() {
     </>
   )
 }
+
