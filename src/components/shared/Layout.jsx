@@ -97,21 +97,21 @@ const BOTTOM_NAV = {
     { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
     { path:"/dashboard/services", key:"findServices", icon:"🔍" },
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
-    { path:"more", label:"More", icon:"⋯" },
+    { path:"more", label:"Menu", icon:"☰" },
   ],
   provider: [
     { path:"/dashboard", key:"overview", icon:"🏠" },
     { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
     { path:"/dashboard/services", key:"myServices", icon:"🔧" },
     { path:"/dashboard/mechanics", label:"Mechanics", icon:"👨‍🔧" },
-    { path:"more", label:"More", icon:"⋯" },
+    { path:"more", label:"Menu", icon:"☰" },
   ],
   driver: [
     { path:"/dashboard", key:"overview", icon:"🏠" },
     { path:"/dashboard/jobs", key:"availableJobs", icon:"📦" },
     { path:"/dashboard/active", key:"activeDelivery", icon:"🚗" },
     { path:"/dashboard/earnings", key:"earnings", icon:"💰" },
-    { path:"more", label:"More", icon:"⋯" },
+    { path:"more", label:"Menu", icon:"☰" },
 
   ],
   admin: [
@@ -119,7 +119,7 @@ const BOTTOM_NAV = {
     { path:"/admin-dashboard/users", label:"Users", icon:"👥" },
     { path:"/admin-dashboard/bookings", key:"bookings", icon:"📅" },
     { path:"/admin-dashboard/revenue", label:"Revenue", icon:"💰" },
-    { path:"more", label:"More", icon:"⋯" },
+    { path:"more", label:"Menu", icon:"☰" },
   ],
 }
 export default function Layout({ children }) {
@@ -266,7 +266,7 @@ export default function Layout({ children }) {
       <div style={{ position:"fixed", bottom:0, left:0, right:0, background:theme.bgSecondary, borderTop:`1px solid ${theme.border}`, display:"flex", zIndex:40, paddingBottom:"env(safe-area-inset-bottom)" }}>
         {bottomNav.map(item=>(
           <button key={item.path}
-            onClick={()=>navigate(item.path)}
+            onClick={item.path==="more"?()=>setMobileMenuOpen(true):()=>navigate(item.path)}
             style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:3, padding:"8px 4px", background:"transparent", border:"none", cursor:"pointer", color:isActive(item)?activeColor:theme.textFaint, borderTop:`2px solid ${isActive(item)?activeColor:"transparent"}` }}>
             <span style={{ position:"relative", display:"inline-block" }}>
               <span style={{ fontSize:20 }}>{item.icon}</span>
