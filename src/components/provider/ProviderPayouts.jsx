@@ -58,7 +58,7 @@ export default function ProviderPayouts() {
     const amt = Number(amount)
     const available = earnings - paid
     if (amt < 50) return toast.error("Minimum payout is $50")
-    if (amt > available) return toast.error(`Maximum available is $${available.toFixed(2)}`)
+    if (amt > available) return toast.error(`Maximum available is KES ${available.toFixed(2)}`)
     setSubmitting(true)
     const { error } = await supabase.from("payout_requests").insert({
       user_id: user.id,
@@ -84,9 +84,9 @@ export default function ProviderPayouts() {
     <div>
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {[
-          { label:"Total earned", value:`$${earnings.toFixed(2)}` },
-          { label:"Available", value:`$${available.toFixed(2)}`, color:available>0?"#e6821e":undefined },
-          { label:"Total paid out", value:`$${paid.toFixed(2)}`, color:"#1d9e75" },
+          { label:"Total earned", value:`KES \${earnings.toFixed(2)}` },
+          { label:"Available", value:`KES \${available.toFixed(2)}`, color:available>0?"#e6821e":undefined },
+          { label:"Total paid out", value:`KES \${paid.toFixed(2)}`, color:"#1d9e75" },
         ].map(s=>(
           <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"1rem", border:"1px solid #1e1e1e" }}>
             <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
@@ -194,5 +194,7 @@ export default function ProviderPayouts() {
     </div>
   )
 }
+
+
 
 

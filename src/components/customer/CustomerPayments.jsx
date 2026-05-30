@@ -56,9 +56,9 @@ export default function CustomerPayments() {
     <div>
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {[
-          { label:"Total spent", value:`$${totalSpent.toFixed(2)}` },
+          { label:"Total spent", value:`KES \${totalSpent.toFixed(2)}` },
           { label:"Transactions", value:paid.length },
-          { label:"Refunded", value:`$${totalRefunded.toFixed(2)}`, color:"#1d9e75" },
+          { label:"Refunded", value:`KES \${totalRefunded.toFixed(2)}`, color:"#1d9e75" },
         ].map(s=>(
           <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"1rem", border:"1px solid #1e1e1e" }}>
             <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
@@ -96,9 +96,9 @@ export default function CustomerPayments() {
               <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8, marginBottom:10 }}>
                 {[
                   { l:"Status", v:b.status },
-                  { l:"Platform 15%", v:`$${(Number(b.total_amount)*0.15).toFixed(2)}` },
-                  { l:"Provider 70%", v:`$${Number(b.provider_earnings||0).toFixed(2)}` },
-                  { l:"Driver 15%", v:`$${Number(b.driver_earnings||0).toFixed(2)}` },
+                  { l:"Platform 15%", v:`KES \${(Number(b.total_amount)*0.15).toFixed(2)}` },
+                  { l:"Provider 70%", v:`KES \${Number(b.provider_earnings||0).toFixed(2)}` },
+                  { l:"Driver 15%", v:`KES \${Number(b.driver_earnings||0).toFixed(2)}` },
                 ].map(f=>(
                   <div key={f.l}>
                     <div style={{ fontSize:10, color:"#555", textTransform:"uppercase" }}>{f.l}</div>
@@ -165,5 +165,6 @@ export default function CustomerPayments() {
     </div>
   )
 }
+
 
 

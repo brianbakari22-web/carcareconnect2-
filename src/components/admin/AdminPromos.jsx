@@ -63,8 +63,8 @@ export default function AdminPromos() {
               </span>
             </div>
             <div style={{ fontSize:11, color:"#555" }}>
-              {p.discount_type==="percentage"?`${p.discount_value}% off`:`$${p.discount_value} off`}
-              {p.min_purchase>0&&` · min $${p.min_purchase}`}
+              {p.discount_type==="percentage"?`${p.discount_value}% off`:`KES \${p.discount_value} off`}
+              {p.min_purchase>0&&` · min KES ${p.min_purchase}`}
               {` · ${p.used_count}/${p.usage_limit} used`}
               {p.valid_until&&` · expires ${new Date(p.valid_until).toLocaleDateString()}`}
             </div>
@@ -106,5 +106,7 @@ export default function AdminPromos() {
     </div>
   )
 }
+
+
 
 

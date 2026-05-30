@@ -52,7 +52,7 @@ export default function CustomerLoyalty() {
       await supabase.from("loyalty_points")
         .update({ points: points - pts })
         .eq("user_id", user.id)
-      toast.success(`Redeemed ${pts} points for $${dollarValue} discount! Use it on your next booking.`)
+      toast.success(`Redeemed ${pts} points for KES ${dollarValue} discount! Use it on your next booking.`)
       setRedeemAmount("")
       load()
     } catch(err) { toast.error(err.message) }
@@ -96,7 +96,7 @@ export default function CustomerLoyalty() {
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {[
           { label:t("pointsBalance"), value:points.toLocaleString(), color:tierColor },
-          { label:t("cashValue"), value:`$${(points/redemptionRate).toFixed(2)}` },
+          { label:t("cashValue"), value:`KES \${(points/redemptionRate).toFixed(2)}` },
           { label:t("redemptionRate"), value:`${redemptionRate} pts = $1` },
         ].map(s=>(
           <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"1rem", border:"1px solid #1e1e1e" }}>
@@ -152,7 +152,7 @@ export default function CustomerLoyalty() {
             </div>
             <button type="submit" disabled={redeeming||!redeemAmount||parseInt(redeemAmount)<redemptionRate}
               style={{ width:"100%", marginTop:12, background: redeemAmount&&parseInt(redeemAmount)>=redemptionRate?"#e6821e":"#333", border:"none", borderRadius:9, color: redeemAmount&&parseInt(redeemAmount)>=redemptionRate?"#fff":"#666", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px", cursor: redeemAmount&&parseInt(redeemAmount)>=redemptionRate?"pointer":"not-allowed" }}>
-              {redeeming ? "Redeeming..." : `Redeem ${redeemAmount||0} points for $${(parseInt(redeemAmount||0)/redemptionRate).toFixed(2)}`}
+              {redeeming ? "Redeeming..." : `Redeem ${redeemAmount||0} points for KES ${(parseInt(redeemAmount||0)/redemptionRate).toFixed(2)}`}
             </button>
           </form>
         </div>
@@ -182,6 +182,8 @@ export default function CustomerLoyalty() {
     </div>
   )
 }
+
+
 
 
 

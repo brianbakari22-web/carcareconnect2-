@@ -32,7 +32,7 @@ export default function AdminPayouts() {
     const { error } = await supabase.from("payout_requests").update({ status, admin_note:note[id]||null, updated_at:new Date().toISOString() }).eq("id",id)
     if (error) return toast.error(error.message)
     const payout = payouts.find(p=>p.id===id)
-    if (payout) await supabase.from("notifications").insert({ user_id:payout.user_id, title:`Payout ${status}`, message:`Your payout of $${Number(payout.amount).toFixed(2)} has been ${status}`, type:status==="paid"?"success":status==="approved"?"info":"error" })
+    if (payout) await supabase.from("notifications").insert({ user_id:payout.user_id, title:`Payout ${status}`, message:`Your payout of KES ${Number(payout.amount).toLocaleString()} has been ${status}`, type:status==="paid"?"success":status==="approved"?"info":"error" })
     toast.success(`Payout ${status}`)
     if (status === "paid" && payout) {
       const { data: sens } = await supabase.from("profile_sensitive").select("email").eq("id", payout.user_id).single()
@@ -46,7 +46,7 @@ export default function AdminPayouts() {
     for (const id of selected) {
       await supabase.from("payout_requests").update({ status:"approved", updated_at:new Date().toISOString() }).eq("id",id)
       const payout = payouts.find(p=>p.id===id)
-      if (payout) await supabase.from("notifications").insert({ user_id:payout.user_id, title:"Payout approved", message:`Your payout of $${Number(payout.amount).toFixed(2)} has been approved`, type:"info" })
+      if (payout) await supabase.from("notifications").insert({ user_id:payout.user_id, title:"Payout approved", message:`Your payout of KES ${Number(payout.amount).toLocaleString()} has been approved`, type:"info" })
     }
     toast.success(`${selected.length} payouts approved`)
     setSelected([])
@@ -58,7 +58,7 @@ export default function AdminPayouts() {
     for (const id of selected) {
       await supabase.from("payout_requests").update({ status:"paid", updated_at:new Date().toISOString() }).eq("id",id)
       const payout = payouts.find(p=>p.id===id)
-      if (payout) await supabase.from("notifications").insert({ user_id:payout.user_id, title:"Payout completed", message:`Your payout of $${Number(payout.amount).toFixed(2)} has been paid`, type:"success" })
+      if (payout) await supabase.from("notifications").insert({ user_id:payout.user_id, title:"Payout completed", message:`Your payout of KES ${Number(payout.amount).toLocaleString()} has been paid`, type:"success" })
     }
     toast.success(`${selected.length} payouts marked as paid`)
     setSelected([])
@@ -84,8 +84,8 @@ export default function AdminPayouts() {
         {[
           { label:"Pending", value:payouts.filter(p=>p.status==="pending").length, color:"#e6821e" },
           { label:"Approved", value:payouts.filter(p=>p.status==="approved").length, color:"#378add" },
-          { label:"Total paid", value:`$${payouts.filter(p=>p.status==="paid").reduce((s,p)=>s+Number(p.amount),0).toFixed(2)}`, color:"#1d9e75" },
-          { label:"Total requested", value:`$${payouts.reduce((s,p)=>s+Number(p.amount),0).toFixed(2)}` },
+          { label:"Total paid", value:`KES \${payouts.filter(p=>p.status==="paid").reduce((s,p)=>s+Number(p.amount),0).toFixed(2)}`, color:"#1d9e75" },
+          { label:"Total requested", value:`KES \${payouts.reduce((s,p)=>s+Number(p.amount),0).toFixed(2)}` },
         ].map(s=>(
           <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"1rem", border:"1px solid #1e1e1e" }}>
             <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
@@ -168,5 +168,8 @@ export default function AdminPayouts() {
     </div>
   )
 }
+
+
+
 
 

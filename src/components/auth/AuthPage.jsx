@@ -50,7 +50,6 @@ export default function AuthPage() {
   const { signIn, signUp, profile, user } = useAuth()
   const navigate = useNavigate()
   const [step, setStep] = useState("landing")
-  const [isDark, setIsDark] = useState(true)
   const [selectedRole, setSelectedRole] = useState(null)
   const [mode, setMode] = useState("signin")
   const [resetSent, setResetSent] = useState(false)
@@ -135,7 +134,7 @@ export default function AuthPage() {
 
   // Forgot password
   if (mode === "forgot") return (
-    <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", background:isDark?"#0a0a0a":"#f0ede6", padding:"1rem" }}>
+    <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", background:"#0a0a0a", padding:"1rem" }}>
       <div style={{ width:"100%", maxWidth:400, background:"#111", border:"1px solid #1e1e1e", borderRadius:16, padding:"2rem" }}>
         <div style={{ textAlign:"center", marginBottom:"1.5rem" }}>
           <div style={{ fontSize:36, marginBottom:8 }}>🔐</div>
@@ -332,8 +331,7 @@ export default function AuthPage() {
     <div style={{ minHeight:"100vh", background:"#0a0a0a", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"'DM Sans',sans-serif", padding:"1rem" }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');`}</style>
       <div style={{ width:"100%", maxWidth:640 }}>
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", width:"100%" }}>
-            <button onClick={()=>setStep("landing")} style={{ background:"none", border:"none", color:"#555", cursor:"pointer", fontSize:13, marginBottom:"1.5rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
+        <button onClick={()=>setStep("landing")} style={{ background:"none", border:"none", color:"#555", cursor:"pointer", fontSize:13, marginBottom:"1.5rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
           ← Back
         </button>
         <div style={{ textAlign:"center", marginBottom:"2rem" }}>
@@ -374,7 +372,7 @@ export default function AuthPage() {
 
   // Landing page
   return (
-    <div style={{ minHeight:"100vh", background:isDark?"#0a0a0a":"#f0ede6", fontFamily:"DM Sans,sans-serif", opacity:visible?1:0, transition:"opacity 0.5s" }}>
+    <div style={{ minHeight:"100vh", background:"#0a0a0a", fontFamily:"'DM Sans',sans-serif", opacity:visible?1:0, transition:"opacity 0.5s" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
         @keyframes fadeUp { from { opacity:0; transform:translateY(24px) } to { opacity:1; transform:translateY(0) } }
@@ -388,17 +386,11 @@ export default function AuthPage() {
       `}</style>
 
       {/* Nav */}
-      <nav style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"1.25rem 2rem", borderBottom:isDark?"1px solid #1a1a1a":"1px solid #e5e2dc", position:"sticky", top:0, background:isDark?"#0a0a0a":"#ffffff", zIndex:10 }}>
+      <nav style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"1.25rem 2rem", borderBottom:"1px solid #1a1a1a", position:"sticky", top:0, background:"#0a0a0a", zIndex:10 }}>
         <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#f0ede6" }}>
           🚗 Car<span style={{ color:"#e6821e" }}>Care</span> Connect
         </div>
-          <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-            <button onClick={()=>setIsDark(d=>!d)}
-              style={{ background:isDark?"#1a1208":"#fff3e6", border:`1px solid ${isDark?"#e6821e40":"#e6821e"}`, borderRadius:20, color:"#e6821e", fontSize:12, fontWeight:600, padding:"6px 14px", cursor:"pointer", display:"flex", alignItems:"center", gap:6 }}>
-              {isDark?"☀️ Light":"🌙 Dark"}
-            </button>
-          </div>
-          <div style={{ display:"flex", gap:10 }}>
+        <div style={{ display:"flex", gap:10 }}>
           <button onClick={()=>{ setStep("role"); setMode("signin") }}
             style={{ background:"none", border:"1px solid #333", borderRadius:8, color:"#888", fontSize:13, padding:"8px 18px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
             Sign in
@@ -540,13 +532,7 @@ export default function AuthPage() {
         <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#f0ede6", marginBottom:12 }}>
           🚗 Car<span style={{ color:"#e6821e" }}>Care</span> Connect
         </div>
-          <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-            <button onClick={()=>setIsDark(d=>!d)}
-              style={{ background:isDark?"#1a1208":"#fff3e6", border:`1px solid ${isDark?"#e6821e40":"#e6821e"}`, borderRadius:20, color:"#e6821e", fontSize:12, fontWeight:600, padding:"6px 14px", cursor:"pointer", display:"flex", alignItems:"center", gap:6 }}>
-              {isDark?"☀️ Light":"🌙 Dark"}
-            </button>
-          </div>
-          <div style={{ display:"flex", gap:20, justifyContent:"center", flexWrap:"wrap", marginBottom:12 }}>
+        <div style={{ display:"flex", gap:20, justifyContent:"center", flexWrap:"wrap", marginBottom:12 }}>
           <span style={{ fontSize:12, color:"#555" }}>📍 Nairobi, Kenya</span>
           <span style={{ fontSize:12, color:"#555" }}>📧 carcareconnect254@gmail.com</span>
           <span style={{ fontSize:12, color:"#555" }}>📞 0113858966</span>
@@ -560,3 +546,19 @@ export default function AuthPage() {
     </div>
   )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

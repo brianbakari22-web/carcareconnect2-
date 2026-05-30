@@ -55,7 +55,7 @@ export default function AdminBookings() {
             <span style={{ fontSize:10, padding:"3px 9px", borderRadius:20, background:SB[b.status]||"#111", color:SC[b.status]||"#888", border:`1px solid ${SC[b.status]||"#888"}40` }}>{b.status}</span>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)", gap:8, marginBottom:8 }}>
-            {[{l:"Date",v:b.booking_date},{l:"Time",v:b.booking_time?.slice(0,5)},{l:"Amount",v:`$${Number(b.total_amount).toFixed(2)}`},{l:"Payment",v:b.payment_status}].map(f => (
+            {[{l:"Date",v:b.booking_date},{l:"Time",v:b.booking_time?.slice(0,5)},{l:"Amount",v:`KES \${Number(b.total_amount).toFixed(2)}`},{l:"Payment",v:b.payment_status}].map(f => (
               <div key={f.l}><div style={{ fontSize:10, color:"#555", textTransform:"uppercase" }}>{f.l}</div><div style={{ fontSize:12, marginTop:2 }}>{f.v}</div></div>
             ))}
           </div>
@@ -70,5 +70,6 @@ export default function AdminBookings() {
     </div>
   )
 }
+
 
 
