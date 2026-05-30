@@ -125,6 +125,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
     setSending(false)
 
     try {
+      if (!otherUserId) return
       await supabase.from("notifications").insert({
         user_id: otherUserId,
         title: claimId ? "New message about your claim 📋" : listingId ? "New message about your listing 💬" : "New message",
@@ -199,5 +200,6 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
     </div>
   )
 }
+
 
 

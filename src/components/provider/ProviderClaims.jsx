@@ -14,8 +14,14 @@ export default function ProviderClaims() {
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState("claims")
   const [chatClaim, setChatClaim] = useState(null)
+  const [adminId, setAdminId] = useState(null)
 
-  useEffect(() => { if (user) load() }, [user])
+  useEffect(() => {
+    if (!user) return
+    load()
+    supabase.from("profiles").select("id").eq("role","admin").limit(1).single()
+      .then(({ data }) => { if (data) setAdminId(data.id) })
+  }, [user])
 
   async function load() {
     const [{ data: cls }, { data: pens }] = await Promise.all([
@@ -171,6 +177,7 @@ export default function ProviderClaims() {
     </div>
   )
 }
+
 
 
 
