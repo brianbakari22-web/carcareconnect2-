@@ -21,40 +21,23 @@ serve(async (req) => {
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-haiku-4-5-20251001",
         max_tokens: 1024,
         system,
-        tools: [
-          {
-            type: "web_search_20250305",
-            name: "web_search",
-            max_uses: 5
-          }
-        ],
         messages,
       }),
     })
 
     const data = await response.json()
-
-    let text = ""
-    if (data.content && Array.isArray(data.content)) {
-      for (const block of data.content) {
-        if (block.type === "text") {
-          text += block.text
-        }
-      }
-    }
-
-    if (!text) text = "Sorry I could not process that. Please try again."
+    const text = data.content?.[0]?.text || "Sorry I could not process that. Please try again."
 
     return new Response(JSON.stringify({ text }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     })
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message, text: "Error: " + err.message }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    })
+    return new Response(
+      JSON.stringify({ text: "Connection error. Please try again." }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    )
   }
 })
