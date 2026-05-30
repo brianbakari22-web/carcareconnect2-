@@ -22,6 +22,33 @@ export default function CustomerBookings() {
   const [rebooking, setRebooking] = useState(null)
   const [invoiceLoading, setInvoiceLoading] = useState(null)
   const [driverInfo, setDriverInfo] = useState({})
+  const [providerPhones, setProviderPhones] = useState({})
+  const [providerPhones, setProviderPhones] = useState({})
+
+  async function loadProviderPhone(providerId, bookingId) {
+    if (!providerId || providerPhones[bookingId]) return
+    const [{ data: sens }, { data: prof }] = await Promise.all([
+      supabase.from("profile_sensitive").select("phone").eq("id", providerId).single(),
+      supabase.from("profiles").select("first_name,last_name,business_name").eq("id", providerId).single(),
+    ])
+    setProviderPhones(prev=>({...prev,[bookingId]:{ phone:sens?.phone, name:prof?.business_name||prof?.first_name+" "+prof?.last_name }}))
+  }
+  async function loadProviderPhone(providerId, bookingId) {
+    if (!providerId || providerPhones[bookingId]) return
+    const [{ data: sens }, { data: prof }] = await Promise.all([
+      supabase.from("profile_sensitive").select("phone").eq("id", providerId).single(),
+      supabase.from("profiles").select("first_name,last_name,business_name").eq("id", providerId).single(),
+    ])
+    setProviderPhones(prev=>({...prev,[bookingId]:{ phone:sens?.phone, name:prof?.business_name||(prof?.first_name+" "+prof?.last_name) }}))
+  }
+  async function loadProviderPhone(providerId, bookingId) {
+    if (!providerId || providerPhones[bookingId]) return
+    const [{ data: sens }, { data: prof }] = await Promise.all([
+      supabase.from("profile_sensitive").select("phone").eq("id", providerId).single(),
+      supabase.from("profiles").select("first_name,last_name,business_name").eq("id", providerId).single(),
+    ])
+    setProviderPhones(prev=>({...prev,[bookingId]:{ phone:sens?.phone, name:prof?.business_name||(prof?.first_name+" "+prof?.last_name) }}))
+  }
 
   async function loadDriverInfo(driverId, bookingId) {
     if (!driverId || driverInfo[bookingId]) return
@@ -298,6 +325,10 @@ export default function CustomerBookings() {
     </div>
   )
 }
+
+
+
+
 
 
 
