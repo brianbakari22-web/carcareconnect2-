@@ -65,7 +65,7 @@ export default function AIAssistant() {
         })
       })
       const data = await res.json()
-      const reply = data.content?.[0]?.text || "Sorry I could not process that. Please try again."
+      const reply = data.text || data.content?.[0]?.text || "Sorry I could not process that. Please try again."
       setMessages(prev => [...prev, { role:"assistant", content:reply }])
     } catch {
       setMessages(prev => [...prev, { role:"assistant", content:"Connection error. Please try again." }])
@@ -152,6 +152,7 @@ export default function AIAssistant() {
     </>
   )
 }
+
 
 
 

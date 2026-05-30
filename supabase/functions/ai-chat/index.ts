@@ -22,14 +22,28 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         model: "claude-haiku-4-5-20251001",
-        max_tokens: 1000,
+        max_tokens: 1024,
         system,
+        tools: [
+          {
+            type: "web_search_20250305",
+            name: "web_search",
+            max_uses: 3
+          }
+        ],
         messages,
       }),
     })
 
     const data = await response.json()
-    return new Response(JSON.stringify(data), {
+
+    // Extract text from all content blocks including tool results
+    const text = data.content
+      ?.filter((b) => b.type === "text")
+      ?.map((b) => b.text)
+      ?.join("\n") || "Sorry I could not process that."
+
+    return new Response(JSON.stringify({ text }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     })
   } catch (err) {
