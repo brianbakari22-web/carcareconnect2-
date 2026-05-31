@@ -84,7 +84,7 @@ export default function CustomerServices() {
       const providerAmount = Number(booking.price) * providerRate
 
       const finalAmount = Math.max(0, Number(booking.price)*(bookForm.is_concierge?1.15:1) - (voucherData?Number(voucherData.value):0))
-        const { data, error } = await supabase.from("bookings").insert({
+        const { data, error } = await supabase.from("bookings").insert([
         customer_id: user.id,
         provider_id: booking.provider_id,
         service_id: booking.id,
@@ -349,6 +349,8 @@ export default function CustomerServices() {
     </div>
   )
 }
+
+
 
 
 
