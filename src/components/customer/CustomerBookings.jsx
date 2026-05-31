@@ -6,6 +6,7 @@ import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 import { downloadInvoice } from "../../lib/invoice"
+import ChatWindow from "../shared/ChatWindow"
 
 const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", completed:"#1d9e75", cancelled:"#e24b4a" }
 const SB = { pending:"#1a1208", confirmed:"#0c1f2e", "in-progress":"#160a2e", completed:"#071a12", cancelled:"#1a0808" }
@@ -23,6 +24,7 @@ export default function CustomerBookings() {
   const [invoiceLoading, setInvoiceLoading] = useState(null)
   const [driverInfo, setDriverInfo] = useState({})
   const [providerPhones, setProviderPhones] = useState({})
+  const [chatBooking, setChatBooking] = useState(null)
 
   async function loadProviderPhone(providerId, bookingId) {
     if (!providerId || providerPhones[bookingId]) return
@@ -278,6 +280,24 @@ export default function CustomerBookings() {
           )}
 
           {expanded===b.id&&(
+            <div style={{ marginBottom:10 }}>
+              <button onClick={()=>setChatBooking(chatBooking===b.id?null:b.id)}
+                style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer", width:"100%" }}>
+                💬 {chatBooking===b.id?"Close chat":"Message provider"}
+              </button>
+              {chatBooking===b.id&&(
+                <div style={{ height:320, marginTop:8 }}>
+                  <ChatWindow
+                    bookingId={b.id}
+                    otherUserId={b.provider_id}
+                    otherUserName={providerPhones[b.id]?.name||"Provider"}
+                    onClose={()=>setChatBooking(null)}
+                  />
+                </div>
+              )}
+            </div>
+          )}
+          {expanded===b.id&&(
             <div style={{ marginTop:10, paddingTop:10, borderTop:"1px solid #1e1e1e" }}>
               <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(3,1fr)", gap:8 }}>
                 {[
@@ -324,6 +344,8 @@ export default function CustomerBookings() {
     </div>
   )
 }
+
+
 
 
 
