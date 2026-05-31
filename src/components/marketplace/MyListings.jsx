@@ -215,7 +215,21 @@ export default function MyListings() {
                   </div>
                   {l.listing_type==="vehicle"&&<div style={{ fontSize:11, color:"#555", marginBottom:2 }}>{[l.make,l.model,l.year].filter(Boolean).join(" ")}</div>}
                   <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>📍 {l.city} · 👁 {l.views||0} views</div>
-                  {l.status==="pending"&&<div style={{ fontSize:11, color:"#e6821e", marginTop:4 }}>⏳ Under review — will go live within 24 hours</div>}
+                  {l.status==="pending"&&l.inspection_status!=="passed"&&l.listing_type==="vehicle"&&(
+                  <div style={{ marginTop:8 }}>
+                    <div style={{ fontSize:11, color:"#e6821e", marginBottom:6 }}>⏳ Awaiting CCC inspection before approval</div>
+                    <button onClick={()=>setShowInspection(showInspection===l.id?null:l.id)}
+                      style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 12px", cursor:"pointer", fontWeight:600 }}>
+                      🔍 {showInspection===l.id?"Close":"Schedule & Pay Inspection"}
+                    </button>
+                    {showInspection===l.id&&(
+                      <div style={{ marginTop:8 }}>
+                        <InspectionRequest listing={l} onSuccess={()=>{ setShowInspection(null); loadListings() }}/>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {l.status==="pending"&&(l.listing_type!=="vehicle"||l.inspection_status==="passed")&&<div style={{ fontSize:11, color:"#e6821e", marginTop:4 }}>⏳ Under review — will go live within 24 hours</div>}
                   {l.status==="rejected"&&l.admin_notes&&<div style={{ fontSize:11, color:"#e24b4a", marginTop:4 }}>Rejected: {l.admin_notes}</div>}
                   <div style={{ fontSize:10, color:"#444", marginTop:4 }}>{new Date(l.created_at).toLocaleDateString()}</div>
                 </div>
@@ -326,6 +340,7 @@ export default function MyListings() {
     </div>
   )
 }
+
 
 
 
