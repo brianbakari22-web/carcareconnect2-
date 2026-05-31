@@ -88,7 +88,7 @@ export default function CustomerPayments() {
                   <div style={{ fontSize:10, color:"#444", marginTop:2 }}>#{b.booking_number} · {b.booking_date}</div>
                 </div>
                 <div style={{ textAlign:"right" }}>
-                  <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" `}}>KES ${Number(b.total_amount).toLocaleString()}</div>
+                  <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(b.total_amount).toLocaleString()}</div>
                   <span style={{ fontSize:10, padding:"2px 8px", borderRadius:20, background:b.payment_status==="paid"?"#071a12":"#1a1208", color:b.payment_status==="paid"?"#1d9e75":"#e6821e" }}>
                     {b.payment_status}
                   </span>
@@ -98,8 +98,8 @@ export default function CustomerPayments() {
                 {[
                   { l:"Status", v:b.status },
                   { l:"Platform 15%", v:`KES ${(Number(b.total_amount)*0.15).toLocaleString()}` },
-                  { l:"Provider 70%", v:`KES ${Number(b.provider_earnings||0).toLocaleString()}` },
-                  { l:"Driver 15%", v:`KES ${Number(b.driver_earnings||0).toLocaleString()}` },
+                    { l:"Provider 70%", v:"KES " + Number(b.provider_earnings||0).toLocaleString() },
+                    { l:"Driver 15%", v:"KES " + Number(b.driver_earnings||0).toLocaleString() },
                 ].map(f=>(
                   <div key={f.l}>
                     <div style={{ fontSize:10, color:"#555", textTransform:"uppercase" }}>{f.l}</div>
@@ -150,7 +150,7 @@ export default function CustomerPayments() {
                 <div key={r.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem", marginBottom:8 }}>
                   <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                     <div>
-                      <div style={{ fontSize:13, fontWeight:500 }}>${Number(r.amount).toFixed(2)} refund</div>
+                      <div style={{ fontSize:13, fontWeight:500 }}>KES {Number(r.amount).toLocaleString()} refund</div>
                       <div style={{ fontSize:11, color:"#555", marginTop:2 }}>{r.reason}</div>
                       <div style={{ fontSize:10, color:"#444", marginTop:2 }}>{new Date(r.created_at).toLocaleDateString()}</div>
                     </div>
@@ -173,7 +173,7 @@ export default function CustomerPayments() {
                   <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Select booking</label>
                   <select value={refundForm.bookingId} onChange={e=>setRefundForm(f=>({...f,bookingId:e.target.value}))} style={inp} required>
                     <option value="">Choose a booking...</option>
-                    {refundable.map(b=><option key={b.id} value={b.id}>{b.service_name} — ${Number(b.total_amount).toFixed(2)} · {b.booking_date}</option>)}
+                    {refundable.map(b=><option key={b.id} value={b.id}>{b.service_name} — KES {Number(b.total_amount).toLocaleString()} · {b.booking_date}</option>)}
                   </select>
                 </div>
                 <div style={{ marginBottom:12 }}>

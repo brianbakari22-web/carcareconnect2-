@@ -101,7 +101,7 @@ export default function CustomerFavorites() {
                   <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
                     {provServices.slice(0,4).map(s=>(
                       <span key={s.id} style={{ fontSize:11, padding:"4px 10px", borderRadius:6, background:"#1a1a1a", color:"#888", border:"1px solid #222" }}>
-                        {s.name} · ${Number(s.discounted_price||s.price).toFixed(0)}
+                        {s.name} · KES {Number(s.discounted_price||s.price).toLocaleString()}
                       </span>
                     ))}
                     {provServices.length>4&&<span style={{ fontSize:11, padding:"4px 10px", borderRadius:6, background:"#1a1a1a", color:"#555" }}>+{provServices.length-4} more</span>}
