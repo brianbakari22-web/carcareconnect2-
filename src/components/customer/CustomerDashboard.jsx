@@ -97,12 +97,13 @@ export default function CustomerDashboard() {
           </div>
           <div style={{ textAlign:"right", flexShrink:0 }}>
             <span style={{ fontSize:10, padding:"2px 8px", borderRadius:20, background:`${SC[b.status]}20`, color:SC[b.status]||"#888" }}>{t(b.status)||b.status}</span>
-            <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e", marginTop:4 `}}>KES ${Number(b.total_amount).toLocaleString()}</div>
+            <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e", marginTop:4 }}>KES {Number(b.total_amount).toLocaleString()}</div>
           </div>
         </div>
       ))}
     </div>
   )
 }
+
 
 
