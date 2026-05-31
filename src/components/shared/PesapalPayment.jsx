@@ -25,7 +25,7 @@ export default function PesapalPayment({ amount, bookingId, customerEmail, custo
         }).eq("id", bookingId)
         window.location.href = order.redirect_url
       } else {
-        throw new Error(order.error || "Payment initiation failed")
+        throw new Error(typeof order.error === "object" ? JSON.stringify(order.error) : order.error || "Payment initiation failed")
       }
     } catch(e) {
       toast.error(e.message || "Payment failed. Please try again.")
@@ -67,3 +67,4 @@ export default function PesapalPayment({ amount, bookingId, customerEmail, custo
     </div>
   )
 }
+
