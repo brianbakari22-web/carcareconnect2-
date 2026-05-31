@@ -329,7 +329,6 @@ export default function CustomerServices() {
           </div>
         )
       })}
-    </div>
 
       {/* Pesapal Payment Modal */}
       {showPayment&&pendingBooking&&(
@@ -350,8 +349,6 @@ export default function CustomerServices() {
     </div>
   )
 }
-
-
 
 
 

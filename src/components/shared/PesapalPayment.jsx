@@ -20,7 +20,7 @@ export default function PesapalPayment({ amount, bookingId, customerEmail, custo
       const order = await submitOrder(token, ipnId, {
         amount,
         currency: 'KES',
-        description: Car Care Connect booking payment,
+        description: 'Car Care Connect booking payment',
         bookingId,
         customerEmail,
         customerPhone,
@@ -83,3 +83,4 @@ export default function PesapalPayment({ amount, bookingId, customerEmail, custo
     </div>
   )
 }
+
