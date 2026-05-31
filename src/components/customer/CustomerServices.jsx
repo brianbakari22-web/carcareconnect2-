@@ -105,7 +105,7 @@ export default function CustomerServices() {
         parts_needed: bookForm.parts_needed||false,
         parts_description: bookForm.parts_description||"",
         is_concierge: bookingLoading.is_concierge||false,
-        vehicle_id: selectedVehicle||null,
+      }).select("id")
       })
       if (error) throw error
       if (bookForm.payment_method !== "cash" && data?.[0]?.id) {
