@@ -4,6 +4,7 @@ import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
+import PesapalPayment from "../shared/PesapalPayment"
 
 const CATEGORIES = [
   { key:"shop_standard", label:"Shop Standard", icon:"🏪", desc:"You bring your car to the shop", color:"#378add", bg:"#0c1f2e", border:"#378add40" },
@@ -23,6 +24,8 @@ export default function CustomerServices() {
   const [booking, setBooking] = useState(null)
   const [bookForm, setBookForm] = useState({ date:"", time:"", notes:"", payment_method:"mpesa", is_concierge:false, problem_description:"", parts_needed:false, parts_description:"" })
   const [bookingLoading, setBookingLoading] = useState(false)
+  const [pendingBooking, setPendingBooking] = useState(null)
+  const [showPayment, setShowPayment] = useState(false)
   const [voucherCode, setVoucherCode] = useState("")
   const [voucherData, setVoucherData] = useState(null)
   const [voucherLoading, setVoucherLoading] = useState(false)
@@ -81,7 +84,7 @@ export default function CustomerServices() {
       const providerAmount = Number(booking.price) * providerRate
 
       const finalAmount = Math.max(0, Number(booking.price)*(bookForm.is_concierge?1.15:1) - (voucherData?Number(voucherData.value):0))
-        const { error } = await supabase.from("bookings").insert({
+        const { data, error } = await supabase.from("bookings").insert({
         customer_id: user.id,
         provider_id: booking.provider_id,
         service_id: booking.id,
@@ -327,8 +330,31 @@ export default function CustomerServices() {
         )
       })}
     </div>
+
+      {/* Pesapal Payment Modal */}
+      {showPayment&&pendingBooking&&(
+        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.8)", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center", padding:"1rem" }}>
+          <div style={{ width:"100%", maxWidth:420 }}>
+            <PesapalPayment
+              amount={pendingBooking.amount}
+              bookingId={pendingBooking.id}
+              customerEmail={user?.email}
+              customerPhone={profile?.phone}
+              customerName={profile?.first_name+" "+profile?.last_name}
+              onSuccess={()=>{ setShowPayment(false); setPendingBooking(null); toast.success("Payment successful!") }}
+              onCancel={()=>{ setShowPayment(false); setPendingBooking(null) }}
+            />
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
+
+
+
+
+
 
 
 
