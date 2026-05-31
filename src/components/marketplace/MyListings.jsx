@@ -252,7 +252,7 @@ export default function MyListings() {
                 </div>
                 <div style={{ textAlign:"right", flexShrink:0 }}>
                   <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>KES {Number(l.price).toLocaleString()}</div>
-                  <div style={{ display:"flex", gap:6, marginTop:6, justifyContent:"flex-end" }}>
+                  <div style={{ display:"flex", gap:4, marginTop:6, justifyContent:"flex-end", flexWrap:"wrap" }}>
                     {l.status!=="sold"&&(
                       <button onClick={()=>deleteListing(l.id)}
                         style={{ background:"none", border:"1px solid #e24b4a30", borderRadius:6, color:"#e24b4a", fontSize:10, padding:"4px 8px", cursor:"pointer" }}>
@@ -357,6 +357,7 @@ export default function MyListings() {
     </div>
   )
 }
+
 
 
 
