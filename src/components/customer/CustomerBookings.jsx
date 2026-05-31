@@ -169,7 +169,7 @@ export default function CustomerBookings() {
             </div>
             <div style={{ textAlign:"right", flexShrink:0 }}>
               <span style={{ fontSize:10, fontWeight:500, padding:"2px 8px", borderRadius:20, background:SB[b.status]||"#111", color:SC[b.status]||"#888", border:`1px solid ${SC[b.status]||"#888"}40`, display:"inline-block" }}>{b.status}</span>
-              <div style={{ fontFamily:"Syne", fontSize:isMobile?13:14, fontWeight:700, color:"#e6821e", marginTop:4 }}>${Number(b.total_amount).toFixed(2)}</div>
+              <div style={{ fontFamily:"Syne", fontSize:isMobile?13:14, fontWeight:700, color:"#e6821e", marginTop:4 }}>KES {Number(b.total_amount).toLocaleString()}</div>
             </div>
           </div>
 
@@ -360,6 +360,7 @@ export default function CustomerBookings() {
     </div>
   )
 }
+
 
 
 
