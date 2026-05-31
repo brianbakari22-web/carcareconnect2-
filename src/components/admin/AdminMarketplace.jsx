@@ -66,6 +66,47 @@ export default function AdminMarketplace() {
     setDisputes(data||[])
   }
 
+  async function requestInspection(listing) {
+    setProcessing(true)
+    try {
+      await supabase.from("inspection_requests").insert({
+        listing_id: listing.id,
+        seller_id: listing.seller_id,
+        status: "pending",
+        fee: 500,
+        notes: adminNotes||""
+      })
+      await supabase.from("marketplace_listings").update({ inspection_status:"requested" }).eq("id", listing.id)
+      await supabase.from("notifications").insert({
+        user_id: listing.seller_id,
+        title: "Vehicle inspection required 🔍",
+        message: "Your listing " + listing.title + " requires a CCC inspection (KES 500) before it can go live. Please go to My Listings to schedule and pay.",
+        type: "warning"
+      })
+      toast.success("Inspection requested — seller notified")
+      setSelected(null)
+      load()
+    } catch(e) { toast.error(e.message) }
+    finally { setProcessing(false) }
+  }
+
+  async function passInspection(listing) {
+    setProcessing(true)
+    try {
+      await supabase.from("marketplace_listings").update({ is_inspected:true, inspection_status:"passed" }).eq("id", listing.id)
+      await supabase.from("inspection_requests").update({ status:"completed", result:"passed" }).eq("listing_id", listing.id)
+      await supabase.from("notifications").insert({
+        user_id: listing.seller_id,
+        title: "Vehicle passed inspection! ✅",
+        message: "Your listing " + listing.title + " passed CCC inspection and is ready for approval.",
+        type: "success"
+      })
+      toast.success("Inspection passed")
+      load()
+    } catch(e) { toast.error(e.message) }
+    finally { setProcessing(false) }
+  }
+
   async function approveListing(id) {
     const listing = listings.find(l=>l.id===id)
     if (listing?.listing_type==="vehicle" && !listing?.is_inspected) {
@@ -444,6 +485,7 @@ export default function AdminMarketplace() {
     </div>
   )
 }
+
 
 
 
