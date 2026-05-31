@@ -150,11 +150,18 @@ SUPPORT:
 - Categories: technical, billing, account, service quality, other
 
 PAYMENTS:
-- Flutterwave payment gateway
-- Supports M-Pesa and card payments
+- Pesapal payment gateway (replaces Flutterwave)
+- Supports M-Pesa STK push, Visa/Mastercard cards, bank transfers
+- Processing fee: 2.5% on all transactions (split between customer, provider, platform)
 - KES currency only
 - Payout requests processed 3-5 business days
-- Platform holds escrow for marketplace transactions
+- Platform holds escrow for marketplace transactions until buyer confirms receipt
+- 7-day dispute window on marketplace transactions
+- Booking payments: customer pays at booking, provider confirmed after payment
+- Marketplace payments: escrow held until buyer confirms delivery
+- Cash payment option available for standard bookings only
+- GO Service requires online payment (M-Pesa or card)
+- Vouchers can be applied at checkout to reduce total amount
 
 SERVICE CATEGORIES:
 - Standard services (oil change, brakes, tyres, battery, AC, suspension, alignment)
@@ -406,4 +413,5 @@ export default function AIAssistant() {
     </>
   )
 }
+
 
