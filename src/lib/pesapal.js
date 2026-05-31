@@ -1,12 +1,11 @@
-// Pesapal Payment Integration
-const PESAPAL_CONSUMER_KEY = 'B+doIBx+u3quT04kc/9C1Z0qYN2xxUI8'
-const PESAPAL_CONSUMER_SECRET = 'xOWzVuH+DKNGQDgHvgOsHgafuY4='
-const PESAPAL_BASE_URL = 'https://cybqa.pesapal.com/pesapalv3' // sandbox
+const PESAPAL_CONSUMER_KEY = "B+doIBx+u3quT04kc/9C1Z0qYN2xxUI8"
+const PESAPAL_CONSUMER_SECRET = "xOWzVuH+DKNGQDgHvgOsHgafuY4="
+const PESAPAL_BASE_URL = "https://cybqa.pesapal.com/pesapalv3"
 
 export async function getPesapalToken() {
-  const res = await fetch(${PESAPAL_BASE_URL}/api/Auth/RequestToken, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+  const res = await fetch(PESAPAL_BASE_URL + "/api/Auth/RequestToken", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
     body: JSON.stringify({
       consumer_key: PESAPAL_CONSUMER_KEY,
       consumer_secret: PESAPAL_CONSUMER_SECRET
@@ -17,16 +16,16 @@ export async function getPesapalToken() {
 }
 
 export async function registerIPN(token) {
-  const res = await fetch(${PESAPAL_BASE_URL}/api/URLSetup/RegisterIPN, {
-    method: 'POST',
-    headers: { 
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': Bearer 
+  const res = await fetch(PESAPAL_BASE_URL + "/api/URLSetup/RegisterIPN", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer " + token
     },
     body: JSON.stringify({
-      url: 'https://carcareconnect2.pages.dev/api/pesapal-ipn',
-      ipn_notification_type: 'GET'
+      url: "https://carcareconnect2.pages.dev/api/pesapal-ipn",
+      ipn_notification_type: "GET"
     })
   })
   const data = await res.json()
@@ -35,26 +34,27 @@ export async function registerIPN(token) {
 
 export async function submitOrder(token, ipnId, orderData) {
   const { amount, currency, description, bookingId, customerEmail, customerPhone, customerName } = orderData
-  const res = await fetch(${PESAPAL_BASE_URL}/api/Transactions/SubmitOrderRequest, {
-    method: 'POST',
+  const nameParts = (customerName || "Customer").split(" ")
+  const res = await fetch(PESAPAL_BASE_URL + "/api/Transactions/SubmitOrderRequest", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': Bearer 
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer " + token
     },
     body: JSON.stringify({
       id: bookingId,
-      currency: currency || 'KES',
+      currency: currency || "KES",
       amount: amount,
-      description: description,
-      callback_url: https://carcareconnect2.pages.dev/payment/callback,
+      description: description || "Car Care Connect payment",
+      callback_url: "https://carcareconnect2.pages.dev/payment/callback",
       notification_id: ipnId,
       billing_address: {
-        email_address: customerEmail,
-        phone_number: customerPhone,
-        first_name: customerName?.split(' ')[0] || '',
-        last_name: customerName?.split(' ')[1] || '',
-        country_code: 'KE'
+        email_address: customerEmail || "",
+        phone_number: customerPhone || "",
+        first_name: nameParts[0] || "",
+        last_name: nameParts[1] || "",
+        country_code: "KE"
       }
     })
   })
@@ -63,10 +63,10 @@ export async function submitOrder(token, ipnId, orderData) {
 }
 
 export async function getTransactionStatus(token, orderTrackingId) {
-  const res = await fetch(${PESAPAL_BASE_URL}/api/Transactions/GetTransactionStatus?orderTrackingId=, {
+  const res = await fetch(PESAPAL_BASE_URL + "/api/Transactions/GetTransactionStatus?orderTrackingId=" + orderTrackingId, {
     headers: {
-      'Accept': 'application/json',
-      'Authorization': Bearer 
+      "Accept": "application/json",
+      "Authorization": "Bearer " + token
     }
   })
   const data = await res.json()
