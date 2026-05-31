@@ -16,6 +16,7 @@ export default function CustomerPayments() {
   const [loading, setLoading] = useState(true)
   const [refundForm, setRefundForm] = useState({ bookingId:"", reason:"" })
   const [submitting, setSubmitting] = useState(false)
+  const [vouchers, setVouchers] = useState([])
 
   useEffect(() => { if (user) load() }, [user])
 
@@ -58,7 +59,7 @@ export default function CustomerPayments() {
         {[
           { label:"Total spent", value:`KES \${totalSpent.toFixed(2)}` },
           { label:"Transactions", value:paid.length },
-          { label:"Refunded", value:`KES \${totalRefunded.toFixed(2)}`, color:"#1d9e75" },
+          { label:"Refunded", value:`KES ${totalRefunded.toLocaleString()}`, color:"#1d9e75" },
         ].map(s=>(
           <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"1rem", border:"1px solid #1e1e1e" }}>
             <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
@@ -68,7 +69,7 @@ export default function CustomerPayments() {
       </div>
 
       <div style={{ display:"flex", gap:6, marginBottom:"1.25rem" }}>
-        {[{k:"history",l:"Payment history"},{k:"refunds",l:"Refund requests"}].map(t=>(
+        {[{k:"history",l:"Payment history"},{k:"refunds",l:"Refund requests"},{k:"vouchers",l:"My Vouchers"}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)} style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#111", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
             {t.l}
           </button>
@@ -96,9 +97,9 @@ export default function CustomerPayments() {
               <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8, marginBottom:10 }}>
                 {[
                   { l:"Status", v:b.status },
-                  { l:"Platform 15%", v:`KES \${(Number(b.total_amount)*0.15).toFixed(2)}` },
-                  { l:"Provider 70%", v:`KES \${Number(b.provider_earnings||0).toFixed(2)}` },
-                  { l:"Driver 15%", v:`KES \${Number(b.driver_earnings||0).toFixed(2)}` },
+                  { l:"Platform 15%", v:`KES ${(Number(b.total_amount)*0.15).toLocaleString()}` },
+                  { l:"Provider 70%", v:`KES ${Number(b.provider_earnings||0).toLocaleString()}` },
+                  { l:"Driver 15%", v:`KES ${Number(b.driver_earnings||0).toLocaleString()}` },
                 ].map(f=>(
                   <div key={f.l}>
                     <div style={{ fontSize:10, color:"#555", textTransform:"uppercase" }}>{f.l}</div>
@@ -110,6 +111,31 @@ export default function CustomerPayments() {
                 style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
                 Download Invoice
               </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {tab==="vouchers"&&(
+        <div>
+          {vouchers.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No vouchers yet</div>}
+          {vouchers.map(v=>(
+            <div key={v.id} style={{ background:"#111", border:`1px solid ${v.is_used?"#1e1e1e":new Date(v.expires_at)<new Date()?"#1a0808":"#1d9e7540"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
+                <div>
+                  <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:v.is_used?"#555":new Date(v.expires_at)<new Date()?"#e24b4a":"#1d9e75", letterSpacing:2 }}>{v.code}</div>
+                  <div style={{ fontSize:11, color:"#555", marginTop:2 }}>Value: KES {Number(v.value).toLocaleString()}</div>
+                  <div style={{ fontSize:10, color:"#444", marginTop:2 }}>Expires: {new Date(v.expires_at).toLocaleDateString()}</div>
+                </div>
+                <span style={{ fontSize:11, padding:"3px 10px", borderRadius:20, background:v.is_used?"#111":new Date(v.expires_at)<new Date()?"#1a0808":"#071a12", color:v.is_used?"#555":new Date(v.expires_at)<new Date()?"#e24b4a":"#1d9e75", fontWeight:600 }}>
+                  {v.is_used?"Used":new Date(v.expires_at)<new Date()?"Expired":"Active"}
+                </span>
+              </div>
+              {!v.is_used&&new Date(v.expires_at)>new Date()&&(
+                <div style={{ fontSize:11, color:"#888", background:"#0f0f0f", borderRadius:6, padding:"6px 10px" }}>
+                  Use this code when booking a service to get KES {Number(v.value).toLocaleString()} off
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -165,6 +191,9 @@ export default function CustomerPayments() {
     </div>
   )
 }
+
+
+
 
 
 
