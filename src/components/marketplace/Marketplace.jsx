@@ -338,22 +338,50 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
 
           {listing.seller_id!==user?.id&&(
             <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-              {existingOffer?(
-                <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:10, padding:"0.9rem" }}>
-                  <div style={{ fontSize:12, color:"#1d9e75", fontWeight:600 }}>✓ Offer submitted</div>
-                  <div style={{ fontSize:11, color:"#555", marginTop:2 }}>KES {Number(existingOffer.offered_price).toLocaleString()} · {existingOffer.status}</div>
-                  {existingOffer.counter_price&&<div style={{ fontSize:11, color:"#e6821e", marginTop:4 }}>Counter: KES {Number(existingOffer.counter_price).toLocaleString()}</div>}
+
+              {/* Status banner */}
+              {!listing.is_inspected&&(
+                <div style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:10, padding:"0.9rem" }}>
+                  <div style={{ fontSize:12, color:"#e6821e", fontWeight:600, marginBottom:4 }}>⏳ Pending CCC Inspection</div>
+                  <div style={{ fontSize:11, color:"#888", lineHeight:1.6 }}>
+                    This listing is awaiting Car Care Connect vehicle inspection before offers and messages are enabled. This ensures all vehicles on our platform are verified and trustworthy.
+                  </div>
                 </div>
-              ):(
-                <button onClick={()=>setShowOffer(true)}
-                  style={{ background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:"pointer" }}>
-                  💰 Make an offer
+              )}
+
+              {listing.is_inspected&&(
+                <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:10, padding:"0.75rem", display:"flex", alignItems:"center", gap:8 }}>
+                  <span style={{ fontSize:14 }}>✓</span>
+                  <div>
+                    <div style={{ fontSize:12, color:"#1d9e75", fontWeight:600 }}>CCC Verified Vehicle</div>
+                    <div style={{ fontSize:10, color:"#555" }}>Inspected and approved by Car Care Connect</div>
+                  </div>
+                </div>
+              )}
+
+              {/* Offer button - only if inspected */}
+              {listing.is_inspected&&(
+                existingOffer?(
+                  <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:10, padding:"0.9rem" }}>
+                    <div style={{ fontSize:12, color:"#1d9e75", fontWeight:600 }}>✓ Offer submitted</div>
+                    <div style={{ fontSize:11, color:"#555", marginTop:2 }}>KES {Number(existingOffer.offered_price).toLocaleString()} · {existingOffer.status}</div>
+                    {existingOffer.counter_price&&<div style={{ fontSize:11, color:"#e6821e", marginTop:4 }}>Counter: KES {Number(existingOffer.counter_price).toLocaleString()}</div>}
+                  </div>
+                ):(
+                  <button onClick={()=>setShowOffer(true)}
+                    style={{ background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:"pointer" }}>
+                    💰 Make an offer
+                  </button>
+                )
+              )}
+
+              {/* Message button - only if inspected */}
+              {listing.is_inspected&&(
+                <button onClick={()=>setShowChat(s=>!s)}
+                style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:10, color:"#378add", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:600, padding:"12px", cursor:"pointer" }}>
+                  💬 {showChat?"Close chat":"Message seller"}
                 </button>
               )}
-              <button onClick={()=>setShowChat(s=>!s)}
-              style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:10, color:"#378add", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:600, padding:"12px", cursor:"pointer" }}>
-                💬 {showChat?"Close chat":"Message seller"}
-            </button>
             {showChat&&(
               <div style={{ marginTop:8, height:400 }}>
                 <ChatWindow
@@ -411,5 +439,6 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
     </div>
   )
 }
+
 
 

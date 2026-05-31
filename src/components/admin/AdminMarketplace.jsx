@@ -67,11 +67,15 @@ export default function AdminMarketplace() {
   }
 
   async function approveListing(id) {
+    const listing = listings.find(l=>l.id===id)
+    if (listing?.listing_type==="vehicle" && !listing?.is_inspected) {
+      toast.error("Cannot approve vehicle listing without CCC inspection. Request inspection first.")
+      return
+    }
     setProcessing(true)
     try {
       const { error } = await supabase.from("marketplace_listings").update({ status:"active", admin_notes:adminNotes||null }).eq("id",id)
       if (error) throw error
-      const listing = listings.find(l=>l.id===id)
       await supabase.from("notifications").insert({
         user_id: listing.seller_id,
         title: "Listing approved! 🎉",
@@ -258,10 +262,40 @@ export default function AdminMarketplace() {
                     </div>
 
                     <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
-                      <button onClick={()=>approveListing(l.id)} disabled={processing}
-                        style={{ background:processing?"#333":"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 18px", cursor:processing?"not-allowed":"pointer" }}>
-                        ✓ Approve & publish
+
+                      {/* Vehicle inspection workflow */}
+                      {l.listing_type==="vehicle"&&!l.is_inspected&&l.inspection_status!=="requested"&&(
+                        <button onClick={()=>requestInspection(l)} disabled={processing}
+                          style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:8, color:"#e6821e", fontSize:12, fontWeight:700, padding:"9px 18px", cursor:processing?"not-allowed":"pointer" }}>
+                          🔍 Request inspection
+                        </button>
+                      )}
+
+                      {l.listing_type==="vehicle"&&l.inspection_status==="requested"&&!l.is_inspected&&(
+                        <div style={{ width:"100%", background:"#0c1f2e", border:"1px solid #378add40", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
+                          <div style={{ fontSize:11, color:"#378add", fontWeight:600, marginBottom:8 }}>🔍 Inspection in progress</div>
+                          <button onClick={()=>passInspection(l)} disabled={processing}
+                            style={{ background:"#1d9e75", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"7px 14px", cursor:"pointer", marginRight:6 }}>
+                            ✓ Mark as passed
+                          </button>
+                          <button onClick={()=>rejectListing(l.id)} disabled={processing}
+                            style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"7px 12px", cursor:"pointer" }}>
+                            ✗ Mark as failed
+                          </button>
+                        </div>
+                      )}
+
+                      {l.is_inspected&&(
+                        <div style={{ fontSize:11, color:"#1d9e75", padding:"7px 12px", background:"#071a12", borderRadius:8, border:"1px solid #1d9e7540" }}>
+                          ✓ CCC Inspected
+                        </div>
+                      )}
+
+                      <button onClick={()=>approveListing(l.id)} disabled={processing||(l.listing_type==="vehicle"&&!l.is_inspected)}
+                        style={{ background:processing||(l.listing_type==="vehicle"&&!l.is_inspected)?"#333":"#1d9e75", border:"none", borderRadius:8, color:processing||(l.listing_type==="vehicle"&&!l.is_inspected)?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 18px", cursor:processing||(l.listing_type==="vehicle"&&!l.is_inspected)?"not-allowed":"pointer" }}>
+                        {l.listing_type==="vehicle"&&!l.is_inspected?"🔒 Inspect first":"✓ Approve & publish"}
                       </button>
+
                       <button onClick={()=>rejectListing(l.id)} disabled={processing}
                         style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", fontSize:12, padding:"9px 14px", cursor:processing?"not-allowed":"pointer" }}>
                         Reject
@@ -410,4 +444,6 @@ export default function AdminMarketplace() {
     </div>
   )
 }
+
+
 
