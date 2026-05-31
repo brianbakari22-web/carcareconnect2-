@@ -108,7 +108,6 @@ export default function CustomerServices() {
         vehicle_id: selectedVehicle||null,
       })
       if (error) throw error
-      toast.success("Booking created — complete payment!")
       if (bookForm.payment_method !== "cash" && data?.[0]?.id) {
         setPendingBooking({ id: data[0].id, amount: finalAmount })
         setShowPayment(true)
@@ -118,6 +117,12 @@ export default function CustomerServices() {
         setBooking(null)
       }
       setBookForm({ date:"", time:"", notes:"", payment_method:"mpesa", is_concierge:false, problem_description:"", parts_needed:false, parts_description:"" })
+      toast.error(err.message)
+    } finally {
+      setBookingLoading(false)
+    }
+  }
+
   const filtered = services.filter(s => {
     const matchCat = activeCategory==="all" || s.category===activeCategory
     const matchSearch = s.name.toLowerCase().includes(search.toLowerCase())
@@ -349,9 +354,6 @@ export default function CustomerServices() {
     </div>
   )
 }
-
-
-
 
 
 
