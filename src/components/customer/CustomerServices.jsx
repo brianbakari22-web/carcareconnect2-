@@ -23,6 +23,9 @@ export default function CustomerServices() {
   const [booking, setBooking] = useState(null)
   const [bookForm, setBookForm] = useState({ date:"", time:"", notes:"", payment_method:"mpesa", is_concierge:false, problem_description:"", parts_needed:false, parts_description:"" })
   const [bookingLoading, setBookingLoading] = useState(false)
+  const [voucherCode, setVoucherCode] = useState("")
+  const [voucherData, setVoucherData] = useState(null)
+  const [voucherLoading, setVoucherLoading] = useState(false)
   const [vehicles, setVehicles] = useState([])
   const [selectedVehicle, setSelectedVehicle] = useState("")
 
@@ -40,6 +43,31 @@ export default function CustomerServices() {
     setLoading(false)
   }
 
+  async function validateVoucher() {
+    if (!voucherCode.trim()) return
+    setVoucherLoading(true)
+    try {
+      const { data, error } = await supabase.from("vouchers")
+        .select("*")
+        .eq("code", voucherCode.trim().toUpperCase())
+        .eq("customer_id", user.id)
+        .eq("is_used", false)
+        .gte("expires_at", new Date().toISOString())
+        .single()
+      if (error || !data) {
+        toast.error("Invalid or expired voucher code")
+        setVoucherData(null)
+      } else {
+        setVoucherData(data)
+        toast.success(`Voucher applied — KES ${Number(data.value).toLocaleString()} discount!`)
+      }
+    } catch(err) {
+      toast.error("Could not validate voucher")
+    } finally {
+      setVoucherLoading(false)
+    }
+  }
+
   async function bookService(e) {
     e.preventDefault()
     if (!booking) return
@@ -52,7 +80,8 @@ export default function CustomerServices() {
       const platformAmount = Number(booking.price) * platformRate
       const providerAmount = Number(booking.price) * providerRate
 
-      const { error } = await supabase.from("bookings").insert({
+      const finalAmount = Math.max(0, Number(booking.price)*(bookForm.is_concierge?1.15:1) - (voucherData?Number(voucherData.value):0))
+        const { error } = await supabase.from("bookings").insert({
         customer_id: user.id,
         provider_id: booking.provider_id,
         service_id: booking.id,
@@ -240,6 +269,25 @@ export default function CustomerServices() {
                     </label>
                   )}
 
+                  <div style={{ marginBottom:14 }}>
+                    <label style={lbl}>Voucher code (optional)</label>
+                    <div style={{ display:"flex", gap:6 }}>
+                      <input value={voucherCode} onChange={e=>setVoucherCode(e.target.value.toUpperCase())}
+                        placeholder="CCC-XXXX-XXXX-XXXX"
+                        style={{ ...inp, flex:1, marginBottom:0 }}/>
+                      <button type="button" onClick={validateVoucher} disabled={voucherLoading||!voucherCode.trim()}
+                        style={{ background:"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontSize:12, padding:"0 14px", cursor:"pointer", flexShrink:0 }}>
+                        {voucherLoading?"...":"Apply"}
+                      </button>
+                    </div>
+                    {voucherData&&(
+                      <div style={{ marginTop:6, background:"#071a12", border:"1px solid #1d9e7540", borderRadius:8, padding:"0.5rem 0.75rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                        <div style={{ fontSize:11, color:"#1d9e75" }}>✅ Voucher applied — KES {Number(voucherData.value).toLocaleString()} off</div>
+                        <button type="button" onClick={()=>{ setVoucherData(null); setVoucherCode("") }} style={{ background:"none", border:"none", color:"#e24b4a", cursor:"pointer", fontSize:12 }}>×</button>
+                      </div>
+                    )}
+                  </div>
+
                   <div style={{ background:"#0f0f0f", borderRadius:8, padding:"0.75rem", marginBottom:14 }}>
                     <div style={{ fontSize:11, color:"#555", marginBottom:4 }}>Booking summary</div>
                     <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#888", marginBottom:2 }}>
@@ -251,9 +299,14 @@ export default function CustomerServices() {
                       </div>
                     )}
                     <div style={{ height:1, background:"#1e1e1e", margin:"6px 0" }}/>
+                    {voucherData&&(
+                      <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#1d9e75", marginBottom:2 }}>
+                        <span>Voucher discount</span><span>- KES {Number(voucherData.value).toLocaleString()}</span>
+                      </div>
+                    )}
                     <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, color:"#e6821e", fontWeight:700 }}>
                       <span>Total</span>
-                      <span>KES {(Number(s.price)*(bookForm.is_concierge?1.15:1)).toFixed(0)}</span>
+                      <span>KES {Math.max(0,(Number(s.price)*(bookForm.is_concierge?1.15:1))-(voucherData?Number(voucherData.value):0)).toFixed(0)}</span>
                     </div>
                   </div>
 
@@ -276,6 +329,11 @@ export default function CustomerServices() {
     </div>
   )
 }
+
+
+
+
+
 
 
 

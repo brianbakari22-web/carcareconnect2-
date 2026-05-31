@@ -103,6 +103,15 @@ export default function AdminClaims() {
           applied_by: user.id,
         }),
 
+        // Save voucher to database
+        supabase.from("vouchers").insert({
+          code: voucherCode,
+          customer_id: claim.customer_id,
+          value: amount,
+          original_value: amount,
+          claim_id: claim.id,
+          expires_at: expires,
+        }),
         // Notify customer
         supabase.from("notifications").insert({
           user_id: claim.customer_id,
@@ -412,6 +421,8 @@ export default function AdminClaims() {
     </div>
   )
 }
+
+
 
 
 
