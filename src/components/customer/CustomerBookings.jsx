@@ -82,7 +82,7 @@ export default function CustomerBookings() {
   useEffect(() => { if (user) load() }, [user])
 
   async function load() {
-    const { data } = await supabase.from("bookings").select("*").eq("customer_id", user.id).eq("hidden_from_customer", false).order("created_at",{ascending:false})
+    const { data } = await supabase.from("bookings").select("*,profiles!bookings_driver_id_fkey(first_name,last_name)").eq("customer_id", user.id).eq("hidden_from_customer", false).order("created_at",{ascending:false})
     setBookings(data||[])
     setLoading(false)
   }
@@ -295,6 +295,22 @@ export default function CustomerBookings() {
                   />
                 </div>
               )}
+              {b.driver_id&&(
+                <button onClick={()=>setChatBooking(chatBooking===b.id+"driver"?null:b.id+"driver")}
+                  style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer", width:"100%", marginTop:6 }}>
+                  💬 {chatBooking===b.id+"driver"?"Close chat":"Message driver"}
+                </button>
+              )}
+              {chatBooking===b.id+"driver"&&b.driver_id&&(
+                <div style={{ height:320, marginTop:8 }}>
+                  <ChatWindow
+                    bookingId={b.id}
+                    otherUserId={b.driver_id}
+                    otherUserName="Driver"
+                    onClose={()=>setChatBooking(null)}
+                  />
+                </div>
+              )}
             </div>
           )}
           {expanded===b.id&&(
@@ -344,6 +360,8 @@ export default function CustomerBookings() {
     </div>
   )
 }
+
+
 
 
 
