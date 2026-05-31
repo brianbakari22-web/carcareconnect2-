@@ -291,7 +291,7 @@ export default function AdminMarketplace() {
                     {/* Description preview */}
                     {l.description&&(
                       <div style={{ background:"#0f0f0f", borderRadius:8, padding:"0.75rem", marginBottom:10, fontSize:12, color:"#888", lineHeight:1.6 }}>
-                        "{l.description}"
+                        {l.description.replace(/\*\*/g,"").replace(/\*/g,"").replace(/#{1,6} /g,"").replace(/- /g,"• ")}
                       </div>
                     )}
 
@@ -315,14 +315,16 @@ export default function AdminMarketplace() {
                       {l.listing_type==="vehicle"&&l.inspection_status==="requested"&&!l.is_inspected&&(
                         <div style={{ width:"100%", background:"#0c1f2e", border:"1px solid #378add40", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
                           <div style={{ fontSize:11, color:"#378add", fontWeight:600, marginBottom:8 }}>🔍 Inspection in progress</div>
-                          <button onClick={()=>passInspection(l)} disabled={processing}
-                            style={{ background:"#1d9e75", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"7px 14px", cursor:"pointer", marginRight:6 }}>
-                            ✓ Mark as passed
-                          </button>
-                          <button onClick={()=>rejectListing(l.id)} disabled={processing}
-                            style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"7px 12px", cursor:"pointer" }}>
-                            ✗ Mark as failed
-                          </button>
+                          <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                            <button onClick={()=>passInspection(l)} disabled={processing}
+                              style={{ background:"#1d9e75", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"7px 14px", cursor:"pointer" }}>
+                              ✓ Mark as passed
+                            </button>
+                            <button onClick={()=>rejectListing(l.id)} disabled={processing}
+                              style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"7px 12px", cursor:"pointer" }}>
+                              ✗ Mark as failed
+                            </button>
+                          </div>
                         </div>
                       )}
 
@@ -485,6 +487,7 @@ export default function AdminMarketplace() {
     </div>
   )
 }
+
 
 
 
