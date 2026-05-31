@@ -25,10 +25,10 @@ export default function MyListings() {
   const [counterPrice, setCounterPrice] = useState("")
   const [processing, setProcessing] = useState(null)
   const [showInspection, setShowInspection] = useState(null)
-  const [photoListing, setPhotoListing] = useState(null)
-  const [listingPhotos, setListingPhotos] = useState([])
-  const [featureListing, setFeatureListing] = useState(null)
-  const [inspectListing, setInspectListing] = useState(null)
+
+
+
+
 
   useEffect(() => {
     if (!user) return
