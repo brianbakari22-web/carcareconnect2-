@@ -28,7 +28,7 @@ export default function CustomerDashboard() {
   async function load() {
     const [{ data: bookings }, { data: loyalty }] = await Promise.all([
       supabase.from("bookings").select("status,created_at,service_name,total_amount,booking_date").eq("customer_id", user.id).order("created_at",{ascending:false}),
-      supabase.from("loyalty_points").select("points").eq("user_id", user.id).single()
+      supabase.from("loyalty_points").select("points").eq("user_id", user.id).maybeSingle()
     ])
     const bks = bookings||[]
     setStats({
@@ -104,6 +104,7 @@ export default function CustomerDashboard() {
     </div>
   )
 }
+
 
 
 
