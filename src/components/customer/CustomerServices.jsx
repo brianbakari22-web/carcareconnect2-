@@ -14,7 +14,7 @@ const CATEGORIES = [
 
 export default function CustomerServices() {
   const isMobile = useIsMobile()
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const { t } = useLanguage()
   const [services, setServices] = useState([])
   const [providers, setProviders] = useState([])
@@ -354,6 +354,7 @@ export default function CustomerServices() {
     </div>
   )
 }
+
 
 
 
