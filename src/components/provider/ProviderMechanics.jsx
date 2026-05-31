@@ -267,7 +267,7 @@ export default function ProviderMechanics() {
 
       {mechanics.map(m=>(
         <div key={m.id} style={{ background:"#111", border:`1px solid ${m.is_active?m.is_available?"#1d9e7530":"#e6821e30":"#1e1e1e"}`, borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8, opacity:m.is_active?1:0.5 }}>
-          <div style={{ display:"flex", alignItems:"flex-start", gap:12 }}>
+          <div style={{ display:"flex", alignItems:"flex-start", gap:10, flexWrap:isMobile?"wrap":"nowrap" }}>
             <div style={{ width:44, height:44, borderRadius:"50%", background:m.is_available&&m.is_active?"#071a12":"#1a1a1a", border:`1px solid ${m.is_available&&m.is_active?"#1d9e7540":"#333"}`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:m.is_available&&m.is_active?"#1d9e75":"#555", flexShrink:0 }}>
               {m.first_name[0]}{m.last_name[0]}
             </div>
@@ -283,7 +283,7 @@ export default function ProviderMechanics() {
               {m.phone&&<div style={{ fontSize:11, color:"#555", marginBottom:2 }}>📞 {m.phone}</div>}
               {m.last_location_update&&<div style={{ fontSize:10, color:"#444" }}>Last seen: {new Date(m.last_location_update).toLocaleTimeString()}</div>}
             </div>
-            <div style={{ display:"flex", gap:6, flexShrink:0, flexWrap:"wrap", justifyContent:"flex-end" }}>
+            <div style={{ display:"flex", gap:6, flexShrink:0, flexWrap:"wrap", justifyContent:"flex-end", marginTop:isMobile?8:0 }}>
               <button onClick={()=>openTracking(m)}
                 style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                 📍 Track
@@ -327,3 +327,4 @@ function LocationHistory({ mechanicId }) {
     </div>
   ))
 }
+
