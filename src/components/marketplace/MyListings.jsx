@@ -297,7 +297,7 @@ export default function MyListings() {
                     {o.message&&<div style={{ fontSize:11, color:"#888", fontStyle:"italic", marginBottom:4 }}>"{o.message}"</div>}
                     <div style={{ fontSize:10, color:"#444" }}>{new Date(o.created_at).toLocaleString()}</div>
                   </div>
-                  <div style={{ textAlign:"right", flexShrink:0 }}>
+                  <div style={{ textAlign:"right", flexShrink:0, minWidth:100 }}>
                     <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#e6821e" }}>
                       KES {Number(o.offered_price).toLocaleString()}
                     </div>
@@ -343,6 +343,7 @@ export default function MyListings() {
     </div>
   )
 }
+
 
 
 
