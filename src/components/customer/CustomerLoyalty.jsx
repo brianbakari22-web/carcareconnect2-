@@ -19,7 +19,7 @@ export default function CustomerLoyalty() {
 
   async function load() {
     const [{ data: lp }, { data: bks }] = await Promise.all([
-      supabase.from("loyalty_points").select("*").eq("user_id", user.id).single(),
+      supabase.from("loyalty_points").select("*").eq("user_id", user.id).maybeSingle(),
       supabase.from("bookings").select("service_name,total_amount,booking_date,status,created_at").eq("customer_id", user.id).eq("status", "completed").order("created_at", { ascending:false })
     ])
     setLoyalty(lp)
@@ -182,6 +182,7 @@ export default function CustomerLoyalty() {
     </div>
   )
 }
+
 
 
 
