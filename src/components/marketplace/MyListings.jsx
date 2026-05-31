@@ -139,6 +139,12 @@ export default function MyListings() {
     setPhotoListing(photoListing===listing.id?null:listing.id)
   }
 
+  async function openPhotos(listing) {
+    const { data } = await supabase.from("marketplace_photos").select("*").eq("listing_id",listing.id).order("display_order")
+    setListingPhotos(data||[])
+    setPhotoListing(photoListing===listing.id?null:listing.id)
+  }
+
   async function deleteListing(id) {
     if (!confirm("Delete this listing?")) return
     await supabase.from("marketplace_listings").delete().eq("id",id).eq("seller_id",user.id)
@@ -351,6 +357,7 @@ export default function MyListings() {
     </div>
   )
 }
+
 
 
 
