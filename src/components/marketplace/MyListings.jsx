@@ -24,6 +24,7 @@ export default function MyListings() {
   const [listingPhotos, setListingPhotos] = useState([])
   const [counterPrice, setCounterPrice] = useState("")
   const [processing, setProcessing] = useState(null)
+  const [showInspection, setShowInspection] = useState(null)
 
   useEffect(() => {
     if (!user) return
@@ -340,6 +341,7 @@ export default function MyListings() {
     </div>
   )
 }
+
 
 
 
