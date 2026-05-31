@@ -94,7 +94,7 @@ export default function CustomerReviews() {
               <div style={{ width:42, height:42, background:"#1a1208", borderRadius:9, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, flexShrink:0 }}>🔧</div>
               <div style={{ flex:1 }}>
                 <div style={{ fontSize:14, fontWeight:500, color:"#f0ede6" }}>{b.service_name}</div>
-                <div style={{ fontSize:11, color:"#555", marginTop:2 }}>{b.booking_date} · ${Number(b.total_amount).toFixed(2)}</div>
+                <div style={{ fontSize:11, color:"#555", marginTop:2 }}>{b.booking_date} · KES ${Number(b.total_amount).toLocaleString()}</div>
               </div>
               <button onClick={()=>{ setReviewing(b); setForm({ provider_rating:0, provider_review:"", driver_rating:0, driver_review:"" }) }}
                 style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"8px 14px", cursor:"pointer", fontFamily:"Syne,sans-serif", flexShrink:0 }}>
@@ -164,3 +164,5 @@ export default function CustomerReviews() {
     </div>
   )
 }
+
+

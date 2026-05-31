@@ -88,7 +88,7 @@ export default function CustomerPayments() {
                   <div style={{ fontSize:10, color:"#444", marginTop:2 }}>#{b.booking_number} · {b.booking_date}</div>
                 </div>
                 <div style={{ textAlign:"right" }}>
-                  <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>${Number(b.total_amount).toFixed(2)}</div>
+                  <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" `}}>KES ${Number(b.total_amount).toLocaleString()}</div>
                   <span style={{ fontSize:10, padding:"2px 8px", borderRadius:20, background:b.payment_status==="paid"?"#071a12":"#1a1208", color:b.payment_status==="paid"?"#1d9e75":"#e6821e" }}>
                     {b.payment_status}
                   </span>
@@ -191,6 +191,8 @@ export default function CustomerPayments() {
     </div>
   )
 }
+
+
 
 
 
