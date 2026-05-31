@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
-import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
 export default function InspectionRequest({ listing, onSuccess }) {
   const { user, profile } = useAuth()
-  const isMobile = useIsMobile()
   const [paying, setPaying] = useState(false)
   const [scheduled, setScheduled] = useState("")
   const [existing, setExisting] = useState(null)
@@ -20,112 +18,84 @@ export default function InspectionRequest({ listing, onSuccess }) {
     if (!scheduled) return toast.error("Please select a preferred date")
     setPaying(true)
     try {
-      const ref = `INSP-${Date.now()}-${user.id.slice(0,8)}`
-      window.FlutterwaveCheckout({
-        public_key: "FLWPUBK_TEST-7cc800b81b21b4d7075e716052932f32-X",
-        tx_ref: ref,
-        amount: 500,
-        currency: "KES",
-        payment_options: "card,mpesa",
-        customer: {
-          email: user.email,
-          name: `${profile?.first_name} ${profile?.last_name}`,
-        },
-        customizations: {
-          title: "CCC Vehicle Inspection",
-          description: `Inspection for: ${listing.title}`,
-        },
-        callback: async (response) => {
-          if (response.status==="successful") {
-            await createInspection(ref, response.transaction_id)
-          } else {
-            toast.error("Payment failed")
-            setPaying(false)
-          }
-        },
-        onclose: () => setPaying(false),
-      })
-    } catch(err) { toast.error(err.message); setPaying(false) }
-  }
-
-  async function createInspection(ref, flwTxId) {
-    try {
-      const { error } = await supabase.from("inspection_requests").insert({
+      // Create inspection request first
+      const { data: insp, error } = await supabase.from("inspection_requests").insert({
         listing_id: listing.id,
         seller_id: user.id,
-        status: "pending",
-        amount: 500,
-        flw_transaction_id: flwTxId,
-        payment_status: "paid",
+        status: "pending_payment",
+        fee: 500,
         scheduled_date: scheduled,
-      })
+      }).select("id").single()
+
       if (error) throw error
 
-      // Notify admin
-      const { data: admins } = await supabase.from("profiles").select("id").eq("role","admin")
-      if (admins?.length) {
-        await Promise.all(admins.map(a=>supabase.from("notifications").insert({
-          user_id: a.id,
-          title: "New inspection request 🔍",
-          message: `Inspection requested for listing "${listing.title}". Preferred date: ${scheduled}. Please assign a mechanic.`,
-          type: "info",
-        })))
-      }
+      // Pay via Pesapal
+      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/pesapal-payment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc"
+        },
+        body: JSON.stringify({
+          amount: 500,
+          bookingId: insp.id,
+          customerEmail: user.email,
+          customerPhone: profile?.phone || "",
+          customerName: (profile?.first_name||"") + " " + (profile?.last_name||"")
+        })
+      })
 
-      toast.success("Inspection booked! Admin will assign a mechanic shortly.")
-      if (onSuccess) onSuccess()
-    } catch(err) { toast.error(err.message); setPaying(false) }
+      const order = await res.json()
+      if (order.redirect_url) {
+        window.location.href = order.redirect_url
+      } else {
+        throw new Error(order.error || "Payment failed")
+      }
+    } catch(e) {
+      toast.error(e.message || "Failed to initiate payment")
+      setPaying(false)
+    }
   }
 
-  if (existing) return (
-    <div style={{ background:"#111", border:"1px solid #1d9e7540", borderRadius:12, padding:"1rem" }}>
-      <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75", marginBottom:4 }}>
-        {existing.status==="completed"?"✓ CCC Inspected":"🔍 Inspection requested"}
-      </div>
-      <div style={{ fontSize:11, color:"#555" }}>
-        {existing.status==="pending"&&"Waiting for mechanic assignment"}
-        {existing.status==="assigned"&&`Mechanic assigned — scheduled ${existing.scheduled_date}`}
-        {existing.status==="completed"&&`Inspection result: ${existing.inspection_result?.toUpperCase()}`}
-      </div>
-      {existing.inspection_notes&&(
-        <div style={{ fontSize:11, color:"#888", marginTop:6, fontStyle:"italic" }}>
-          "{existing.inspection_notes}"
-        </div>
-      )}
+  if (existing && existing.status !== "pending_payment") return (
+    <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:10, padding:"1rem" }}>
+      <div style={{ fontSize:13, color:"#1d9e75", fontWeight:600, marginBottom:4 }}>✓ Inspection requested</div>
+      <div style={{ fontSize:11, color:"#555" }}>Status: {existing.status}</div>
+      {existing.scheduled_date&&<div style={{ fontSize:11, color:"#555" }}>Scheduled: {existing.scheduled_date}</div>}
+      {existing.result&&<div style={{ fontSize:12, color:existing.result==="passed"?"#1d9e75":"#e24b4a", marginTop:4, fontWeight:600 }}>Result: {existing.result}</div>}
     </div>
   )
 
   return (
-    <div style={{ background:"#111", border:"1px solid #e6821e30", borderRadius:12, padding:"1.25rem" }}>
-      <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>
-        🔍 Request CCC Inspection
-      </div>
-      <div style={{ fontSize:12, color:"#555", marginBottom:12 }}>
-        Get your vehicle professionally inspected by a CCC verified mechanic. Adds a ✓ CCC Inspected badge to your listing — builds buyer trust and faster sale.
+    <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
+      <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>🔍 CCC Vehicle Inspection</div>
+      <div style={{ fontSize:12, color:"#555", marginBottom:16, lineHeight:1.6 }}>
+        Get your vehicle inspected by a CCC certified mechanic. Once passed, your listing will show a verified badge and buyers can make offers.
       </div>
 
-      {[
-        { icon:"✓", text:"Full mechanical inspection by verified mechanic" },
-        { icon:"✓", text:"Inspection report filed on listing" },
-        { icon:"✓", text:"CCC Inspected badge on your listing" },
-        { icon:"✓", text:"Inspection completed within 48 hours" },
-      ].map((item,i)=>(
-        <div key={i} style={{ display:"flex", gap:8, marginBottom:4 }}>
-          <span style={{ color:"#1d9e75", flexShrink:0 }}>{item.icon}</span>
-          <span style={{ fontSize:11, color:"#888" }}>{item.text}</span>
+      <div style={{ background:"#0f0f0f", borderRadius:8, padding:"0.75rem", marginBottom:16 }}>
+        <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#888", marginBottom:4 }}>
+          <span>Inspection fee</span><span>KES 500</span>
         </div>
-      ))}
-
-      <div style={{ margin:"12px 0" }}>
-        <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>Preferred inspection date *</label>
-        <input type="date" value={scheduled} onChange={e=>setScheduled(e.target.value)}
-          min={new Date(Date.now()+24*60*60*1000).toISOString().split("T")[0]}
-          style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }}/>
+        <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#888" }}>
+          <span>Processing fee (2.5%)</span><span>KES 13</span>
+        </div>
+        <div style={{ height:1, background:"#1e1e1e", margin:"6px 0" }}/>
+        <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, color:"#e6821e", fontWeight:700 }}>
+          <span>Total</span><span>KES 513</span>
+        </div>
       </div>
 
-      <button onClick={requestInspection} disabled={paying}
-        style={{ width:"100%", background:paying?"#333":"#e6821e", border:"none", borderRadius:9, color:paying?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:paying?"not-allowed":"pointer" }}>
-        {paying?"Processing...":"Pay KES 500 — Book inspection"}
+      <div style={{ marginBottom:16 }}>
+        <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>Preferred inspection date</label>
+        <input type="date" value={scheduled} onChange={e=>setScheduled(e.target.value)}
+          min={new Date().toISOString().split("T")[0]}
+          style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:12, outline:"none" }}/>
+      </div>
+
+      <button onClick={requestInspection} disabled={paying||!scheduled}
+        style={{ width:"100%", background:paying||!scheduled?"#333":"#e6821e", border:"none", borderRadius:10, color:paying||!scheduled?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:paying||!scheduled?"not-allowed":"pointer" }}>
+        {paying?"Connecting to Pesapal...":"Pay KES 513 & Request Inspection →"}
       </button>
     </div>
   )

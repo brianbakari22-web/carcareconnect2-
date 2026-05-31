@@ -4,6 +4,7 @@ import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
+import InspectionRequest from "./InspectionRequest"
 import PhotoUpload from "./PhotoUpload"
 import InspectionRequest from "./InspectionRequest"
 import FeaturedListing from "./FeaturedListing"
@@ -325,5 +326,6 @@ export default function MyListings() {
     </div>
   )
 }
+
 
 
