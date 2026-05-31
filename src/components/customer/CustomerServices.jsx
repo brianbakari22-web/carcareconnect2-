@@ -106,7 +106,7 @@ export default function CustomerServices() {
         parts_description: bookForm.parts_description||"",
         is_concierge: bookingLoading.is_concierge||false,
       }).select("id")
-      })
+
       if (error) throw error
       if (bookForm.payment_method !== "cash" && data?.[0]?.id) {
         setPendingBooking({ id: data[0].id, amount: finalAmount })
