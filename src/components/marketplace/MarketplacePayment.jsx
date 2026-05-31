@@ -12,139 +12,101 @@ export default function MarketplacePayment({ offer, listing, onSuccess, onCancel
   const salePrice = offer.counter_price || offer.offered_price
   const commission = salePrice * (listing.listing_type==="vehicle" ? 0.02 : 0.08)
   const sellerEarnings = salePrice - commission
+  const processingFee = salePrice * 0.025
+  const totalAmount = salePrice + processingFee
 
   async function initPayment() {
     setPaying(true)
     try {
-      const ref = `MKT-${Date.now()}-${user.id.slice(0,8)}`
-      window.FlutterwaveCheckout({
-        public_key: "FLWPUBK_TEST-7cc800b81b21b4d7075e716052932f32-X",
-        tx_ref: ref,
-        amount: salePrice,
-        currency: "KES",
-        payment_options: "card,mpesa",
-        customer: {
-          email: user.email,
-          name: `${profile?.first_name} ${profile?.last_name}`,
-          phone_number: profile?.phone || "",
-        },
-        customizations: {
-          title: "Car Care Connect Marketplace",
-          description: `Payment for: ${listing.title}`,
-          logo: "https://carcareconnect2.pages.dev/logo.png",
-        },
-        callback: async (response) => {
-          if (response.status === "successful") {
-            await processPayment(ref, response.transaction_id)
-          } else {
-            toast.error("Payment failed — please try again")
-            setPaying(false)
-          }
-        },
-        onclose: () => setPaying(false),
-      })
-    } catch(err) {
-      toast.error(err.message)
-      setPaying(false)
-    }
-  }
-
-  async function processPayment(ref, flwTxId) {
-    try {
-      // Create transaction with escrow
-      const disputeDeadline = new Date(Date.now()+7*24*60*60*1000).toISOString()
-      const { error } = await supabase.from("marketplace_transactions").insert({
+      // Create transaction record first
+      const { data: txn, error: txnError } = await supabase.from("marketplace_transactions").insert({
         listing_id: listing.id,
         offer_id: offer.id,
         buyer_id: user.id,
         seller_id: listing.seller_id,
-        sale_price: salePrice,
-        platform_commission: commission,
+        amount: salePrice,
+        commission: commission,
         seller_earnings: sellerEarnings,
-        payment_status: "paid",
-        flw_transaction_id: flwTxId,
-        flw_reference: ref,
-        dispute_deadline: disputeDeadline,
-      })
-      if (error) throw error
+        status: "pending"
+      }).select("id").single()
 
-      // Mark listing as sold
-      await supabase.from("marketplace_listings").update({ status:"sold" }).eq("id",listing.id)
+      if (txnError) throw txnError
 
-      // Mark offer as accepted
-      await supabase.from("marketplace_offers").update({ status:"accepted" }).eq("id",offer.id)
-
-      // Reject other offers
-      await supabase.from("marketplace_offers").update({ status:"rejected" })
-        .eq("listing_id",listing.id).neq("id",offer.id)
-
-      // Notify seller
-      await supabase.from("notifications").insert({
-        user_id: listing.seller_id,
-        title: "Payment received! 💰",
-        message: `${profile?.first_name} ${profile?.last_name} has paid KES ${Number(salePrice).toLocaleString()} for your listing "${listing.title}". Funds are held in escrow until buyer confirms receipt. You will receive KES ${Number(sellerEarnings).toLocaleString()} after confirmation.`,
-        type: "success",
+      // Call Pesapal edge function
+      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/pesapal-payment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc"
+        },
+        body: JSON.stringify({
+          amount: totalAmount,
+          bookingId: txn.id,
+          customerEmail: user.email,
+          customerPhone: profile?.phone || "",
+          customerName: (profile?.first_name || "") + " " + (profile?.last_name || "")
+        })
       })
 
-      toast.success("Payment successful! Funds held in escrow.")
-      if (onSuccess) onSuccess()
-    } catch(err) {
-      toast.error(err.message)
+      const order = await res.json()
+
+      if (order.redirect_url) {
+        // Update transaction with tracking ID
+        await supabase.from("marketplace_transactions").update({
+          pesapal_tracking_id: order.order_tracking_id,
+          status: "processing"
+        }).eq("id", txn.id)
+
+        // Redirect to Pesapal
+        window.location.href = order.redirect_url
+      } else {
+        throw new Error(typeof order.error === "object" ? JSON.stringify(order.error) : order.error || "Payment failed")
+      }
+    } catch(e) {
+      toast.error(e.message || "Payment failed")
       setPaying(false)
     }
   }
 
   return (
-    <div style={{ background:"#0f0f0f", border:"1px solid #2a2a2a", borderRadius:16, padding:"1.5rem" }}>
-      <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>Complete purchase</div>
-      <div style={{ fontSize:12, color:"#555", marginBottom:"1.5rem" }}>Payment is held in escrow until you confirm receipt</div>
+    <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
+      <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#f0ede6", marginBottom:12 }}>
+        Complete Purchase
+      </div>
 
-      {/* Listing summary */}
-      <div style={{ background:"#111", borderRadius:10, padding:"1rem", marginBottom:"1.25rem" }}>
-        <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6", marginBottom:8 }}>{listing.title}</div>
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
-          {[
-            { l:"Sale price", v:`KES ${Number(salePrice).toLocaleString()}`, c:"#e6821e" },
-            { l:"Platform fee", v:`KES ${Number(commission).toFixed(0)}`, c:"#555" },
-            { l:"Seller receives", v:`KES ${Number(sellerEarnings).toFixed(0)}`, c:"#1d9e75" },
-            { l:"You pay", v:`KES ${Number(salePrice).toLocaleString()}`, c:"#f0ede6" },
-          ].map(f=>(
-            <div key={f.l}>
-              <div style={{ fontSize:10, color:"#444" }}>{f.l}</div>
-              <div style={{ fontSize:13, fontWeight:600, color:f.c }}>{f.v}</div>
-            </div>
-          ))}
+      <div style={{ background:"#0f0f0f", borderRadius:8, padding:"0.75rem", marginBottom:16 }}>
+        <div style={{ fontSize:12, color:"#888", marginBottom:8, fontWeight:600 }}>{listing.title}</div>
+        <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#888", marginBottom:4 }}>
+          <span>Sale price</span><span>KES {Number(salePrice).toLocaleString()}</span>
+        </div>
+        <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#888", marginBottom:4 }}>
+          <span>Processing fee (2.5%)</span><span>KES {processingFee.toFixed(0)}</span>
+        </div>
+        <div style={{ height:1, background:"#1e1e1e", margin:"8px 0" }}/>
+        <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, color:"#e6821e", fontWeight:700, marginBottom:4 }}>
+          <span>You pay</span><span>KES {totalAmount.toFixed(0)}</span>
+        </div>
+        <div style={{ display:"flex", justifyContent:"space-between", fontSize:11, color:"#555" }}>
+          <span>Seller receives</span><span>KES {sellerEarnings.toLocaleString()}</span>
+        </div>
+        <div style={{ display:"flex", justifyContent:"space-between", fontSize:11, color:"#555" }}>
+          <span>Platform commission</span><span>KES {commission.toLocaleString()}</span>
         </div>
       </div>
 
-      {/* Escrow explanation */}
-      <div style={{ background:"#0c1f2e", border:"1px solid #378add30", borderRadius:10, padding:"0.9rem", marginBottom:"1.25rem" }}>
-        <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#378add", marginBottom:8 }}>🔒 How escrow works</div>
-        {[
-          "You pay now — funds are held securely by Car Care Connect",
-          "Seller is notified and arranges handover",
-          "You confirm receipt within 7 days after handover",
-          "Funds released to seller after your confirmation",
-          "Raise a dispute within 7 days if item not as described",
-        ].map((s,i)=>(
-          <div key={i} style={{ display:"flex", gap:8, marginBottom:4 }}>
-            <span style={{ color:"#378add", flexShrink:0 }}>{i+1}.</span>
-            <span style={{ fontSize:11, color:"#888" }}>{s}</span>
-          </div>
-        ))}
+      <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:8, padding:"0.75rem", marginBottom:16, fontSize:11, color:"#1d9e75", lineHeight:1.6 }}>
+        🔒 Funds held in escrow until you confirm receipt. 7-day dispute window after delivery.
       </div>
 
-      <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-        <button onClick={initPayment} disabled={paying}
-          style={{ background:paying?"#333":"#e6821e", border:"none", borderRadius:10, color:paying?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:paying?"not-allowed":"pointer" }}>
-          {paying?"Processing...":"💳 Pay KES "+Number(salePrice).toLocaleString()}
-        </button>
-        <button onClick={onCancel}
-          style={{ background:"none", border:"1px solid #333", borderRadius:10, color:"#666", fontSize:13, padding:"12px", cursor:"pointer" }}>
-          Cancel
-        </button>
-      </div>
+      <button onClick={initPayment} disabled={paying}
+        style={{ width:"100%", background:paying?"#333":"#e6821e", border:"none", borderRadius:10, color:paying?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:paying?"not-allowed":"pointer", marginBottom:8 }}>
+        {paying ? "Connecting to Pesapal..." : "Pay KES " + totalAmount.toFixed(0) + " →"}
+      </button>
+
+      <button onClick={onCancel}
+        style={{ width:"100%", background:"none", border:"1px solid #333", borderRadius:10, color:"#666", fontSize:13, padding:"11px", cursor:"pointer" }}>
+        Cancel
+      </button>
     </div>
   )
 }
-
