@@ -177,6 +177,9 @@ function DashboardRouter() {
           <Route path="claims" element={<CustomerClaims />} />
           <Route path="marketplace" element={<Marketplace />} />
           <Route path="marketplace/new" element={<CreateListing />} />
+          <Route path="marketplace/my-listings" element={<MyListings />} />
+          <Route path="marketplace/my-offers" element={<MyOffers />} />
+          <Route path="marketplace/transactions" element={<EscrowManager />} />
           <Route path="profile" element={<CustomerProfile />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </>}
@@ -197,6 +200,9 @@ function DashboardRouter() {
           <Route path="claims" element={<ProviderClaims />} />
           <Route path="marketplace" element={<Marketplace />} />
           <Route path="marketplace/new" element={<CreateListing />} />
+          <Route path="marketplace/my-listings" element={<MyListings />} />
+          <Route path="marketplace/my-offers" element={<MyOffers />} />
+          <Route path="marketplace/transactions" element={<EscrowManager />} />
           <Route path="profile" element={<ProviderProfile />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </>}
@@ -215,6 +221,9 @@ function DashboardRouter() {
           <Route path="profile" element={<DriverProfile />} />
           <Route path="marketplace" element={<Marketplace />} />
           <Route path="marketplace/new" element={<CreateListing />} />
+          <Route path="marketplace/my-listings" element={<MyListings />} />
+          <Route path="marketplace/my-offers" element={<MyOffers />} />
+          <Route path="marketplace/transactions" element={<EscrowManager />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </>}
       </Routes>
@@ -281,6 +290,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 
