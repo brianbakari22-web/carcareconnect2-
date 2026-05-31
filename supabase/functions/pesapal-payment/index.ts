@@ -7,7 +7,7 @@ const corsHeaders = {
 
 const PESAPAL_CONSUMER_KEY = Deno.env.get("PESAPAL_CONSUMER_KEY") ?? ""
 const PESAPAL_CONSUMER_SECRET = Deno.env.get("PESAPAL_CONSUMER_SECRET") ?? ""
-const PESAPAL_BASE_URL = "https://cybqa.pesapal.com/pesapalv3"
+const PESAPAL_BASE_URL = "https://pay.pesapal.com/v3"
 
 async function getToken() {
   const res = await fetch(PESAPAL_BASE_URL + "/api/Auth/RequestToken", {
@@ -67,3 +67,4 @@ serve(async (req) => {
     return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
   }
 })
+
