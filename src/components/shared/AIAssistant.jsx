@@ -29,7 +29,7 @@ COMMISSION STRUCTURE:
 
 BOOKING FLOW:
 Customer finds service -> Books online -> Provider confirms -> Service performed -> Customer reviews
-Payment via Flutterwave (M-Pesa and Card)
+Payment via Pesapal (M-Pesa STK push, Visa/Mastercard cards, bank transfers)
 
 GO SERVICE (Emergency):
 - Customer requests emergency roadside assistance
@@ -138,7 +138,7 @@ DATA & PRIVACY POLICY:
 - All data stored in Supabase PostgreSQL with Row Level Security (RLS)
 - Users can export data as PDF/JSON/CSV from profile settings
 - Data never sold to third parties
-- Payment data handled by Flutterwave (PCI compliant)
+- Payment data handled by Pesapal (regulated by Central Bank of Kenya)
 - Driver documents stored in Supabase Storage (encrypted)
 - Data retention: active accounts keep all data, deleted accounts removed after 30 days
 - 2FA available for admin accounts
@@ -168,6 +168,46 @@ SERVICE CATEGORIES:
 - Premium services (full diagnostic, major repairs)
 - GO Service (emergency roadside)
 - Concierge (vehicle pickup/delivery)
+
+MARKETPLACE VEHICLE INSPECTION FLOW:
+- All vehicle listings require CCC inspection before going live
+- Parts and accessories: no inspection required
+- Flow: Seller lists -> Admin requests inspection -> Seller pays KES 500 via Pesapal -> Admin assigns inspector -> Inspector visits -> Pass/Fail decision -> If passed: CCC Inspected badge added -> Admin approves listing -> Goes live
+- Buyers cannot make offers or message seller until vehicle is inspected and approved
+- Inspection status shown on listing: Pending CCC Inspection / CCC Verified
+- Inspection fee: KES 500 (non-refundable)
+- If failed: seller notified with reason, can relist after fixing issues
+
+VOUCHER SYSTEM:
+- Vouchers issued when service guarantee claim is approved
+- Format: CCC-XXXX-XXXX-XXXX
+- Valid for 30 days from issue date
+- Full value of original booking
+- Can be used on any provider (not the original offending provider)
+- Applied at booking checkout in voucher code field
+- One voucher per booking
+- Visible in Customer Payments -> My Vouchers tab
+
+PESAPAL PAYMENT DETAILS:
+- Live keys integrated (not sandbox)
+- Pending merchant contract signing for full activation
+- Current limit: KES 1,000 per transaction (test mode)
+- Full activation after contract signed with Pesapal
+- Contact: merchant@pesapal.com
+- Processing fee split: Customer pays 1%, Provider pays 1%, Platform pays 1% = 3% total
+
+CONTACT BLOCKING:
+- Phone numbers, emails, WhatsApp mentions automatically blocked in all chats
+- Replaced with [contact blocked]
+- Applies to marketplace chat, booking chat, and claim investigation chat
+- Database trigger fires on every message insert
+
+ADMIN MARKETPLACE CONTROLS:
+- Cannot approve vehicle listing without inspection
+- Request inspection button sends notification to seller
+- Mark as passed/failed after physical inspection
+- Approve and publish only available after inspection passed
+- Can feature listings, suspend listings, resolve disputes
 - Parts & commodities
 
 SERVICE PRICING IN NAIROBI (approximate KES):
@@ -413,5 +453,6 @@ export default function AIAssistant() {
     </>
   )
 }
+
 
 
