@@ -32,7 +32,7 @@ export default function CustomerGoService() {
   const [activeGoBookings, setActiveGoBookings] = useState([])
   const [goServices, setGoServices] = useState([])
   const [selectedService, setSelectedService] = useState(null)
-  const [selectedService, setSelectedService] = useState(null)
+
   const [showDepositPayment, setShowDepositPayment] = useState(false)
   const [payingCallout, setPayingCallout] = useState(false)
   useEffect(() => {
