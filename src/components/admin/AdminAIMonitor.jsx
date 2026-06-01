@@ -42,6 +42,22 @@ export default function AdminAIMonitor() {
         supabase.from("inspection_requests").select("id",{count:"exact",head:true}).eq("status","pending"),
       ])
 
+      // Get additional stats
+      const { count: totalBookings } = await supabase.from("bookings").select("id",{count:"exact",head:true})
+      const { count: completedBookings } = await supabase.from("bookings").select("id",{count:"exact",head:true}).eq("status","completed")
+      const { count: totalUsers } = await supabase.from("profiles").select("id",{count:"exact",head:true})
+      const { count: totalDrivers } = await supabase.from("profiles").select("id",{count:"exact",head:true}).eq("role","driver")
+      const { count: verifiedDrivers } = await supabase.from("profiles").select("id",{count:"exact",head:true}).eq("role","driver").eq("is_verified",true)
+      const { count: totalListings } = await supabase.from("marketplace_listings").select("id",{count:"exact",head:true})
+      const { count: activeListings } = await supabase.from("marketplace_listings").select("id",{count:"exact",head:true}).eq("status","active")
+      const { count: totalReviews } = await supabase.from("reviews").select("id",{count:"exact",head:true})
+      const { count: totalClaims } = await supabase.from("service_claims").select("id",{count:"exact",head:true})
+      const { count: resolvedClaims } = await supabase.from("service_claims").select("id",{count:"exact",head:true}).eq("status","resolved")
+      const { count: totalGoRequests } = await supabase.from("go_service_requests").select("id",{count:"exact",head:true})
+      const { count: totalTransactions } = await supabase.from("marketplace_transactions").select("id",{count:"exact",head:true})
+      const { count: paidTransactions } = await supabase.from("marketplace_transactions").select("id",{count:"exact",head:true}).eq("status","completed")
+      const { count: totalEmployees } = await supabase.from("employees").select("id",{count:"exact",head:true})
+
       const platformData = {
         stuck_bookings: stuckBookings?.length||0,
         stuck_booking_details: stuckBookings?.slice(0,5)||[],
@@ -57,38 +73,66 @@ export default function AdminAIMonitor() {
         todays_new_users: todayUsers?.length||0,
         active_go_requests: goRequests?.length||0,
         pending_inspections: pendingInspections||0,
+        total_bookings: totalBookings||0,
+        completed_bookings: completedBookings||0,
+        total_users: totalUsers||0,
+        total_drivers: totalDrivers||0,
+        verified_drivers: verifiedDrivers||0,
+        total_listings: totalListings||0,
+        active_listings: activeListings||0,
+        total_reviews: totalReviews||0,
+        total_claims: totalClaims||0,
+        resolved_claims: resolvedClaims||0,
+        total_go_requests: totalGoRequests||0,
+        total_marketplace_transactions: totalTransactions||0,
+        completed_marketplace_transactions: paidTransactions||0,
+        total_employees: totalEmployees||0,
       }
 
       const prompt = `You are the Car Care Connect AI Admin Monitor. Analyze this platform data and give a CONCISE priority report.
 
 PLATFORM STATUS RIGHT NOW:
+OPERATIONS:
 - Stuck bookings (pending >24hrs): ${platformData.stuck_bookings}
-- Pending service claims: ${platformData.pending_claims}
-- Unanswered support tickets: ${platformData.pending_support}
-- Unverified drivers: ${platformData.unverified_drivers}
-- Marketplace listings pending approval: ${platformData.pending_listings}
-- Completed bookings not yet paid out: ${platformData.completed_unpaid} (KES ${platformData.unpaid_amount.toLocaleString()})
-- Pending payout requests: ${platformData.pending_payouts}
-- Expiring vouchers (3 days): ${platformData.expiring_vouchers}
-- Active GO emergency requests: ${platformData.active_go_requests}
-- Pending vehicle inspections: ${platformData.pending_inspections}
+- Total bookings: ${platformData.total_bookings} | Completed: ${platformData.completed_bookings}
+- Active GO emergency requests: ${platformData.active_go_requests} | Total GO requests ever: ${platformData.total_go_requests}
 - Today new bookings: ${platformData.todays_bookings}
-- Today new users: ${platformData.todays_new_users}
 
-Give a SHORT report with:
-1. 🔴 CRITICAL (needs action NOW)
-2. 🟡 WARNING (needs action today)
-3. 🟢 TODAY (positive updates)
-4. 🔧 PLATFORM GAPS (features that need editing/fixing based on data)
-5. 💡 TOP RECOMMENDATION
+USERS:
+- Total users: ${platformData.total_users} | Today new: ${platformData.todays_new_users}
+- Total drivers: ${platformData.total_drivers} | Verified: ${platformData.verified_drivers} | Unverified: ${platformData.unverified_drivers}
+- Total employees: ${platformData.total_employees}
 
-For PLATFORM GAPS - look at:
-- Any zero counts that should have data (e.g. no completed bookings = payment flow untested)
-- Missing verifications (unverified drivers cant work)
-- Pending items that have been waiting too long
-- Any broken flows based on the data patterns
+PAYMENTS:
+- Completed bookings not yet paid: ${platformData.completed_unpaid} (KES ${platformData.unpaid_amount.toLocaleString()})
+- Pending payout requests: ${platformData.pending_payouts}
 
-Be direct, use bullet points, max 250 words.`
+MARKETPLACE:
+- Total listings: ${platformData.total_listings} | Active: ${platformData.active_listings} | Pending: ${platformData.pending_listings}
+- Total transactions: ${platformData.total_marketplace_transactions} | Completed: ${platformData.completed_marketplace_transactions}
+- Pending inspections: ${platformData.pending_inspections}
+
+QUALITY:
+- Service claims: ${platformData.total_claims} total | Resolved: ${platformData.resolved_claims} | Pending: ${platformData.pending_claims}
+- Total reviews: ${platformData.total_reviews}
+- Support tickets pending: ${platformData.pending_support}
+- Expiring vouchers (3 days): ${platformData.expiring_vouchers}
+
+Give a comprehensive report with these sections:
+
+1. 🔴 CRITICAL (needs action NOW - blocking operations)
+2. 🟡 WARNING (needs attention today)
+3. ✅ WORKING WELL (features confirmed working based on data)
+4. ❌ NOT WORKING / UNTESTED (zero data = untested or broken)
+5. 🔧 NEEDS EDITING (features that need fixes based on data patterns)
+6. 🟢 TODAY (positive activity)
+7. 💡 TOP 3 RECOMMENDATIONS (priority actions)
+
+For WORKING WELL - confirm features that have actual data
+For NOT WORKING - identify features with zero data that should have data by now
+For NEEDS EDITING - identify broken flows, missing steps, or incomplete features
+
+Be specific and actionable. Max 300 words. Use bullet points.`
 
       const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/ai-chat", {
         method: "POST",
@@ -214,4 +258,7 @@ Be direct, use bullet points, max 250 words.`
     </div>
   )
 }
+
+
+
 
