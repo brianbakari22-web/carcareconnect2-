@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import toast from "react-hot-toast"
 
 export default function AdminAIMonitor() {
   const [report, setReport] = useState(null)
@@ -77,6 +78,57 @@ export default function AdminAIMonitor() {
         supabase.from("inspection_requests").select("id",{count:"exact",head:true}).eq("status","pending"),
       ])
 
+      // Fraud detection queries
+      const { data: suspiciousCustomers } = await supabase.from("bookings")
+        .select("customer_id, count")
+        .eq("status","cancelled")
+        .gte("created_at", new Date(Date.now()-7*24*60*60*1000).toISOString())
+      
+      // Provider performance
+      const { data: providerStats } = await supabase.from("bookings")
+        .select("provider_id, status, total_amount, platform_commission")
+        .gte("created_at", new Date(Date.now()-30*24*60*60*1000).toISOString())
+
+      // Revenue intelligence  
+      const { data: thisWeekRevenue } = await supabase.from("bookings")
+        .select("platform_commission, created_at")
+        .eq("payment_status","paid")
+        .gte("created_at", new Date(Date.now()-7*24*60*60*1000).toISOString())
+
+      const { data: lastWeekRevenue } = await supabase.from("bookings")
+        .select("platform_commission")
+        .eq("payment_status","paid")
+        .gte("created_at", new Date(Date.now()-14*24*60*60*1000).toISOString())
+        .lt("created_at", new Date(Date.now()-7*24*60*60*1000).toISOString())
+
+      // Customer insights
+      const { data: inactiveCustomers } = await supabase.from("profiles")
+        .select("id,first_name,last_name")
+        .eq("role","customer")
+        .lt("updated_at", new Date(Date.now()-30*24*60*60*1000).toISOString())
+
+      const { data: newNoBooking } = await supabase.from("profiles")
+        .select("id,first_name,last_name,created_at")
+        .eq("role","customer")
+        .gte("created_at", new Date(Date.now()-7*24*60*60*1000).toISOString())
+
+      // Expiring documents
+      const { data: expiringDocs } = await supabase.from("driver_documents")
+        .select("driver_id, document_type, expiry_date")
+        .lt("expiry_date", new Date(Date.now()+7*24*60*60*1000).toISOString())
+        .gt("expiry_date", new Date().toISOString())
+        .eq("status","approved")
+
+      // Provider claims count
+      const { data: providerClaims } = await supabase.from("service_claims")
+        .select("provider_id, status")
+        .gte("created_at", new Date(Date.now()-30*24*60*60*1000).toISOString())
+
+      // High review providers
+      const { data: topReviews } = await supabase.from("reviews")
+        .select("provider_id, rating")
+        .gte("created_at", new Date(Date.now()-30*24*60*60*1000).toISOString())
+
       // Get additional stats
       const { count: totalBookings } = await supabase.from("bookings").select("id",{count:"exact",head:true})
       const { count: completedBookings } = await supabase.from("bookings").select("id",{count:"exact",head:true}).eq("status","completed")
@@ -123,6 +175,20 @@ export default function AdminAIMonitor() {
         total_marketplace_transactions: totalTransactions||0,
         completed_marketplace_transactions: paidTransactions||0,
         total_employees: totalEmployees||0,
+        // Revenue intelligence
+        this_week_revenue: thisWeekRevenue?.reduce((s,b)=>s+Number(b.platform_commission||0),0)||0,
+        last_week_revenue: lastWeekRevenue?.reduce((s,b)=>s+Number(b.platform_commission||0),0)||0,
+        revenue_trend: ((thisWeekRevenue?.reduce((s,b)=>s+Number(b.platform_commission||0),0)||0) - (lastWeekRevenue?.reduce((s,b)=>s+Number(b.platform_commission||0),0)||0)),
+        // Fraud detection
+        cancelled_last_7days: suspiciousCustomers?.length||0,
+        // Customer insights
+        inactive_customers_30days: inactiveCustomers?.length||0,
+        new_customers_no_booking: newNoBooking?.length||0,
+        // Driver documents
+        expiring_documents: expiringDocs?.length||0,
+        // Provider performance
+        providers_with_claims: [...new Set(providerClaims?.map(c=>c.provider_id)||[])].length,
+        avg_rating_this_month: topReviews?.length>0?(topReviews.reduce((s,r)=>s+Number(r.rating||0),0)/topReviews.length).toFixed(1):"N/A",
       }
 
       const prompt = `You are the Car Care Connect AI Admin Monitor. Analyze this platform data and give a CONCISE priority report.
@@ -155,9 +221,27 @@ MARKETPLACE:
 
 QUALITY:
 - Service claims: ${platformData.total_claims} total | Resolved: ${platformData.resolved_claims} | Pending: ${platformData.pending_claims}
-- Total reviews: ${platformData.total_reviews}
+- Providers with claims this month: ${platformData.providers_with_claims}
+- Total reviews: ${platformData.total_reviews} | Avg rating this month: ${platformData.avg_rating_this_month}
 - Support tickets pending: ${platformData.pending_support}
 - Expiring vouchers (3 days): ${platformData.expiring_vouchers}
+
+REVENUE INTELLIGENCE:
+- This week revenue: KES ${platformData.this_week_revenue?.toLocaleString()}
+- Last week revenue: KES ${platformData.last_week_revenue?.toLocaleString()}
+- Revenue trend: ${platformData.revenue_trend>=0?"UP":"DOWN"} KES ${Math.abs(platformData.revenue_trend||0).toLocaleString()} vs last week
+
+FRAUD DETECTION:
+- Cancelled bookings last 7 days: ${platformData.cancelled_last_7days}
+- Expiring driver documents (7 days): ${platformData.expiring_documents}
+
+CUSTOMER INSIGHTS:
+- Inactive customers (30+ days no activity): ${platformData.inactive_customers_30days}
+- New customers this week who havent booked: ${platformData.new_customers_no_booking}
+
+PROVIDER PERFORMANCE:
+- Providers with claims this month: ${platformData.providers_with_claims}
+- Average platform rating this month: ${platformData.avg_rating_this_month}
 
 Give a comprehensive report with these sections:
 
@@ -286,6 +370,43 @@ Be specific and actionable. Max 300 words. Use bullet points.`
                 ))}
               </div>
 
+              {/* Auto-actions */}
+              {report.platformData.stuck_bookings>0&&(
+                <div style={{ background:"#1a0808", border:"1px solid #e24b4a30", borderRadius:10, padding:"0.75rem", marginBottom:"1rem" }}>
+                  <div style={{ fontSize:12, color:"#e24b4a", fontWeight:600, marginBottom:8 }}>⚡ Quick Actions</div>
+                  <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
+                    {report.platformData.stuck_bookings>0&&(
+                      <button onClick={async()=>{
+                        if(!confirm("Cancel all "+report.platformData.stuck_bookings+" stuck bookings?")) return
+                        const cutoff = new Date(Date.now()-24*60*60*1000).toISOString()
+                        await supabase.from("bookings").update({status:"cancelled"}).eq("status","pending").lt("created_at",cutoff)
+                        toast.success("Stuck bookings cancelled")
+                        scanPlatform()
+                      }} style={{ background:"#e24b4a", border:"none", borderRadius:7, color:"#fff", fontSize:11, padding:"6px 12px", cursor:"pointer", fontWeight:600 }}>
+                        Cancel {report.platformData.stuck_bookings} stuck bookings
+                      </button>
+                    )}
+                    {report.platformData.inactive_customers_30days>0&&(
+                      <button onClick={async()=>{
+                        if(!confirm("Send re-engagement notification to "+report.platformData.inactive_customers_30days+" inactive customers?")) return
+                        const { data: inactive } = await supabase.from("profiles").select("id").eq("role","customer").lt("updated_at", new Date(Date.now()-30*24*60*60*1000).toISOString())
+                        if(inactive?.length>0) {
+                          await supabase.from("notifications").insert(inactive.map(u=>({
+                            user_id:u.id,
+                            title:"We miss you! 🚗",
+                            message:"Book a service today and earn double loyalty points. Use code WELCOME back for 10% off.",
+                            type:"info"
+                          })))
+                          toast.success("Re-engagement notifications sent!")
+                        }
+                        scanPlatform()
+                      }} style={{ background:"#378add", border:"none", borderRadius:7, color:"#fff", fontSize:11, padding:"6px 12px", cursor:"pointer", fontWeight:600 }}>
+                        Re-engage {report.platformData.inactive_customers_30days} inactive customers
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
               {/* Feature sync checklist */}
               <div style={{ background:"#0f0f0f", borderRadius:10, padding:"1rem", marginBottom:"1rem" }}>
                 <div style={{ fontSize:12, fontWeight:600, color:"#f0ede6", marginBottom:10 }}>🔄 Feature Sync Checklist</div>
@@ -343,6 +464,11 @@ Be specific and actionable. Max 300 words. Use bullet points.`
     </div>
   )
 }
+
+
+
+
+
 
 
 
