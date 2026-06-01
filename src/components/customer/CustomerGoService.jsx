@@ -97,11 +97,20 @@ export default function CustomerGoService() {
       .select("*")
       .eq("customer_id", user.id)
       .eq("is_emergency", true)
-      .not("status", "in", '("completed","cancelled")')
+      .not("status", "in", "(completed,cancelled)")
       .order("created_at", { ascending:false })
     setActiveGoBookings(data||[])
+    if (data && data.length > 0 && data[0].go_callout_paid) {
+      const active = data[0]
+      const elapsed = Math.floor((Date.now() - new Date(active.created_at).getTime()) / 1000)
+      const remaining = Math.max(0, 15*60 - elapsed)
+      if (remaining > 0 && active.status === "pending") {
+        setBooking(active)
+        setStep("waiting")
+        setTimeLeft(remaining)
+      }
+    }
   }
-
   async function loadGoServices() {
     const { data } = await supabase.from("services")
       .select("*, profiles(business_name,first_name,last_name,city)")
