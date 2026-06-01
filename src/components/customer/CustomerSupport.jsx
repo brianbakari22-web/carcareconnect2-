@@ -122,12 +122,20 @@ export default function CustomerSupport() {
             <span style={{ fontSize:10, color:"#444" }}>#{selected.ticket_number}</span>
           </div>
         </div>
-        {selected.status!=="closed"&&selected.status!=="resolved"&&(
-          <button onClick={()=>closeTicket(selected.id)}
-            style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#666", fontSize:11, padding:"5px 10px", cursor:"pointer", flexShrink:0 }}>
-            {language==="sw"?"Funga":"Close ticket"}
-          </button>
-        )}
+        <div style={{ display:"flex", gap:6 }}>
+          {selected.status==="resolved"&&(
+            <button onClick={async()=>{ await supabase.from("support_tickets").update({status:"open"}).eq("id",selected.id); toast.success("Ticket reopened"); load(); setSelected(t=>({...t,status:"open"})) }}
+              style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer", flexShrink:0 }}>
+              🔄 Reopen
+            </button>
+          )}
+          {selected.status!=="closed"&&selected.status!=="resolved"&&(
+            <button onClick={()=>closeTicket(selected.id)}
+              style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#666", fontSize:11, padding:"5px 10px", cursor:"pointer", flexShrink:0 }}>
+              {language==="sw"?"Funga":"Close ticket"}
+            </button>
+          )}
+        </div>
       </div>
 
       <div style={{ flex:1, overflowY:"auto", background:"#111", borderRadius:12, border:"1px solid #1e1e1e", padding:"1rem", display:"flex", flexDirection:"column", gap:10, marginBottom:10 }}>
@@ -256,7 +264,20 @@ export default function CustomerSupport() {
                   </span>
                 </div>
               </div>
-              <div style={{ fontSize:11, color:"#555" }}>{ticket.category} · {language==="sw"?"Bonyeza kuona":"Click to view"}</div>
+              <div style={{ fontSize:11, color:"#555", marginBottom:4 }}>{ticket.category} · {language==="sw"?"Bonyeza kuona":"Click to view"}</div>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                <div style={{ fontSize:11, color:ticket.status==="open"?"#e6821e":ticket.status==="in_progress"?"#378add":ticket.status==="resolved"?"#1d9e75":"#555" }}>
+                  {ticket.status==="open"?"⏳ Awaiting response — within 24hrs":
+                   ticket.status==="in_progress"?"👤 Support team is reviewing your ticket":
+                   ticket.status==="resolved"?"✅ Resolved — please confirm or reopen":
+                   "🔒 Closed"}
+                </div>
+                {ticket.status==="open"&&(
+                  <div style={{ fontSize:10, color:"#444" }}>
+                    {Math.floor((Date.now()-new Date(ticket.created_at).getTime())/(1000*60*60))}h ago
+                  </div>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -264,3 +285,5 @@ export default function CustomerSupport() {
     </div>
   )
 }
+
+
