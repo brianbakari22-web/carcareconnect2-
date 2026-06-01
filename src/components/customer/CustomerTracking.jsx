@@ -32,12 +32,22 @@ export default function CustomerTracking() {
     if (!selected) return
     if (selected.driver_id) loadDriver(selected)
     if (selected.assigned_mechanic_id) loadMechanic(selected)
+    // Live update every 10 seconds
+    const interval = setInterval(() => {
+      if (selected.driver_id) loadDriver(selected)
+      if (selected.assigned_mechanic_id) loadMechanic(selected)
+    }, 10000)
 
     const sub = supabase.channel(`tracking-${selected.id}`)
       .on("postgres_changes", { event:"INSERT", schema:"public", table:"driver_location_history", filter:`booking_id=eq.${selected.id}` },
         payload => {
           const { latitude, longitude } = payload.new
           setDriver(d=>d?{...d,current_lat:latitude,current_lng:longitude}:d)
+          // Smoothly move marker
+          if (driverMarkerRef.current) {
+            driverMarkerRef.current.setLatLng([latitude, longitude])
+            if (mapInstanceRef.current) mapInstanceRef.current.panTo([latitude, longitude], {animate:true, duration:1})
+          }
           if (driverMarkerRef.current) driverMarkerRef.current.setLatLng([latitude, longitude])
           if (mapInstanceRef.current) mapInstanceRef.current.panTo([latitude, longitude])
         })
@@ -50,7 +60,7 @@ export default function CustomerTracking() {
       .on("postgres_changes", { event:"UPDATE", schema:"public", table:"bookings", filter:`id=eq.${selected.id}` },
         payload => setSelected(s=>({...s,...payload.new})))
       .subscribe()
-    return () => supabase.removeChannel(sub)
+    return () => { supabase.removeChannel(sub); clearInterval(interval) }
   }, [selected?.id])
 
   useEffect(() => {
@@ -62,16 +72,20 @@ export default function CustomerTracking() {
       const L = window.L
       const lat = driver?.current_lat || mechanic?.current_latitude || -1.2921
       const lng = driver?.current_lng || mechanic?.current_longitude || 36.8219
-      const map = L.map(mapRef.current).setView([lat, lng], 13)
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map)
+      const map = L.map(mapRef.current, { zoomControl:true, attributionControl:false }).setView([lat, lng], 14)
+      // Better looking map tiles
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+        maxZoom:19,
+        subdomains:"abcd"
+      }).addTo(map)
 
       if (driver?.current_lat) {
-        const driverIcon = L.divIcon({ className:"", html:`<div style="background:#378add;width:38px;height:38px;border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 8px rgba(0,0,0,0.3);">🚗</div>`, iconSize:[38,38], iconAnchor:[19,19] })
+        const driverIcon = L.divIcon({ className:"", html:`<div style="position:relative"><div style="position:absolute;inset:-8px;border-radius:50%;border:2px solid #378add;animation:ping 1.5s ease-out infinite;opacity:0.6"></div><div style="background:#378add;width:42px;height:42px;border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 12px rgba(55,138,221,0.5);">🚗</div></div>`, iconSize:[42,42], iconAnchor:[21,21] })
         driverMarkerRef.current = L.marker([driver.current_lat, driver.current_lng], { icon:driverIcon }).addTo(map).bindPopup(`Driver: ${driver.first_name} ${driver.last_name}`)
       }
 
       if (mechanic?.current_latitude) {
-        const mechanicIcon = L.divIcon({ className:"", html:`<div style="background:#1d9e75;width:38px;height:38px;border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 8px rgba(0,0,0,0.3);">👨‍🔧</div>`, iconSize:[38,38], iconAnchor:[19,19] })
+        const mechanicIcon = L.divIcon({ className:"", html:`<div style="position:relative"><div style="position:absolute;inset:-8px;border-radius:50%;border:2px solid #1d9e75;animation:ping 1.5s ease-out infinite;opacity:0.6"></div><div style="background:#1d9e75;width:42px;height:42px;border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 12px rgba(29,158,117,0.5);">👨‍🔧</div></div>`, iconSize:[42,42], iconAnchor:[21,21] })
         mechanicMarkerRef.current = L.marker([mechanic.current_latitude, mechanic.current_longitude], { icon:mechanicIcon }).addTo(map).bindPopup(`Mechanic: ${mechanic.first_name} ${mechanic.last_name}`)
       }
 
@@ -117,6 +131,10 @@ export default function CustomerTracking() {
     <div>
       <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
       <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"/>
+      <style>{`
+        @keyframes ping { 0%{transform:scale(1);opacity:0.6} 100%{transform:scale(2.5);opacity:0} }
+        .leaflet-container { background:#1a1a1a !important; }
+      `}</style>
 
       <button onClick={()=>{ setSelected(null); setDriver(null); setMechanic(null); if(mapInstanceRef.current){mapInstanceRef.current.remove();mapInstanceRef.current=null} }}
         style={{ background:"none", border:"none", color:"#e6821e", cursor:"pointer", fontSize:13, marginBottom:"1rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
@@ -132,6 +150,15 @@ export default function CustomerTracking() {
         </div>
 
         {/* Concierge progress */}
+        {(driver?.current_lat||mechanic?.current_latitude)&&(
+          <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:8, padding:"0.75rem", marginBottom:10, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+            <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+              <div style={{ width:8, height:8, borderRadius:"50%", background:"#1d9e75", boxShadow:"0 0 6px #1d9e75", animation:"ping 1.5s ease-out infinite" }}/>
+              <span style={{ fontSize:12, color:"#1d9e75", fontWeight:600 }}>Live tracking active</span>
+            </div>
+            <span style={{ fontSize:11, color:"#555" }}>Updates every 10s</span>
+          </div>
+        )}
         {selected.is_concierge&&selected.concierge_status&&(
           <div style={{ marginBottom:12 }}>
             <div style={{ fontSize:11, color:"#555", marginBottom:6 }}>Delivery progress</div>
@@ -259,3 +286,7 @@ export default function CustomerTracking() {
     </div>
   )
 }
+
+
+
+
