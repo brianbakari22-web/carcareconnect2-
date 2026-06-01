@@ -135,6 +135,7 @@ export default function Layout({ children }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
   const [unreadCount, setUnreadCount] = useState(0)
+  const [unreadChat, setUnreadChat] = useState(0)
   const { user } = useAuth()
 
   useEffect(() => {
@@ -148,10 +149,13 @@ export default function Layout({ children }) {
   useEffect(() => {
     if (!user) return
     supabase.from("notifications").select("id",{count:"exact"}).eq("user_id",user.id).eq("is_read",false).then(({count})=>setUnreadCount(count||0))
+    supabase.from("chat_messages").select("id",{count:"exact"}).eq("receiver_id",user.id).eq("is_read",false).then(({count})=>setUnreadChat(count||0))
     const sub = supabase.channel(`layout-notifs-${user.id}`)
       .on("postgres_changes",{event:"INSERT",schema:"public",table:"notifications",filter:`user_id=eq.${user.id}`},()=>setUnreadCount(c=>c+1))
+      .on("postgres_changes",{event:"INSERT",schema:"public",table:"chat_messages",filter:`receiver_id=eq.${user.id}`},()=>setUnreadChat(c=>c+1))
       .on("postgres_changes",{event:"UPDATE",schema:"public",table:"notifications",filter:`user_id=eq.${user.id}`},()=>{
         supabase.from("notifications").select("id",{count:"exact"}).eq("user_id",user.id).eq("is_read",false).then(({count})=>setUnreadCount(count||0))
+    supabase.from("chat_messages").select("id",{count:"exact"}).eq("receiver_id",user.id).eq("is_read",false).then(({count})=>setUnreadChat(count||0))
       })
       .subscribe()
     return () => supabase.removeChannel(sub)
@@ -357,6 +361,7 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 
 
