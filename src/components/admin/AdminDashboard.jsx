@@ -1,4 +1,5 @@
 import useIsMobile from "../../lib/useIsMobile"
+import AdminAIMonitor from "./AdminAIMonitor"
 import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import toast from "react-hot-toast"
@@ -185,6 +186,7 @@ export default function AdminDashboard() {
           ))}
         </div>
       </div>
+      <AdminAIMonitor />
 
       {/* Secondary stats */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:8, marginBottom:"1rem" }}>
@@ -283,4 +285,5 @@ export default function AdminDashboard() {
     </div>
   )
 }
+
 
