@@ -140,6 +140,12 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
     setMessages(prev => prev.filter(m => m.id!==id))
   }
 
+  async function deleteMessage(id) {
+    if (!confirm("Delete this message?")) return
+    await supabase.from("chat_messages").delete().eq("id", id).eq("sender_id", user.id)
+    setMessages(prev => prev.filter(m => m.id!==id))
+  }
+
   function handleKeyDown(e) {
     if (e.key==="Enter" && !e.shiftKey) { e.preventDefault(); send(e) }
     else broadcastTyping()
