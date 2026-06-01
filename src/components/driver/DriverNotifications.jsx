@@ -34,6 +34,16 @@ export default function DriverNotifications() {
     setNotifications(n => n.map(x => x.id===id ? {...x, is_read:true} : x))
   }
 
+  async function deleteNotif(id) {
+    await supabase.from("notifications").delete().eq("id", id).eq("user_id", user.id)
+    setNotifications(n => n.filter(x => x.id!==id))
+  }
+  async function clearAll() {
+    if (!confirm("Clear all notifications?")) return
+    await supabase.from("notifications").delete().eq("user_id", user.id)
+    setNotifications([])
+    toast.success("All cleared")
+  }
   async function markAllRead() {
     await supabase.from("notifications").update({ is_read:true }).eq("user_id", user.id).eq("is_read", false)
     setNotifications(n => n.map(x => ({...x, is_read:true})))
@@ -57,7 +67,10 @@ export default function DriverNotifications() {
           <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#f0ede6" }}>{t("notifications")}</div>
           {unread>0&&<div style={{ fontSize:12, color:"#1d9e75", marginTop:2 }}>{unread} unread</div>}
         </div>
-        {unread>0&&<button onClick={markAllRead} style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#888", fontSize:12, padding:"6px 12px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>Mark all read</button>}
+        <div style={{ display:"flex", gap:6 }}>
+          {unread>0&&<button onClick={markAllRead} style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#888", fontSize:12, padding:"6px 12px", cursor:"pointer" }}>Mark all read</button>}
+          {notifications.length>0&&<button onClick={clearAll} style={{ background:"none", border:"1px solid #e24b4a30", borderRadius:7, color:"#e24b4a", fontSize:12, padding:"6px 12px", cursor:"pointer" }}>Clear all</button>}
+        </div>
       </div>
       {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
       {!loading&&notifications.length===0&&(
@@ -86,3 +99,5 @@ export default function DriverNotifications() {
     </div>
   )
 }
+
+
