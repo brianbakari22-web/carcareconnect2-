@@ -42,15 +42,17 @@ export default function ProviderChat() {
       const customer = profs?.find(p=>p.id===b.customer_id)
       const msgs = lastMessages?.filter(m=>m.booking_id===b.id)||[]
       const last = msgs[0]
+      const _hasMessages = msgs.length>0
       const unread = msgs.filter(m=>m.receiver_id===user.id&&!m.is_read).length
       return {
+        _hasMessages,
         bookingId: b.id, serviceName: b.service_name, bookingDate: b.booking_date,
         status: b.status, otherUserId: b.customer_id,
         otherUserName: `${customer?.first_name||""} ${customer?.last_name||""}`.trim()||"Customer",
         lastMessage: last?.message||"No messages yet", lastTime: last?.created_at, unread,
       }
     })
-    setConversations(convs)
+    setConversations(convs.filter(c=>c._hasMessages))
     setLoading(false)
   }
 
@@ -109,4 +111,5 @@ export default function ProviderChat() {
     </>
   )
 }
+
 

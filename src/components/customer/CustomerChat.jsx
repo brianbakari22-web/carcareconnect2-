@@ -48,6 +48,7 @@ export default function CustomerChat() {
       return {
         bookingId: b.id,
         serviceName: b.service_name,
+        _hasMessages: msgs.length>0,
         bookingDate: b.booking_date,
         status: b.status,
         otherUserId: b.provider_id,
@@ -57,7 +58,7 @@ export default function CustomerChat() {
         unread,
       }
     })
-    setConversations(convs)
+    setConversations(convs.filter(c=>c._hasMessages))
     setLoading(false)
   }
 
@@ -161,5 +162,6 @@ export default function CustomerChat() {
     </>
   )
 }
+
 
 

@@ -43,6 +43,7 @@ export default function DriverChat() {
         const profile = profs?.find(p=>p.id===b.customer_id)
         const msgs = lastMessages?.filter(m=>m.booking_id===b.id)||[]
         const last = msgs[0]
+      const _hasMessages = msgs.length>0
         const unread = msgs.filter(m=>m.receiver_id===user.id&&!m.is_read).length
         convos.push({
           id: b.id,
@@ -72,6 +73,7 @@ export default function DriverChat() {
       listingIds.forEach(lid=>{
         const msgs = marketMsgs.filter(m=>m.listing_id===lid)
         const last = msgs[0]
+      const _hasMessages = msgs.length>0
         const otherUserId = last.sender_id===user.id ? last.receiver_id : last.sender_id
         const otherProfile = last.profiles
         const unread = msgs.filter(m=>m.receiver_id===user.id&&!m.is_read).length
@@ -197,4 +199,5 @@ export default function DriverChat() {
     </div>
   )
 }
+
 
