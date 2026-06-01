@@ -188,7 +188,9 @@ export default function Layout({ children }) {
   if (isMobile) return (
     <div style={{ display:"flex", flexDirection:"column", minHeight:"100vh", background:theme.bg, fontFamily:"'DM Sans',sans-serif", color:theme.text }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
-      ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:${theme.border};border-radius:2px;}`}</style>
+      ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:${theme.border};border-radius:2px;}
+      @keyframes notif-glow{0%,100%{filter:drop-shadow(0 0 2px #e24b4a)}50%{filter:drop-shadow(0 0 5px #e24b4a)}}
+      @keyframes chat-glow{0%,100%{filter:drop-shadow(0 0 2px #378add)}50%{filter:drop-shadow(0 0 5px #378add)}}`}</style>
 
       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0.75rem 1rem", borderBottom:`1px solid ${theme.border}`, background:theme.bgSecondary, position:"sticky", top:0, zIndex:50 }}>
         <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:theme.text }}>
@@ -274,7 +276,7 @@ export default function Layout({ children }) {
             onClick={item.path==="more"?()=>setMobileMenuOpen(true):()=>navigate(item.path)}
             style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:3, padding:"8px 4px", background:"transparent", border:"none", cursor:"pointer", color:isActive(item)?activeColor:theme.textFaint, borderTop:`2px solid ${isActive(item)?activeColor:"transparent"}` }}>
             <span style={{ position:"relative", display:"inline-block" }}>
-              <span style={{ fontSize:20 }}>{item.icon}</span>
+              <span style={{ fontSize:20, animation:item.key==="notifications"&&unreadCount>0?"notif-glow 2s ease-in-out infinite":item.key==="messages"&&unreadChat>0?"chat-glow 2s ease-in-out infinite":undefined }}>{item.icon}</span>
               {item.key==="notifications"&&unreadCount>0&&(
                 <span style={{ position:"absolute", top:-4, right:-4, background:"#e24b4a", color:"#fff", borderRadius:"50%", fontSize:8, fontWeight:800, minWidth:14, height:14, display:"flex", alignItems:"center", justifyContent:"center" }}>{unreadCount>9?"9+":unreadCount}</span>
               )}
@@ -361,6 +363,8 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
+
 
 
 
