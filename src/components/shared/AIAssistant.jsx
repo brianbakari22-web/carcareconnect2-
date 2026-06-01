@@ -218,6 +218,43 @@ ADMIN MARKETPLACE CONTROLS:
 - Can feature listings, suspend listings, resolve disputes
 - Parts & commodities
 
+EMPLOYEE MANAGEMENT:
+- Admin can add and manage platform employees
+- Employee roles: customer_service, inspector, accountant, manager, field_driver, mechanic, other
+- Departments: operations, finance, support, field, management
+- Salary types: fixed, commission only, mixed (fixed + commission)
+- Commission can be based on: platform revenue, inspections done, bookings completed
+- Payroll processing: admin selects period, system auto-calculates commission
+- Payment methods: M-Pesa, bank transfer, cash
+- Payment history tracked per employee
+- Employee can be activated/deactivated
+- Example salary structures:
+  Inspector: KES 30,000/month + KES 300 per inspection
+  Customer service: KES 25,000/month fixed
+  Manager: KES 60,000/month + 2% of platform revenue
+
+PAYMENT TRACKING (Admin):
+- Full visibility of all platform payments
+- Tracks: bookings, GO Service callout fees, marketplace escrow
+- Revenue stats: total revenue, pending release, anticipated revenue, escrow held
+- GO callout fee: KES 500 per emergency (KES 425 to mechanic, KES 75 to platform)
+- Parts revenue tracked separately with commission
+- Transport allowance tracking (KES 200 per concierge delivery)
+- Admin can release payment to provider after service completion
+- Admin can hold/dispute payments
+- Admin can release marketplace escrow to seller
+- Pesapal tracking ID shown for each online payment
+- Filter bookings by payment status: all, pending, paid, disputed
+- Anticipated revenue = all non-cancelled bookings platform commission
+
+FINANCIAL CONTROLS:
+- Payments never released automatically
+- Admin must manually release payment after confirming service completion
+- Both customer and provider must confirm before release
+- Disputed payments held until admin resolves
+- Parts cost approved by admin before provider orders
+- Transport allowance released only after dropoff report filed
+
 SERVICE PRICING IN NAIROBI (approximate KES):
 - Oil change: 2,000 - 5,000
 - Brake pads: 3,000 - 8,000
@@ -461,6 +498,7 @@ export default function AIAssistant() {
     </>
   )
 }
+
 
 
 
