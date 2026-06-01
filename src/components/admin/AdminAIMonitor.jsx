@@ -79,9 +79,16 @@ Give a SHORT report with:
 1. 🔴 CRITICAL (needs action NOW)
 2. 🟡 WARNING (needs action today)
 3. 🟢 TODAY (positive updates)
-4. 💡 TOP RECOMMENDATION
+4. 🔧 PLATFORM GAPS (features that need editing/fixing based on data)
+5. 💡 TOP RECOMMENDATION
 
-Be direct, use bullet points, max 200 words.`
+For PLATFORM GAPS - look at:
+- Any zero counts that should have data (e.g. no completed bookings = payment flow untested)
+- Missing verifications (unverified drivers cant work)
+- Pending items that have been waiting too long
+- Any broken flows based on the data patterns
+
+Be direct, use bullet points, max 250 words.`
 
       const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/ai-chat", {
         method: "POST",
@@ -207,3 +214,4 @@ Be direct, use bullet points, max 200 words.`
     </div>
   )
 }
+
