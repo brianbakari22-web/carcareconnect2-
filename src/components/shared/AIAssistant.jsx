@@ -33,11 +33,19 @@ Payment via Pesapal (M-Pesa STK push, Visa/Mastercard cards, bank transfers)
 
 GO SERVICE (Emergency):
 - Customer requests emergency roadside assistance
-- Platform notifies providers in order
-- Provider has 15 minutes to respond
-- 5 attempts before notifying customer of no response
-- Online payment required
-- Safety checklist shown to customer while waiting (hazards, warning triangles, NTSA number 0800 723 573, Police 999)
+- KES 500 mechanic callout fee paid upfront via Pesapal before request is sent
+- Callout fee split: Mechanic KES 425 (85%), Platform KES 75 (15%)
+- This deters prank calls — only serious emergencies will pay upfront
+- Maximum 2 GO Service requests per day per customer
+- Provider has 15 minutes to respond per attempt
+- Up to 5 providers attempted before notifying customer of unavailability
+- Live 15-minute countdown timer shown to customer while waiting
+- Safety checklist shown to customer while waiting (hazards, warning triangles, NTSA 0800 723 573, Police 999)
+- Provider receives loud alarm + browser push notification when new request arrives
+- After provider accepts: customer gets notification with mechanic name, phone, specialization
+- Service fee paid separately after service completion
+- Waiting screen auto-resumes after Pesapal payment redirect
+- Emergency types: flat tire, dead battery, out of fuel, car wont start, overheating, towing, other
 
 CONCIERGE SERVICE:
 - Driver picks up customer vehicle
@@ -453,6 +461,7 @@ export default function AIAssistant() {
     </>
   )
 }
+
 
 
 
