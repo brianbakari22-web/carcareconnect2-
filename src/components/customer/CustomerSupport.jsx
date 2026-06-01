@@ -31,9 +31,11 @@ export default function CustomerSupport() {
     const sub = supabase.channel(`ticket-${selected.id}`)
       .on("postgres_changes", { event:"INSERT", schema:"public", table:"support_messages", filter:`ticket_id=eq.${selected.id}` },
         payload => setMessages(m => [...m, payload.new]))
+      .on("postgres_changes", { event:"UPDATE", schema:"public", table:"support_tickets", filter:`id=eq.${selected.id}` },
+        payload => { setSelected(s=>({...s,...payload.new})) })
       .subscribe()
     return () => supabase.removeChannel(sub)
-  }, [selected])
+  }, [selected?.id])
 
   async function load() {
     const [{ data: tks }, { data: bks }] = await Promise.all([
@@ -105,6 +107,13 @@ export default function CustomerSupport() {
     load()
   }
 
+  async function reopenTicket(ticketId) {
+    await supabase.from("support_tickets").update({ status:"open", updated_at:new Date().toISOString() }).eq("id", ticketId).eq("customer_id", user.id)
+    toast.success("Ticket reopened")
+    setSelected(null)
+    load()
+  }
+
   function getSLAStatus(ticket) {
     if (ticket.status==="resolved"||ticket.status==="closed") return null
     const hours = (Date.now() - new Date(ticket.created_at).getTime()) / (1000*60*60)
@@ -130,12 +139,20 @@ export default function CustomerSupport() {
             <span style={{ fontSize:10, color:"#444" }}>#{selected.ticket_number}</span>
           </div>
         </div>
-        {selected.status!=="closed"&&selected.status!=="resolved"&&(
-          <button onClick={()=>closeTicket(selected.id)}
-            style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#666", fontSize:11, padding:"5px 10px", cursor:"pointer", flexShrink:0 }}>
-            {language==="sw"?"Funga":"Close ticket"}
-          </button>
-        )}
+        <div style={{ display:"flex", gap:6 }}>
+          {selected.status==="resolved"&&(
+            <button onClick={()=>reopenTicket(selected.id)}
+              style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+              🔄 Reopen
+            </button>
+          )}
+          {selected.status!=="closed"&&selected.status!=="resolved"&&(
+            <button onClick={()=>closeTicket(selected.id)}
+              style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#666", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+              {language==="sw"?"Funga":"Close ticket"}
+            </button>
+          )}
+        </div>
       </div>
 
       <div style={{ flex:1, overflowY:"auto", background:"#111", borderRadius:12, border:"1px solid #1e1e1e", padding:"1rem", display:"flex", flexDirection:"column", gap:10, marginBottom:10 }}>
@@ -290,5 +307,6 @@ export default function CustomerSupport() {
 
 
 // cache-bust: 20260602004412
+
 
 
