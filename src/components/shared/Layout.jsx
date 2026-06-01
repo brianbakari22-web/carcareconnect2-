@@ -189,7 +189,11 @@ export default function Layout({ children }) {
     <div style={{ display:"flex", flexDirection:"column", minHeight:"100vh", background:theme.bg, fontFamily:"'DM Sans',sans-serif", color:theme.text }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
       ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:${theme.border};border-radius:2px;}
-      @keyframes notif-glow{0%,100%{filter:drop-shadow(0 0 2px #e24b4a)}50%{filter:drop-shadow(0 0 5px #e24b4a)}}
+      ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:${theme.border};border-radius:2px;}
+      @keyframes notif-glow{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:0.7}}
+      @keyframes chat-glow{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:0.7}}
+      .notif-badge{animation:notif-glow 1s ease-in-out infinite}
+      .chat-badge{animation:chat-glow 1s ease-in-out infinite}
       @keyframes chat-glow{0%,100%{filter:drop-shadow(0 0 2px #378add)}50%{filter:drop-shadow(0 0 5px #378add)}}`}</style>
 
       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0.75rem 1rem", borderBottom:`1px solid ${theme.border}`, background:theme.bgSecondary, position:"sticky", top:0, zIndex:50 }}>
@@ -366,6 +370,7 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 
 
