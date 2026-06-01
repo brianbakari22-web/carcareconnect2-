@@ -266,7 +266,7 @@ Be specific and actionable. Max 300 words. Use bullet points.`
           "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc"
         },
         body: JSON.stringify({
-          system: "You are the Car Care Connect AI Admin Monitor. Be concise, direct and actionable. Always respond in plain text with emoji indicators.",
+          system: "You are the Car Care Connect AI Admin Monitor with DIRECT access to live platform data provided to you. You have already scanned the database and the results are in your context. You CAN see real data. When asked about tickets, claims, bookings etc - reference the numbers from the platform data provided. For actions that need UI interaction, guide the admin to the specific page and button. For actions the system can execute automatically (like cancelling stuck bookings), tell admin to use the Quick Action buttons above the chat. Be concise, direct and specific. Never say you cannot access data - you already have it.",
           messages: [{ role:"user", content:prompt }]
         })
       })
@@ -464,6 +464,7 @@ Be specific and actionable. Max 300 words. Use bullet points.`
     </div>
   )
 }
+
 
 
 
