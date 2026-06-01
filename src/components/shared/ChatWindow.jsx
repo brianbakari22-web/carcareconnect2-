@@ -182,7 +182,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
           return (
             <div key={m.id} style={{ display:"flex", justifyContent:isMine?"flex-end":"flex-start", alignItems:"flex-end", gap:4 }}>
               {isMine&&!m._pending&&(
-                <button onClick={()=>deleteMessage(m.id)} style={{ background:"none", border:"none", color:"#333", cursor:"pointer", fontSize:12, padding:"2px 4px", opacity:0.6, lineHeight:1, flexShrink:0 }} title="Delete message">🗑</button>
+                <button onClick={()=>deleteMessage(m.id)} style={{ background:"#1a0808", border:"1px solid #e24b4a40", borderRadius:6, color:"#e24b4a", cursor:"pointer", fontSize:11, padding:"3px 7px", lineHeight:1, flexShrink:0 }} title="Delete">🗑</button>
               )}
               <div style={{ maxWidth:"75%", padding:"10px 14px", borderRadius:isMine?"14px 14px 4px 14px":"14px 14px 14px 4px", background:isMine?"#e6821e":"#1a1a1a", color:isMine?"#fff":"#f0ede6", fontSize:13, lineHeight:1.5, opacity:m._pending?0.7:1, transition:"opacity 0.2s" }}>
                 <div style={{ wordBreak:"break-word" }}>{m.message}</div>
@@ -214,6 +214,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
     </div>
   )
 }
+
 
 
 
