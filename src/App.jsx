@@ -84,6 +84,7 @@ import AdminMechanics from "./components/admin/AdminMechanics"
 import AdminDisputes from "./components/admin/AdminDisputes"
 import AdminClaims from "./components/admin/AdminClaims"
 import AdminEmployees from "./components/admin/AdminEmployees"
+import AdminPaymentTracking from "./components/admin/AdminPaymentTracking"
 
 const ADMIN_SECRET = "ccc-admin-x7k9m2p4q8"
 
@@ -254,6 +255,7 @@ function AdminDashboardRouter() {
               <Route path="health" element={<AdminHealth />} />
               <Route path="marketplace" element={<AdminMarketplace />} />
           <Route path="employees" element={<AdminEmployees />} />
+          <Route path="payment-tracking" element={<AdminPaymentTracking />} />
           <Route path="providers" element={<AdminProviders />} />
           <Route path="drivers" element={<AdminDrivers />} />
           <Route path="mechanics" element={<AdminMechanics />} />
@@ -292,6 +294,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 
