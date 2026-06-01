@@ -138,8 +138,19 @@ export default function ProviderClaims() {
                 </div>
               )}
               {c.status==="approved"&&(
-                <div style={{ marginTop:8, padding:"0.6rem", background:"#1a0808", borderRadius:7, fontSize:11, color:"#e24b4a" }}>
-                  ❌ Claim approved — KES {Number(c.bookings?.total_amount||0).toLocaleString()} deducted from your earnings. Contact support within 48 hours to dispute.
+                <div style={{ marginTop:8 }}>
+                  <div style={{ padding:"0.6rem", background:"#1a0808", borderRadius:7, fontSize:11, color:"#e24b4a", marginBottom:6 }}>
+                    ❌ Claim approved — KES {Number(c.bookings?.total_amount||0).toLocaleString()} deducted. Dispute within 48 hours.
+                  </div>
+                  <button onClick={()=>setChatClaim(chatClaim===c.id?null:c.id)}
+                    style={{ background:"#1a0808", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+                    ⚠️ {chatClaim===c.id?"Close":"Dispute this decision"}
+                  </button>
+                  {chatClaim===c.id&&(
+                    <div style={{ height:280, marginTop:8 }}>
+                      <ChatWindow claimId={c.id} otherUserId={null} otherUserName="CCC Admin" onClose={()=>setChatClaim(null)}/>
+                    </div>
+                  )}
                 </div>
               )}
               {c.status==="pending"&&(
@@ -177,6 +188,7 @@ export default function ProviderClaims() {
     </div>
   )
 }
+
 
 
 
