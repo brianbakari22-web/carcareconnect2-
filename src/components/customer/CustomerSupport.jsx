@@ -130,20 +130,12 @@ export default function CustomerSupport() {
             <span style={{ fontSize:10, color:"#444" }}>#{selected.ticket_number}</span>
           </div>
         </div>
-        <div style={{ display:"flex", gap:6 }}>
-          {selected.status==="resolved"&&(
-            <button onClick={async()=>{ await supabase.from("support_tickets").update({status:"open"}).eq("id",selected.id); toast.success("Ticket reopened"); load(); setSelected(prev=>({...prev,status:"open"})) }}
-              style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer", flexShrink:0 }}>
-              🔄 Reopen
-            </button>
-          )}
-          {selected.status!=="closed"&&selected.status!=="resolved"&&(
-            <button onClick={()=>closeTicket(selected.id)}
-              style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#666", fontSize:11, padding:"5px 10px", cursor:"pointer", flexShrink:0 }}>
-              {language==="sw"?"Funga":"Close ticket"}
-            </button>
-          )}
-        </div>
+        {selected.status!=="closed"&&selected.status!=="resolved"&&(
+          <button onClick={()=>closeTicket(selected.id)}
+            style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#666", fontSize:11, padding:"5px 10px", cursor:"pointer", flexShrink:0 }}>
+            {language==="sw"?"Funga":"Close ticket"}
+          </button>
+        )}
       </div>
 
       <div style={{ flex:1, overflowY:"auto", background:"#111", borderRadius:12, border:"1px solid #1e1e1e", padding:"1rem", display:"flex", flexDirection:"column", gap:10, marginBottom:10 }}>
@@ -298,4 +290,5 @@ export default function CustomerSupport() {
 
 
 // cache-bust: 20260602004412
+
 
