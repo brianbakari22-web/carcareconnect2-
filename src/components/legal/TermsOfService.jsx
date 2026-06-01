@@ -65,7 +65,7 @@ export default function TermsOfService() {
               "When a GO Service request is submitted, it is sent to available providers in sequence. Each provider has 15 minutes to accept the request.",
               "If a provider does not respond within 15 minutes, the request is automatically forwarded to the next available provider. After 5 unsuccessful attempts, the customer is notified that no providers are currently available.",
               "Providers who are marked as offline will not receive GO Service requests.",
-              "Customers must provide accurate location information for emergency dispatch. False emergency requests may result in account suspension.",
+              "A KES 500 non-refundable callout fee is required before dispatch. Fee split: KES 425 to mechanic and KES 75 to platform.",
               "Car Care Connect is not a substitute for emergency services. In life-threatening situations, contact emergency services (999) immediately.",
             ]
           },
@@ -139,7 +139,7 @@ export default function TermsOfService() {
           {
             title: "11. Payments and Refunds",
             items: [
-              "Payments are processed securely through Flutterwave. Accepted methods include M-Pesa, Visa, and Mastercard.",
+              "Payments are processed securely through Pesapal (regulated by the Central Bank of Kenya). Accepted methods include M-Pesa, Visa, and Mastercard.",
               "Cash payments are accepted for Shop Standard and Shop Premium services but are NOT accepted for GO Service emergency requests.",
               "Parts costs require customer approval before payment. Once approved, the updated total is charged.",
               "Refund requests must be submitted within 7 days of service completion.",
@@ -149,7 +149,7 @@ export default function TermsOfService() {
             ]
           },
           {
-            title: "12. Prohibited Conduct",
+            title: "12. Marketplace Terms",
             items: [
               "Using the platform for any unlawful purpose or in violation of any local, national, or international law.",
               "Harassing, threatening, or abusing other users, providers, drivers, or mechanics.",
@@ -163,7 +163,7 @@ export default function TermsOfService() {
             ]
           },
           {
-            title: "13. Limitation of Liability",
+            title: "15. Limitation of Liability",
             items: [
               "Car Care Connect is a marketplace platform and is not liable for the quality, safety, or legality of services provided by third-party service providers, mechanics, and drivers.",
               "We are not liable for any vehicle damage that occurs outside of documented vehicle condition reports. Disputes must follow our vehicle condition dispute process.",
@@ -174,7 +174,7 @@ export default function TermsOfService() {
             ]
           },
           {
-            title: "14. Intellectual Property",
+            title: "16. Intellectual Property",
             items: [
               "The Car Care Connect name, logo, and platform design are our intellectual property. You may not use them without our written permission.",
               "User-generated content (reviews, photos) remains your property, but you grant us a license to display it on the platform.",
@@ -182,7 +182,7 @@ export default function TermsOfService() {
             ]
           },
           {
-            title: "15. Governing Law and Disputes",
+            title: "17. Governing Law and Disputes",
             items: [
               "These Terms of Service are governed by the laws of Kenya.",
               "Any disputes shall first be attempted to be resolved through good-faith negotiation.",
@@ -191,7 +191,7 @@ export default function TermsOfService() {
             ]
           },
           {
-            title: "16. Termination",
+            title: "18. Termination",
             items: [
               "You may terminate your account at any time by contacting us at carcareconnect254@gmail.com.",
               "We may terminate or suspend your account immediately for violations of these terms.",
@@ -199,7 +199,7 @@ export default function TermsOfService() {
             ]
           },
           {
-            title: "17. Contact Information",
+            title: "19. Contact Information",
             items: [],
             contact: true
           },
@@ -236,4 +236,8 @@ export default function TermsOfService() {
     </div>
   )
 }
+
+
+
+
 
