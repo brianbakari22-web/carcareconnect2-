@@ -88,6 +88,36 @@ export default function ProviderGoRequests() {
     }
   }
 
+  function requestPushPermission() {
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission()
+    }
+  }
+
+  function playAlarm() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)()
+      const freqs = [880, 660, 880, 660, 1100]
+      freqs.forEach((freq, i) => {
+        const o = ctx.createOscillator()
+        const g = ctx.createGain()
+        o.connect(g); g.connect(ctx.destination)
+        o.frequency.value = freq
+        o.type = "square"
+        g.gain.setValueAtTime(0.4, ctx.currentTime + i*0.25)
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i*0.25 + 0.2)
+        o.start(ctx.currentTime + i*0.25)
+        o.stop(ctx.currentTime + i*0.25 + 0.2)
+      })
+    } catch(e) {}
+  }
+
+  function sendPushNotification(title, body) {
+    if ("Notification" in window && Notification.permission === "granted") {
+      new Notification(title, { body, requireInteraction:true, tag:"go-emergency" })
+    }
+  }
+
   async function load() {
     const [{ data: reqs }, { data: mechs }] = await Promise.all([
       supabase.from("go_service_requests").select("*, bookings(*)").eq("provider_id", user.id).order("sent_at", { ascending:false }).limit(20),
