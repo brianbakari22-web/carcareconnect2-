@@ -163,7 +163,7 @@ export default function CustomerGoService() {
         booking_id: bk.id,
         provider_id: selectedService.provider_id,
         status: "pending",
-        respond_number: 1,
+        attempt_number: 1,
       })
       // Notify provider
       await supabase.from("notifications").insert({
@@ -446,6 +446,7 @@ export default function CustomerGoService() {
     </div>
   )
 }
+
 
 
 
