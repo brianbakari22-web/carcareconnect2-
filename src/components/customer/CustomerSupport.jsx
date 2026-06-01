@@ -105,6 +105,14 @@ export default function CustomerSupport() {
     load()
   }
 
+  function getSLAStatus(ticket) {
+    if (ticket.status==="resolved"||ticket.status==="closed") return null
+    const hours = (Date.now() - new Date(ticket.created_at).getTime()) / (1000*60*60)
+    if (hours>48) return { label:"SLA BREACHED", color:"#e24b4a" }
+    if (hours>24) return { label:"SLA WARNING", color:"#e6821e" }
+    return null
+  }
+
   const inp = { width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"10px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:10 }
   const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
 
@@ -285,5 +293,6 @@ export default function CustomerSupport() {
     </div>
   )
 }
+
 
 
