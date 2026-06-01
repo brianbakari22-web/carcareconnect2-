@@ -21,6 +21,11 @@ export default function PaymentCallback() {
 
   async function verifyPayment(trackingId, merchantRef) {
     try {
+      // Check if this is a GO callout payment
+      const goBookingId = sessionStorage.getItem("go_booking_id")
+      const goProviderId = sessionStorage.getItem("go_provider_id")
+      const isGoPayment = goBookingId === merchantRef
+
       const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/pesapal-verify", {
         method: "POST",
         headers: {
@@ -32,14 +37,44 @@ export default function PaymentCallback() {
       const data = await res.json()
 
       if (data.payment_status_description === "Completed") {
-        await supabase.from("bookings").update({
-          payment_status: "paid",
-          pesapal_tracking_id: trackingId
-        }).eq("id", merchantRef)
+        if (isGoPayment) {
+          // GO callout payment - mark paid and create go_service_request
+          await supabase.from("bookings").update({
+            go_callout_paid: true,
+            pesapal_tracking_id: trackingId,
+            payment_status: "partial"
+          }).eq("id", merchantRef)
 
-        setStatus("success")
-        toast.success("Payment successful!")
-        setTimeout(() => navigate("/dashboard/bookings"), 3000)
+          await supabase.from("go_service_requests").insert({
+            booking_id: merchantRef,
+            provider_id: goProviderId,
+            status: "pending",
+            attempt_number: 1,
+          })
+
+          // Notify provider
+          const { data: bk } = await supabase.from("bookings").select("emergency_type, emergency_location_address, profiles!bookings_customer_id_fkey(first_name,last_name)").eq("id", merchantRef).single()
+          await supabase.from("notifications").insert({
+            user_id: goProviderId,
+            title: "🚨 Emergency GO Service request!",
+            message: "Emergency: "+(bk?.emergency_type||"").replace(/_/g," ")+" at "+(bk?.emergency_location_address||"").slice(0,60)+". Callout fee paid.",
+            type: "error"
+          })
+
+          sessionStorage.removeItem("go_booking_id")
+          sessionStorage.removeItem("go_provider_id")
+          setStatus("success")
+          toast.success("Payment successful! Finding mechanic...")
+          setTimeout(() => navigate("/dashboard/emergency"), 3000)
+        } else {
+          await supabase.from("bookings").update({
+            payment_status: "paid",
+            pesapal_tracking_id: trackingId
+          }).eq("id", merchantRef)
+          setStatus("success")
+          toast.success("Payment successful!")
+          setTimeout(() => navigate("/dashboard/bookings"), 3000)
+        }
       } else {
         setStatus("failed")
         toast.error("Payment not completed")
@@ -79,3 +114,4 @@ export default function PaymentCallback() {
     </div>
   )
 }
+

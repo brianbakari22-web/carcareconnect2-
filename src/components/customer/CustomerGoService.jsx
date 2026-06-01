@@ -436,16 +436,54 @@ export default function CustomerGoService() {
       </div>
 
       {/* Submit */}
-      <button onClick={submitEmergency} disabled={submitting||!emergencyType||!location.lat||!selectedService}
+      <button onClick={initiateCalloutPayment} disabled={submitting||!emergencyType||!location.lat||!selectedService}
         style={{ width:"100%", background:submitting||!emergencyType||!location.lat||!selectedService?"#333":"#e24b4a", border:"none", borderRadius:12, color:submitting||!emergencyType||!location.lat||!selectedService?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:15, fontWeight:700, padding:"15px", cursor:submitting||!emergencyType||!location.lat||!selectedService?"not-allowed":"pointer" }}>
         {submitting?"Sending request...":"🚨 Request Emergency Help"}
       </button>
       <div style={{ fontSize:11, color:"#444", textAlign:"center", marginTop:8 }}>
         Online payment only · Provider has 15 min to accept · Max 5 attempts
       </div>
+
+      {showDepositPayment&&(
+        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.8)", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center", padding:"1rem" }}>
+          <div style={{ width:"100%", maxWidth:400, background:"#111", border:"1px solid #e24b4a40", borderRadius:16, padding:"1.5rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#e24b4a", marginBottom:4 }}>🚨 Confirm Emergency Request</div>
+            <div style={{ fontSize:12, color:"#888", marginBottom:16, lineHeight:1.6 }}>
+              A KES 500 mechanic callout fee is required to dispatch a mechanic to your location. This covers transport costs.
+            </div>
+            <div style={{ background:"#0f0f0f", borderRadius:10, padding:"1rem", marginBottom:16 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#888", marginBottom:6 }}>
+                <span>Emergency type</span><span style={{ color:"#f0ede6" }}>{emergencyType.replace(/_/g," ")}</span>
+              </div>
+              <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#888", marginBottom:6 }}>
+                <span>Service provider</span><span style={{ color:"#f0ede6" }}>{selectedService?.profiles?.business_name||selectedService?.profiles?.first_name}</span>
+              </div>
+              <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#888", marginBottom:6 }}>
+                <span>Service fee</span><span style={{ color:"#f0ede6" }}>KES {Number(selectedService?.price||0).toLocaleString()}</span>
+              </div>
+              <div style={{ height:1, background:"#1e1e1e", margin:"8px 0" }}/>
+              <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, color:"#e6821e", fontWeight:700 }}>
+                <span>Callout fee (pay now)</span><span>KES 500</span>
+              </div>
+              <div style={{ fontSize:10, color:"#555", marginTop:4 }}>Service fee paid after completion</div>
+            </div>
+            <button onClick={payCalloutFee} disabled={payingCallout}
+              style={{ width:"100%", background:payingCallout?"#333":"#e24b4a", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:payingCallout?"not-allowed":"pointer", marginBottom:8 }}>
+              {payingCallout?"Connecting to Pesapal...":"Pay KES 500 & Request Help →"}
+            </button>
+            <button onClick={()=>setShowDepositPayment(false)}
+              style={{ width:"100%", background:"none", border:"1px solid #333", borderRadius:10, color:"#666", fontSize:13, padding:"11px", cursor:"pointer" }}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
+
+
+
 
 
 

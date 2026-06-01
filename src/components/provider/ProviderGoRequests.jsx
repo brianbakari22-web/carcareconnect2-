@@ -17,11 +17,20 @@ export default function ProviderGoRequests() {
   useEffect(() => {
     if (!user) return
     load()
+    requestPushPermission()
     const sub = supabase.channel("provider-go-requests")
       .on("postgres_changes", { event:"INSERT", schema:"public", table:"go_service_requests", filter:`provider_id=eq.${user.id}` },
         payload => {
-          toast("🚨 New emergency request!", { duration:10000, icon:"🚨" })
+          playAlarm()
+          sendPushNotification("🚨 EMERGENCY GO REQUEST!", "Customer needs help urgently. Open CCC now!")
+          toast("🚨 NEW EMERGENCY — Customer needs help NOW!", { duration:30000, icon:"🚨", style:{ background:"#e24b4a", color:"#fff", fontWeight:800, fontSize:13 } })
           load()
+          let count = 0
+          const interval = setInterval(() => {
+            count++
+            if (count >= 4) { clearInterval(interval); return }
+            playAlarm()
+          }, 30000)
         })
       .on("postgres_changes", { event:"UPDATE", schema:"public", table:"go_service_requests", filter:`provider_id=eq.${user.id}` },
         () => load())
@@ -48,6 +57,36 @@ export default function ProviderGoRequests() {
     }, 1000)
     return () => clearInterval(interval)
   }, [requests])
+
+  function requestPushPermission() {
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission()
+    }
+  }
+
+  function playAlarm() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)()
+      const freqs = [880, 660, 880, 660, 1100]
+      freqs.forEach((freq, i) => {
+        const o = ctx.createOscillator()
+        const g = ctx.createGain()
+        o.connect(g); g.connect(ctx.destination)
+        o.frequency.value = freq
+        o.type = "square"
+        g.gain.setValueAtTime(0.4, ctx.currentTime + i*0.25)
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i*0.25 + 0.2)
+        o.start(ctx.currentTime + i*0.25)
+        o.stop(ctx.currentTime + i*0.25 + 0.2)
+      })
+    } catch(e) {}
+  }
+
+  function sendPushNotification(title, body) {
+    if ("Notification" in window && Notification.permission === "granted") {
+      new Notification(title, { body, requireInteraction:true, tag:"go-emergency" })
+    }
+  }
 
   async function load() {
     const [{ data: reqs }, { data: mechs }] = await Promise.all([
@@ -78,6 +117,19 @@ export default function ProviderGoRequests() {
         await supabase.from("mechanics").update({ is_available:false, current_booking_id:request.booking_id }).eq("id", selectedMechanic)
       }
       toast.success("Emergency accepted — mechanic dispatched! 🚨")
+      const mechanic = mechanics.find(m=>m.id===selectedMechanic)
+      const mName = mechanic ? mechanic.first_name+" "+mechanic.last_name : "Our mechanic"
+      const mPhone = mechanic?.phone || "Check notifications"
+      const mSpec = mechanic?.specialization || "General Mechanic"
+      const { data: bkData } = await supabase.from("bookings").select("customer_id").eq("id", request.booking_id).single()
+      if (bkData?.customer_id) {
+        await supabase.from("notifications").insert({
+          user_id: bkData.customer_id,
+          title: "🚨 Mechanic dispatched — help is on the way!",
+          message: "Mechanic: "+mName+" | "+mSpec+" | Phone: "+mPhone+" | They are heading to your location now. Please stay safe.",
+          type: "success"
+        })
+      }
       setAssigning(null)
       setSelectedMechanic("")
       load()
@@ -213,3 +265,5 @@ export default function ProviderGoRequests() {
     </div>
   )
 }
+
+
