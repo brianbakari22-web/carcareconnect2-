@@ -57,8 +57,11 @@ export default function AdminPaymentTracking() {
   // Stats
   const totalRevenue = bookings.filter(b=>b.payment_status==="paid").reduce((s,b)=>s+Number(b.platform_commission||0),0)
   const pendingRevenue = bookings.filter(b=>b.status==="completed"&&b.payment_status!=="paid").reduce((s,b)=>s+Number(b.platform_commission||0),0)
-  const goRevenue = goPayments.filter(b=>b.go_callout_paid).reduce((s,b)=>s+75,0) // KES 75 platform share of KES 500
+  const goRevenue = goPayments.filter(b=>b.go_callout_paid).length * 75
   const escrowTotal = marketplace.filter(m=>m.status==="pending"||m.status==="processing").reduce((s,m)=>s+Number(m.amount||0),0)
+  const partsRevenue = bookings.filter(b=>b.parts_approved).reduce((s,b)=>s+Number(b.parts_commission||0),0)
+  const transportAllowanceDue = bookings.filter(b=>b.is_concierge&&!b.transport_allowance_paid&&b.status==="completed").length * 200
+  const anticipatedRevenue = bookings.filter(b=>b.status!=="cancelled").reduce((s,b)=>s+Number(b.platform_commission||0),0)
 
   const filtered = tab==="bookings" ? (filter==="all"?bookings:bookings.filter(b=>b.payment_status===filter)) :
                    tab==="go" ? goPayments :
@@ -77,8 +80,12 @@ export default function AdminPaymentTracking() {
         {[
           { label:"Total revenue", value:"KES "+totalRevenue.toLocaleString(), color:"#1d9e75" },
           { label:"Pending release", value:"KES "+pendingRevenue.toLocaleString(), color:"#e6821e" },
-          { label:"GO callout revenue", value:"KES "+goRevenue.toLocaleString(), color:"#e24b4a" },
+          { label:"Anticipated revenue", value:"KES "+anticipatedRevenue.toLocaleString(), color:"#378add" },
           { label:"Escrow held", value:"KES "+escrowTotal.toLocaleString(), color:"#8b5cf6" },
+          { label:"GO callout revenue", value:"KES "+goRevenue.toLocaleString(), color:"#e24b4a" },
+          { label:"Parts revenue", value:"KES "+partsRevenue.toLocaleString(), color:"#8b5cf6" },
+          { label:"Transport allowance due", value:"KES "+transportAllowanceDue.toLocaleString(), color:"#e6821e" },
+          { label:"Marketplace commission", value:"KES "+marketplace.reduce((s,m)=>s+Number(m.commission||0),0).toLocaleString(), color:"#1d9e75" },
         ].map(s=>(
           <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"1rem", border:"1px solid #1e1e1e" }}>
             <div style={{ fontSize:10, color:"#555", marginBottom:4, textTransform:"uppercase" }}>{s.label}</div>
@@ -163,13 +170,42 @@ export default function AdminPaymentTracking() {
                   <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:(SC[b.payment_status]||"#888")+"20", color:SC[b.payment_status]||"#888", display:"inline-block", marginTop:4 }}>{b.payment_status||"pending"}</span>
                 </div>
               </div>
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:6, marginBottom:8 }}>
+                {[
+                  { l:"Total", v:"KES "+Number(b.total_amount||0).toLocaleString() },
+                  { l:"Platform", v:"KES "+Number(b.platform_commission||0).toLocaleString() },
+                  { l:"Provider", v:"KES "+Number(b.provider_earnings||0).toLocaleString() },
+                  { l:"Driver", v:"KES "+Number(b.driver_earnings||0).toLocaleString() },
+                  { l:"Parts", v:"KES "+Number(b.parts_cost||0).toLocaleString() },
+                  { l:"Discount", v:"KES "+Number(b.discount_amount||0).toLocaleString() },
+                ].map(f=>(
+                  <div key={f.l} style={{ background:"#0f0f0f", borderRadius:6, padding:"6px 8px" }}>
+                    <div style={{ fontSize:9, color:"#444", textTransform:"uppercase" }}>{f.l}</div>
+                    <div style={{ fontSize:11, color:"#f0ede6" }}>{f.v}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:6 }}>
+                <span style={{ fontSize:10, padding:"2px 8px", borderRadius:8, background:"#1a1a1a", color:b.status==="completed"?"#1d9e75":"#888" }}>Status: {b.status}</span>
+                <span style={{ fontSize:10, padding:"2px 8px", borderRadius:8, background:"#1a1a1a", color:"#888" }}>Method: {b.payment_method||"—"}</span>
+                {b.is_concierge&&<span style={{ fontSize:10, padding:"2px 8px", borderRadius:8, background:"#071a12", color:"#1d9e75" }}>Concierge</span>}
+                {b.is_emergency&&<span style={{ fontSize:10, padding:"2px 8px", borderRadius:8, background:"#1a0808", color:"#e24b4a" }}>Emergency</span>}
+                {b.promo_code&&<span style={{ fontSize:10, padding:"2px 8px", borderRadius:8, background:"#160a2e", color:"#8b5cf6" }}>Promo: {b.promo_code}</span>}
+                {b.parts_needed&&<span style={{ fontSize:10, padding:"2px 8px", borderRadius:8, background:"#1a1208", color:"#e6821e" }}>Parts needed</span>}
+                {b.pesapal_tracking_id&&<span style={{ fontSize:10, padding:"2px 8px", borderRadius:8, background:"#0c1f2e", color:"#378add" }}>Pesapal tracked</span>}
+              </div>
               <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
-                <span style={{ fontSize:10, padding:"2px 8px", borderRadius:8, background:"#1a1a1a", color:b.status==="completed"?"#1d9e75":"#888" }}>Booking: {b.status}</span>
                 {b.status==="completed"&&b.payment_status!=="paid"&&(
                   <>
-                    <button onClick={()=>releasePayment(b.id)} style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:6, color:"#1d9e75", fontSize:10, padding:"3px 10px", cursor:"pointer" }}>Release payment</button>
-                    <button onClick={()=>holdPayment(b.id)} style={{ background:"none", border:"1px solid #e24b4a30", borderRadius:6, color:"#e24b4a", fontSize:10, padding:"3px 8px", cursor:"pointer" }}>Hold</button>
+                    <button onClick={()=>releasePayment(b.id)} style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:6, color:"#1d9e75", fontSize:10, padding:"4px 10px", cursor:"pointer" }}>✓ Release payment</button>
+                    <button onClick={()=>holdPayment(b.id)} style={{ background:"none", border:"1px solid #e24b4a30", borderRadius:6, color:"#e24b4a", fontSize:10, padding:"4px 8px", cursor:"pointer" }}>Hold</button>
                   </>
+                )}
+                {b.parts_needed&&!b.parts_approved&&b.status!=="completed"&&(
+                  <button onClick={async()=>{ await supabase.from("bookings").update({parts_approved:true}).eq("id",b.id); toast.success("Parts approved"); load() }}
+                    style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:6, color:"#e6821e", fontSize:10, padding:"4px 10px", cursor:"pointer" }}>
+                    Approve parts
+                  </button>
                 )}
               </div>
             </div>
@@ -232,3 +268,7 @@ export default function AdminPaymentTracking() {
     </div>
   )
 }
+
+
+
+
