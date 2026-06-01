@@ -94,11 +94,29 @@ export default function ProviderBookings() {
   }
 
   async function completeAndFreeMechanic(bookingId, mechanicId) {
+    const booking = bookings.find(b=>b.id===bookingId)
     await supabase.from("bookings").update({ status:"completed" }).eq("id",bookingId).eq("provider_id",user.id)
     if (mechanicId) {
       await supabase.from("mechanics").update({ is_available:true, current_booking_id:null, current_latitude:null, current_longitude:null }).eq("id",mechanicId)
     }
-    toast.success("Booking completed — mechanic freed")
+    // Auto notify customer to leave review + pay
+    if (booking?.customer_id) {
+      await supabase.from("notifications").insert([
+        {
+          user_id: booking.customer_id,
+          title: "Service completed! How was it? ⭐",
+          message: "Your "+booking.service_name+" has been completed. Please leave a review to help other customers. Your feedback matters!",
+          type: "success"
+        },
+        {
+          user_id: booking.customer_id,
+          title: "Payment reminder 💳",
+          message: "Please complete payment for your "+booking.service_name+" service. Amount: KES "+Number(booking.updated_total||booking.total_amount).toLocaleString(),
+          type: "info"
+        }
+      ])
+    }
+    toast.success("Booking completed — customer notified!")
     load()
   }
 
@@ -337,3 +355,4 @@ export default function ProviderBookings() {
     </div>
   )
 }
+
