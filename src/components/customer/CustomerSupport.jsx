@@ -132,7 +132,7 @@ export default function CustomerSupport() {
         </div>
         <div style={{ display:"flex", gap:6 }}>
           {selected.status==="resolved"&&(
-            <button onClick={async()=>{ await supabase.from("support_tickets").update({status:"open"}).eq("id",selected.id); toast.success("Ticket reopened"); load(); setSelected(t=>({...t,status:"open"})) }}
+            <button onClick={async()=>{ await supabase.from("support_tickets").update({status:"open"}).eq("id",selected.id); toast.success("Ticket reopened"); load(); setSelected(prev=>({...prev,status:"open"})) }}
               style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer", flexShrink:0 }}>
               🔄 Reopen
             </button>
@@ -298,3 +298,4 @@ export default function CustomerSupport() {
 
 
 // cache-bust: 20260602004412
+
