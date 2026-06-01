@@ -343,14 +343,26 @@ ${PLATFORM_KNOWLEDGE}
 FOR ADMINS specifically:
 - Full platform policy knowledge
 - Commission and revenue management
-- Driver verification process
+- Driver verification process (use documents_verified column)
 - Service Guarantee claim resolution
 - System health monitoring and fixes
-- Marketplace listing approval
+- Marketplace listing approval and inspection enforcement
 - User management and support
 - Data and privacy compliance
 - Dispute resolution
-- Promo code management`
+- Promo code management
+- Employee management: add staff, set salary (fixed/commission/mixed), process payroll
+- Payment tracking: release payments, hold disputed payments, release marketplace escrow
+- AI Admin Monitor: auto-scans platform on dashboard load, shows critical/warning/working/broken features
+- GO Service monitoring: track callout fees, mechanic dispatch, customer notifications
+- Vehicle inspection flow: request inspection, mark pass/fail, approve listings
+- Revenue intelligence: weekly revenue trends, anticipated revenue, platform commission tracking
+- Fraud detection: cancelled bookings pattern, suspicious activity flags
+- Customer insights: inactive customers, new users without bookings
+- Provider performance: claims rate, review scores, booking completion rate
+- Auto-actions: cancel stuck bookings, re-engage inactive customers
+- Financial controls: payments never auto-released, admin must manually approve all payouts
+- Policies: Privacy Policy and Terms of Service updated June 1 2026`
 }
 
 const GREETINGS = {
@@ -498,6 +510,7 @@ export default function AIAssistant() {
     </>
   )
 }
+
 
 
 
