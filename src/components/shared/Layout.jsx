@@ -280,6 +280,9 @@ export default function Layout({ children }) {
               {item.key==="notifications"&&unreadCount>0&&(
                 <span style={{ position:"absolute", top:-4, right:-4, background:"#e24b4a", color:"#fff", borderRadius:"50%", fontSize:8, fontWeight:800, minWidth:14, height:14, display:"flex", alignItems:"center", justifyContent:"center" }}>{unreadCount>9?"9+":unreadCount}</span>
               )}
+              {item.key==="messages"&&unreadChat>0&&(
+                <span style={{ position:"absolute", top:-4, right:-4, background:"#378add", color:"#fff", borderRadius:"50%", fontSize:8, fontWeight:800, minWidth:14, height:14, display:"flex", alignItems:"center", justifyContent:"center", animation:"chat-glow 2s ease-in-out infinite" }}>{unreadChat>9?"9+":unreadChat}</span>
+              )}
             </span>
             <span style={{ fontSize:9, fontFamily:"'DM Sans',sans-serif", fontWeight:isActive(item)?600:400 }}>{getLabel(item)}</span>
           </button>
