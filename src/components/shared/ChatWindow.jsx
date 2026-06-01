@@ -135,6 +135,11 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
     } catch(_) {}
   }
 
+  async function deleteMessage(id) {
+    await supabase.from("chat_messages").delete().eq("id", id).eq("sender_id", user.id)
+    setMessages(prev => prev.filter(m => m.id!==id))
+  }
+
   function handleKeyDown(e) {
     if (e.key==="Enter" && !e.shiftKey) { e.preventDefault(); send(e) }
     else broadcastTyping()
@@ -169,7 +174,10 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
         {messages.map(m=>{
           const isMine = m.sender_id===user.id
           return (
-            <div key={m.id} style={{ display:"flex", justifyContent:isMine?"flex-end":"flex-start" }}>
+            <div key={m.id} style={{ display:"flex", justifyContent:isMine?"flex-end":"flex-start", alignItems:"flex-end", gap:4 }}>
+              {isMine&&!m._pending&&(
+                <button onClick={()=>deleteMessage(m.id)} style={{ background:"none", border:"none", color:"#333", cursor:"pointer", fontSize:12, padding:"2px 4px", opacity:0.6, lineHeight:1, flexShrink:0 }} title="Delete message">🗑</button>
+              )}
               <div style={{ maxWidth:"75%", padding:"10px 14px", borderRadius:isMine?"14px 14px 4px 14px":"14px 14px 14px 4px", background:isMine?"#e6821e":"#1a1a1a", color:isMine?"#fff":"#f0ede6", fontSize:13, lineHeight:1.5, opacity:m._pending?0.7:1, transition:"opacity 0.2s" }}>
                 <div style={{ wordBreak:"break-word" }}>{m.message}</div>
                 <div style={{ fontSize:9, opacity:0.6, marginTop:4, textAlign:isMine?"right":"left", display:"flex", alignItems:"center", justifyContent:isMine?"flex-end":"flex-start", gap:4 }}>
@@ -200,6 +208,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
     </div>
   )
 }
+
 
 
 
