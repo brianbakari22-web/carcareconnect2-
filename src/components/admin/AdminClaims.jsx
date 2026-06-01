@@ -310,12 +310,32 @@ export default function AdminClaims() {
                 </div>
                 <div style={{ textAlign:"right", flexShrink:0 }}>
                   <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>KES {Number(c.bookings?.total_amount||0).toLocaleString()}</div>
-                  {c.status==="pending"&&(
-                    <button onClick={()=>{ setSelected(selected===c.id?null:c.id); setAdminNotes("") }}
-                      style={{ background:"#160a2e", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"5px 10px", cursor:"pointer", marginTop:6 }}>
-                      Review
-                    </button>
-                  )}
+                  <div style={{ display:"flex", flexDirection:"column", gap:4, marginTop:6 }}>
+                    {c.status==="pending"&&(
+                      <button onClick={()=>{ setSelected(selected===c.id?null:c.id); setAdminNotes("") }}
+                        style={{ background:"#160a2e", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                        Review
+                      </button>
+                    )}
+                    {(c.status==="approved"||c.status==="rejected")&&(
+                      <button onClick={()=>{ setSelected(selected===c.id?null:c.id); setAdminNotes(c.admin_notes||"") }}
+                        style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                        {selected===c.id?"Close":"View details"}
+                      </button>
+                    )}
+                    {c.status==="approved"&&(
+                      <button onClick={()=>setChattingWith({claimId:c.id, userId:c.customer_id, name:c.customer?.first_name+" "+c.customer?.last_name, role:"customer"})}
+                        style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                        💬 Message customer
+                      </button>
+                    )}
+                    {c.status==="approved"&&(
+                      <button onClick={()=>setChattingWith({claimId:c.id, userId:c.provider_id, name:c.provider?.first_name+" "+c.provider?.last_name, role:"provider"})}
+                        style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                        💬 Message provider
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -421,6 +441,7 @@ export default function AdminClaims() {
     </div>
   )
 }
+
 
 
 
