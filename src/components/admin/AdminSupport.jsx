@@ -69,6 +69,34 @@ export default function AdminSupport() {
     load()
   }
 
+  async function assignTicket(ticketId, employeeId, employeeName) {
+    await supabase.from("support_tickets").update({ 
+      assigned_to: employeeId,
+      status: "in_progress",
+      updated_at: new Date().toISOString()
+    }).eq("id", ticketId)
+    const ticket = tickets.find(t=>t.id===ticketId)
+    if (ticket) {
+      await supabase.from("notifications").insert({
+        user_id: ticket.customer_id,
+        title: "Your ticket has been assigned 👤",
+        message: "Ticket #"+ticket.ticket_number+" has been assigned to our support team. We will respond within 24 hours.",
+        type: "info"
+      })
+    }
+    toast.success("Ticket assigned to "+employeeName)
+    load()
+  }
+
+  async function escalateTicket(ticketId) {
+    await supabase.from("support_tickets").update({ 
+      priority: "urgent",
+      updated_at: new Date().toISOString()
+    }).eq("id", ticketId)
+    toast.success("Ticket escalated to urgent")
+    load()
+  }
+
   async function updateStatus(ticketId, status) {
     const updates = { status, updated_at:new Date().toISOString() }
     if (status==="resolved") updates.resolved_at = new Date().toISOString()
@@ -194,7 +222,31 @@ export default function AdminSupport() {
               </span>
               <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:`${PC[ticket.priority]}20`, color:PC[ticket.priority] }}>
                 {ticket.priority}
+            </div>
+          </div>
+          {getSLAStatus(ticket)&&(
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginTop:6 }}>
+              <span style={{ fontSize:10, padding:"2px 8px", borderRadius:8, background:getSLAStatus(ticket)?.color+"20", color:getSLAStatus(ticket)?.color, fontWeight:600 }}>
+                ⏱ {getSLAStatus(ticket)?.label}
               </span>
+              <div style={{ display:"flex", gap:4 }} onClick={e=>e.stopPropagation()}>
+                {ticket.priority!=="urgent"&&(
+                  <button onClick={()=>escalateTicket(ticket.id)}
+                    style={{ background:"#1a0808", border:"1px solid #e24b4a30", borderRadius:6, color:"#e24b4a", fontSize:10, padding:"3px 8px", cursor:"pointer" }}>
+                    🔺 Escalate
+                  </button>
+                )}
+                {ticket.status==="open"&&(
+                  <button onClick={()=>updateStatus(ticket.id,"in_progress")}
+                    style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:6, color:"#1d9e75", fontSize:10, padding:"3px 8px", cursor:"pointer" }}>
+                    ▶ Start
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
             </div>
           </div>
         </div>
@@ -202,5 +254,7 @@ export default function AdminSupport() {
     </div>
   )
 }
+
+
 
 
