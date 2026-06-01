@@ -55,7 +55,21 @@ export default function CustomerDashboard() {
       <div style={{ marginBottom:"1.25rem" }}>
         <div style={{ fontFamily:"Syne", fontSize:isMobile?18:22, fontWeight:800, color:"#f0ede6" }}>
           {t("welcomeBack")}, <span style={{ color:"#e6821e" }}>{profile?.first_name}</span>
+        <div style={{ fontSize:12, color:"#555", marginTop:2 }}>{t("goodToSeeYou")}</div>
+      </div>
+
+      {/* GO Service Emergency Banner */}
+      <div onClick={()=>navigate("/dashboard/emergency")}
+        style={{ background:"linear-gradient(135deg,#1a0808,#2a0a0a)", border:"1px solid #e24b4a40", borderRadius:14, padding:"1rem 1.25rem", marginBottom:"1.25rem", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"space-between", gap:12 }}>
+        <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+          <div style={{ width:44, height:44, borderRadius:"50%", background:"#e24b4a20", border:"1px solid #e24b4a40", display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, flexShrink:0, animation:"pulse 2s infinite" }}>🚨</div>
+          <div>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e24b4a" }}>Car breakdown? GO Service</div>
+            <div style={{ fontSize:11, color:"#888", marginTop:2 }}>24/7 emergency roadside assistance · Mechanic comes to you</div>
+          </div>
         </div>
+        <div style={{ fontSize:20, color:"#e24b4a", flexShrink:0 }}>→</div>
+      </div>
         <div style={{ fontSize:12, color:"#555", marginTop:2 }}>{new Date().toLocaleDateString("default",{weekday:"long",year:"numeric",month:"long",day:"numeric"})}</div>
       </div>
 
