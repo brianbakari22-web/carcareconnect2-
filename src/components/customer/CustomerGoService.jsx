@@ -158,6 +158,20 @@ export default function CustomerGoService() {
         go_attempt_number: 1,
       }).select().single()
       if (error) throw error
+      // Create go_service_request so providers can see it
+      await supabase.from("go_service_requests").insert({
+        booking_id: bk.id,
+        provider_id: selectedService.provider_id,
+        status: "pending",
+        respond_number: 1,
+      })
+      // Notify provider
+      await supabase.from("notifications").insert({
+        user_id: selectedService.provider_id,
+        title: "🚨 Emergency GO Service request!",
+        message: "A customer needs emergency help: "+emergencyType.replace(/_/g," ")+" at "+location.address.slice(0,60),
+        type: "error"
+      })
       setBooking(bk)
       setStep("waiting")
       startCountdown(15 * 60)
@@ -432,5 +446,7 @@ export default function CustomerGoService() {
     </div>
   )
 }
+
+
 
 
