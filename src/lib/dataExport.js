@@ -199,7 +199,7 @@ export function downloadPDF(data, filename) {
         (b.service_name||"").slice(0,20),
         b.booking_date||"",
         b.status||"",
-        `$${Number(b.total_amount||0).toFixed(2)}`,
+        `KES ${Number(b.total_amount||0).toLocaleString()}`,
         b.payment_status||""
       ], [55, 28, 28, 25, 30], i%2===0)
     })
@@ -288,3 +288,4 @@ export function downloadPDF(data, filename) {
 
   doc.save(filename)
 }
+
