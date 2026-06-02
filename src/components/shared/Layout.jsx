@@ -25,6 +25,7 @@ const NAV = {
     { path:"/dashboard/vehicle-reports", label:"Vehicle Reports", icon:"📋" },
     { path:"/dashboard/claims", label:"Service Guarantee", icon:"🛡️" },
     { path:"/dashboard/marketplace", label:"Marketplace", icon:"🛒" },
+    { path:"/dashboard/parts", label:"Parts & Accessories", icon:"⚙️" },
     { path:"/dashboard/marketplace/my-listings", label:"My Listings", icon:"📦" },
     { path:"/dashboard/marketplace/my-offers", label:"My Offers", icon:"💰" },
     { path:"/dashboard/marketplace/transactions", label:"My Transactions", icon:"💳" },
@@ -46,6 +47,7 @@ const NAV = {
     { path:"/dashboard/go-requests", label:"GO Requests 🚨", icon:"🚨" },
     { path:"/dashboard/claims", label:"Service Claims", icon:"🛡️" },
     { path:"/dashboard/marketplace", label:"Marketplace", icon:"🛒" },
+    { path:"/dashboard/parts", label:"Parts & Accessories", icon:"⚙️" },
     { path:"/dashboard/marketplace/my-listings", label:"My Listings", icon:"📦" },
     { path:"/dashboard/marketplace/my-offers", label:"My Offers", icon:"💰" },
     { path:"/dashboard/marketplace/transactions", label:"My Transactions", icon:"💳" },
@@ -62,6 +64,7 @@ const NAV = {
     { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
     { path:"/dashboard/claims", label:"My Claims", icon:"🛡️" },
     { path:"/dashboard/marketplace", label:"Marketplace", icon:"🛒" },
+    { path:"/dashboard/parts", label:"Parts & Accessories", icon:"⚙️" },
     { path:"/dashboard/marketplace/my-listings", label:"My Listings", icon:"📦" },
     { path:"/dashboard/marketplace/my-offers", label:"My Offers", icon:"💰" },
     { path:"/dashboard/marketplace/transactions", label:"My Transactions", icon:"💳" },
@@ -373,6 +376,7 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 
 

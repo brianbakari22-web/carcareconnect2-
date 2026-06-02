@@ -30,6 +30,7 @@ import CustomerFavorites from "./components/customer/CustomerFavorites"
 import CustomerReferral from "./components/customer/CustomerReferral"
 import CustomerSupport from "./components/customer/CustomerSupport"
 import CustomerClaims from "./components/customer/CustomerClaims"
+import CustomerPartsMarketplace from "./components/customer/CustomerPartsMarketplace"
 import Marketplace from "./components/marketplace/Marketplace"
 import MyListings from "./components/marketplace/MyListings"
 import MyOffers from "./components/marketplace/MyOffers"
@@ -180,6 +181,7 @@ function DashboardRouter() {
           <Route path="emergency" element={<CustomerGoService />} />
           <Route path="vehicle-reports" element={<CustomerVehicleReports />} />
           <Route path="claims" element={<CustomerClaims />} />
+          <Route path="parts" element={<CustomerPartsMarketplace />} />
           <Route path="marketplace" element={<Marketplace />} />
           <Route path="marketplace/new" element={<CreateListing />} />
           <Route path="marketplace/my-listings" element={<MyListings />} />
@@ -298,6 +300,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 
