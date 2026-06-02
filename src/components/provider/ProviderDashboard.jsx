@@ -5,6 +5,18 @@ import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
+const COMMISSION_RATES = {
+  garage: { platform:10, provider:90 },
+  garage_premium: { platform:20, provider:80 },
+  parts_dealer: { platform:5, provider:95 },
+  accessories_shop: { platform:8, provider:92 },
+  tyre_shop: { platform:6, provider:94 },
+  auto_electrician: { platform:12, provider:88 },
+  car_wash: { platform:10, provider:90 },
+  panel_beater: { platform:15, provider:85 },
+  auto_glass: { platform:12, provider:88 },
+}
+
 export default function ProviderDashboard() {
   const { user } = useAuth()
   const { t, language } = useLanguage()
@@ -107,6 +119,21 @@ export default function ProviderDashboard() {
         ))}
       </div>
 
+      {/* Commission rate banner */}
+      <div style={{ background:"#111", border:"1px solid #378add30", borderRadius:10, padding:"0.75rem 1rem", marginBottom:"1.25rem", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:8 }}>
+        <div>
+          <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>Your commission rate · {(profile?.provider_type||"garage").replace(/_/g," ")}</div>
+          <div style={{ fontSize:13, color:"#378add", fontWeight:600 }}>
+            You earn {COMMISSION_RATES[profile?.provider_type||"garage"]?.provider||90}% · Platform takes {COMMISSION_RATES[profile?.provider_type||"garage"]?.platform||10}%
+          </div>
+        </div>
+        <div style={{ fontSize:11, color:"#444" }}>
+          {profile?.provider_type==="parts_dealer"?"Lowest platform rate for parts dealers 🎉":
+           profile?.provider_type==="accessories_shop"?"8% platform rate for accessories":
+           profile?.provider_type==="tyre_shop"?"6% platform rate for tyre shops 🎉":""}
+        </div>
+      </div>
+
       {/* Recent bookings */}
       <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#f0ede6", marginBottom:"1rem" }}>
         {language==="sw"?"Miadi ya hivi karibuni":"Recent bookings"}
@@ -184,3 +211,5 @@ export default function ProviderDashboard() {
     </div>
   )
 }
+
+
