@@ -95,6 +95,7 @@ const NAV = {
     { path:"/admin-dashboard/marketplace", label:"Marketplace", icon:"🛒" },
     { path:"/admin-dashboard/employees", label:"Employees", icon:"👨‍💼" },
     { path:"/admin-dashboard/orders", label:"Orders", icon:"🛒" },
+    { path:"/admin-dashboard/inventory", label:"Inventory", icon:"📦" },
     { path:"/admin-dashboard/payment-tracking", label:"Payment Tracking", icon:"💹" },
 
   ],
@@ -377,6 +378,7 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 
 

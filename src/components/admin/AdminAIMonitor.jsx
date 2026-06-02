@@ -272,8 +272,10 @@ PROVIDER TYPE BREAKDOWN:
 
 INVENTORY & ORDERS:
 - Active inventory items listed: ${platformData.parts_inventory_items}
-- Pending orders (needs fulfillment): ${platformData.pending_orders}
-- Orders system is LIVE and operational
+- Pending orders needing fulfillment: ${platformData.pending_orders}
+- Low stock items (5 or less): check inventory
+- Orders system: LIVE and operational
+- Delivery zones configured: YES
 
 PLATFORM CONTEXT:
 Provider types: garage, parts_dealer, accessories_shop, tyre_shop, auto_electrician, car_wash, panel_beater, auto_glass
@@ -508,6 +510,7 @@ Be specific and actionable. Max 300 words. Use bullet points.`
     </div>
   )
 }
+
 
 
 

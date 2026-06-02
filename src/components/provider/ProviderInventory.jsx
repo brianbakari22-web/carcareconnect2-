@@ -81,7 +81,9 @@ export default function ProviderInventory() {
   }
 
   async function updateStock(id, qty) {
-    await supabase.from("inventory").update({ stock_quantity:qty }).eq("id", id)
+    await supabase.from("inventory").update({ stock_quantity:qty, updated_at:new Date().toISOString() }).eq("id", id)
+    if (qty<=3&&qty>0) toast("⚠️ Low stock warning — only "+qty+" left!", { icon:"⚠️", duration:5000 })
+    if (qty===0) toast.error("❌ Item out of stock — customers cannot order this item")
     load()
   }
 
@@ -223,3 +225,4 @@ export default function ProviderInventory() {
     </div>
   )
 }
+

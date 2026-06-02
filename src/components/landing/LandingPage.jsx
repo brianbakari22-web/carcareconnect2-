@@ -321,6 +321,42 @@ export default function LandingPage() {
         </div>
       </div>
 
+      {/* PARTS MARKETPLACE */}
+      <div style={{ position:"relative", zIndex:1, maxWidth:1000, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
+        <div style={{ background:"linear-gradient(135deg,#141414,#1a1a1a)", border:"1px solid #1e1e1e", borderRadius:20, padding:"2.5rem 2rem" }}>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"3rem", alignItems:"center" }}>
+            <div>
+              <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#e6821e", marginBottom:8 }}>Parts marketplace</div>
+              <h2 style={{ fontFamily:"Syne", fontSize:"clamp(22px,3vw,32px)", fontWeight:800, marginBottom:12 }}>Order parts online. Delivered to your door.</h2>
+              <p style={{ fontSize:13, color:"#666", lineHeight:1.8, marginBottom:"1.5rem" }}>Browse thousands of genuine and aftermarket parts from verified Nairobi shops. Order online, pay securely, get it delivered by CCC riders.</p>
+              {[["⚙️","Engine & mechanical parts"],["✨","Car accessories"],["🛞","Tyres all brands"],["🔋","Batteries & electrical"],["🛢️","Engine oils & fluids"]].map(([icon,label])=>(
+                <div key={label} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
+                  <span style={{ fontSize:16 }}>{icon}</span>
+                  <span style={{ fontSize:13, color:"#888" }}>{label}</span>
+                </div>
+              ))}
+              <button onClick={()=>navigate("/auth")} style={{ marginTop:"1.5rem", background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px 28px", cursor:"pointer" }}>
+                Browse parts →
+              </button>
+            </div>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+              {[
+                { icon:"🏪", title:"Pickup", desc:"Collect from shop" },
+                { icon:"🚚", title:"Delivery", desc:"CCC riders deliver" },
+                { icon:"✅", title:"Verified shops", desc:"All shops checked" },
+                { icon:"💳", title:"Secure pay", desc:"M-Pesa or card" },
+              ].map(f=>(
+                <div key={f.title} style={{ background:"#0f0f0f", borderRadius:12, padding:"1rem", textAlign:"center" }}>
+                  <div style={{ fontSize:24, marginBottom:6 }}>{f.icon}</div>
+                  <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#f0ede6", marginBottom:4 }}>{f.title}</div>
+                  <div style={{ fontSize:11, color:"#555" }}>{f.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* CTA */}
       <div style={{ position:"relative", zIndex:1, textAlign:"center", padding:"4rem 1.5rem 6rem", overflow:"hidden" }}>
         <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse at center, #e6821e08, transparent)", pointerEvents:"none" }}/>
@@ -354,6 +390,7 @@ export default function LandingPage() {
     </div>
   )
 }
+
 
 
 

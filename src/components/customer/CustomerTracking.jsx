@@ -26,7 +26,21 @@ export default function CustomerTracking() {
   const driverMarkerRef = useRef(null)
   const mechanicMarkerRef = useRef(null)
 
-  useEffect(() => { if (user) load() }, [user])
+  useEffect(() => {
+    if (!user) return
+    load()
+    // Realtime order delivery updates
+    const sub = supabase.channel("customer-delivery-updates")
+      .on("postgres_changes", { event:"UPDATE", schema:"public", table:"orders", filter:`customer_id=eq.${user.id}` },
+        payload => {
+          const status = payload.new.delivery_status
+          if (status==="picked_up") toast("📦 Driver picked up your order!", { icon:"🚚", duration:8000 })
+          if (status==="delivered") toast.success("✅ Order delivered! Please confirm receipt.")
+          load()
+        })
+      .subscribe()
+    return () => supabase.removeChannel(sub)
+  }, [user])
 
   useEffect(() => {
     if (!selected) return
@@ -286,6 +300,9 @@ export default function CustomerTracking() {
     </div>
   )
 }
+
+
+
 
 
 

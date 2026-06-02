@@ -137,12 +137,25 @@ export default function CustomerPartsMarketplace() {
         })
       }
 
-      toast.success("Order placed successfully! 🎉")
+      toast.success("Order placed! Redirecting to payment...")
       setCart([])
       setShowCart(false)
-      setTab("orders")
-      loadOrders()
-      load()
+      // Pay via Pesapal for first order
+      const firstOrderId = Object.keys(cartByProvider)[0]
+      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/pesapal-payment", {
+        method:"POST",
+        headers:{"Content-Type":"application/json","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc"},
+        body:JSON.stringify({ amount:orderTotal, bookingId:firstOrderId, customerEmail:user.email||"", customerPhone:"", customerName:"" })
+      })
+      const order = await res.json()
+      if (order.redirect_url) {
+        sessionStorage.setItem("parts_order_id", firstOrderId)
+        window.location.href = order.redirect_url
+      } else {
+        setTab("orders")
+        loadOrders()
+        load()
+      }
     } catch(e) { toast.error(e.message) }
     finally { setOrdering(false) }
   }
@@ -337,3 +350,4 @@ export default function CustomerPartsMarketplace() {
     </div>
   )
 }
+
