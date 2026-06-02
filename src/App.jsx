@@ -7,6 +7,7 @@ import { ThemeProvider } from "./contexts/ThemeContext"
 import { supabase } from "./lib/supabase"
 import AuthPage from "./components/auth/AuthPage"
 import LandingPage from "./components/landing/LandingPage"
+import LandingPage from "./components/landing/LandingPage"
 import PrivacyPolicy from "./components/legal/PrivacyPolicy"
 import TermsOfService from "./components/legal/TermsOfService"
 import AdminAuthPage from "./components/auth/AdminAuthPage"
@@ -295,6 +296,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 
