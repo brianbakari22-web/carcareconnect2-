@@ -47,21 +47,25 @@ export default function AdminOrders() {
   }
 
   async function assignDriver(orderId) {
+    const order = orders.find(o=>o.id===orderId)
+    const itemCount = order?.order_items?.length||1
+    const preferredType = itemCount<=3?"motorcycle":itemCount<=6?"tuktuk":"van"
     const { data: drivers } = await supabase.from("profiles")
       .select("id,first_name,last_name,driver_vehicle_type")
       .eq("role","driver")
       .eq("is_active",true)
       .eq("documents_verified",true)
     if (!drivers?.length) return toast.error("No verified drivers available")
-    const driver = drivers[0]
+    const preferred = drivers.filter(d=>d.driver_vehicle_type===preferredType)
+    const driver = preferred.length>0 ? preferred[0] : drivers[0]
     await supabase.from("orders").update({ delivery_driver_id:driver.id, delivery_status:"driver_assigned" }).eq("id", orderId)
     await supabase.from("notifications").insert({
       user_id: driver.id,
-      title: "New delivery assigned 🚚",
-      message: "You have been assigned a new delivery order.",
-      type: "info"
+      title: "🚚 Delivery assigned by admin!",
+      message: "New delivery: "+itemCount+" item(s) to "+order?.delivery_address+". Zone: "+order?.delivery_zone,
+      type: "success"
     })
-    toast.success("Driver assigned: "+driver.first_name)
+    toast.success("Smart match: "+driver.first_name+" ("+driver.driver_vehicle_type+")")
     load()
   }
 
@@ -170,3 +174,4 @@ export default function AdminOrders() {
     </div>
   )
 }
+

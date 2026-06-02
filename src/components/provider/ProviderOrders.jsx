@@ -59,22 +59,27 @@ export default function ProviderOrders() {
   }
 
   async function assignDriver(orderId) {
+    const order = orders.find(o=>o.id===orderId)
+    // Smart matching - prefer boda boda for small orders, van for large
+    const itemCount = order?.order_items?.length||1
+    const preferredType = itemCount<=3?"motorcycle":itemCount<=6?"tuktuk":"van"
     const { data: drivers } = await supabase.from("profiles")
-      .select("id,first_name,last_name,driver_vehicle_type")
+      .select("id,first_name,last_name,driver_vehicle_type,city")
       .eq("role","driver")
       .eq("is_active",true)
       .eq("documents_verified",true)
     if (!drivers?.length) return toast.error("No verified drivers available")
-    // For now assign first available driver — Phase 3 will have smart matching
-    const driver = drivers[0]
+    // Try preferred vehicle type first, fallback to any
+    const preferred = drivers.filter(d=>d.driver_vehicle_type===preferredType)
+    const driver = preferred.length>0 ? preferred[0] : drivers[0]
     await supabase.from("orders").update({ delivery_driver_id:driver.id, delivery_status:"driver_assigned" }).eq("id", orderId)
     await supabase.from("notifications").insert({
       user_id: driver.id,
-      title: "New delivery job 🚚",
-      message: "You have been assigned a delivery. Check your delivery jobs.",
-      type: "info"
+      title: "🚚 New delivery job!",
+      message: "New delivery assigned: "+order?.order_items?.length+" item(s) to "+order?.delivery_address+". Zone: "+order?.delivery_zone+". Check your deliveries now!",
+      type: "success"
     })
-    toast.success("Driver assigned: "+driver.first_name+" "+driver.last_name)
+    toast.success("Driver assigned: "+driver.first_name+" "+driver.last_name+" ("+driver.driver_vehicle_type+")")
     load()
   }
 
@@ -177,3 +182,4 @@ export default function ProviderOrders() {
     </div>
   )
 }
+
