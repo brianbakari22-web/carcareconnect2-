@@ -1,0 +1,179 @@
+import { useEffect, useState } from "react"
+import { supabase } from "../../lib/supabase"
+import { useAuth } from "../../contexts/AuthContext"
+import useIsMobile from "../../lib/useIsMobile"
+import toast from "react-hot-toast"
+
+const STATUS_COLORS = { pending:"#e6821e", confirmed:"#378add", processing:"#8b5cf6", ready:"#1d9e75", delivered:"#1d9e75", cancelled:"#e24b4a" }
+const STATUS_FLOW = ["pending","confirmed","processing","ready","delivered"]
+
+export default function ProviderOrders() {
+  const { user } = useAuth()
+  const isMobile = useIsMobile()
+  const [orders, setOrders] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [filter, setFilter] = useState("pending")
+
+  useEffect(() => {
+    if (!user) return
+    load()
+    const sub = supabase.channel("provider-orders")
+      .on("postgres_changes", { event:"INSERT", schema:"public", table:"orders", filter:`provider_id=eq.${user.id}` },
+        payload => {
+          toast("🛒 New order received!", { duration:8000, icon:"🛒" })
+          load()
+        })
+      .subscribe()
+    return () => supabase.removeChannel(sub)
+  }, [user])
+
+  async function load() {
+    const { data } = await supabase.from("orders")
+      .select("*, order_items(*, inventory(name,unit,category)), profiles!orders_customer_id_fkey(first_name,last_name,city)")
+      .eq("provider_id", user.id)
+      .order("created_at", { ascending:false })
+    setOrders(data||[])
+    setLoading(false)
+  }
+
+  async function updateStatus(orderId, status) {
+    const order = orders.find(o=>o.id===orderId)
+    await supabase.from("orders").update({ status, updated_at:new Date().toISOString() }).eq("id", orderId)
+    if (order?.customer_id) {
+      const messages = {
+        confirmed: "Your order has been confirmed! We are preparing your items.",
+        processing: "Your order is being processed and packed.",
+        ready: order.fulfillment_type==="delivery"?"Your order is ready — driver will pick up soon!":"Your order is ready for pickup!",
+        delivered: "Your order has been delivered. Thank you! 🎉",
+        cancelled: "Your order has been cancelled. Contact support for refund."
+      }
+      await supabase.from("notifications").insert({
+        user_id: order.customer_id,
+        title: "Order update 📦",
+        message: messages[status]||"Order status updated to "+status,
+        type: status==="cancelled"?"error":"success"
+      })
+    }
+    toast.success("Order "+status)
+    load()
+  }
+
+  async function assignDriver(orderId) {
+    const { data: drivers } = await supabase.from("profiles")
+      .select("id,first_name,last_name,driver_vehicle_type")
+      .eq("role","driver")
+      .eq("is_active",true)
+      .eq("documents_verified",true)
+    if (!drivers?.length) return toast.error("No verified drivers available")
+    // For now assign first available driver — Phase 3 will have smart matching
+    const driver = drivers[0]
+    await supabase.from("orders").update({ delivery_driver_id:driver.id, delivery_status:"driver_assigned" }).eq("id", orderId)
+    await supabase.from("notifications").insert({
+      user_id: driver.id,
+      title: "New delivery job 🚚",
+      message: "You have been assigned a delivery. Check your delivery jobs.",
+      type: "info"
+    })
+    toast.success("Driver assigned: "+driver.first_name+" "+driver.last_name)
+    load()
+  }
+
+  const filtered = filter==="all" ? orders : orders.filter(o=>o.status===filter)
+  const pending = orders.filter(o=>o.status==="pending").length
+  const today = orders.filter(o=>new Date(o.created_at).toDateString()===new Date().toDateString()).length
+  const revenue = orders.filter(o=>o.status==="delivered").reduce((s,o)=>s+Number(o.provider_earnings||0),0)
+
+  return (
+    <div>
+      <div style={{ marginBottom:"1.25rem" }}>
+        <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#f0ede6" }}>Orders</div>
+        <div style={{ fontSize:12, color:"#555" }}>Manage parts and accessories orders</div>
+      </div>
+
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginBottom:"1.5rem" }}>
+        {[
+          { label:"Pending", value:pending, color:pending>0?"#e6821e":"#555" },
+          { label:"Today", value:today, color:"#378add" },
+          { label:"Revenue", value:"KES "+revenue.toLocaleString(), color:"#1d9e75" },
+        ].map(s=>(
+          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"0.75rem", border:"1px solid #1e1e1e", textAlign:"center" }}>
+            <div style={{ fontFamily:"Syne", fontSize:isMobile?14:18, fontWeight:800, color:s.color }}>{s.value}</div>
+            <div style={{ fontSize:10, color:"#555", marginTop:2 }}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {pending>0&&(
+        <div style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:10, padding:"0.75rem", marginBottom:"1rem" }}>
+          <div style={{ fontSize:13, color:"#e6821e", fontWeight:600 }}>⚠️ {pending} order{pending>1?"s":""} waiting for confirmation</div>
+        </div>
+      )}
+
+      <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
+        {["pending","confirmed","processing","ready","delivered","cancelled","all"].map(f=>(
+          <button key={f} onClick={()=>setFilter(f)}
+            style={{ padding:"5px 12px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:filter===f?(STATUS_COLORS[f]||"#8b5cf6"):"#111", color:filter===f?"#fff":"#666" }}>
+            {f} ({f==="all"?orders.length:orders.filter(o=>o.status===f).length})
+          </button>
+        ))}
+      </div>
+
+      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {!loading&&filtered.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No orders found</div>}
+
+      {filtered.map(o=>(
+        <div key={o.id} style={{ background:"#111", border:"1px solid "+(STATUS_COLORS[o.status]||"#1e1e1e")+"30", borderRadius:12, padding:"1rem", marginBottom:10 }}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
+            <div>
+              <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6", marginBottom:2 }}>#{o.order_number}</div>
+              <div style={{ fontSize:11, color:"#555" }}>👤 {o.profiles?.first_name} {o.profiles?.last_name}</div>
+              <div style={{ fontSize:11, color:"#555" }}>{o.fulfillment_type==="delivery"?"🚚 Delivery to "+o.delivery_address:"🏪 Customer pickup"}</div>
+              {o.delivery_zone&&<div style={{ fontSize:11, color:"#378add" }}>📍 Zone: {o.delivery_zone}</div>}
+              <div style={{ fontSize:10, color:"#444" }}>{new Date(o.created_at).toLocaleString()}</div>
+            </div>
+            <div style={{ textAlign:"right" }}>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>KES {Number(o.subtotal||0).toLocaleString()}</div>
+              <div style={{ fontSize:10, color:"#1d9e75" }}>Your cut: KES {Number(o.provider_earnings||0).toLocaleString()}</div>
+              <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:(STATUS_COLORS[o.status]||"#888")+"20", color:STATUS_COLORS[o.status]||"#888", display:"inline-block", marginTop:4 }}>{o.status}</span>
+            </div>
+          </div>
+
+          <div style={{ background:"#0f0f0f", borderRadius:8, padding:"0.75rem", marginBottom:10 }}>
+            {o.order_items?.map(oi=>(
+              <div key={oi.id} style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#888", padding:"3px 0" }}>
+                <span>{oi.name} × {oi.quantity} {oi.inventory?.unit||""}</span>
+                <span>KES {Number(oi.unit_price*oi.quantity).toLocaleString()}</span>
+              </div>
+            ))}
+            {o.delivery_fee>0&&(
+              <div style={{ display:"flex", justifyContent:"space-between", fontSize:11, color:"#555", borderTop:"1px solid #1a1a1a", paddingTop:4, marginTop:4 }}>
+                <span>Delivery fee</span><span>KES {Number(o.delivery_fee).toLocaleString()}</span>
+              </div>
+            )}
+          </div>
+
+          <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+            {o.status==="pending"&&(
+              <>
+                <button onClick={()=>updateStatus(o.id,"confirmed")} style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer", fontWeight:600 }}>✓ Confirm order</button>
+                <button onClick={()=>updateStatus(o.id,"cancelled")} style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"6px 10px", cursor:"pointer" }}>Cancel</button>
+              </>
+            )}
+            {o.status==="confirmed"&&(
+              <button onClick={()=>updateStatus(o.id,"processing")} style={{ background:"#160a2e", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>📦 Start packing</button>
+            )}
+            {o.status==="processing"&&(
+              <button onClick={()=>updateStatus(o.id,"ready")} style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>✅ Mark ready</button>
+            )}
+            {o.status==="ready"&&o.fulfillment_type==="delivery"&&!o.delivery_driver_id&&(
+              <button onClick={()=>assignDriver(o.id)} style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>🚚 Assign driver</button>
+            )}
+            {o.status==="ready"&&o.fulfillment_type==="pickup"&&(
+              <button onClick={()=>updateStatus(o.id,"delivered")} style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>✓ Customer picked up</button>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
