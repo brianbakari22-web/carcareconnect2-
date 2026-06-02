@@ -224,6 +224,9 @@ export default function AdminDrivers() {
                       {isSuspended&&<span style={{ fontSize:10, color:"#e24b4a", background:"#1a0808", padding:"2px 7px", borderRadius:10 }}>🚫 Suspended</span>}
                       {isOnline&&!isSuspended&&<span style={{ fontSize:10, color:"#1d9e75" }}>🟢 Online{onJob?" · On job":""}</span>}
                       {noShowCount>0&&<span style={{ fontSize:10, color:"#e6821e", background:"#1a1208", padding:"2px 7px", borderRadius:10 }}>⚠️ {noShowCount} no-show{noShowCount>1?"s":""}</span>}
+                      {d.driver_vehicle_type&&<span style={{ fontSize:10, color:"#8b5cf6", background:"#160a2e", padding:"2px 7px", borderRadius:10 }}>
+                        {d.driver_vehicle_type==="motorcycle"?"🏍️ Boda Boda":d.driver_vehicle_type==="tuktuk"?"🛺 Tuktuk":d.driver_vehicle_type==="van"?"🚐 Van":"🚗 Car"}
+                      </span>}
                     </div>
 
                     <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(3,1fr)", gap:6, marginBottom:10 }}>
@@ -366,6 +369,8 @@ function DriverStats({ driverId, isMobile }) {
     </div>
   )
 }
+
+
 
 
 
