@@ -49,6 +49,7 @@ import ProviderPayouts from "./components/provider/ProviderPayouts"
 import ProviderNotifications from "./components/provider/ProviderNotifications"
 import ProviderAvailability from "./components/provider/ProviderAvailability"
 import ProviderProfile from "./components/provider/ProviderProfile"
+import ProviderInventory from "./components/provider/ProviderInventory"
 import ProviderMechanics from "./components/provider/ProviderMechanics"
 import ProviderGoRequests from "./components/provider/ProviderGoRequests"
 import ProviderClaims from "./components/provider/ProviderClaims"
@@ -208,6 +209,7 @@ function DashboardRouter() {
           <Route path="marketplace/my-offers" element={<MyOffers />} />
           <Route path="marketplace/transactions" element={<EscrowManager />} />
           <Route path="profile" element={<ProviderProfile />} />
+          <Route path="inventory" element={<ProviderInventory />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </>}
         {role === "driver" && <>
@@ -296,6 +298,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 
