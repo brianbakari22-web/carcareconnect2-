@@ -51,7 +51,6 @@ function NetworkCanvas() {
 export default function LandingPage() {
   const navigate = useNavigate()
   const [scrolled, setScrolled] = useState(false)
-
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 50)
     window.addEventListener("scroll", h)
@@ -60,9 +59,7 @@ export default function LandingPage() {
 
   return (
     <div style={{ minHeight:"100vh", background:"#0d0d0d", color:"#e8e4dc", fontFamily:"DM Sans,sans-serif", overflowX:"hidden", position:"relative" }}>
-      <div style={{ position:"fixed", inset:0, zIndex:0, pointerEvents:"none" }}>
-        <NetworkCanvas />
-      </div>
+      <div style={{ position:"fixed", inset:0, zIndex:0, pointerEvents:"none" }}><NetworkCanvas /></div>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
         @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
@@ -70,7 +67,7 @@ export default function LandingPage() {
         @keyframes glow { 0%,100%{filter:drop-shadow(0 0 20px #e6821e30)} 50%{filter:drop-shadow(0 0 40px #e6821e70)} }
         * { box-sizing:border-box; }
         html { scroll-behavior:smooth; }
-        .hcard:hover { border-color:#e6821e50 !important; transform:translateY(-3px); transition:all 0.2s ease; }
+        .hcard:hover { border-color:#e6821e50!important; transform:translateY(-3px); transition:all 0.2s ease; }
         .hcard { transition:all 0.2s ease; }
       `}</style>
 
@@ -78,43 +75,32 @@ export default function LandingPage() {
       <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:200, padding:"0.75rem 2rem", display:"flex", justifyContent:"space-between", alignItems:"center", background:scrolled?"rgba(13,13,13,0.97)":"transparent", backdropFilter:scrolled?"blur(12px)":"none", borderBottom:scrolled?"1px solid #1e1e1e":"none", transition:"all 0.3s" }}>
         <img src="/logo.svg" alt="Car Care Connect" style={{ height:52, animation:"glow 3s ease-in-out infinite" }}/>
         <div style={{ display:"flex", gap:8, alignItems:"center" }}>
-          <button onClick={()=>navigate("/auth")} style={{ background:"none", border:"1px solid #333", borderRadius:8, color:"#888", fontSize:13, padding:"8px 18px", cursor:"pointer" }}>
-            Sign in
-          </button>
-          <button onClick={()=>navigate("/auth")} style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:13, fontWeight:700, padding:"9px 20px", cursor:"pointer", fontFamily:"Syne,sans-serif" }}>
-            Get started →
-          </button>
+          <button onClick={()=>navigate("/auth")} style={{ background:"none", border:"1px solid #333", borderRadius:8, color:"#888", fontSize:13, padding:"8px 18px", cursor:"pointer" }}>Sign in</button>
+          <button onClick={()=>navigate("/auth")} style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:13, fontWeight:700, padding:"9px 20px", cursor:"pointer", fontFamily:"Syne,sans-serif" }}>Get started free →</button>
         </div>
       </nav>
 
       {/* HERO */}
       <div style={{ minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", textAlign:"center", padding:"7rem 1.5rem 4rem", position:"relative", overflow:"hidden" }}>
-        <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse at 50% 40%, #e6821e12 0%, #1d9e7504 50%, transparent 70%)", pointerEvents:"none" }}/>
-        <div style={{ position:"absolute", top:"10%", left:"5%", width:500, height:500, background:"#e6821e05", borderRadius:"50%", filter:"blur(100px)", animation:"float 8s ease-in-out infinite" }}/>
-        <div style={{ position:"absolute", bottom:"10%", right:"5%", width:350, height:350, background:"#1d9e7505", borderRadius:"50%", filter:"blur(80px)", animation:"float 10s ease-in-out infinite 3s" }}/>
-
+        <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse at 50% 40%, #e6821e12 0%, #1d9e7504 50%, transparent 70%)", pointerEvents:"none", zIndex:1 }}/>
         <div style={{ position:"relative", maxWidth:820, zIndex:1 }}>
           <img src="/logo.svg" alt="Car Care Connect" style={{ height:130, marginBottom:"2rem", animation:"glow 3s ease-in-out infinite" }}/>
-
           <div style={{ display:"inline-flex", alignItems:"center", gap:8, background:"#1d9e7512", border:"1px solid #1d9e7530", borderRadius:20, padding:"6px 16px", marginBottom:"1.5rem" }}>
             <div style={{ position:"relative", width:8, height:8 }}>
               <div style={{ width:8, height:8, borderRadius:"50%", background:"#1d9e75", position:"absolute" }}/>
               <div style={{ position:"absolute", inset:0, borderRadius:"50%", background:"#1d9e75", animation:"ping 1.5s ease-out infinite" }}/>
             </div>
-            <span style={{ fontSize:12, color:"#1d9e75", fontWeight:600 }}>Now live in Nairobi, Kenya 🇰🇪</span>
+            <span style={{ fontSize:12, color:"#1d9e75", fontWeight:600 }}>🇰🇪 Built in Kenya · Serving Nairobi</span>
           </div>
-
           <h1 style={{ fontFamily:"Syne", fontSize:"clamp(38px,6vw,74px)", fontWeight:800, lineHeight:1.1, marginBottom:"1.5rem" }}>
-            Your Car.<br/>
-            <span style={{ color:"#e6821e" }}>Our Care.</span><br/>
-            Simplified.
+            One app.<br/>
+            <span style={{ color:"#e6821e" }}>Every car need.</span><br/>
+            Nairobi.
           </h1>
-
-          <p style={{ fontSize:"clamp(15px,2vw,18px)", color:"#777", lineHeight:1.8, maxWidth:560, margin:"0 auto 2.5rem" }}>
-            Nairobi first full-service automotive platform. Book mechanics, get 24/7 emergency roadside help, track your car live, and buy or sell vehicles — all in one place.
+          <p style={{ fontSize:"clamp(15px,2vw,18px)", color:"#777", lineHeight:1.8, maxWidth:580, margin:"0 auto 2.5rem" }}>
+            Kenya's first AI-powered automotive platform. Verified mechanics, 24/7 emergency roadside help, live tracking, parts marketplace — everything your car needs, one tap away.
           </p>
-
-          <div style={{ display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap", marginBottom:"3rem" }}>
+          <div style={{ display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap", marginBottom:"2.5rem" }}>
             <button onClick={()=>navigate("/auth")} style={{ background:"#e6821e", border:"none", borderRadius:12, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:16, fontWeight:700, padding:"16px 40px", cursor:"pointer" }}>
               🚗 Get started free
             </button>
@@ -122,12 +108,17 @@ export default function LandingPage() {
               Sign in →
             </button>
           </div>
-
-          <div style={{ display:"flex", gap:28, justifyContent:"center", flexWrap:"wrap" }}>
-            {[["🚗","Service booking"],["🚨","24/7 emergency"],["📍","Live tracking"],["🛒","Marketplace"],["💎","Loyalty rewards"]].map(([icon,label])=>(
-              <div key={label} style={{ fontSize:12, color:"#444", display:"flex", alignItems:"center", gap:6 }}>
-                <span>{icon}</span><span>{label}</span>
+          <div style={{ display:"flex", gap:16, justifyContent:"center", flexWrap:"wrap", marginBottom:"2rem" }}>
+            {[["24/7","Emergency service"],["5min","Avg response"],["100%","Verified providers"],["🇰🇪","Made in Kenya"]].map(([v,l])=>(
+              <div key={l} style={{ textAlign:"center", padding:"0.6rem 1rem", background:"#141414", borderRadius:10, border:"1px solid #1e1e1e" }}>
+                <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#e6821e" }}>{v}</div>
+                <div style={{ fontSize:10, color:"#555", marginTop:2 }}>{l}</div>
               </div>
+            ))}
+          </div>
+          <div style={{ display:"flex", gap:20, justifyContent:"center", flexWrap:"wrap" }}>
+            {[["🚗","Service booking"],["🚨","24/7 emergency"],["📍","Live tracking"],["🛒","Marketplace"],["💎","Loyalty rewards"]].map(([icon,label])=>(
+              <div key={label} style={{ fontSize:12, color:"#444", display:"flex", alignItems:"center", gap:6 }}><span>{icon}</span><span>{label}</span></div>
             ))}
           </div>
         </div>
@@ -138,19 +129,17 @@ export default function LandingPage() {
         <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse at center, #e24b4a06, transparent)", pointerEvents:"none" }}/>
         <div style={{ fontSize:52, marginBottom:16 }}>🚨</div>
         <h2 style={{ fontFamily:"Syne", fontSize:"clamp(22px,4vw,36px)", fontWeight:800, color:"#e24b4a", marginBottom:12 }}>
-          Car breakdown? We come to you.
+          Breakdown anywhere in Nairobi? We dispatch a mechanic to you.
         </h2>
-        <p style={{ fontSize:15, color:"#777", maxWidth:520, margin:"0 auto 2rem", lineHeight:1.8 }}>
-          GO Service dispatches a certified mechanic to your exact GPS location 24/7. Flat tyre, dead battery, overheating, towing — all covered. KES 500 callout fee only.
+        <p style={{ fontSize:15, color:"#777", maxWidth:540, margin:"0 auto 2rem", lineHeight:1.8 }}>
+          Kenya's only 24/7 emergency roadside service. Our certified mechanics come to your exact GPS location — highway, parking lot, or home. Just KES 500 callout fee.
         </p>
-        <div style={{ display:"flex", gap:16, justifyContent:"center", flexWrap:"wrap", marginBottom:"1.5rem" }}>
+        <div style={{ display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap", marginBottom:"1.5rem" }}>
           {[["🛞","Flat tyre"],["🔋","Dead battery"],["⛽","Out of fuel"],["🌡️","Overheating"],["🚚","Towing"]].map(([icon,label])=>(
-            <div key={label} style={{ background:"#e24b4a15", border:"1px solid #e24b4a30", borderRadius:8, padding:"6px 12px", fontSize:12, color:"#e24b4a" }}>
-              {icon} {label}
-            </div>
+            <div key={label} style={{ background:"#e24b4a15", border:"1px solid #e24b4a30", borderRadius:8, padding:"6px 12px", fontSize:12, color:"#e24b4a" }}>{icon} {label}</div>
           ))}
         </div>
-        <button onClick={()=>navigate("/auth")} style={{ background:"linear-gradient(135deg,#c23a3a,#a82e2e)", border:"none", borderRadius:12, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:15, fontWeight:700, padding:"14px 36px", cursor:"pointer", boxShadow:"0 4px 20px #e24b4a20" }}>
+        <button onClick={()=>navigate("/auth")} style={{ background:"#e24b4a", border:"none", borderRadius:12, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:15, fontWeight:700, padding:"14px 36px", cursor:"pointer" }}>
           🚨 Request emergency help
         </button>
       </div>
@@ -159,12 +148,12 @@ export default function LandingPage() {
       <div style={{ position:"relative", zIndex:1, maxWidth:1000, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
         <div style={{ textAlign:"center", marginBottom:"3rem" }}>
           <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#e6821e", marginBottom:8 }}>How it works</div>
-          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>3 steps to car care bliss</h2>
+          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>Car care has never been this easy</h2>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))", gap:20 }}>
           {[
             { n:"01", icon:"🔍", title:"Find a service", desc:"Browse verified providers near you. Compare prices, read reviews, and pick the best mechanic for your car and budget." },
-            { n:"02", icon:"📱", title:"Book and pay", desc:"Book in seconds. Pay securely via M-Pesa or card through Pesapal. Instant confirmation and reminders." },
+            { n:"02", icon:"📱", title:"Book and pay", desc:"Book in seconds. Pay securely via M-Pesa or card through Pesapal, regulated by Central Bank of Kenya." },
             { n:"03", icon:"✅", title:"Track and review", desc:"Track your mechanic live on the map. Rate your experience and earn loyalty points on every booking." },
           ].map(s=>(
             <div key={s.n} className="hcard" style={{ background:"#141414", border:"1px solid #1e1e1e", borderRadius:16, padding:"2rem", position:"relative", overflow:"hidden" }}>
@@ -181,7 +170,7 @@ export default function LandingPage() {
       <div style={{ position:"relative", zIndex:1, maxWidth:1000, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
         <div style={{ textAlign:"center", marginBottom:"3rem" }}>
           <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#e6821e", marginBottom:8 }}>Features</div>
-          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>Everything your car needs</h2>
+          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>Kenya's most complete automotive platform</h2>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))", gap:16 }}>
           {[
@@ -203,35 +192,27 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* PROVIDER TYPES */}
+      {/* TRUST SECTION */}
       <div style={{ position:"relative", zIndex:1, maxWidth:1000, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
         <div style={{ textAlign:"center", marginBottom:"3rem" }}>
-          <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#e6821e", marginBottom:8 }}>For businesses</div>
-          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>All automotive businesses welcome</h2>
-          <p style={{ fontSize:14, color:"#555", marginTop:8 }}>Not just mechanics — list any automotive business and reach thousands of customers</p>
+          <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#e6821e", marginBottom:8 }}>Why CCC</div>
+          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>Built for Kenya. Built for trust.</h2>
         </div>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))", gap:12 }}>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))", gap:16 }}>
           {[
-            { icon:"🔧", type:"Garage/Mechanic", commission:"90%", color:"#e6821e" },
-            { icon:"⚙️", type:"Parts Dealer", commission:"95%", color:"#378add" },
-            { icon:"✨", type:"Accessories Shop", commission:"92%", color:"#8b5cf6" },
-            { icon:"🛞", type:"Tyre Shop", commission:"94%", color:"#1d9e75" },
-            { icon:"⚡", type:"Auto Electrician", commission:"88%", color:"#e6821e" },
-            { icon:"🚿", type:"Car Wash", commission:"90%", color:"#378add" },
-            { icon:"🔨", type:"Panel Beater", commission:"85%", color:"#e24b4a" },
-            { icon:"🪟", type:"Auto Glass", commission:"88%", color:"#1d9e75" },
-          ].map(b=>(
-            <div key={b.type} className="hcard" style={{ background:"#141414", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", textAlign:"center" }}>
-              <div style={{ fontSize:28, marginBottom:8 }}>{b.icon}</div>
-              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#f0ede6", marginBottom:4 }}>{b.type}</div>
-              <div style={{ fontSize:11, color:b.color, fontWeight:600 }}>Keep {b.commission}</div>
+            { icon:"🛡️", title:"Service Guarantee", desc:"Not happy with the service? We investigate and issue a full refund voucher. No questions asked.", color:"#1d9e75" },
+            { icon:"✅", title:"Verified providers only", desc:"Every mechanic, parts dealer and service provider is manually verified before listing on CCC.", color:"#378add" },
+            { icon:"📍", title:"Real-time tracking", desc:"Know exactly where your mechanic or driver is at all times. Live GPS tracking on every job.", color:"#e6821e" },
+            { icon:"🔒", title:"Secure payments", desc:"All payments processed through Pesapal, regulated by the Central Bank of Kenya.", color:"#8b5cf6" },
+            { icon:"✦", title:"AI-powered support", desc:"24/7 AI assistant to help diagnose car problems, guide bookings, and answer any question.", color:"#e6821e" },
+            { icon:"🇰🇪", title:"Made in Kenya", desc:"Built by Kenyans for Kenyan roads. We understand Nairobi traffic, local mechanics, and Kenyan cars.", color:"#1d9e75" },
+          ].map(t=>(
+            <div key={t.title} className="hcard" style={{ background:"#141414", border:"1px solid #1e1e1e", borderRadius:14, padding:"1.5rem" }}>
+              <div style={{ fontSize:32, marginBottom:10 }}>{t.icon}</div>
+              <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:700, color:t.color, marginBottom:6 }}>{t.title}</div>
+              <div style={{ fontSize:12, color:"#666", lineHeight:1.7 }}>{t.desc}</div>
             </div>
           ))}
-        </div>
-        <div style={{ textAlign:"center", marginTop:"2rem" }}>
-          <button onClick={()=>navigate("/auth")} style={{ background:"none", border:"2px solid #e6821e", borderRadius:12, color:"#e6821e", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px 32px", cursor:"pointer" }}>
-            Register your business →
-          </button>
         </div>
       </div>
 
@@ -239,13 +220,13 @@ export default function LandingPage() {
       <div style={{ position:"relative", zIndex:1, maxWidth:1000, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
         <div style={{ textAlign:"center", marginBottom:"3rem" }}>
           <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#e6821e", marginBottom:8 }}>Who is it for</div>
-          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>Built for everyone in the ecosystem</h2>
+          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>Join Kenya's fastest growing automotive community</h2>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))", gap:16 }}>
           {[
             { icon:"🚗", role:"Customer", color:"#e6821e", desc:"Book services, get emergency help, track your car, earn rewards", features:["Book car services","Emergency GO Service","Live mechanic tracking","Buy and sell vehicles"] },
-            { icon:"🔧", role:"Service Provider", color:"#378add", desc:"List services, manage bookings, earn commissions, dispatch mechanics", features:["Manage bookings","GO Service requests","Parts manager","Earnings dashboard"] },
-            { icon:"🚙", role:"Concierge Driver", color:"#1d9e75", desc:"Pick up and deliver customer vehicles, earn commission per delivery", features:["Accept deliveries","Condition reports","Live navigation","KES 200 allowance per trip"] },
+            { icon:"🔧", role:"Service Provider", color:"#378add", desc:"List services, manage bookings, earn commissions, dispatch mechanics", features:["Manage bookings","GO Service requests","Parts inventory","Earnings dashboard"] },
+            { icon:"🚙", role:"Concierge Driver", color:"#1d9e75", desc:"Pick up and deliver customer vehicles and parts, earn per delivery", features:["Accept deliveries","Parts delivery jobs","Live navigation","KES 200 allowance per trip"] },
           ].map(r=>(
             <div key={r.role} className="hcard" style={{ background:"#141414", border:"1px solid "+r.color+"30", borderRadius:16, padding:"1.75rem" }}>
               <div style={{ fontSize:40, marginBottom:12 }}>{r.icon}</div>
@@ -265,12 +246,44 @@ export default function LandingPage() {
         </div>
       </div>
 
+      {/* PROVIDER TYPES */}
+      <div style={{ position:"relative", zIndex:1, maxWidth:1000, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
+        <div style={{ textAlign:"center", marginBottom:"3rem" }}>
+          <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#e6821e", marginBottom:8 }}>For businesses</div>
+          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>All automotive businesses welcome</h2>
+          <p style={{ fontSize:14, color:"#555", marginTop:8 }}>Not just mechanics — list any automotive business and reach thousands of customers in Nairobi</p>
+        </div>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))", gap:12 }}>
+          {[
+            { icon:"🔧", type:"Garage/Mechanic", commission:"90%", color:"#e6821e" },
+            { icon:"⚙️", type:"Parts Dealer", commission:"95%", color:"#378add" },
+            { icon:"✨", type:"Accessories Shop", commission:"92%", color:"#8b5cf6" },
+            { icon:"🛞", type:"Tyre Shop", commission:"94%", color:"#1d9e75" },
+            { icon:"⚡", type:"Auto Electrician", commission:"88%", color:"#e6821e" },
+            { icon:"🚿", type:"Car Wash", commission:"90%", color:"#378add" },
+            { icon:"🔨", type:"Panel Beater", commission:"85%", color:"#e24b4a" },
+            { icon:"🪟", type:"Auto Glass", commission:"88%", color:"#1d9e75" },
+          ].map(b=>(
+            <div key={b.type} className="hcard" style={{ background:"#141414", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", textAlign:"center" }}>
+              <div style={{ fontSize:28, marginBottom:8 }}>{b.icon}</div>
+              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e8e4dc", marginBottom:4 }}>{b.type}</div>
+              <div style={{ fontSize:11, color:b.color, fontWeight:600 }}>Keep {b.commission}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ textAlign:"center", marginTop:"2rem" }}>
+          <button onClick={()=>navigate("/auth")} style={{ background:"none", border:"2px solid #e6821e", borderRadius:12, color:"#e6821e", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px 32px", cursor:"pointer" }}>
+            Register your business →
+          </button>
+        </div>
+      </div>
+
       {/* PRICING */}
       <div style={{ position:"relative", zIndex:1, maxWidth:900, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
         <div style={{ textAlign:"center", marginBottom:"3rem" }}>
           <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#e6821e", marginBottom:8 }}>Pricing</div>
-          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>Simple, transparent commissions</h2>
-          <p style={{ fontSize:14, color:"#555", marginTop:8 }}>Free to join. We only earn when you earn.</p>
+          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>Earn more. Keep more.</h2>
+          <p style={{ fontSize:14, color:"#555", marginTop:8 }}>No monthly fees. No hidden charges. We only make money when you make money.</p>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(190px,1fr))", gap:16 }}>
           {[
@@ -295,7 +308,7 @@ export default function LandingPage() {
         <div style={{ background:"#141414", border:"1px solid #1e1e1e", borderRadius:20, padding:"2rem" }}>
           <div style={{ textAlign:"center", marginBottom:"1.5rem" }}>
             <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#e6821e", marginBottom:8 }}>Nairobi market prices</div>
-            <h2 style={{ fontFamily:"Syne", fontSize:"clamp(20px,3vw,28px)", fontWeight:800 }}>What services cost in Nairobi</h2>
+            <h2 style={{ fontFamily:"Syne", fontSize:"clamp(20px,3vw,28px)", fontWeight:800 }}>What services cost in Nairobi 2026</h2>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))", gap:12 }}>
             {[
@@ -328,8 +341,8 @@ export default function LandingPage() {
             <div>
               <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#e6821e", marginBottom:8 }}>Parts marketplace</div>
               <h2 style={{ fontFamily:"Syne", fontSize:"clamp(22px,3vw,32px)", fontWeight:800, marginBottom:12 }}>Order parts online. Delivered to your door.</h2>
-              <p style={{ fontSize:13, color:"#666", lineHeight:1.8, marginBottom:"1.5rem" }}>Browse thousands of genuine and aftermarket parts from verified Nairobi shops. Order online, pay securely, get it delivered by CCC riders.</p>
-              {[["⚙️","Engine & mechanical parts"],["✨","Car accessories"],["🛞","Tyres all brands"],["🔋","Batteries & electrical"],["🛢️","Engine oils & fluids"]].map(([icon,label])=>(
+              <p style={{ fontSize:13, color:"#666", lineHeight:1.8, marginBottom:"1.5rem" }}>Browse genuine and aftermarket parts from verified Nairobi shops. Order online, pay securely via M-Pesa, get it delivered by CCC riders.</p>
+              {[["⚙️","Engine and mechanical parts"],["✨","Car accessories"],["🛞","Tyres all brands"],["🔋","Batteries and electrical"],["🛢️","Engine oils and fluids"]].map(([icon,label])=>(
                 <div key={label} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
                   <span style={{ fontSize:16 }}>{icon}</span>
                   <span style={{ fontSize:13, color:"#888" }}>{label}</span>
@@ -348,7 +361,7 @@ export default function LandingPage() {
               ].map(f=>(
                 <div key={f.title} style={{ background:"#0f0f0f", borderRadius:12, padding:"1rem", textAlign:"center" }}>
                   <div style={{ fontSize:24, marginBottom:6 }}>{f.icon}</div>
-                  <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#f0ede6", marginBottom:4 }}>{f.title}</div>
+                  <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e8e4dc", marginBottom:4 }}>{f.title}</div>
                   <div style={{ fontSize:11, color:"#555" }}>{f.desc}</div>
                 </div>
               ))}
@@ -362,10 +375,10 @@ export default function LandingPage() {
         <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse at center, #e6821e08, transparent)", pointerEvents:"none" }}/>
         <img src="/logo.svg" alt="Car Care Connect" style={{ height:80, marginBottom:"1.5rem", animation:"glow 3s ease-in-out infinite", position:"relative" }}/>
         <h2 style={{ fontFamily:"Syne", fontSize:"clamp(28px,5vw,52px)", fontWeight:800, marginBottom:16, position:"relative" }}>
-          Ready to simplify<br/><span style={{ color:"#e6821e" }}>car care in Nairobi?</span>
+          Kenya's car care revolution<br/><span style={{ color:"#e6821e" }}>starts here.</span>
         </h2>
-        <p style={{ fontSize:15, color:"#666", maxWidth:400, margin:"0 auto 2.5rem", lineHeight:1.7, position:"relative" }}>
-          Join Car Care Connect today. Free to sign up. No hidden fees. Available 24/7.
+        <p style={{ fontSize:15, color:"#666", maxWidth:440, margin:"0 auto 2.5rem", lineHeight:1.7, position:"relative" }}>
+          Join thousands of car owners and mechanics already on CCC. Free to join. Available 24/7. Built for Nairobi.
         </p>
         <div style={{ display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap", position:"relative" }}>
           <button onClick={()=>navigate("/auth")} style={{ background:"#e6821e", border:"none", borderRadius:12, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:16, fontWeight:700, padding:"16px 40px", cursor:"pointer" }}>
@@ -385,16 +398,10 @@ export default function LandingPage() {
             <a key={label} href={href} style={{ fontSize:12, color:"#444", textDecoration:"none" }}>{label}</a>
           ))}
         </div>
+        <div style={{ fontSize:12, color:"#333", marginBottom:6 }}>🇰🇪 Kenya's first AI-powered automotive platform</div>
         <div style={{ fontSize:11, color:"#2a2a2a" }}>© 2026 Car Care Connect · Nairobi, Kenya · 0113858966 · carcareconnect254@gmail.com</div>
+        <div style={{ fontSize:10, color:"#222", marginTop:6 }}>Payments secured by Pesapal · Regulated by Central Bank of Kenya</div>
       </footer>
     </div>
   )
 }
-
-
-
-
-
-
-
-
