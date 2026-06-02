@@ -45,7 +45,7 @@ function NetworkCanvas() {
     draw()
     return () => { window.removeEventListener("resize", resize); cancelAnimationFrame(animId) }
   }, [])
-  return <canvas ref={canvasRef} style={{ position:"absolute", inset:0, width:"100%", height:"100%", opacity:0.5 }}/>
+  return <canvas ref={canvasRef} style={{ position:"absolute", inset:0, width:"100%", height:"100%", opacity:0.5, pointerEvents:"none", zIndex:0 }}/>
 }
 
 export default function LandingPage() {
@@ -91,7 +91,7 @@ export default function LandingPage() {
         <div style={{ position:"absolute", top:"10%", left:"5%", width:500, height:500, background:"#e6821e05", borderRadius:"50%", filter:"blur(100px)", animation:"float 8s ease-in-out infinite" }}/>
         <div style={{ position:"absolute", bottom:"10%", right:"5%", width:350, height:350, background:"#1d9e7505", borderRadius:"50%", filter:"blur(80px)", animation:"float 10s ease-in-out infinite 3s" }}/>
 
-        <div style={{ position:"relative", maxWidth:820 }}>
+        <div style={{ position:"relative", maxWidth:820, zIndex:1 }}>
           <img src="/logo.svg" alt="Car Care Connect" style={{ height:130, marginBottom:"2rem", animation:"glow 3s ease-in-out infinite" }}/>
 
           <div style={{ display:"inline-flex", alignItems:"center", gap:8, background:"#1d9e7512", border:"1px solid #1d9e7530", borderRadius:20, padding:"6px 16px", marginBottom:"1.5rem" }}>
@@ -316,5 +316,6 @@ export default function LandingPage() {
     </div>
   )
 }
+
 
 
