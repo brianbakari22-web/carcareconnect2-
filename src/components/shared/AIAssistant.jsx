@@ -177,6 +177,29 @@ SERVICE CATEGORIES:
 - GO Service (emergency roadside)
 - Concierge (vehicle pickup/delivery)
 
+PROVIDER TYPES (all can register on CCC):
+- Garage/Mechanic: Car service and repair — 90% earnings, 10% platform
+- Mobile Mechanic: Travels to customer — 80% earnings, 20% platform
+- Parts Dealer: Auto parts and spares — 95% earnings, 5% platform (lowest rate)
+- Accessories Shop: Car accessories and add-ons — 92% earnings, 8% platform
+- Tyre Shop: Tyre sales and fitting — 94% earnings, 6% platform
+- Auto Electrician: Electrical systems specialist — 88% earnings, 12% platform
+- Car Wash: Car wash and detailing — 90% earnings, 10% platform
+- Panel Beater: Body work and spray painting — 85% earnings, 15% platform
+- Auto Glass: Windscreen and glass specialist — 88% earnings, 12% platform
+
+DRIVER VEHICLE TYPES:
+- Car: Standard concierge delivery
+- Motorcycle/Boda Boda: Fast parts delivery
+- Tuktuk: Local area delivery
+- Van/Pickup: Large item delivery
+
+INVENTORY SYSTEM (coming Phase 2):
+- Parts dealers and accessories shops can list inventory
+- Customers can browse and order parts online
+- Delivery or pickup options
+- Stock level tracking
+
 MARKETPLACE VEHICLE INSPECTION FLOW:
 - All vehicle listings require CCC inspection before going live
 - Parts and accessories: no inspection required
@@ -510,6 +533,7 @@ export default function AIAssistant() {
     </>
   )
 }
+
 
 
 
