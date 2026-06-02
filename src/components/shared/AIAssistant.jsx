@@ -189,10 +189,36 @@ PROVIDER TYPES (all can register on CCC):
 - Auto Glass: Windscreen and glass specialist — 88% earnings, 12% platform
 
 DRIVER VEHICLE TYPES:
-- Car: Standard concierge delivery
-- Motorcycle/Boda Boda: Fast parts delivery
-- Tuktuk: Local area delivery
-- Van/Pickup: Large item delivery
+- Car: Standard concierge vehicle delivery
+- Motorcycle/Boda Boda: Fast parts delivery (1-3 items)
+- Tuktuk: Medium parts delivery (4-6 items)
+- Van/Pickup: Large items, bulk orders, tyres, batteries (7+ items)
+
+SMART DRIVER MATCHING:
+- System auto-matches driver type to order size
+- 1-3 items → boda boda preferred
+- 4-6 items → tuktuk preferred  
+- 7+ items → van preferred
+- Falls back to any available driver if preferred type unavailable
+
+DELIVERY ZONES (Nairobi):
+- CBD/City Centre: KES 150 base
+- Westlands: KES 200 base
+- Karen/Langata: KES 300 base
+- Kasarani/Roysambu: KES 250 base
+- Embakasi/South B: KES 200 base
+- Kiambu Road: KES 300 base
+- Ngong Road: KES 250 base
+- Thika Road: KES 350 base
+- Mombasa Road: KES 250 base
+- Kiserian/Rongai: KES 400 base
+- Driver earns 85% of delivery fee
+
+ONBOARDING:
+- New customers get 2 welcome notifications with booking incentive
+- New providers get prompt to add services
+- New drivers get prompt to complete verification
+- Review reminder sent after every completed booking with 50 bonus points incentive
 
 INVENTORY & ORDERS SYSTEM:
 - Parts dealers, accessories shops, tyre shops can list inventory on CCC
@@ -547,6 +573,7 @@ export default function AIAssistant() {
     </>
   )
 }
+
 
 
 
