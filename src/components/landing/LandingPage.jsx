@@ -203,6 +203,38 @@ export default function LandingPage() {
         </div>
       </div>
 
+      {/* PROVIDER TYPES */}
+      <div style={{ position:"relative", zIndex:1, maxWidth:1000, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
+        <div style={{ textAlign:"center", marginBottom:"3rem" }}>
+          <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#e6821e", marginBottom:8 }}>For businesses</div>
+          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>All automotive businesses welcome</h2>
+          <p style={{ fontSize:14, color:"#555", marginTop:8 }}>Not just mechanics — list any automotive business and reach thousands of customers</p>
+        </div>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))", gap:12 }}>
+          {[
+            { icon:"🔧", type:"Garage/Mechanic", commission:"90%", color:"#e6821e" },
+            { icon:"⚙️", type:"Parts Dealer", commission:"95%", color:"#378add" },
+            { icon:"✨", type:"Accessories Shop", commission:"92%", color:"#8b5cf6" },
+            { icon:"🛞", type:"Tyre Shop", commission:"94%", color:"#1d9e75" },
+            { icon:"⚡", type:"Auto Electrician", commission:"88%", color:"#e6821e" },
+            { icon:"🚿", type:"Car Wash", commission:"90%", color:"#378add" },
+            { icon:"🔨", type:"Panel Beater", commission:"85%", color:"#e24b4a" },
+            { icon:"🪟", type:"Auto Glass", commission:"88%", color:"#1d9e75" },
+          ].map(b=>(
+            <div key={b.type} className="hcard" style={{ background:"#141414", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", textAlign:"center" }}>
+              <div style={{ fontSize:28, marginBottom:8 }}>{b.icon}</div>
+              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#f0ede6", marginBottom:4 }}>{b.type}</div>
+              <div style={{ fontSize:11, color:b.color, fontWeight:600 }}>Keep {b.commission}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ textAlign:"center", marginTop:"2rem" }}>
+          <button onClick={()=>navigate("/auth")} style={{ background:"none", border:"2px solid #e6821e", borderRadius:12, color:"#e6821e", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px 32px", cursor:"pointer" }}>
+            Register your business →
+          </button>
+        </div>
+      </div>
+
       {/* ROLES */}
       <div style={{ position:"relative", zIndex:1, maxWidth:1000, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
         <div style={{ textAlign:"center", marginBottom:"3rem" }}>
@@ -322,6 +354,7 @@ export default function LandingPage() {
     </div>
   )
 }
+
 
 
 
