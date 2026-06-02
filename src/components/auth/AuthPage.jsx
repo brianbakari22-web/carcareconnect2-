@@ -117,15 +117,15 @@ export default function AuthPage() {
           password: form.password,
           firstName: form.firstName,
           lastName: form.lastName,
-            phone: form.phone,
-            role: selectedRole,
-            businessName: form.businessName,
-            providerType: form.providerType,
-            driverVehicleType: form.driverVehicleType,
-          }, refCode)
+          phone: form.phone,
+          role: selectedRole,
+          businessName: form.businessName,
+          providerType: form.providerType,
           driverVehicleType: form.driverVehicleType,
         }, refCode)
-        toast.success("Welcome to Car Care Connect! 🎉")
+
+
+
         let tries = 0
         const checkProfile = async () => {
           const { data: { user: u } } = await supabase.auth.getUser()
