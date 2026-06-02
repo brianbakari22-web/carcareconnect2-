@@ -234,39 +234,9 @@ export default function AuthPage() {
                   </div>
                 </div>
                 {selectedRole==="provider"&&(
-                {selectedRole==="driver"&&(
-                  <>
-                    <label style={lbl}>Vehicle type</label>
-                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:10 }}>
-                      {DRIVER_VEHICLE_TYPES.map(vt=>(
-                        <div key={vt.key} onClick={()=>setForm(f=>({...f,driverVehicleType:vt.key}))}
-                          style={{ background:form.driverVehicleType===vt.key?"#071a12":"#111", border:"1px solid "+(form.driverVehicleType===vt.key?"#1d9e75":"#222"), borderRadius:8, padding:"8px 10px", cursor:"pointer" }}>
-                          <div style={{ fontSize:16, marginBottom:2 }}>{vt.icon}</div>
-                          <div style={{ fontSize:11, fontWeight:600, color:form.driverVehicleType===vt.key?"#1d9e75":"#888" }}>{vt.label}</div>
-                          <div style={{ fontSize:10, color:"#444", marginTop:2 }}>{vt.desc}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                )}
-                    <label style={lbl}>Business name</label>
-                {selectedRole==="provider"&&(
                   <>
                     <label style={lbl}>Business name</label>
                     <input style={inp} placeholder="e.g. Nairobi Auto Care" value={form.businessName} onChange={e=>setForm(f=>({...f,businessName:e.target.value}))}/>
-                    <label style={lbl}>Business type</label>
-                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:10 }}>
-                      {PROVIDER_TYPES.map(pt=>(
-                        <div key={pt.key} onClick={()=>setForm(f=>({...f,providerType:pt.key}))}
-                          style={{ background:form.providerType===pt.key?"#0c1f2e":"#111", border:"1px solid "+(form.providerType===pt.key?"#378add":"#222"), borderRadius:8, padding:"8px 10px", cursor:"pointer" }}>
-                          <div style={{ fontSize:16, marginBottom:2 }}>{pt.icon}</div>
-                          <div style={{ fontSize:11, fontWeight:600, color:form.providerType===pt.key?"#378add":"#888" }}>{pt.label}</div>
-                          <div style={{ fontSize:10, color:"#444", marginTop:2 }}>{pt.desc}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                )}
                   </>
                 )}
                 <label style={lbl}>Phone number</label>
@@ -576,8 +546,6 @@ export default function AuthPage() {
     </div>
   )
 }
-
-
 
 
 
