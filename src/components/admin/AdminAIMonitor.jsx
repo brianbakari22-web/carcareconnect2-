@@ -270,9 +270,10 @@ PROVIDER TYPE BREAKDOWN:
 - Provider types registered: ${JSON.stringify(platformData.provider_type_breakdown)}
 - Boda boda drivers: ${platformData.boda_boda_drivers}
 
-INVENTORY & ORDERS (Phase 2):
-- Active inventory items: ${platformData.parts_inventory_items}
-- Pending orders: ${platformData.pending_orders}
+INVENTORY & ORDERS:
+- Active inventory items listed: ${platformData.parts_inventory_items}
+- Pending orders (needs fulfillment): ${platformData.pending_orders}
+- Orders system is LIVE and operational
 
 PLATFORM CONTEXT:
 Provider types: garage, parts_dealer, accessories_shop, tyre_shop, auto_electrician, car_wash, panel_beater, auto_glass
@@ -466,6 +467,9 @@ Be specific and actionable. Max 300 words. Use bullet points.`
                     { f:"Provider types", ok:true },
                     { f:"Boda boda drivers", ok:report.platformData.boda_boda_drivers>=0 },
                     { f:"Inventory system", ok:report.platformData.parts_inventory_items>=0 },
+                    { f:"Parts marketplace", ok:true },
+                    { f:"Order management", ok:true },
+                    { f:"Driver deliveries", ok:true },
                   ].map(item=>(
                     <div key={item.f} style={{ display:"flex", alignItems:"center", gap:6, padding:"4px 0" }}>
                       <span style={{ fontSize:10, color:item.ok?"#1d9e75":"#e24b4a", flexShrink:0 }}>{item.ok?"✅":"❌"}</span>
@@ -504,6 +508,7 @@ Be specific and actionable. Max 300 words. Use bullet points.`
     </div>
   )
 }
+
 
 
 

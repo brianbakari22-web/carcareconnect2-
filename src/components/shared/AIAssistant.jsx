@@ -194,11 +194,25 @@ DRIVER VEHICLE TYPES:
 - Tuktuk: Local area delivery
 - Van/Pickup: Large item delivery
 
-INVENTORY SYSTEM (coming Phase 2):
-- Parts dealers and accessories shops can list inventory
-- Customers can browse and order parts online
-- Delivery or pickup options
-- Stock level tracking
+INVENTORY & ORDERS SYSTEM:
+- Parts dealers, accessories shops, tyre shops can list inventory on CCC
+- Inventory categories: parts, accessories, tyres, oils, electrical, body parts, tools
+- Each item has: name, brand, price, stock quantity, compatible cars, category
+- Customers browse at /dashboard/parts
+- Add to cart, choose pickup or delivery
+- Delivery zones: CBD, Westlands, Karen, Kasarani, Embakasi, Kiambu Road etc
+- Delivery fee: base fee per zone + per km rate
+- Order flow: browse → cart → place order → provider confirms → packs → driver delivers
+- Provider order statuses: pending → confirmed → processing → ready → delivered
+- CCC drivers (boda boda, tuktuk, van) deliver orders within Nairobi
+- Driver earns 85% of delivery fee, platform 15%
+- Parts dealer commission: 5% (lowest), accessories: 8%, tyres: 6%
+- Customers track orders at /dashboard/parts → My Orders tab
+- Providers manage inventory at /provider-dashboard/inventory
+- Providers manage orders at /provider-dashboard/orders
+- Drivers see delivery jobs at /driver-dashboard/deliveries
+- Admin manages all orders at /admin-dashboard/orders
+- Admin manages delivery zones and pricing
 
 MARKETPLACE VEHICLE INSPECTION FLOW:
 - All vehicle listings require CCC inspection before going live
@@ -533,6 +547,7 @@ export default function AIAssistant() {
     </>
   )
 }
+
 
 
 
