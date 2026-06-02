@@ -1,5 +1,52 @@
 import { useNavigate } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
+
+function NetworkCanvas() {
+  const canvasRef = useRef(null)
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext("2d")
+    let animId
+    const resize = () => { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight }
+    resize()
+    window.addEventListener("resize", resize)
+    const dots = Array.from({ length: 55 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.35,
+      vy: (Math.random() - 0.5) * 0.35,
+      r: Math.random() * 2 + 1,
+      color: Math.random() > 0.6 ? "#e6821e" : Math.random() > 0.5 ? "#1d9e75" : "#8b5cf6"
+    }))
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      dots.forEach(d => {
+        d.x += d.vx; d.y += d.vy
+        if (d.x < 0 || d.x > canvas.width) d.vx *= -1
+        if (d.y < 0 || d.y > canvas.height) d.vy *= -1
+        ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2)
+        ctx.fillStyle = d.color+"90"; ctx.fill()
+      })
+      for (let i = 0; i < dots.length; i++) {
+        for (let j = i + 1; j < dots.length; j++) {
+          const dx = dots[i].x - dots[j].x
+          const dy = dots[i].y - dots[j].y
+          const dist = Math.sqrt(dx*dx + dy*dy)
+          if (dist < 120) {
+            ctx.beginPath(); ctx.moveTo(dots[i].x, dots[i].y); ctx.lineTo(dots[j].x, dots[j].y)
+            ctx.strokeStyle = dots[i].color+(Math.floor((1-dist/120)*40)).toString(16).padStart(2,"0")
+            ctx.lineWidth = 0.5; ctx.stroke()
+          }
+        }
+      }
+      animId = requestAnimationFrame(draw)
+    }
+    draw()
+    return () => { window.removeEventListener("resize", resize); cancelAnimationFrame(animId) }
+  }, [])
+  return <canvas ref={canvasRef} style={{ position:"absolute", inset:0, width:"100%", height:"100%", opacity:0.5 }}/>
+}
 
 export default function LandingPage() {
   const navigate = useNavigate()
@@ -39,6 +86,7 @@ export default function LandingPage() {
 
       {/* HERO */}
       <div style={{ minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", textAlign:"center", padding:"7rem 1.5rem 4rem", position:"relative", overflow:"hidden" }}>
+        <NetworkCanvas />
         <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse at 50% 40%, #e6821e12 0%, #1d9e7504 50%, transparent 70%)", pointerEvents:"none" }}/>
         <div style={{ position:"absolute", top:"10%", left:"5%", width:500, height:500, background:"#e6821e05", borderRadius:"50%", filter:"blur(100px)", animation:"float 8s ease-in-out infinite" }}/>
         <div style={{ position:"absolute", bottom:"10%", right:"5%", width:350, height:350, background:"#1d9e7505", borderRadius:"50%", filter:"blur(80px)", animation:"float 10s ease-in-out infinite 3s" }}/>
@@ -268,4 +316,5 @@ export default function LandingPage() {
     </div>
   )
 }
+
 
