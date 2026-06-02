@@ -8,10 +8,10 @@ CAR CARE CONNECT PLATFORM - COMPLETE KNOWLEDGE BASE
 
 ABOUT THE PLATFORM:
 Car Care Connect (CCC) is a full-stack automotive service platform based in Nairobi, Kenya.
-Website: carcareconnect2.pages.dev
+Website: carcareconnect.care
 Contact: carcareconnect254@gmail.com | 0113858966
-Privacy Policy: carcareconnect2.pages.dev/privacy
-Terms of Service: carcareconnect2.pages.dev/terms
+Privacy Policy: carcareconnect.care/privacy
+Terms of Service: carcareconnect.care/terms
 
 4 ROLES:
 1. Customer - Books services, tracks drivers, earns loyalty points, uses marketplace
@@ -510,6 +510,7 @@ export default function AIAssistant() {
     </>
   )
 }
+
 
 
 
