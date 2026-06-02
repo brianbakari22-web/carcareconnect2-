@@ -27,6 +27,7 @@ export default function CustomerDiscover() {
   const [userLocation, setUserLocation] = useState(null)
   const [locating, setLocating] = useState(false)
   const [sortBy, setSortBy] = useState("default")
+  const [providerTypeFilter, setProviderTypeFilter] = useState("all")
   const [maxDistance, setMaxDistance] = useState(null)
   const [showFilters, setShowFilters] = useState(false)
   const [priceRange, setPriceRange] = useState({ min:"", max:"" })
@@ -187,7 +188,8 @@ export default function CustomerDiscover() {
     const matchOpen = !onlyOpen||status?.open===true
     const dist = getDistance(p)
     const matchDist = !maxDistance||dist===null||dist<=maxDistance
-    return matchSearch&&matchVerified&&matchOpen&&matchDist
+    const matchType = providerTypeFilter==="all"||p.provider_type===providerTypeFilter
+    return matchSearch&&matchVerified&&matchOpen&&matchDist&&matchType
   })
 
   if (sortBy==="distance"&&userLocation) {
@@ -233,6 +235,26 @@ export default function CustomerDiscover() {
           style={{ background:showFilters?"#1a1208":"#111", border:`1px solid ${showFilters?"#e6821e40":"#333"}`, borderRadius:8, color:showFilters?"#e6821e":"#888", fontSize:12, padding:"0 14px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
           {t("filters")} {showFilters?"▲":"▼"}
         </button>
+      </div>
+
+      {/* Provider type filter */}
+      <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
+        {[
+          { key:"all", label:"All", icon:"🔍" },
+          { key:"garage", label:"Garage", icon:"🔧" },
+          { key:"parts_dealer", label:"Parts", icon:"⚙️" },
+          { key:"accessories_shop", label:"Accessories", icon:"✨" },
+          { key:"tyre_shop", label:"Tyres", icon:"🛞" },
+          { key:"auto_electrician", label:"Electrician", icon:"⚡" },
+          { key:"car_wash", label:"Car Wash", icon:"🚿" },
+          { key:"panel_beater", label:"Panel Beater", icon:"🔨" },
+          { key:"auto_glass", label:"Auto Glass", icon:"🪟" },
+        ].map(tp=>(
+          <button key={tp.key} onClick={()=>setProviderTypeFilter(tp.key)}
+            style={{ padding:"6px 12px", borderRadius:8, border:"none", fontSize:11, cursor:"pointer", background:providerTypeFilter===tp.key?"#e6821e":"#111", color:providerTypeFilter===tp.key?"#fff":"#666", fontFamily:"DM Sans,sans-serif", whiteSpace:"nowrap" }}>
+            {tp.icon} {tp.label}
+          </button>
+        ))}
       </div>
 
       {showFilters&&(
@@ -320,6 +342,7 @@ export default function CustomerDiscover() {
                     <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:2, flexWrap:"wrap" }}>
                       <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#f0ede6" }}>{getDisplayName(p)}</div>
                       {p.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#071a12", padding:"1px 6px", borderRadius:10 }}>✓ {t("verified")}</span>}
+                      {p.provider_type&&p.provider_type!=="garage"&&<span style={{ fontSize:10, color:"#8b5cf6", background:"#160a2e", padding:"1px 6px", borderRadius:10 }}>{p.provider_type.replace(/_/g," ")}</span>}
                     </div>
                     <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
                       {p.business_name&&<div style={{ fontSize:11, color:"#666" }}>{t("owner")}: {p.first_name} {p.last_name}</div>}
@@ -500,5 +523,8 @@ export default function CustomerDiscover() {
     </div>
   )
 }
+
+
+
 
 
