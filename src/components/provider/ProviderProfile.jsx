@@ -6,6 +6,17 @@ import useIsMobile from "../../lib/useIsMobile"
 import { exportUserData, downloadJSON, downloadCSV, downloadPDF } from "../../lib/dataExport"
 import toast from "react-hot-toast"
 
+const PROVIDER_TYPES = [
+  { key:"garage", label:"Garage/Mechanic", icon:"🔧" },
+  { key:"parts_dealer", label:"Parts Dealer", icon:"⚙️" },
+  { key:"accessories_shop", label:"Accessories Shop", icon:"✨" },
+  { key:"tyre_shop", label:"Tyre Shop", icon:"🛞" },
+  { key:"auto_electrician", label:"Auto Electrician", icon:"⚡" },
+  { key:"car_wash", label:"Car Wash", icon:"🚿" },
+  { key:"panel_beater", label:"Panel Beater", icon:"🔨" },
+  { key:"auto_glass", label:"Auto Glass", icon:"🪟" },
+]
+
 export default function ProviderProfile() {
   const { profile, updateProfile, user } = useAuth()
   const { t } = useLanguage()
@@ -119,7 +130,12 @@ export default function ProviderProfile() {
         </div>
         <div>
           <div style={{ fontFamily:"Syne", fontSize:17, fontWeight:800, color:"#f0ede6" }}>{profile?.business_name||`${profile?.first_name} ${profile?.last_name}`}</div>
-          <div style={{ fontSize:12, color:"#555", marginTop:2 }}>Provider · {profile?.city||"Location not set"}</div>
+          <div style={{ fontSize:12, color:"#555", marginTop:2 }}>
+            Provider · {profile?.city||"Location not set"}
+            {profile?.provider_type&&<span style={{ marginLeft:6, fontSize:10, color:"#378add", background:"#0c1f2e", padding:"1px 7px", borderRadius:10 }}>
+              {PROVIDER_TYPES.find(p=>p.key===profile.provider_type)?.icon} {profile.provider_type.replace(/_/g," ")}
+            </span>}
+          </div>
         </div>
       </div>
 
@@ -144,6 +160,16 @@ export default function ProviderProfile() {
             </div>
             <label style={lbl}>{t("city")}</label>
             <input style={inp} placeholder="e.g. Nairobi" value={form.city} onChange={e=>setForm(f=>({...f,city:e.target.value}))}/>
+            <label style={lbl}>Business type</label>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:12 }}>
+              {PROVIDER_TYPES.map(pt=>(
+                <div key={pt.key} onClick={()=>setForm(f=>({...f,provider_type:pt.key}))}
+                  style={{ background:form.provider_type===pt.key?"#0c1f2e":"#0f0f0f", border:"1px solid "+(form.provider_type===pt.key?"#378add":"#222"), borderRadius:8, padding:"8px 10px", cursor:"pointer" }}>
+                  <div style={{ fontSize:16, marginBottom:2 }}>{pt.icon}</div>
+                  <div style={{ fontSize:11, fontWeight:600, color:form.provider_type===pt.key?"#378add":"#888" }}>{pt.label}</div>
+                </div>
+              ))}
+            </div>
             <button type="submit" disabled={saving}
               style={{ background:saving?"#333":"#378add", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
               {saving?t("saving"):t("saveChanges")}
@@ -259,3 +285,4 @@ export default function ProviderProfile() {
     </div>
   )
 }
+
