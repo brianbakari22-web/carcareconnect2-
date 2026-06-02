@@ -265,14 +265,18 @@ export default function LandingPage() {
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))", gap:12 }}>
             {[
-              ["Oil change","KES 2,000 - 5,000"],
-              ["Brake pads","KES 3,000 - 8,000"],
-              ["Full service","KES 8,000 - 20,000"],
-              ["Battery replacement","KES 5,000 - 15,000"],
-              ["Wheel alignment","KES 1,500 - 3,000"],
-              ["AC service","KES 3,000 - 8,000"],
-              ["Full diagnostic","KES 2,000 - 5,000"],
+              ["Oil change (minor service)","KES 4,000 - 7,000"],
+              ["Brake pads replacement","KES 7,000 - 15,000"],
+              ["Minor service","KES 12,000 - 15,000"],
+              ["Major service","KES 30,000 - 35,000"],
+              ["Battery replacement","KES 5,000 - 12,000"],
+              ["Wheel alignment","KES 2,500 - 5,000"],
+              ["AC service","KES 5,000 - 12,000"],
+              ["Suspension repair","KES 15,000 - 25,000"],
+              ["Full diagnostic","KES 3,000 - 8,000"],
+              ["Tyre replacement (each)","KES 8,000 - 30,000"],
               ["GO callout fee","KES 500 flat"],
+              ["Transmission repair","KES 20,000 - 50,000"],
             ].map(([service,price])=>(
               <div key={service} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 12px", background:"#0f0f0f", borderRadius:8 }}>
                 <span style={{ fontSize:12, color:"#888" }}>{service}</span>
@@ -316,6 +320,7 @@ export default function LandingPage() {
     </div>
   )
 }
+
 
 
 
