@@ -21,14 +21,17 @@ export default function AdminAIMonitor() {
       checks.supabase = { status:"ok", ms:Date.now()-start }
     } catch(e) { checks.supabase = { status:"error", ms:0 } }
 
-    // Check Pesapal edge function reachability
+    // Check Pesapal - verify edge function is deployed
     try {
       const start = Date.now()
       const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/pesapal-payment", {
-        method:"OPTIONS",
-        headers:{"Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc"},
+        method:"POST",
+        headers:{"Content-Type":"application/json","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc"},
+        body:JSON.stringify({ping:true})
       })
-      checks.pesapal = { status:"ok", ms:Date.now()-start }
+      const ms = Date.now()-start
+      // Any response means edge function is reachable
+      checks.pesapal = { status:"ok", ms }
     } catch(e) { checks.pesapal = { status:"error", ms:0 } }
 
     // Check AI
@@ -217,7 +220,7 @@ export default function AdminAIMonitor() {
 
 API HEALTH:
 - Supabase database: ${apiHealth.supabase?.status} (${apiHealth.supabase?.ms}ms)
-- Pesapal payments: ${apiHealth.pesapal?.status} (${apiHealth.pesapal?.ms}ms)
+- Pesapal payments: ${apiHealth.pesapal?.status} (${apiHealth.pesapal?.ms}ms) NOTE: Merchant contract pending - KES 1000 limit active until contract signed
 - AI assistant: ${apiHealth.ai?.status} (${apiHealth.ai?.ms}ms)
 
 PLATFORM STATUS RIGHT NOW:
@@ -510,6 +513,8 @@ Be specific and actionable. Max 300 words. Use bullet points.`
     </div>
   )
 }
+
+
 
 
 
