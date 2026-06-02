@@ -129,6 +129,25 @@ export default function AdminAIMonitor() {
         .select("provider_id, rating")
         .gte("created_at", new Date(Date.now()-30*24*60*60*1000).toISOString())
 
+      // Provider type breakdown
+      const { data: providerTypes } = await supabase.from("profiles")
+        .select("provider_type")
+        .eq("role","provider")
+        .eq("is_active", true)
+
+      const { count: bodaBodaDrivers } = await supabase.from("profiles")
+        .select("id",{count:"exact",head:true})
+        .eq("role","driver")
+        .eq("driver_vehicle_type","motorcycle")
+
+      const { count: partsInventory } = await supabase.from("inventory")
+        .select("id",{count:"exact",head:true})
+        .eq("is_active",true)
+
+      const { count: pendingOrders } = await supabase.from("orders")
+        .select("id",{count:"exact",head:true})
+        .eq("status","pending")
+
       // Get additional stats
       const { count: totalBookings } = await supabase.from("bookings").select("id",{count:"exact",head:true})
       const { count: completedBookings } = await supabase.from("bookings").select("id",{count:"exact",head:true}).eq("status","completed")
@@ -175,6 +194,10 @@ export default function AdminAIMonitor() {
         total_marketplace_transactions: totalTransactions||0,
         completed_marketplace_transactions: paidTransactions||0,
         total_employees: totalEmployees||0,
+        boda_boda_drivers: bodaBodaDrivers||0,
+        parts_inventory_items: partsInventory||0,
+        pending_orders: pendingOrders||0,
+        provider_type_breakdown: providerTypes?.reduce((acc,p)=>{ acc[p.provider_type||"garage"]=(acc[p.provider_type||"garage"]||0)+1; return acc },{})||{},
         // Revenue intelligence
         this_week_revenue: thisWeekRevenue?.reduce((s,b)=>s+Number(b.platform_commission||0),0)||0,
         last_week_revenue: lastWeekRevenue?.reduce((s,b)=>s+Number(b.platform_commission||0),0)||0,
@@ -242,6 +265,20 @@ CUSTOMER INSIGHTS:
 PROVIDER PERFORMANCE:
 - Providers with claims this month: ${platformData.providers_with_claims}
 - Average platform rating this month: ${platformData.avg_rating_this_month}
+
+PROVIDER TYPE BREAKDOWN:
+- Provider types registered: ${JSON.stringify(platformData.provider_type_breakdown)}
+- Boda boda drivers: ${platformData.boda_boda_drivers}
+
+INVENTORY & ORDERS (Phase 2):
+- Active inventory items: ${platformData.parts_inventory_items}
+- Pending orders: ${platformData.pending_orders}
+
+PLATFORM CONTEXT:
+Provider types: garage, parts_dealer, accessories_shop, tyre_shop, auto_electrician, car_wash, panel_beater, auto_glass
+Driver vehicle types: car, motorcycle (boda boda), tuktuk, van
+Commission rates: parts_dealer=5%, tyre_shop=6%, accessories_shop=8%, garage=10%, auto_electrician=12%, auto_glass=12%, car_wash=10%, panel_beater=15%
+New tables: inventory, orders, order_items, commission_rates
 
 Give a comprehensive report with these sections:
 
@@ -426,6 +463,9 @@ Be specific and actionable. Max 300 words. Use bullet points.`
                     { f:"Employee mgmt", ok:report.platformData.total_employees>=0 },
                     { f:"Payment tracking", ok:true },
                     { f:"AI Monitor", ok:true },
+                    { f:"Provider types", ok:true },
+                    { f:"Boda boda drivers", ok:report.platformData.boda_boda_drivers>=0 },
+                    { f:"Inventory system", ok:report.platformData.parts_inventory_items>=0 },
                   ].map(item=>(
                     <div key={item.f} style={{ display:"flex", alignItems:"center", gap:6, padding:"4px 0" }}>
                       <span style={{ fontSize:10, color:item.ok?"#1d9e75":"#e24b4a", flexShrink:0 }}>{item.ok?"✅":"❌"}</span>
@@ -464,6 +504,7 @@ Be specific and actionable. Max 300 words. Use bullet points.`
     </div>
   )
 }
+
 
 
 
