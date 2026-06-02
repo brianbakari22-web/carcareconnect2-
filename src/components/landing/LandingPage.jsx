@@ -134,7 +134,7 @@ export default function LandingPage() {
       </div>
 
       {/* EMERGENCY BANNER */}
-      <div style={{ position:"relative", zIndex:1, margin:"0 1.5rem 5rem", background:"linear-gradient(135deg,#13080a,#1a0c0e)", border:"1px solid #e24b4a25", borderRadius:20, padding:"3rem 2rem", textAlign:"center", position:"relative", overflow:"hidden" }}>
+      <div style={{ position:"relative", zIndex:1, margin:"0 1.5rem 5rem", background:"linear-gradient(135deg,#13080a,#1a0c0e)", border:"1px solid #e24b4a25", borderRadius:20, padding:"3rem 2rem", textAlign:"center", overflow:"hidden" }}>
         <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse at center, #e24b4a06, transparent)", pointerEvents:"none" }}/>
         <div style={{ fontSize:52, marginBottom:16 }}>🚨</div>
         <h2 style={{ fontFamily:"Syne", fontSize:"clamp(22px,4vw,36px)", fontWeight:800, color:"#e24b4a", marginBottom:12 }}>
@@ -322,6 +322,7 @@ export default function LandingPage() {
     </div>
   )
 }
+
 
 
 
