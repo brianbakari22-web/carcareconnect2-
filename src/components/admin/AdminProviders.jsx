@@ -11,6 +11,7 @@ export default function AdminProviders() {
   const [loading, setLoading] = useState(true)
   const [selected, setSelected] = useState(null)
   const [search, setSearch] = useState("")
+  const [typeFilter, setTypeFilter] = useState("all")
 
   useEffect(() => { load() }, [])
 
@@ -43,6 +44,7 @@ export default function AdminProviders() {
   }
 
   const filtered = providers.filter(p=>
+    (typeFilter==="all"||p.provider_type===typeFilter) &&
     `${p.first_name} ${p.last_name} ${p.business_name||""} ${p.city||""}`.toLowerCase().includes(search.toLowerCase())
   )
 
@@ -64,6 +66,14 @@ export default function AdminProviders() {
       <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search providers..."
         style={{ width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:"1rem" }}/>
 
+      <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
+        {["all","garage","parts_dealer","accessories_shop","tyre_shop","auto_electrician","car_wash","panel_beater","auto_glass"].map(t=>(
+          <button key={t} onClick={()=>setTypeFilter(t)}
+            style={{ padding:"5px 12px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:typeFilter===t?"#8b5cf6":"#111", color:typeFilter===t?"#fff":"#666" }}>
+            {t==="all"?"All types":t.replace(/_/g," ")}
+          </button>
+        ))}
+      </div>
       {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
       {filtered.map(p=>(
         <div key={p.id} style={{ background:"#111", border:`1px solid ${!p.is_active?"#e24b4a20":"#1e1e1e"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
@@ -76,11 +86,12 @@ export default function AdminProviders() {
                 <div style={{ fontSize:13, fontWeight:600, color:p.is_active?"#f0ede6":"#555" }}>{p.business_name||`${p.first_name} ${p.last_name}`}</div>
                 {p.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#071a12", padding:"1px 6px", borderRadius:10 }}>✓ Verified</span>}
                 {!p.is_active&&<span style={{ fontSize:10, color:"#e24b4a", background:"#1a0808", padding:"1px 6px", borderRadius:10 }}>Suspended</span>}
+                {p.provider_type&&<span style={{ fontSize:10, color:"#8b5cf6", background:"#160a2e", padding:"1px 6px", borderRadius:10 }}>{p.provider_type.replace(/_/g," ")}</span>}
               </div>
               <div style={{ fontSize:11, color:"#555" }}>
                 {p.business_name&&`${p.first_name} ${p.last_name} · `}
                 {p.city&&`${p.city} · `}
-                {services[p.id]?.active||0} services · ${(earnings[p.id]||0).toFixed(2)} earned
+                {services[p.id]?.active||0} services · KES ${Number(earnings[p.id]||0).toLocaleString()} earned
               </div>
             </div>
             <button onClick={()=>setSelected(selected===p.id?null:p.id)}
@@ -103,5 +114,7 @@ export default function AdminProviders() {
     </div>
   )
 }
+
+
 
 
