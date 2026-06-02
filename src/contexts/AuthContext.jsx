@@ -88,7 +88,7 @@ export function AuthProvider({ children }) {
     return data
   }
 
-  async function signUp({ email, password, firstName, lastName, phone, role, businessName }, referralCode="") {
+  async function signUp({ email, password, firstName, lastName, phone, role, businessName, providerType, driverVehicleType }, referralCode="") {
     let referrerId = null
     if (referralCode) {
       const { data: refProfile } = await supabase.from("profiles").select("id").eq("referral_code", referralCode.toUpperCase()).single()
@@ -113,6 +113,8 @@ export function AuthProvider({ children }) {
         last_name: lastName,
         role: role || "customer",
         business_name: businessName || "",
+        provider_type: providerType || "garage",
+        driver_vehicle_type: driverVehicleType || "car",
         referred_by: referrerId,
         is_active: true,
       })
@@ -153,3 +155,4 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   )
 }
+

@@ -5,6 +5,22 @@ import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
 
+const PROVIDER_TYPES = [
+  { key:"garage", label:"Garage/Mechanic", icon:"🔧", desc:"Car service and repair" },
+  { key:"parts_dealer", label:"Parts Dealer", icon:"⚙️", desc:"Auto parts and spares" },
+  { key:"accessories_shop", label:"Accessories Shop", icon:"✨", desc:"Car accessories" },
+  { key:"tyre_shop", label:"Tyre Shop", icon:"🛞", desc:"Tyre sales and fitting" },
+  { key:"auto_electrician", label:"Auto Electrician", icon:"⚡", desc:"Electrical specialist" },
+  { key:"car_wash", label:"Car Wash", icon:"🚿", desc:"Wash and detailing" },
+  { key:"panel_beater", label:"Panel Beater", icon:"🔨", desc:"Body and spray paint" },
+  { key:"auto_glass", label:"Auto Glass", icon:"🪟", desc:"Windscreen specialist" },
+]
+const DRIVER_VEHICLE_TYPES = [
+  { key:"car", label:"Car", icon:"🚗", desc:"Standard delivery" },
+  { key:"motorcycle", label:"Boda Boda", icon:"🏍️", desc:"Fast parts delivery" },
+  { key:"tuktuk", label:"Tuktuk", icon:"🛺", desc:"Local delivery" },
+  { key:"van", label:"Van/Pickup", icon:"🚐", desc:"Large items" },
+]
 const ROLES = [
   {
     key: "customer",
@@ -53,7 +69,7 @@ export default function AuthPage() {
   const [selectedRole, setSelectedRole] = useState(null)
   const [mode, setMode] = useState("signin")
   const [resetSent, setResetSent] = useState(false)
-  const [form, setForm] = useState({ email:"", password:"", firstName:"", lastName:"", phone:"", businessName:"" })
+  const [form, setForm] = useState({ email:"", password:"", firstName:"", lastName:"", phone:"", businessName:"", providerType:"garage", driverVehicleType:"car" })
   const [loading, setLoading] = useState(false)
   const [refCode, setRefCode] = useState("")
   const [agreed, setAgreed] = useState(false)
@@ -103,7 +119,11 @@ export default function AuthPage() {
           lastName: form.lastName,
           phone: form.phone,
           role: selectedRole,
+          phone: form.phone,
+          role: selectedRole,
           businessName: form.businessName,
+          providerType: form.providerType,
+          driverVehicleType: form.driverVehicleType,
         }, refCode)
         toast.success("Welcome to Car Care Connect! 🎉")
         let tries = 0
@@ -237,6 +257,32 @@ export default function AuthPage() {
                   <>
                     <label style={lbl}>Business name</label>
                     <input style={inp} placeholder="e.g. Nairobi Auto Care" value={form.businessName} onChange={e=>setForm(f=>({...f,businessName:e.target.value}))}/>
+                    <label style={lbl}>Business type</label>
+                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:10 }}>
+                      {PROVIDER_TYPES.map(pt=>(
+                        <div key={pt.key} onClick={()=>setForm(f=>({...f,providerType:pt.key}))}
+                          style={{ background:form.providerType===pt.key?"#0c1f2e":"#0f0f0f", border:"1px solid "+(form.providerType===pt.key?"#378add":"#222"), borderRadius:8, padding:"8px 10px", cursor:"pointer" }}>
+                          <div style={{ fontSize:18, marginBottom:2 }}>{pt.icon}</div>
+                          <div style={{ fontSize:11, fontWeight:600, color:form.providerType===pt.key?"#378add":"#888" }}>{pt.label}</div>
+                          <div style={{ fontSize:10, color:"#444" }}>{pt.desc}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+                {selectedRole==="driver"&&(
+                  <>
+                    <label style={lbl}>Vehicle type</label>
+                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:10 }}>
+                      {DRIVER_VEHICLE_TYPES.map(vt=>(
+                        <div key={vt.key} onClick={()=>setForm(f=>({...f,driverVehicleType:vt.key}))}
+                          style={{ background:form.driverVehicleType===vt.key?"#071a12":"#0f0f0f", border:"1px solid "+(form.driverVehicleType===vt.key?"#1d9e75":"#222"), borderRadius:8, padding:"8px 10px", cursor:"pointer" }}>
+                          <div style={{ fontSize:18, marginBottom:2 }}>{vt.icon}</div>
+                          <div style={{ fontSize:11, fontWeight:600, color:form.driverVehicleType===vt.key?"#1d9e75":"#888" }}>{vt.label}</div>
+                          <div style={{ fontSize:10, color:"#444" }}>{vt.desc}</div>
+                        </div>
+                      ))}
+                    </div>
                   </>
                 )}
                 <label style={lbl}>Phone number</label>
@@ -546,6 +592,7 @@ export default function AuthPage() {
     </div>
   )
 }
+
 
 
 
