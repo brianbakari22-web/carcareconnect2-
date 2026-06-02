@@ -6,6 +6,7 @@ import { LanguageProvider } from "./contexts/LanguageContext"
 import { ThemeProvider } from "./contexts/ThemeContext"
 import { supabase } from "./lib/supabase"
 import AuthPage from "./components/auth/AuthPage"
+import LandingPage from "./components/landing/LandingPage"
 import PrivacyPolicy from "./components/legal/PrivacyPolicy"
 import TermsOfService from "./components/legal/TermsOfService"
 import AdminAuthPage from "./components/auth/AdminAuthPage"
@@ -285,7 +286,7 @@ export default function App() {
               <Route path="/admin-dashboard/*" element={<AdminProtectedRoute><AdminDashboardRouter /></AdminProtectedRoute>} />
               <Route path="/dashboard/*" element={<ProtectedRoute><DashboardRouter /></ProtectedRoute>} />
               <Route path="/not-found" element={<NotFound />} />
-              <Route path="/" element={<Navigate to="/auth" replace />} />
+              <Route path="/" element={<LandingPage />} />
               <Route path="*" element={<Navigate to="/auth" replace />} />
             </Routes>
           </BrowserRouter>
@@ -294,6 +295,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 
