@@ -12,7 +12,7 @@ export default function LandingPage() {
   }, [])
 
   return (
-    <div style={{ minHeight:"100vh", background:"#0a0a0a", color:"#f0ede6", fontFamily:"DM Sans,sans-serif", overflowX:"hidden" }}>
+    <div style={{ minHeight:"100vh", background:"#0d0d0d", color:"#e8e4dc", fontFamily:"DM Sans,sans-serif", overflowX:"hidden" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
         @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
@@ -25,7 +25,7 @@ export default function LandingPage() {
       `}</style>
 
       {/* NAV */}
-      <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:100, padding:"0.75rem 2rem", display:"flex", justifyContent:"space-between", alignItems:"center", background:scrolled?"rgba(10,10,10,0.96)":"transparent", backdropFilter:scrolled?"blur(12px)":"none", borderBottom:scrolled?"1px solid #1e1e1e":"none", transition:"all 0.3s" }}>
+      <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:100, padding:"0.75rem 2rem", display:"flex", justifyContent:"space-between", alignItems:"center", background:scrolled?"rgba(13,13,13,0.97)":"transparent", backdropFilter:scrolled?"blur(12px)":"none", borderBottom:scrolled?"1px solid #1e1e1e":"none", transition:"all 0.3s" }}>
         <img src="/logo.svg" alt="Car Care Connect" style={{ height:52, animation:"glow 3s ease-in-out infinite" }}/>
         <div style={{ display:"flex", gap:8, alignItems:"center" }}>
           <button onClick={()=>navigate("/auth")} style={{ background:"none", border:"1px solid #333", borderRadius:8, color:"#888", fontSize:13, padding:"8px 18px", cursor:"pointer" }}>
@@ -39,7 +39,7 @@ export default function LandingPage() {
 
       {/* HERO */}
       <div style={{ minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", textAlign:"center", padding:"7rem 1.5rem 4rem", position:"relative", overflow:"hidden" }}>
-        <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse at 50% 40%, #e6821e0a 0%, transparent 65%)", pointerEvents:"none" }}/>
+        <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse at 50% 40%, #e6821e12 0%, #1d9e7504 50%, transparent 70%)", pointerEvents:"none" }}/>
         <div style={{ position:"absolute", top:"10%", left:"5%", width:500, height:500, background:"#e6821e05", borderRadius:"50%", filter:"blur(100px)", animation:"float 8s ease-in-out infinite" }}/>
         <div style={{ position:"absolute", bottom:"10%", right:"5%", width:350, height:350, background:"#1d9e7505", borderRadius:"50%", filter:"blur(80px)", animation:"float 10s ease-in-out infinite 3s" }}/>
 
@@ -84,7 +84,7 @@ export default function LandingPage() {
       </div>
 
       {/* EMERGENCY BANNER */}
-      <div style={{ margin:"0 1.5rem 5rem", background:"linear-gradient(135deg,#1a0808,#2d0c0c)", border:"2px solid #e24b4a30", borderRadius:20, padding:"3rem 2rem", textAlign:"center", position:"relative", overflow:"hidden" }}>
+      <div style={{ margin:"0 1.5rem 5rem", background:"linear-gradient(135deg,#13080a,#1a0c0e)", border:"1px solid #e24b4a25", borderRadius:20, padding:"3rem 2rem", textAlign:"center", position:"relative", overflow:"hidden" }}>
         <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse at center, #e24b4a06, transparent)", pointerEvents:"none" }}/>
         <div style={{ fontSize:52, marginBottom:16 }}>🚨</div>
         <h2 style={{ fontFamily:"Syne", fontSize:"clamp(22px,4vw,36px)", fontWeight:800, color:"#e24b4a", marginBottom:12 }}>
@@ -100,7 +100,7 @@ export default function LandingPage() {
             </div>
           ))}
         </div>
-        <button onClick={()=>navigate("/auth")} style={{ background:"#e24b4a", border:"none", borderRadius:12, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:15, fontWeight:700, padding:"14px 36px", cursor:"pointer" }}>
+        <button onClick={()=>navigate("/auth")} style={{ background:"linear-gradient(135deg,#c23a3a,#a82e2e)", border:"none", borderRadius:12, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:15, fontWeight:700, padding:"14px 36px", cursor:"pointer", boxShadow:"0 4px 20px #e24b4a20" }}>
           🚨 Request emergency help
         </button>
       </div>
@@ -117,10 +117,10 @@ export default function LandingPage() {
             { n:"02", icon:"📱", title:"Book and pay", desc:"Book in seconds. Pay securely via M-Pesa or card through Pesapal. Instant confirmation and reminders." },
             { n:"03", icon:"✅", title:"Track and review", desc:"Track your mechanic live on the map. Rate your experience and earn loyalty points on every booking." },
           ].map(s=>(
-            <div key={s.n} className="hcard" style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:16, padding:"2rem", position:"relative", overflow:"hidden" }}>
+            <div key={s.n} className="hcard" style={{ background:"#141414", border:"1px solid #1e1e1e", borderRadius:16, padding:"2rem", position:"relative", overflow:"hidden" }}>
               <div style={{ fontFamily:"Syne", fontSize:64, fontWeight:800, color:"#e6821e06", position:"absolute", top:0, right:12, lineHeight:1 }}>{s.n}</div>
               <div style={{ fontSize:40, marginBottom:16 }}>{s.icon}</div>
-              <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:700, color:"#f0ede6", marginBottom:10 }}>{s.title}</div>
+              <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:700, color:"#e8e4dc", marginBottom:10 }}>{s.title}</div>
               <div style={{ fontSize:13, color:"#666", lineHeight:1.8 }}>{s.desc}</div>
             </div>
           ))}
@@ -144,9 +144,9 @@ export default function LandingPage() {
             { icon:"🛡️", title:"Service guarantee", desc:"Not happy? We investigate and issue a full service voucher refund", color:"#1d9e75" },
             { icon:"✦", title:"AI assistant", desc:"24/7 AI-powered help for car problems, bookings, and platform guidance", color:"#8b5cf6" },
           ].map(f=>(
-            <div key={f.title} className="hcard" style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:14, padding:"1.25rem" }}>
+            <div key={f.title} className="hcard" style={{ background:"#141414", border:"1px solid #1e1e1e", borderRadius:14, padding:"1.25rem" }}>
               <div style={{ fontSize:28, marginBottom:10, color:f.color }}>{f.icon}</div>
-              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#f0ede6", marginBottom:6 }}>{f.title}</div>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#e8e4dc", marginBottom:6 }}>{f.title}</div>
               <div style={{ fontSize:12, color:"#666", lineHeight:1.6 }}>{f.desc}</div>
             </div>
           ))}
@@ -165,7 +165,7 @@ export default function LandingPage() {
             { icon:"🔧", role:"Service Provider", color:"#378add", desc:"List services, manage bookings, earn commissions, dispatch mechanics", features:["Manage bookings","GO Service requests","Parts manager","Earnings dashboard"] },
             { icon:"🚙", role:"Concierge Driver", color:"#1d9e75", desc:"Pick up and deliver customer vehicles, earn commission per delivery", features:["Accept deliveries","Condition reports","Live navigation","KES 200 allowance per trip"] },
           ].map(r=>(
-            <div key={r.role} className="hcard" style={{ background:"#111", border:"1px solid "+r.color+"30", borderRadius:16, padding:"1.75rem" }}>
+            <div key={r.role} className="hcard" style={{ background:"#141414", border:"1px solid "+r.color+"30", borderRadius:16, padding:"1.75rem" }}>
               <div style={{ fontSize:40, marginBottom:12 }}>{r.icon}</div>
               <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:r.color, marginBottom:6 }}>{r.role}</div>
               <div style={{ fontSize:12, color:"#555", marginBottom:14, lineHeight:1.6 }}>{r.desc}</div>
@@ -197,9 +197,9 @@ export default function LandingPage() {
             { type:"GO Service", provider:"85%", platform:"15%", desc:"Emergency roadside assistance", color:"#e24b4a" },
             { type:"Marketplace", provider:"92-98%", platform:"2-8%", desc:"Buy and sell vehicles and parts", color:"#1d9e75" },
           ].map(p=>(
-            <div key={p.type} className="hcard" style={{ background:"#111", border:"1px solid "+p.color+"30", borderRadius:14, padding:"1.5rem", textAlign:"center" }}>
+            <div key={p.type} className="hcard" style={{ background:"#141414", border:"1px solid "+p.color+"30", borderRadius:14, padding:"1.5rem", textAlign:"center" }}>
               <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:p.color, marginBottom:12 }}>{p.type}</div>
-              <div style={{ fontFamily:"Syne", fontSize:36, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>{p.provider}</div>
+              <div style={{ fontFamily:"Syne", fontSize:36, fontWeight:800, color:"#e8e4dc", marginBottom:4 }}>{p.provider}</div>
               <div style={{ fontSize:11, color:"#555", marginBottom:10 }}>Your earnings</div>
               <div style={{ fontSize:11, color:"#333", marginBottom:6 }}>Platform: {p.platform}</div>
               <div style={{ fontSize:11, color:"#444", lineHeight:1.5 }}>{p.desc}</div>
@@ -210,7 +210,7 @@ export default function LandingPage() {
 
       {/* NAIROBI PRICING */}
       <div style={{ maxWidth:900, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
-        <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:20, padding:"2rem" }}>
+        <div style={{ background:"#141414", border:"1px solid #1e1e1e", borderRadius:20, padding:"2rem" }}>
           <div style={{ textAlign:"center", marginBottom:"1.5rem" }}>
             <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#e6821e", marginBottom:8 }}>Nairobi market prices</div>
             <h2 style={{ fontFamily:"Syne", fontSize:"clamp(20px,3vw,28px)", fontWeight:800 }}>What services cost in Nairobi</h2>
@@ -268,3 +268,4 @@ export default function LandingPage() {
     </div>
   )
 }
+
