@@ -7,6 +7,13 @@ import toast from "react-hot-toast"
 
 const LICENSE_CLASSES = ["Class B - Light Motor Vehicle", "Class C - Heavy Motor Vehicle", "Class D - Motorcycle", "Class E - PSV", "Class F - Special Vehicle"]
 
+const DRIVER_VEHICLE_TYPES = [
+  { key:"car", label:"Car", icon:"🚗", desc:"Standard delivery" },
+  { key:"motorcycle", label:"Boda Boda", icon:"🏍️", desc:"Fast parts delivery" },
+  { key:"tuktuk", label:"Tuktuk", icon:"🛺", desc:"Local delivery" },
+  { key:"van", label:"Van/Pickup", icon:"🚐", desc:"Large items" },
+]
+
 export default function DriverProfile() {
   const { user, profile, updateProfile } = useAuth()
   const { t } = useLanguage()
@@ -16,6 +23,7 @@ export default function DriverProfile() {
   const [stats, setStats] = useState({ total:0, completed:0, rating:0, earnings:0 })
   const [sensitive, setSensitive] = useState({ phone:"", email:"" })
 
+  const [vehicleType, setVehicleType] = useState("car")
   const [personalForm, setPersonalForm] = useState({
     first_name:"", last_name:"", city:""
   })
@@ -84,7 +92,7 @@ export default function DriverProfile() {
     e.preventDefault()
     setSaving(true)
     try {
-      await updateProfile(personalForm)
+      await updateProfile({ ...personalForm, driver_vehicle_type: vehicleType })
       toast.success("Personal info saved")
     } catch(err) { toast.error(err.message) }
     finally { setSaving(false) }
@@ -181,7 +189,12 @@ export default function DriverProfile() {
           </div>
           <div>
             <div style={{ fontFamily:"Syne", fontSize:17, fontWeight:800, color:"#f0ede6" }}>{profile?.first_name} {profile?.last_name}</div>
-            <div style={{ fontSize:12, color:"#555", marginTop:2 }}>Concierge Driver · {profile?.city||"Location not set"}</div>
+            <div style={{ fontSize:12, color:"#555", marginTop:2 }}>
+              {profile?.driver_vehicle_type==="motorcycle"?"🏍️ Boda Boda Driver":
+               profile?.driver_vehicle_type==="tuktuk"?"🛺 Tuktuk Driver":
+               profile?.driver_vehicle_type==="van"?"🚐 Van Driver":"🚗 Concierge Driver"}
+               · {profile?.city||"Location not set"}
+            </div>
             <div style={{ display:"flex", alignItems:"center", gap:6, marginTop:4 }}>
               {profile?.documents_verified ? (
                 <span style={{ fontSize:10, color:"#1d9e75", background:"#071a12", padding:"2px 8px", borderRadius:10, border:"1px solid #1d9e7540" }}>✓ Verified driver</span>
@@ -349,6 +362,10 @@ export default function DriverProfile() {
     </div>
   )
 }
+
+
+
+
 
 
 
