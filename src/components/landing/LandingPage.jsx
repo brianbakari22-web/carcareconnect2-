@@ -59,7 +59,10 @@ export default function LandingPage() {
   }, [])
 
   return (
-    <div style={{ minHeight:"100vh", background:"#0d0d0d", color:"#e8e4dc", fontFamily:"DM Sans,sans-serif", overflowX:"hidden" }}>
+    <div style={{ minHeight:"100vh", background:"#0d0d0d", color:"#e8e4dc", fontFamily:"DM Sans,sans-serif", overflowX:"hidden", position:"relative" }}>
+      <div style={{ position:"fixed", inset:0, zIndex:0, pointerEvents:"none" }}>
+        <NetworkCanvas />
+      </div>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
         @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
@@ -72,7 +75,7 @@ export default function LandingPage() {
       `}</style>
 
       {/* NAV */}
-      <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:100, padding:"0.75rem 2rem", display:"flex", justifyContent:"space-between", alignItems:"center", background:scrolled?"rgba(13,13,13,0.97)":"transparent", backdropFilter:scrolled?"blur(12px)":"none", borderBottom:scrolled?"1px solid #1e1e1e":"none", transition:"all 0.3s" }}>
+      <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:200, padding:"0.75rem 2rem", display:"flex", justifyContent:"space-between", alignItems:"center", background:scrolled?"rgba(13,13,13,0.97)":"transparent", backdropFilter:scrolled?"blur(12px)":"none", borderBottom:scrolled?"1px solid #1e1e1e":"none", transition:"all 0.3s" }}>
         <img src="/logo.svg" alt="Car Care Connect" style={{ height:52, animation:"glow 3s ease-in-out infinite" }}/>
         <div style={{ display:"flex", gap:8, alignItems:"center" }}>
           <button onClick={()=>navigate("/auth")} style={{ background:"none", border:"1px solid #333", borderRadius:8, color:"#888", fontSize:13, padding:"8px 18px", cursor:"pointer" }}>
@@ -86,7 +89,6 @@ export default function LandingPage() {
 
       {/* HERO */}
       <div style={{ minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", textAlign:"center", padding:"7rem 1.5rem 4rem", position:"relative", overflow:"hidden" }}>
-        <NetworkCanvas />
         <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse at 50% 40%, #e6821e12 0%, #1d9e7504 50%, transparent 70%)", pointerEvents:"none" }}/>
         <div style={{ position:"absolute", top:"10%", left:"5%", width:500, height:500, background:"#e6821e05", borderRadius:"50%", filter:"blur(100px)", animation:"float 8s ease-in-out infinite" }}/>
         <div style={{ position:"absolute", bottom:"10%", right:"5%", width:350, height:350, background:"#1d9e7505", borderRadius:"50%", filter:"blur(80px)", animation:"float 10s ease-in-out infinite 3s" }}/>
@@ -132,7 +134,7 @@ export default function LandingPage() {
       </div>
 
       {/* EMERGENCY BANNER */}
-      <div style={{ margin:"0 1.5rem 5rem", background:"linear-gradient(135deg,#13080a,#1a0c0e)", border:"1px solid #e24b4a25", borderRadius:20, padding:"3rem 2rem", textAlign:"center", position:"relative", overflow:"hidden" }}>
+      <div style={{ position:"relative", zIndex:1, margin:"0 1.5rem 5rem", background:"linear-gradient(135deg,#13080a,#1a0c0e)", border:"1px solid #e24b4a25", borderRadius:20, padding:"3rem 2rem", textAlign:"center", position:"relative", overflow:"hidden" }}>
         <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse at center, #e24b4a06, transparent)", pointerEvents:"none" }}/>
         <div style={{ fontSize:52, marginBottom:16 }}>🚨</div>
         <h2 style={{ fontFamily:"Syne", fontSize:"clamp(22px,4vw,36px)", fontWeight:800, color:"#e24b4a", marginBottom:12 }}>
@@ -154,7 +156,7 @@ export default function LandingPage() {
       </div>
 
       {/* HOW IT WORKS */}
-      <div style={{ maxWidth:1000, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
+      <div style={{ position:"relative", zIndex:1, maxWidth:1000, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
         <div style={{ textAlign:"center", marginBottom:"3rem" }}>
           <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#e6821e", marginBottom:8 }}>How it works</div>
           <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>3 steps to car care bliss</h2>
@@ -176,7 +178,7 @@ export default function LandingPage() {
       </div>
 
       {/* FEATURES */}
-      <div style={{ maxWidth:1000, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
+      <div style={{ position:"relative", zIndex:1, maxWidth:1000, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
         <div style={{ textAlign:"center", marginBottom:"3rem" }}>
           <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#e6821e", marginBottom:8 }}>Features</div>
           <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>Everything your car needs</h2>
@@ -202,7 +204,7 @@ export default function LandingPage() {
       </div>
 
       {/* ROLES */}
-      <div style={{ maxWidth:1000, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
+      <div style={{ position:"relative", zIndex:1, maxWidth:1000, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
         <div style={{ textAlign:"center", marginBottom:"3rem" }}>
           <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#e6821e", marginBottom:8 }}>Who is it for</div>
           <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>Built for everyone in the ecosystem</h2>
@@ -232,7 +234,7 @@ export default function LandingPage() {
       </div>
 
       {/* PRICING */}
-      <div style={{ maxWidth:900, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
+      <div style={{ position:"relative", zIndex:1, maxWidth:900, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
         <div style={{ textAlign:"center", marginBottom:"3rem" }}>
           <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#e6821e", marginBottom:8 }}>Pricing</div>
           <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>Simple, transparent commissions</h2>
@@ -257,7 +259,7 @@ export default function LandingPage() {
       </div>
 
       {/* NAIROBI PRICING */}
-      <div style={{ maxWidth:900, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
+      <div style={{ position:"relative", zIndex:1, maxWidth:900, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
         <div style={{ background:"#141414", border:"1px solid #1e1e1e", borderRadius:20, padding:"2rem" }}>
           <div style={{ textAlign:"center", marginBottom:"1.5rem" }}>
             <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#e6821e", marginBottom:8 }}>Nairobi market prices</div>
@@ -288,7 +290,7 @@ export default function LandingPage() {
       </div>
 
       {/* CTA */}
-      <div style={{ textAlign:"center", padding:"4rem 1.5rem 6rem", position:"relative", overflow:"hidden" }}>
+      <div style={{ position:"relative", zIndex:1, textAlign:"center", padding:"4rem 1.5rem 6rem", overflow:"hidden" }}>
         <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse at center, #e6821e08, transparent)", pointerEvents:"none" }}/>
         <img src="/logo.svg" alt="Car Care Connect" style={{ height:80, marginBottom:"1.5rem", animation:"glow 3s ease-in-out infinite", position:"relative" }}/>
         <h2 style={{ fontFamily:"Syne", fontSize:"clamp(28px,5vw,52px)", fontWeight:800, marginBottom:16, position:"relative" }}>
@@ -308,7 +310,7 @@ export default function LandingPage() {
       </div>
 
       {/* FOOTER */}
-      <footer style={{ borderTop:"1px solid #141414", padding:"2.5rem 1.5rem", textAlign:"center" }}>
+      <footer style={{ position:"relative", zIndex:1, borderTop:"1px solid #141414", padding:"2.5rem 1.5rem", textAlign:"center" }}>
         <img src="/logo.svg" alt="Car Care Connect" style={{ height:44, marginBottom:16, opacity:0.5 }}/>
         <div style={{ display:"flex", gap:24, justifyContent:"center", flexWrap:"wrap", marginBottom:16 }}>
           {[["Privacy Policy","/privacy"],["Terms of Service","/terms"],["Contact","mailto:carcareconnect254@gmail.com"],["Support","mailto:carcareconnect254@gmail.com"]].map(([label,href])=>(
@@ -320,6 +322,7 @@ export default function LandingPage() {
     </div>
   )
 }
+
 
 
 
