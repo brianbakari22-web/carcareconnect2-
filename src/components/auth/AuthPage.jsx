@@ -117,12 +117,12 @@ export default function AuthPage() {
           password: form.password,
           firstName: form.firstName,
           lastName: form.lastName,
-          phone: form.phone,
-          role: selectedRole,
-          phone: form.phone,
-          role: selectedRole,
-          businessName: form.businessName,
-          providerType: form.providerType,
+            phone: form.phone,
+            role: selectedRole,
+            businessName: form.businessName,
+            providerType: form.providerType,
+            driverVehicleType: form.driverVehicleType,
+          }, refCode)
           driverVehicleType: form.driverVehicleType,
         }, refCode)
         toast.success("Welcome to Car Care Connect! 🎉")
