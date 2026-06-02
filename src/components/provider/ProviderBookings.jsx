@@ -105,7 +105,7 @@ export default function ProviderBookings() {
         {
           user_id: booking.customer_id,
           title: "Service completed! How was it? ⭐",
-          message: "Your "+booking.service_name+" has been completed. Please leave a review to help other customers. Your feedback matters!",
+          message: "Your "+booking.service_name+" has been completed! Please go to My Bookings → tap the booking → Leave a Review. Your feedback helps other customers and earns you 50 bonus loyalty points!",
           type: "success"
         },
         {
@@ -355,4 +355,5 @@ export default function ProviderBookings() {
     </div>
   )
 }
+
 
