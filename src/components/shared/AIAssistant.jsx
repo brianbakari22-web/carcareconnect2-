@@ -617,7 +617,7 @@ export default function AIAssistant() {
               style={{ flex:1, background:"#0f0f0f", border:"1px solid #222", borderRadius:10, padding:"9px 12px", color:"#f0ede6", fontSize:12, outline:"none" }}/>
             <button type="submit" disabled={!input.trim()||loading}
               style={{ background:input.trim()&&!loading?color:"#222", border:"none", borderRadius:10, color:input.trim()&&!loading?"#fff":"#555", fontSize:16, padding:"0 14px", cursor:input.trim()&&!loading?"pointer":"default" }}>
-              Γ₧ñ
+              🤔
             </button>
           </form>
         </div>
@@ -625,6 +625,7 @@ export default function AIAssistant() {
     </>
   )
 }
+
 
 
 
