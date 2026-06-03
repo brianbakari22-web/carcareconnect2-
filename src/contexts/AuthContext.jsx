@@ -66,19 +66,30 @@ export function AuthProvider({ children }) {
     return () => document.removeEventListener("visibilitychange", handleVisibility)
   }, [])
 
-  async function fetchProfile(userId) {
+  async function fetchProfile(userId, retries=0) {
     try {
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
         .eq("id", userId)
-        .single()
+        .maybeSingle()
       if (error) throw error
-      setProfile(data)
+      if (data) {
+        setProfile(data)
+        setLoading(false)
+      } else if (retries < 10) {
+        // Profile not created yet - retry
+        setTimeout(() => fetchProfile(userId, retries+1), 500)
+      } else {
+        setLoading(false)
+      }
     } catch (err) {
       console.error("fetchProfile error:", err)
-    } finally {
-      setLoading(false)
+      if (retries < 5) {
+        setTimeout(() => fetchProfile(userId, retries+1), 1000)
+      } else {
+        setLoading(false)
+      }
     }
   }
 
@@ -155,4 +166,5 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   )
 }
+
 
