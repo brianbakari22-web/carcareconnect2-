@@ -145,6 +145,11 @@ export default function AuthPage() {
       }
     } catch(err) {
       toast.error(err.message || "Something went wrong")
+      // Log to error tracker
+      if (window.__ccc_errors !== undefined) {
+        window.__ccc_errors.unshift({ time:new Date().toLocaleTimeString(), msg:"Auth error: "+err.message, src:"AuthPage", line:0, col:0 })
+      }
+      console.error("AUTH ERROR:", err)
     } finally {
       setLoading(false)
     }
@@ -594,6 +599,7 @@ export default function AuthPage() {
     </div>
   )
 }
+
 
 
 
