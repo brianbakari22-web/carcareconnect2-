@@ -35,7 +35,7 @@ GO SERVICE (Emergency):
 - Customer requests emergency roadside assistance
 - KES 500 mechanic callout fee paid upfront via Pesapal before request is sent
 - Callout fee split: Mechanic KES 425 (85%), Platform KES 75 (15%)
-- This deters prank calls ΓÇö only serious emergencies will pay upfront
+- This deters prank calls — only serious emergencies will pay upfront
 - Maximum 2 GO Service requests per day per customer
 - Provider has 15 minutes to respond per attempt
 - Up to 5 providers attempted before notifying customer of unavailability
@@ -178,15 +178,15 @@ SERVICE CATEGORIES:
 - Concierge (vehicle pickup/delivery)
 
 PROVIDER TYPES (all can register on CCC):
-- Garage/Mechanic: Car service and repair ΓÇö 90% earnings, 10% platform
-- Mobile Mechanic: Travels to customer ΓÇö 80% earnings, 20% platform
-- Parts Dealer: Auto parts and spares ΓÇö 95% earnings, 5% platform (lowest rate)
-- Accessories Shop: Car accessories and add-ons ΓÇö 92% earnings, 8% platform
-- Tyre Shop: Tyre sales and fitting ΓÇö 94% earnings, 6% platform
-- Auto Electrician: Electrical systems specialist ΓÇö 88% earnings, 12% platform
-- Car Wash: Car wash and detailing ΓÇö 90% earnings, 10% platform
-- Panel Beater: Body work and spray painting ΓÇö 85% earnings, 15% platform
-- Auto Glass: Windscreen and glass specialist ΓÇö 88% earnings, 12% platform
+- Garage/Mechanic: Car service and repair — 90% earnings, 10% platform
+- Mobile Mechanic: Travels to customer — 80% earnings, 20% platform
+- Parts Dealer: Auto parts and spares — 95% earnings, 5% platform (lowest rate)
+- Accessories Shop: Car accessories and add-ons — 92% earnings, 8% platform
+- Tyre Shop: Tyre sales and fitting — 94% earnings, 6% platform
+- Auto Electrician: Electrical systems specialist — 88% earnings, 12% platform
+- Car Wash: Car wash and detailing — 90% earnings, 10% platform
+- Panel Beater: Body work and spray painting — 85% earnings, 15% platform
+- Auto Glass: Windscreen and glass specialist — 88% earnings, 12% platform
 
 DRIVER VEHICLE TYPES:
 - Car: Standard concierge vehicle delivery
@@ -196,9 +196,9 @@ DRIVER VEHICLE TYPES:
 
 SMART DRIVER MATCHING:
 - System auto-matches driver type to order size
-- 1-3 items ΓåÆ boda boda preferred
-- 4-6 items ΓåÆ tuktuk preferred  
-- 7+ items ΓåÆ van preferred
+- 1-3 items → boda boda preferred
+- 4-6 items → tuktuk preferred  
+- 7+ items → van preferred
 - Falls back to any available driver if preferred type unavailable
 
 DELIVERY ZONES (Nairobi):
@@ -228,12 +228,12 @@ INVENTORY & ORDERS SYSTEM:
 - Add to cart, choose pickup or delivery
 - Delivery zones: CBD, Westlands, Karen, Kasarani, Embakasi, Kiambu Road etc
 - Delivery fee: base fee per zone + per km rate
-- Order flow: browse ΓåÆ cart ΓåÆ place order ΓåÆ provider confirms ΓåÆ packs ΓåÆ driver delivers
-- Provider order statuses: pending ΓåÆ confirmed ΓåÆ processing ΓåÆ ready ΓåÆ delivered
+- Order flow: browse → cart → place order → provider confirms → packs → driver delivers
+- Provider order statuses: pending → confirmed → processing → ready → delivered
 - CCC drivers (boda boda, tuktuk, van) deliver orders within Nairobi
 - Driver earns 85% of delivery fee, platform 15%
 - Parts dealer commission: 5% (lowest), accessories: 8%, tyres: 6%
-- Customers track orders at /dashboard/parts ΓåÆ My Orders tab
+- Customers track orders at /dashboard/parts → My Orders tab
 - Providers manage inventory at /provider-dashboard/inventory
 - Providers manage orders at /provider-dashboard/orders
 - Drivers see delivery jobs at /driver-dashboard/deliveries
@@ -395,13 +395,13 @@ INVENTORY MANAGEMENT (Parts Dealer, Accessories Shop, Tyre Shop):
 - Set price, stock quantity, unit, brand, compatible cars
 - Low stock alert at 5 or fewer items
 - Orders come in at /dashboard/orders
-- Order flow: pending ΓåÆ confirmed ΓåÆ processing ΓåÆ ready ΓåÆ delivered
+- Order flow: pending → confirmed → processing → ready → delivered
 - Customers can choose pickup or delivery
 - CCC drivers handle delivery
 
 SERVICE MANAGEMENT (Garage, Car Wash, Auto Electrician etc):
 - Add services at /dashboard/services
-- Booking flow: pending ΓåÆ confirmed ΓåÆ in-progress ΓåÆ completed
+- Booking flow: pending → confirmed → in-progress → completed
 - Assign mechanics at /dashboard/mechanics
 - GO Service requests at /dashboard/go-requests
 - Business hours at /dashboard/business-hours
@@ -594,7 +594,7 @@ export default function AIAssistant() {
             ))}
             {loading&&(
               <div style={{ display:"flex" }}>
-                <div style={{ padding:"10px 14px", borderRadius:"14px 14px 14px 4px", background:"#1a1a1a", color:"#555", fontSize:18, letterSpacing:4 }}>ΓÇóΓÇóΓÇó</div>
+                <div style={{ padding:"10px 14px", borderRadius:"14px 14px 14px 4px", background:"#1a1a1a", color:"#555", fontSize:18, letterSpacing:4 }}>•••</div>
               </div>
             )}
             {messages.length<=1&&!loading&&(
@@ -625,6 +625,8 @@ export default function AIAssistant() {
     </>
   )
 }
+
+
 
 
 
