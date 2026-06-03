@@ -198,7 +198,20 @@ export default function Layout({ children }) {
   ]
 
   const nav = role === "provider" ? providerNav : (NAV[role] || [])
-  const bottomNav = BOTTOM_NAV[role] || []
+  const providerBottomNav = isInventoryProvider ? [
+    { path:"/dashboard", key:"overview", icon:"🏠" },
+    { path:"/dashboard/inventory", label:"Inventory", icon:"📦" },
+    { path:"/dashboard/orders", label:"Orders", icon:"🛒" },
+    { path:"/dashboard/chat", key:"messages", icon:"✉️" },
+    { path:"more", label:"Menu", icon:"☰" },
+  ] : [
+    { path:"/dashboard", key:"overview", icon:"🏠" },
+    { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
+    { path:"/dashboard/services", key:"myServices", icon:"🔧" },
+    { path:"/dashboard/chat", key:"messages", icon:"✉️" },
+    { path:"more", label:"Menu", icon:"☰" },
+  ]
+  const bottomNav = role==="provider" ? providerBottomNav : (BOTTOM_NAV[role] || [])
   const initials = `${profile?.first_name?.[0]||""}${profile?.last_name?.[0]||""}`.toUpperCase()
 
   const roleColors = {
@@ -411,6 +424,7 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 
 
