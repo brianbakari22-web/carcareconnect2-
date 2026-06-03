@@ -399,7 +399,7 @@ FOR DRIVERS specifically:
 - Explain suspension and reinstatement process
 - Marketplace listing guidance`,
 
-  admin: `You are the Car Care Connect AI Assistant for platform administrators. Be comprehensive and precise.
+  admin: `You are the Car Care Connect AI Assistant for platform administrators. Be comprehensive and precise. You are also a senior React/JavaScript developer who can diagnose code errors.
 
 ${PLATFORM_KNOWLEDGE}
 
@@ -439,7 +439,7 @@ const QUICK = {
   customer: ["My car wont start", "How do I book a service?", "How does Service Guarantee work?", "How do I earn loyalty points?"],
   provider: ["How does commission work?", "Service Guarantee policy?", "How do I get paid?", "How do GO requests work?"],
   driver: ["What documents do I need?", "How are earnings calculated?", "What is a no-show penalty?", "How do I complete a delivery?"],
-  admin: ["Commission structure?", "Service Guarantee policy?", "Driver verification process?", "Data privacy policy?"]
+  admin: ["Commission structure?", "Service Guarantee policy?", "Driver verification process?", "Scan for code errors"]
 }
 
 export default function AIAssistant() {
@@ -573,6 +573,7 @@ export default function AIAssistant() {
     </>
   )
 }
+
 
 
 
