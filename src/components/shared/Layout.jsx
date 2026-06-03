@@ -206,6 +206,7 @@ export default function Layout({ children }) {
   ]
 
   const nav = role === "provider" ? providerNav : (NAV[role] || [])
+  const isDeliveryDriver = ["motorcycle","tuktuk","van"].includes(profile?.driver_vehicle_type||"car")
   const providerBottomNav = isInventoryProvider ? [
     { path:"/dashboard", key:"overview", icon:"🏠" },
     { path:"/dashboard/inventory", label:"Inventory", icon:"📦" },
@@ -432,6 +433,7 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 
 

@@ -4,6 +4,13 @@ import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
+const VEHICLE_CONFIG = {
+  car: { icon:"🚗", label:"Concierge Driver", color:"#1d9e75", desc:"Vehicle pickup and delivery", jobs:"Concierge jobs" },
+  motorcycle: { icon:"🏍️", label:"Boda Boda Rider", color:"#e6821e", desc:"Fast parts and accessories delivery", jobs:"Delivery jobs" },
+  tuktuk: { icon:"🛺", label:"Tuktuk Driver", color:"#378add", desc:"Local area parts delivery", jobs:"Delivery jobs" },
+  van: { icon:"🚐", label:"Van Driver", color:"#8b5cf6", desc:"Bulk parts and large item delivery", jobs:"Delivery jobs" },
+}
+
 export default function DriverOverview() {
   const { user, profile } = useAuth()
   const isMobile = useIsMobile()
@@ -124,11 +131,33 @@ export default function DriverOverview() {
   const isVerified = profile?.documents_verified
   const isSuspended = driverStatus?.is_suspended
   const noShowCount = driverStatus?.no_show_count||0
+  const vehicleType = profile?.driver_vehicle_type || "car"
+  const vehicleConfig = VEHICLE_CONFIG[vehicleType] || VEHICLE_CONFIG.car
+  const isDeliveryDriver = ["motorcycle","tuktuk","van"].includes(vehicleType)
 
   if (loading) return <div style={{ color:"#555", fontSize:13 }}>Loading...</div>
 
   return (
     <div>
+      {/* DRIVER IDENTITY HEADER */}
+      <div style={{ background:`linear-gradient(135deg,#071a12,#111)`, border:`1px solid ${vehicleConfig.color}30`, borderRadius:16, padding:"1.25rem", marginBottom:"1.5rem", display:"flex", alignItems:"center", gap:16 }}>
+        <div style={{ width:60, height:60, borderRadius:14, background:"#0f0f0f", border:`2px solid ${vehicleConfig.color}60`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:28, flexShrink:0 }}>
+          {vehicleConfig.icon}
+        </div>
+        <div style={{ flex:1 }}>
+          <div style={{ fontFamily:"Syne", fontSize:isMobile?15:18, fontWeight:800, color:"#f0ede6", marginBottom:2 }}>
+            {profile?.first_name} {profile?.last_name}
+          </div>
+          <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
+            <span style={{ fontSize:12, padding:"3px 10px", borderRadius:20, background:"#0f0f0f", color:vehicleConfig.color, border:`1px solid ${vehicleConfig.color}40`, fontWeight:600 }}>
+              {vehicleConfig.icon} {vehicleConfig.label}
+            </span>
+            {profile?.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#071a12", padding:"2px 8px", borderRadius:10 }}>✓ Verified</span>}
+          </div>
+          <div style={{ fontSize:11, color:"#555", marginTop:4 }}>{vehicleConfig.desc}</div>
+        </div>
+      </div>
+
       {/* Suspension banner */}
       {isSuspended&&(
         <div style={{ background:"#1a0808", border:"2px solid #e24b4a", borderRadius:12, padding:"1rem", marginBottom:"1.5rem" }}>
@@ -161,7 +190,7 @@ export default function DriverOverview() {
           {isSuspended?"SUSPENDED":isOnline?"You are ONLINE":"You are OFFLINE"}
         </div>
         <div style={{ fontSize:12, color:"#555", marginBottom:"1.5rem" }}>
-          {isSuspended?"Contact support to appeal your suspension":isOnline?"Visible to customers · Receiving job requests":"Toggle on to start receiving concierge jobs"}
+          {isSuspended?"Contact support to appeal your suspension":isOnline?"Visible to customers · Receiving job requests":isDeliveryDriver?"Toggle on to start receiving delivery jobs":"Toggle on to start receiving concierge jobs"}
         </div>
 
         {!isVerified&&!isSuspended&&(
@@ -276,3 +305,4 @@ export default function DriverOverview() {
     </div>
   )
 }
+
