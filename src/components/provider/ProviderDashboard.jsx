@@ -31,7 +31,7 @@ export default function ProviderDashboard() {
     if (!user) return
     load()
     const sub = supabase.channel("prov-dash")
-      .on("postgres_changes", { event:"*", schema:"public", table:"bookings", filter:`provider_id=eq.${user.id}` }, () => { load(); toast("Booking updated", { icon:"📋" }) })
+      .on("postgres_changes", { event:"*", schema:"public", table:"bookings", filter:`provider_id=eq.${user.id}` }, () => { load(); toast("Booking updated", { icon:"≡ƒôï" }) })
       .subscribe()
     return () => supabase.removeChannel(sub)
   }, [user])
@@ -63,17 +63,17 @@ export default function ProviderDashboard() {
       {/* Service Guarantee Policy Banner */}
       {showPolicy&&(
         <div style={{ background:"#1a0808", border:"2px solid #e24b4a", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e24b4a", marginBottom:8 }}>🛡️ Important — Service Guarantee Policy</div>
+          <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e24b4a", marginBottom:8 }}>≡ƒ¢í∩╕Å Important ΓÇö Service Guarantee Policy</div>
           <div style={{ fontSize:12, color:"#888", lineHeight:1.8, marginBottom:"1rem" }}>
             Car Care Connect operates a <strong style={{ color:"#f0ede6" }}>Service Guarantee</strong> for all customers. As a provider, you must be aware of the following:
           </div>
           {[
-            { icon:"1️⃣", text:"If a customer is unhappy with your service, they can submit a Service Guarantee claim within 7 days." },
-            { icon:"2️⃣", text:"If the claim is approved, the full service cost is deducted from your earnings and a voucher is issued to the customer." },
-            { icon:"3️⃣", text:"1st approved claim → Warning + cost deduction." },
-            { icon:"4️⃣", text:"2nd approved claim → 7 day suspension + cost deduction." },
-            { icon:"5️⃣", text:"3rd approved claim → Permanent ban from the platform." },
-            { icon:"✅", text:"The best protection is to always deliver excellent, professional service." },
+            { icon:"1∩╕ÅΓâú", text:"If a customer is unhappy with your service, they can submit a Service Guarantee claim within 7 days." },
+            { icon:"2∩╕ÅΓâú", text:"If the claim is approved, the full service cost is deducted from your earnings and a voucher is issued to the customer." },
+            { icon:"3∩╕ÅΓâú", text:"1st approved claim ΓåÆ Warning + cost deduction." },
+            { icon:"4∩╕ÅΓâú", text:"2nd approved claim ΓåÆ 7 day suspension + cost deduction." },
+            { icon:"5∩╕ÅΓâú", text:"3rd approved claim ΓåÆ Permanent ban from the platform." },
+            { icon:"Γ£à", text:"The best protection is to always deliver excellent, professional service." },
           ].map(item=>(
             <div key={item.icon} style={{ display:"flex", gap:10, alignItems:"flex-start", marginBottom:6 }}>
               <span style={{ fontSize:14, flexShrink:0 }}>{item.icon}</span>
@@ -83,7 +83,7 @@ export default function ProviderDashboard() {
           <div style={{ display:"flex", gap:8, marginTop:"1rem" }}>
             <button onClick={()=>{ localStorage.setItem("ccc_policy_acknowledged","true"); setShowPolicy(false) }}
               style={{ background:"#e24b4a", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 18px", cursor:"pointer" }}>
-              I understand — got it
+              I understand ΓÇö got it
             </button>
             <button onClick={()=>window.open("/terms","_blank")}
               style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", fontSize:12, padding:"9px 14px", cursor:"pointer" }}>
@@ -96,7 +96,7 @@ export default function ProviderDashboard() {
       {/* Permanent policy reminder */}
       {!showPolicy&&(
         <div style={{ background:"#111", border:"1px solid #e24b4a20", borderRadius:10, padding:"0.75rem", marginBottom:"1.25rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-          <div style={{ fontSize:11, color:"#555" }}>🛡️ Service Guarantee active — deliver quality service to avoid claims</div>
+          <div style={{ fontSize:11, color:"#555" }}>≡ƒ¢í∩╕Å Service Guarantee active ΓÇö deliver quality service to avoid claims</div>
           <button onClick={()=>setShowPolicy(true)}
             style={{ background:"none", border:"none", color:"#e24b4a", fontSize:11, cursor:"pointer" }}>
             View policy
@@ -122,15 +122,15 @@ export default function ProviderDashboard() {
       {/* Commission rate banner */}
       <div style={{ background:"#111", border:"1px solid #378add30", borderRadius:10, padding:"0.75rem 1rem", marginBottom:"1.25rem", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:8 }}>
         <div>
-          <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>Your commission rate · {(profile?.provider_type||"garage").replace(/_/g," ")}</div>
+          <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>Your commission rate ┬╖ {(profile?.provider_type||"garage").replace(/_/g," ")}</div>
           <div style={{ fontSize:13, color:"#378add", fontWeight:600 }}>
-            You earn {COMMISSION_RATES[profile?.provider_type||"garage"] || COMMISSION_RATES["garage"]?.provider||90}% · Platform takes {COMMISSION_RATES[profile?.provider_type||"garage"] || COMMISSION_RATES["garage"]?.platform||10}%
+            You earn {COMMISSION_RATES[profile?.provider_type||"garage"]?.provider||90}% ┬╖ Platform takes {COMMISSION_RATES[profile?.provider_type||"garage"]?.platform||10}%
           </div>
-            You earn {(COMMISSION_RATES[profile?.provider_type||"garage"] || COMMISSION_RATES["garage"])?.provider||90}% · Platform takes {(COMMISSION_RATES[profile?.provider_type||"garage"] || COMMISSION_RATES["garage"])?.platform||10}%
+        </div>
         <div style={{ fontSize:11, color:"#444" }}>
-          {profile?.provider_type==="parts_dealer"?"Lowest platform rate for parts dealers 🎉":
+          {profile?.provider_type==="parts_dealer"?"Lowest platform rate for parts dealers ≡ƒÄë":
            profile?.provider_type==="accessories_shop"?"8% platform rate for accessories":
-           profile?.provider_type==="tyre_shop"?"6% platform rate for tyre shops 🎉":""}
+           profile?.provider_type==="tyre_shop"?"6% platform rate for tyre shops ≡ƒÄë":""}
         </div>
       </div>
 
@@ -142,7 +142,7 @@ export default function ProviderDashboard() {
       {loading&&<div style={{ color:"#555", fontSize:13 }}>{t("loading")}</div>}
       {!loading&&bookings.length===0&&(
         <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>
-          <div style={{ fontSize:32, marginBottom:10 }}>📅</div>
+          <div style={{ fontSize:32, marginBottom:10 }}>≡ƒôà</div>
           {language==="sw"?"Hakuna miadi bado":"No bookings yet"}
         </div>
       )}
@@ -152,7 +152,7 @@ export default function ProviderDashboard() {
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
             <div style={{ flex:1, minWidth:0, marginRight:8 }}>
               <div style={{ fontSize:isMobile?13:14, fontWeight:500, color:"#f0ede6", marginBottom:4 }}>{b.service_name}</div>
-              <div style={{ fontSize:11, color:"#555" }}>{b.booking_date} · {b.booking_time?.slice(0,5)}</div>
+              <div style={{ fontSize:11, color:"#555" }}>{b.booking_date} ┬╖ {b.booking_time?.slice(0,5)}</div>
               {b.booking_number&&<div style={{ fontSize:10, color:"#444", marginTop:2 }}>#{b.booking_number}</div>}
             </div>
             <div style={{ textAlign:"right", flexShrink:0 }}>
@@ -211,6 +211,5 @@ export default function ProviderDashboard() {
     </div>
   )
 }
-
 
 
