@@ -172,7 +172,7 @@ function DashboardRouter() {
   const { profile, loading } = useAuth()
   if (loading || !profile) return <Loader text="Loading your dashboard..." />
   const role = profile?.role
-  if (role === "admin") return <Navigate to={`/${ADMIN_SECRET}`} replace />
+  if (role === "admin") return <Navigate to="/admin-dashboard" replace />
   if (!["customer","provider","driver"].includes(role)) return <Loader text="Loading your dashboard..." />
 
   return (
