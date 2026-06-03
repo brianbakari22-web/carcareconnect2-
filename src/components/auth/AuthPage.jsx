@@ -1,6 +1,6 @@
 import useIsMobile from "../../lib/useIsMobile"
 import { useState, useEffect } from "react"
-import useIsMobile from "../../lib/useIsMobile"
+
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
@@ -64,7 +64,7 @@ const STATS = [
 
 export default function AuthPage() {
   const isMobile = useIsMobile()
-  const isMobile = useIsMobile()
+
   const { signIn, signUp, profile, user } = useAuth()
   const navigate = useNavigate()
   const [step, setStep] = useState("landing")
