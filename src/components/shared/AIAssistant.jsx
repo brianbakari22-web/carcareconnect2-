@@ -456,9 +456,30 @@ FOR ADMINS specifically:
 - Policies: Privacy Policy and Terms of Service updated June 1 2026`
 }
 
+const PROVIDER_GREETINGS = {
+  garage: "Hello! I am your CCC Garage assistant. I can help with bookings, mechanic management, GO Service requests, commissions and payouts. How can I assist?",
+  garage_premium: "Hello! I am your CCC Mobile Mechanic assistant. I can help with customer bookings, home visits, commissions and payouts. How can I assist?",
+  parts_dealer: "Hello! I am your CCC Parts Dealer assistant. I can help with inventory management, order fulfillment, stock alerts, delivery and your 95% earnings rate. How can I assist?",
+  accessories_shop: "Hello! I am your CCC Accessories Shop assistant. I can help with inventory, orders, delivery and your 92% earnings rate. How can I assist?",
+  tyre_shop: "Hello! I am your CCC Tyre Shop assistant. I can help with tyre inventory, fitting appointments, orders and your 94% earnings rate. How can I assist?",
+  auto_electrician: "Hello! I am your CCC Auto Electrician assistant. I can help with bookings, electrical services and your 88% earnings rate. How can I assist?",
+  car_wash: "Hello! I am your CCC Car Wash assistant. I can help with booking schedules, wash management and your 90% earnings rate. How can I assist?",
+  panel_beater: "Hello! I am your CCC Panel Beater assistant. I can help with bodywork bookings, job tracking and your 85% earnings rate. How can I assist?",
+  auto_glass: "Hello! I am your CCC Auto Glass assistant. I can help with windscreen bookings, glass services and your 88% earnings rate. How can I assist?",
+}
+const PROVIDER_QUICK = {
+  garage: ["How does commission work?", "Service Guarantee policy?", "How do I get paid?", "How do GO requests work?"],
+  parts_dealer: ["How do I add inventory?", "How do I fulfill an order?", "What is my commission rate?", "How does delivery work?"],
+  accessories_shop: ["How do I add inventory?", "How do I fulfill an order?", "What is my commission rate?", "How does delivery work?"],
+  tyre_shop: ["How do I add tyre inventory?", "How do fitting appointments work?", "What is my commission rate?", "How do I manage orders?"],
+  car_wash: ["How do I manage bookings?", "How does scheduling work?", "What is my commission rate?", "How do I get paid?"],
+  panel_beater: ["How do I manage bodywork jobs?", "Service Guarantee policy?", "What is my commission rate?", "How do I get paid?"],
+  auto_electrician: ["How do I manage bookings?", "Service Guarantee policy?", "What is my commission rate?", "How do I get paid?"],
+  auto_glass: ["How do I manage bookings?", "How do I add glass inventory?", "What is my commission rate?", "How do I get paid?"],
+}
 const GREETINGS = {
   customer: "Hi! I am your Car Care Connect AI assistant. I can help with car problems, booking services, loyalty points, marketplace, and anything about our platform. What can I help you with?",
-  provider: (()=>{
+  provider: "Hello! I am your CCC business assistant. How can I assist?",
     const pt = typeof window !== "undefined" ? localStorage.getItem("ccc_provider_type")||"garage" : "garage"
     const greetings = {
       garage: "Hello! I am your CCC Garage assistant. I can help with bookings, mechanic management, GO Service requests, commissions and payouts. How can I assist?",
@@ -508,14 +529,14 @@ export default function AIAssistant() {
 
   const role = profile?.role || "customer"
   const providerType = profile?.provider_type || "garage"
-  if (role === "provider" && typeof window !== "undefined") {
-    localStorage.setItem("ccc_provider_type", providerType)
-  }
   const color = ROLE_COLORS[role] || "#e6821e"
 
   useEffect(() => {
     if (open && !greeted) {
-      setMessages([{ role:"assistant", content:GREETINGS[role] }])
+      const greeting = role==="provider" 
+      ? (PROVIDER_GREETINGS[providerType]||PROVIDER_GREETINGS.garage) 
+      : GREETINGS[role]
+    setMessages([{ role:"assistant", content:greeting }])
       setGreeted(true)
     }
   }, [open])
@@ -631,6 +652,8 @@ export default function AIAssistant() {
     </>
   )
 }
+
+
 
 
 
