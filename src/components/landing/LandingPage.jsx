@@ -72,11 +72,11 @@ export default function LandingPage() {
       `}</style>
 
       {/* NAV */}
-      <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:200, padding:"0.75rem 2rem", display:"flex", justifyContent:"space-between", alignItems:"center", background:scrolled?"rgba(13,13,13,0.97)":"transparent", backdropFilter:scrolled?"blur(12px)":"none", borderBottom:scrolled?"1px solid #1e1e1e":"none", transition:"all 0.3s" }}>
-        <img src="/logo.svg" alt="Car Care Connect" style={{ height:52, animation:"glow 3s ease-in-out infinite" }}/>
-        <div style={{ display:"flex", gap:8, alignItems:"center" }}>
-          <button onClick={()=>navigate("/auth")} style={{ background:"none", border:"1px solid #333", borderRadius:8, color:"#888", fontSize:13, padding:"8px 18px", cursor:"pointer" }}>Sign in</button>
-          <button onClick={()=>navigate("/auth")} style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:13, fontWeight:700, padding:"9px 20px", cursor:"pointer", fontFamily:"Syne,sans-serif" }}>Get started free →</button>
+      <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:200, padding:"0.6rem 1rem", display:"flex", justifyContent:"space-between", alignItems:"center", background:"rgba(13,13,13,0.97)", backdropFilter:"blur(12px)", borderBottom:"1px solid #1e1e1e", transition:"all 0.3s" }}>
+        <img src="/logo.svg" alt="Car Care Connect" style={{ height:36 }}/>
+        <div style={{ display:"flex", gap:6, alignItems:"center" }}>
+          <button onClick={()=>navigate("/auth")} style={{ background:"none", border:"1px solid #444", borderRadius:8, color:"#aaa", fontSize:12, padding:"8px 14px", cursor:"pointer", fontFamily:"DM Sans,sans-serif" }}>Sign in</button>
+          <button onClick={()=>navigate("/auth")} style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"9px 16px", cursor:"pointer", fontFamily:"Syne,sans-serif", whiteSpace:"nowrap" }}>Get started →</button>
         </div>
       </nav>
 
@@ -405,6 +405,7 @@ export default function LandingPage() {
     </div>
   )
 }
+
 
 
 

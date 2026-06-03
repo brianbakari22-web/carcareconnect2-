@@ -1,5 +1,6 @@
 import useIsMobile from "../../lib/useIsMobile"
 import { useState, useEffect } from "react"
+import useIsMobile from "../../lib/useIsMobile"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
@@ -62,6 +63,7 @@ const STATS = [
 ]
 
 export default function AuthPage() {
+  const isMobile = useIsMobile()
   const isMobile = useIsMobile()
   const { signIn, signUp, profile, user } = useAuth()
   const navigate = useNavigate()
@@ -200,7 +202,7 @@ export default function AuthPage() {
     <div style={{ minHeight:"100vh", background:"#0a0a0a", display:"flex", flexDirection:isMobile?"column":"row", fontFamily:"'DM Sans',sans-serif" }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');`}</style>
 
-      <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", padding:"2rem" }}>
+      <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", padding:isMobile?"1rem":"2rem" }}>
         <div style={{ width:"100%", maxWidth:420 }}>
           <button onClick={()=>setStep("role")} style={{ background:"none", border:"none", color:"#555", cursor:"pointer", fontSize:13, marginBottom:"1.5rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
             ← Back
@@ -592,6 +594,8 @@ export default function AuthPage() {
     </div>
   )
 }
+
+
 
 
 
