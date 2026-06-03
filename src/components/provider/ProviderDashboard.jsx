@@ -18,7 +18,7 @@ const COMMISSION_RATES = {
 }
 
 export default function ProviderDashboard() {
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const { t, language } = useLanguage()
   const isMobile = useIsMobile()
   const [bookings, setBookings] = useState([])
@@ -211,5 +211,6 @@ export default function ProviderDashboard() {
     </div>
   )
 }
+
 
 
