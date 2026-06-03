@@ -35,7 +35,7 @@ GO SERVICE (Emergency):
 - Customer requests emergency roadside assistance
 - KES 500 mechanic callout fee paid upfront via Pesapal before request is sent
 - Callout fee split: Mechanic KES 425 (85%), Platform KES 75 (15%)
-- This deters prank calls — only serious emergencies will pay upfront
+- This deters prank calls ΓÇö only serious emergencies will pay upfront
 - Maximum 2 GO Service requests per day per customer
 - Provider has 15 minutes to respond per attempt
 - Up to 5 providers attempted before notifying customer of unavailability
@@ -178,15 +178,15 @@ SERVICE CATEGORIES:
 - Concierge (vehicle pickup/delivery)
 
 PROVIDER TYPES (all can register on CCC):
-- Garage/Mechanic: Car service and repair — 90% earnings, 10% platform
-- Mobile Mechanic: Travels to customer — 80% earnings, 20% platform
-- Parts Dealer: Auto parts and spares — 95% earnings, 5% platform (lowest rate)
-- Accessories Shop: Car accessories and add-ons — 92% earnings, 8% platform
-- Tyre Shop: Tyre sales and fitting — 94% earnings, 6% platform
-- Auto Electrician: Electrical systems specialist — 88% earnings, 12% platform
-- Car Wash: Car wash and detailing — 90% earnings, 10% platform
-- Panel Beater: Body work and spray painting — 85% earnings, 15% platform
-- Auto Glass: Windscreen and glass specialist — 88% earnings, 12% platform
+- Garage/Mechanic: Car service and repair ΓÇö 90% earnings, 10% platform
+- Mobile Mechanic: Travels to customer ΓÇö 80% earnings, 20% platform
+- Parts Dealer: Auto parts and spares ΓÇö 95% earnings, 5% platform (lowest rate)
+- Accessories Shop: Car accessories and add-ons ΓÇö 92% earnings, 8% platform
+- Tyre Shop: Tyre sales and fitting ΓÇö 94% earnings, 6% platform
+- Auto Electrician: Electrical systems specialist ΓÇö 88% earnings, 12% platform
+- Car Wash: Car wash and detailing ΓÇö 90% earnings, 10% platform
+- Panel Beater: Body work and spray painting ΓÇö 85% earnings, 15% platform
+- Auto Glass: Windscreen and glass specialist ΓÇö 88% earnings, 12% platform
 
 DRIVER VEHICLE TYPES:
 - Car: Standard concierge vehicle delivery
@@ -196,9 +196,9 @@ DRIVER VEHICLE TYPES:
 
 SMART DRIVER MATCHING:
 - System auto-matches driver type to order size
-- 1-3 items → boda boda preferred
-- 4-6 items → tuktuk preferred  
-- 7+ items → van preferred
+- 1-3 items ΓåÆ boda boda preferred
+- 4-6 items ΓåÆ tuktuk preferred  
+- 7+ items ΓåÆ van preferred
 - Falls back to any available driver if preferred type unavailable
 
 DELIVERY ZONES (Nairobi):
@@ -228,12 +228,12 @@ INVENTORY & ORDERS SYSTEM:
 - Add to cart, choose pickup or delivery
 - Delivery zones: CBD, Westlands, Karen, Kasarani, Embakasi, Kiambu Road etc
 - Delivery fee: base fee per zone + per km rate
-- Order flow: browse → cart → place order → provider confirms → packs → driver delivers
-- Provider order statuses: pending → confirmed → processing → ready → delivered
+- Order flow: browse ΓåÆ cart ΓåÆ place order ΓåÆ provider confirms ΓåÆ packs ΓåÆ driver delivers
+- Provider order statuses: pending ΓåÆ confirmed ΓåÆ processing ΓåÆ ready ΓåÆ delivered
 - CCC drivers (boda boda, tuktuk, van) deliver orders within Nairobi
 - Driver earns 85% of delivery fee, platform 15%
 - Parts dealer commission: 5% (lowest), accessories: 8%, tyres: 6%
-- Customers track orders at /dashboard/parts → My Orders tab
+- Customers track orders at /dashboard/parts ΓåÆ My Orders tab
 - Providers manage inventory at /provider-dashboard/inventory
 - Providers manage orders at /provider-dashboard/orders
 - Drivers see delivery jobs at /driver-dashboard/deliveries
@@ -395,13 +395,13 @@ INVENTORY MANAGEMENT (Parts Dealer, Accessories Shop, Tyre Shop):
 - Set price, stock quantity, unit, brand, compatible cars
 - Low stock alert at 5 or fewer items
 - Orders come in at /dashboard/orders
-- Order flow: pending → confirmed → processing → ready → delivered
+- Order flow: pending ΓåÆ confirmed ΓåÆ processing ΓåÆ ready ΓåÆ delivered
 - Customers can choose pickup or delivery
 - CCC drivers handle delivery
 
 SERVICE MANAGEMENT (Garage, Car Wash, Auto Electrician etc):
 - Add services at /dashboard/services
-- Booking flow: pending → confirmed → in-progress → completed
+- Booking flow: pending ΓåÆ confirmed ΓåÆ in-progress ΓåÆ completed
 - Assign mechanics at /dashboard/mechanics
 - GO Service requests at /dashboard/go-requests
 - Business hours at /dashboard/business-hours
@@ -458,7 +458,7 @@ FOR ADMINS specifically:
 
 const PROVIDER_GREETINGS = {
   garage: "Hello! I am your CCC Garage assistant. I can help with bookings, mechanic management, GO Service requests, commissions and payouts. How can I assist?",
-  garage_premium: "Hello! I am your CCC Mobile Mechanic assistant. I can help with customer bookings, home visits, commissions and payouts. How can I assist?",
+  garage_premium: "Hello! I am your CCC Mobile Mechanic assistant. I can help with home visit bookings, commissions and payouts. How can I assist?",
   parts_dealer: "Hello! I am your CCC Parts Dealer assistant. I can help with inventory management, order fulfillment, stock alerts, delivery and your 95% earnings rate. How can I assist?",
   accessories_shop: "Hello! I am your CCC Accessories Shop assistant. I can help with inventory, orders, delivery and your 92% earnings rate. How can I assist?",
   tyre_shop: "Hello! I am your CCC Tyre Shop assistant. I can help with tyre inventory, fitting appointments, orders and your 94% earnings rate. How can I assist?",
@@ -479,40 +479,14 @@ const PROVIDER_QUICK = {
 }
 const GREETINGS = {
   customer: "Hi! I am your Car Care Connect AI assistant. I can help with car problems, booking services, loyalty points, marketplace, and anything about our platform. What can I help you with?",
-  provider: "Hello! I am your CCC business assistant. How can I assist?",
-    const pt = typeof window !== "undefined" ? localStorage.getItem("ccc_provider_type")||"garage" : "garage"
-    const greetings = {
-      garage: "Hello! I am your CCC Garage assistant. I can help with bookings, mechanic management, GO Service requests, commissions and payouts. How can I assist?",
-      garage_premium: "Hello! I am your CCC Mobile Mechanic assistant. I can help with customer bookings, travel to customer, commissions and payouts. How can I assist?",
-      parts_dealer: "Hello! I am your CCC Parts Dealer assistant. I can help with inventory management, order fulfillment, stock alerts, delivery and your 95% earnings rate. How can I assist?",
-      accessories_shop: "Hello! I am your CCC Accessories Shop assistant. I can help with inventory, orders, delivery management and your 92% earnings rate. How can I assist?",
-      tyre_shop: "Hello! I am your CCC Tyre Shop assistant. I can help with tyre inventory, fitting appointments, orders and your 94% earnings rate. How can I assist?",
-      auto_electrician: "Hello! I am your CCC Auto Electrician assistant. I can help with bookings, electrical service management and your 88% earnings rate. How can I assist?",
-      car_wash: "Hello! I am your CCC Car Wash assistant. I can help with booking schedules, wash management and your 90% earnings rate. How can I assist?",
-      panel_beater: "Hello! I am your CCC Panel Beater assistant. I can help with bodywork bookings, job tracking and your 85% earnings rate. How can I assist?",
-      auto_glass: "Hello! I am your CCC Auto Glass assistant. I can help with windscreen bookings, glass inventory and your 88% earnings rate. How can I assist?",
-    }
-    return greetings[pt] || greetings.garage
-  })(),
+  provider: "Hello! I am your CCC business assistant. I can help with commissions, service management, GO Service, payouts, and platform policies. How can I assist?",
   driver: "Hey! I am your CCC driver assistant. I can help with earnings, document verification, delivery procedures, and platform rules. What do you need?",
   admin: "Hello Admin! I have complete knowledge of the Car Care Connect platform including all policies, features, and procedures. How can I help?"
 }
 
 const QUICK = {
   customer: ["My car wont start", "How do I book a service?", "How does Service Guarantee work?", "How do I earn loyalty points?"],
-  provider: (()=>{
-    const pt = typeof window !== "undefined" ? localStorage.getItem("ccc_provider_type")||"garage" : "garage"
-    const questions = {
-      parts_dealer: ["How do I add inventory?", "How do I fulfill an order?", "What is my commission rate?", "How does delivery work?"],
-      accessories_shop: ["How do I add inventory?", "How do I fulfill an order?", "What is my commission rate?", "How does delivery work?"],
-      tyre_shop: ["How do I add tyre inventory?", "How do fitting appointments work?", "What is my commission rate?", "How do I manage orders?"],
-      car_wash: ["How do I manage bookings?", "How does scheduling work?", "What is my commission rate?", "How do I get paid?"],
-      panel_beater: ["How do I manage bodywork jobs?", "Service Guarantee policy?", "What is my commission rate?", "How do I get paid?"],
-      auto_electrician: ["How do I manage bookings?", "Service Guarantee policy?", "What is my commission rate?", "How do I get paid?"],
-      auto_glass: ["How do I manage bookings?", "How do I add glass inventory?", "What is my commission rate?", "How do I get paid?"],
-    }
-    return questions[pt] || ["How does commission work?", "Service Guarantee policy?", "How do I get paid?", "How do GO requests work?"]
-  })(),
+  provider: ["How does commission work?", "Service Guarantee policy?", "How do I get paid?", "How do GO requests work?"],
   driver: ["What documents do I need?", "How are earnings calculated?", "What is a no-show penalty?", "How do I complete a delivery?"],
   admin: ["Commission structure?", "Service Guarantee policy?", "Driver verification process?", "Scan for code errors"]
 }
@@ -528,14 +502,13 @@ export default function AIAssistant() {
   const inputRef = useRef(null)
 
   const role = profile?.role || "customer"
-  const providerType = profile?.provider_type || "garage"
   const color = ROLE_COLORS[role] || "#e6821e"
 
   useEffect(() => {
     if (open && !greeted) {
-      const greeting = role==="provider" 
-      ? (PROVIDER_GREETINGS[providerType]||PROVIDER_GREETINGS.garage) 
-      : GREETINGS[role]
+      const greeting = role==="provider"
+      ? (PROVIDER_GREETINGS[providerType]||PROVIDER_GREETINGS.garage)
+      : (GREETINGS[role]||GREETINGS.customer)
     setMessages([{ role:"assistant", content:greeting }])
       setGreeted(true)
     }
@@ -587,12 +560,12 @@ export default function AIAssistant() {
         <div onClick={()=>setOpen(true)} style={{ position:"fixed", bottom:88, right:20, zIndex:999, cursor:"pointer", width:56, height:56 }}>
           <div style={{ position:"absolute", inset:-6, borderRadius:"50%", border:"2px solid "+color, animation:"ai-pulse 2s ease-out infinite" }}/>
           <div style={{ position:"absolute", inset:-6, borderRadius:"50%", border:"2px solid "+color, animation:"ai-pulse 2s ease-out infinite 1s" }}/>
-          <div style={{ position:"absolute", top:-8, left:-4, fontSize:11, color:color, animation:"ai-spark1 2.5s ease-in-out infinite" }}>✦</div>
-          <div style={{ position:"absolute", top:-10, right:-2, fontSize:9, color:color, animation:"ai-spark2 2.5s ease-in-out infinite 0.8s" }}>✦</div>
-          <div style={{ position:"absolute", bottom:0, left:-10, fontSize:7, color:color, animation:"ai-spark3 2.5s ease-in-out infinite 1.4s" }}>✦</div>
-          <div style={{ position:"absolute", bottom:0, right:-8, fontSize:8, color:color, animation:"ai-spark4 2.5s ease-in-out infinite 0.4s" }}>✦</div>
+          <div style={{ position:"absolute", top:-8, left:-4, fontSize:11, color:color, animation:"ai-spark1 2.5s ease-in-out infinite" }}>Γ£ª</div>
+          <div style={{ position:"absolute", top:-10, right:-2, fontSize:9, color:color, animation:"ai-spark2 2.5s ease-in-out infinite 0.8s" }}>Γ£ª</div>
+          <div style={{ position:"absolute", bottom:0, left:-10, fontSize:7, color:color, animation:"ai-spark3 2.5s ease-in-out infinite 1.4s" }}>Γ£ª</div>
+          <div style={{ position:"absolute", bottom:0, right:-8, fontSize:8, color:color, animation:"ai-spark4 2.5s ease-in-out infinite 0.4s" }}>Γ£ª</div>
           <div style={{ width:56, height:56, borderRadius:"50%", background:"linear-gradient(135deg,"+color+","+color+"99)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", boxShadow:"0 4px 20px "+color+"60", animation:"ai-spin 8s linear infinite" }}>
-            <div style={{ fontSize:18, color:"#fff", animation:"ai-spin 8s linear infinite reverse" }}>✦</div>
+            <div style={{ fontSize:18, color:"#fff", animation:"ai-spin 8s linear infinite reverse" }}>Γ£ª</div>
             <div style={{ fontFamily:"Syne", fontSize:8, fontWeight:800, color:"#fff", letterSpacing:2 }}>AI</div>
           </div>
         </div>
@@ -602,13 +575,13 @@ export default function AIAssistant() {
         <div style={{ position:"fixed", bottom:88, right:20, width:340, height:520, background:"#0a0a0a", border:"1px solid "+color+"44", borderRadius:16, boxShadow:"0 8px 40px rgba(0,0,0,0.7)", zIndex:999, display:"flex", flexDirection:"column", overflow:"hidden" }}>
           <div style={{ background:"linear-gradient(135deg,"+color+","+color+"cc)", padding:"0.9rem 1rem", display:"flex", alignItems:"center", justifyContent:"space-between", flexShrink:0 }}>
             <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-              <div style={{ width:32, height:32, borderRadius:"50%", background:"rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, color:"#fff" }}>✦</div>
+              <div style={{ width:32, height:32, borderRadius:"50%", background:"rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, color:"#fff" }}>Γ£ª</div>
               <div>
                 <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:800, color:"#fff" }}>CCC Assistant</div>
                 <div style={{ fontSize:10, color:"rgba(255,255,255,0.75)" }}>AI-powered car care help</div>
               </div>
             </div>
-            <button onClick={()=>setOpen(false)} style={{ background:"none", border:"none", color:"#fff", fontSize:20, cursor:"pointer", opacity:0.8, lineHeight:1 }}>×</button>
+            <button onClick={()=>setOpen(false)} style={{ background:"none", border:"none", color:"#fff", fontSize:20, cursor:"pointer", opacity:0.8, lineHeight:1 }}>├ù</button>
           </div>
 
           <div style={{ flex:1, overflowY:"auto", padding:"0.9rem", display:"flex", flexDirection:"column", gap:8 }}>
@@ -621,7 +594,7 @@ export default function AIAssistant() {
             ))}
             {loading&&(
               <div style={{ display:"flex" }}>
-                <div style={{ padding:"10px 14px", borderRadius:"14px 14px 14px 4px", background:"#1a1a1a", color:"#555", fontSize:18, letterSpacing:4 }}>•••</div>
+                <div style={{ padding:"10px 14px", borderRadius:"14px 14px 14px 4px", background:"#1a1a1a", color:"#555", fontSize:18, letterSpacing:4 }}>ΓÇóΓÇóΓÇó</div>
               </div>
             )}
             {messages.length<=1&&!loading&&(
@@ -644,7 +617,7 @@ export default function AIAssistant() {
               style={{ flex:1, background:"#0f0f0f", border:"1px solid #222", borderRadius:10, padding:"9px 12px", color:"#f0ede6", fontSize:12, outline:"none" }}/>
             <button type="submit" disabled={!input.trim()||loading}
               style={{ background:input.trim()&&!loading?color:"#222", border:"none", borderRadius:10, color:input.trim()&&!loading?"#fff":"#555", fontSize:16, padding:"0 14px", cursor:input.trim()&&!loading?"pointer":"default" }}>
-              ➤
+              Γ₧ñ
             </button>
           </form>
         </div>
@@ -652,7 +625,6 @@ export default function AIAssistant() {
     </>
   )
 }
-
 
 
 
