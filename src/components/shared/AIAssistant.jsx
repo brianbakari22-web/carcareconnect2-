@@ -507,7 +507,7 @@ export default function AIAssistant() {
   useEffect(() => {
     if (open && !greeted) {
       const greeting = role==="provider"
-      ? (PROVIDER_GREETINGS[providerType]||PROVIDER_GREETINGS.garage)
+      ? (PROVIDER_GREETINGS[profile?.provider_type||"garage"]||PROVIDER_GREETINGS.garage)
       : (GREETINGS[role]||GREETINGS.customer)
     setMessages([{ role:"assistant", content:greeting }])
       setGreeted(true)
@@ -625,6 +625,7 @@ export default function AIAssistant() {
     </>
   )
 }
+
 
 
 
