@@ -126,7 +126,7 @@ export default function ProviderDashboard() {
           <div style={{ fontSize:13, color:"#378add", fontWeight:600 }}>
             You earn {COMMISSION_RATES[profile?.provider_type||"garage"] || COMMISSION_RATES["garage"]?.provider||90}% · Platform takes {COMMISSION_RATES[profile?.provider_type||"garage"] || COMMISSION_RATES["garage"]?.platform||10}%
           </div>
-        </div>
+            You earn {(COMMISSION_RATES[profile?.provider_type||"garage"] || COMMISSION_RATES["garage"])?.provider||90}% · Platform takes {(COMMISSION_RATES[profile?.provider_type||"garage"] || COMMISSION_RATES["garage"])?.platform||10}%
         <div style={{ fontSize:11, color:"#444" }}>
           {profile?.provider_type==="parts_dealer"?"Lowest platform rate for parts dealers 🎉":
            profile?.provider_type==="accessories_shop"?"8% platform rate for accessories":
