@@ -168,7 +168,36 @@ export default function Layout({ children }) {
       .subscribe()
     return () => supabase.removeChannel(sub)
   }, [user?.id])
-  const nav = NAV[role] || []
+  const providerType = profile?.provider_type || "garage"
+  const isInventoryProvider = ["parts_dealer","accessories_shop","tyre_shop"].includes(providerType)
+  const isServiceProvider = ["garage","garage_premium","auto_electrician","car_wash","panel_beater","auto_glass"].includes(providerType)
+
+  // Build dynamic nav based on provider type
+  const providerNav = [
+    { path:"/dashboard", key:"overview", icon:"🏠" },
+    ...(isServiceProvider ? [
+      { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
+      { path:"/dashboard/services", key:"myServices", icon:"🔧" },
+      { path:"/dashboard/mechanics", label:"My Mechanics", icon:"👨‍🔧" },
+      { path:"/dashboard/go-requests", label:"GO Requests", icon:"🚨" },
+    ] : []),
+    ...(isInventoryProvider ? [
+      { path:"/dashboard/inventory", label:"Inventory", icon:"📦" },
+      { path:"/dashboard/orders", label:"Orders", icon:"🛒" },
+    ] : []),
+    { path:"/dashboard/earnings", key:"earnings", icon:"💰" },
+    { path:"/dashboard/analytics", label:"Analytics", icon:"📊" },
+    { path:"/dashboard/reviews", key:"reviews", icon:"⭐" },
+    { path:"/dashboard/availability", label:"Availability", icon:"🗓️" },
+    { path:"/dashboard/business-hours", label:"Business Hours", icon:"🕐" },
+    { path:"/dashboard/payouts", label:"Payouts", icon:"🏦" },
+    { path:"/dashboard/claims", label:"Service Claims", icon:"🛡️" },
+    { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
+    { path:"/dashboard/chat", key:"messages", icon:"✉️" },
+    { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
+  ]
+
+  const nav = role === "provider" ? providerNav : (NAV[role] || [])
   const bottomNav = BOTTOM_NAV[role] || []
   const initials = `${profile?.first_name?.[0]||""}${profile?.last_name?.[0]||""}`.toUpperCase()
 
@@ -378,6 +407,7 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 
 
