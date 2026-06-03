@@ -81,12 +81,16 @@ export default function AdminDashboard() {
       { data: driverStatus },
       { data: recentBookings },
       { data: recentUsers },
+    { data: recentOrders },
+      { data: inventoryItems },
     ] = await Promise.all([
       supabase.from("profiles").select("role,created_at,is_active"),
       supabase.from("bookings").select("status,total_amount,created_at,booking_date,service_name,customer_id"),
       supabase.from("driver_status").select("is_online").eq("is_online", true),
       supabase.from("bookings").select("id,service_name,status,total_amount,created_at").order("created_at",{ascending:false}).limit(8),
       supabase.from("profiles").select("id,first_name,last_name,role,created_at").order("created_at",{ascending:false}).limit(5),
+      supabase.from("orders").select("id,status,subtotal,created_at").order("created_at",{ascending:false}).limit(5),
+      supabase.from("inventory").select("id,is_active,stock_quantity").eq("is_active",true),
     ])
 
     const ps = profiles||[]
@@ -104,6 +108,9 @@ export default function AdminDashboard() {
       completed: completed.length,
     })
     setOnlineDrivers(driverStatus?.length||0)
+    const pendingOrders = (recentOrders||[]).filter(o=>o.status==="pending").length
+    const lowStock = (inventoryItems||[]).filter(i=>i.stock_quantity<=5).length
+    setStats(s=>({...s, pendingOrders, lowStock, inventoryItems:(inventoryItems||[]).length }))
 
     const feed = [
       ...(recentBookings||[]).map(b=>({ type:"booking", text:`Booking: ${b.service_name}`, sub:b.status, time:b.created_at, tag:b.status==="completed"?"Completed":b.status==="cancelled"?"Cancelled":"Pending", icon:"📅" })),
@@ -143,6 +150,24 @@ export default function AdminDashboard() {
 
   return (
     <div>
+      {/* QUICK ACTIONS */}
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))", gap:8, marginBottom:"1.25rem" }}>
+        {[
+          { icon:"👥", label:"Users", path:"/admin-dashboard/users", color:"#378add", value:stats.users },
+          { icon:"📅", label:"Bookings", path:"/admin-dashboard/bookings", color:"#e6821e", value:stats.bookings },
+          { icon:"🛒", label:"Orders", path:"/admin-dashboard/orders", color:"#8b5cf6", value:stats.pendingOrders||0 },
+          { icon:"📦", label:"Inventory", path:"/admin-dashboard/inventory", color:"#1d9e75", value:stats.inventoryItems||0 },
+          { icon:"💰", label:"Revenue", path:"/admin-dashboard/revenue", color:"#e6821e", value:"KES "+(stats.revenue||0).toLocaleString() },
+          { icon:"🔬", label:"Diagnostics", path:"/admin-dashboard/diagnostics", color:"#e24b4a", value:"Check" },
+        ].map(a=>(
+          <a key={a.path} href={a.path} style={{ background:"#111", border:`1px solid ${a.color}30`, borderRadius:10, padding:"0.75rem", textDecoration:"none", textAlign:"center", display:"block" }}>
+            <div style={{ fontSize:22, marginBottom:4 }}>{a.icon}</div>
+            <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:800, color:a.color }}>{a.value}</div>
+            <div style={{ fontSize:10, color:"#555", marginTop:2 }}>{a.label}</div>
+          </a>
+        ))}
+      </div>
+
       {/* Hero Banner */}
       <div style={{ position:"relative", background:"#0f0f0f", border:"1px solid #1e1e1e", borderRadius:isMobile?10:16, overflow:"hidden", marginBottom:"1rem" }}>
         <NetworkCanvas />
@@ -285,6 +310,8 @@ export default function AdminDashboard() {
     </div>
   )
 }
+
+
 
 
 
