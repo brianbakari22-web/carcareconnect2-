@@ -133,7 +133,7 @@ export default function ProviderProfile() {
           <div style={{ fontSize:12, color:"#555", marginTop:2 }}>
             Provider · {profile?.city||"Location not set"}
             {profile?.provider_type&&<span style={{ marginLeft:6, fontSize:10, color:"#378add", background:"#0c1f2e", padding:"1px 7px", borderRadius:10 }}>
-              {PROVIDER_TYPES.find(p=>p.key===profile.provider_type)?.icon} {profile?.provider_type?.replace(/_/g," ")}
+            {PROVIDER_TYPES.find(p=>p.key===profile?.provider_type)?.icon} {profile?.provider_type?.replace(/_/g," ")}
             </span>}
           </div>
         </div>
