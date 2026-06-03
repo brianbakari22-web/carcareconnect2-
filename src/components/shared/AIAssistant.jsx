@@ -4,11 +4,13 @@ import { useAuth } from "../../contexts/AuthContext"
 const ROLE_COLORS = { customer:"#e6821e", provider:"#378add", driver:"#1d9e75", admin:"#8b5cf6" }
 
 const PLATFORM_KNOWLEDGE = `
-CAR CARE CONNECT PLATFORM - COMPLETE KNOWLEDGE BASE
+CAR CARE CONNECT PLATFORM - COMPLETE KNOWLEDGE BASE (Updated June 2026)
 
 ABOUT THE PLATFORM:
 Car Care Connect (CCC) is a full-stack automotive service platform based in Nairobi, Kenya.
 Website: carcareconnect.care
+Admin panel: carcareconnect.care/ccc-admin-x7k9m2p4q8
+System diagnostics: carcareconnect.care/admin-dashboard/diagnostics
 Contact: carcareconnect254@gmail.com | 0113858966
 Privacy Policy: carcareconnect.care/privacy
 Terms of Service: carcareconnect.care/terms
@@ -625,6 +627,7 @@ export default function AIAssistant() {
     </>
   )
 }
+
 
 
 
