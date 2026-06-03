@@ -15,7 +15,7 @@ import { Toaster } from "react-hot-toast"
 import { AuthProvider, useAuth } from "./contexts/AuthContext"
 import { LanguageProvider } from "./contexts/LanguageContext"
 import { ThemeProvider } from "./contexts/ThemeContext"
-import { supabase } from "./lib/supabase"
+
 import AuthPage from "./components/auth/AuthPage"
 import LandingPage from "./components/landing/LandingPage"
 
