@@ -109,7 +109,7 @@ export default function AuthPage() {
         } else {
           window.location.href = "/dashboard"
         }
-        return
+        return // navigation handled above
 
 
         checkProfile()
