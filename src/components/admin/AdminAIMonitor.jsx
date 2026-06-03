@@ -6,6 +6,8 @@ export default function AdminAIMonitor() {
   const [report, setReport] = useState(null)
   const [codeScan, setCodeScan] = useState(null)
   const [scanning, setScanning] = useState(false)
+  const [codeScan, setCodeScan] = useState(null)
+  const [scanning, setScanning] = useState(false)
   const [loading, setLoading] = useState(true)
   const [open, setOpen] = useState(true)
   const [chatInput, setChatInput] = useState("")
@@ -510,11 +512,36 @@ Be specific and actionable. Max 300 words. Use bullet points.`
               </div>
             </>
           )}
+      {/* CODE DIAGNOSTICS */}
+      <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", marginTop:"1.25rem" }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#f0ede6" }}>🔍 Code Diagnostics</div>
+          <button onClick={scanCode} disabled={scanning}
+            style={{ background:scanning?"#333":"#8b5cf6", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:600, padding:"6px 14px", cursor:scanning?"not-allowed":"pointer" }}>
+            {scanning?"Scanning...":"Scan source code"}
+          </button>
+        </div>
+        {!codeScan&&<div style={{ fontSize:12, color:"#555" }}>Click scan to check source files for common React errors.</div>}
+        {codeScan&&(
+          <div>
+            <div style={{ fontSize:11, color:"#555", marginBottom:8 }}>Scanned {codeScan.filesScanned} files · {codeScan.scannedAt}</div>
+            {codeScan.issues.length===0&&<div style={{ fontSize:12, color:"#1d9e75" }}>✅ No issues found!</div>}
+            {codeScan.issues.map((issue,i)=>(
+              <div key={i} style={{ background:"#1a0808", border:"1px solid #e24b4a30", borderRadius:8, padding:"0.75rem", marginBottom:6 }}>
+                <div style={{ fontSize:11, color:"#e24b4a", fontWeight:600, marginBottom:2 }}>⚠️ {issue.file} — Line {issue.line}</div>
+                <div style={{ fontSize:11, color:"#888", marginBottom:4, fontFamily:"monospace" }}>{issue.code}</div>
+                <div style={{ fontSize:11, color:"#555" }}>{issue.issue}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
         </div>
       )}
     </div>
   )
 }
+
 
 
 
