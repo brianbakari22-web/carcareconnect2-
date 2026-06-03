@@ -458,14 +458,40 @@ FOR ADMINS specifically:
 
 const GREETINGS = {
   customer: "Hi! I am your Car Care Connect AI assistant. I can help with car problems, booking services, loyalty points, marketplace, and anything about our platform. What can I help you with?",
-  provider: "Hello! I am your CCC business assistant. I can help with commissions, service management, GO Service, payouts, and platform policies. How can I assist?",
+  provider: (()=>{
+    const pt = typeof window !== "undefined" ? localStorage.getItem("ccc_provider_type")||"garage" : "garage"
+    const greetings = {
+      garage: "Hello! I am your CCC Garage assistant. I can help with bookings, mechanic management, GO Service requests, commissions and payouts. How can I assist?",
+      garage_premium: "Hello! I am your CCC Mobile Mechanic assistant. I can help with customer bookings, travel to customer, commissions and payouts. How can I assist?",
+      parts_dealer: "Hello! I am your CCC Parts Dealer assistant. I can help with inventory management, order fulfillment, stock alerts, delivery and your 95% earnings rate. How can I assist?",
+      accessories_shop: "Hello! I am your CCC Accessories Shop assistant. I can help with inventory, orders, delivery management and your 92% earnings rate. How can I assist?",
+      tyre_shop: "Hello! I am your CCC Tyre Shop assistant. I can help with tyre inventory, fitting appointments, orders and your 94% earnings rate. How can I assist?",
+      auto_electrician: "Hello! I am your CCC Auto Electrician assistant. I can help with bookings, electrical service management and your 88% earnings rate. How can I assist?",
+      car_wash: "Hello! I am your CCC Car Wash assistant. I can help with booking schedules, wash management and your 90% earnings rate. How can I assist?",
+      panel_beater: "Hello! I am your CCC Panel Beater assistant. I can help with bodywork bookings, job tracking and your 85% earnings rate. How can I assist?",
+      auto_glass: "Hello! I am your CCC Auto Glass assistant. I can help with windscreen bookings, glass inventory and your 88% earnings rate. How can I assist?",
+    }
+    return greetings[pt] || greetings.garage
+  })(),
   driver: "Hey! I am your CCC driver assistant. I can help with earnings, document verification, delivery procedures, and platform rules. What do you need?",
   admin: "Hello Admin! I have complete knowledge of the Car Care Connect platform including all policies, features, and procedures. How can I help?"
 }
 
 const QUICK = {
   customer: ["My car wont start", "How do I book a service?", "How does Service Guarantee work?", "How do I earn loyalty points?"],
-  provider: ["How does commission work?", "Service Guarantee policy?", "How do I get paid?", "How do GO requests work?"],
+  provider: (()=>{
+    const pt = typeof window !== "undefined" ? localStorage.getItem("ccc_provider_type")||"garage" : "garage"
+    const questions = {
+      parts_dealer: ["How do I add inventory?", "How do I fulfill an order?", "What is my commission rate?", "How does delivery work?"],
+      accessories_shop: ["How do I add inventory?", "How do I fulfill an order?", "What is my commission rate?", "How does delivery work?"],
+      tyre_shop: ["How do I add tyre inventory?", "How do fitting appointments work?", "What is my commission rate?", "How do I manage orders?"],
+      car_wash: ["How do I manage bookings?", "How does scheduling work?", "What is my commission rate?", "How do I get paid?"],
+      panel_beater: ["How do I manage bodywork jobs?", "Service Guarantee policy?", "What is my commission rate?", "How do I get paid?"],
+      auto_electrician: ["How do I manage bookings?", "Service Guarantee policy?", "What is my commission rate?", "How do I get paid?"],
+      auto_glass: ["How do I manage bookings?", "How do I add glass inventory?", "What is my commission rate?", "How do I get paid?"],
+    }
+    return questions[pt] || ["How does commission work?", "Service Guarantee policy?", "How do I get paid?", "How do GO requests work?"]
+  })(),
   driver: ["What documents do I need?", "How are earnings calculated?", "What is a no-show penalty?", "How do I complete a delivery?"],
   admin: ["Commission structure?", "Service Guarantee policy?", "Driver verification process?", "Scan for code errors"]
 }
@@ -481,6 +507,10 @@ export default function AIAssistant() {
   const inputRef = useRef(null)
 
   const role = profile?.role || "customer"
+  const providerType = profile?.provider_type || "garage"
+  if (role === "provider" && typeof window !== "undefined") {
+    localStorage.setItem("ccc_provider_type", providerType)
+  }
   const color = ROLE_COLORS[role] || "#e6821e"
 
   useEffect(() => {
@@ -601,6 +631,7 @@ export default function AIAssistant() {
     </>
   )
 }
+
 
 
 
