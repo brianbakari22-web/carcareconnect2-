@@ -81,7 +81,7 @@ export default function LandingPage() {
       </nav>
 
       {/* HERO */}
-      <div style={{ minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", textAlign:"center", padding:"7rem 1.5rem 4rem", position:"relative", overflow:"hidden" }}>
+      <div style={{ minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", textAlign:"center", padding:"5rem 1rem 3rem", position:"relative", overflow:"hidden" }}>
         <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse at 50% 40%, #e6821e12 0%, #1d9e7504 50%, transparent 70%)", pointerEvents:"none", zIndex:1 }}/>
         <div style={{ position:"relative", maxWidth:820, zIndex:1 }}>
           <img src="/logo.svg" alt="Car Care Connect" style={{ height:130, marginBottom:"2rem", animation:"glow 3s ease-in-out infinite" }}/>
@@ -108,7 +108,7 @@ export default function LandingPage() {
               Sign in →
             </button>
           </div>
-          <div style={{ display:"flex", gap:16, justifyContent:"center", flexWrap:"wrap", marginBottom:"2rem" }}>
+          <div style={{ display:"flex", gap:8, justifyContent:"center", flexWrap:"wrap", marginBottom:"1.5rem" }}>
             {[["24/7","Emergency service"],["5min","Avg response"],["100%","Verified providers"],["🇰🇪","Made in Kenya"]].map(([v,l])=>(
               <div key={l} style={{ textAlign:"center", padding:"0.6rem 1rem", background:"#141414", borderRadius:10, border:"1px solid #1e1e1e" }}>
                 <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#e6821e" }}>{v}</div>
@@ -337,7 +337,7 @@ export default function LandingPage() {
       {/* PARTS MARKETPLACE */}
       <div style={{ position:"relative", zIndex:1, maxWidth:1000, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
         <div style={{ background:"linear-gradient(135deg,#141414,#1a1a1a)", border:"1px solid #1e1e1e", borderRadius:20, padding:"2.5rem 2rem" }}>
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"3rem", alignItems:"center" }}>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr", gap:"2rem", alignItems:"center" }}>
             <div>
               <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#e6821e", marginBottom:8 }}>Parts marketplace</div>
               <h2 style={{ fontFamily:"Syne", fontSize:"clamp(22px,3vw,32px)", fontWeight:800, marginBottom:12 }}>Order parts online. Delivered to your door.</h2>
@@ -352,7 +352,7 @@ export default function LandingPage() {
                 Browse parts →
               </button>
             </div>
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:10 }}>
               {[
                 { icon:"🏪", title:"Pickup", desc:"Collect from shop" },
                 { icon:"🚚", title:"Delivery", desc:"CCC riders deliver" },
@@ -405,6 +405,8 @@ export default function LandingPage() {
     </div>
   )
 }
+
+
 
 
 
