@@ -10,6 +10,8 @@ export default function AdminAIMonitor() {
 
   const [loading, setLoading] = useState(true)
   const [open, setOpen] = useState(true)
+  const [errorLogs, setErrorLogs] = useState([])
+  const [loadingErrors, setLoadingErrors] = useState(false)
   const [chatInput, setChatInput] = useState("")
   const [chatMessages, setChatMessages] = useState([])
   const [chatLoading, setChatLoading] = useState(false)
@@ -32,6 +34,22 @@ export default function AdminAIMonitor() {
     await supabase.from("error_logs").delete().neq("id","00000000-0000-0000-0000-000000000000")
     setErrorLogs([])
     toast.success("Error logs cleared")
+  }
+
+  async function loadErrorLogs() {
+    setLoadingErrors(true)
+    try {
+      const { data } = await supabase.from("error_logs")
+        .select("*").order("created_at",{ascending:false}).limit(30)
+      setErrorLogs(data||[])
+    } catch(e) { console.error(e) }
+    finally { setLoadingErrors(false) }
+  }
+
+  async function clearErrorLogs() {
+    await supabase.from("error_logs").delete().neq("id","00000000-0000-0000-0000-000000000000")
+    setErrorLogs([])
+    toast.success("Logs cleared")
   }
 
   async function scanCode() {
@@ -615,6 +633,35 @@ Be specific and actionable. Max 300 words. Use bullet points.`
 
 
 
+
+
+      {/* LIVE ERROR TRACKER */}
+      <div style={{ background:"#111", border:"1px solid #e24b4a30", borderRadius:12, padding:"1.25rem", marginTop:"1.25rem" }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#e24b4a" }}>🔴 Live Error Tracker</div>
+          <div style={{ display:"flex", gap:8 }}>
+            <button onClick={loadErrorLogs} disabled={loadingErrors}
+              style={{ background:"#e24b4a", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:600, padding:"5px 12px", cursor:"pointer" }}>
+              {loadingErrors?"Loading...":"Refresh errors"}
+            </button>
+            {errorLogs.length>0&&<button onClick={clearErrorLogs}
+              style={{ background:"#333", border:"none", borderRadius:8, color:"#888", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+              Clear
+            </button>}
+          </div>
+        </div>
+        {errorLogs.length===0&&<div style={{ fontSize:12, color:"#555" }}>No errors logged yet. Click Refresh after reproducing an error.</div>}
+        {errorLogs.map((e,i)=>(
+          <div key={e.id||i} style={{ background:"#1a0808", border:"1px solid #e24b4a20", borderRadius:8, padding:"0.75rem", marginBottom:6 }}>
+            <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4, flexWrap:"wrap", gap:4 }}>
+              <span style={{ fontSize:10, color:"#e24b4a", fontWeight:600 }}>{e.user_role}{e.provider_type?" ("+e.provider_type+")":""} · {e.page_url}</span>
+              <span style={{ fontSize:10, color:"#444" }}>{new Date(e.created_at).toLocaleTimeString()}</span>
+            </div>
+            <div style={{ fontSize:11, color:"#f0ede6", marginBottom:2, fontFamily:"monospace", wordBreak:"break-all" }}>{e.error_message}</div>
+            <div style={{ fontSize:10, color:"#555" }}>{e.error_source} · line {e.error_line}:{e.error_col}</div>
+          </div>
+        ))}
+      </div>
 
 
 
