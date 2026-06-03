@@ -606,35 +606,6 @@ Be specific and actionable. Max 300 words. Use bullet points.`
       </div>
         </div>
       )}
-    </div>
-  )
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       {/* LIVE ERROR TRACKER */}
       <div style={{ background:"#111", border:"1px solid #e24b4a30", borderRadius:12, padding:"1.25rem", marginTop:"1.25rem" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
@@ -662,6 +633,7 @@ Be specific and actionable. Max 300 words. Use bullet points.`
           </div>
         ))}
       </div>
-
-
+    </div>
+  )
+}
 
