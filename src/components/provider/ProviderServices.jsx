@@ -41,7 +41,9 @@ const CATEGORIES = [
 const EMPTY = { name:"", description:"", price:"", duration_minutes:"", category:"shop_standard" }
 
 export default function ProviderServices() {
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
+  const providerType = profile?.provider_type || "garage"
+  const isInventoryProvider = ["parts_dealer","accessories_shop","tyre_shop"].includes(providerType)
   const { t } = useLanguage()
   const isMobile = useIsMobile()
   const [services, setServices] = useState([])
@@ -130,6 +132,27 @@ export default function ProviderServices() {
   const filtered = activeCategory==="all" ? services : services.filter(s=>s.category===activeCategory)
   const inp = { width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"11px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }
   const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
+
+  if (isInventoryProvider) return (
+    <div style={{ textAlign:"center", padding:"3rem 1rem" }}>
+      <div style={{ fontSize:48, marginBottom:16 }}>📦</div>
+      <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#f0ede6", marginBottom:8 }}>
+        {providerType==="parts_dealer"?"Parts Dealer":providerType==="tyre_shop"?"Tyre Shop":"Accessories Shop"}
+      </div>
+      <div style={{ fontSize:13, color:"#555", marginBottom:"1.5rem", lineHeight:1.7 }}>
+        As a {providerType.replace(/_/g," ")}, you manage your products through Inventory, not services.
+        Customers browse and order your items from the Parts Marketplace.
+      </div>
+      <div style={{ display:"flex", gap:10, justifyContent:"center", flexWrap:"wrap" }}>
+        <a href="/dashboard/inventory" style={{ background:"#8b5cf6", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", textDecoration:"none" }}>
+          📦 Go to Inventory
+        </a>
+        <a href="/dashboard/orders" style={{ background:"#111", border:"1px solid #333", borderRadius:10, color:"#888", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", textDecoration:"none" }}>
+          🛒 View Orders
+        </a>
+      </div>
+    </div>
+  )
 
   return (
     <div>
@@ -285,3 +308,4 @@ export default function ProviderServices() {
     </div>
   )
 }
+
