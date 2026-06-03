@@ -377,6 +377,34 @@ FOR CUSTOMERS specifically:
 ${PLATFORM_KNOWLEDGE}
 
 FOR PROVIDERS specifically:
+
+PROVIDER TYPES AND THEIR FOCUS:
+- Garage/Mechanic: manages bookings, confirms/starts/completes services, assigns mechanics, handles GO Service requests, earns 90% commission
+- Mobile Mechanic: travels to customer, premium service, earns 80% commission
+- Parts Dealer: manages inventory (add/edit/delete items), confirms orders, packs and dispatches, earns 95% commission (lowest platform rate)
+- Accessories Shop: manages accessories inventory, confirms orders, earns 92% commission
+- Tyre Shop: manages tyre inventory + fitting appointments, earns 94% commission
+- Auto Electrician: manages electrical service bookings, earns 88% commission
+- Car Wash: manages wash/detailing bookings and schedule, earns 90% commission
+- Panel Beater: manages bodywork/spray paint bookings, earns 85% commission
+- Auto Glass: manages windscreen/glass bookings, earns 88% commission
+
+INVENTORY MANAGEMENT (Parts Dealer, Accessories Shop, Tyre Shop):
+- Add items at /dashboard/inventory
+- Categories: parts, accessories, tyres, oils, electrical, body, tools
+- Set price, stock quantity, unit, brand, compatible cars
+- Low stock alert at 5 or fewer items
+- Orders come in at /dashboard/orders
+- Order flow: pending → confirmed → processing → ready → delivered
+- Customers can choose pickup or delivery
+- CCC drivers handle delivery
+
+SERVICE MANAGEMENT (Garage, Car Wash, Auto Electrician etc):
+- Add services at /dashboard/services
+- Booking flow: pending → confirmed → in-progress → completed
+- Assign mechanics at /dashboard/mechanics
+- GO Service requests at /dashboard/go-requests
+- Business hours at /dashboard/business-hours
 - Explain commission structure and earnings
 - Guide through adding and managing services
 - Explain Service Guarantee policy and consequences
@@ -573,6 +601,7 @@ export default function AIAssistant() {
     </>
   )
 }
+
 
 
 
