@@ -255,7 +255,7 @@ export default function Layout({ children }) {
 
       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0.75rem 1rem", borderBottom:`1px solid ${theme.border}`, background:theme.bgSecondary, position:"sticky", top:0, zIndex:50 }}>
         <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:theme.text }}>
-          {role==="provider"?(providerTypeColors[providerType]?["🔧","🚗","⚙️","✨","🛞","⚡","🚿","🔨","🪟"][["garage","garage_premium","parts_dealer","accessories_shop","tyre_shop","auto_electrician","car_wash","panel_beater","auto_glass"].indexOf(providerType)]||"🔧":"🔧"):role==="customer"?"🚗":role==="driver"?"🚙":"⚡"} Car<span style={{ color:activeColor }}>Care</span>
+          {{"garage":"🔧","garage_premium":"🚗","parts_dealer":"⚙️","accessories_shop":"✨","tyre_shop":"🛞","auto_electrician":"⚡","car_wash":"🚿","panel_beater":"🔨","auto_glass":"🪟"}[providerType]||"🚗"} Car<span style={{ color:activeColor }}>Care</span>
         </div>
         <div style={{ display:"flex", alignItems:"center", gap:10 }}>
           <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:theme.textMuted }}>
@@ -431,6 +431,7 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 
 
