@@ -68,23 +68,24 @@ export function AuthProvider({ children }) {
 
   async function fetchProfile(userId, retries=0) {
     try {
+      console.log("fetchProfile attempt", retries, userId)
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
         .eq("id", userId)
         .maybeSingle()
+      console.log("fetchProfile result", data, error)
       if (error) throw error
       if (data) {
         setProfile(data)
         setLoading(false)
       } else if (retries < 10) {
-        // Profile not created yet - retry
         setTimeout(() => fetchProfile(userId, retries+1), 500)
       } else {
         setLoading(false)
       }
     } catch (err) {
-      console.error("fetchProfile error:", err)
+      console.error("fetchProfile error:", err.message, err.code)
       if (retries < 5) {
         setTimeout(() => fetchProfile(userId, retries+1), 1000)
       } else {
@@ -166,5 +167,6 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   )
 }
+
 
 
