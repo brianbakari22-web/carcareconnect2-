@@ -100,18 +100,18 @@ export default function AuthPage() {
       if (mode === "signin") {
         const { data, error } = await supabase.auth.signInWithPassword({ email: form.email, password: form.password })
         if (error) throw error
-        // Wait for profile to load before navigating
-        let tries = 0
-        const checkProfile = async () => {
-          const { data: prof } = await supabase.from("profiles").select("role").eq("id", data.user.id).single()
-          if (prof?.role) {
-            navigate("/dashboard")
-          } else if (tries++ < 15) {
-            setTimeout(checkProfile, 300)
-          } else {
-            navigate("/dashboard")
-          }
+        // Navigate after successful signin
+        setLoading(false)
+        toast.success("Signed in successfully!")
+        const { data: prof } = await supabase.from("profiles").select("role").eq("id", data.user.id).maybeSingle()
+        if (prof?.role === "admin") {
+          window.location.href = "/ccc-admin-x7k9m2p4q8"
+        } else {
+          window.location.href = "/dashboard"
         }
+        return
+
+
         checkProfile()
       } else {
         await signUp({
