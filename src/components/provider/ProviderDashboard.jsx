@@ -198,7 +198,7 @@ export default function ProviderDashboard() {
 
       {/* STATS — different per type */}
       {isInventoryFocus ? (
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:10, marginBottom:"1.5rem" }}>
+        <div style={{ display:"grid", gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)", gap:10, marginBottom:"1.5rem" }}>
           {[
             { label:"Pending orders", value:orderStats.pending, color:orderStats.pending>0?"#e6821e":"#555" },
             { label:"Inventory items", value:orderStats.items, color:"#378add" },
@@ -212,7 +212,7 @@ export default function ProviderDashboard() {
           ))}
         </div>
       ) : (
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:10, marginBottom:"1.5rem" }}>
+        <div style={{ display:"grid", gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)", gap:10, marginBottom:"1.5rem" }}>
           {[
             { label:t("pending"), value:bookingStats.pending, color:"#e6821e" },
             { label:"Confirmed", value:bookingStats.confirmed, color:"#378add" },
@@ -363,3 +363,4 @@ export default function ProviderDashboard() {
     </div>
   )
 }
+
