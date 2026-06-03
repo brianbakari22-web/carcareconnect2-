@@ -124,7 +124,7 @@ export default function ProviderDashboard() {
         <div>
           <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>Your commission rate · {(profile?.provider_type||"garage").replace(/_/g," ")}</div>
           <div style={{ fontSize:13, color:"#378add", fontWeight:600 }}>
-            You earn {COMMISSION_RATES[profile?.provider_type||"garage"]?.provider||90}% · Platform takes {COMMISSION_RATES[profile?.provider_type||"garage"]?.platform||10}%
+            You earn {COMMISSION_RATES[profile?.provider_type||"garage"] || COMMISSION_RATES["garage"]?.provider||90}% · Platform takes {COMMISSION_RATES[profile?.provider_type||"garage"] || COMMISSION_RATES["garage"]?.platform||10}%
           </div>
         </div>
         <div style={{ fontSize:11, color:"#444" }}>
@@ -211,5 +211,6 @@ export default function ProviderDashboard() {
     </div>
   )
 }
+
 
 
