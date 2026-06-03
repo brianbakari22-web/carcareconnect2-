@@ -560,12 +560,12 @@ export default function AIAssistant() {
         <div onClick={()=>setOpen(true)} style={{ position:"fixed", bottom:88, right:20, zIndex:999, cursor:"pointer", width:56, height:56 }}>
           <div style={{ position:"absolute", inset:-6, borderRadius:"50%", border:"2px solid "+color, animation:"ai-pulse 2s ease-out infinite" }}/>
           <div style={{ position:"absolute", inset:-6, borderRadius:"50%", border:"2px solid "+color, animation:"ai-pulse 2s ease-out infinite 1s" }}/>
-          <div style={{ position:"absolute", top:-8, left:-4, fontSize:11, color:color, animation:"ai-spark1 2.5s ease-in-out infinite" }}>Γ£ª</div>
-          <div style={{ position:"absolute", top:-10, right:-2, fontSize:9, color:color, animation:"ai-spark2 2.5s ease-in-out infinite 0.8s" }}>Γ£ª</div>
-          <div style={{ position:"absolute", bottom:0, left:-10, fontSize:7, color:color, animation:"ai-spark3 2.5s ease-in-out infinite 1.4s" }}>Γ£ª</div>
-          <div style={{ position:"absolute", bottom:0, right:-8, fontSize:8, color:color, animation:"ai-spark4 2.5s ease-in-out infinite 0.4s" }}>Γ£ª</div>
+          <div style={{ position:"absolute", top:-8, left:-4, fontSize:11, color:color, animation:"ai-spark1 2.5s ease-in-out infinite" }}>✦</div>
+          <div style={{ position:"absolute", top:-10, right:-2, fontSize:9, color:color, animation:"ai-spark2 2.5s ease-in-out infinite 0.8s" }}>✦</div>
+          <div style={{ position:"absolute", bottom:0, left:-10, fontSize:7, color:color, animation:"ai-spark3 2.5s ease-in-out infinite 1.4s" }}>✦</div>
+          <div style={{ position:"absolute", bottom:0, right:-8, fontSize:8, color:color, animation:"ai-spark4 2.5s ease-in-out infinite 0.4s" }}>✦</div>
           <div style={{ width:56, height:56, borderRadius:"50%", background:"linear-gradient(135deg,"+color+","+color+"99)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", boxShadow:"0 4px 20px "+color+"60", animation:"ai-spin 8s linear infinite" }}>
-            <div style={{ fontSize:18, color:"#fff", animation:"ai-spin 8s linear infinite reverse" }}>Γ£ª</div>
+            <div style={{ fontSize:18, color:"#fff", animation:"ai-spin 8s linear infinite reverse" }}>✦</div>
             <div style={{ fontFamily:"Syne", fontSize:8, fontWeight:800, color:"#fff", letterSpacing:2 }}>AI</div>
           </div>
         </div>
@@ -575,13 +575,13 @@ export default function AIAssistant() {
         <div style={{ position:"fixed", bottom:88, right:20, width:340, height:520, background:"#0a0a0a", border:"1px solid "+color+"44", borderRadius:16, boxShadow:"0 8px 40px rgba(0,0,0,0.7)", zIndex:999, display:"flex", flexDirection:"column", overflow:"hidden" }}>
           <div style={{ background:"linear-gradient(135deg,"+color+","+color+"cc)", padding:"0.9rem 1rem", display:"flex", alignItems:"center", justifyContent:"space-between", flexShrink:0 }}>
             <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-              <div style={{ width:32, height:32, borderRadius:"50%", background:"rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, color:"#fff" }}>Γ£ª</div>
+              <div style={{ width:32, height:32, borderRadius:"50%", background:"rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, color:"#fff" }}>✦</div>
               <div>
                 <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:800, color:"#fff" }}>CCC Assistant</div>
                 <div style={{ fontSize:10, color:"rgba(255,255,255,0.75)" }}>AI-powered car care help</div>
               </div>
             </div>
-            <button onClick={()=>setOpen(false)} style={{ background:"none", border:"none", color:"#fff", fontSize:20, cursor:"pointer", opacity:0.8, lineHeight:1 }}>├ù</button>
+            <button onClick={()=>setOpen(false)} style={{ background:"none", border:"none", color:"#fff", fontSize:20, cursor:"pointer", opacity:0.8, lineHeight:1 }}>×</button>
           </div>
 
           <div style={{ flex:1, overflowY:"auto", padding:"0.9rem", display:"flex", flexDirection:"column", gap:8 }}>
@@ -625,6 +625,8 @@ export default function AIAssistant() {
     </>
   )
 }
+
+
 
 
 
