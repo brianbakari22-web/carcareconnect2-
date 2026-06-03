@@ -16,6 +16,24 @@ export default function AdminAIMonitor() {
 
   useEffect(() => { scanPlatform() }, [])
 
+  async function loadErrorLogs() {
+    setLoadingErrors(true)
+    try {
+      const { data } = await supabase.from("error_logs")
+        .select("*")
+        .order("created_at", { ascending:false })
+        .limit(20)
+      setErrorLogs(data||[])
+    } catch(e) { console.error(e) }
+    finally { setLoadingErrors(false) }
+  }
+
+  async function clearErrorLogs() {
+    await supabase.from("error_logs").delete().neq("id","00000000-0000-0000-0000-000000000000")
+    setErrorLogs([])
+    toast.success("Error logs cleared")
+  }
+
   async function scanCode() {
     setScanning(true)
     try {
@@ -573,6 +591,7 @@ Be specific and actionable. Max 300 words. Use bullet points.`
     </div>
   )
 }
+
 
 
 

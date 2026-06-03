@@ -175,3 +175,4 @@ to {
     pointer-events: auto;
   }
 `,$=16,Pe=({reverseOrder:e,position:t="top-center",toastOptions:a,gutter:s,children:o,toasterId:i,containerStyle:r,containerClassName:n})=>{let{toasts:l,handlers:u}=oe(a,i);return d.createElement("div",{"data-rht-toaster":i||"",style:{position:"fixed",zIndex:9999,top:$,left:$,right:$,bottom:$,pointerEvents:"none",...r},className:n,onMouseEnter:u.startPause,onMouseLeave:u.endPause},l.map(p=>{let c=p.position||t,m=u.calculateOffset(p,{reverseOrder:e,gutter:s,defaultPosition:t}),g=Ne(c,m);return d.createElement(ze,{id:p.id,key:p.id,onHeightUpdate:u.updateHeight,className:p.visible?Ae:"",style:g},p.type==="custom"?D(p.message,p):o?o(p):d.createElement(je,{toast:p,position:c}))}))},Te=f;export{Pe as F,Te as z};
+//# sourceMappingURL=ui-K-cxXfHU.js.map
