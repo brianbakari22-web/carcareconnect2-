@@ -9,7 +9,7 @@ export default defineConfig({
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
           supabase: ['@supabase/supabase-js'],
-          ui: ['react-hot-toast', 'react-leaflet'],
+          ui: ['react-hot-toast'],
         }
       }
     }
