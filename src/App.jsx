@@ -125,7 +125,7 @@ function AdminProtectedRoute({ children }) {
   const { user, profile, loading } = useAuth()
   if (loading || (user && !profile)) return <Loader text="Loading..." />
   if (!user) return <Navigate to={`/${ADMIN_SECRET}`} replace />
-  if (profile && profile.role !== "admin") return <Navigate to="/auth" replace />
+  if (profile && profile?.role !== "admin") return <Navigate to="/auth" replace />
   return children
 }
 
@@ -159,7 +159,7 @@ function Admin2FAGate({ children }) {
 function DashboardRouter() {
   const { profile, loading } = useAuth()
   if (loading || !profile) return <Loader text="Loading your dashboard..." />
-  const role = profile.role
+  const role = profile?.role
   if (role === "admin") return <Navigate to={`/${ADMIN_SECRET}`} replace />
   if (!["customer","provider","driver"].includes(role)) return <Loader text="Loading your dashboard..." />
 
@@ -306,6 +306,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 

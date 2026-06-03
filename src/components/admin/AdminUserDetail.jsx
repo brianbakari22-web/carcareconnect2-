@@ -97,22 +97,22 @@ export default function AdminUserDetail({ userId, onBack }) {
       {/* Profile header */}
       <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", marginBottom:"1.25rem" }}>
         <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:"1.25rem", flexWrap:"wrap" }}>
-          <div style={{ width:52, height:52, borderRadius:12, background:`${RC[profile.role]||"#333"}20`, border:`2px solid ${RC[profile.role]||"#333"}40`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:18, fontWeight:800, color:RC[profile.role]||"#888", flexShrink:0 }}>
-            {profile.first_name?.[0]}{profile.last_name?.[0]}
+          <div style={{ width:52, height:52, borderRadius:12, background:`${RC[profile?.role]||"#333"}20`, border:`2px solid ${RC[profile?.role]||"#333"}40`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:18, fontWeight:800, color:RC[profile?.role]||"#888", flexShrink:0 }}>
+            {profile?.first_name?.[0]}{profile?.last_name?.[0]}
           </div>
           <div style={{ flex:1, minWidth:0 }}>
             <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
-              <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#f0ede6" }}>{profile.business_name||`${profile.first_name} ${profile.last_name}`}</div>
-              {profile.business_name&&<div style={{ fontSize:12, color:"#666" }}>{profile.first_name} {profile.last_name}</div>}
-              <span style={{ fontSize:11, padding:"2px 8px", borderRadius:10, background:`${RC[profile.role]||"#333"}20`, color:RC[profile.role]||"#888" }}>{profile.role}</span>
-              {profile.is_verified&&<span style={{ fontSize:11, color:"#1d9e75" }}>✓ Verified</span>}
-              {!profile.is_active&&<span style={{ fontSize:11, color:"#e24b4a", background:"#1a0808", padding:"2px 8px", borderRadius:10 }}>Suspended</span>}
+              <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#f0ede6" }}>{profile?.business_name||`${profile?.first_name} ${profile?.last_name}`}</div>
+              {profile?.business_name&&<div style={{ fontSize:12, color:"#666" }}>{profile?.first_name} {profile?.last_name}</div>}
+              <span style={{ fontSize:11, padding:"2px 8px", borderRadius:10, background:`${RC[profile?.role]||"#333"}20`, color:RC[profile?.role]||"#888" }}>{profile?.role}</span>
+              {profile?.is_verified&&<span style={{ fontSize:11, color:"#1d9e75" }}>✓ Verified</span>}
+              {!profile?.is_active&&<span style={{ fontSize:11, color:"#e24b4a", background:"#1a0808", padding:"2px 8px", borderRadius:10 }}>Suspended</span>}
             </div>
             <div style={{ fontSize:11, color:"#555" }}>
               {sensitive?.email&&`${sensitive.email} · `}
               {sensitive?.phone&&`${sensitive.phone} · `}
-              {profile.city&&`${profile.city} · `}
-              Joined {new Date(profile.created_at).toLocaleDateString()}
+              {profile?.city&&`${profile?.city} · `}
+              Joined {new Date(profile?.created_at).toLocaleDateString()}
             </div>
           </div>
           <div style={{ display:"flex", gap:8, flexShrink:0, flexWrap:"wrap" }}>
@@ -154,14 +154,14 @@ export default function AdminUserDetail({ userId, onBack }) {
           <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>Profile info</div>
             {[
-              { label:"Role", value:profile.role },
+              { label:"Role", value:profile?.role },
               { label:"Email", value:sensitive?.email||"—" },
               { label:"Phone", value:sensitive?.phone||"—" },
-              { label:"City", value:profile.city||"—" },
+              { label:"City", value:profile?.city||"—" },
               { label:"Referral code", value:profile.referral_code||"—" },
-              { label:"Status", value:profile.is_active?"Active":"Suspended" },
-              { label:"Verified", value:profile.is_verified?"Yes":"No" },
-              { label:"Joined", value:new Date(profile.created_at).toLocaleDateString() },
+              { label:"Status", value:profile?.is_active?"Active":"Suspended" },
+              { label:"Verified", value:profile?.is_verified?"Yes":"No" },
+              { label:"Joined", value:new Date(profile?.created_at).toLocaleDateString() },
             ].map(f=>(
               <div key={f.label} style={{ display:"flex", justifyContent:"space-between", padding:"7px 0", borderBottom:"1px solid #1a1a1a", fontSize:12 }}>
                 <span style={{ color:"#555" }}>{f.label}</span>
@@ -284,3 +284,4 @@ export default function AdminUserDetail({ userId, onBack }) {
     </div>
   )
 }
+

@@ -51,7 +51,7 @@ export default function DriverChat() {
           bookingId: b.id,
           listingId: null,
           otherUserId: b.customer_id,
-          name: profile ? `${profile.first_name} ${profile.last_name}` : "Customer",
+          name: profile ? `${profile?.first_name} ${profile?.last_name}` : "Customer",
           subtitle: b.service_name,
           status: b.status,
           lastMessage: last?.message||"",
@@ -199,5 +199,6 @@ export default function DriverChat() {
     </div>
   )
 }
+
 
 
