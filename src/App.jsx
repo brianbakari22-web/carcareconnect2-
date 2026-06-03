@@ -1,5 +1,15 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import React, { useState, useEffect } from "react"
+
+// Global error handler to catch profile undefined
+if (typeof window !== "undefined") {
+  window.onerror = function(msg, src, line, col, error) {
+    if (msg.includes("profile is not defined")) {
+      console.error("PROFILE ERROR CAUGHT:", { msg, src, line, col, stack: error?.stack })
+      document.title = "ERROR: " + line + ":" + col
+    }
+  }
+}
 import { Toaster } from "react-hot-toast"
 import { AuthProvider, useAuth } from "./contexts/AuthContext"
 import { LanguageProvider } from "./contexts/LanguageContext"
@@ -306,6 +316,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 
