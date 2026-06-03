@@ -98,7 +98,7 @@ export default function LandingPage() {
             Nairobi.
           </h1>
           <p style={{ fontSize:"clamp(15px,2vw,18px)", color:"#777", lineHeight:1.8, maxWidth:580, margin:"0 auto 2.5rem" }}>
-            Kenya's first AI-powered automotive platform. Verified mechanics, 24/7 emergency roadside help, live tracking, parts marketplace — everything your car needs, one tap away.
+            Nairobi's most trusted automotive platform. Verified mechanics, 24/7 emergency roadside help, live tracking, parts marketplace — everything your car needs, one tap away.
           </p>
           <div style={{ display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap", marginBottom:"2.5rem" }}>
             <button onClick={()=>navigate("/auth")} style={{ background:"#e6821e", border:"none", borderRadius:12, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:16, fontWeight:700, padding:"16px 40px", cursor:"pointer" }}>
@@ -170,7 +170,7 @@ export default function LandingPage() {
       <div style={{ position:"relative", zIndex:1, maxWidth:1000, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
         <div style={{ textAlign:"center", marginBottom:"3rem" }}>
           <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#e6821e", marginBottom:8 }}>Features</div>
-          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>Kenya's most complete automotive platform</h2>
+          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>Everything your car needs, in one place</h2>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))", gap:16 }}>
           {[
@@ -181,7 +181,7 @@ export default function LandingPage() {
             { icon:"💎", title:"Loyalty rewards", desc:"Earn points every booking. Redeem for discounts on future services", color:"#8b5cf6" },
             { icon:"📍", title:"Live tracking", desc:"Track your driver or mechanic on a live dark map in real time", color:"#e6821e" },
             { icon:"🛡️", title:"Service guarantee", desc:"Not happy? We investigate and issue a full service voucher refund", color:"#1d9e75" },
-            { icon:"✦", title:"AI assistant", desc:"24/7 AI-powered help for car problems, bookings, and platform guidance", color:"#8b5cf6" },
+            { icon:"💬", title:"24/7 assistant", desc:"Always-on help for car problems, bookings, and platform guidance", color:"#8b5cf6" },
           ].map(f=>(
             <div key={f.title} className="hcard" style={{ background:"#141414", border:"1px solid #1e1e1e", borderRadius:14, padding:"1.25rem" }}>
               <div style={{ fontSize:28, marginBottom:10, color:f.color }}>{f.icon}</div>
@@ -204,7 +204,7 @@ export default function LandingPage() {
             { icon:"✅", title:"Verified providers only", desc:"Every mechanic, parts dealer and service provider is manually verified before listing on CCC.", color:"#378add" },
             { icon:"📍", title:"Real-time tracking", desc:"Know exactly where your mechanic or driver is at all times. Live GPS tracking on every job.", color:"#e6821e" },
             { icon:"🔒", title:"Secure payments", desc:"All payments processed through Pesapal, regulated by the Central Bank of Kenya.", color:"#8b5cf6" },
-            { icon:"✦", title:"AI-powered support", desc:"24/7 AI assistant to help diagnose car problems, guide bookings, and answer any question.", color:"#e6821e" },
+            { icon:"💬", title:"24/7 support", desc:"Always-on support to help diagnose car problems, guide bookings, and answer any question.", color:"#e6821e" },
             { icon:"🇰🇪", title:"Made in Kenya", desc:"Built by Kenyans for Kenyan roads. We understand Nairobi traffic, local mechanics, and Kenyan cars.", color:"#1d9e75" },
           ].map(t=>(
             <div key={t.title} className="hcard" style={{ background:"#141414", border:"1px solid #1e1e1e", borderRadius:14, padding:"1.5rem" }}>
@@ -220,7 +220,7 @@ export default function LandingPage() {
       <div style={{ position:"relative", zIndex:1, maxWidth:1000, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
         <div style={{ textAlign:"center", marginBottom:"3rem" }}>
           <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#e6821e", marginBottom:8 }}>Who is it for</div>
-          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>Join Kenya's fastest growing automotive community</h2>
+          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>Join Built for everyone in the ecosystem</h2>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))", gap:16 }}>
           {[
@@ -375,7 +375,7 @@ export default function LandingPage() {
         <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse at center, #e6821e08, transparent)", pointerEvents:"none" }}/>
         <img src="/logo.svg" alt="Car Care Connect" style={{ height:80, marginBottom:"1.5rem", animation:"glow 3s ease-in-out infinite", position:"relative" }}/>
         <h2 style={{ fontFamily:"Syne", fontSize:"clamp(28px,5vw,52px)", fontWeight:800, marginBottom:16, position:"relative" }}>
-          Kenya's car care revolution<br/><span style={{ color:"#e6821e" }}>starts here.</span>
+          Nairobi's car care platform<br/><span style={{ color:"#e6821e" }}>starts here.</span>
         </h2>
         <p style={{ fontSize:15, color:"#666", maxWidth:440, margin:"0 auto 2.5rem", lineHeight:1.7, position:"relative" }}>
           Join thousands of car owners and mechanics already on CCC. Free to join. Available 24/7. Built for Nairobi.
@@ -398,10 +398,11 @@ export default function LandingPage() {
             <a key={label} href={href} style={{ fontSize:12, color:"#444", textDecoration:"none" }}>{label}</a>
           ))}
         </div>
-        <div style={{ fontSize:12, color:"#333", marginBottom:6 }}>🇰🇪 Kenya's first AI-powered automotive platform</div>
+        <div style={{ fontSize:12, color:"#333", marginBottom:6 }}>🇰🇪 Nairobi's most trusted automotive platform</div>
         <div style={{ fontSize:11, color:"#2a2a2a" }}>© 2026 Car Care Connect · Nairobi, Kenya · 0113858966 · carcareconnect254@gmail.com</div>
         <div style={{ fontSize:10, color:"#222", marginTop:6 }}>Payments secured by Pesapal · Regulated by Central Bank of Kenya</div>
       </footer>
     </div>
   )
 }
+
