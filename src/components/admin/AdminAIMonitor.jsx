@@ -6,8 +6,8 @@ export default function AdminAIMonitor() {
   const [report, setReport] = useState(null)
   const [codeScan, setCodeScan] = useState(null)
   const [scanning, setScanning] = useState(false)
-  const [codeScan, setCodeScan] = useState(null)
-  const [scanning, setScanning] = useState(false)
+
+
   const [loading, setLoading] = useState(true)
   const [open, setOpen] = useState(true)
   const [chatInput, setChatInput] = useState("")
