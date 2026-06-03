@@ -119,14 +119,14 @@ const LoginSheet = memo(function LoginSheet({ isMobile, onClose }) {
         user = retry.data.user
       }
       if (!user) { toast.error("Session error — try again"); setLoading(false); return }
-      const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single()
+      const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle()
       if (profile?.role !== "admin") {
         await supabase.auth.signOut()
         toast.error("Access denied — not an admin account")
         setLoading(false)
         return
       }
-      navigate("/admin-dashboard")
+      window.location.href = "/admin-dashboard"
     } catch(err) {
       toast.error(err.message || "Invalid credentials")
     } finally {
@@ -269,5 +269,6 @@ export default function AdminAuthPage() {
     </div>
   )
 }
+
 
 
