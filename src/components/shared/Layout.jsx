@@ -235,7 +235,7 @@ export default function Layout({ children }) {
 
       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0.75rem 1rem", borderBottom:`1px solid ${theme.border}`, background:theme.bgSecondary, position:"sticky", top:0, zIndex:50 }}>
         <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:theme.text }}>
-          🚗 Car<span style={{ color:"#e6821e" }}>Care</span>
+          {role==="provider"?(providerTypeColors[providerType]?["🔧","🚗","⚙️","✨","🛞","⚡","🚿","🔨","🪟"][["garage","garage_premium","parts_dealer","accessories_shop","tyre_shop","auto_electrician","car_wash","panel_beater","auto_glass"].indexOf(providerType)]||"🔧":"🔧"):role==="customer"?"🚗":role==="driver"?"🚙":"⚡"} Car<span style={{ color:activeColor }}>Care</span>
         </div>
         <div style={{ display:"flex", alignItems:"center", gap:10 }}>
           <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:theme.textMuted }}>
@@ -271,7 +271,9 @@ export default function Layout({ children }) {
                 <div style={{ width:32, height:32, borderRadius:"50%", background:activeBg, border:`1px solid ${activeColor}40`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:800, color:activeColor, flexShrink:0 }}>{initials}</div>
                 <div style={{ minWidth:0, flex:1 }}>
                   <div style={{ fontSize:12, color:theme.text, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{profile?.first_name} {profile?.last_name}</div>
-                  <div style={{ fontSize:10, color:theme.textFaint, textTransform:"capitalize" }}>{role}</div>
+                  <div style={{ fontSize:10, color:theme.textFaint, textTransform:"capitalize" }}>
+                {role==="provider"?providerType.replace(/_/g," "):role}
+              </div>
                 </div>
               </div>
               <ThemeSwitcher collapsed={false} />
@@ -366,7 +368,9 @@ export default function Layout({ children }) {
               <div style={{ width:28, height:28, borderRadius:"50%", background:activeBg, border:`1px solid ${activeColor}40`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:10, fontWeight:800, color:activeColor, flexShrink:0 }}>{initials}</div>
               <div style={{ minWidth:0, flex:1 }}>
                 <div style={{ fontSize:12, color:theme.textMuted, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{profile?.first_name} {profile?.last_name}</div>
-                <div style={{ fontSize:10, color:theme.textFaint, textTransform:"capitalize" }}>{role}</div>
+                <div style={{ fontSize:10, color:theme.textFaint, textTransform:"capitalize" }}>
+                {role==="provider"?providerType.replace(/_/g," "):role}
+              </div>
               </div>
             </div>
           )}
@@ -407,6 +411,7 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 
 
