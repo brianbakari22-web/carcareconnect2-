@@ -33,7 +33,15 @@ export default function ProviderInventory() {
   const [search, setSearch] = useState("")
   const [catFilter, setCatFilter] = useState("all")
 
-  useEffect(() => { if (user) load() }, [user])
+  useEffect(() => {
+    if (!user) return
+    load()
+    const sub = supabase.channel("provider-inventory-live")
+      .on("postgres_changes", { event:"*", schema:"public", table:"inventory", filter:`provider_id=eq.${user.id}` }, () => load())
+      .on("postgres_changes", { event:"*", schema:"public", table:"orders", filter:`provider_id=eq.${user.id}` }, () => { toast("New order received! 🛒", { duration:5000 }); load() })
+      .subscribe()
+    return () => supabase.removeChannel(sub)
+  }, [user])
 
   async function load() {
     const { data } = await supabase.from("inventory")
@@ -225,4 +233,5 @@ export default function ProviderInventory() {
     </div>
   )
 }
+
 

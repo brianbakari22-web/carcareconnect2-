@@ -47,6 +47,8 @@ export default function ProviderDashboard() {
   const [loading, setLoading] = useState(true)
   const [showPolicy, setShowPolicy] = useState(!localStorage.getItem("ccc_policy_acknowledged"))
   const [uploadingPhoto, setUploadingPhoto] = useState(false)
+  const fileRef = useRef(null)
+  const [uploadingPhoto, setUploadingPhoto] = useState(false)
 
   const providerType = profile?.provider_type || "garage"
   const config = TYPE_CONFIG[providerType] || TYPE_CONFIG.garage
@@ -121,6 +123,23 @@ export default function ProviderDashboard() {
     finally { setUploadingPhoto(false) }
   }
 
+  async function uploadPhoto(e) {
+    const file = e.target.files[0]
+    if (!file) return
+    if (file.size > 5*1024*1024) return toast.error("Photo must be under 5MB")
+    setUploadingPhoto(true)
+    try {
+      const ext = file.name.split(".").pop()
+      const path = `${user.id}/profile-${Date.now()}.${ext}`
+      const { error } = await supabase.storage.from("provider-photos").upload(path, file, { upsert:true })
+      if (error) throw error
+      const { data } = supabase.storage.from("provider-photos").getPublicUrl(path)
+      await updateProfile({ profile_photo_url: data.publicUrl })
+      toast.success("Photo updated! 📷")
+    } catch(e) { toast.error(e.message) }
+    finally { setUploadingPhoto(false) }
+  }
+
   const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", completed:"#1d9e75", cancelled:"#e24b4a" }
   const initials = `${profile?.first_name?.[0]||""}${profile?.last_name?.[0]||""}`.toUpperCase()
 
@@ -165,10 +184,15 @@ export default function ProviderDashboard() {
           {/* Profile Photo */}
           <div style={{ position:"relative", flexShrink:0 }}>
             <div onClick={()=>fileRef.current?.click()} style={{ width:72, height:72, borderRadius:16, background:config.bg, border:`2px solid ${config.color}60`, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", overflow:"hidden", position:"relative" }}>
+              {profile?.profile_photo_url&&<img src={profile.profile_photo_url} alt="Profile" style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover" }}/>}
               {profile?.profile_photo_url ? (
                 <img src={profile.profile_photo_url} alt="Profile" style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
               ) : (
                 <span style={{ fontFamily:"Syne", fontSize:24, fontWeight:800, color:config.color }}>{initials||config.icon}</span>
+              <div onClick={()=>fileRef.current?.click()} style={{ position:"absolute", bottom:0, left:0, right:0, background:"rgba(0,0,0,0.6)", fontSize:9, color:"#fff", textAlign:"center", padding:"2px 0", cursor:"pointer" }}>
+                {uploadingPhoto?"...":"📷"}
+              </div>
+              <input ref={fileRef} type="file" accept="image/*" onChange={uploadPhoto} style={{ display:"none" }}/>
               )}
               <div style={{ position:"absolute", bottom:0, left:0, right:0, background:"rgba(0,0,0,0.6)", fontSize:9, color:"#fff", textAlign:"center", padding:"2px 0" }}>
                 {uploadingPhoto?"...":"📷"}
@@ -363,4 +387,5 @@ export default function ProviderDashboard() {
     </div>
   )
 }
+
 

@@ -35,7 +35,17 @@ export default function CustomerPartsMarketplace() {
   const [orders, setOrders] = useState([])
   const [tab, setTab] = useState("browse")
 
-  useEffect(() => { if (user) { load(); loadOrders() } }, [user])
+  useEffect(() => {
+    if (!user) return
+    load()
+    loadOrders()
+    // Real-time inventory updates
+    const sub = supabase.channel("marketplace-inventory")
+      .on("postgres_changes", { event:"*", schema:"public", table:"inventory" }, () => load())
+      .on("postgres_changes", { event:"*", schema:"public", table:"orders", filter:`customer_id=eq.${user.id}` }, () => loadOrders())
+      .subscribe()
+    return () => supabase.removeChannel(sub)
+  }, [user])
 
   async function load() {
     const { data: inv } = await supabase.from("inventory")
@@ -350,4 +360,5 @@ export default function CustomerPartsMarketplace() {
     </div>
   )
 }
+
 
