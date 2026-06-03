@@ -18,7 +18,7 @@ export default function CustomerProfile() {
   const [exportData, setExportData] = useState(null)
 
   useEffect(() => {
-    if (profile) setForm({ first_name:profile.first_name||"", last_name:profile.last_name||"", city:profile.city||"" })
+    if (profile) setForm({ first_name:profile?.first_name||"", last_name:profile?.last_name||"", city:profile?.city||"" })
     if (user) loadSensitive()
   }, [profile, user])
 
@@ -230,6 +230,7 @@ export default function CustomerProfile() {
     </div>
   )
 }
+
 
 
 

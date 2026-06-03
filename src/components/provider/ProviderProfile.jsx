@@ -32,8 +32,8 @@ export default function ProviderProfile() {
 
   useEffect(() => {
     if (profile) {
-      setForm({ first_name:profile.first_name||"", last_name:profile.last_name||"", business_name:profile.business_name||"", city:profile.city||"" })
-      setLocation({ latitude:profile.latitude||null, longitude:profile.longitude||null, address:"" })
+      setForm({ first_name:profile?.first_name||"", last_name:profile?.last_name||"", business_name:profile?.business_name||"", city:profile?.city||"" })
+      setLocation({ latitude:profile?.latitude||null, longitude:profile?.longitude||null, address:"" })
     }
     if (user) loadSensitive()
   }, [profile, user])
@@ -133,7 +133,7 @@ export default function ProviderProfile() {
           <div style={{ fontSize:12, color:"#555", marginTop:2 }}>
             Provider · {profile?.city||"Location not set"}
             {profile?.provider_type&&<span style={{ marginLeft:6, fontSize:10, color:"#378add", background:"#0c1f2e", padding:"1px 7px", borderRadius:10 }}>
-              {PROVIDER_TYPES.find(p=>p.key===profile.provider_type)?.icon} {profile.provider_type.replace(/_/g," ")}
+              {PROVIDER_TYPES.find(p=>p.key===profile.provider_type)?.icon} {profile?.provider_type?.replace(/_/g," ")}
             </span>}
           </div>
         </div>
@@ -285,4 +285,5 @@ export default function ProviderProfile() {
     </div>
   )
 }
+
 

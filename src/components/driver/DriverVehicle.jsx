@@ -14,7 +14,7 @@ export default function DriverVehicle() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (profile) setForm({ vehicle_model:profile.vehicle_model||"", vehicle_color:profile.vehicle_color||"", vehicle_plate:profile.vehicle_plate||"", vehicle_year:profile.vehicle_year||"" })
+    if (profile) setForm({ vehicle_model:profile?.vehicle_model||"", vehicle_color:profile?.vehicle_color||"", vehicle_plate:profile?.vehicle_plate||"", vehicle_year:profile?.vehicle_year||"" })
     if (user) loadDocs()
   }, [profile, user])
 
@@ -133,6 +133,7 @@ export default function DriverVehicle() {
     </div>
   )
 }
+
 
 
 

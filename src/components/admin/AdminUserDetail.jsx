@@ -158,7 +158,7 @@ export default function AdminUserDetail({ userId, onBack }) {
               { label:"Email", value:sensitive?.email||"—" },
               { label:"Phone", value:sensitive?.phone||"—" },
               { label:"City", value:profile?.city||"—" },
-              { label:"Referral code", value:profile.referral_code||"—" },
+              { label:"Referral code", value:profile?.referral_code||"—" },
               { label:"Status", value:profile?.is_active?"Active":"Suspended" },
               { label:"Verified", value:profile?.is_verified?"Yes":"No" },
               { label:"Joined", value:new Date(profile?.created_at).toLocaleDateString() },
@@ -284,4 +284,5 @@ export default function AdminUserDetail({ userId, onBack }) {
     </div>
   )
 }
+
 

@@ -53,20 +53,20 @@ export default function DriverProfile() {
   useEffect(() => {
     if (profile) {
       setPersonalForm({
-        first_name: profile.first_name||"",
-        last_name: profile.last_name||"",
-        city: profile.city||"",
+        first_name: profile?.first_name||"",
+        last_name: profile?.last_name||"",
+        city: profile?.city||"",
       })
       setCredentialsForm({
-        id_number: profile.id_number||"",
-        license_number: profile.license_number||"",
-        license_expiry: profile.license_expiry||"",
-        license_class: profile.license_class||"Class B - Light Motor Vehicle",
-        years_experience: profile.years_experience||"",
-        emergency_contact_name: profile.emergency_contact_name||"",
-        emergency_contact_phone: profile.emergency_contact_phone||"",
-        kra_pin_number: profile.kra_pin_number||"",
-        psv_badge_number: profile.psv_badge_number||"",
+        id_number: profile?.id_number||"",
+        license_number: profile?.license_number||"",
+        license_expiry: profile?.license_expiry||"",
+        license_class: profile?.license_class||"Class B - Light Motor Vehicle",
+        years_experience: profile?.years_experience||"",
+        emergency_contact_name: profile?.emergency_contact_name||"",
+        emergency_contact_phone: profile?.emergency_contact_phone||"",
+        kra_pin_number: profile?.kra_pin_number||"",
+        psv_badge_number: profile?.psv_badge_number||"",
       })
     }
     if (user) { loadSensitive(); loadStats() }
@@ -113,14 +113,14 @@ export default function DriverProfile() {
     setSaving(true)
       setUploading(true)
       try {
-        let idDocUrl = profile.id_document_url
-        let idDocBackUrl = profile.id_document_back_url
-        let licenseDocUrl = profile.license_document_url
-        let goodConductUrl = profile.good_conduct_url
-        let kraPinUrl = profile.kra_pin_url
-        let medicalCertUrl = profile.medical_cert_url
-        let psvBadgeUrl = profile.psv_badge_url
-        let profilePhotoUrl = profile.profile_photo_url
+        let idDocUrl = profile?.id_document_url
+        let idDocBackUrl = profile?.id_document_back_url
+        let licenseDocUrl = profile?.license_document_url
+        let goodConductUrl = profile?.good_conduct_url
+        let kraPinUrl = profile?.kra_pin_url
+        let medicalCertUrl = profile?.medical_cert_url
+        let psvBadgeUrl = profile?.psv_badge_url
+        let profilePhotoUrl = profile?.profile_photo_url
         if (idDocFile) idDocUrl = await uploadDocument(idDocFile, "id-front")
         if (idDocBackFile) idDocBackUrl = await uploadDocument(idDocBackFile, "id-back")
         if (licenseDocFile) licenseDocUrl = await uploadDocument(licenseDocFile, "license")
@@ -269,7 +269,7 @@ export default function DriverProfile() {
               <label style={lbl}>Profile photo</label>
               <div style={{ display:"flex", alignItems:"center", gap:12 }}>
                 {(profile?.profile_photo_url||profilePhotoFile)&&(
-                  <img src={profilePhotoFile?URL.createObjectURL(profilePhotoFile):profile.profile_photo_url} alt="Profile" style={{ width:56, height:56, borderRadius:"50%", objectFit:"cover", border:"2px solid #1d9e75" }}/>
+                  <img src={profilePhotoFile?URL.createObjectURL(profilePhotoFile):profile?.profile_photo_url} alt="Profile" style={{ width:56, height:56, borderRadius:"50%", objectFit:"cover", border:"2px solid #1d9e75" }}/>
                 )}
                 <div>
                   <input type="file" accept="image/*" id="profile-photo" style={{ display:"none" }} onChange={e=>setProfilePhotoFile(e.target.files[0])}/>
@@ -362,6 +362,7 @@ export default function DriverProfile() {
     </div>
   )
 }
+
 
 
 
