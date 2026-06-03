@@ -16,6 +16,38 @@ export default function AdminAIMonitor() {
 
   useEffect(() => { scanPlatform() }, [])
 
+  async function scanCode() {
+    setScanning(true)
+    try {
+      const files = [
+        "src/App.jsx",
+        "src/components/shared/Layout.jsx",
+        "src/components/provider/ProviderDashboard.jsx",
+        "src/components/provider/ProviderProfile.jsx",
+        "src/components/driver/DriverProfile.jsx",
+        "src/components/customer/CustomerProfile.jsx",
+        "src/contexts/AuthContext.jsx",
+        "src/components/provider/ProviderPartsManager.jsx",
+      ]
+      const issues = []
+      for (const file of files) {
+        try {
+          const res = await fetch(`https://raw.githubusercontent.com/brianbakari22-web/carcareconnect2-/main/${file}`)
+          if (!res.ok) continue
+          const code = await res.text()
+          const lines = code.split("\n")
+          lines.forEach((line, i) => {
+            if (line.match(/\bprofile\.[a-zA-Z]/) && !line.match(/profile\?\./) && !line.includes("//") && !line.includes("refProfile") && !line.includes("otherProfile")) {
+              issues.push({ file, line:i+1, code:line.trim(), issue:"profile. without optional chaining — crashes if profile is null" })
+            }
+          })
+        } catch(fe) { issues.push({ file, line:0, code:"", issue:"Could not fetch: "+fe.message }) }
+      }
+      setCodeScan({ issues, scannedAt:new Date().toLocaleString(), filesScanned:files.length })
+    } catch(e) { console.error(e) }
+    finally { setScanning(false) }
+  }
+
   async function checkAPIHealth() {
     const checks = {}
     // Check Supabase
