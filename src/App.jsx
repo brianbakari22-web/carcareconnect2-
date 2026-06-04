@@ -58,7 +58,7 @@ import ProviderAnalytics from "./components/provider/ProviderAnalytics"
 import ProviderReviews from "./components/provider/ProviderReviews"
 import ProviderBusinessHours from "./components/provider/ProviderBusinessHours"
 import ProviderPayouts from "./components/provider/ProviderPayouts"
-import ProviderBusinessHours from "./components/provider/ProviderBusinessHours"
+
 import ProviderNotifications from "./components/provider/ProviderNotifications"
 import ProviderAvailability from "./components/provider/ProviderAvailability"
 import ProviderProfile from "./components/provider/ProviderProfile"
