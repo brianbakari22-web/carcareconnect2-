@@ -117,7 +117,22 @@ export default function CustomerProfile() {
           <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>{t("profile")}</div>
             <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
-              <div><label style={lbl}>{t("firstName")}</label><input style={inp} value={form.first_name} onChange={e=>setForm(f=>({...f,first_name:e.target.value}))} required/></div>
+              <div><label style={lbl}>Profile photo</label>
+            <div style={{ marginBottom:12 }}>
+              {profile?.profile_photo_url&&<img src={profile.profile_photo_url} alt="Profile" style={{ width:80, height:80, borderRadius:"50%", objectFit:"cover", marginBottom:8, border:"2px solid #e6821e" }}/>}
+              <input type="file" accept="image/*" onChange={async(e)=>{
+                const file = e.target.files[0]
+                if (!file) return
+                const ext = file.name.split(".").pop()
+                const path = `${user.id}/profile-${Date.now()}.${ext}`
+                const { error } = await supabase.storage.from("provider-photos").upload(path, file, { upsert:true })
+                if (error) return toast.error(error.message)
+                const { data } = supabase.storage.from("provider-photos").getPublicUrl(path)
+                await updateProfile({ profile_photo_url: data.publicUrl })
+                toast.success("Photo updated!")
+              }} style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"8px", color:"#888", fontSize:12, marginBottom:8 }}/>
+            </div>
+            <label style={lbl}>{t("firstName")}</label><input style={inp} value={form.first_name} onChange={e=>setForm(f=>({...f,first_name:e.target.value}))} required/></div>
               <div><label style={lbl}>{t("lastName")}</label><input style={inp} value={form.last_name} onChange={e=>setForm(f=>({...f,last_name:e.target.value}))} required/></div>
             </div>
             <label style={lbl}>{t("city")}</label>
@@ -230,6 +245,7 @@ export default function CustomerProfile() {
     </div>
   )
 }
+
 
 
 
