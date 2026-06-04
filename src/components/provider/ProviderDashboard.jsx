@@ -25,7 +25,7 @@ const TYPE_CONFIG = {
   tyre_shop:       { label:"Tyre Shop",             icon:"≡ƒ¢₧", color:"#1d9e75", bg:"#071a12", focus:"inventory" },
   auto_electrician:{ label:"Auto Electrician",      icon:"ΓÜí", color:"#e6821e", bg:"#1a1208", focus:"bookings" },
   car_wash:        { label:"Car Wash",              icon:"≡ƒÜ┐", color:"#378add", bg:"#0c1f2e", focus:"bookings" },
-  panel_beater:    { label:"Panel Beater",          icon:"≡ƒö¿", color:"#e24b4a", bg:"#1a0808", focus:"bookings" },
+  panel_beater:    { label:"Panel Beater",          icon:"⚙️", color:"#e24b4a", bg:"#1a0808", focus:"bookings" },
   auto_glass:      { label:"Auto Glass",            icon:"≡ƒ¬ƒ", color:"#1d9e75", bg:"#071a12", focus:"bookings" },
 }
 
@@ -129,16 +129,16 @@ export default function ProviderDashboard() {
       {/* SERVICE GUARANTEE POLICY */}
       {showPolicy&&(
         <div style={{ background:"#1a0808", border:"2px solid #e24b4a", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e24b4a", marginBottom:8 }}>≡ƒÜ¿ Important ΓÇö Service Guarantee Policy</div>
+          <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e24b4a", marginBottom:8 }}>🚗 Important — Service Guarantee Policy</div>
           <div style={{ fontSize:12, color:"#888", lineHeight:1.8, marginBottom:"1rem" }}>
             Car Care Connect operates a <strong style={{ color:"#f0ede6" }}>Service Guarantee</strong> for all customers. As a provider, you must be aware of the following:
           </div>
           {[
             { icon:"1∩╕ÅΓâú", text:"If a customer is unhappy with your service, they can submit a Service Guarantee claim within 7 days." },
             { icon:"2∩╕ÅΓâú", text:"If the claim is approved, the full service cost is deducted from your earnings and a voucher is issued to the customer." },
-            { icon:"3∩╕ÅΓâú", text:"1st approved claim ΓåÆ Warning + cost deduction." },
-            { icon:"4∩╕ÅΓâú", text:"2nd approved claim ΓåÆ 7 day suspension + cost deduction." },
-            { icon:"5∩╕ÅΓâú", text:"3rd approved claim ΓåÆ Permanent ban from the platform." },
+            { icon:"3∩╕ÅΓâú", text:"1st approved claim → Warning + cost deduction." },
+            { icon:"4∩╕ÅΓâú", text:"2nd approved claim → 7 day suspension + cost deduction." },
+            { icon:"5∩╕ÅΓâú", text:"3rd approved claim → Permanent ban from the platform." },
             { icon:"Γ£à", text:"The best protection is to always deliver excellent, professional service." },
           ].map(item=>(
             <div key={item.icon} style={{ display:"flex", gap:10, alignItems:"flex-start", marginBottom:6 }}>
@@ -149,7 +149,7 @@ export default function ProviderDashboard() {
           <div style={{ display:"flex", gap:8, marginTop:"1rem" }}>
             <button onClick={()=>{ localStorage.setItem("ccc_policy_acknowledged","true"); setShowPolicy(false) }}
               style={{ background:"#e24b4a", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 18px", cursor:"pointer" }}>
-              I understand ΓÇö got it
+              I understand — got it
             </button>
             <button onClick={()=>window.open("/terms","_blank")}
               style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", fontSize:12, padding:"9px 14px", cursor:"pointer" }}>
@@ -196,7 +196,7 @@ export default function ProviderDashboard() {
         </div>
       </div>
 
-      {/* STATS ΓÇö different per type */}
+      {/* STATS — different per type */}
       {isInventoryFocus ? (
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)", gap:10, marginBottom:"1.5rem" }}>
           {[
@@ -227,14 +227,14 @@ export default function ProviderDashboard() {
         </div>
       )}
 
-      {/* PARTS/ACCESSORIES/TYRES FOCUS ΓÇö show orders and inventory */}
+      {/* PARTS/ACCESSORIES/TYRES FOCUS — show orders and inventory */}
       {isInventoryFocus&&(
         <>
           {/* Low stock alert */}
           {orderStats.lowStock>0&&(
             <div style={{ background:"#1a0808", border:"1px solid #e24b4a40", borderRadius:10, padding:"0.75rem", marginBottom:"1rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
               <div style={{ fontSize:13, color:"#e24b4a", fontWeight:600 }}>ΓÜá∩╕Å {orderStats.lowStock} item{orderStats.lowStock>1?"s":""} low on stock</div>
-              <a href="/dashboard/inventory" style={{ fontSize:11, color:"#e6821e", textDecoration:"none" }}>Manage inventory ΓåÆ</a>
+              <a href="/dashboard/inventory" style={{ fontSize:11, color:"#e6821e", textDecoration:"none" }}>Manage inventory →</a>
             </div>
           )}
 
@@ -242,7 +242,7 @@ export default function ProviderDashboard() {
           {orderStats.pending>0&&(
             <div style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:10, padding:"0.75rem", marginBottom:"1rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
               <div style={{ fontSize:13, color:"#e6821e", fontWeight:600 }}>≡ƒ¢Æ {orderStats.pending} order{orderStats.pending>1?"s":""} waiting for confirmation</div>
-              <a href="/dashboard/orders" style={{ fontSize:11, color:"#e6821e", textDecoration:"none" }}>View orders ΓåÆ</a>
+              <a href="/dashboard/orders" style={{ fontSize:11, color:"#e6821e", textDecoration:"none" }}>View orders →</a>
             </div>
           )}
 
@@ -266,7 +266,7 @@ export default function ProviderDashboard() {
           {!loading&&orders.length===0&&(
             <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>
               <div style={{ fontSize:32, marginBottom:10 }}>≡ƒôª</div>
-              No orders yet ΓÇö add inventory to start selling
+              No orders yet — add inventory to start selling
             </div>
           )}
           {orders.slice(0,5).map(o=>(
@@ -307,18 +307,18 @@ export default function ProviderDashboard() {
           ))}
           {inventory.length===0&&!loading&&(
             <div style={{ color:"#444", fontSize:12, textAlign:"center", padding:"1rem" }}>
-              No inventory yet ΓÇö <a href="/dashboard/inventory" style={{ color:config.color }}>add items</a>
+              No inventory yet — <a href="/dashboard/inventory" style={{ color:config.color }}>add items</a>
             </div>
           )}
         </>
       )}
 
-      {/* GARAGE/SERVICE FOCUS ΓÇö show bookings */}
+      {/* GARAGE/SERVICE FOCUS — show bookings */}
       {!isInventoryFocus&&(
         <>
           {!showPolicy&&(
             <div style={{ background:"#111", border:"1px solid #e24b4a20", borderRadius:10, padding:"0.75rem", marginBottom:"1.25rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-              <div style={{ fontSize:11, color:"#555" }}>≡ƒ¢í∩╕Å Service Guarantee active ΓÇö deliver quality service to avoid claims</div>
+              <div style={{ fontSize:11, color:"#555" }}>🚨∩╕Å Service Guarantee active — deliver quality service to avoid claims</div>
               <button onClick={()=>setShowPolicy(true)} style={{ background:"none", border:"none", color:"#e24b4a", fontSize:11, cursor:"pointer" }}>View policy</button>
             </div>
           )}
@@ -329,7 +329,7 @@ export default function ProviderDashboard() {
           {loading&&<div style={{ color:"#555", fontSize:13 }}>{t("loading")}</div>}
           {!loading&&bookings.length===0&&(
             <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>
-              <div style={{ fontSize:32, marginBottom:10 }}>≡ƒôà</div>
+              <div style={{ fontSize:32, marginBottom:10 }}>📅</div>
               {language==="sw"?"Hakuna miadi bado":"No bookings yet"}
             </div>
           )}
@@ -363,5 +363,6 @@ export default function ProviderDashboard() {
     </div>
   )
 }
+
 
 
