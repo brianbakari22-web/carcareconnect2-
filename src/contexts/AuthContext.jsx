@@ -45,6 +45,17 @@ export function AuthProvider({ children }) {
         filter: `id=eq.${user.id}`
       }, payload => {
         setProfile(prev => ({ ...prev, ...payload.new }))
+        // Show toast if verification status changed
+        if (payload.new.documents_verified && !payload.old?.documents_verified) {
+          import("react-hot-toast").then(({ default: toast }) => {
+            toast.success("Your documents have been verified! You can now go online. 🎉")
+          })
+        }
+        if (!payload.new.documents_verified && payload.old?.documents_verified) {
+          import("react-hot-toast").then(({ default: toast }) => {
+            toast.error("Your document verification has been revoked. Please check your credentials.")
+          })
+        }
       })
       .subscribe()
     return () => supabase.removeChannel(sub)
@@ -167,6 +178,7 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   )
 }
+
 
 
 
