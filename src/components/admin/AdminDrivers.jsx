@@ -11,6 +11,9 @@ export default function AdminDrivers() {
   const [tab, setTab] = useState("all")
   const [selected, setSelected] = useState(null)
   const [search, setSearch] = useState("")
+  const [rejectingId, setRejectingId] = useState(null)
+  const [rejectReason, setRejectReason] = useState("")
+  const [viewingDocs, setViewingDocs] = useState(null)
   const mapRef = useRef(null)
   const mapInstanceRef = useRef(null)
 
@@ -232,8 +235,11 @@ export default function AdminDrivers() {
                     <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(3,1fr)", gap:6, marginBottom:10 }}>
                       {[
                         { l:"National ID", v:d.id_number||"—" },
-                        { l:"ID Document", v:d.id_document_url?"✓ Uploaded":"✗ Missing" },
-                        { l:"License Doc", v:d.license_document_url?"✓ Uploaded":"✗ Missing" },
+                        { l:"ID Front", v:d.id_doc_front_url?"✓ Uploaded":"✗ Missing" },
+                        { l:"ID Back", v:d.id_doc_back_url?"✓ Uploaded":"✗ Missing" },
+                        { l:"License Doc", v:d.license_doc_url?"✓ Uploaded":"✗ Missing" },
+                        { l:"PSV Badge", v:d.psv_badge_url?"✓ Uploaded":"✗ Missing" },
+                        { l:"Good Conduct", v:d.good_conduct_url?"✓ Uploaded":"✗ Missing" },
                         { l:"License No.", v:d.license_number||"—" },
                         { l:"License class", v:d.license_class||"—" },
                         { l:"Expiry", v:d.license_expiry||"—" },
@@ -253,6 +259,47 @@ export default function AdminDrivers() {
                       </div>
                     )}
 
+                    {rejectingId===d.id&&(
+                      <div style={{ marginTop:10, background:"#1a0808", border:"1px solid #e24b4a30", borderRadius:10, padding:"0.75rem" }}>
+                        <div style={{ fontSize:12, color:"#e24b4a", marginBottom:6 }}>Rejection reason (driver will be notified):</div>
+                        <input value={rejectReason} onChange={e=>setRejectReason(e.target.value)}
+                          placeholder="e.g. ID photo unclear, expired license..."
+                          style={{ width:"100%", background:"#111", border:"1px solid #333", borderRadius:7, padding:"8px 10px", color:"#f0ede6", fontSize:12, outline:"none", marginBottom:8 }}/>
+                        <div style={{ display:"flex", gap:6 }}>
+                          <button onClick={()=>rejectDriver(d.id)}
+                            style={{ background:"#e24b4a", border:"none", borderRadius:7, color:"#fff", fontSize:12, fontWeight:700, padding:"7px 16px", cursor:"pointer" }}>
+                            Send rejection
+                          </button>
+                          <button onClick={()=>{ setRejectingId(null); setRejectReason("") }}
+                            style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#666", fontSize:12, padding:"7px 12px", cursor:"pointer" }}>
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    {viewingDocs===d.id&&(
+                      <div style={{ marginTop:10, background:"#0f0f0f", border:"1px solid #1e1e1e", borderRadius:10, padding:"0.75rem" }}>
+                        <div style={{ fontSize:12, color:"#888", marginBottom:8 }}>Uploaded documents:</div>
+                        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(120px,1fr))", gap:8 }}>
+                          {[
+                            { key:"id_doc_front_url", label:"ID Front" },
+                            { key:"id_doc_back_url", label:"ID Back" },
+                            { key:"license_doc_url", label:"License" },
+                            { key:"psv_badge_url", label:"PSV Badge" },
+                            { key:"good_conduct_url", label:"Good Conduct" },
+                            { key:"insurance_url", label:"Insurance" },
+                            { key:"vehicle_photo_url", label:"Vehicle" },
+                          ].filter(doc=>d[doc.key]).map(doc=>(
+                            <div key={doc.key} style={{ textAlign:"center" }}>
+                              <a href={d[doc.key]} target="_blank" rel="noreferrer">
+                                <img src={d[doc.key]} alt={doc.label} style={{ width:"100%", height:80, objectFit:"cover", borderRadius:7, border:"1px solid #333" }}/>
+                              </a>
+                              <div style={{ fontSize:10, color:"#555", marginTop:3 }}>{doc.label}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     {status?.suspension_expires_at&&isSuspended&&(
                       <div style={{ fontSize:11, color:"#e24b4a", marginBottom:8 }}>
                         Suspended until: {new Date(status.suspension_expires_at).toLocaleString()}
@@ -267,9 +314,31 @@ export default function AdminDrivers() {
 
                     <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
                       {!d.documents_verified&&d.is_active&&(
-                        <button onClick={()=>verifyDriver(d.id,true)}
-                          style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer", fontWeight:600 }}>
-                          ✓ Verify
+                        <>
+                          <button onClick={()=>verifyDriver(d.id,true)}
+                            style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer", fontWeight:600 }}>
+                            ✓ Verify
+                          </button>
+                          <button onClick={()=>setRejectingId(rejectingId===d.id?null:d.id)}
+                            style={{ background:"#1a0808", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+                            ✗ Reject
+                          </button>
+                        </>
+                      )}
+                      {[
+                        { key:"id_doc_front_url", label:"ID Front" },
+                        { key:"id_doc_back_url", label:"ID Back" },
+                        { key:"license_doc_url", label:"License" },
+                        { key:"psv_badge_url", label:"PSV Badge" },
+                        { key:"good_conduct_url", label:"Good Conduct" },
+                        { key:"insurance_url", label:"Insurance" },
+                      ].filter(doc=>d[doc.key]).length>0&&(
+                        <button onClick={()=>setViewingDocs(viewingDocs===d.id?null:d.id)}
+                          style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+                          📋 View docs ({[
+                            d.id_doc_front_url,d.id_doc_back_url,d.license_doc_url,
+                            d.psv_badge_url,d.good_conduct_url,d.insurance_url
+                          ].filter(Boolean).length})
                         </button>
                       )}
                       {d.documents_verified&&(
@@ -369,6 +438,8 @@ function DriverStats({ driverId, isMobile }) {
     </div>
   )
 }
+
+
 
 
 
