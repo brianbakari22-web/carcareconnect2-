@@ -103,6 +103,7 @@ import AdminEmployees from "./components/admin/AdminEmployees"
 import AdminOrders from "./components/admin/AdminOrders"
 import AdminInventory from "./components/admin/AdminInventory"
 import AdminSystemDiagnostics from "./components/admin/AdminSystemDiagnostics"
+import AdminCommissions from "./components/admin/AdminCommissions"
 import AdminPaymentTracking from "./components/admin/AdminPaymentTracking"
 
 const ADMIN_SECRET = "ccc-admin-x7k9m2p4q8"
@@ -280,6 +281,7 @@ function AdminDashboardRouter() {
           <Route path="orders" element={<AdminOrders />} />
           <Route path="inventory" element={<AdminInventory />} />
           <Route path="diagnostics" element={<AdminSystemDiagnostics />} />
+          <Route path="commissions" element={<AdminCommissions />} />
           <Route path="payment-tracking" element={<AdminPaymentTracking />} />
           <Route path="providers" element={<AdminProviders />} />
           <Route path="drivers" element={<AdminDrivers />} />
@@ -319,6 +321,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 
