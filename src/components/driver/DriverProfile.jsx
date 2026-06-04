@@ -304,6 +304,46 @@ export default function DriverProfile() {
             <label style={lbl}>Years of driving experience *</label>
             <input style={inp} type="number" min="0" max="50" placeholder="e.g. 5" value={credentialsForm.years_experience} onChange={e=>setCredentialsForm(f=>({...f,years_experience:e.target.value}))} required/>
 
+            {/* DOCUMENT UPLOADS */}
+            <div style={{ marginBottom:16 }}>
+              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8, color:"#f0ede6" }}>Upload documents</div>
+              <div style={{ fontSize:11, color:"#555", marginBottom:10 }}>Upload clear photos for admin verification. Max 10MB each.</div>
+              {[
+                { key:"id_doc_front_url", label:"National ID (front)", icon:"📋" },
+                { key:"id_doc_back_url", label:"National ID (back)", icon:"📋" },
+                { key:"license_doc_url", label:"Drivers License", icon:"🪪" },
+                { key:"psv_badge_url", label:"PSV Badge (if applicable)", icon:"🔖" },
+                { key:"good_conduct_url", label:"Certificate of Good Conduct", icon:"📄" },
+                { key:"insurance_url", label:"Insurance Certificate", icon:"📝" },
+              ].map(doc=>(
+                <div key={doc.key} style={{ marginBottom:12, background:"#0f0f0f", borderRadius:10, padding:"0.75rem", border:"1px solid #1e1e1e" }}>
+                  <div style={{ fontSize:12, color:"#888", marginBottom:6 }}>{doc.icon} {doc.label}</div>
+                  {creds[doc.key]&&(
+                    <div style={{ position:"relative", marginBottom:6 }}>
+                      <img src={creds[doc.key]} alt={doc.label} style={{ width:"100%", maxHeight:120, objectFit:"cover", borderRadius:8 }}/>
+                      <span style={{ position:"absolute", top:4, right:4, background:"#1d9e75", borderRadius:6, fontSize:10, color:"#fff", padding:"2px 8px" }}>✓ Uploaded</span>
+                    </div>
+                  )}
+                  <input type="file" accept="image/*,application/pdf"
+                    onChange={async(e)=>{
+                      const file = e.target.files[0]
+                      if (!file) return
+                      if (file.size > 10*1024*1024) return toast.error("File too large - max 10MB")
+                      try {
+                        const ext = file.name.split(".").pop()
+                        const path = `${user.id}/${doc.key}-${Date.now()}.${ext}`
+                        const { error } = await supabase.storage.from("driver-documents").upload(path, file, { upsert:true })
+                        if (error) throw error
+                        const { data } = supabase.storage.from("driver-documents").getPublicUrl(path)
+                        setCreds(c=>({...c, [doc.key]:data.publicUrl}))
+                        toast.success(doc.label + " uploaded!")
+                      } catch(err) { toast.error(err.message) }
+                    }}
+                    style={{ width:"100%", background:"#111", border:"1px solid #2a2a2a", borderRadius:8, padding:"8px", color:"#888", fontSize:12 }}/>
+                </div>
+              ))}
+            </div>
+            <div style={{ height:1, background:"#1e1e1e", margin:"8px 0 16px" }}/>
             <div style={{ height:1, background:"#1e1e1e", margin:"8px 0 16px" }}/>
             <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:"0.75rem", color:"#f0ede6" }}>Emergency contact</div>
 
@@ -362,6 +402,7 @@ export default function DriverProfile() {
     </div>
   )
 }
+
 
 
 
