@@ -28,6 +28,10 @@ export default function CustomerDiscover() {
   const [locating, setLocating] = useState(false)
   const [sortBy, setSortBy] = useState("default")
   const [providerTypeFilter, setProviderTypeFilter] = useState("all")
+  const [partsSearch, setPartsSearch] = useState("")
+  const [partResults, setPartResults] = useState([])
+  const [searchingParts, setSearchingParts] = useState(false)
+  const [carModel, setCarModel] = useState("")
   const [maxDistance, setMaxDistance] = useState(null)
   const [showFilters, setShowFilters] = useState(false)
   const [priceRange, setPriceRange] = useState({ min:"", max:"" })
@@ -93,6 +97,19 @@ export default function CustomerDiscover() {
       })
       setClosures(map)
     }
+  }
+
+  async function searchParts(query, car) {
+    if (!query && !car) { setPartResults([]); return }
+    setSearchingParts(true)
+    try {
+      let q = supabase.from("inventory").select("*, profiles!inventory_provider_id_fkey(business_name,first_name,last_name,city,is_verified)").eq("is_active",true).gt("stock_quantity",0)
+      if (query) q = q.ilike("name", `%${query}%`)
+      if (car) q = q.contains("compatible_cars", [car])
+      const { data } = await q.limit(20)
+      setPartResults(data||[])
+    } catch(e) { console.error(e) }
+    finally { setSearchingParts(false) }
   }
 
   async function loadFavorites() {
@@ -494,6 +511,50 @@ export default function CustomerDiscover() {
         </div>
       )}
 
+      {tab==="parts"&&(
+        <div>
+          <div style={{ display:"flex", gap:8, marginBottom:"1rem", flexWrap:"wrap" }}>
+            <input value={partsSearch} onChange={e=>{ setPartsSearch(e.target.value); searchParts(e.target.value, carModel) }}
+              placeholder="Search parts, accessories, tyres..."
+              style={{ flex:1, minWidth:150, background:"#111", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:13, outline:"none" }}/>
+            <input value={carModel} onChange={e=>{ setCarModel(e.target.value); searchParts(partsSearch, e.target.value) }}
+              placeholder="Filter by car model..."
+              style={{ flex:1, minWidth:150, background:"#111", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:13, outline:"none" }}/>
+          </div>
+          {searchingParts&&<div style={{ color:"#555", fontSize:13 }}>Searching...</div>}
+          {!searchingParts&&partsSearch===("")&&carModel===("")&&(
+            <div style={{ textAlign:"center", padding:"2rem", color:"#444" }}>
+              <div style={{ fontSize:32, marginBottom:10 }}>🔍</div>
+              <div style={{ fontSize:13 }}>Search for parts, accessories or filter by your car model</div>
+              <button onClick={()=>navigate("/dashboard/parts")} style={{ marginTop:"1rem", background:"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne", fontSize:13, fontWeight:700, padding:"10px 24px", cursor:"pointer" }}>
+                Browse all parts →
+              </button>
+            </div>
+          )}
+          {partResults.length===0&&(partsSearch||carModel)&&!searchingParts&&(
+            <div style={{ textAlign:"center", padding:"2rem", color:"#444", fontSize:13 }}>No parts found matching your search</div>
+          )}
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(2,1fr)", gap:12 }}>
+            {partResults.map(item=>(
+              <div key={item.id} onClick={()=>navigate("/dashboard/parts")} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1rem", cursor:"pointer" }}>
+                {item.photos?.[0]&&<img src={item.photos[0]} alt={item.name} style={{ width:"100%", height:120, objectFit:"cover", borderRadius:8, marginBottom:8 }}/>}
+                <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6", marginBottom:4 }}>{item.name}</div>
+                {item.brand&&<div style={{ fontSize:11, color:"#888", marginBottom:2 }}>Brand: {item.brand}</div>}
+                {item.compatible_cars?.length>0&&<div style={{ fontSize:10, color:"#555", marginBottom:4 }}>🚗 {item.compatible_cars.slice(0,2).join(", ")}</div>}
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                  <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>KES {Number(item.price).toLocaleString()}</div>
+                  <div style={{ fontSize:10, color:item.stock_quantity>5?"#1d9e75":"#e24b4a" }}>{item.stock_quantity} in stock</div>
+                </div>
+                <div style={{ fontSize:11, color:"#555", marginTop:4 }}>
+                  🏪 {item.profiles?.business_name||item.profiles?.first_name}
+                  {item.profiles?.is_verified&&<span style={{ color:"#1d9e75", marginLeft:4 }}>✓</span>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {tab==="drivers"&&(
         <div style={{ display:"grid", gap:10 }}>
           <div style={{ display:"flex", gap:8, marginBottom:4 }}>
@@ -523,6 +584,9 @@ export default function CustomerDiscover() {
     </div>
   )
 }
+
+
+
 
 
 
