@@ -5,6 +5,7 @@ import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import { useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
+import ProviderStorefront from "./ProviderStorefront"
 
 const DAYS_EN = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
 const DAYS_SW = ["Jumapili","Jumatatu","Jumanne","Jumatano","Alhamisi","Ijumaa","Jumamosi"]
@@ -584,6 +585,7 @@ export default function CustomerDiscover() {
     </div>
   )
 }
+
 
 
 
