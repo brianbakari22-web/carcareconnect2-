@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -18,7 +18,7 @@ const CATEGORIES = [
 const EMPTY = {
   name:"", description:"", category:"parts", subcategory:"",
   price:"", stock_quantity:"", unit:"piece", brand:"",
-  compatible_cars:"", is_active:true
+  compatible_cars:"", is_active:true, photos:[]
 }
 
 export default function ProviderInventory() {
@@ -30,6 +30,9 @@ export default function ProviderInventory() {
   const [editing, setEditing] = useState(null)
   const [form, setForm] = useState(EMPTY)
   const [saving, setSaving] = useState(false)
+  const [uploadingPhoto, setUploadingPhoto] = useState(false)
+  const [photoPreview, setPhotoPreview] = useState(null)
+  const photoRef = useRef(null)
   const [search, setSearch] = useState("")
   const [catFilter, setCatFilter] = useState("all")
 
@@ -52,16 +55,35 @@ export default function ProviderInventory() {
     setLoading(false)
   }
 
+  async function uploadItemPhoto(file) {
+    if (!file) return null
+    setUploadingPhoto(true)
+    try {
+      const ext = file.name.split(".").pop()
+      const path = `${user.id}/item-${Date.now()}.${ext}`
+      const { error } = await supabase.storage.from("provider-photos").upload(path, file, { upsert:true })
+      if (error) throw error
+      const { data } = supabase.storage.from("provider-photos").getPublicUrl(path)
+      return data.publicUrl
+    } catch(e) { toast.error(e.message); return null }
+    finally { setUploadingPhoto(false) }
+  }
+
   async function save(e) {
     e.preventDefault()
     setSaving(true)
     try {
+      let photoUrl = form.photos?.[0] || null
+      if (photoRef.current?.files?.[0]) {
+        photoUrl = await uploadItemPhoto(photoRef.current.files[0])
+      }
       const payload = {
         ...form,
         provider_id: user.id,
         price: Number(form.price)||0,
         stock_quantity: Number(form.stock_quantity)||0,
         compatible_cars: form.compatible_cars ? form.compatible_cars.split(",").map(s=>s.trim()) : [],
+        photos: photoUrl ? [photoUrl] : [],
       }
       if (editing) {
         await supabase.from("inventory").update(payload).eq("id", editing)
@@ -165,6 +187,15 @@ export default function ProviderInventory() {
             <input style={inp} value={form.compatible_cars} onChange={e=>setForm(f=>({...f,compatible_cars:e.target.value}))} placeholder="e.g. Toyota Vitz, Toyota Axio, Toyota Fielder"/>
             <label style={lbl}>Description</label>
             <textarea style={{...inp, resize:"vertical", minHeight:60}} value={form.description} onChange={e=>setForm(f=>({...f,description:e.target.value}))} placeholder="Describe the item..."/>
+            <label style={lbl}>Item photo</label>
+            <div style={{ marginBottom:10 }}>
+              {photoPreview&&<img src={photoPreview} alt="Preview" style={{ width:"100%", maxHeight:150, objectFit:"cover", borderRadius:8, marginBottom:8 }}/>}
+              {!photoPreview&&form.photos?.[0]&&<img src={form.photos[0]} alt="Current" style={{ width:"100%", maxHeight:150, objectFit:"cover", borderRadius:8, marginBottom:8 }}/>}
+              <input ref={photoRef} type="file" accept="image/*"
+                onChange={e=>{ const f=e.target.files[0]; if(f) setPhotoPreview(URL.createObjectURL(f)) }}
+                style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"8px", color:"#888", fontSize:12, marginBottom:8 }}/>
+              {uploadingPhoto&&<div style={{ fontSize:11, color:"#555" }}>Uploading photo...</div>}
+            </div>
             <div style={{ display:"flex", gap:8, marginTop:4 }}>
               <button type="submit" disabled={saving} style={{ background:saving?"#333":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 24px", cursor:saving?"not-allowed":"pointer" }}>
                 {saving?"Saving...":editing?"Update item":"Add item"}
@@ -233,5 +264,6 @@ export default function ProviderInventory() {
     </div>
   )
 }
+
 
 
