@@ -63,11 +63,11 @@ const NAV = {
     { path:"/dashboard/reviews", key:"myRatings", icon:"⭐" },
     { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
     { path:"/dashboard/claims", label:"My Claims", icon:"🛡️" },
-    { path:"/dashboard/marketplace", label:"Marketplace", icon:"🛒" },
-    { path:"/dashboard/parts", label:"Parts & Accessories", icon:"⚙️" },
-    { path:"/dashboard/marketplace/my-listings", label:"My Listings", icon:"📦" },
-    { path:"/dashboard/marketplace/my-offers", label:"My Offers", icon:"💰" },
-    { path:"/dashboard/marketplace/transactions", label:"My Transactions", icon:"💳" },
+
+
+
+
+
     { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
@@ -196,11 +196,7 @@ export default function Layout({ children }) {
     { path:"/dashboard/business-hours", label:"Business Hours", icon:"🕐" },
     { path:"/dashboard/payouts", label:"Payouts", icon:"🏦" },
     { path:"/dashboard/claims", label:"Service Claims", icon:"🛡️" },
-    { path:"/dashboard/marketplace", label:"Marketplace", icon:"🛒" },
-    { path:"/dashboard/parts", label:"Parts & Accessories", icon:"⚙️" },
-    { path:"/dashboard/marketplace/my-listings", label:"My Listings", icon:"📦" },
-    { path:"/dashboard/marketplace/my-offers", label:"My Offers", icon:"💰" },
-    { path:"/dashboard/marketplace/transactions", label:"My Transactions", icon:"💳" },
+    
     { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
@@ -434,6 +430,7 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 
 
