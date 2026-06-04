@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { supabase } from "../../lib/supabase"
+import PhotoManager from "../shared/PhotoManager"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
@@ -574,6 +575,7 @@ export default function CustomerGoService() {
     </div>
   )
 }
+
 
 
 

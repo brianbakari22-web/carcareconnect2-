@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import PhotoManager from "../shared/PhotoManager"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -308,4 +309,5 @@ export default function ProviderServices() {
     </div>
   )
 }
+
 
