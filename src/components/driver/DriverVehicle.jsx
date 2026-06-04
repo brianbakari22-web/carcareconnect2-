@@ -16,6 +16,12 @@ export default function DriverVehicle() {
   useEffect(() => {
     if (profile) setForm({ vehicle_model:profile?.vehicle_model||"", vehicle_color:profile?.vehicle_color||"", vehicle_plate:profile?.vehicle_plate||"", vehicle_year:profile?.vehicle_year||"" })
     if (user) loadDocs()
+    if (user) {
+      const sub = supabase.channel("driver-vehicle-live")
+        .on("postgres_changes", { event:"*", schema:"public", table:"driver_documents", filter:`driver_id=eq.${user.id}` }, () => loadDocs())
+        .subscribe()
+      return () => supabase.removeChannel(sub)
+    }
   }, [profile, user])
 
   async function loadDocs() {
@@ -133,6 +139,7 @@ export default function DriverVehicle() {
     </div>
   )
 }
+
 
 
 
