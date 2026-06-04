@@ -58,6 +58,7 @@ import ProviderAnalytics from "./components/provider/ProviderAnalytics"
 import ProviderReviews from "./components/provider/ProviderReviews"
 import ProviderBusinessHours from "./components/provider/ProviderBusinessHours"
 import ProviderPayouts from "./components/provider/ProviderPayouts"
+import ProviderBusinessHours from "./components/provider/ProviderBusinessHours"
 import ProviderNotifications from "./components/provider/ProviderNotifications"
 import ProviderAvailability from "./components/provider/ProviderAvailability"
 import ProviderProfile from "./components/provider/ProviderProfile"
@@ -217,6 +218,7 @@ function DashboardRouter() {
           <Route path="hours" element={<ProviderBusinessHours />} />
           <Route path="availability" element={<ProviderAvailability />} />
           <Route path="payouts" element={<ProviderPayouts />} />
+          <Route path="business-hours" element={<ProviderBusinessHours />} />
           <Route path="notifications" element={<ProviderNotifications />} />
           <Route path="chat" element={<ProviderChat />} />
           <Route path="mechanics" element={<ProviderMechanics />} />
@@ -324,6 +326,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 
