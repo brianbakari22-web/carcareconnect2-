@@ -318,9 +318,9 @@ export default function DriverProfile() {
               ].map(doc=>(
                 <div key={doc.key} style={{ marginBottom:12, background:"#0f0f0f", borderRadius:10, padding:"0.75rem", border:"1px solid #1e1e1e" }}>
                   <div style={{ fontSize:12, color:"#888", marginBottom:6 }}>{doc.icon} {doc.label}</div>
-                  {creds[doc.key]&&(
+                  {credentialsForm[doc.key]&&(
                     <div style={{ position:"relative", marginBottom:6 }}>
-                      <img src={creds[doc.key]} alt={doc.label} style={{ width:"100%", maxHeight:120, objectFit:"cover", borderRadius:8 }}/>
+                      <img src={credentialsForm[doc.key]} alt={doc.label} style={{ width:"100%", maxHeight:120, objectFit:"cover", borderRadius:8 }}/>
                       <span style={{ position:"absolute", top:4, right:4, background:"#1d9e75", borderRadius:6, fontSize:10, color:"#fff", padding:"2px 8px" }}>✓ Uploaded</span>
                     </div>
                   )}
@@ -335,7 +335,7 @@ export default function DriverProfile() {
                         const { error } = await supabase.storage.from("driver-documents").upload(path, file, { upsert:true })
                         if (error) throw error
                         const { data } = supabase.storage.from("driver-documents").getPublicUrl(path)
-                        setCreds(c=>({...c, [doc.key]:data.publicUrl}))
+                        setCredentialsForm(c=>({...c, [doc.key]:data.publicUrl}))
                         toast.success(doc.label + " uploaded!")
                       } catch(err) { toast.error(err.message) }
                     }}
@@ -402,6 +402,7 @@ export default function DriverProfile() {
     </div>
   )
 }
+
 
 
 
