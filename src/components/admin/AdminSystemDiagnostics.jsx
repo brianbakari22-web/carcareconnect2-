@@ -101,7 +101,7 @@ export default function AdminSystemDiagnostics() {
     try {
       const { data, error } = await supabase.storage.listBuckets()
       r.storage = { ok:!error, buckets:(data||[]).map(b=>b.name) }
-      const requiredBuckets = ["provider-photos","driver-documents","vehicle-images"]
+      const requiredBuckets = ["provider-photos","driver-documents","vehicle-images","inventory-photos"]
       requiredBuckets.forEach(b => {
         if (!r.storage.buckets?.includes(b)) {
           r.fixes.push({ severity:"🟡", issue:`Storage bucket missing: ${b}`, fix:`Create bucket "${b}" in Supabase Storage` })
@@ -240,3 +240,4 @@ export default function AdminSystemDiagnostics() {
     </div>
   )
 }
+
