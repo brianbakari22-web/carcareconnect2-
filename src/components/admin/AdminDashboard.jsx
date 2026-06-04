@@ -83,6 +83,7 @@ export default function AdminDashboard() {
       { data: recentUsers },
     { data: recentOrders },
       { data: inventoryItems },
+      { data: commissionRates },
     ] = await Promise.all([
       supabase.from("profiles").select("role,created_at,is_active"),
       supabase.from("bookings").select("status,total_amount,created_at,booking_date,service_name,customer_id"),
@@ -91,6 +92,7 @@ export default function AdminDashboard() {
       supabase.from("profiles").select("id,first_name,last_name,role,created_at").order("created_at",{ascending:false}).limit(5),
       supabase.from("orders").select("id,status,subtotal,created_at").order("created_at",{ascending:false}).limit(5),
       supabase.from("inventory").select("id,is_active,stock_quantity").eq("is_active",true),
+      supabase.from("commission_rates").select("provider_type,platform_rate"),
     ])
 
     const ps = profiles||[]
@@ -103,7 +105,11 @@ export default function AdminDashboard() {
       providers: ps.filter(p=>p.role==="provider").length,
       drivers: ps.filter(p=>p.role==="driver").length,
       bookings: bks.length,
-      revenue: completed.reduce((s,b)=>s+Number(b.total_amount)*0.15,0),
+      revenue: completed.reduce((s,b)=>{
+        const rateRow = (commissionRates||[]).find(r=>r.provider_type===(b.provider_type||"garage"))
+        const rate = rateRow ? rateRow.platform_rate : 0.10
+        return s+Number(b.total_amount)*rate
+      },0),
       pending: bks.filter(b=>b.status==="pending").length,
       completed: completed.length,
     })
@@ -310,6 +316,9 @@ export default function AdminDashboard() {
     </div>
   )
 }
+
+
+
 
 
 
