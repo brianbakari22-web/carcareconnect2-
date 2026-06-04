@@ -75,6 +75,7 @@ import DriverEarnings from "./components/driver/DriverEarnings"
 import DriverReviews from "./components/driver/DriverReviews"
 import DriverPayouts from "./components/driver/DriverPayouts"
 import DriverVehicle from "./components/driver/DriverVehicle"
+import DriverPerformance from "./components/driver/DriverPerformance"
 import DriverNotifications from "./components/driver/DriverNotifications"
 import DriverProfile from "./components/driver/DriverProfile"
 import AdminDashboard from "./components/admin/AdminDashboard"
@@ -240,6 +241,7 @@ function DashboardRouter() {
           <Route path="earnings" element={<DriverEarnings />} />
           <Route path="payouts" element={<DriverPayouts />} />
           <Route path="vehicle" element={<DriverVehicle />} />
+          <Route path="performance" element={<DriverPerformance />} />
           <Route path="notifications" element={<DriverNotifications />} />
           <Route path="chat" element={<DriverChat />} />
               <Route path="claims" element={<DriverClaims />} />
@@ -321,6 +323,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 
