@@ -242,6 +242,7 @@ function DashboardRouter() {
           <Route path="payouts" element={<DriverPayouts />} />
           <Route path="vehicle" element={<DriverVehicle />} />
           <Route path="performance" element={<DriverPerformance />} />
+          <Route path="performance" element={<DriverPerformance />} />
           <Route path="notifications" element={<DriverNotifications />} />
           <Route path="chat" element={<DriverChat />} />
               <Route path="claims" element={<DriverClaims />} />
@@ -323,6 +324,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 

@@ -63,6 +63,8 @@ const NAV = {
     { path:"/dashboard/reviews", key:"myRatings", icon:"⭐" },
     { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
     { path:"/dashboard/claims", label:"My Claims", icon:"🛡️" },
+    { path:"/dashboard/vehicle", label:"My Vehicle", icon:"🚗" },
+    { path:"/dashboard/performance", label:"Performance", icon:"📊" },
 
 
 
