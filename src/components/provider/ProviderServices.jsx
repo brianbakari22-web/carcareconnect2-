@@ -119,7 +119,36 @@ export default function ProviderServices() {
 
   async function deleteService(id) {
     if (!confirm("Delete this service?")) return
-    await supabase.from("services").delete().eq("id",id).eq("provider_id",user.id)
+    // Soft delete - deactivate service
+    await supabase.from("services").update({ is_active:false }).eq("id",id).eq("provider_id",user.id)
+    
+    // Cancel pending bookings for this service
+    const { data: pendingBookings } = await supabase
+      .from("bookings")
+      .select("id,customer_id,service_name")
+      .eq("service_id", id)
+      .in("status", ["pending","confirmed"])
+    
+    if (pendingBookings?.length > 0) {
+      // Cancel the bookings
+      await supabase.from("bookings")
+        .update({ status:"cancelled", cancellation_reason:"Service no longer available" })
+        .eq("service_id", id)
+        .in("status", ["pending","confirmed"])
+      
+      // Notify each affected customer
+      for (const booking of pendingBookings) {
+        await supabase.from("notifications").insert({
+          user_id: booking.customer_id,
+          title: "Booking cancelled",
+          message: `Your booking for "${booking.service_name}" has been cancelled as the service is no longer available. Please book an alternative service.`,
+          type: "warning",
+        })
+      }
+      toast.success(`Service deactivated · ${pendingBookings.length} pending booking(s) cancelled and customers notified`)
+    } else {
+      toast.success("Service deactivated")
+    }
     toast.success("Service deleted")
     load()
   }
@@ -297,7 +326,7 @@ export default function ProviderServices() {
                   style={{ background:s.is_active?"#1a0808":"#071a12", border:`1px solid ${s.is_active?"#e24b4a40":"#1d9e7540"}`, borderRadius:7, color:s.is_active?"#e24b4a":"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                   {s.is_active?"Deactivate":"Activate"}
                 </button>
-                <button onClick={()=>deleteService(s.id)}
+                <button onClick={()=>{ if(confirm("Deactivate this service? Pending bookings will be cancelled and customers notified.")) deleteService(s.id) }}
                   style={{ background:"none", border:"1px solid #e24b4a20", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                   Delete
                 </button>
@@ -309,5 +338,8 @@ export default function ProviderServices() {
     </div>
   )
 }
+
+
+
 
 
