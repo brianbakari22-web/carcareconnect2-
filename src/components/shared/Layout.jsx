@@ -184,7 +184,7 @@ export default function Layout({ children }) {
       { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
       { path:"/dashboard/services", key:"myServices", icon:"🔧" },
       { path:"/dashboard/mechanics", label:"My Mechanics", icon:"👨‍🔧" },
-      ...(["garage","garage_premium","auto_electrician"].includes(providerType)?[{ path:"/dashboard/go-requests", label:"GO Requests", icon:"🚨" }]:[] as any),
+        ...(["garage","garage_premium","auto_electrician"].includes(providerType)?[{ path:"/dashboard/go-requests", label:"GO Requests", icon:"🚨" }]:[]),
     ] : []),
     ...(isInventoryProvider ? [
       { path:"/dashboard/inventory", label:"Inventory", icon:"📦" },
