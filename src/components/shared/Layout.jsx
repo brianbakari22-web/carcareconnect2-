@@ -202,6 +202,30 @@ export default function Layout({ children }) {
     { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
+  const providerNav = [
+    { path:"/dashboard", key:"overview", icon:"🏠" },
+    { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
+    { path:"/dashboard/services", key:"myServices", icon:"🔧" },
+    ...( ["parts_dealer","accessories_shop","tyre_shop","auto_glass"].includes(providerType) ? [
+      { path:"/dashboard/inventory", label:"Inventory", icon:"📦" },
+      { path:"/dashboard/orders", label:"Orders", icon:"🛒" },
+    ] : []),
+    { path:"/dashboard/earnings", key:"earnings", icon:"💰" },
+    { path:"/dashboard/analytics", key:"analytics", icon:"📊" },
+    { path:"/dashboard/reviews", key:"reviews", icon:"⭐" },
+    { path:"/dashboard/business-hours", label:"Business Hours", icon:"🕐" },
+    { path:"/dashboard/availability", key:"availability", icon:"📆" },
+    { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
+    ...( ["garage","garage_premium","panel_beater","auto_glass","car_wash","auto_electrician"].includes(providerType) ? [
+      { path:"/dashboard/mechanics", label:"My Mechanics", icon:"👨‍🔧" },
+    ] : []),
+    ...( ["garage","garage_premium","auto_electrician"].includes(providerType) ? [
+      { path:"/dashboard/go-requests", label:"GO Requests", icon:"🚨" },
+    ] : []),
+    { path:"/dashboard/claims", label:"Service Claims", icon:"🛡️" },
+    { path:"/dashboard/chat", key:"messages", icon:"✉️" },
+    { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
+    { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
   ]
 
   const nav = role === "provider" ? providerNav : (NAV[role] || [])
