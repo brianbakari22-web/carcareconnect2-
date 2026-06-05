@@ -220,7 +220,11 @@ export default function CustomerPartsMarketplace() {
 
           <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(2,1fr)", gap:12 }}>
             {filtered.map(item=>(
-              <div key={item.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1rem" }}>
+              <div key={item.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, overflow:"hidden" }}>
+                {item.photos?.[0]&&(
+                  <img src={item.photos[0]} alt={item.name} style={{ width:"100%", height:140, objectFit:"cover" }}/>
+                )}
+                <div style={{ padding:"1rem" }}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10, marginBottom:8 }}>
                   <div style={{ flex:1, minWidth:0 }}>
                     <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6", marginBottom:4 }}>{item.name}</div>
@@ -243,8 +247,9 @@ export default function CustomerPartsMarketplace() {
                   style={{ width:"100%", background:item.stock_quantity===0?"#333":"#e6821e", border:"none", borderRadius:8, color:item.stock_quantity===0?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px", cursor:item.stock_quantity===0?"not-allowed":"pointer" }}>
                   {item.stock_quantity===0?"Out of stock":"+ Add to cart"}
                 </button>
+                </div>
               </div>
-            ))}
+            )})
           </div>
         </>
       )}
@@ -360,5 +365,6 @@ export default function CustomerPartsMarketplace() {
     </div>
   )
 }
+
 
 
