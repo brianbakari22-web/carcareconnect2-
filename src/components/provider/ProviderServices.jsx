@@ -12,7 +12,7 @@ const CATEGORIES = [
     label: "Shop Standard",
     icon: "🏪",
     desc: "Customer brings car to your shop",
-    commission: "You keep 90% · Platform 10%",
+    commission: `You keep ${commissionRate.provider}% · Platform ${commissionRate.platform}%`,
     color: "#378add",
     bg: "#0c1f2e",
     border: "#378add40",
@@ -22,7 +22,7 @@ const CATEGORIES = [
     label: "Shop Premium",
     icon: "🏡",
     desc: "Your mechanic drives to customer home",
-    commission: "You keep 80% · Platform 20%",
+    commission: `You keep ${Math.max(commissionRate.provider-10,70)}% · Platform ${Math.min(commissionRate.platform+10,30)}%`,
     color: "#8b5cf6",
     bg: "#160a2e",
     border: "#8b5cf640",
@@ -32,7 +32,7 @@ const CATEGORIES = [
     label: "GO Service",
     icon: "🚨",
     desc: "Emergency roadside assistance",
-    commission: "You keep 85% · Platform 15%",
+    commission: `You keep ${commissionRate.provider}% · Platform ${commissionRate.platform}%`,
     color: "#e24b4a",
     bg: "#1a0808",
     border: "#e24b4a40",
@@ -49,13 +49,27 @@ export default function ProviderServices() {
   const isMobile = useIsMobile()
   const [services, setServices] = useState([])
   const [loading, setLoading] = useState(true)
+  const [commissionRate, setCommissionRate] = useState({ platform:10, provider:90 })
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState(null)
   const [form, setForm] = useState(EMPTY)
   const [saving, setSaving] = useState(false)
   const [activeCategory, setActiveCategory] = useState("all")
 
-  useEffect(() => { if (user) load() }, [user])
+  useEffect(() => {
+    if (!user) return
+    load()
+    // Load commission rate for this provider type
+    const providerType = profile?.provider_type || "garage"
+    supabase.from("commission_rates").select("platform_rate,provider_rate")
+      .eq("provider_type", providerType).single()
+      .then(({ data }) => {
+        if (data) setCommissionRate({
+          platform: Math.round(data.platform_rate*100),
+          provider: Math.round(data.provider_rate*100)
+        })
+      })
+  }, [user, profile?.provider_type])
 
   async function load() {
     const { data } = await supabase.from("services").select("*").eq("provider_id", user.id).order("created_at", { ascending:false })
@@ -338,6 +352,7 @@ export default function ProviderServices() {
     </div>
   )
 }
+
 
 
 
