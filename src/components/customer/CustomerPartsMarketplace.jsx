@@ -249,7 +249,7 @@ export default function CustomerPartsMarketplace() {
                 </button>
                 </div>
               </div>
-            )})
+            ))}
           </div>
         </>
       )}
