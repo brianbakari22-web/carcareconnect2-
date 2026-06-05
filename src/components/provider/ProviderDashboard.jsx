@@ -135,11 +135,11 @@ export default function ProviderDashboard() {
             Car Care Connect operates a <strong style={{ color:"#f0ede6" }}>Service Guarantee</strong> for all customers. As a provider, you must be aware of the following:
           </div>
           {[
-            { icon:"1Γâú", text:"If a customer is unhappy with your service, they can submit a Service Guarantee claim within 7 days." },
-            { icon:"2Γâú", text:"If the claim is approved, the full service cost is deducted from your earnings and a voucher is issued to the customer." },
-            { icon:"3Γâú", text:"1st approved claim → Warning + cost deduction." },
-            { icon:"4Γâú", text:"2nd approved claim → 7 day suspension + cost deduction." },
-            { icon:"5Γâú", text:"3rd approved claim → Permanent ban from the platform." },
+            { icon:"1️⃣", text:"If a customer is unhappy with your service, they can submit a Service Guarantee claim within 7 days." },
+            { icon:"2️⃣", text:"If the claim is approved, the full service cost is deducted from your earnings and a voucher is issued to the customer." },
+            { icon:"3️⃣", text:"1st approved claim → Warning + cost deduction." },
+            { icon:"4️⃣", text:"2nd approved claim → 7 day suspension + cost deduction." },
+            { icon:"5️⃣", text:"3rd approved claim → Permanent ban from the platform." },
             { icon:"✅", text:"The best protection is to always deliver excellent, professional service." },
           ].map(item=>(
             <div key={item.icon} style={{ display:"flex", gap:10, alignItems:"flex-start", marginBottom:6 }}>
@@ -364,6 +364,7 @@ export default function ProviderDashboard() {
     </div>
   )
 }
+
 
 
 
