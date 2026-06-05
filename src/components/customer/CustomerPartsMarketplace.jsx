@@ -34,6 +34,8 @@ export default function CustomerPartsMarketplace() {
   const [ordering, setOrdering] = useState(false)
   const [orders, setOrders] = useState([])
   const [tab, setTab] = useState("browse")
+  const [checkoutStep, setCheckoutStep] = useState("cart") // cart, details, payment
+  const [customerDetails, setCustomerDetails] = useState({ name:"", phone:"", email:"" })
 
   useEffect(() => {
     if (!user) return
@@ -286,8 +288,17 @@ export default function CustomerPartsMarketplace() {
         <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.85)", zIndex:200, display:"flex", alignItems:"flex-end", justifyContent:"center" }}>
           <div style={{ width:"100%", maxWidth:500, background:"#111", borderRadius:"16px 16px 0 0", padding:"1.5rem", maxHeight:"85vh", overflowY:"auto" }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1.25rem" }}>
-              <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#f0ede6" }}>🛒 Your cart</div>
-              <button onClick={()=>setShowCart(false)} style={{ background:"none", border:"none", color:"#555", fontSize:22, cursor:"pointer" }}>×</button>
+              <div>
+              <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#f0ede6" }}>
+                {checkoutStep==="cart"?"🛒 Your cart":checkoutStep==="details"?"📋 Delivery details":"💳 Payment"}
+              </div>
+              <div style={{ display:"flex", gap:4, marginTop:4 }}>
+                {["cart","details","payment"].map((s,i)=>(
+                  <div key={s} style={{ flex:1, height:3, borderRadius:2, background:checkoutStep===s||["details","payment"].includes(checkoutStep)&&i===0||checkoutStep==="payment"&&i===1?"#e6821e":"#333" }}/>
+                ))}
+              </div>
+            </div>
+              <button onClick={()=>{ setShowCart(false); setCheckoutStep("cart") }} style={{ background:"none", border:"none", color:"#555", fontSize:22, cursor:"pointer" }}>×</button>
             </div>
 
             {cart.length===0&&<div style={{ color:"#444", textAlign:"center", padding:"2rem" }}>Cart is empty</div>}
@@ -321,6 +332,23 @@ export default function CustomerPartsMarketplace() {
                   </div>
                 </div>
 
+                {checkoutStep==="details"&&(
+                  <div style={{ marginBottom:12 }}>
+                    <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#f0ede6", marginBottom:10 }}>Your details</div>
+                    <div style={{ marginBottom:8 }}>
+                      <div style={{ fontSize:11, color:"#666", marginBottom:4 }}>Full name</div>
+                      <input value={customerDetails.name} onChange={e=>setCustomerDetails(d=>({...d,name:e.target.value}))}
+                        placeholder="Your full name"
+                        style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:12, outline:"none" }}/>
+                    </div>
+                    <div style={{ marginBottom:8 }}>
+                      <div style={{ fontSize:11, color:"#666", marginBottom:4 }}>Phone number</div>
+                      <input value={customerDetails.phone} onChange={e=>setCustomerDetails(d=>({...d,phone:e.target.value}))}
+                        placeholder="0712 345 678"
+                        style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:12, outline:"none" }}/>
+                    </div>
+                  </div>
+                )}
                 {fulfillment==="delivery"&&(
                   <>
                     <div style={{ marginBottom:8 }}>
@@ -365,6 +393,7 @@ export default function CustomerPartsMarketplace() {
     </div>
   )
 }
+
 
 
 
