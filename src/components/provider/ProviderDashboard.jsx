@@ -51,6 +51,7 @@ export default function ProviderDashboard() {
   const providerType = profile?.provider_type || "garage"
   const config = TYPE_CONFIG[providerType] || TYPE_CONFIG.garage
   const isInventoryFocus = config.focus === "inventory"
+  const isMixedProvider = providerType === "tyre_shop" || providerType === "auto_glass"
   const commission = COMMISSION_RATES[providerType] || COMMISSION_RATES.garage
 
   useEffect(() => {
@@ -363,6 +364,7 @@ export default function ProviderDashboard() {
     </div>
   )
 }
+
 
 
 
