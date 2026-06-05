@@ -33,28 +33,8 @@ const NAV = {
     { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
   ],
-  provider: [
-    { path:"/dashboard", key:"overview", icon:"🏠" },
-    { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
-    { path:"/dashboard/services", key:"myServices", icon:"🔧" },
-    { path:"/dashboard/earnings", key:"earnings", icon:"💰" },
-    { path:"/dashboard/analytics", key:"analytics", icon:"📊" },
-    { path:"/dashboard/reviews", key:"reviews", icon:"⭐" },
-    { path:"/dashboard/hours", key:"businessHours", icon:"🕐" },
-    { path:"/dashboard/availability", key:"availability", icon:"📆" },
-    { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
-    { path:"/dashboard/mechanics", label:"My Mechanics", icon:"👨‍🔧" },
-    { path:"/dashboard/go-requests", label:"GO Requests 🚨", icon:"🚨" },
-    { path:"/dashboard/claims", label:"Service Claims", icon:"🛡️" },
-    { path:"/dashboard/marketplace", label:"Marketplace", icon:"🛒" },
-    { path:"/dashboard/parts", label:"Parts & Accessories", icon:"⚙️" },
-    { path:"/dashboard/marketplace/my-listings", label:"My Listings", icon:"📦" },
-    { path:"/dashboard/marketplace/my-offers", label:"My Offers", icon:"💰" },
-    { path:"/dashboard/marketplace/transactions", label:"My Transactions", icon:"💳" },
-    { path:"/dashboard/chat", key:"messages", icon:"✉️" },
-    { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
-    { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
-  ],
+  provider: [], // built dynamically below
+
   driver: [
     { path:"/dashboard", key:"overview", icon:"🏠" },
     { path:"/dashboard/jobs", key:"availableJobs", icon:"📦" },
@@ -177,31 +157,31 @@ export default function Layout({ children }) {
   const isServiceProvider = ["garage","garage_premium","auto_electrician","car_wash","panel_beater","auto_glass"].includes(providerType)
   const isTyreShop = providerType === "tyre_shop"
 
-  // Build dynamic nav based on provider type
-  const providerNav = [
-    { path:"/dashboard", key:"overview", icon:"🏠" },
-    ...(isServiceProvider ? [
-      { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
-      { path:"/dashboard/services", key:"myServices", icon:"🔧" },
-      { path:"/dashboard/mechanics", label:"My Mechanics", icon:"👨‍🔧" },
-        ...(["garage","garage_premium","auto_electrician"].includes(providerType)?[{ path:"/dashboard/go-requests", label:"GO Requests", icon:"🚨" }]:[]),
-    ] : []),
-    ...(isInventoryProvider ? [
-      { path:"/dashboard/inventory", label:"Inventory", icon:"📦" },
-      { path:"/dashboard/orders", label:"Orders", icon:"🛒" },
-      ...(isTyreShop ? [{ path:"/dashboard/bookings", key:"bookings", icon:"📅" }] : []),
-    ] : []),
-    { path:"/dashboard/earnings", key:"earnings", icon:"💰" },
-    { path:"/dashboard/analytics", label:"Analytics", icon:"📊" },
-    { path:"/dashboard/reviews", key:"reviews", icon:"⭐" },
-    { path:"/dashboard/availability", label:"Availability", icon:"🗓️" },
-    { path:"/dashboard/business-hours", label:"Business Hours", icon:"🕐" },
-    { path:"/dashboard/payouts", label:"Payouts", icon:"🏦" },
-    { path:"/dashboard/claims", label:"Service Claims", icon:"🛡️" },
-    
-    { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
-    { path:"/dashboard/chat", key:"messages", icon:"✉️" },
-    { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const providerNav = [
     { path:"/dashboard", key:"overview", icon:"🏠" },
     { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
