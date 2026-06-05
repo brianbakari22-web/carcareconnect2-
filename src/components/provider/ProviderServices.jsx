@@ -12,7 +12,7 @@ const CATEGORIES = [
     label: "Shop Standard",
     icon: "🏪",
     desc: "Customer brings car to your shop",
-    commission: `You keep ${commissionRate.provider}% · Platform ${commissionRate.platform}%`,
+    commission: "You keep X% · Platform Y%",
     color: "#378add",
     bg: "#0c1f2e",
     border: "#378add40",
@@ -22,7 +22,7 @@ const CATEGORIES = [
     label: "Shop Premium",
     icon: "🏡",
     desc: "Your mechanic drives to customer home",
-    commission: `You keep ${Math.max(commissionRate.provider-10,70)}% · Platform ${Math.min(commissionRate.platform+10,30)}%`,
+    commission: "You keep X% · Platform Y%",
     color: "#8b5cf6",
     bg: "#160a2e",
     border: "#8b5cf640",
@@ -32,7 +32,7 @@ const CATEGORIES = [
     label: "GO Service",
     icon: "🚨",
     desc: "Emergency roadside assistance",
-    commission: `You keep ${commissionRate.provider}% · Platform ${commissionRate.platform}%`,
+    commission: "You keep X% · Platform Y%",
     color: "#e24b4a",
     bg: "#1a0808",
     border: "#e24b4a40",
@@ -328,7 +328,7 @@ export default function ProviderServices() {
                 <div style={{ display:"flex", gap:12, flexWrap:"wrap" }}>
                   <span style={{ fontSize:12, color:"#e6821e", fontFamily:"Syne", fontWeight:700 }}>KES {Number(s.price).toLocaleString()}</span>
                   <span style={{ fontSize:11, color:"#555" }}>⏱ {s.duration_minutes||60} min</span>
-                  <span style={{ fontSize:11, color:cat.color }}>{cat.commission}</span>
+                  <span style={{ fontSize:11, color:cat.color }}>{cat.key==="shop_standard"?`You keep ${commissionRate.provider}% · Platform ${commissionRate.platform}%`:cat.key==="shop_premium"?`You keep ${Math.max(commissionRate.provider-10,70)}% · Platform ${Math.min(commissionRate.platform+10,30)}%`:`You keep ${commissionRate.provider}% · Platform ${commissionRate.platform}%`}</span>
                 </div>
               </div>
               <div style={{ display:"flex", gap:6, flexShrink:0, flexWrap:"wrap", justifyContent:"flex-end" }}>
@@ -352,6 +352,7 @@ export default function ProviderServices() {
     </div>
   )
 }
+
 
 
 
