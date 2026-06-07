@@ -8,13 +8,13 @@ import toast from "react-hot-toast"
 
 const PROVIDER_TYPES = [
   { key:"garage", label:"Garage/Mechanic", icon:"🔧", desc:"Car service and repair" },
-  { key:"parts_dealer", label:"Parts Dealer", icon:"ΓÜÖ∩╕Å", desc:"Auto parts and spares" },
-  { key:"accessories_shop", label:"Accessories Shop", icon:"Γ£¿", desc:"Car accessories" },
-  { key:"tyre_shop", label:"Tyre Shop", icon:"≡ƒ¢₧", desc:"Tyre sales and fitting" },
-  { key:"auto_electrician", label:"Auto Electrician", icon:"ΓÜí", desc:"Electrical specialist" },
-  { key:"car_wash", label:"Car Wash", icon:"≡ƒÜ┐", desc:"Wash and detailing" },
-  { key:"panel_beater", label:"Panel Beater", icon:"≡ƒö¿", desc:"Body and spray paint" },
-  { key:"auto_glass", label:"Auto Glass", icon:"≡ƒ¬ƒ", desc:"Windscreen specialist" },
+  { key:"parts_dealer", label:"Parts Dealer", icon:"⚙️", desc:"Auto parts and spares" },
+  { key:"accessories_shop", label:"Accessories Shop", icon:"✨", desc:"Car accessories" },
+  { key:"tyre_shop", label:"Tyre Shop", icon:"🛞", desc:"Tyre sales and fitting" },
+  { key:"auto_electrician", label:"Auto Electrician", icon:"⚡", desc:"Electrical specialist" },
+  { key:"car_wash", label:"Car Wash", icon:"🚿", desc:"Wash and detailing" },
+  { key:"panel_beater", label:"Panel Beater", icon:"🔨", desc:"Body and spray paint" },
+  { key:"auto_glass", label:"Auto Glass", icon:"🪟", desc:"Windscreen specialist" },
 ]
 const DRIVER_VEHICLE_TYPES = [
   { key:"car", label:"Car", icon:"🚗", desc:"Standard delivery" },
@@ -464,6 +464,7 @@ export default function AuthPage() {
     </div>
   )
 }
+
 
 
 
