@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
 
 export default function ProviderNotifications() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const [notifications, setNotifications] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -78,7 +80,16 @@ export default function ProviderNotifications() {
         </div>
       )}
       {notifications.map(n=>(
-        <div key={n.id} onClick={()=>!n.is_read&&markRead(n.id)}
+        <div key={n.id} onClick={()=>{ 
+        if(!n.is_read) markRead(n.id)
+        if(n.type==="message"||n.title?.includes("💬")) {
+          try {
+            const meta = n.metadata ? JSON.parse(n.metadata) : {}
+            if(meta.booking_id) navigate(`/dashboard/chat?booking=${meta.booking_id}`)
+            else navigate("/dashboard/chat")
+          } catch(_) { navigate("/dashboard/chat") }
+        }
+      }}
           style={{ background:n.is_read?"#f8f8f8":"#ffffff", border:`1px solid ${n.is_read?"#1e1e1e":typeColor[n.type]||"#e6821e"}30`, borderRadius:10, padding:"1rem", marginBottom:8, cursor:n.is_read?"default":"pointer", display:"flex", alignItems:"flex-start", gap:12 }}>
           <div style={{ width:38, height:38, borderRadius:9, background:typeBg[n.type]||"#1a1208", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>
             {typeIcon[n.type]||"🔔"}
@@ -97,6 +108,7 @@ export default function ProviderNotifications() {
     </div>
   )
 }
+
 
 
 
