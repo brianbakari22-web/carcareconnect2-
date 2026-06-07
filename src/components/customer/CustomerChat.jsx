@@ -92,7 +92,8 @@ export default function CustomerChat() {
             </div>
             <div style={{ flex:1, minHeight:0 }}>
               <ChatWindow
-                bookingId={selected.bookingId}
+                bookingId={selected.bookingId||null}
+                listingId={selected.listingId||null}
                 otherUserId={selected.otherUserId}
                 otherUserName={selected.otherUserName}
                 onClose={()=>setSelected(null)}
@@ -119,7 +120,8 @@ export default function CustomerChat() {
             </div>
             <div style={{ flex:1, minHeight:0 }}>
               <ChatWindow
-                bookingId={selected.bookingId}
+                bookingId={selected.bookingId||null}
+                listingId={selected.listingId||null}
                 otherUserId={selected.otherUserId}
                 otherUserName={selected.otherUserName}
                 onClose={()=>setSelected(null)}
@@ -171,6 +173,8 @@ export default function CustomerChat() {
     </>
   )
 }
+
+
 
 
 
