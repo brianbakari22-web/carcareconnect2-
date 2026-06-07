@@ -155,7 +155,7 @@ export default function AuthPage() {
     }
   }
 
-  const inp = { width:"100%", background:"#000000", border:"1px solid #2a2a2a", borderRadius:9, padding:"12px 14px", color:"#000", fontSize:15, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:12 }
+  const inp = { width:"100%", background:"#f5f5f5", border:"1px solid #e0e0e0", borderRadius:9, padding:"12px 14px", color:"#000000", fontSize:15, outline:"none", fontFamily:"DM Sans,sans-serif", marginBottom:12 }
   const lbl = { fontSize:13, color:"#666666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
   const roleData = ROLES.find(r=>r.key===selectedRole)
 
