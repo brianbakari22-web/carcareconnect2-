@@ -78,7 +78,7 @@ export default function ProviderPartsManager({ booking, onUpdate }) {
       )}
 
       {parts.map(p=>(
-        <div key={p.id} style={{ display:"flex", alignItems:"center", gap:8, padding:"8px 0", borderBottom:"1px solid #1a1a1a" }}>
+        <div key={p.id} style={{ display:"flex", alignItems:"center", gap:8, padding:"8px 0", borderBottom:"1px solid #eeeeee" }}>
           <div style={{ flex:1 }}>
             <div style={{ fontSize:12, color:"#000000" }}>{p.name}</div>
             <div style={{ fontSize:10, color:"#777777" }}>Qty: {p.quantity} × KES {p.unit_price.toLocaleString()}</div>
@@ -120,4 +120,5 @@ export default function ProviderPartsManager({ booking, onUpdate }) {
     </div>
   )
 }
+
 

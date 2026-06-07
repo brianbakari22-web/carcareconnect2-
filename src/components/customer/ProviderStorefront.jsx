@@ -136,7 +136,7 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
                   { label:"Services", value:services.length+" services listed" },
                   { label:"Verified", value:provider.is_verified?"✓ Yes":"Pending" },
                 ].map(f=>(
-                  <div key={f.label} style={{ display:"flex", justifyContent:"space-between", padding:"8px 0", borderBottom:"1px solid #1a1a1a" }}>
+                  <div key={f.label} style={{ display:"flex", justifyContent:"space-between", padding:"8px 0", borderBottom:"1px solid #eeeeee" }}>
                     <span style={{ fontSize:12, color:"#777777" }}>{f.label}</span>
                     <span style={{ fontSize:12, color:"#000000" }}>{f.value}</span>
                   </div>
@@ -211,4 +211,5 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
     </div>
   )
 }
+
 

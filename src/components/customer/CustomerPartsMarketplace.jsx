@@ -273,7 +273,7 @@ export default function CustomerPartsMarketplace() {
                 </div>
               </div>
               {o.order_items?.map(oi=>(
-                <div key={oi.id} style={{ display:"flex", justifyContent:"space-between", fontSize:11, color:"#666", padding:"4px 0", borderTop:"1px solid #1a1a1a" }}>
+                <div key={oi.id} style={{ display:"flex", justifyContent:"space-between", fontSize:11, color:"#666", padding:"4px 0", borderTop:"1px solid #eeeeee" }}>
                   <span>{oi.name} x{oi.quantity}</span>
                   <span>KES {Number(oi.unit_price*oi.quantity).toLocaleString()}</span>
                 </div>
@@ -304,7 +304,7 @@ export default function CustomerPartsMarketplace() {
             {cart.length===0&&<div style={{ color:"#888888", textAlign:"center", padding:"2rem" }}>Cart is empty</div>}
 
             {cart.map(item=>(
-              <div key={item.id} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 0", borderBottom:"1px solid #1a1a1a" }}>
+              <div key={item.id} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 0", borderBottom:"1px solid #eeeeee" }}>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ fontSize:13, color:"#000000" }}>{item.name}</div>
                   <div style={{ fontSize:11, color:"#777777" }}>KES {Number(item.price).toLocaleString()} / {item.unit}</div>
@@ -393,6 +393,7 @@ export default function CustomerPartsMarketplace() {
     </div>
   )
 }
+
 
 
 

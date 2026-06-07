@@ -396,7 +396,7 @@ export default function CustomerGoService() {
         <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:12, padding:"1rem", marginBottom:"1.5rem" }}>
           <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75", marginBottom:8 }}>Active emergency requests</div>
           {activeGoBookings.map(b=>(
-            <div key={b.id} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"8px 0", borderBottom:"1px solid #1a1a1a" }}>
+            <div key={b.id} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"8px 0", borderBottom:"1px solid #eeeeee" }}>
               <div>
                 <div style={{ fontSize:12, color:"#000000" }}>{b.service_name}</div>
                 <div style={{ fontSize:10, color:"#777777" }}>#{b.booking_number} · {b.status}</div>
@@ -575,6 +575,7 @@ export default function CustomerGoService() {
     </div>
   )
 }
+
 
 
 

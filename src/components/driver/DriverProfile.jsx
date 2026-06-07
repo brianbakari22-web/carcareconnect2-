@@ -213,7 +213,7 @@ export default function DriverProfile() {
             { label:"Rating", value:stats.rating, color:"#e6821e" },
             { label:"Earned", value:`${Number(stats.earnings).toLocaleString()}`, color:"#8b5cf6" },
           ].map(s=>(
-            <div key={s.label} style={{ background:"#ffffff", borderRadius:8, padding:"0.6rem", textAlign:"center", border:"1px solid #1a1a1a" }}>
+            <div key={s.label} style={{ background:"#ffffff", borderRadius:8, padding:"0.6rem", textAlign:"center", border:"1px solid #eeeeee" }}>
               <div style={{ fontFamily:"Syne", fontSize:isMobile?13:16, fontWeight:800, color:s.color }}>{s.value}</div>
               <div style={{ fontSize:9, color:"#888888", marginTop:2 }}>{s.label}</div>
             </div>
@@ -402,6 +402,7 @@ export default function DriverProfile() {
     </div>
   )
 }
+
 
 
 

@@ -118,7 +118,7 @@ export default function ProviderAnalytics() {
           { label:"One-time customers", value:total-returning },
           { label:"Retention rate", value:`${retentionRate}%`, color:"#378add" },
         ].map(s=>(
-          <div key={s.label} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"8px 0", borderBottom:"1px solid #1a1a1a" }}>
+          <div key={s.label} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"8px 0", borderBottom:"1px solid #eeeeee" }}>
             <div style={{ fontSize:13, color:"#555555" }}>{s.label}</div>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:s.color||"#f0ede6" }}>{s.value}</div>
           </div>
@@ -127,6 +127,7 @@ export default function ProviderAnalytics() {
     </div>
   )
 }
+
 
 
 

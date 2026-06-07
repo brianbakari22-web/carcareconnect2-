@@ -145,7 +145,7 @@ export default function DriverAvailableJobs() {
 
             {/* Vehicle info */}
             {vehicle&&(
-              <div style={{ background:"#ffffff", borderRadius:10, padding:"0.9rem", marginBottom:10, border:"1px solid #1a1a1a" }}>
+              <div style={{ background:"#ffffff", borderRadius:10, padding:"0.9rem", marginBottom:10, border:"1px solid #eeeeee" }}>
                 <div style={{ fontSize:10, color:"#777777", textTransform:"uppercase", marginBottom:6 }}>Vehicle to transport</div>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
                   <div>
@@ -161,12 +161,12 @@ export default function DriverAvailableJobs() {
 
             {/* Customer & location info */}
             <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:8, marginBottom:12 }}>
-              <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", border:"1px solid #1a1a1a" }}>
+              <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", border:"1px solid #eeeeee" }}>
                 <div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>Customer</div>
                 <div style={{ fontSize:12, color:"#000000" }}>{customer?.first_name} {customer?.last_name}</div>
                 {customer?.city&&<div style={{ fontSize:11, color:"#777777", marginTop:2 }}>📍 {customer.city}</div>}
               </div>
-              <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", border:"1px solid #1a1a1a" }}>
+              <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", border:"1px solid #eeeeee" }}>
                 <div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>Service total</div>
                 <div style={{ fontSize:12, color:"#e6821e", fontWeight:600 }}>KES {Number(job.total_amount||0).toLocaleString()}</div>
                 <div style={{ fontSize:10, color:"#777777", marginTop:2 }}>Payment: {job.payment_method||"—"}</div>
@@ -175,7 +175,7 @@ export default function DriverAvailableJobs() {
 
             {/* Problem description */}
             {job.problem_description&&(
-              <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", marginBottom:10, border:"1px solid #1a1a1a" }}>
+              <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", marginBottom:10, border:"1px solid #eeeeee" }}>
                 <div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>Problem description</div>
                 <div style={{ fontSize:12, color:"#555555", fontStyle:"italic" }}>"{job.problem_description}"</div>
               </div>
@@ -207,4 +207,5 @@ export default function DriverAvailableJobs() {
     </div>
   )
 }
+
 

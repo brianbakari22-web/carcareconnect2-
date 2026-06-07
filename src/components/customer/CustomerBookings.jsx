@@ -258,7 +258,7 @@ export default function CustomerBookings() {
             <div style={{ marginTop:10, background:"#0c1f2e", border:"1px solid #378add40", borderRadius:10, padding:"0.9rem" }}>
               <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#378add", marginBottom:8 }}>🔧 Parts added by provider</div>
               {b.parts_details.map((p,i)=>(
-                <div key={i} style={{ display:"flex", justifyContent:"space-between", fontSize:12, padding:"4px 0", borderBottom:"1px solid #1a1a1a" }}>
+                <div key={i} style={{ display:"flex", justifyContent:"space-between", fontSize:12, padding:"4px 0", borderBottom:"1px solid #eeeeee" }}>
                   <span style={{ color:"#555555" }}>{p.name} × {p.quantity}</span>
                   <span style={{ color:"#000000" }}>KES {p.total?.toLocaleString()}</span>
                 </div>
@@ -360,6 +360,7 @@ export default function CustomerBookings() {
     </div>
   )
 }
+
 
 
 

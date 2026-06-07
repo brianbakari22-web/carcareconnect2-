@@ -99,7 +99,7 @@ export default function ProviderBusinessHours() {
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>Operating hours</div>
             {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
             {hours.map((day, i) => (
-              <div key={day.day_of_week} style={{ display:"flex", alignItems:"center", gap:12, padding:"10px 0", borderBottom:"1px solid #1a1a1a" }}>
+              <div key={day.day_of_week} style={{ display:"flex", alignItems:"center", gap:12, padding:"10px 0", borderBottom:"1px solid #eeeeee" }}>
                 <div style={{ width:90, fontSize:13, color:day.is_open?"#f0ede6":"#555", fontWeight:day.is_open?500:400 }}>{day.day_name}</div>
                 <label style={{ display:"flex", alignItems:"center", gap:6, cursor:"pointer" }}>
                   <input type="checkbox" checked={day.is_open} onChange={e=>updateDay(i,"is_open",e.target.checked)}/>
@@ -163,4 +163,5 @@ export default function ProviderBusinessHours() {
     </div>
   )
 }
+
 

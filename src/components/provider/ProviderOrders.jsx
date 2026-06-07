@@ -151,7 +151,7 @@ export default function ProviderOrders() {
               </div>
             ))}
             {o.delivery_fee>0&&(
-              <div style={{ display:"flex", justifyContent:"space-between", fontSize:11, color:"#777777", borderTop:"1px solid #1a1a1a", paddingTop:4, marginTop:4 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", fontSize:11, color:"#777777", borderTop:"1px solid #eeeeee", paddingTop:4, marginTop:4 }}>
                 <span>Delivery fee</span><span>KES {Number(o.delivery_fee).toLocaleString()}</span>
               </div>
             )}
@@ -182,5 +182,6 @@ export default function ProviderOrders() {
     </div>
   )
 }
+
 
 

@@ -321,11 +321,12 @@ function LocationHistory({ mechanicId }) {
   }, [mechanicId])
   if (!history.length) return <div style={{ fontSize:12, color:"#888888" }}>No location history</div>
   return history.map((h,i)=>(
-    <div key={h.id} style={{ display:"flex", justifyContent:"space-between", padding:"6px 0", borderBottom:"1px solid #1a1a1a", fontSize:11 }}>
+    <div key={h.id} style={{ display:"flex", justifyContent:"space-between", padding:"6px 0", borderBottom:"1px solid #eeeeee", fontSize:11 }}>
       <span style={{ color:"#777777", fontFamily:"monospace" }}>{h.latitude.toFixed(5)}, {h.longitude.toFixed(5)}</span>
       <span style={{ color:"#888888" }}>{new Date(h.recorded_at).toLocaleTimeString()}</span>
     </div>
   ))
 }
+
 
 

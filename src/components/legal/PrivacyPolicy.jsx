@@ -7,7 +7,7 @@ export default function PrivacyPolicy() {
     <div style={{ minHeight:"100vh", background:"#ffffff", fontFamily:"'DM Sans',sans-serif", color:"#000000" }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');`}</style>
 
-      <nav style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"1.25rem 2rem", borderBottom:"1px solid #1a1a1a", position:"sticky", top:0, background:"#ffffff", zIndex:10 }}>
+      <nav style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"1.25rem 2rem", borderBottom:"1px solid #eeeeee", position:"sticky", top:0, background:"#ffffff", zIndex:10 }}>
         <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000000", cursor:"pointer" }} onClick={()=>navigate("/auth")}>
           🚗 Car<span style={{ color:"#e6821e" }}>Care</span> Connect
         </div>
@@ -131,12 +131,13 @@ export default function PrivacyPolicy() {
         ))}
       </div>
 
-      <footer style={{ borderTop:"1px solid #1a1a1a", padding:"1.5rem 2rem", textAlign:"center" }}>
+      <footer style={{ borderTop:"1px solid #eeeeee", padding:"1.5rem 2rem", textAlign:"center" }}>
         <div style={{ fontSize:11, color:"#333" }}>© 2026 Car Care Connect · All rights reserved</div>
       </footer>
     </div>
   )
 }
+
 
 
 

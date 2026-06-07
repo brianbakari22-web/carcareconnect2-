@@ -435,7 +435,7 @@ export default function CustomerDiscover() {
               {getWeekHours(selectedProvider.id).map(h=>{
                 const isToday = h.dayIndex===new Date().getDay()
                 return (
-                  <div key={h.day} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"7px 0", borderBottom:"1px solid #1a1a1a" }}>
+                  <div key={h.day} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"7px 0", borderBottom:"1px solid #eeeeee" }}>
                     <div style={{ fontSize:12, color:isToday?"#e6821e":"#888", fontWeight:isToday?600:400 }}>
                       {h.day}{isToday?` (${t("today")})` :""}
                     </div>
@@ -585,6 +585,7 @@ export default function CustomerDiscover() {
     </div>
   )
 }
+
 
 
 
