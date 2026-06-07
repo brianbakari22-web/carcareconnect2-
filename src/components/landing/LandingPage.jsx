@@ -76,7 +76,7 @@ export default function LandingPage() {
         <img src="/logo.svg" alt="Car Care Connect" style={{ height:36 }}/>
         <div style={{ display:"flex", gap:6, alignItems:"center" }}>
           <button onClick={()=>navigate("/auth")} style={{ background:"none", border:"1px solid #444", borderRadius:8, color:"#aaa", fontSize:12, padding:"8px 14px", cursor:"pointer", fontFamily:"DM Sans,sans-serif" }}>Sign in</button>
-          <button onClick={()=>navigate("/auth")} style={{ background:"#000000", border:"none", borderRadius:500, color:"#fff", fontSize:12, fontWeight:700, padding:"9px 16px", cursor:"pointer", fontFamily:"Syne,sans-serif", whiteSpace:"nowrap" }}>Get started →</button>
+          <button onClick={()=>navigate("/auth")} style={{ background:"#e6821e", border:"none", borderRadius:500, color:"#fff", fontSize:12, fontWeight:700, padding:"9px 16px", cursor:"pointer", fontFamily:"Syne,sans-serif", whiteSpace:"nowrap" }}>Get started →</button>
         </div>
       </nav>
 
@@ -405,6 +405,8 @@ export default function LandingPage() {
     </div>
   )
 }
+
+
 
 
 
