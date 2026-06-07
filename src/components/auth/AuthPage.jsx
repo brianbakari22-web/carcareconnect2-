@@ -232,10 +232,10 @@ export default function AuthPage() {
             </div>
           )}
 
-          <div style={{ display:"flex", gap:0, marginBottom:"1.5rem", background:"#000000", borderRadius:9, padding:3 }}>
+          <div style={{ display:"flex", gap:0, marginBottom:"1.5rem", background:"#f0f0f0", borderRadius:9, padding:3 }}>
             {[{k:"signin",l:"Sign in"},{k:"signup",l:"Create account"}].map(m=>(
               <button key={m.k} onClick={()=>{ setMode(m.k); setAgreed(false) }}
-                style={{ flex:1, padding:"9px", borderRadius:7, border:"none", fontSize:13, cursor:"pointer", fontFamily:"'DM Sans',sans-serif", fontWeight:mode===m.k?600:400, background:mode===m.k?"#1a1a1a":"transparent", color:mode===m.k?"#f0ede6":"#555", transition:"all 0.15s" }}>
+                style={{ flex:1, padding:"9px", borderRadius:7, border:"none", fontSize:13, cursor:"pointer", fontFamily:"'DM Sans',sans-serif", fontWeight:mode===m.k?600:400, background:mode===m.k?"#ffffff":"transparent", color:mode===m.k?"#000000":"#888", transition:"all 0.15s" }}>
                 {m.l}
               </button>
             ))}
@@ -268,9 +268,9 @@ export default function AuthPage() {
                     <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:10 }}>
                       {PROVIDER_TYPES.map(pt=>(
                         <div key={pt.key} onClick={()=>setForm(f=>({...f,providerType:pt.key}))}
-                          style={{ background:form.providerType===pt.key?"#0c1f2e":"#0f0f0f", border:"1px solid "+(form.providerType===pt.key?"#378add":"#222"), borderRadius:8, padding:"8px 10px", cursor:"pointer" }}>
+                          style={{ background:form.providerType===pt.key?"#eff6ff":"#f5f5f5", border:"1px solid "+(form.providerType===pt.key?"#378add":"#e0e0e0"), borderRadius:8, padding:"8px 10px", cursor:"pointer" }}>
                           <div style={{ fontSize:18, marginBottom:2 }}>{pt.icon}</div>
-                          <div style={{ fontSize:13, fontWeight:600, color:form.providerType===pt.key?"#378add":"#888" }}>{pt.label}</div>
+                          <div style={{ fontSize:13, fontWeight:600, color:form.providerType===pt.key?"#378add":"#555" }}>{pt.label}</div>
                           <div style={{ fontSize:12, color:"#999" }}>{pt.desc}</div>
                         </div>
                       ))}
@@ -283,9 +283,9 @@ export default function AuthPage() {
                     <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:10 }}>
                       {DRIVER_VEHICLE_TYPES.map(vt=>(
                         <div key={vt.key} onClick={()=>setForm(f=>({...f,driverVehicleType:vt.key}))}
-                          style={{ background:form.driverVehicleType===vt.key?"#071a12":"#0f0f0f", border:"1px solid "+(form.driverVehicleType===vt.key?"#1d9e75":"#222"), borderRadius:8, padding:"8px 10px", cursor:"pointer" }}>
+                          style={{ background:form.driverVehicleType===vt.key?"#f0fdf4":"#f5f5f5", border:"1px solid "+(form.driverVehicleType===vt.key?"#1d9e75":"#e0e0e0"), borderRadius:8, padding:"8px 10px", cursor:"pointer" }}>
                           <div style={{ fontSize:18, marginBottom:2 }}>{vt.icon}</div>
-                          <div style={{ fontSize:13, fontWeight:600, color:form.driverVehicleType===vt.key?"#1d9e75":"#888" }}>{vt.label}</div>
+                          <div style={{ fontSize:13, fontWeight:600, color:form.driverVehicleType===vt.key?"#1d9e75":"#555" }}>{vt.label}</div>
                           <div style={{ fontSize:12, color:"#999" }}>{vt.desc}</div>
                         </div>
                       ))}
@@ -464,6 +464,7 @@ export default function AuthPage() {
     </div>
   )
 }
+
 
 
 
