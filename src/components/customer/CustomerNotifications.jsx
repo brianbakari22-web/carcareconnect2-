@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -7,6 +8,7 @@ import toast from "react-hot-toast"
 
 export default function CustomerNotifications() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const { t } = useLanguage()
   const isMobile = useIsMobile()
   const [notifications, setNotifications] = useState([])
@@ -61,7 +63,7 @@ export default function CustomerNotifications() {
   const unread = notifications.filter(n=>!n.is_read).length
   const typeIcon = { info:"🔔", success:"✅", warning:"⚠️", error:"❌" }
   const typeColor = { info:"#378add", success:"#1d9e75", warning:"#e6821e", error:"#e24b4a" }
-  const typeBg = { info:"#0c1f2e", success:"#071a12", warning:"#1a1208", error:"#1a0808" }
+  const typeBg = { info:"#eff6ff", success:"#f0fdf4", warning:"#fff8f0", error:"#fff5f5" }
 
   return (
     <div>
@@ -83,14 +85,19 @@ export default function CustomerNotifications() {
         </div>
       )}
       {notifications.map(n=>(
-        <div key={n.id} onClick={()=>!n.is_read&&markRead(n.id)}
-          style={{ background:n.is_read?"#111":"#161208", border:`1px solid ${n.is_read?"#1e1e1e":typeColor[n.type]||"#e6821e"}30`, borderRadius:10, padding:"1rem", marginBottom:8, cursor:n.is_read?"default":"pointer", display:"flex", alignItems:"flex-start", gap:12 }}>
+        <div key={n.id} onClick={()=>{ 
+    if(!n.is_read) markRead(n.id)
+    if(n.type==="message"||n.title?.toLowerCase().includes("message")||n.message?.toLowerCase().includes("message")) {
+      navigate("/dashboard/chat")
+    }
+  }}
+          style={{ background:n.is_read?"#f8f8f8":"#ffffff", border:`1px solid ${n.is_read?"#eeeeee":typeColor[n.type]||"#e6821e"}50`, borderRadius:10, padding:"1rem", marginBottom:8, cursor:n.is_read?"default":"pointer", display:"flex", alignItems:"flex-start", gap:12 }}>
           <div style={{ width:38, height:38, borderRadius:9, background:typeBg[n.type]||"#1a1208", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>
             {typeIcon[n.type]||"🔔"}
           </div>
           <div style={{ flex:1, minWidth:0 }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:8 }}>
-              <div style={{ fontSize:13, fontWeight:n.is_read?400:600, color:n.is_read?"#aaa":"#f0ede6" }}>{n.title}</div>
+              <div style={{ fontSize:13, fontWeight:n.is_read?400:600, color:n.is_read?"#888888":"#000000" }}>{n.title}</div>
               {!n.is_read&&<div style={{ width:8, height:8, borderRadius:"50%", background:"#e6821e", flexShrink:0, marginTop:4 }}/>}
             </div>
             <div style={{ fontSize:12, color:"#666", marginTop:3, lineHeight:1.5 }}>{n.message}</div>
@@ -102,5 +109,6 @@ export default function CustomerNotifications() {
     </div>
   )
 }
+
 
 

@@ -58,7 +58,7 @@ export default function DriverNotifications() {
   const unread = notifications.filter(n=>!n.is_read).length
   const typeIcon = { info:"🔔", success:"✅", warning:"⚠️", error:"❌" }
   const typeColor = { info:"#378add", success:"#1d9e75", warning:"#e6821e", error:"#e24b4a" }
-  const typeBg = { info:"#0c1f2e", success:"#071a12", warning:"#1a1208", error:"#1a0808" }
+  const typeBg = { info:"#eff6ff", success:"#f0fdf4", warning:"#fff8f0", error:"#fff5f5" }
 
   return (
     <div>
@@ -87,7 +87,7 @@ export default function DriverNotifications() {
           </div>
           <div style={{ flex:1, minWidth:0 }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:8 }}>
-              <div style={{ fontSize:13, fontWeight:n.is_read?400:600, color:n.is_read?"#aaa":"#f0ede6" }}>{n.title}</div>
+              <div style={{ fontSize:13, fontWeight:n.is_read?400:600, color:n.is_read?"#888888":"#000000" }}>{n.title}</div>
               {!n.is_read&&<div style={{ width:8, height:8, borderRadius:"50%", background:"#1d9e75", flexShrink:0, marginTop:4 }}/>}
             </div>
             <div style={{ fontSize:12, color:"#666", marginTop:3, lineHeight:1.5 }}>{n.message}</div>
@@ -99,6 +99,7 @@ export default function DriverNotifications() {
     </div>
   )
 }
+
 
 
 
