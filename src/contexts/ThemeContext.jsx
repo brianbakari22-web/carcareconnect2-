@@ -29,11 +29,7 @@ export function ThemeProvider({ children }) {
     const key = getUserThemeKey()
     // Force light theme - clear old dark theme
     const saved = localStorage.getItem(key)
-    if (!saved || saved === "dark") {
-      localStorage.setItem(key, "light")
-      return "light"
-    }
-    return saved
+    return localStorage.getItem(key) || "light"
   })
 
   const theme = THEMES[themeName] || THEMES.dark
@@ -73,6 +69,7 @@ export function ThemeProvider({ children }) {
 export function useTheme() {
   return useContext(ThemeContext)
 }
+
 
 
 
