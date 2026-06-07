@@ -3,23 +3,23 @@ import { useNavigate } from "react-router-dom"
 
 function FloatingParts() {
   const items = [
-    { id:0, icon:"🛞", left:5, top:15, size:52, duration:7, delay:0, opacity:0.18 },
-    { id:1, icon:"⚙️", left:88, top:10, size:48, duration:9, delay:1, opacity:0.15 },
-    { id:2, icon:"🔧", left:15, top:75, size:40, duration:6, delay:2, opacity:0.14 },
-    { id:3, icon:"🚗", left:78, top:65, size:56, duration:8, delay:0.5, opacity:0.13 },
-    { id:4, icon:"🔋", left:45, top:5, size:38, duration:7, delay:1.5, opacity:0.15 },
-    { id:5, icon:"🛢️", left:92, top:45, size:44, duration:10, delay:3, opacity:0.14 },
-    { id:6, icon:"🔩", left:25, top:45, size:34, duration:5, delay:0, opacity:0.16 },
-    { id:7, icon:"⚡", left:60, top:80, size:42, duration:8, delay:2, opacity:0.15 },
-    { id:8, icon:"🪛", left:70, top:25, size:36, duration:6, delay:1, opacity:0.14 },
-    { id:9, icon:"🔑", left:35, top:90, size:34, duration:9, delay:4, opacity:0.13 },
-    { id:10, icon:"🛠️", left:50, top:55, size:38, duration:7, delay:2.5, opacity:0.12 },
-    { id:11, icon:"🏎️", left:10, top:55, size:46, duration:11, delay:0.5, opacity:0.14 },
+    { id:0, icon:"🛞", left:5, top:15, size:52, duration:7, delay:0, opacity:0.35 },
+    { id:1, icon:"⚙️", left:88, top:10, size:48, duration:9, delay:1, opacity:0.30 },
+    { id:2, icon:"🔧", left:15, top:75, size:40, duration:6, delay:2, opacity:0.28 },
+    { id:3, icon:"🚗", left:78, top:65, size:56, duration:8, delay:0.5, opacity:0.25 },
+    { id:4, icon:"🔋", left:45, top:5, size:38, duration:7, delay:1.5, opacity:0.30 },
+    { id:5, icon:"🛢️", left:92, top:45, size:44, duration:10, delay:3, opacity:0.28 },
+    { id:6, icon:"🔩", left:25, top:45, size:34, duration:5, delay:0, opacity:0.32 },
+    { id:7, icon:"⚡", left:60, top:80, size:42, duration:8, delay:2, opacity:0.30 },
+    { id:8, icon:"🪛", left:70, top:25, size:36, duration:6, delay:1, opacity:0.28 },
+    { id:9, icon:"🔑", left:35, top:90, size:34, duration:9, delay:4, opacity:0.25 },
+    { id:10, icon:"🛠️", left:50, top:55, size:38, duration:7, delay:2.5, opacity:0.22 },
+    { id:11, icon:"🏎️", left:10, top:55, size:46, duration:11, delay:0.5, opacity:0.28 },
   ]
   return (
     <div style={{ position:"absolute", inset:0, pointerEvents:"none", overflow:"hidden", zIndex:0 }}>
       {items.map(item => (
-        <div key={item.id} style={{ position:"absolute", left:item.left+"%", top:item.top+"%", fontSize:item.size, opacity:item.opacity, animation:`float-${item.id%3} ${item.duration}s ease-in-out infinite`, animationDelay:item.delay+"s", filter:"drop-shadow(0 2px 8px rgba(230,130,30,0.2))" }}>
+        <div key={item.id} style={{ position:"absolute", left:item.left+"%", top:item.top+"%", fontSize:item.size, opacity:item.opacity, animation:`float-${item.id%3} ${item.duration}s ease-in-out infinite`, animationDelay:item.delay+"s", filter:"drop-shadow(0 4px 12px rgba(230,130,30,0.4))" }}>
           {item.icon}
         </div>
       ))}
@@ -424,5 +424,6 @@ export default function LandingPage() {
     </div>
   )
 }
+
 
 
