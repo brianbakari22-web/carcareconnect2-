@@ -3,6 +3,7 @@ import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
+import ChatWindow from "../shared/ChatWindow"
 
 const CATEGORIES = [
   { key:"all", label:"All", icon:"🔍" },
@@ -34,6 +35,7 @@ export default function CustomerPartsMarketplace() {
   const [ordering, setOrdering] = useState(false)
   const [orders, setOrders] = useState([])
   const [tab, setTab] = useState("browse")
+  const [chatItem, setChatItem] = useState(null)
   const [checkoutStep, setCheckoutStep] = useState("cart") // cart, details, payment
   const [customerDetails, setCustomerDetails] = useState({ name:"", phone:"", email:"" })
 
@@ -284,6 +286,27 @@ export default function CustomerPartsMarketplace() {
         </div>
       )}
 
+      {chatItem&&(
+        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.7)", zIndex:200, display:"flex", alignItems:"flex-end", justifyContent:"center" }}>
+          <div style={{ width:"100%", maxWidth:500, background:"#fff", borderRadius:"16px 16px 0 0", height:"70vh", display:"flex", flexDirection:"column", overflow:"hidden" }}>
+            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"1rem", borderBottom:"1px solid #eee", flexShrink:0 }}>
+              <div>
+                <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#000" }}>{chatItem.name}</div>
+                <div style={{ fontSize:11, color:"#888" }}>Chat with {chatItem.profiles?.business_name||chatItem.profiles?.first_name}</div>
+              </div>
+              <button onClick={()=>setChatItem(null)} style={{ background:"#f5f5f5", border:"none", borderRadius:"50%", width:32, height:32, cursor:"pointer", fontSize:18 }}>×</button>
+            </div>
+            <div style={{ flex:1, minHeight:0 }}>
+              <ChatWindow
+                listingId={chatItem.id}
+                otherUserId={chatItem.provider_id}
+                otherUserName={chatItem.profiles?.business_name||chatItem.profiles?.first_name||"Seller"}
+                onClose={()=>setChatItem(null)}
+              />
+            </div>
+          </div>
+        </div>
+      )}
       {showCart&&(
         <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.85)", zIndex:200, display:"flex", alignItems:"flex-end", justifyContent:"center" }}>
           <div style={{ width:"100%", maxWidth:500, background:"#ffffff", borderRadius:"16px 16px 0 0", padding:"1.5rem", maxHeight:"85vh", overflowY:"auto" }}>
@@ -393,6 +416,7 @@ export default function CustomerPartsMarketplace() {
     </div>
   )
 }
+
 
 
 
