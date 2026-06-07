@@ -2,17 +2,25 @@ import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 
 function FloatingParts() {
-  const parts = ["🛞","⚙️","🔧","🔩","🪛","🛢️","🔋","🚗","⚡","🔑","🛠️","🪝"]
-  const items = Array.from({ length: 18 }, (_, i) => ({
-    id: i, icon: parts[i % parts.length],
-    left: Math.random() * 100, top: Math.random() * 100,
-    size: Math.random() * 16 + 12, duration: Math.random() * 8 + 6,
-    delay: Math.random() * 5, opacity: Math.random() * 0.12 + 0.04,
-  }))
+  const parts = ["🛞","⚙️","🔧","🔩","🪛","🛢️","🔋","🚗","⚡","🔑","🛠️","🪝","🏎️","🔌","💨","🚘","🔦","🪤"]
+  const items = [
+    { id:0, icon:"🛞", left:5, top:15, size:52, duration:7, delay:0, opacity:0.35 },
+    { id:1, icon:"⚙️", left:88, top:10, size:48, duration:9, delay:1, opacity:0.30 },
+    { id:2, icon:"🔧", left:15, top:75, size:40, duration:6, delay:2, opacity:0.28 },
+    { id:3, icon:"🚗", left:78, top:65, size:56, duration:8, delay:0.5, opacity:0.25 },
+    { id:4, icon:"🔋", left:45, top:5, size:38, duration:7, delay:1.5, opacity:0.30 },
+    { id:5, icon:"🛢️", left:92, top:45, size:44, duration:10, delay:3, opacity:0.28 },
+    { id:6, icon:"🔩", left:25, top:45, size:34, duration:5, delay:0, opacity:0.32 },
+    { id:7, icon:"⚡", left:60, top:80, size:42, duration:8, delay:2, opacity:0.30 },
+    { id:8, icon:"🪛", left:70, top:25, size:36, duration:6, delay:1, opacity:0.28 },
+    { id:9, icon:"🔑", left:35, top:90, size:34, duration:9, delay:4, opacity:0.25 },
+    { id:10, icon:"🛠️", left:50, top:55, size:38, duration:7, delay:2.5, opacity:0.22 },
+    { id:11, icon:"🏎️", left:10, top:55, size:46, duration:11, delay:0.5, opacity:0.28 },
+  ]
   return (
     <div style={{ position:"absolute", inset:0, pointerEvents:"none", overflow:"hidden", zIndex:0 }}>
       {items.map(item => (
-        <div key={item.id} style={{ position:"absolute", left:item.left+"%", top:item.top+"%", fontSize:item.size, opacity:item.opacity, animation:`float-${item.id%3} ${item.duration}s ease-in-out infinite`, animationDelay:item.delay+"s" }}>
+        <div key={item.id} style={{ position:"absolute", left:item.left+"%", top:item.top+"%", fontSize:item.size, opacity:item.opacity, animation:`float-${item.id%3} ${item.duration}s ease-in-out infinite`, animationDelay:item.delay+"s", filter:"drop-shadow(0 4px 12px rgba(230,130,30,0.4))" }}>
           {item.icon}
         </div>
       ))}
@@ -30,10 +38,10 @@ function NetworkCanvas() {
     const resize = () => { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight }
     resize()
     window.addEventListener("resize", resize)
-    const dots = Array.from({ length: 60 }, () => ({
+    const dots = Array.from({ length: 80 }, () => ({
       x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-      vx: (Math.random()-0.5)*0.35, vy: (Math.random()-0.5)*0.35,
-      r: Math.random()*1.8+0.5,
+      vx: (Math.random()-0.5)*0.6, vy: (Math.random()-0.5)*0.6,
+      r: Math.random()*3+1,
       color: Math.random()>0.5?"#e6821e":Math.random()>0.5?"#1d9e75":"#378add"
     }))
     function draw() {
@@ -43,14 +51,14 @@ function NetworkCanvas() {
         if(d.x<0||d.x>canvas.width) d.vx*=-1
         if(d.y<0||d.y>canvas.height) d.vy*=-1
         ctx.beginPath(); ctx.arc(d.x,d.y,d.r,0,Math.PI*2)
-        ctx.fillStyle=d.color+"55"; ctx.fill()
+        ctx.fillStyle=d.color+"99"; ctx.fill()
       })
       for(let i=0;i<dots.length;i++) for(let j=i+1;j<dots.length;j++) {
         const dx=dots[i].x-dots[j].x, dy=dots[i].y-dots[j].y
         const dist=Math.sqrt(dx*dx+dy*dy)
         if(dist<110) {
           ctx.beginPath(); ctx.moveTo(dots[i].x,dots[i].y); ctx.lineTo(dots[j].x,dots[j].y)
-          ctx.strokeStyle=`rgba(230,130,30,${0.18*(1-dist/110)})`; ctx.lineWidth=0.5; ctx.stroke()
+          ctx.strokeStyle=`rgba(230,130,30,${0.4*(1-dist/110)})`; ctx.lineWidth=1; ctx.stroke()
         }
       }
       animId=requestAnimationFrame(draw)
@@ -113,9 +121,9 @@ export default function LandingPage() {
         .faq-row:first-child{border-top:1px solid #e5e5e5;}
         @keyframes glow{0%,100%{opacity:1}50%{opacity:0.85}}
         @keyframes ping{0%{transform:scale(1);opacity:1}100%{transform:scale(2.2);opacity:0}}
-        @keyframes float-0{0%,100%{transform:translateY(0px) rotate(0deg)}50%{transform:translateY(-20px) rotate(10deg)}}
-        @keyframes float-1{0%,100%{transform:translateY(0px) rotate(0deg)}50%{transform:translateY(-30px) rotate(-8deg)}}
-        @keyframes float-2{0%,100%{transform:translateY(0px) rotate(0deg)}50%{transform:translateY(-15px) rotate(5deg)}}
+        @keyframes float-0{0%{transform:translateY(0px) rotate(0deg) scale(1)}25%{transform:translateY(-35px) rotate(15deg) scale(1.1)}50%{transform:translateY(-55px) rotate(5deg) scale(1.05)}75%{transform:translateY(-30px) rotate(-10deg) scale(1.08)}100%{transform:translateY(0px) rotate(0deg) scale(1)}}
+        @keyframes float-1{0%{transform:translateY(0px) rotate(0deg) scale(1)}33%{transform:translateY(-45px) rotate(-12deg) scale(1.12)}66%{transform:translateY(-25px) rotate(8deg) scale(1.06)}100%{transform:translateY(0px) rotate(0deg) scale(1)}}
+        @keyframes float-2{0%{transform:translateY(0px) rotate(0deg) scale(1)}40%{transform:translateY(-40px) rotate(20deg) scale(1.15)}80%{transform:translateY(-15px) rotate(-5deg) scale(1.05)}100%{transform:translateY(0px) rotate(0deg) scale(1)}}
       `}</style>
 
       {/* NAV */}
@@ -451,3 +459,4 @@ export default function LandingPage() {
     </div>
   )
 }
+
