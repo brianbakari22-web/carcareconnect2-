@@ -76,7 +76,7 @@ export default function LandingPage() {
         <img src="/logo.svg" alt="Car Care Connect" style={{ height:36 }}/>
         <div style={{ display:"flex", gap:6, alignItems:"center" }}>
           <button onClick={()=>navigate("/auth")} style={{ background:"none", border:"1px solid #444", borderRadius:8, color:"#aaa", fontSize:12, padding:"8px 14px", cursor:"pointer", fontFamily:"DM Sans,sans-serif" }}>Sign in</button>
-          <button onClick={()=>navigate("/auth")} style={{ background:"#000000", border:"none", borderRadius:500, color:"#fff", fontSize:12, fontWeight:700, padding:"9px 16px", cursor:"pointer", fontFamily:"Syne,sans-serif", whiteSpace:"nowrap" }}>Get started ΓåÆ</button>
+          <button onClick={()=>navigate("/auth")} style={{ background:"#000000", border:"none", borderRadius:500, color:"#fff", fontSize:12, fontWeight:700, padding:"9px 16px", cursor:"pointer", fontFamily:"Syne,sans-serif", whiteSpace:"nowrap" }}>Get started →</button>
         </div>
       </nav>
 
@@ -90,7 +90,7 @@ export default function LandingPage() {
               <div style={{ width:8, height:8, borderRadius:"50%", background:"#1d9e75", position:"absolute" }}/>
               <div style={{ position:"absolute", inset:0, borderRadius:"50%", background:"#1d9e75", animation:"ping 1.5s ease-out infinite" }}/>
             </div>
-            <span style={{ fontSize:12, color:"#1d9e75", fontWeight:600 }}>≡ƒç░≡ƒç¬ Built in Kenya ┬╖ Serving Nairobi</span>
+            <span style={{ fontSize:12, color:"#1d9e75", fontWeight:600 }}>🇰🇪 Built in Kenya · Serving Nairobi</span>
           </div>
           <h1 style={{ fontFamily:"Syne", fontSize:"clamp(38px,6vw,74px)", fontWeight:800, lineHeight:1.1, marginBottom:"1.5rem" }}>
             One app.<br/>
@@ -98,18 +98,18 @@ export default function LandingPage() {
             Nairobi.
           </h1>
           <p style={{ fontSize:"clamp(15px,2vw,18px)", color:"#777", lineHeight:1.8, maxWidth:580, margin:"0 auto 2.5rem" }}>
-            Nairobi's most trusted automotive platform. Verified mechanics, 24/7 emergency roadside help, live tracking, parts marketplace ΓÇö everything your car needs, one tap away.
+            Nairobi's most trusted automotive platform. Verified mechanics, 24/7 emergency roadside help, live tracking, parts marketplace — everything your car needs, one tap away.
           </p>
           <div style={{ display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap", marginBottom:"2.5rem" }}>
             <button onClick={()=>navigate("/auth")} style={{ background:"#e6821e", border:"none", borderRadius:12, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:16, fontWeight:700, padding:"16px 40px", cursor:"pointer" }}>
-              ≡ƒÜù Get started free
+              🚗 Get started free
             </button>
             <button onClick={()=>navigate("/auth")} style={{ background:"none", border:"2px solid #e6821e", borderRadius:12, color:"#e6821e", fontFamily:"Syne,sans-serif", fontSize:16, fontWeight:700, padding:"14px 38px", cursor:"pointer" }}>
-              Sign in ΓåÆ
+              Sign in →
             </button>
           </div>
           <div style={{ display:"flex", gap:8, justifyContent:"center", flexWrap:"wrap", marginBottom:"1.5rem" }}>
-            {[["24/7","Emergency service"],["5min","Avg response"],["100%","Verified providers"],["≡ƒç░≡ƒç¬","Made in Kenya"]].map(([v,l])=>(
+            {[["24/7","Emergency service"],["5min","Avg response"],["100%","Verified providers"],["🇰🇪","Made in Kenya"]].map(([v,l])=>(
               <div key={l} style={{ textAlign:"center", padding:"0.6rem 1rem", background:"#141414", borderRadius:10, border:"1px solid #1e1e1e" }}>
                 <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#e6821e" }}>{v}</div>
                 <div style={{ fontSize:10, color:"#999999", marginTop:2 }}>{l}</div>
@@ -117,7 +117,7 @@ export default function LandingPage() {
             ))}
           </div>
           <div style={{ display:"flex", gap:20, justifyContent:"center", flexWrap:"wrap" }}>
-            {[["≡ƒÜù","Service booking"],["≡ƒÜ¿","24/7 emergency"],["≡ƒôì","Live tracking"],["≡ƒ¢Æ","Marketplace"],["≡ƒÆÄ","Loyalty rewards"]].map(([icon,label])=>(
+            {[["🚗","Service booking"],["🚗","24/7 emergency"],["📍","Live tracking"],["🛒","Marketplace"],["🎁","Loyalty rewards"]].map(([icon,label])=>(
               <div key={label} style={{ fontSize:12, color:"#bbbbbb", display:"flex", alignItems:"center", gap:6 }}><span>{icon}</span><span>{label}</span></div>
             ))}
           </div>
@@ -127,20 +127,20 @@ export default function LandingPage() {
       {/* EMERGENCY BANNER */}
       <div style={{ position:"relative", zIndex:1, margin:"0 1.5rem 5rem", background:"linear-gradient(135deg,#13080a,#1a0c0e)", border:"1px solid #e24b4a25", borderRadius:20, padding:"3rem 2rem", textAlign:"center", overflow:"hidden" }}>
         <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse at center, #e24b4a06, transparent)", pointerEvents:"none" }}/>
-        <div style={{ fontSize:52, marginBottom:16 }}>≡ƒÜ¿</div>
+        <div style={{ fontSize:52, marginBottom:16 }}>🚗</div>
         <h2 style={{ fontFamily:"Syne", fontSize:"clamp(22px,4vw,36px)", fontWeight:800, color:"#e24b4a", marginBottom:12 }}>
           Breakdown anywhere in Nairobi? We dispatch a mechanic to you.
         </h2>
         <p style={{ fontSize:15, color:"#777", maxWidth:540, margin:"0 auto 2rem", lineHeight:1.8 }}>
-          Kenya's only 24/7 emergency roadside service. Our certified mechanics come to your exact GPS location ΓÇö highway, parking lot, or home. Just KES 500 callout fee.
+          Kenya's only 24/7 emergency roadside service. Our certified mechanics come to your exact GPS location — highway, parking lot, or home. Just KES 500 callout fee.
         </p>
         <div style={{ display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap", marginBottom:"1.5rem" }}>
-          {[["≡ƒ¢₧","Flat tyre"],["≡ƒöï","Dead battery"],["Γ¢╜","Out of fuel"],["≡ƒîí∩╕Å","Overheating"],["≡ƒÜÜ","Towing"]].map(([icon,label])=>(
+          {[["🛞","Flat tyre"],["🔋","Dead battery"],["⛽","Out of fuel"],["🌡","Overheating"],["🚚","Towing"]].map(([icon,label])=>(
             <div key={label} style={{ background:"#e24b4a15", border:"1px solid #e24b4a30", borderRadius:8, padding:"6px 12px", fontSize:12, color:"#e24b4a" }}>{icon} {label}</div>
           ))}
         </div>
         <button onClick={()=>navigate("/auth")} style={{ background:"#e24b4a", border:"none", borderRadius:12, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:15, fontWeight:700, padding:"14px 36px", cursor:"pointer" }}>
-          ≡ƒÜ¿ Request emergency help
+          🚗 Request emergency help
         </button>
       </div>
 
@@ -152,9 +152,9 @@ export default function LandingPage() {
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))", gap:20 }}>
           {[
-            { n:"01", icon:"≡ƒöì", title:"Find a service", desc:"Browse verified providers near you. Compare prices, read reviews, and pick the best mechanic for your car and budget." },
-            { n:"02", icon:"≡ƒô▒", title:"Book and pay", desc:"Book in seconds. Pay securely via M-Pesa or card through Pesapal, regulated by Central Bank of Kenya." },
-            { n:"03", icon:"Γ£à", title:"Track and review", desc:"Track your mechanic live on the map. Rate your experience and earn loyalty points on every booking." },
+            { n:"01", icon:"🔍", title:"Find a service", desc:"Browse verified providers near you. Compare prices, read reviews, and pick the best mechanic for your car and budget." },
+            { n:"02", icon:"📱", title:"Book and pay", desc:"Book in seconds. Pay securely via M-Pesa or card through Pesapal, regulated by Central Bank of Kenya." },
+            { n:"03", icon:"✅", title:"Track and review", desc:"Track your mechanic live on the map. Rate your experience and earn loyalty points on every booking." },
           ].map(s=>(
             <div key={s.n} className="hcard" style={{ background:"#141414", border:"1px solid #1e1e1e", borderRadius:16, padding:"2rem", position:"relative", overflow:"hidden" }}>
               <div style={{ fontFamily:"Syne", fontSize:64, fontWeight:800, color:"#e6821e06", position:"absolute", top:0, right:12, lineHeight:1 }}>{s.n}</div>
@@ -174,14 +174,14 @@ export default function LandingPage() {
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))", gap:16 }}>
           {[
-            { icon:"≡ƒöº", title:"Service booking", desc:"Oil change, brakes, AC, full diagnostics from verified Nairobi providers", color:"#e6821e" },
-            { icon:"≡ƒÜ¿", title:"GO Service", desc:"24/7 emergency roadside. Mechanic dispatched to your GPS location fast", color:"#e24b4a" },
-            { icon:"≡ƒÜÖ", title:"Concierge delivery", desc:"We collect your car, service it, and return it to your door", color:"#378add" },
-            { icon:"≡ƒ¢Æ", title:"Marketplace", desc:"Buy and sell vehicles, parts and accessories with CCC inspection badge", color:"#1d9e75" },
-            { icon:"≡ƒÆÄ", title:"Loyalty rewards", desc:"Earn points every booking. Redeem for discounts on future services", color:"#8b5cf6" },
-            { icon:"≡ƒôì", title:"Live tracking", desc:"Track your driver or mechanic on a live dark map in real time", color:"#e6821e" },
-            { icon:"≡ƒ¢í∩╕Å", title:"Service guarantee", desc:"Not happy? We investigate and issue a full service voucher refund", color:"#1d9e75" },
-            { icon:"≡ƒÆ¼", title:"24/7 assistant", desc:"Always-on help for car problems, bookings, and platform guidance", color:"#8b5cf6" },
+            { icon:"🔧", title:"Service booking", desc:"Oil change, brakes, AC, full diagnostics from verified Nairobi providers", color:"#e6821e" },
+            { icon:"🚗", title:"GO Service", desc:"24/7 emergency roadside. Mechanic dispatched to your GPS location fast", color:"#e24b4a" },
+            { icon:"🚗", title:"Concierge delivery", desc:"We collect your car, service it, and return it to your door", color:"#378add" },
+            { icon:"🛒", title:"Marketplace", desc:"Buy and sell vehicles, parts and accessories with CCC inspection badge", color:"#1d9e75" },
+            { icon:"🎁", title:"Loyalty rewards", desc:"Earn points every booking. Redeem for discounts on future services", color:"#8b5cf6" },
+            { icon:"📍", title:"Live tracking", desc:"Track your driver or mechanic on a live dark map in real time", color:"#e6821e" },
+            { icon:"🚨", title:"Service guarantee", desc:"Not happy? We investigate and issue a full service voucher refund", color:"#1d9e75" },
+            { icon:"🤖", title:"24/7 assistant", desc:"Always-on help for car problems, bookings, and platform guidance", color:"#8b5cf6" },
           ].map(f=>(
             <div key={f.title} className="hcard" style={{ background:"#141414", border:"1px solid #1e1e1e", borderRadius:14, padding:"1.25rem" }}>
               <div style={{ fontSize:28, marginBottom:10, color:f.color }}>{f.icon}</div>
@@ -200,12 +200,12 @@ export default function LandingPage() {
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))", gap:16 }}>
           {[
-            { icon:"≡ƒ¢í∩╕Å", title:"Service Guarantee", desc:"Not happy with the service? We investigate and issue a full refund voucher. No questions asked.", color:"#1d9e75" },
-            { icon:"Γ£à", title:"Verified providers only", desc:"Every mechanic, parts dealer and service provider is manually verified before listing on CCC.", color:"#378add" },
-            { icon:"≡ƒôì", title:"Real-time tracking", desc:"Know exactly where your mechanic or driver is at all times. Live GPS tracking on every job.", color:"#e6821e" },
-            { icon:"≡ƒöÆ", title:"Secure payments", desc:"All payments processed through Pesapal, regulated by the Central Bank of Kenya.", color:"#8b5cf6" },
-            { icon:"≡ƒÆ¼", title:"24/7 support", desc:"Always-on support to help diagnose car problems, guide bookings, and answer any question.", color:"#e6821e" },
-            { icon:"≡ƒç░≡ƒç¬", title:"Made in Kenya", desc:"Built by Kenyans for Kenyan roads. We understand Nairobi traffic, local mechanics, and Kenyan cars.", color:"#1d9e75" },
+            { icon:"🚨", title:"Service Guarantee", desc:"Not happy with the service? We investigate and issue a full refund voucher. No questions asked.", color:"#1d9e75" },
+            { icon:"✅", title:"Verified providers only", desc:"Every mechanic, parts dealer and service provider is manually verified before listing on CCC.", color:"#378add" },
+            { icon:"📍", title:"Real-time tracking", desc:"Know exactly where your mechanic or driver is at all times. Live GPS tracking on every job.", color:"#e6821e" },
+            { icon:"🔐", title:"Secure payments", desc:"All payments processed through Pesapal, regulated by the Central Bank of Kenya.", color:"#8b5cf6" },
+            { icon:"🤖", title:"24/7 support", desc:"Always-on support to help diagnose car problems, guide bookings, and answer any question.", color:"#e6821e" },
+            { icon:"🇰🇪", title:"Made in Kenya", desc:"Built by Kenyans for Kenyan roads. We understand Nairobi traffic, local mechanics, and Kenyan cars.", color:"#1d9e75" },
           ].map(t=>(
             <div key={t.title} className="hcard" style={{ background:"#141414", border:"1px solid #1e1e1e", borderRadius:14, padding:"1.5rem" }}>
               <div style={{ fontSize:32, marginBottom:10 }}>{t.icon}</div>
@@ -224,9 +224,9 @@ export default function LandingPage() {
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))", gap:16 }}>
           {[
-            { icon:"≡ƒÜù", role:"Customer", color:"#e6821e", desc:"Book services, get emergency help, track your car, earn rewards", features:["Book car services","Emergency GO Service","Live mechanic tracking","Buy and sell vehicles"] },
-            { icon:"≡ƒöº", role:"Service Provider", color:"#378add", desc:"List services, manage bookings, earn commissions, dispatch mechanics", features:["Manage bookings","GO Service requests","Parts inventory","Earnings dashboard"] },
-            { icon:"≡ƒÜÖ", role:"Concierge Driver", color:"#1d9e75", desc:"Pick up and deliver customer vehicles and parts, earn per delivery", features:["Accept deliveries","Parts delivery jobs","Live navigation","KES 200 allowance per trip"] },
+            { icon:"🚗", role:"Customer", color:"#e6821e", desc:"Book services, get emergency help, track your car, earn rewards", features:["Book car services","Emergency GO Service","Live mechanic tracking","Buy and sell vehicles"] },
+            { icon:"🔧", role:"Service Provider", color:"#378add", desc:"List services, manage bookings, earn commissions, dispatch mechanics", features:["Manage bookings","GO Service requests","Parts inventory","Earnings dashboard"] },
+            { icon:"🚗", role:"Concierge Driver", color:"#1d9e75", desc:"Pick up and deliver customer vehicles and parts, earn per delivery", features:["Accept deliveries","Parts delivery jobs","Live navigation","KES 200 allowance per trip"] },
           ].map(r=>(
             <div key={r.role} className="hcard" style={{ background:"#141414", border:"1px solid "+r.color+"30", borderRadius:16, padding:"1.75rem" }}>
               <div style={{ fontSize:40, marginBottom:12 }}>{r.icon}</div>
@@ -239,7 +239,7 @@ export default function LandingPage() {
                 </div>
               ))}
               <button onClick={()=>navigate("/auth")} style={{ marginTop:18, width:"100%", background:r.color+"18", border:"1px solid "+r.color+"40", borderRadius:9, color:r.color, fontSize:13, fontWeight:700, padding:"10px", cursor:"pointer", fontFamily:"Syne,sans-serif" }}>
-                Join as {r.role} ΓåÆ
+                Join as {r.role} →
               </button>
             </div>
           ))}
@@ -251,18 +251,18 @@ export default function LandingPage() {
         <div style={{ textAlign:"center", marginBottom:"3rem" }}>
           <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#e6821e", marginBottom:8 }}>For businesses</div>
           <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>All automotive businesses welcome</h2>
-          <p style={{ fontSize:14, color:"#999999", marginTop:8 }}>Not just mechanics ΓÇö list any automotive business and reach thousands of customers in Nairobi</p>
+          <p style={{ fontSize:14, color:"#999999", marginTop:8 }}>Not just mechanics — list any automotive business and reach thousands of customers in Nairobi</p>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))", gap:12 }}>
           {[
-            { icon:"≡ƒöº", type:"Garage/Mechanic", commission:"90%", color:"#e6821e" },
-            { icon:"ΓÜÖ∩╕Å", type:"Parts Dealer", commission:"95%", color:"#378add" },
-            { icon:"Γ£¿", type:"Accessories Shop", commission:"92%", color:"#8b5cf6" },
-            { icon:"≡ƒ¢₧", type:"Tyre Shop", commission:"94%", color:"#1d9e75" },
-            { icon:"ΓÜí", type:"Auto Electrician", commission:"88%", color:"#e6821e" },
-            { icon:"≡ƒÜ┐", type:"Car Wash", commission:"90%", color:"#378add" },
-            { icon:"≡ƒö¿", type:"Panel Beater", commission:"85%", color:"#e24b4a" },
-            { icon:"≡ƒ¬ƒ", type:"Auto Glass", commission:"88%", color:"#1d9e75" },
+            { icon:"🔧", type:"Garage/Mechanic", commission:"90%", color:"#e6821e" },
+            { icon:"⚙️", type:"Parts Dealer", commission:"95%", color:"#378add" },
+            { icon:"✨", type:"Accessories Shop", commission:"92%", color:"#8b5cf6" },
+            { icon:"🛞", type:"Tyre Shop", commission:"94%", color:"#1d9e75" },
+            { icon:"⚡", type:"Auto Electrician", commission:"88%", color:"#e6821e" },
+            { icon:"🚿", type:"Car Wash", commission:"90%", color:"#378add" },
+            { icon:"⚙️", type:"Panel Beater", commission:"85%", color:"#e24b4a" },
+            { icon:"🪟", type:"Auto Glass", commission:"88%", color:"#1d9e75" },
           ].map(b=>(
             <div key={b.type} className="hcard" style={{ background:"#141414", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", textAlign:"center" }}>
               <div style={{ fontSize:28, marginBottom:8 }}>{b.icon}</div>
@@ -273,7 +273,7 @@ export default function LandingPage() {
         </div>
         <div style={{ textAlign:"center", marginTop:"2rem" }}>
           <button onClick={()=>navigate("/auth")} style={{ background:"none", border:"2px solid #e6821e", borderRadius:12, color:"#e6821e", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px 32px", cursor:"pointer" }}>
-            Register your business ΓåÆ
+            Register your business →
           </button>
         </div>
       </div>
@@ -342,22 +342,22 @@ export default function LandingPage() {
               <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#e6821e", marginBottom:8 }}>Parts marketplace</div>
               <h2 style={{ fontFamily:"Syne", fontSize:"clamp(22px,3vw,32px)", fontWeight:800, marginBottom:12 }}>Order parts online. Delivered to your door.</h2>
               <p style={{ fontSize:13, color:"#666", lineHeight:1.8, marginBottom:"1.5rem" }}>Browse genuine and aftermarket parts from verified Nairobi shops. Order online, pay securely via M-Pesa, get it delivered by CCC riders.</p>
-              {[["ΓÜÖ∩╕Å","Engine and mechanical parts"],["Γ£¿","Car accessories"],["≡ƒ¢₧","Tyres all brands"],["≡ƒöï","Batteries and electrical"],["≡ƒ¢ó∩╕Å","Engine oils and fluids"]].map(([icon,label])=>(
+              {[["⚙️","Engine and mechanical parts"],["✨","Car accessories"],["🛞","Tyres all brands"],["🔋","Batteries and electrical"],["🛢️","Engine oils and fluids"]].map(([icon,label])=>(
                 <div key={label} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
                   <span style={{ fontSize:16 }}>{icon}</span>
                   <span style={{ fontSize:13, color:"#6b6b6b" }}>{label}</span>
                 </div>
               ))}
               <button onClick={()=>navigate("/auth")} style={{ marginTop:"1.5rem", background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px 28px", cursor:"pointer" }}>
-                Browse parts ΓåÆ
+                Browse parts →
               </button>
             </div>
             <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:10 }}>
               {[
-                { icon:"≡ƒÅ¬", title:"Pickup", desc:"Collect from shop" },
-                { icon:"≡ƒÜÜ", title:"Delivery", desc:"CCC riders deliver" },
-                { icon:"Γ£à", title:"Verified shops", desc:"All shops checked" },
-                { icon:"≡ƒÆ│", title:"Secure pay", desc:"M-Pesa or card" },
+                { icon:"🏪", title:"Pickup", desc:"Collect from shop" },
+                { icon:"🚚", title:"Delivery", desc:"CCC riders deliver" },
+                { icon:"✅", title:"Verified shops", desc:"All shops checked" },
+                { icon:"💳", title:"Secure pay", desc:"M-Pesa or card" },
               ].map(f=>(
                 <div key={f.title} style={{ background:"#f5f5f5", borderRadius:12, padding:"1rem", textAlign:"center" }}>
                   <div style={{ fontSize:24, marginBottom:6 }}>{f.icon}</div>
@@ -382,10 +382,10 @@ export default function LandingPage() {
         </p>
         <div style={{ display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap", position:"relative" }}>
           <button onClick={()=>navigate("/auth")} style={{ background:"#e6821e", border:"none", borderRadius:12, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:16, fontWeight:700, padding:"16px 40px", cursor:"pointer" }}>
-            ≡ƒÜù Get started free
+            🚗 Get started free
           </button>
           <button onClick={()=>navigate("/auth")} style={{ background:"none", border:"2px solid #333", borderRadius:12, color:"#666", fontFamily:"Syne,sans-serif", fontSize:16, fontWeight:700, padding:"14px 38px", cursor:"pointer" }}>
-            Sign in ΓåÆ
+            Sign in →
           </button>
         </div>
       </div>
@@ -398,13 +398,14 @@ export default function LandingPage() {
             <a key={label} href={href} style={{ fontSize:12, color:"#bbbbbb", textDecoration:"none" }}>{label}</a>
           ))}
         </div>
-        <div style={{ fontSize:12, color:"#dddddd", marginBottom:6 }}>≡ƒç░≡ƒç¬ Nairobi's most trusted automotive platform</div>
-        <div style={{ fontSize:11, color:"#dddddd" }}>┬⌐ 2026 Car Care Connect ┬╖ Nairobi, Kenya ┬╖ 0113858966 ┬╖ carcareconnect254@gmail.com</div>
-        <div style={{ fontSize:10, color:"#222", marginTop:6 }}>Payments secured by Pesapal ┬╖ Regulated by Central Bank of Kenya</div>
+        <div style={{ fontSize:12, color:"#dddddd", marginBottom:6 }}>🇰🇪 Nairobi's most trusted automotive platform</div>
+        <div style={{ fontSize:11, color:"#dddddd" }}>© 2026 Car Care Connect · Nairobi, Kenya · 0113858966 · carcareconnect254@gmail.com</div>
+        <div style={{ fontSize:10, color:"#222", marginTop:6 }}>Payments secured by Pesapal · Regulated by Central Bank of Kenya</div>
       </footer>
     </div>
   )
 }
+
 
 
 
