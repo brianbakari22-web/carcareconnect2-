@@ -101,8 +101,8 @@ export default function EscrowManager() {
 
   return (
     <div>
-      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>Transactions</div>
-      <div style={{ fontSize:12, color:"#555", marginBottom:"1.25rem" }}>Track your marketplace purchases and sales</div>
+      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#000000", marginBottom:4 }}>Transactions</div>
+      <div style={{ fontSize:12, color:"#777777", marginBottom:"1.25rem" }}>Track your marketplace purchases and sales</div>
 
       <div style={{ display:"flex", gap:6, marginBottom:"1.25rem" }}>
         {[
@@ -116,9 +116,9 @@ export default function EscrowManager() {
         ))}
       </div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&txList.length===0&&(
-        <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"3rem" }}>
+        <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
           <div style={{ fontSize:32, marginBottom:10 }}>💳</div>
           No transactions yet
         </div>
@@ -127,10 +127,10 @@ export default function EscrowManager() {
       {txList.map(tx=>{
         const days = daysLeft(tx.dispute_deadline)
         return (
-          <div key={tx.id} style={{ background:"#111", border:`1px solid ${PS[tx.payment_status]||"#1e1e1e"}20`, borderRadius:12, padding:"1rem", marginBottom:10 }}>
+          <div key={tx.id} style={{ background:"#ffffff", border:`1px solid ${PS[tx.payment_status]||"#1e1e1e"}20`, borderRadius:12, padding:"1rem", marginBottom:10 }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
               <div style={{ flex:1, minWidth:0 }}>
-                <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6", marginBottom:4 }}>
+                <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:4 }}>
                   {tx.marketplace_listings?.title}
                 </div>
                 <div style={{ display:"flex", gap:8, alignItems:"center", flexWrap:"wrap" }}>
@@ -138,12 +138,12 @@ export default function EscrowManager() {
                   {tx.buyer_confirmed&&<span style={{ fontSize:10, color:"#1d9e75" }}>✓ Receipt confirmed</span>}
                   {tx.dispute_raised&&<span style={{ fontSize:10, color:"#e24b4a" }}>⚠️ Dispute raised</span>}
                 </div>
-                <div style={{ fontSize:10, color:"#444", marginTop:4 }}>{new Date(tx.created_at).toLocaleString()}</div>
+                <div style={{ fontSize:10, color:"#888888", marginTop:4 }}>{new Date(tx.created_at).toLocaleString()}</div>
               </div>
               <div style={{ textAlign:"right", flexShrink:0 }}>
                 <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>KES {Number(tx.sale_price).toLocaleString()}</div>
                 {tab==="selling"&&<div style={{ fontSize:11, color:"#1d9e75", marginTop:2 }}>You get: KES {Number(tx.seller_earnings).toLocaleString()}</div>}
-                {tab==="buying"&&<div style={{ fontSize:11, color:"#555", marginTop:2 }}>Commission: KES {Number(tx.platform_commission).toLocaleString()}</div>}
+                {tab==="buying"&&<div style={{ fontSize:11, color:"#777777", marginTop:2 }}>Commission: KES {Number(tx.platform_commission).toLocaleString()}</div>}
               </div>
             </div>
 
@@ -168,7 +168,7 @@ export default function EscrowManager() {
                   </div>
                 )}
                 {tab==="selling"&&(
-                  <div style={{ fontSize:11, color:"#555" }}>Waiting for buyer to confirm receipt</div>
+                  <div style={{ fontSize:11, color:"#777777" }}>Waiting for buyer to confirm receipt</div>
                 )}
               </div>
             )}
@@ -186,20 +186,20 @@ export default function EscrowManager() {
               <div style={{ marginTop:8, background:"#1a0808", border:"1px solid #e24b4a30", borderRadius:8, padding:"0.9rem" }}>
                 <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e24b4a", marginBottom:8 }}>Raise a dispute</div>
                 <select value={disputeReason} onChange={e=>setDisputeReason(e.target.value)}
-                  style={{ width:"100%", background:"#111", border:"1px solid #222", borderRadius:7, padding:"9px 12px", color:"#f0ede6", fontSize:12, outline:"none", marginBottom:8, fontFamily:"'DM Sans',sans-serif" }}>
+                  style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:7, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none", marginBottom:8, fontFamily:"'DM Sans',sans-serif" }}>
                   <option value="">Select reason</option>
                   {DISPUTE_REASONS.map(r=><option key={r} value={r}>{r}</option>)}
                 </select>
                 <textarea value={disputeDesc} onChange={e=>setDisputeDesc(e.target.value)}
                   placeholder="Describe the issue in detail..."
-                  style={{ width:"100%", background:"#111", border:"1px solid #222", borderRadius:7, padding:"9px 12px", color:"#f0ede6", fontSize:12, outline:"none", resize:"vertical", minHeight:70, marginBottom:8, fontFamily:"'DM Sans',sans-serif" }}/>
+                  style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:7, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none", resize:"vertical", minHeight:70, marginBottom:8, fontFamily:"'DM Sans',sans-serif" }}/>
                 <div style={{ display:"flex", gap:8 }}>
                   <button onClick={()=>raiseDispute(tx)}
                     style={{ background:"#e24b4a", border:"none", borderRadius:7, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"7px 14px", cursor:"pointer" }}>
                     Submit dispute
                   </button>
                   <button onClick={()=>setDisputing(null)}
-                    style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#666", fontSize:11, padding:"7px 12px", cursor:"pointer" }}>
+                    style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#666", fontSize:11, padding:"7px 12px", cursor:"pointer" }}>
                     Cancel
                   </button>
                 </div>
@@ -211,3 +211,4 @@ export default function EscrowManager() {
     </div>
   )
 }
+

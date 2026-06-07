@@ -198,7 +198,7 @@ export default function ProviderGoRequests() {
             </div>
           </div>
           {pending.map(r=>(
-            <div key={r.id} style={{ background:"#0f0f0f", borderRadius:10, padding:"1rem", marginBottom:10 }}>
+            <div key={r.id} style={{ background:"#ffffff", borderRadius:10, padding:"1rem", marginBottom:10 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
                 <div>
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
@@ -207,18 +207,18 @@ export default function ProviderGoRequests() {
                       {r.bookings?.emergency_type?.replace(/_/g," ").toUpperCase()}
                     </div>
                   </div>
-                  <div style={{ fontSize:12, color:"#888", marginBottom:2 }}>📍 {r.bookings?.emergency_location_address}</div>
+                  <div style={{ fontSize:12, color:"#555555", marginBottom:2 }}>📍 {r.bookings?.emergency_location_address}</div>
                   {r.bookings?.notes&&<div style={{ fontSize:11, color:"#666" }}>📝 {r.bookings.notes}</div>}
                   <div style={{ fontSize:11, color:"#e6821e", marginTop:4 }}>
                     💰 KES {Number(r.bookings?.total_amount||0).toLocaleString()} · Your earnings: KES {(Number(r.bookings?.total_amount||0)*0.85).toFixed(0)}
                   </div>
-                  <div style={{ fontSize:11, color:"#555", marginTop:2 }}>Attempt {r.attempt_number} of 5</div>
+                  <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>Attempt {r.attempt_number} of 5</div>
                 </div>
                 <div style={{ textAlign:"center", flexShrink:0 }}>
                   <div style={{ fontFamily:"Syne", fontSize:24, fontWeight:800, color:timers[r.id]<60?"#e24b4a":"#e6821e" }}>
                     {formatTime(timers[r.id])}
                   </div>
-                  <div style={{ fontSize:9, color:"#555" }}>time left</div>
+                  <div style={{ fontSize:9, color:"#777777" }}>time left</div>
                 </div>
               </div>
 
@@ -232,8 +232,8 @@ export default function ProviderGoRequests() {
                         {m.first_name[0]}{m.last_name[0]}
                       </div>
                       <div>
-                        <div style={{ fontSize:12, color:"#f0ede6" }}>{m.first_name} {m.last_name}</div>
-                        <div style={{ fontSize:10, color:"#555" }}>{m.specialization}</div>
+                        <div style={{ fontSize:12, color:"#000000" }}>{m.first_name} {m.last_name}</div>
+                        <div style={{ fontSize:10, color:"#777777" }}>{m.specialization}</div>
                       </div>
                       {selectedMechanic===m.id&&<div style={{ marginLeft:"auto", color:"#8b5cf6", fontSize:14 }}>✓</div>}
                     </div>
@@ -262,29 +262,29 @@ export default function ProviderGoRequests() {
         </div>
       )}
 
-      <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#f0ede6", marginBottom:"1rem" }}>
+      <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000", marginBottom:"1rem" }}>
         Recent GO requests
       </div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&recent.length===0&&pending.length===0&&(
-        <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>
+        <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>
           <div style={{ fontSize:32, marginBottom:10 }}>🚨</div>
           No GO service requests yet
         </div>
       )}
 
       {recent.map(r=>(
-        <div key={r.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"0.9rem", marginBottom:8 }}>
+        <div key={r.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"0.9rem", marginBottom:8 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
             <div>
               <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
                 <span>{EMERGENCY_ICONS[r.bookings?.emergency_type]||"🆘"}</span>
-                <span style={{ fontSize:13, color:"#f0ede6" }}>{r.bookings?.emergency_type?.replace(/_/g," ")}</span>
+                <span style={{ fontSize:13, color:"#000000" }}>{r.bookings?.emergency_type?.replace(/_/g," ")}</span>
                 <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:r.status==="accepted"?"#071a12":r.status==="declined"?"#1a0808":"#1a1a1a", color:r.status==="accepted"?"#1d9e75":r.status==="declined"?"#e24b4a":"#888" }}>{r.status}</span>
               </div>
-              <div style={{ fontSize:11, color:"#555" }}>📍 {r.bookings?.emergency_location_address}</div>
-              <div style={{ fontSize:10, color:"#444", marginTop:2 }}>{new Date(r.sent_at).toLocaleString()}</div>
+              <div style={{ fontSize:11, color:"#777777" }}>📍 {r.bookings?.emergency_location_address}</div>
+              <div style={{ fontSize:10, color:"#888888", marginTop:2 }}>{new Date(r.sent_at).toLocaleString()}</div>
             </div>
             <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e" }}>
               KES {Number(r.bookings?.total_amount||0).toLocaleString()}
@@ -295,5 +295,6 @@ export default function ProviderGoRequests() {
     </div>
   )
 }
+
 
 

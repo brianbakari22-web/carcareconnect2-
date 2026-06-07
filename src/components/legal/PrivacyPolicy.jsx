@@ -4,15 +4,15 @@ export default function PrivacyPolicy() {
   const navigate = useNavigate()
 
   return (
-    <div style={{ minHeight:"100vh", background:"#0a0a0a", fontFamily:"'DM Sans',sans-serif", color:"#f0ede6" }}>
+    <div style={{ minHeight:"100vh", background:"#ffffff", fontFamily:"'DM Sans',sans-serif", color:"#000000" }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');`}</style>
 
-      <nav style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"1.25rem 2rem", borderBottom:"1px solid #1a1a1a", position:"sticky", top:0, background:"#0a0a0a", zIndex:10 }}>
-        <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#f0ede6", cursor:"pointer" }} onClick={()=>navigate("/auth")}>
+      <nav style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"1.25rem 2rem", borderBottom:"1px solid #1a1a1a", position:"sticky", top:0, background:"#ffffff", zIndex:10 }}>
+        <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000000", cursor:"pointer" }} onClick={()=>navigate("/auth")}>
           🚗 Car<span style={{ color:"#e6821e" }}>Care</span> Connect
         </div>
         <button onClick={()=>navigate("/auth")}
-          style={{ background:"none", border:"1px solid #333", borderRadius:8, color:"#888", fontSize:13, padding:"8px 16px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
+          style={{ background:"none", border:"1px solid #dddddd", borderRadius:8, color:"#555555", fontSize:13, padding:"8px 16px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
           ← Back
         </button>
       </nav>
@@ -20,12 +20,12 @@ export default function PrivacyPolicy() {
       <div style={{ maxWidth:760, margin:"0 auto", padding:"3rem 2rem 5rem" }}>
         <div style={{ marginBottom:"2.5rem" }}>
           <div style={{ fontSize:12, color:"#e6821e", fontWeight:600, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>Legal</div>
-          <div style={{ fontFamily:"Syne", fontSize:"clamp(28px,4vw,40px)", fontWeight:800, color:"#f0ede6", marginBottom:8 }}>Privacy Policy</div>
-          <div style={{ fontSize:13, color:"#555" }}>Last updated: January 1, 2026 · Effective: January 1, 2026</div>
+          <div style={{ fontFamily:"Syne", fontSize:"clamp(28px,4vw,40px)", fontWeight:800, color:"#000000", marginBottom:8 }}>Privacy Policy</div>
+          <div style={{ fontSize:13, color:"#777777" }}>Last updated: January 1, 2026 · Effective: January 1, 2026</div>
         </div>
 
-        <div style={{ background:"#111", border:"1px solid #e6821e30", borderRadius:12, padding:"1.25rem", marginBottom:"2rem" }}>
-          <div style={{ fontSize:13, color:"#888", lineHeight:1.7 }}>
+        <div style={{ background:"#ffffff", border:"1px solid #e6821e30", borderRadius:12, padding:"1.25rem", marginBottom:"2rem" }}>
+          <div style={{ fontSize:13, color:"#555555", lineHeight:1.7 }}>
             Car Care Connect ("we", "us", or "our") is committed to protecting your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform. Please read it carefully. By using Car Care Connect, you consent to the practices described in this policy.
           </div>
         </div>
@@ -106,22 +106,22 @@ export default function PrivacyPolicy() {
           },
         ].map(section=>(
           <div key={section.title} style={{ marginBottom:"2.5rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#f0ede6", marginBottom:"1rem", paddingBottom:"0.5rem", borderBottom:"1px solid #1e1e1e" }}>{section.title}</div>
+            <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000000", marginBottom:"1rem", paddingBottom:"0.5rem", borderBottom:"1px solid #eeeeee" }}>{section.title}</div>
             {section.content.map((item,i)=>(
               <div key={i} style={{ marginBottom:"1rem" }}>
                 {item.sub&&<div style={{ fontSize:13, fontWeight:600, color:"#e6821e", marginBottom:4 }}>{item.sub}</div>}
-                <div style={{ fontSize:13, color:"#888", lineHeight:1.8 }}>{item.text}</div>
+                <div style={{ fontSize:13, color:"#555555", lineHeight:1.8 }}>{item.text}</div>
               </div>
             ))}
             {section.contact&&(
-              <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem", marginTop:8 }}>
+              <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginTop:8 }}>
                 {[
                   { icon:"🏢", text:"Car Care Connect" },
                   { icon:"📍", text:"Nairobi, Kenya" },
                   { icon:"📧", text:"carcareconnect254@gmail.com" },
                   { icon:"📞", text:"0113858966" },
                 ].map(c=>(
-                  <div key={c.text} style={{ display:"flex", gap:10, alignItems:"center", marginBottom:8, fontSize:13, color:"#888" }}>
+                  <div key={c.text} style={{ display:"flex", gap:10, alignItems:"center", marginBottom:8, fontSize:13, color:"#555555" }}>
                     <span>{c.icon}</span><span>{c.text}</span>
                   </div>
                 ))}
@@ -137,6 +137,7 @@ export default function PrivacyPolicy() {
     </div>
   )
 }
+
 
 
 

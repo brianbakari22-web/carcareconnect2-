@@ -123,8 +123,8 @@ export default function MyListings() {
     <div>
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1.25rem", flexWrap:"wrap", gap:10 }}>
         <div>
-          <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#f0ede6" }}>My Listings</div>
-          <div style={{ fontSize:12, color:"#555" }}>Manage your marketplace listings and offers</div>
+          <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#000000" }}>My Listings</div>
+          <div style={{ fontSize:12, color:"#777777" }}>Manage your marketplace listings and offers</div>
         </div>
         <button onClick={()=>navigate("/dashboard/marketplace/new")}
           style={{ background:"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 18px", cursor:"pointer" }}>
@@ -134,14 +134,14 @@ export default function MyListings() {
 
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8, marginBottom:"1.25rem" }}>
         {[
-          { label:"Total", value:listings.length, color:"#f0ede6" },
+          { label:"Total", value:listings.length, color:"#000000" },
           { label:"Active", value:listings.filter(l=>l.status==="active").length, color:"#1d9e75" },
           { label:"Pending", value:listings.filter(l=>l.status==="pending").length, color:"#e6821e" },
           { label:"Offers", value:pendingOffers.length, color:"#8b5cf6" },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"0.6rem", border:"1px solid #1e1e1e", textAlign:"center" }}>
+          <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"0.6rem", border:"1px solid #eeeeee", textAlign:"center" }}>
             <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:s.color }}>{s.value}</div>
-            <div style={{ fontSize:10, color:"#555" }}>{s.label}</div>
+            <div style={{ fontSize:10, color:"#777777" }}>{s.label}</div>
           </div>
         ))}
       </div>
@@ -161,12 +161,12 @@ export default function MyListings() {
         ))}
       </div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
 
       {tab==="listings"&&(
         <div>
           {!loading&&listings.length===0&&(
-            <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"3rem" }}>
+            <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
               <div style={{ fontSize:32, marginBottom:10 }}>🛒</div>
               No listings yet
               <div style={{ marginTop:12 }}>
@@ -178,9 +178,9 @@ export default function MyListings() {
             </div>
           )}
           {listings.map(l=>(
-            <div key={l.id} style={{ background:"#111", border:"1px solid "+(SC[l.status]||"#1e1e1e")+"30", borderRadius:12, marginBottom:10, overflow:"hidden" }}>
+            <div key={l.id} style={{ background:"#ffffff", border:"1px solid "+(SC[l.status]||"#1e1e1e")+"30", borderRadius:12, marginBottom:10, overflow:"hidden" }}>
               <div style={{ display:"flex", gap:0 }}>
-                <div style={{ width:90, minHeight:90, background:"#1a1a1a", flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
+                <div style={{ width:90, minHeight:90, background:"#f5f5f5", flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
                   {l.primary_photo
                     ? <img src={l.primary_photo} alt="" style={{ width:"100%", height:"100%", objectFit:"cover", minHeight:90 }}/>
                     : <span style={{ fontSize:32 }}>{l.listing_type==="vehicle"?"🚗":l.listing_type==="part"?"🔧":"✨"}</span>
@@ -188,7 +188,7 @@ export default function MyListings() {
                 </div>
                 <div style={{ flex:1, padding:"0.75rem", minWidth:0 }}>
                   <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:4, marginBottom:3 }}>
-                    <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6", flex:1, minWidth:0, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{l.title}</div>
+                    <div style={{ fontSize:13, fontWeight:600, color:"#000000", flex:1, minWidth:0, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{l.title}</div>
                     <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:800, color:"#e6821e", flexShrink:0 }}>KES {Number(l.price).toLocaleString()}</div>
                   </div>
                   <div style={{ display:"flex", gap:4, alignItems:"center", flexWrap:"wrap", marginBottom:3 }}>
@@ -196,13 +196,13 @@ export default function MyListings() {
                     {l.is_featured&&<span style={{ fontSize:10, color:"#e6821e" }}>⭐</span>}
                     {l.is_inspected&&<span style={{ fontSize:10, color:"#1d9e75" }}>✓</span>}
                   </div>
-                  {l.listing_type==="vehicle"&&<div style={{ fontSize:10, color:"#555", marginBottom:2 }}>{[l.make,l.model,l.year].filter(Boolean).join(" · ")}</div>}
-                  <div style={{ fontSize:10, color:"#555" }}>📍 {l.city||"—"} · 👁 {l.views||0} · {new Date(l.created_at).toLocaleDateString()}</div>
+                  {l.listing_type==="vehicle"&&<div style={{ fontSize:10, color:"#777777", marginBottom:2 }}>{[l.make,l.model,l.year].filter(Boolean).join(" · ")}</div>}
+                  <div style={{ fontSize:10, color:"#777777" }}>📍 {l.city||"—"} · 👁 {l.views||0} · {new Date(l.created_at).toLocaleDateString()}</div>
                 </div>
               </div>
 
               {l.status==="pending"&&l.listing_type==="vehicle"&&l.inspection_status!=="passed"&&(
-                <div style={{ borderTop:"1px solid #1e1e1e", padding:"0.75rem", background:"#1a1208" }}>
+                <div style={{ borderTop:"1px solid #eeeeee", padding:"0.75rem", background:"#1a1208" }}>
                   <div style={{ fontSize:11, color:"#e6821e", marginBottom:6 }}>⏳ CCC inspection required before approval</div>
                   <button onClick={()=>setShowInspection(showInspection===l.id?null:l.id)}
                     style={{ background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontSize:11, padding:"6px 14px", cursor:"pointer", fontWeight:600, width:"100%" }}>
@@ -212,31 +212,31 @@ export default function MyListings() {
                 </div>
               )}
               {l.status==="pending"&&(l.listing_type!=="vehicle"||l.inspection_status==="passed")&&(
-                <div style={{ borderTop:"1px solid #1e1e1e", padding:"0.5rem 0.75rem" }}>
+                <div style={{ borderTop:"1px solid #eeeeee", padding:"0.5rem 0.75rem" }}>
                   <div style={{ fontSize:11, color:"#e6821e" }}>⏳ Under review</div>
                 </div>
               )}
               {l.status==="rejected"&&l.admin_notes&&(
-                <div style={{ borderTop:"1px solid #1e1e1e", padding:"0.5rem 0.75rem" }}>
+                <div style={{ borderTop:"1px solid #eeeeee", padding:"0.5rem 0.75rem" }}>
                   <div style={{ fontSize:11, color:"#e24b4a" }}>❌ {l.admin_notes}</div>
                 </div>
               )}
 
-              {inspectListing===l.id&&<div style={{ borderTop:"1px solid #1e1e1e", padding:"0.75rem" }}><InspectionRequest listing={l} onSuccess={()=>{ setInspectListing(null); loadListings() }}/></div>}
-              {featureListing===l.id&&<div style={{ borderTop:"1px solid #1e1e1e", padding:"0.75rem" }}><FeaturedListing listingId={l.id} onSuccess={()=>{ setFeatureListing(null); loadListings() }}/></div>}
+              {inspectListing===l.id&&<div style={{ borderTop:"1px solid #eeeeee", padding:"0.75rem" }}><InspectionRequest listing={l} onSuccess={()=>{ setInspectListing(null); loadListings() }}/></div>}
+              {featureListing===l.id&&<div style={{ borderTop:"1px solid #eeeeee", padding:"0.75rem" }}><FeaturedListing listingId={l.id} onSuccess={()=>{ setFeatureListing(null); loadListings() }}/></div>}
               {photoListing===l.id&&(
-                <div style={{ borderTop:"1px solid #1e1e1e", padding:"0.75rem" }}>
+                <div style={{ borderTop:"1px solid #eeeeee", padding:"0.75rem" }}>
                   <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:8 }}>
-                    {listingPhotos.map(p=>(<img key={p.id} src={p.photo_url} alt="" style={{ width:64, height:64, objectFit:"cover", borderRadius:8, border:p.is_primary?"2px solid #e6821e":"1px solid #333" }}/>))}
-                    {listingPhotos.length===0&&<div style={{ fontSize:11, color:"#555" }}>No photos yet</div>}
+                    {listingPhotos.map(p=>(<img key={p.id} src={p.photo_url} alt="" style={{ width:64, height:64, objectFit:"cover", borderRadius:8, border:p.is_primary?"2px solid #e6821e":"1px solid #dddddd" }}/>))}
+                    {listingPhotos.length===0&&<div style={{ fontSize:11, color:"#777777" }}>No photos yet</div>}
                   </div>
                   <PhotoUpload listingId={l.id} onSuccess={()=>openPhotos(l)} existingPhotos={listingPhotos}/>
                 </div>
               )}
 
-              <div style={{ borderTop:"1px solid #1e1e1e", padding:"0.5rem 0.75rem", display:"flex", gap:6, flexWrap:"wrap" }}>
+              <div style={{ borderTop:"1px solid #eeeeee", padding:"0.5rem 0.75rem", display:"flex", gap:6, flexWrap:"wrap" }}>
                 <button onClick={()=>navigate("/dashboard/marketplace")} style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>View</button>
-                <button onClick={()=>openPhotos(l)} style={{ background:"#111", border:"1px solid #333", borderRadius:7, color:"#888", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>Photos {l.marketplace_photos?.length>0?"("+l.marketplace_photos.length+")":""}</button>
+                <button onClick={()=>openPhotos(l)} style={{ background:"#ffffff", border:"1px solid #dddddd", borderRadius:7, color:"#555555", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>Photos {l.marketplace_photos?.length>0?"("+l.marketplace_photos.length+")":""}</button>
                 {l.listing_type==="vehicle"&&<button onClick={()=>setFeatureListing(featureListing===l.id?null:l.id)} style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>Feature</button>}
                 <button onClick={()=>setInspectListing(inspectListing===l.id?null:l.id)} style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>Inspect</button>
                 {l.status!=="sold"&&<button onClick={()=>deleteListing(l.id)} style={{ background:"none", border:"1px solid #e24b4a30", borderRadius:7, color:"#e24b4a", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>Delete</button>}
@@ -249,7 +249,7 @@ export default function MyListings() {
       {tab==="offers"&&(
         <div>
           {!loading&&offers.length===0&&(
-            <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"3rem" }}>
+            <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
               <div style={{ fontSize:32, marginBottom:10 }}>💰</div>
               No offers yet
             </div>
@@ -257,14 +257,14 @@ export default function MyListings() {
           {offers.map(o=>{
             const OC = { pending:"#8b5cf6", accepted:"#1d9e75", rejected:"#e24b4a", countered:"#e6821e", withdrawn:"#555" }
             return (
-              <div key={o.id} style={{ background:"#111", border:"1px solid "+(OC[o.status]||"#1e1e1e")+"30", borderRadius:12, padding:"1rem", marginBottom:10 }}>
+              <div key={o.id} style={{ background:"#ffffff", border:"1px solid "+(OC[o.status]||"#1e1e1e")+"30", borderRadius:12, padding:"1rem", marginBottom:10 }}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
                   <div style={{ flex:1, minWidth:0 }}>
-                    <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6", marginBottom:4 }}>{o.marketplace_listings?.title}</div>
-                    <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>Asking: KES {Number(o.marketplace_listings?.price||0).toLocaleString()}</div>
-                    <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>From: {o.buyer?.first_name} {o.buyer?.last_name}{o.buyer?.city&&" · "+o.buyer.city}</div>
-                    {o.message&&<div style={{ fontSize:11, color:"#888", fontStyle:"italic", marginBottom:4 }}>"{o.message}"</div>}
-                    <div style={{ fontSize:10, color:"#444" }}>{new Date(o.created_at).toLocaleString()}</div>
+                    <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:4 }}>{o.marketplace_listings?.title}</div>
+                    <div style={{ fontSize:11, color:"#777777", marginBottom:2 }}>Asking: KES {Number(o.marketplace_listings?.price||0).toLocaleString()}</div>
+                    <div style={{ fontSize:11, color:"#777777", marginBottom:2 }}>From: {o.buyer?.first_name} {o.buyer?.last_name}{o.buyer?.city&&" · "+o.buyer.city}</div>
+                    {o.message&&<div style={{ fontSize:11, color:"#555555", fontStyle:"italic", marginBottom:4 }}>"{o.message}"</div>}
+                    <div style={{ fontSize:10, color:"#888888" }}>{new Date(o.created_at).toLocaleString()}</div>
                   </div>
                   <div style={{ textAlign:"right", flexShrink:0 }}>
                     <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#e6821e" }}>KES {Number(o.offered_price).toLocaleString()}</div>
@@ -292,7 +292,7 @@ export default function MyListings() {
                       <div style={{ marginTop:8, display:"flex", gap:8 }}>
                         <input type="number" value={counterPrice} onChange={e=>setCounterPrice(e.target.value)}
                           placeholder="Counter price"
-                          style={{ flex:1, background:"#0f0f0f", border:"1px solid #222", borderRadius:7, padding:"8px 12px", color:"#f0ede6", fontSize:12, outline:"none" }}/>
+                          style={{ flex:1, background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:7, padding:"8px 12px", color:"#000000", fontSize:12, outline:"none" }}/>
                         <button onClick={()=>counterOffer(o)} disabled={processing===o.id}
                           style={{ background:"#8b5cf6", border:"none", borderRadius:7, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"8px 14px", cursor:"pointer" }}>
                           Send
@@ -309,3 +309,4 @@ export default function MyListings() {
     </div>
   )
 }
+

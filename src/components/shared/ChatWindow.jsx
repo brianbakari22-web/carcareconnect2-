@@ -152,27 +152,27 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
   }
 
   return (
-    <div style={{ display:"flex", flexDirection:"column", height:"100%", minHeight:320, background:"#0f0f0f", borderRadius:12, border:"1px solid #2a2a2a", overflow:"hidden" }}>
-      <div style={{ padding:"1rem", borderBottom:"1px solid #1e1e1e", display:"flex", alignItems:"center", justifyContent:"space-between", background:"#111", flexShrink:0 }}>
+    <div style={{ display:"flex", flexDirection:"column", height:"100%", minHeight:320, background:"#ffffff", borderRadius:12, border:"1px solid #e5e5e5", overflow:"hidden" }}>
+      <div style={{ padding:"1rem", borderBottom:"1px solid #eeeeee", display:"flex", alignItems:"center", justifyContent:"space-between", background:"#ffffff", flexShrink:0 }}>
         <div style={{ display:"flex", alignItems:"center", gap:10 }}>
           <div style={{ width:36, height:36, borderRadius:"50%", background:"#1a1208", border:"1px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>
             {otherUserName?.[0]?.toUpperCase()||"?"}
           </div>
           <div>
-            <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6" }}>{otherUserName}</div>
+            <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{otherUserName}</div>
             <div style={{ fontSize:10, color:otherTyping?"#1d9e75":"#555", transition:"color 0.2s" }}>
               {otherTyping?"typing...":claimId?"Claim investigation":listingId?"Marketplace chat":"Chat"}
             </div>
           </div>
         </div>
         {onClose&&(
-          <button onClick={onClose} style={{ background:"none", border:"none", color:"#555", fontSize:20, cursor:"pointer", lineHeight:1, padding:"4px" }}>×</button>
+          <button onClick={onClose} style={{ background:"none", border:"none", color:"#777777", fontSize:20, cursor:"pointer", lineHeight:1, padding:"4px" }}>×</button>
         )}
       </div>
 
       <div style={{ flex:1, overflowY:"auto", padding:"1rem", display:"flex", flexDirection:"column", gap:8 }}>
         {messages.length===0&&(
-          <div style={{ textAlign:"center", color:"#444", fontSize:12, padding:"2rem" }}>
+          <div style={{ textAlign:"center", color:"#888888", fontSize:12, padding:"2rem" }}>
             <div style={{ fontSize:28, marginBottom:8 }}>💬</div>
             No messages yet. Start the conversation!
           </div>
@@ -196,16 +196,16 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
         })}
         {otherTyping&&(
           <div style={{ display:"flex", justifyContent:"flex-start" }}>
-            <div style={{ padding:"10px 14px", borderRadius:"14px 14px 14px 4px", background:"1a1a1a", color:"#555", fontSize:20, letterSpacing:4 }}>•••</div>
+            <div style={{ padding:"10px 14px", borderRadius:"14px 14px 14px 4px", background:"1a1a1a", color:"#777777", fontSize:20, letterSpacing:4 }}>•••</div>
           </div>
         )}
         <div ref={bottomRef}/>
       </div>
 
-      <form onSubmit={send} style={{ padding:"0.75rem", borderTop:"1px solid #1e1e1e", display:"flex", gap:8, background:"#111", flexShrink:0 }}>
+      <form onSubmit={send} style={{ padding:"0.75rem", borderTop:"1px solid #eeeeee", display:"flex", gap:8, background:"#ffffff", flexShrink:0 }}>
         <textarea value={text} onChange={e=>setText(e.target.value)} onKeyDown={handleKeyDown}
           placeholder={t("typeMessage")} rows={1}
-          style={{ flex:1, background:"#0f0f0f", border:"1px solid #222", borderRadius:10, padding:"10px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", resize:"none", lineHeight:1.4, maxHeight:100 }}/>
+          style={{ flex:1, background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:10, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", resize:"none", lineHeight:1.4, maxHeight:100 }}/>
         <button type="submit" disabled={!text.trim()||sending}
           style={{ background:text.trim()&&!sending?"#e6821e":"#222", border:"none", borderRadius:10, color:text.trim()&&!sending?"#fff":"#555", fontSize:18, padding:"0 16px", cursor:text.trim()&&!sending?"pointer":"default", flexShrink:0, transition:"all 0.12s" }}>
           ➤
@@ -214,6 +214,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
     </div>
   )
 }
+
 
 
 

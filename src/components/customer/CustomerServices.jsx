@@ -129,7 +129,7 @@ export default function CustomerServices() {
     return matchCat && matchSearch
   })
 
-  const inp = { width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"11px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }
+  const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"11px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }
   const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
 
   return (
@@ -142,7 +142,7 @@ export default function CustomerServices() {
             style={{ background:activeCategory===c.key?c.bg:"#111", border:`1px solid ${activeCategory===c.key?c.color:"#1e1e1e"}`, borderRadius:12, padding:"1rem", cursor:"pointer", transition:"all 0.15s" }}>
             <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
               <span style={{ fontSize:22 }}>{c.icon}</span>
-              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:activeCategory===c.key?c.color:"#f0ede6" }}>{c.label}</div>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:activeCategory===c.key?c.color:"#000000" }}>{c.label}</div>
             </div>
             <div style={{ fontSize:11, color:"#666" }}>{c.desc}</div>
             <div style={{ fontSize:10, color:c.color, marginTop:4, fontWeight:600 }}>
@@ -166,26 +166,26 @@ export default function CustomerServices() {
         ))}
       </div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading services...</div>}
-      {!loading&&filtered.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No services found</div>}
+      {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading services...</div>}
+      {!loading&&filtered.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>No services found</div>}
 
       {filtered.map(s=>{
         const cat = CATEGORIES.find(c=>c.key===s.category)||CATEGORIES[0]
         const provider = providers.find(p=>p.id===s.provider_id)
         return (
-          <div key={s.id} style={{ background:"#111", border:`1px solid ${cat.border}`, borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10 }}>
+          <div key={s.id} style={{ background:"#ffffff", border:`1px solid ${cat.border}`, borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10 }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10 }}>
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6, flexWrap:"wrap" }}>
                   <span style={{ fontSize:18 }}>{cat.icon}</span>
-                  <div style={{ fontFamily:"Syne", fontSize:isMobile?14:15, fontWeight:800, color:"#f0ede6" }}>{s.name}</div>
+                  <div style={{ fontFamily:"Syne", fontSize:isMobile?14:15, fontWeight:800, color:"#000000" }}>{s.name}</div>
                   <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:cat.bg, color:cat.color, border:`1px solid ${cat.border}` }}>{cat.label}</span>
                 </div>
                 {s.description&&<div style={{ fontSize:12, color:"#666", marginBottom:6, lineHeight:1.5 }}>{s.description}</div>}
                 <div style={{ display:"flex", gap:12, flexWrap:"wrap", alignItems:"center" }}>
                   <span style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(s.price).toLocaleString()}</span>
-                  <span style={{ fontSize:11, color:"#555" }}>⏱ {s.duration_minutes||60} min</span>
-                  {provider&&<span style={{ fontSize:11, color:"#555" }}>🏪 {provider.business_name||`${provider.first_name} ${provider.last_name}`}{provider.city?` · ${provider.city}`:""}</span>}
+                  <span style={{ fontSize:11, color:"#777777" }}>⏱ {s.duration_minutes||60} min</span>
+                  {provider&&<span style={{ fontSize:11, color:"#777777" }}>🏪 {provider.business_name||`${provider.first_name} ${provider.last_name}`}{provider.city?` · ${provider.city}`:""}</span>}
                   {provider?.is_verified&&<span style={{ fontSize:10, color:"#1d9e75" }}>✓ Verified</span>}
                 </div>
               </div>
@@ -197,7 +197,7 @@ export default function CustomerServices() {
 
             {booking?.id===s.id&&(
               <div style={{ marginTop:"1rem", paddingTop:"1rem", borderTop:`1px solid ${cat.border}` }}>
-                <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:"0.75rem", color:"#f0ede6" }}>Book — {s.name}</div>
+                <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:"0.75rem", color:"#000000" }}>Book — {s.name}</div>
 
                 {s.category==="go_service"&&(
                   <div style={{ background:"#1a0808", border:"1px solid #e24b4a30", borderRadius:8, padding:"0.75rem", marginBottom:12 }}>
@@ -296,17 +296,17 @@ export default function CustomerServices() {
                     )}
                   </div>
 
-                  <div style={{ background:"#0f0f0f", borderRadius:8, padding:"0.75rem", marginBottom:14 }}>
-                    <div style={{ fontSize:11, color:"#555", marginBottom:4 }}>Booking summary</div>
-                    <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#888", marginBottom:2 }}>
+                  <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", marginBottom:14 }}>
+                    <div style={{ fontSize:11, color:"#777777", marginBottom:4 }}>Booking summary</div>
+                    <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#555555", marginBottom:2 }}>
                       <span>{s.name}</span><span>KES {Number(s.price).toLocaleString()}</span>
                     </div>
                     {bookForm.is_concierge&&(
-                      <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#888", marginBottom:2 }}>
+                      <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#555555", marginBottom:2 }}>
                         <span>Concierge fee</span><span>KES {(Number(s.price)*0.15).toFixed(0)}</span>
                       </div>
                     )}
-                    <div style={{ height:1, background:"#1e1e1e", margin:"6px 0" }}/>
+                    <div style={{ height:1, background:"#f0f0f0", margin:"6px 0" }}/>
                     {voucherData&&(
                       <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#1d9e75", marginBottom:2 }}>
                         <span>Voucher discount</span><span>- KES {Number(voucherData.value).toLocaleString()}</span>
@@ -324,7 +324,7 @@ export default function CustomerServices() {
                       {bookingLoading?"Booking...":"Confirm booking"}
                     </button>
                     <button type="button" onClick={()=>setBooking(null)}
-                      style={{ background:"none", border:"1px solid #333", borderRadius:9, color:"#666", fontSize:13, padding:"11px 16px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
+                      style={{ background:"none", border:"1px solid #dddddd", borderRadius:9, color:"#666", fontSize:13, padding:"11px 16px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
                       Cancel
                     </button>
                   </div>
@@ -354,6 +354,7 @@ export default function CustomerServices() {
     </div>
   )
 }
+
 
 
 

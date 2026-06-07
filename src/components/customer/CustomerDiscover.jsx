@@ -228,15 +228,15 @@ export default function CustomerDiscover() {
     `${d.first_name} ${d.last_name}`.toLowerCase().includes(search.toLowerCase())
   )
 
-  const inp = { width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"10px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }
+  const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }
 
   return (
     <div>
       <div style={{ marginBottom:"1.25rem" }}>
-        <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>
+        <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#000000", marginBottom:4 }}>
           {t("discoverServices")}
         </div>
-        <div style={{ fontSize:12, color:"#555" }}>
+        <div style={{ fontSize:12, color:"#777777" }}>
           {providers.length} {t("providers").toLowerCase()} · {drivers.filter(d=>d.is_online).length} {t("drivers").toLowerCase()} {t("online").toLowerCase()} · {services.length} {t("services").toLowerCase()}
         </div>
       </div>
@@ -276,9 +276,9 @@ export default function CustomerDiscover() {
       </div>
 
       {showFilters&&(
-        <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem", marginBottom:"1rem", display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(180px,1fr))", gap:12 }}>
+        <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:"1rem", display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(180px,1fr))", gap:12 }}>
           <div>
-            <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", marginBottom:6 }}>{t("sortBy")}</div>
+            <div style={{ fontSize:11, color:"#777777", textTransform:"uppercase", marginBottom:6 }}>{t("sortBy")}</div>
             <select value={sortBy} onChange={e=>setSortBy(e.target.value)} style={{ ...inp, padding:"7px 10px" }}>
               <option value="default">{t("defaultSort")}</option>
               <option value="distance">{t("nearest")}</option>
@@ -287,7 +287,7 @@ export default function CustomerDiscover() {
           </div>
           {userLocation&&(
             <div>
-              <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", marginBottom:6 }}>{t("maxDistance")}</div>
+              <div style={{ fontSize:11, color:"#777777", textTransform:"uppercase", marginBottom:6 }}>{t("maxDistance")}</div>
               <select value={maxDistance||""} onChange={e=>setMaxDistance(e.target.value?Number(e.target.value):null)} style={{ ...inp, padding:"7px 10px" }}>
                 <option value="">{t("anyDistance")}</option>
                 <option value="5">5 km</option>
@@ -298,25 +298,25 @@ export default function CustomerDiscover() {
             </div>
           )}
           <div>
-            <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", marginBottom:6 }}>{t("priceRange")}</div>
+            <div style={{ fontSize:11, color:"#777777", textTransform:"uppercase", marginBottom:6 }}>{t("priceRange")}</div>
             <div style={{ display:"flex", gap:6 }}>
               <input type="number" placeholder="Min" value={priceRange.min} onChange={e=>setPriceRange(p=>({...p,min:e.target.value}))} style={{ ...inp, padding:"7px 10px" }}/>
               <input type="number" placeholder="Max" value={priceRange.max} onChange={e=>setPriceRange(p=>({...p,max:e.target.value}))} style={{ ...inp, padding:"7px 10px" }}/>
             </div>
           </div>
           <div style={{ display:"flex", flexDirection:"column", gap:8, justifyContent:"flex-end" }}>
-            <label style={{ display:"flex", alignItems:"center", gap:8, cursor:"pointer", fontSize:12, color:"#888" }}>
+            <label style={{ display:"flex", alignItems:"center", gap:8, cursor:"pointer", fontSize:12, color:"#555555" }}>
               <input type="checkbox" checked={onlyOpen} onChange={e=>setOnlyOpen(e.target.checked)}/>
               {t("openNow")}
             </label>
-            <label style={{ display:"flex", alignItems:"center", gap:8, cursor:"pointer", fontSize:12, color:"#888" }}>
+            <label style={{ display:"flex", alignItems:"center", gap:8, cursor:"pointer", fontSize:12, color:"#555555" }}>
               <input type="checkbox" checked={onlyVerified} onChange={e=>setOnlyVerified(e.target.checked)}/>
               {t("verifiedOnly")}
             </label>
           </div>
           <div style={{ display:"flex", alignItems:"flex-end" }}>
             <button onClick={()=>{ setSortBy("default"); setMaxDistance(null); setPriceRange({min:"",max:""}); setOnlyOpen(false); setOnlyVerified(false); setUserLocation(null) }}
-              style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#666", fontSize:11, padding:"7px 12px", cursor:"pointer" }}>
+              style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#666", fontSize:11, padding:"7px 12px", cursor:"pointer" }}>
               {t("clearFilters")}
             </button>
           </div>
@@ -336,11 +336,11 @@ export default function CustomerDiscover() {
         ))}
       </div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>{t("loading")}</div>}
+      {loading&&<div style={{ color:"#777777", fontSize:13 }}>{t("loading")}</div>}
 
       {tab==="providers"&&!selectedProvider&&(
         <div style={{ display:"grid", gap:10 }}>
-          {filteredProviders.length===0&&!loading&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>{t("noProvidersFound")}</div>}
+          {filteredProviders.length===0&&!loading&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>{t("noProvidersFound")}</div>}
           {filteredProviders.map(p=>{
             const ps = providerServices(p.id)
             const status = getProviderStatus(p.id)
@@ -348,7 +348,7 @@ export default function CustomerDiscover() {
             const isFav = favorites.includes(p.id)
             return (
               <div key={p.id}
-                style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", cursor:"pointer", transition:"border-color 0.12s" }}
+                style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", cursor:"pointer", transition:"border-color 0.12s" }}
                 onMouseEnter={e=>e.currentTarget.style.borderColor="#e6821e40"}
                 onMouseLeave={e=>e.currentTarget.style.borderColor="#1e1e1e"}
                 onClick={()=>setSelectedProvider(p)}>
@@ -358,13 +358,13 @@ export default function CustomerDiscover() {
                   </div>
                   <div style={{ flex:1, minWidth:0 }}>
                     <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:2, flexWrap:"wrap" }}>
-                      <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#f0ede6" }}>{getDisplayName(p)}</div>
+                      <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#000000" }}>{getDisplayName(p)}</div>
                       {p.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#071a12", padding:"1px 6px", borderRadius:10 }}>✓ {t("verified")}</span>}
                       {p.provider_type&&p.provider_type!=="garage"&&<span style={{ fontSize:10, color:"#8b5cf6", background:"#160a2e", padding:"1px 6px", borderRadius:10 }}>{p.provider_type.replace(/_/g," ")}</span>}
                     </div>
                     <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
                       {p.business_name&&<div style={{ fontSize:11, color:"#666" }}>{t("owner")}: {p.first_name} {p.last_name}</div>}
-                      {p.city&&<span style={{ fontSize:11, color:"#555" }}>📍 {p.city}</span>}
+                      {p.city&&<span style={{ fontSize:11, color:"#777777" }}>📍 {p.city}</span>}
                       {dist!==null&&<span style={{ fontSize:11, color:"#378add" }}>· {dist.toFixed(1)} {t("kmAway")}</span>}
                     </div>
                     {status&&<div style={{ fontSize:11, color:status.color, marginTop:3, fontWeight:500 }}>● {status.label}</div>}
@@ -380,11 +380,11 @@ export default function CustomerDiscover() {
                 {ps.length>0&&(
                   <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
                     {ps.slice(0,4).map(s=>(
-                      <span key={s.id} style={{ fontSize:10, padding:"3px 8px", borderRadius:6, background:"#1a1a1a", color:"#888", border:"1px solid #222" }}>
+                      <span key={s.id} style={{ fontSize:10, padding:"3px 8px", borderRadius:6, background:"#f5f5f5", color:"#555555", border:"1px solid #e5e5e5" }}>
                         {s.name} · Ksh {formatPrice(s)}
                       </span>
                     ))}
-                    {ps.length>4&&<span style={{ fontSize:10, padding:"3px 8px", borderRadius:6, background:"#1a1a1a", color:"#555" }}>+{ps.length-4} {t("more")}</span>}
+                    {ps.length>4&&<span style={{ fontSize:10, padding:"3px 8px", borderRadius:6, background:"#f5f5f5", color:"#777777" }}>+{ps.length-4} {t("more")}</span>}
                   </div>
                 )}
               </div>
@@ -399,20 +399,20 @@ export default function CustomerDiscover() {
             style={{ background:"none", border:"none", color:"#666", cursor:"pointer", fontSize:13, marginBottom:"1rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
             ← {t("backToProviders")}
           </button>
-          <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", marginBottom:"1rem" }}>
+          <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1rem" }}>
             <div style={{ display:"flex", alignItems:"center", gap:14 }}>
               <div style={{ width:60, height:60, borderRadius:14, background:"#1a1208", border:"2px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:24, fontWeight:800, color:"#e6821e", flexShrink:0 }}>
                 {getDisplayName(selectedProvider)[0]?.toUpperCase()}
               </div>
               <div style={{ flex:1 }}>
-                <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#f0ede6", marginBottom:2 }}>
+                <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000000", marginBottom:2 }}>
                   {getDisplayName(selectedProvider)}
                 </div>
                 {selectedProvider.business_name&&(
-                  <div style={{ fontSize:12, color:"#888", marginBottom:3 }}>{t("owner")}: {selectedProvider.first_name} {selectedProvider.last_name}</div>
+                  <div style={{ fontSize:12, color:"#555555", marginBottom:3 }}>{t("owner")}: {selectedProvider.first_name} {selectedProvider.last_name}</div>
                 )}
                 <div style={{ display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
-                  {selectedProvider.city&&<span style={{ fontSize:12, color:"#555" }}>📍 {selectedProvider.city}</span>}
+                  {selectedProvider.city&&<span style={{ fontSize:12, color:"#777777" }}>📍 {selectedProvider.city}</span>}
                   {selectedProvider.is_verified&&<span style={{ fontSize:11, color:"#1d9e75", background:"#071a12", padding:"2px 8px", borderRadius:10 }}>✓ {t("verified")}</span>}
                   {getDistance(selectedProvider)!==null&&<span style={{ fontSize:11, color:"#378add" }}>📍 {getDistance(selectedProvider).toFixed(1)} {t("kmAway")}</span>}
                 </div>
@@ -430,8 +430,8 @@ export default function CustomerDiscover() {
           </div>
 
           {getWeekHours(selectedProvider.id)&&(
-            <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", marginBottom:"1rem" }}>
-              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:10, color:"#f0ede6" }}>{t("businessHoursLabel")}</div>
+            <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1rem" }}>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:10, color:"#000000" }}>{t("businessHoursLabel")}</div>
               {getWeekHours(selectedProvider.id).map(h=>{
                 const isToday = h.dayIndex===new Date().getDay()
                 return (
@@ -452,7 +452,7 @@ export default function CustomerDiscover() {
             <div style={{ background:"#1a0808", border:"1px solid #e24b4a20", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
               <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8, color:"#e24b4a" }}>{t("upcomingClosures")}</div>
               {closures[selectedProvider.id].map(c=>(
-                <div key={c.id} style={{ fontSize:12, color:"#888", marginBottom:4 }}>
+                <div key={c.id} style={{ fontSize:12, color:"#555555", marginBottom:4 }}>
                   🚫 {new Date(c.closure_date+"T00:00:00").toLocaleDateString("default",{weekday:"long",month:"long",day:"numeric"})}
                   {c.reason&&` — ${c.reason}`}
                 </div>
@@ -460,31 +460,31 @@ export default function CustomerDiscover() {
             </div>
           )}
 
-          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:10, color:"#f0ede6" }}>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:10, color:"#000000" }}>
             {t("servicesOffered")} ({providerServices(selectedProvider.id).length})
           </div>
           {providerServices(selectedProvider.id).length===0&&(
-            <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"1.5rem" }}>{t("noDataYet")}</div>
+            <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"1.5rem" }}>{t("noDataYet")}</div>
           )}
           <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(200px,1fr))", gap:10 }}>
             {providerServices(selectedProvider.id).map(s=>(
-              <div key={s.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem" }}>
-                <div style={{ fontSize:11, color:"#555", marginBottom:4 }}>{s.category}</div>
-                <div style={{ fontSize:14, fontWeight:600, color:"#f0ede6", marginBottom:4 }}>{s.name}</div>
+              <div key={s.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem" }}>
+                <div style={{ fontSize:11, color:"#777777", marginBottom:4 }}>{s.category}</div>
+                <div style={{ fontSize:14, fontWeight:600, color:"#000000", marginBottom:4 }}>{s.name}</div>
                 {s.description&&<div style={{ fontSize:11, color:"#666", marginBottom:8, lineHeight:1.5 }}>{s.description.slice(0,80)}{s.description.length>80?"...":""}</div>}
                 {Array.isArray(s.inclusions)&&s.inclusions.length>0&&(
                   <div style={{ marginBottom:8 }}>
-                    {s.inclusions.slice(0,3).map((inc,i)=><div key={i} style={{ fontSize:10, color:"#555", marginBottom:2 }}>✓ {inc}</div>)}
+                    {s.inclusions.slice(0,3).map((inc,i)=><div key={i} style={{ fontSize:10, color:"#777777", marginBottom:2 }}>✓ {inc}</div>)}
                   </div>
                 )}
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                   <div>
                     <span style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>Ksh {formatPrice(s)}</span>
                     {s.discounted_price&&Number(s.discounted_price)<Number(s.price)&&(
-                      <span style={{ fontSize:11, color:"#555", textDecoration:"line-through", marginLeft:6 }}>Ksh {Number(s.price).toFixed(2)}</span>
+                      <span style={{ fontSize:11, color:"#777777", textDecoration:"line-through", marginLeft:6 }}>Ksh {Number(s.price).toFixed(2)}</span>
                     )}
                   </div>
-                  <span style={{ fontSize:11, color:"#555" }}>{s.duration}{t("minutes")}</span>
+                  <span style={{ fontSize:11, color:"#777777" }}>{s.duration}{t("minutes")}</span>
                 </div>
               </div>
             ))}
@@ -494,17 +494,17 @@ export default function CustomerDiscover() {
 
       {tab==="services"&&(
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(180px,1fr))", gap:10 }}>
-          {filteredServices.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem", gridColumn:"1/-1" }}>{t("noServicesFound")}</div>}
+          {filteredServices.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem", gridColumn:"1/-1" }}>{t("noServicesFound")}</div>}
           {filteredServices.map(s=>(
-            <div key={s.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem" }}>
-              <div style={{ fontSize:11, color:"#555", marginBottom:4 }}>{s.category}</div>
-              <div style={{ fontSize:14, fontWeight:500, color:"#f0ede6", marginBottom:4 }}>{s.name}</div>
+            <div key={s.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem" }}>
+              <div style={{ fontSize:11, color:"#777777", marginBottom:4 }}>{s.category}</div>
+              <div style={{ fontSize:14, fontWeight:500, color:"#000000", marginBottom:4 }}>{s.name}</div>
               {s.description&&<div style={{ fontSize:11, color:"#666", marginBottom:8, lineHeight:1.4 }}>{s.description.slice(0,60)}{s.description.length>60?"...":""}</div>}
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
                 <span style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>Ksh {formatPrice(s)}</span>
-                <span style={{ fontSize:11, color:"#555" }}>{s.duration}{t("minutes")}</span>
+                <span style={{ fontSize:11, color:"#777777" }}>{s.duration}{t("minutes")}</span>
               </div>
-              <div style={{ fontSize:11, color:"#555" }}>
+              <div style={{ fontSize:11, color:"#777777" }}>
                 {s.profile_public?.business_name||`${s.profile_public?.first_name||""} ${s.profile_public?.last_name||""}`.trim()}
               </div>
             </div>
@@ -517,14 +517,14 @@ export default function CustomerDiscover() {
           <div style={{ display:"flex", gap:8, marginBottom:"1rem", flexWrap:"wrap" }}>
             <input value={partsSearch} onChange={e=>{ setPartsSearch(e.target.value); searchParts(e.target.value, carModel) }}
               placeholder="Search parts, accessories, tyres..."
-              style={{ flex:1, minWidth:150, background:"#111", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:13, outline:"none" }}/>
+              style={{ flex:1, minWidth:150, background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none" }}/>
             <input value={carModel} onChange={e=>{ setCarModel(e.target.value); searchParts(partsSearch, e.target.value) }}
               placeholder="Filter by car model..."
-              style={{ flex:1, minWidth:150, background:"#111", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:13, outline:"none" }}/>
+              style={{ flex:1, minWidth:150, background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none" }}/>
           </div>
-          {searchingParts&&<div style={{ color:"#555", fontSize:13 }}>Searching...</div>}
+          {searchingParts&&<div style={{ color:"#777777", fontSize:13 }}>Searching...</div>}
           {!searchingParts&&partsSearch===("")&&carModel===("")&&(
-            <div style={{ textAlign:"center", padding:"2rem", color:"#444" }}>
+            <div style={{ textAlign:"center", padding:"2rem", color:"#888888" }}>
               <div style={{ fontSize:32, marginBottom:10 }}>🔍</div>
               <div style={{ fontSize:13 }}>Search for parts, accessories or filter by your car model</div>
               <button onClick={()=>navigate("/dashboard/parts")} style={{ marginTop:"1rem", background:"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne", fontSize:13, fontWeight:700, padding:"10px 24px", cursor:"pointer" }}>
@@ -533,20 +533,20 @@ export default function CustomerDiscover() {
             </div>
           )}
           {partResults.length===0&&(partsSearch||carModel)&&!searchingParts&&(
-            <div style={{ textAlign:"center", padding:"2rem", color:"#444", fontSize:13 }}>No parts found matching your search</div>
+            <div style={{ textAlign:"center", padding:"2rem", color:"#888888", fontSize:13 }}>No parts found matching your search</div>
           )}
           <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(2,1fr)", gap:12 }}>
             {partResults.map(item=>(
-              <div key={item.id} onClick={()=>navigate("/dashboard/parts")} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1rem", cursor:"pointer" }}>
+              <div key={item.id} onClick={()=>navigate("/dashboard/parts")} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem", cursor:"pointer" }}>
                 {item.photos?.[0]&&<img src={item.photos[0]} alt={item.name} style={{ width:"100%", height:120, objectFit:"cover", borderRadius:8, marginBottom:8 }}/>}
-                <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6", marginBottom:4 }}>{item.name}</div>
-                {item.brand&&<div style={{ fontSize:11, color:"#888", marginBottom:2 }}>Brand: {item.brand}</div>}
-                {item.compatible_cars?.length>0&&<div style={{ fontSize:10, color:"#555", marginBottom:4 }}>🚗 {item.compatible_cars.slice(0,2).join(", ")}</div>}
+                <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:4 }}>{item.name}</div>
+                {item.brand&&<div style={{ fontSize:11, color:"#555555", marginBottom:2 }}>Brand: {item.brand}</div>}
+                {item.compatible_cars?.length>0&&<div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>🚗 {item.compatible_cars.slice(0,2).join(", ")}</div>}
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                   <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>KES {Number(item.price).toLocaleString()}</div>
                   <div style={{ fontSize:10, color:item.stock_quantity>5?"#1d9e75":"#e24b4a" }}>{item.stock_quantity} in stock</div>
                 </div>
-                <div style={{ fontSize:11, color:"#555", marginTop:4 }}>
+                <div style={{ fontSize:11, color:"#777777", marginTop:4 }}>
                   🏪 {item.profiles?.business_name||item.profiles?.first_name}
                   {item.profiles?.is_verified&&<span style={{ color:"#1d9e75", marginLeft:4 }}>✓</span>}
                 </div>
@@ -560,20 +560,20 @@ export default function CustomerDiscover() {
         <div style={{ display:"grid", gap:10 }}>
           <div style={{ display:"flex", gap:8, marginBottom:4 }}>
             <span style={{ fontSize:12, color:"#1d9e75" }}>● {drivers.filter(d=>d.is_online).length} {t("online").toLowerCase()}</span>
-            <span style={{ fontSize:12, color:"#555" }}>● {drivers.filter(d=>!d.is_online).length} {t("offline").toLowerCase()}</span>
+            <span style={{ fontSize:12, color:"#777777" }}>● {drivers.filter(d=>!d.is_online).length} {t("offline").toLowerCase()}</span>
           </div>
-          {filteredDrivers.length===0&&!loading&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>{t("noDriversFound")}</div>}
+          {filteredDrivers.length===0&&!loading&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>{t("noDriversFound")}</div>}
           {filteredDrivers.map(d=>(
-            <div key={d.id} style={{ background:"#111", border:`1px solid ${d.is_online?"#1d9e7520":"#1e1e1e"}`, borderRadius:12, padding:"1rem", display:"flex", alignItems:"center", gap:12 }}>
+            <div key={d.id} style={{ background:"#ffffff", border:`1px solid ${d.is_online?"#1d9e7520":"#1e1e1e"}`, borderRadius:12, padding:"1rem", display:"flex", alignItems:"center", gap:12 }}>
               <div style={{ width:44, height:44, borderRadius:"50%", background:d.is_online?"#071a12":"#1a1a1a", border:`1px solid ${d.is_online?"#1d9e7540":"#333"}`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:15, fontWeight:800, color:d.is_online?"#1d9e75":"#555", flexShrink:0 }}>
                 {d.first_name?.[0]}{d.last_name?.[0]}
               </div>
               <div style={{ flex:1 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:2 }}>
-                  <div style={{ fontSize:14, fontWeight:500, color:"#f0ede6" }}>{d.first_name} {d.last_name}</div>
+                  <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>{d.first_name} {d.last_name}</div>
                   {d.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#071a12", padding:"1px 6px", borderRadius:10 }}>✓</span>}
                 </div>
-                <div style={{ fontSize:11, color:"#555" }}>{language==="sw"?"Dereva wa kuchukua":"Concierge driver"} · {d.city||"Nairobi"}</div>
+                <div style={{ fontSize:11, color:"#777777" }}>{language==="sw"?"Dereva wa kuchukua":"Concierge driver"} · {d.city||"Nairobi"}</div>
               </div>
               <span style={{ fontSize:11, fontWeight:600, padding:"4px 10px", borderRadius:20, background:d.is_online?"#071a12":"#1a1a1a", color:d.is_online?"#1d9e75":"#555", border:`1px solid ${d.is_online?"#1d9e7530":"#33333330"}`, flexShrink:0 }}>
                 {d.is_online?t("online"):t("offline")}
@@ -585,6 +585,7 @@ export default function CustomerDiscover() {
     </div>
   )
 }
+
 
 
 

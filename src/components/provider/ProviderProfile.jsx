@@ -112,7 +112,7 @@ export default function ProviderProfile() {
   }
 
   const initials = `${profile?.first_name?.[0]||""}${profile?.last_name?.[0]||""}`.toUpperCase()
-  const inp = { width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"11px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:12 }
+  const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"11px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:12 }
   const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
 
   const TABS = [
@@ -130,8 +130,8 @@ export default function ProviderProfile() {
           {initials}
         </div>
         <div>
-          <div style={{ fontFamily:"Syne", fontSize:17, fontWeight:800, color:"#f0ede6" }}>{profile?.business_name||`${profile?.first_name} ${profile?.last_name}`}</div>
-          <div style={{ fontSize:12, color:"#555", marginTop:2 }}>
+          <div style={{ fontFamily:"Syne", fontSize:17, fontWeight:800, color:"#000000" }}>{profile?.business_name||`${profile?.first_name} ${profile?.last_name}`}</div>
+          <div style={{ fontSize:12, color:"#777777", marginTop:2 }}>
             Provider · {profile?.city||"Location not set"}
             {profile?.provider_type&&<span style={{ marginLeft:6, fontSize:10, color:"#378add", background:"#0c1f2e", padding:"1px 7px", borderRadius:10 }}>
             {PROVIDER_TYPES.find(p=>p.key===profile?.provider_type)?.icon} {profile?.provider_type?.replace(/_/g," ")}
@@ -151,8 +151,8 @@ export default function ProviderProfile() {
 
       {tab==="business"&&(
         <form onSubmit={saveProfile}>
-          <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>{t("businessInfo")}</div>
+          <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>{t("businessInfo")}</div>
             <label style={lbl}>Business name</label>
             <input style={inp} placeholder="Your business name" value={form.business_name} onChange={e=>setForm(f=>({...f,business_name:e.target.value}))}/>
             <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
@@ -181,10 +181,10 @@ export default function ProviderProfile() {
 
       {tab==="contact"&&(
         <form onSubmit={saveContact}>
-          <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>{t("contactDetails")}</div>
+          <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>{t("contactDetails")}</div>
             <label style={lbl}>{t("email")}</label>
-            <input style={{ ...inp, color:"#555", cursor:"not-allowed" }} value={sensitive.email} readOnly/>
+            <input style={{ ...inp, color:"#777777", cursor:"not-allowed" }} value={sensitive.email} readOnly/>
             <label style={lbl}>{t("phone")}</label>
             <input style={inp} placeholder="+254 700 000 000" value={sensitive.phone} onChange={e=>setSensitive(s=>({...s,phone:e.target.value}))}/>
             <button type="submit" disabled={saving}
@@ -197,14 +197,14 @@ export default function ProviderProfile() {
 
       {tab==="location"&&(
         <form onSubmit={saveLocation}>
-          <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#f0ede6" }}>Shop location</div>
-            <div style={{ fontSize:12, color:"#555", marginBottom:"1rem" }}>Help customers find you and enable distance-based search</div>
+          <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#000000" }}>Shop location</div>
+            <div style={{ fontSize:12, color:"#777777", marginBottom:"1rem" }}>Help customers find you and enable distance-based search</div>
             <button type="button" onClick={detectLocation} disabled={locating}
               style={{ background:locating?"#333":"#071a12", border:"1px solid #1d9e7540", borderRadius:9, color:"#1d9e75", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:locating?"not-allowed":"pointer", marginBottom:16, width:"100%" }}>
               {locating?"Detecting...":"📍 Use my current location"}
             </button>
-            {location.address&&<div style={{ fontSize:11, color:"#555", marginBottom:12, padding:"0.6rem", background:"#0f0f0f", borderRadius:7 }}>{location.address}</div>}
+            {location.address&&<div style={{ fontSize:11, color:"#777777", marginBottom:12, padding:"0.6rem", background:"#ffffff", borderRadius:7 }}>{location.address}</div>}
             <label style={lbl}>Or enter coordinates manually</label>
             <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
               <div>
@@ -226,8 +226,8 @@ export default function ProviderProfile() {
 
       {tab==="security"&&(
         <form onSubmit={changePassword}>
-          <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>{t("changePassword")}</div>
+          <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>{t("changePassword")}</div>
             <label style={lbl}>{t("newPassword")}</label>
             <input style={inp} type="password" name="password" placeholder="Min 6 characters" required/>
             <label style={lbl}>{t("confirmPassword")}</label>
@@ -242,12 +242,12 @@ export default function ProviderProfile() {
 
       {tab==="data"&&(
         <div>
-          <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", marginBottom:"1rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#f0ede6" }}>Your data</div>
+          <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#000000" }}>Your data</div>
             <div style={{ fontSize:12, color:"#666", marginBottom:"1.25rem", lineHeight:1.6 }}>
               Download all data we hold about you under the Kenya Data Protection Act 2019.
             </div>
-            {exporting&&<div style={{ color:"#555", fontSize:13, marginBottom:"1rem" }}>Loading your data...</div>}
+            {exporting&&<div style={{ color:"#777777", fontSize:13, marginBottom:"1rem" }}>Loading your data...</div>}
             {exportData&&(
               <div style={{ marginBottom:"1.25rem" }}>
                 <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:8, marginBottom:"1rem" }}>
@@ -256,9 +256,9 @@ export default function ProviderProfile() {
                     { label:"Payments", value:exportData.payments.length },
                     { label:"Reviews", value:exportData.reviews.length },
                   ].map(s=>(
-                    <div key={s.label} style={{ background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"0.75rem", textAlign:"center" }}>
+                    <div key={s.label} style={{ background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"0.75rem", textAlign:"center" }}>
                       <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#378add" }}>{s.value}</div>
-                      <div style={{ fontSize:10, color:"#555", marginTop:2 }}>{s.label}</div>
+                      <div style={{ fontSize:10, color:"#777777", marginTop:2 }}>{s.label}</div>
                     </div>
                   ))}
                 </div>
@@ -286,6 +286,7 @@ export default function ProviderProfile() {
     </div>
   )
 }
+
 
 
 

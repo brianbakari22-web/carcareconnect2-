@@ -91,8 +91,8 @@ export default function ProviderOrders() {
   return (
     <div>
       <div style={{ marginBottom:"1.25rem" }}>
-        <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#f0ede6" }}>Orders</div>
-        <div style={{ fontSize:12, color:"#555" }}>Manage parts and accessories orders</div>
+        <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#000000" }}>Orders</div>
+        <div style={{ fontSize:12, color:"#777777" }}>Manage parts and accessories orders</div>
       </div>
 
       <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginBottom:"1.5rem" }}>
@@ -101,9 +101,9 @@ export default function ProviderOrders() {
           { label:"Today", value:today, color:"#378add" },
           { label:"Revenue", value:"KES "+revenue.toLocaleString(), color:"#1d9e75" },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"0.75rem", border:"1px solid #1e1e1e", textAlign:"center" }}>
+          <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"0.75rem", border:"1px solid #eeeeee", textAlign:"center" }}>
             <div style={{ fontFamily:"Syne", fontSize:isMobile?14:18, fontWeight:800, color:s.color }}>{s.value}</div>
-            <div style={{ fontSize:10, color:"#555", marginTop:2 }}>{s.label}</div>
+            <div style={{ fontSize:10, color:"#777777", marginTop:2 }}>{s.label}</div>
           </div>
         ))}
       </div>
@@ -123,18 +123,18 @@ export default function ProviderOrders() {
         ))}
       </div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
-      {!loading&&filtered.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No orders found</div>}
+      {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
+      {!loading&&filtered.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>No orders found</div>}
 
       {filtered.map(o=>(
-        <div key={o.id} style={{ background:"#111", border:"1px solid "+(STATUS_COLORS[o.status]||"#1e1e1e")+"30", borderRadius:12, padding:"1rem", marginBottom:10 }}>
+        <div key={o.id} style={{ background:"#ffffff", border:"1px solid "+(STATUS_COLORS[o.status]||"#1e1e1e")+"30", borderRadius:12, padding:"1rem", marginBottom:10 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
             <div>
-              <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6", marginBottom:2 }}>#{o.order_number}</div>
-              <div style={{ fontSize:11, color:"#555" }}>👤 {o.profiles?.first_name} {o.profiles?.last_name}</div>
-              <div style={{ fontSize:11, color:"#555" }}>{o.fulfillment_type==="delivery"?"🚚 Delivery to "+o.delivery_address:"🏪 Customer pickup"}</div>
+              <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:2 }}>#{o.order_number}</div>
+              <div style={{ fontSize:11, color:"#777777" }}>👤 {o.profiles?.first_name} {o.profiles?.last_name}</div>
+              <div style={{ fontSize:11, color:"#777777" }}>{o.fulfillment_type==="delivery"?"🚚 Delivery to "+o.delivery_address:"🏪 Customer pickup"}</div>
               {o.delivery_zone&&<div style={{ fontSize:11, color:"#378add" }}>📍 Zone: {o.delivery_zone}</div>}
-              <div style={{ fontSize:10, color:"#444" }}>{new Date(o.created_at).toLocaleString()}</div>
+              <div style={{ fontSize:10, color:"#888888" }}>{new Date(o.created_at).toLocaleString()}</div>
             </div>
             <div style={{ textAlign:"right" }}>
               <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>KES {Number(o.subtotal||0).toLocaleString()}</div>
@@ -143,15 +143,15 @@ export default function ProviderOrders() {
             </div>
           </div>
 
-          <div style={{ background:"#0f0f0f", borderRadius:8, padding:"0.75rem", marginBottom:10 }}>
+          <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", marginBottom:10 }}>
             {o.order_items?.map(oi=>(
-              <div key={oi.id} style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#888", padding:"3px 0" }}>
+              <div key={oi.id} style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#555555", padding:"3px 0" }}>
                 <span>{oi.name} × {oi.quantity} {oi.inventory?.unit||""}</span>
                 <span>KES {Number(oi.unit_price*oi.quantity).toLocaleString()}</span>
               </div>
             ))}
             {o.delivery_fee>0&&(
-              <div style={{ display:"flex", justifyContent:"space-between", fontSize:11, color:"#555", borderTop:"1px solid #1a1a1a", paddingTop:4, marginTop:4 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", fontSize:11, color:"#777777", borderTop:"1px solid #1a1a1a", paddingTop:4, marginTop:4 }}>
                 <span>Delivery fee</span><span>KES {Number(o.delivery_fee).toLocaleString()}</span>
               </div>
             )}
@@ -182,4 +182,5 @@ export default function ProviderOrders() {
     </div>
   )
 }
+
 

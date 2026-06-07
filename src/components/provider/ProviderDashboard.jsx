@@ -131,8 +131,8 @@ export default function ProviderDashboard() {
       {showPolicy&&(
         <div style={{ background:"#1a0808", border:"2px solid #e24b4a", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
           <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e24b4a", marginBottom:8 }}>🚗 Important — Service Guarantee Policy</div>
-          <div style={{ fontSize:12, color:"#888", lineHeight:1.8, marginBottom:"1rem" }}>
-            Car Care Connect operates a <strong style={{ color:"#f0ede6" }}>Service Guarantee</strong> for all customers. As a provider, you must be aware of the following:
+          <div style={{ fontSize:12, color:"#555555", lineHeight:1.8, marginBottom:"1rem" }}>
+            Car Care Connect operates a <strong style={{ color:"#000000" }}>Service Guarantee</strong> for all customers. As a provider, you must be aware of the following:
           </div>
           {[
             { icon:"1️⃣", text:"If a customer is unhappy with your service, they can submit a Service Guarantee claim within 7 days." },
@@ -144,7 +144,7 @@ export default function ProviderDashboard() {
           ].map(item=>(
             <div key={item.icon} style={{ display:"flex", gap:10, alignItems:"flex-start", marginBottom:6 }}>
               <span style={{ fontSize:14, flexShrink:0 }}>{item.icon}</span>
-              <span style={{ fontSize:12, color:"#888", lineHeight:1.5 }}>{item.text}</span>
+              <span style={{ fontSize:12, color:"#555555", lineHeight:1.5 }}>{item.text}</span>
             </div>
           ))}
           <div style={{ display:"flex", gap:8, marginTop:"1rem" }}>
@@ -179,7 +179,7 @@ export default function ProviderDashboard() {
           </div>
           <div style={{ flex:1, minWidth:0 }}>
             <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
-              <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#f0ede6" }}>
+              <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#000000" }}>
                 {profile?.business_name||`${profile?.first_name||""} ${profile?.last_name||""}`}
               </div>
               {profile?.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#071a12", padding:"2px 8px", borderRadius:10, border:"1px solid #1d9e7540" }}>✓ Verified</span>}
@@ -188,7 +188,7 @@ export default function ProviderDashboard() {
               <span style={{ fontSize:12, padding:"3px 10px", borderRadius:20, background:config.bg, color:config.color, border:`1px solid ${config.color}40`, fontWeight:600 }}>
                 {config.icon} {config.label}
               </span>
-              {profile?.city&&<span style={{ fontSize:11, color:"#555" }}>📍 {profile.city}</span>}
+              {profile?.city&&<span style={{ fontSize:11, color:"#777777" }}>📍 {profile.city}</span>}
             </div>
             <div style={{ fontSize:12, color:config.color, marginTop:6, fontWeight:600 }}>
               Keep {commission.provider}% · Platform {commission.platform}%
@@ -206,9 +206,9 @@ export default function ProviderDashboard() {
             { label:"Low stock", value:orderStats.lowStock, color:orderStats.lowStock>0?"#e24b4a":"#555" },
             { label:"Parts revenue", value:"KES "+orderStats.revenue.toLocaleString(), color:"#1d9e75" },
           ].map(s=>(
-            <div key={s.label} style={{ background:"#111", borderRadius:10, padding:isMobile?"0.6rem":"1rem", border:"1px solid #1e1e1e", textAlign:"center" }}>
+            <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:isMobile?"0.6rem":"1rem", border:"1px solid #eeeeee", textAlign:"center" }}>
               <div style={{ fontFamily:"Syne", fontSize:isMobile?14:20, fontWeight:800, color:s.color }}>{s.value}</div>
-              <div style={{ fontSize:9, color:"#555", marginTop:2 }}>{s.label}</div>
+              <div style={{ fontSize:9, color:"#777777", marginTop:2 }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -220,9 +220,9 @@ export default function ProviderDashboard() {
             { label:t("completed"), value:bookingStats.completed, color:"#1d9e75" },
             { label:"Earnings", value:"KES "+Number(bookingStats.earnings).toLocaleString(), color:"#8b5cf6" },
           ].map(s=>(
-            <div key={s.label} style={{ background:"#111", borderRadius:10, padding:isMobile?"0.6rem":"1rem", border:"1px solid #1e1e1e", textAlign:"center" }}>
+            <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:isMobile?"0.6rem":"1rem", border:"1px solid #eeeeee", textAlign:"center" }}>
               <div style={{ fontFamily:"Syne", fontSize:isMobile?14:20, fontWeight:800, color:s.color }}>{s.value}</div>
-              <div style={{ fontSize:9, color:"#555", marginTop:2 }}>{s.label}</div>
+              <div style={{ fontSize:9, color:"#777777", marginTop:2 }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -253,34 +253,34 @@ export default function ProviderDashboard() {
               { href:"/dashboard/inventory", icon:"📦", label:"Manage Inventory", desc:"Add, edit, update stock", color:config.color },
               { href:"/dashboard/orders", icon:"🛒", label:"Manage Orders", desc:"Confirm, pack, dispatch", color:"#1d9e75" },
             ].map(q=>(
-              <a key={q.label} href={q.href} style={{ background:"#111", border:`1px solid ${q.color}30`, borderRadius:12, padding:"1rem", textDecoration:"none", display:"block" }}>
+              <a key={q.label} href={q.href} style={{ background:"#ffffff", border:`1px solid ${q.color}30`, borderRadius:12, padding:"1rem", textDecoration:"none", display:"block" }}>
                 <div style={{ fontSize:24, marginBottom:6 }}>{q.icon}</div>
                 <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:q.color, marginBottom:2 }}>{q.label}</div>
-                <div style={{ fontSize:11, color:"#555" }}>{q.desc}</div>
+                <div style={{ fontSize:11, color:"#777777" }}>{q.desc}</div>
               </a>
             ))}
           </div>
 
           {/* Recent orders */}
-          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#f0ede6", marginBottom:"1rem" }}>Recent orders</div>
-          {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000", marginBottom:"1rem" }}>Recent orders</div>
+          {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
           {!loading&&orders.length===0&&(
-            <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>
+            <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>
               <div style={{ fontSize:32, marginBottom:10 }}>📦</div>
               No orders yet — add inventory to start selling
             </div>
           )}
           {orders.slice(0,5).map(o=>(
-            <div key={o.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem", marginBottom:8 }}>
+            <div key={o.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                 <div>
-                  <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6" }}>#{o.order_number}</div>
-                  <div style={{ fontSize:11, color:"#555" }}>{o.fulfillment_type==="delivery"?"🚚 Delivery":"🏪 Pickup"} · {new Date(o.created_at).toLocaleDateString()}</div>
-                  <div style={{ fontSize:11, color:"#555" }}>{o.order_items?.length||0} item(s)</div>
+                  <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>#{o.order_number}</div>
+                  <div style={{ fontSize:11, color:"#777777" }}>{o.fulfillment_type==="delivery"?"🚚 Delivery":"🏪 Pickup"} · {new Date(o.created_at).toLocaleDateString()}</div>
+                  <div style={{ fontSize:11, color:"#777777" }}>{o.order_items?.length||0} item(s)</div>
                 </div>
                 <div style={{ textAlign:"right" }}>
                   <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>KES {Number(o.subtotal||0).toLocaleString()}</div>
-                  <span style={{ fontSize:10, padding:"2px 8px", borderRadius:8, background:"#1a1a1a", color:"#888" }}>{o.status}</span>
+                  <span style={{ fontSize:10, padding:"2px 8px", borderRadius:8, background:"#f5f5f5", color:"#555555" }}>{o.status}</span>
                 </div>
               </div>
               {o.status==="pending"&&(
@@ -293,12 +293,12 @@ export default function ProviderDashboard() {
           ))}
 
           {/* Recent inventory */}
-          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#f0ede6", margin:"1.5rem 0 1rem" }}>Your inventory</div>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000", margin:"1.5rem 0 1rem" }}>Your inventory</div>
           {inventory.slice(0,5).map(item=>(
-            <div key={item.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"0.75rem 1rem", marginBottom:6, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+            <div key={item.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"0.75rem 1rem", marginBottom:6, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
               <div>
-                <div style={{ fontSize:12, fontWeight:600, color:"#f0ede6" }}>{item.name}</div>
-                <div style={{ fontSize:10, color:"#555" }}>{item.category} · {item.stock_quantity} {item.unit}s in stock</div>
+                <div style={{ fontSize:12, fontWeight:600, color:"#000000" }}>{item.name}</div>
+                <div style={{ fontSize:10, color:"#777777" }}>{item.category} · {item.stock_quantity} {item.unit}s in stock</div>
               </div>
               <div style={{ textAlign:"right" }}>
                 <div style={{ fontSize:13, fontWeight:700, color:"#e6821e" }}>KES {Number(item.price).toLocaleString()}</div>
@@ -307,7 +307,7 @@ export default function ProviderDashboard() {
             </div>
           ))}
           {inventory.length===0&&!loading&&(
-            <div style={{ color:"#444", fontSize:12, textAlign:"center", padding:"1rem" }}>
+            <div style={{ color:"#888888", fontSize:12, textAlign:"center", padding:"1rem" }}>
               No inventory yet — <a href="/dashboard/inventory" style={{ color:config.color }}>add items</a>
             </div>
           )}
@@ -318,29 +318,29 @@ export default function ProviderDashboard() {
       {!isInventoryFocus&&(
         <>
           {!showPolicy&&(
-            <div style={{ background:"#111", border:"1px solid #e24b4a20", borderRadius:10, padding:"0.75rem", marginBottom:"1.25rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-              <div style={{ fontSize:11, color:"#555" }}>🚨 Service Guarantee active — deliver quality service to avoid claims</div>
+            <div style={{ background:"#ffffff", border:"1px solid #e24b4a20", borderRadius:10, padding:"0.75rem", marginBottom:"1.25rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+              <div style={{ fontSize:11, color:"#777777" }}>🚨 Service Guarantee active — deliver quality service to avoid claims</div>
               <button onClick={()=>setShowPolicy(true)} style={{ background:"none", border:"none", color:"#e24b4a", fontSize:11, cursor:"pointer" }}>View policy</button>
             </div>
           )}
 
-          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#f0ede6", marginBottom:"1rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000", marginBottom:"1rem" }}>
             {language==="sw"?"Miadi ya hivi karibuni":"Recent bookings"}
           </div>
-          {loading&&<div style={{ color:"#555", fontSize:13 }}>{t("loading")}</div>}
+          {loading&&<div style={{ color:"#777777", fontSize:13 }}>{t("loading")}</div>}
           {!loading&&bookings.length===0&&(
-            <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>
+            <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>
               <div style={{ fontSize:32, marginBottom:10 }}>📅</div>
               {language==="sw"?"Hakuna miadi bado":"No bookings yet"}
             </div>
           )}
           {bookings.map(b=>(
-            <div key={b.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8 }}>
+            <div key={b.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
                 <div style={{ flex:1, minWidth:0, marginRight:8 }}>
-                  <div style={{ fontSize:isMobile?13:14, fontWeight:500, color:"#f0ede6", marginBottom:4 }}>{b.service_name}</div>
-                  <div style={{ fontSize:11, color:"#555" }}>{b.booking_date} · {b.booking_time?.slice(0,5)}</div>
-                  {b.booking_number&&<div style={{ fontSize:10, color:"#444", marginTop:2 }}>#{b.booking_number}</div>}
+                  <div style={{ fontSize:isMobile?13:14, fontWeight:500, color:"#000000", marginBottom:4 }}>{b.service_name}</div>
+                  <div style={{ fontSize:11, color:"#777777" }}>{b.booking_date} · {b.booking_time?.slice(0,5)}</div>
+                  {b.booking_number&&<div style={{ fontSize:10, color:"#888888", marginTop:2 }}>#{b.booking_number}</div>}
                 </div>
                 <div style={{ textAlign:"right", flexShrink:0 }}>
                   <span style={{ fontSize:10, fontWeight:500, padding:"2px 8px", borderRadius:20, background:`${SC[b.status]||"#888"}20`, color:SC[b.status]||"#888", border:`1px solid ${SC[b.status]||"#888"}40`, display:"inline-block" }}>
@@ -364,6 +364,7 @@ export default function ProviderDashboard() {
     </div>
   )
 }
+
 
 
 

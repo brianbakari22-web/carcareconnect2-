@@ -88,8 +88,8 @@ export default function DriverDeliveries() {
   return (
     <div>
       <div style={{ marginBottom:"1.25rem" }}>
-        <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#f0ede6" }}>Deliveries</div>
-        <div style={{ fontSize:12, color:"#555" }}>CCC parts and accessories deliveries</div>
+        <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#000000" }}>Deliveries</div>
+        <div style={{ fontSize:12, color:"#777777" }}>CCC parts and accessories deliveries</div>
       </div>
 
       <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginBottom:"1.5rem" }}>
@@ -98,9 +98,9 @@ export default function DriverDeliveries() {
           { label:"Active", value:activeDeliveries.length, color:activeDeliveries.length>0?"#378add":"#555" },
           { label:"Earnings", value:"KES "+earnings.toLocaleString(), color:"#1d9e75" },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"0.75rem", border:"1px solid #1e1e1e", textAlign:"center" }}>
+          <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"0.75rem", border:"1px solid #eeeeee", textAlign:"center" }}>
             <div style={{ fontFamily:"Syne", fontSize:isMobile?14:18, fontWeight:800, color:s.color }}>{s.value}</div>
-            <div style={{ fontSize:10, color:"#555", marginTop:2 }}>{s.label}</div>
+            <div style={{ fontSize:10, color:"#777777", marginTop:2 }}>{s.label}</div>
           </div>
         ))}
       </div>
@@ -114,24 +114,24 @@ export default function DriverDeliveries() {
         ))}
       </div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
 
       {tab==="available"&&(
         <div>
-          {available.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No delivery jobs available right now</div>}
+          {available.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>No delivery jobs available right now</div>}
           {available.map(o=>(
-            <div key={o.id} style={{ background:"#111", border:"1px solid #e6821e30", borderRadius:12, padding:"1rem", marginBottom:10 }}>
+            <div key={o.id} style={{ background:"#ffffff", border:"1px solid #e6821e30", borderRadius:12, padding:"1rem", marginBottom:10 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
                 <div>
-                  <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6", marginBottom:2 }}>#{o.order_number}</div>
-                  <div style={{ fontSize:11, color:"#555" }}>📦 Pick up from: {o.provider?.business_name||o.provider?.first_name} · {o.provider?.city}</div>
-                  <div style={{ fontSize:11, color:"#555" }}>📍 Deliver to: {o.delivery_address}</div>
+                  <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:2 }}>#{o.order_number}</div>
+                  <div style={{ fontSize:11, color:"#777777" }}>📦 Pick up from: {o.provider?.business_name||o.provider?.first_name} · {o.provider?.city}</div>
+                  <div style={{ fontSize:11, color:"#777777" }}>📍 Deliver to: {o.delivery_address}</div>
                   <div style={{ fontSize:11, color:"#378add" }}>Zone: {o.delivery_zone}</div>
-                  <div style={{ fontSize:10, color:"#444" }}>{o.order_items?.length} item(s)</div>
+                  <div style={{ fontSize:10, color:"#888888" }}>{o.order_items?.length} item(s)</div>
                 </div>
                 <div style={{ textAlign:"right" }}>
                   <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#1d9e75" }}>KES {(Number(o.delivery_fee||0)*0.85).toLocaleString()}</div>
-                  <div style={{ fontSize:10, color:"#555" }}>Your earnings (85%)</div>
+                  <div style={{ fontSize:10, color:"#777777" }}>Your earnings (85%)</div>
                 </div>
               </div>
               <button onClick={()=>acceptDelivery(o.id)} style={{ width:"100%", background:"#1d9e75", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px", cursor:"pointer" }}>
@@ -144,14 +144,14 @@ export default function DriverDeliveries() {
 
       {tab==="active"&&(
         <div>
-          {activeDeliveries.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No active deliveries</div>}
+          {activeDeliveries.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>No active deliveries</div>}
           {activeDeliveries.map(o=>(
-            <div key={o.id} style={{ background:"#111", border:"1px solid #378add30", borderRadius:12, padding:"1rem", marginBottom:10 }}>
+            <div key={o.id} style={{ background:"#ffffff", border:"1px solid #378add30", borderRadius:12, padding:"1rem", marginBottom:10 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
                 <div>
-                  <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6", marginBottom:2 }}>#{o.order_number}</div>
-                  <div style={{ fontSize:11, color:"#555" }}>📦 {o.provider?.business_name||o.provider?.first_name} · {o.provider?.city}</div>
-                  <div style={{ fontSize:11, color:"#555" }}>📍 {o.delivery_address}</div>
+                  <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:2 }}>#{o.order_number}</div>
+                  <div style={{ fontSize:11, color:"#777777" }}>📦 {o.provider?.business_name||o.provider?.first_name} · {o.provider?.city}</div>
+                  <div style={{ fontSize:11, color:"#777777" }}>📍 {o.delivery_address}</div>
                   <span style={{ fontSize:10, padding:"2px 8px", borderRadius:8, background:(SC[o.delivery_status]||"#888")+"20", color:SC[o.delivery_status]||"#888", display:"inline-block", marginTop:4 }}>
                     {o.delivery_status?.replace(/_/g," ")||"assigned"}
                   </span>
@@ -179,17 +179,17 @@ export default function DriverDeliveries() {
 
       {tab==="completed"&&(
         <div>
-          {completedDeliveries.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No completed deliveries yet</div>}
+          {completedDeliveries.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>No completed deliveries yet</div>}
           {completedDeliveries.map(o=>(
-            <div key={o.id} style={{ background:"#111", border:"1px solid #1d9e7530", borderRadius:10, padding:"1rem", marginBottom:8 }}>
+            <div key={o.id} style={{ background:"#ffffff", border:"1px solid #1d9e7530", borderRadius:10, padding:"1rem", marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                 <div>
-                  <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6" }}>#{o.order_number}</div>
-                  <div style={{ fontSize:11, color:"#555" }}>{o.delivery_zone} · {new Date(o.created_at).toLocaleDateString()}</div>
+                  <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>#{o.order_number}</div>
+                  <div style={{ fontSize:11, color:"#777777" }}>{o.delivery_zone} · {new Date(o.created_at).toLocaleDateString()}</div>
                 </div>
                 <div style={{ textAlign:"right" }}>
                   <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#1d9e75" }}>KES {(Number(o.delivery_fee||0)*0.85).toLocaleString()}</div>
-                  <div style={{ fontSize:10, color:"#555" }}>earned</div>
+                  <div style={{ fontSize:10, color:"#777777" }}>earned</div>
                 </div>
               </div>
             </div>
@@ -199,3 +199,4 @@ export default function DriverDeliveries() {
     </div>
   )
 }
+

@@ -66,7 +66,7 @@ export default function PhotoUpload({ listingId, existingPhotos=[], onUploaded }
 
   return (
     <div>
-      <div style={{ fontSize:11, color:"#555", marginBottom:8 }}>
+      <div style={{ fontSize:11, color:"#777777", marginBottom:8 }}>
         {photos.length}/10 photos · First photo is the cover · Click photo to set as cover
       </div>
 
@@ -80,7 +80,7 @@ export default function PhotoUpload({ listingId, existingPhotos=[], onUploaded }
         <div style={{ fontSize:13, color:"#666", marginBottom:8 }}>
           {uploading?"Uploading...":"Drag photos here or click to select"}
         </div>
-        <div style={{ fontSize:11, color:"#444", marginBottom:12 }}>Max 10 photos · 5MB each · JPG, PNG, WEBP</div>
+        <div style={{ fontSize:11, color:"#888888", marginBottom:12 }}>Max 10 photos · 5MB each · JPG, PNG, WEBP</div>
         <input type="file" accept="image/*" multiple id="photo-upload" style={{ display:"none" }}
           onChange={e=>uploadFiles(e.target.files)}/>
         <label htmlFor="photo-upload"
@@ -113,3 +113,4 @@ export default function PhotoUpload({ listingId, existingPhotos=[], onUploaded }
     </div>
   )
 }
+

@@ -64,17 +64,17 @@ export default function DriverNotifications() {
     <div>
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1.25rem" }}>
         <div>
-          <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#f0ede6" }}>{t("notifications")}</div>
+          <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000000" }}>{t("notifications")}</div>
           {unread>0&&<div style={{ fontSize:12, color:"#1d9e75", marginTop:2 }}>{unread} unread</div>}
         </div>
         <div style={{ display:"flex", gap:6 }}>
-          {unread>0&&<button onClick={markAllRead} style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#888", fontSize:12, padding:"6px 12px", cursor:"pointer" }}>Mark all read</button>}
+          {unread>0&&<button onClick={markAllRead} style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#555555", fontSize:12, padding:"6px 12px", cursor:"pointer" }}>Mark all read</button>}
           {notifications.length>0&&<button onClick={clearAll} style={{ background:"none", border:"1px solid #e24b4a30", borderRadius:7, color:"#e24b4a", fontSize:12, padding:"6px 12px", cursor:"pointer" }}>Clear all</button>}
         </div>
       </div>
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&notifications.length===0&&(
-        <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"3rem" }}>
+        <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
           <div style={{ fontSize:32, marginBottom:10 }}>🔔</div>
           No notifications yet
         </div>
@@ -91,7 +91,7 @@ export default function DriverNotifications() {
               {!n.is_read&&<div style={{ width:8, height:8, borderRadius:"50%", background:"#1d9e75", flexShrink:0, marginTop:4 }}/>}
             </div>
             <div style={{ fontSize:12, color:"#666", marginTop:3, lineHeight:1.5 }}>{n.message}</div>
-            <div style={{ fontSize:10, color:"#444", marginTop:5 }}>{new Date(n.created_at).toLocaleString()}</div>
+            <div style={{ fontSize:10, color:"#888888", marginTop:5 }}>{new Date(n.created_at).toLocaleString()}</div>
           </div>
           <button onClick={e=>{ e.stopPropagation(); deleteNotif(n.id) }} style={{ background:"none", border:"none", color:"#333", cursor:"pointer", fontSize:16, lineHeight:1, flexShrink:0 }}>×</button>
         </div>
@@ -99,5 +99,6 @@ export default function DriverNotifications() {
     </div>
   )
 }
+
 
 

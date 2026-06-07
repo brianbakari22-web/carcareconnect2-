@@ -56,7 +56,7 @@ export default function DriverVehicle() {
     loadDocs()
   }
 
-  const inp = { width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"10px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:10 }
+  const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:10 }
   const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
   const docTypeColor = { license:"#e6821e", insurance:"#1d9e75", registration:"#378add", other:"#888" }
 
@@ -73,8 +73,8 @@ export default function DriverVehicle() {
 
   return (
     <div>
-      <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
-        <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>Vehicle information</div>
+      <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
+        <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>Vehicle information</div>
         <form onSubmit={saveVehicle}>
           <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
             <div><label style={lbl}>Model</label><input style={inp} placeholder="e.g. Toyota Fielder" value={form.vehicle_model} onChange={e=>setForm(f=>({...f,vehicle_model:e.target.value}))}/></div>
@@ -89,16 +89,16 @@ export default function DriverVehicle() {
         </form>
       </div>
 
-      <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
-        <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>Documents</div>
-        {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
+        <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>Documents</div>
+        {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
         {docs.map(d=>(
-          <div key={d.id} style={{ display:"flex", alignItems:"center", gap:12, padding:"0.75rem", background:"#0f0f0f", borderRadius:8, marginBottom:8, border:`1px solid ${isExpired(d.expiry_date)?"#e24b4a40":isExpiringSoon(d.expiry_date)?"#e6821e40":"#222"}` }}>
+          <div key={d.id} style={{ display:"flex", alignItems:"center", gap:12, padding:"0.75rem", background:"#ffffff", borderRadius:8, marginBottom:8, border:`1px solid ${isExpired(d.expiry_date)?"#e24b4a40":isExpiringSoon(d.expiry_date)?"#e6821e40":"#222"}` }}>
             <div style={{ width:36, height:36, background:`${docTypeColor[d.type]}20`, borderRadius:8, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>
               {d.type==="license"?"🪪":d.type==="insurance"?"🛡️":d.type==="registration"?"📄":"📎"}
             </div>
             <div style={{ flex:1 }}>
-              <div style={{ fontSize:13, fontWeight:500, color:"#f0ede6", textTransform:"capitalize" }}>{d.type}</div>
+              <div style={{ fontSize:13, fontWeight:500, color:"#000000", textTransform:"capitalize" }}>{d.type}</div>
               {d.expiry_date&&(
                 <div style={{ fontSize:11, color:isExpired(d.expiry_date)?"#e24b4a":isExpiringSoon(d.expiry_date)?"#e6821e":"#555", marginTop:2 }}>
                   {isExpired(d.expiry_date)?"Expired":"Expires"}: {new Date(d.expiry_date).toLocaleDateString()}
@@ -111,8 +111,8 @@ export default function DriverVehicle() {
           </div>
         ))}
 
-        <div style={{ marginTop:"1rem", paddingTop:"1rem", borderTop:"1px solid #1e1e1e" }}>
-          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:"0.75rem", color:"#f0ede6" }}>Add document</div>
+        <div style={{ marginTop:"1rem", paddingTop:"1rem", borderTop:"1px solid #eeeeee" }}>
+          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:"0.75rem", color:"#000000" }}>Add document</div>
           <form onSubmit={addDocument}>
             <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
               <div>
@@ -139,6 +139,7 @@ export default function DriverVehicle() {
     </div>
   )
 }
+
 
 
 

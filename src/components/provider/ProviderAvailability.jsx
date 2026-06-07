@@ -168,8 +168,8 @@ export default function ProviderAvailability() {
           { label:"Blocked days", value:blockedDays, color:blockedDays>0?"#e24b4a":undefined },
           { label:"Full days", value:fullDays, color:fullDays>0?"#e6821e":undefined },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"1rem", border:"1px solid #1e1e1e" }}>
-            <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
+          <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
+            <div style={{ fontSize:11, color:"#777777", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
             <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:s.color||"#f0ede6" }}>{s.value}</div>
           </div>
         ))}
@@ -187,19 +187,19 @@ export default function ProviderAvailability() {
       {tab==="calendar"&&(
         <div style={{ display:"grid", gridTemplateColumns:selected&&!isMobile?"1fr 320px":"1fr", gap:10 }}>
           <div>
-            <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
+            <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
                 <button onClick={()=>setCurrentMonth(new Date(year,month-1,1))}
-                  style={{ background:"none", border:"none", color:"#888", cursor:"pointer", fontSize:18, padding:"4px 8px" }}>‹</button>
-                <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:700, color:"#f0ede6" }}>
+                  style={{ background:"none", border:"none", color:"#555555", cursor:"pointer", fontSize:18, padding:"4px 8px" }}>‹</button>
+                <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:700, color:"#000000" }}>
                   {currentMonth.toLocaleString("default",{month:"long",year:"numeric"})}
                 </div>
                 <button onClick={()=>setCurrentMonth(new Date(year,month+1,1))}
-                  style={{ background:"none", border:"none", color:"#888", cursor:"pointer", fontSize:18, padding:"4px 8px" }}>›</button>
+                  style={{ background:"none", border:"none", color:"#555555", cursor:"pointer", fontSize:18, padding:"4px 8px" }}>›</button>
               </div>
 
               <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:2, marginBottom:6 }}>
-                {DAYS.map(d=><div key={d} style={{ textAlign:"center", fontSize:10, color:"#555", padding:"4px 0" }}>{d}</div>)}
+                {DAYS.map(d=><div key={d} style={{ textAlign:"center", fontSize:10, color:"#777777", padding:"4px 0" }}>{d}</div>)}
               </div>
 
               <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:4 }}>
@@ -236,7 +236,7 @@ export default function ProviderAvailability() {
                 ].map(l=>(
                   <div key={l.label} style={{ display:"flex", alignItems:"center", gap:4 }}>
                     <div style={{ width:12, height:12, borderRadius:3, background:l.color, border:`1px solid ${l.text}40` }}/>
-                    <span style={{ fontSize:10, color:"#555" }}>{l.label}</span>
+                    <span style={{ fontSize:10, color:"#777777" }}>{l.label}</span>
                   </div>
                 ))}
               </div>
@@ -244,7 +244,7 @@ export default function ProviderAvailability() {
 
             <div style={{ display:"flex", gap:8, marginTop:10, flexWrap:"wrap" }}>
               <button onClick={()=>bulkBlock("weekends")} disabled={saving}
-                style={{ background:"#111", border:"1px solid #333", borderRadius:8, color:"#888", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
+                style={{ background:"#ffffff", border:"1px solid #dddddd", borderRadius:8, color:"#555555", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
                 Block all weekends
               </button>
               <button onClick={()=>bulkBlock("all")} disabled={saving}
@@ -252,18 +252,18 @@ export default function ProviderAvailability() {
                 Block entire month
               </button>
               <button onClick={clearMonth} disabled={saving}
-                style={{ background:"#111", border:"1px solid #333", borderRadius:8, color:"#555", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
+                style={{ background:"#ffffff", border:"1px solid #dddddd", borderRadius:8, color:"#777777", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
                 Clear month
               </button>
             </div>
           </div>
 
           {selected&&(
-            <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
-              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#f0ede6" }}>
+            <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#000000" }}>
                 {new Date(selected+"T00:00:00").toLocaleDateString("default",{weekday:"long",month:"long",day:"numeric"})}
               </div>
-              <div style={{ fontSize:11, color:"#555", marginBottom:"1.25rem" }}>
+              <div style={{ fontSize:11, color:"#777777", marginBottom:"1.25rem" }}>
                 {bookingCounts[selected]||0} booking{(bookingCounts[selected]||0)!==1?"s":""} today
               </div>
               <form onSubmit={saveDay}>
@@ -280,7 +280,7 @@ export default function ProviderAvailability() {
                     <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Reason (optional)</label>
                     <input value={form.block_reason} onChange={e=>setForm(f=>({...f,block_reason:e.target.value}))}
                       placeholder="e.g. Public holiday, Staff training"
-                      style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"10px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }}/>
+                      style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }}/>
                   </div>
                 )}
 
@@ -289,12 +289,12 @@ export default function ProviderAvailability() {
                     <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Max bookings this day</label>
                     <div style={{ display:"flex", alignItems:"center", gap:10 }}>
                       <button type="button" onClick={()=>setForm(f=>({...f,max_bookings:Math.max(1,f.max_bookings-1)}))}
-                        style={{ width:36, height:36, borderRadius:8, background:"#1a1a1a", border:"1px solid #333", color:"#f0ede6", fontSize:18, cursor:"pointer" }}>−</button>
+                        style={{ width:36, height:36, borderRadius:8, background:"#f5f5f5", border:"1px solid #dddddd", color:"#000000", fontSize:18, cursor:"pointer" }}>−</button>
                       <div style={{ fontFamily:"Syne", fontSize:24, fontWeight:800, color:"#378add", width:40, textAlign:"center" }}>{form.max_bookings}</div>
                       <button type="button" onClick={()=>setForm(f=>({...f,max_bookings:Math.min(20,f.max_bookings+1)}))}
-                        style={{ width:36, height:36, borderRadius:8, background:"#1a1a1a", border:"1px solid #333", color:"#f0ede6", fontSize:18, cursor:"pointer" }}>+</button>
+                        style={{ width:36, height:36, borderRadius:8, background:"#f5f5f5", border:"1px solid #dddddd", color:"#000000", fontSize:18, cursor:"pointer" }}>+</button>
                     </div>
-                    <div style={{ fontSize:11, color:"#555", marginTop:6 }}>
+                    <div style={{ fontSize:11, color:"#777777", marginTop:6 }}>
                       {bookingCounts[selected]||0} booked · {Math.max(0,form.max_bookings-(bookingCounts[selected]||0))} slots remaining
                     </div>
                   </div>
@@ -306,7 +306,7 @@ export default function ProviderAvailability() {
                     {saving?"Saving...":"Save"}
                   </button>
                   <button type="button" onClick={()=>setSelected(null)}
-                    style={{ flex:1, background:"none", border:"1px solid #333", borderRadius:8, color:"#888", fontSize:13, padding:"11px", cursor:"pointer" }}>
+                    style={{ flex:1, background:"none", border:"1px solid #dddddd", borderRadius:8, color:"#555555", fontSize:13, padding:"11px", cursor:"pointer" }}>
                     Cancel
                   </button>
                 </div>
@@ -317,33 +317,33 @@ export default function ProviderAvailability() {
       )}
 
       {tab==="settings"&&(
-        <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", maxWidth:400 }}>
-          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#f0ede6" }}>Default settings</div>
-          <div style={{ fontSize:12, color:"#555", marginBottom:"1.5rem" }}>Applied to days with no specific settings</div>
+        <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", maxWidth:400 }}>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#000000" }}>Default settings</div>
+          <div style={{ fontSize:12, color:"#777777", marginBottom:"1.5rem" }}>Applied to days with no specific settings</div>
 
           <div style={{ marginBottom:"1.5rem" }}>
             <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:8 }}>Default max bookings per day</label>
             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
               <button onClick={()=>setDefaultMaxBookings(m=>Math.max(1,m-1))}
-                style={{ width:40, height:40, borderRadius:8, background:"#1a1a1a", border:"1px solid #333", color:"#f0ede6", fontSize:20, cursor:"pointer" }}>−</button>
+                style={{ width:40, height:40, borderRadius:8, background:"#f5f5f5", border:"1px solid #dddddd", color:"#000000", fontSize:20, cursor:"pointer" }}>−</button>
               <div style={{ fontFamily:"Syne", fontSize:28, fontWeight:800, color:"#378add", width:50, textAlign:"center" }}>{defaultMaxBookings}</div>
               <button onClick={()=>setDefaultMaxBookings(m=>Math.min(20,m+1))}
-                style={{ width:40, height:40, borderRadius:8, background:"#1a1a1a", border:"1px solid #333", color:"#f0ede6", fontSize:20, cursor:"pointer" }}>+</button>
+                style={{ width:40, height:40, borderRadius:8, background:"#f5f5f5", border:"1px solid #dddddd", color:"#000000", fontSize:20, cursor:"pointer" }}>+</button>
             </div>
-            <div style={{ fontSize:11, color:"#555", marginTop:8 }}>
+            <div style={{ fontSize:11, color:"#777777", marginTop:8 }}>
               This applies to all days unless you set a specific limit on the calendar
             </div>
           </div>
 
-          <div style={{ background:"#0f0f0f", border:"1px solid #222", borderRadius:10, padding:"1rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8, color:"#f0ede6" }}>How it works</div>
+          <div style={{ background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:10, padding:"1rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8, color:"#000000" }}>How it works</div>
             {[
               { icon:"🟢", text:"Open — day has available slots" },
               { icon:"🟡", text:"Partial — some bookings made" },
               { icon:"🔴", text:"Full — max bookings reached" },
               { icon:"⛔", text:"Blocked — no bookings allowed" },
             ].map(i=>(
-              <div key={i.text} style={{ display:"flex", gap:8, marginBottom:6, fontSize:12, color:"#888" }}>
+              <div key={i.text} style={{ display:"flex", gap:8, marginBottom:6, fontSize:12, color:"#555555" }}>
                 <span>{i.icon}</span><span>{i.text}</span>
               </div>
             ))}
@@ -353,5 +353,6 @@ export default function ProviderAvailability() {
     </div>
   )
 }
+
 
 

@@ -85,17 +85,17 @@ export default function CustomerVehicleReports() {
     return hours <= 24 && !getDispute(bookingId)
   }
 
-  const inp = { width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"11px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }
+  const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"11px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }
   const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
 
   return (
     <div>
-      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:18, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>Vehicle reports</div>
-      <div style={{ fontSize:12, color:"#555", marginBottom:"1.25rem" }}>Condition reports for your vehicles during service</div>
+      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:18, fontWeight:800, color:"#000000", marginBottom:4 }}>Vehicle reports</div>
+      <div style={{ fontSize:12, color:"#777777", marginBottom:"1.25rem" }}>Condition reports for your vehicles during service</div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&bookings.length===0&&(
-        <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"3rem" }}>
+        <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
           <div style={{ fontSize:32, marginBottom:10 }}>🚗</div>
           No vehicle reports yet
         </div>
@@ -108,15 +108,15 @@ export default function CustomerVehicleReports() {
         const pickup = bReports.pickup
         const dropoff = bReports.dropoff
         return (
-          <div key={b.id} style={{ background:"#111", border:`1px solid ${alert&&!dispute?"#e6821e40":"#1e1e1e"}`, borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10 }}>
+          <div key={b.id} style={{ background:"#ffffff", border:`1px solid ${alert&&!dispute?"#e6821e40":"#1e1e1e"}`, borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10 }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
               <div>
-                <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6", marginBottom:2 }}>{b.service_name}</div>
-                <div style={{ fontSize:11, color:"#555" }}>#{b.booking_number} · {b.booking_date}</div>
+                <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:2 }}>{b.service_name}</div>
+                <div style={{ fontSize:11, color:"#777777" }}>#{b.booking_number} · {b.booking_date}</div>
                 {b.vehicles&&<div style={{ fontSize:11, color:"#378add", marginTop:2 }}>🚗 {b.vehicles.make} {b.vehicles.model} — {b.vehicles.license_plate}</div>}
               </div>
               <button onClick={()=>setSelected(selected===b.id?null:b.id)}
-                style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#666", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#666", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                 {selected===b.id?"Hide":"View reports"}
               </button>
             </div>
@@ -124,11 +124,11 @@ export default function CustomerVehicleReports() {
             {alert&&(
               <div style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
                 <div style={{ fontSize:12, color:"#e6821e", fontWeight:600, marginBottom:2 }}>⚠️ Mileage alert</div>
-                <div style={{ fontSize:11, color:"#888" }}>
+                <div style={{ fontSize:11, color:"#555555" }}>
                   Vehicle driven {alert.difference}km during service (pickup: {alert.pickup_odometer}km → dropoff: {alert.dropoff_odometer}km)
                 </div>
                 {dispute?(
-                  <div style={{ fontSize:11, color:"#555", marginTop:4 }}>
+                  <div style={{ fontSize:11, color:"#777777", marginTop:4 }}>
                     Dispute {dispute.status} — {dispute.status==="resolved"?"Resolved":dispute.status==="dismissed"?"Dismissed":"Under review"}
                   </div>
                 ):canDispute(b.id)&&(
@@ -141,22 +141,22 @@ export default function CustomerVehicleReports() {
             )}
 
             {selected===b.id&&(
-              <div style={{ borderTop:"1px solid #1e1e1e", paddingTop:10 }}>
+              <div style={{ borderTop:"1px solid #eeeeee", paddingTop:10 }}>
                 <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
                   {[{ report:pickup, type:"Pickup" }, { report:dropoff, type:"Dropoff" }].map(({ report, type })=>(
-                    <div key={type} style={{ background:"#0f0f0f", borderRadius:10, padding:"0.9rem" }}>
+                    <div key={type} style={{ background:"#ffffff", borderRadius:10, padding:"0.9rem" }}>
                       <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:type==="Pickup"?"#378add":"#1d9e75", marginBottom:8 }}>{type} report</div>
                       {report?(
                         <div>
                           <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, marginBottom:4 }}>
-                            <span style={{ color:"#555" }}>Odometer</span>
-                            <span style={{ color:"#f0ede6", fontWeight:600 }}>{report.odometer_reading?.toLocaleString()} km</span>
+                            <span style={{ color:"#777777" }}>Odometer</span>
+                            <span style={{ color:"#000000", fontWeight:600 }}>{report.odometer_reading?.toLocaleString()} km</span>
                           </div>
                           <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, marginBottom:8 }}>
-                            <span style={{ color:"#555" }}>Fuel level</span>
-                            <span style={{ color:"#f0ede6" }}>{FUEL_LABELS[report.fuel_level]||report.fuel_level}</span>
+                            <span style={{ color:"#777777" }}>Fuel level</span>
+                            <span style={{ color:"#000000" }}>{FUEL_LABELS[report.fuel_level]||report.fuel_level}</span>
                           </div>
-                          <div style={{ fontSize:11, color:"#555", marginBottom:4 }}>Condition:</div>
+                          <div style={{ fontSize:11, color:"#777777", marginBottom:4 }}>Condition:</div>
                           <div style={{ display:"flex", flexWrap:"wrap", gap:4, marginBottom:4 }}>
                             {["has_scratches","has_dents","has_broken_lights","has_missing_parts","dirty_interior","dirty_exterior"].filter(k=>report[k]).map(k=>(
                               <span key={k} style={{ fontSize:10, padding:"2px 7px", borderRadius:10, background:"#1a0808", color:"#e24b4a" }}>
@@ -167,11 +167,11 @@ export default function CustomerVehicleReports() {
                               <span style={{ fontSize:10, color:"#1d9e75" }}>✓ No issues found</span>
                             )}
                           </div>
-                          {report.condition_notes&&<div style={{ fontSize:11, color:"#555", fontStyle:"italic" }}>"{report.condition_notes}"</div>}
-                          <div style={{ fontSize:10, color:"#444", marginTop:4 }}>{new Date(report.created_at).toLocaleString()}</div>
+                          {report.condition_notes&&<div style={{ fontSize:11, color:"#777777", fontStyle:"italic" }}>"{report.condition_notes}"</div>}
+                          <div style={{ fontSize:10, color:"#888888", marginTop:4 }}>{new Date(report.created_at).toLocaleString()}</div>
                         </div>
                       ):(
-                        <div style={{ fontSize:12, color:"#444", textAlign:"center", padding:"1rem" }}>No {type.toLowerCase()} report yet</div>
+                        <div style={{ fontSize:12, color:"#888888", textAlign:"center", padding:"1rem" }}>No {type.toLowerCase()} report yet</div>
                       )}
                     </div>
                   ))}
@@ -204,7 +204,7 @@ export default function CustomerVehicleReports() {
                       {submitting?"Submitting...":"Submit dispute"}
                     </button>
                     <button type="button" onClick={()=>setShowDispute(null)}
-                      style={{ background:"none", border:"1px solid #333", borderRadius:8, color:"#666", fontSize:12, padding:"9px 14px", cursor:"pointer" }}>
+                      style={{ background:"none", border:"1px solid #dddddd", borderRadius:8, color:"#666", fontSize:12, padding:"9px 14px", cursor:"pointer" }}>
                       Cancel
                     </button>
                   </div>
@@ -217,4 +217,5 @@ export default function CustomerVehicleReports() {
     </div>
   )
 }
+
 

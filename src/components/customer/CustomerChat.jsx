@@ -70,14 +70,14 @@ export default function CustomerChat() {
       {isMobile && selected && (
         <div style={{ position:"fixed", inset:0, zIndex:1000, display:"flex", flexDirection:"column", background:"rgba(0,0,0,0.7)" }}
           onClick={e=>{ if(e.target===e.currentTarget) setSelected(null) }}>
-          <div style={{ marginTop:"auto", background:"#0f0f0f", borderRadius:"16px 16px 0 0", height:"80vh", display:"flex", flexDirection:"column", overflow:"hidden" }}>
-            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"1rem", borderBottom:"1px solid #1e1e1e", flexShrink:0 }}>
+          <div style={{ marginTop:"auto", background:"#ffffff", borderRadius:"16px 16px 0 0", height:"80vh", display:"flex", flexDirection:"column", overflow:"hidden" }}>
+            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"1rem", borderBottom:"1px solid #eeeeee", flexShrink:0 }}>
               <div>
-                <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#f0ede6" }}>{selected.otherUserName}</div>
-                <div style={{ fontSize:11, color:"#555" }}>{selected.serviceName}</div>
+                <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#000000" }}>{selected.otherUserName}</div>
+                <div style={{ fontSize:11, color:"#777777" }}>{selected.serviceName}</div>
               </div>
               <button onClick={()=>setSelected(null)}
-                style={{ background:"#1a1a1a", border:"none", borderRadius:"50%", width:32, height:32, color:"#888", cursor:"pointer", fontSize:18, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                style={{ background:"#f5f5f5", border:"none", borderRadius:"50%", width:32, height:32, color:"#555555", cursor:"pointer", fontSize:18, display:"flex", alignItems:"center", justifyContent:"center" }}>
                 ×
               </button>
             </div>
@@ -97,14 +97,14 @@ export default function CustomerChat() {
       {!isMobile && selected && (
         <div style={{ position:"fixed", inset:0, zIndex:1000, display:"flex", alignItems:"center", justifyContent:"center", background:"rgba(0,0,0,0.7)" }}
           onClick={e=>{ if(e.target===e.currentTarget) setSelected(null) }}>
-          <div style={{ width:520, height:600, background:"#0f0f0f", borderRadius:16, border:"1px solid #1e1e1e", display:"flex", flexDirection:"column", overflow:"hidden" }}>
-            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"1rem", borderBottom:"1px solid #1e1e1e", flexShrink:0 }}>
+          <div style={{ width:520, height:600, background:"#ffffff", borderRadius:16, border:"1px solid #eeeeee", display:"flex", flexDirection:"column", overflow:"hidden" }}>
+            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"1rem", borderBottom:"1px solid #eeeeee", flexShrink:0 }}>
               <div>
-                <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#f0ede6" }}>{selected.otherUserName}</div>
-                <div style={{ fontSize:11, color:"#555" }}>{selected.serviceName}</div>
+                <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#000000" }}>{selected.otherUserName}</div>
+                <div style={{ fontSize:11, color:"#777777" }}>{selected.serviceName}</div>
               </div>
               <button onClick={()=>setSelected(null)}
-                style={{ background:"#1a1a1a", border:"none", borderRadius:"50%", width:32, height:32, color:"#888", cursor:"pointer", fontSize:18, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                style={{ background:"#f5f5f5", border:"none", borderRadius:"50%", width:32, height:32, color:"#555555", cursor:"pointer", fontSize:18, display:"flex", alignItems:"center", justifyContent:"center" }}>
                 ×
               </button>
             </div>
@@ -121,12 +121,12 @@ export default function CustomerChat() {
       )}
 
       {/* Conversation list */}
-      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:18, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>Messages</div>
-      <div style={{ fontSize:11, color:"#555", marginBottom:"1rem" }}>{conversations.length} active booking{conversations.length!==1?"s":""}</div>
+      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:18, fontWeight:800, color:"#000000", marginBottom:4 }}>Messages</div>
+      <div style={{ fontSize:11, color:"#777777", marginBottom:"1rem" }}>{conversations.length} active booking{conversations.length!==1?"s":""}</div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&conversations.length===0&&(
-        <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"3rem" }}>
+        <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
           <div style={{ fontSize:32, marginBottom:10 }}>💬</div>
           No active bookings to chat about
         </div>
@@ -134,7 +134,7 @@ export default function CustomerChat() {
 
       {conversations.map(c=>(
         <div key={c.bookingId} onClick={()=>setSelected(c)}
-          style={{ background:"#111", border:`1px solid ${selected?.bookingId===c.bookingId?"#e6821e40":"#1a1a1a"}`, borderRadius:10, padding:"0.9rem", marginBottom:8, cursor:"pointer" }}
+          style={{ background:"#ffffff", border:`1px solid ${selected?.bookingId===c.bookingId?"#e6821e40":"#1a1a1a"}`, borderRadius:10, padding:"0.9rem", marginBottom:8, cursor:"pointer" }}
           onMouseEnter={e=>e.currentTarget.style.background="#161616"}
           onMouseLeave={e=>e.currentTarget.style.background="#111"}>
           <div style={{ display:"flex", alignItems:"flex-start", gap:10 }}>
@@ -143,16 +143,16 @@ export default function CustomerChat() {
             </div>
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:2 }}>
-                <div style={{ fontSize:13, fontWeight:c.unread>0?700:500, color:"#f0ede6", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.otherUserName}</div>
+                <div style={{ fontSize:13, fontWeight:c.unread>0?700:500, color:"#000000", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.otherUserName}</div>
                 <div style={{ display:"flex", alignItems:"center", gap:6 }}>
                   {c.unread>0&&<div style={{ width:20, height:20, borderRadius:"50%", background:"#e6821e", color:"#fff", fontSize:10, fontWeight:700, display:"flex", alignItems:"center", justifyContent:"center" }}>{c.unread}</div>}
-                  <span style={{ fontSize:10, color:"#444" }}>{c.lastTime?new Date(c.lastTime).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):""}</span>
+                  <span style={{ fontSize:10, color:"#888888" }}>{c.lastTime?new Date(c.lastTime).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):""}</span>
                 </div>
               </div>
               <div style={{ fontSize:11, color:"#666", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", marginBottom:4 }}>{c.lastMessage}</div>
               <div style={{ display:"flex", gap:6, alignItems:"center" }}>
                 <span style={{ fontSize:10, color:SC[c.status]||"#555" }}>● {c.status}</span>
-                <span style={{ fontSize:10, color:"#444" }}>· {c.serviceName} · {c.bookingDate}</span>
+                <span style={{ fontSize:10, color:"#888888" }}>· {c.serviceName} · {c.bookingDate}</span>
               </div>
             </div>
             <div style={{ fontSize:11, color:"#e6821e", flexShrink:0, marginTop:2 }}>💬 Chat</div>
@@ -162,6 +162,7 @@ export default function CustomerChat() {
     </>
   )
 }
+
 
 
 

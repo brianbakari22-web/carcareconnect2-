@@ -169,7 +169,7 @@ export default function DriverProfile() {
   }
 
   const initials = `${profile?.first_name?.[0]||""}${profile?.last_name?.[0]||""}`.toUpperCase()
-  const inp = { width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"11px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:12 }
+  const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"11px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:12 }
   const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
 
   const TABS = [
@@ -182,14 +182,14 @@ export default function DriverProfile() {
   return (
     <div style={{ maxWidth:isMobile?"100%":540 }}>
       {/* Profile header */}
-      <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", marginBottom:"1.25rem" }}>
+      <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.25rem" }}>
         <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:"1.25rem" }}>
           <div style={{ width:60, height:60, borderRadius:14, background:"#071a12", border:"2px solid #1d9e7540", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#1d9e75", flexShrink:0 }}>
             {initials||"🚗"}
           </div>
           <div>
-            <div style={{ fontFamily:"Syne", fontSize:17, fontWeight:800, color:"#f0ede6" }}>{profile?.first_name} {profile?.last_name}</div>
-            <div style={{ fontSize:12, color:"#555", marginTop:2 }}>
+            <div style={{ fontFamily:"Syne", fontSize:17, fontWeight:800, color:"#000000" }}>{profile?.first_name} {profile?.last_name}</div>
+            <div style={{ fontSize:12, color:"#777777", marginTop:2 }}>
               {profile?.driver_vehicle_type==="motorcycle"?"🏍️ Boda Boda Driver":
                profile?.driver_vehicle_type==="tuktuk"?"🛺 Tuktuk Driver":
                profile?.driver_vehicle_type==="van"?"🚐 Van Driver":"🚗 Concierge Driver"}
@@ -208,14 +208,14 @@ export default function DriverProfile() {
         {/* Stats */}
         <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8 }}>
           {[
-            { label:"Total jobs", value:stats.total, color:"#f0ede6" },
+            { label:"Total jobs", value:stats.total, color:"#000000" },
             { label:"Completed", value:stats.completed, color:"#1d9e75" },
             { label:"Rating", value:stats.rating, color:"#e6821e" },
             { label:"Earned", value:`${Number(stats.earnings).toLocaleString()}`, color:"#8b5cf6" },
           ].map(s=>(
-            <div key={s.label} style={{ background:"#0f0f0f", borderRadius:8, padding:"0.6rem", textAlign:"center", border:"1px solid #1a1a1a" }}>
+            <div key={s.label} style={{ background:"#ffffff", borderRadius:8, padding:"0.6rem", textAlign:"center", border:"1px solid #1a1a1a" }}>
               <div style={{ fontFamily:"Syne", fontSize:isMobile?13:16, fontWeight:800, color:s.color }}>{s.value}</div>
-              <div style={{ fontSize:9, color:"#444", marginTop:2 }}>{s.label}</div>
+              <div style={{ fontSize:9, color:"#888888", marginTop:2 }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -234,8 +234,8 @@ export default function DriverProfile() {
       {/* PERSONAL TAB */}
       {tab==="personal"&&(
         <form onSubmit={savePersonal}>
-          <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>Personal information</div>
+          <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>Personal information</div>
             <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
               <div><label style={lbl}>First name</label><input style={inp} value={personalForm.first_name} onChange={e=>setPersonalForm(f=>({...f,first_name:e.target.value}))} required/></div>
               <div><label style={lbl}>Last name</label><input style={inp} value={personalForm.last_name} onChange={e=>setPersonalForm(f=>({...f,last_name:e.target.value}))} required/></div>
@@ -253,9 +253,9 @@ export default function DriverProfile() {
       {/* CREDENTIALS TAB */}
       {tab==="credentials"&&(
         <form onSubmit={saveCredentials}>
-          <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#f0ede6" }}>Driver credentials</div>
-            <div style={{ fontSize:11, color:"#555", marginBottom:"1rem" }}>Your credentials will be reviewed by admin before you can go online.</div>
+          <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#000000" }}>Driver credentials</div>
+            <div style={{ fontSize:11, color:"#777777", marginBottom:"1rem" }}>Your credentials will be reviewed by admin before you can go online.</div>
 
             {!profile?.documents_verified&&(
               <div style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:8, padding:"0.75rem", marginBottom:"1rem" }}>
@@ -273,7 +273,7 @@ export default function DriverProfile() {
                 )}
                 <div>
                   <input type="file" accept="image/*" id="profile-photo" style={{ display:"none" }} onChange={e=>setProfilePhotoFile(e.target.files[0])}/>
-                  <label htmlFor="profile-photo" style={{ background:"#111", border:"1px solid #333", borderRadius:8, color:"#888", fontSize:11, padding:"7px 14px", cursor:"pointer", display:"inline-block" }}>
+                  <label htmlFor="profile-photo" style={{ background:"#ffffff", border:"1px solid #dddddd", borderRadius:8, color:"#555555", fontSize:11, padding:"7px 14px", cursor:"pointer", display:"inline-block" }}>
                     {profile?.profile_photo_url?"Change photo":"Upload photo"}
                   </label>
                   {profilePhotoFile&&<div style={{ fontSize:10, color:"#1d9e75", marginTop:4 }}>✓ {profilePhotoFile.name}</div>}
@@ -281,7 +281,7 @@ export default function DriverProfile() {
               </div>
             </div>
 
-            <div style={{ height:1, background:"#1e1e1e", margin:"8px 0 16px" }}/>
+            <div style={{ height:1, background:"#f0f0f0", margin:"8px 0 16px" }}/>
             <label style={lbl}>National ID number *</label>
             <input style={inp} placeholder="e.g. 12345678" value={credentialsForm.id_number} onChange={e=>setCredentialsForm(f=>({...f,id_number:e.target.value}))} required/>
 
@@ -306,8 +306,8 @@ export default function DriverProfile() {
 
             {/* DOCUMENT UPLOADS */}
             <div style={{ marginBottom:16 }}>
-              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8, color:"#f0ede6" }}>Upload documents</div>
-              <div style={{ fontSize:11, color:"#555", marginBottom:10 }}>Upload clear photos for admin verification. Max 10MB each.</div>
+              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8, color:"#000000" }}>Upload documents</div>
+              <div style={{ fontSize:11, color:"#777777", marginBottom:10 }}>Upload clear photos for admin verification. Max 10MB each.</div>
               {[
                 { key:"id_doc_front_url", label:"National ID (front)", icon:"📋" },
                 { key:"id_doc_back_url", label:"National ID (back)", icon:"📋" },
@@ -316,8 +316,8 @@ export default function DriverProfile() {
                 { key:"good_conduct_url", label:"Certificate of Good Conduct", icon:"📄" },
                 { key:"insurance_url", label:"Insurance Certificate", icon:"📝" },
               ].map(doc=>(
-                <div key={doc.key} style={{ marginBottom:12, background:"#0f0f0f", borderRadius:10, padding:"0.75rem", border:"1px solid #1e1e1e" }}>
-                  <div style={{ fontSize:12, color:"#888", marginBottom:6 }}>{doc.icon} {doc.label}</div>
+                <div key={doc.key} style={{ marginBottom:12, background:"#ffffff", borderRadius:10, padding:"0.75rem", border:"1px solid #eeeeee" }}>
+                  <div style={{ fontSize:12, color:"#555555", marginBottom:6 }}>{doc.icon} {doc.label}</div>
                   {credentialsForm[doc.key]&&(
                     <div style={{ position:"relative", marginBottom:6 }}>
                       <img src={credentialsForm[doc.key]} alt={doc.label} style={{ width:"100%", maxHeight:120, objectFit:"cover", borderRadius:8 }}/>
@@ -339,13 +339,13 @@ export default function DriverProfile() {
                         toast.success(doc.label + " uploaded!")
                       } catch(err) { toast.error(err.message) }
                     }}
-                    style={{ width:"100%", background:"#111", border:"1px solid #2a2a2a", borderRadius:8, padding:"8px", color:"#888", fontSize:12 }}/>
+                    style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"8px", color:"#555555", fontSize:12 }}/>
                 </div>
               ))}
             </div>
-            <div style={{ height:1, background:"#1e1e1e", margin:"8px 0 16px" }}/>
-            <div style={{ height:1, background:"#1e1e1e", margin:"8px 0 16px" }}/>
-            <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:"0.75rem", color:"#f0ede6" }}>Emergency contact</div>
+            <div style={{ height:1, background:"#f0f0f0", margin:"8px 0 16px" }}/>
+            <div style={{ height:1, background:"#f0f0f0", margin:"8px 0 16px" }}/>
+            <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:"0.75rem", color:"#000000" }}>Emergency contact</div>
 
             <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
               <div>
@@ -369,10 +369,10 @@ export default function DriverProfile() {
       {/* CONTACT TAB */}
       {tab==="contact"&&(
         <form onSubmit={saveContact}>
-          <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>Contact details</div>
+          <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>Contact details</div>
             <label style={lbl}>Email</label>
-            <input style={{ ...inp, color:"#555", cursor:"not-allowed" }} value={sensitive.email} readOnly/>
+            <input style={{ ...inp, color:"#777777", cursor:"not-allowed" }} value={sensitive.email} readOnly/>
             <label style={lbl}>Phone number</label>
             <input style={inp} placeholder="+254 700 000 000" value={sensitive.phone} onChange={e=>setSensitive(s=>({...s,phone:e.target.value}))}/>
             <button type="submit" disabled={saving}
@@ -386,8 +386,8 @@ export default function DriverProfile() {
       {/* SECURITY TAB */}
       {tab==="security"&&(
         <form onSubmit={changePassword}>
-          <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>Change password</div>
+          <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>Change password</div>
             <label style={lbl}>New password</label>
             <input style={inp} type="password" placeholder="Min 6 characters" value={passwordForm.password} onChange={e=>setPasswordForm(f=>({...f,password:e.target.value}))} required/>
             <label style={lbl}>Confirm password</label>
@@ -402,6 +402,7 @@ export default function DriverProfile() {
     </div>
   )
 }
+
 
 
 

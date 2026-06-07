@@ -100,14 +100,14 @@ export default function CustomerClaims() {
   const usedVouchers = vouchers.filter(v=>v.is_used)
   const expiredVouchers = vouchers.filter(v=>!v.is_used&&new Date(v.expires_at)<=new Date())
 
-  const inp = { width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"11px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:12 }
+  const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"11px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:12 }
   const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
   const SC = { pending:"#e6821e", under_review:"#8b5cf6", approved:"#1d9e75", rejected:"#e24b4a" }
 
   return (
     <div>
-      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:18, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>Service Guarantee</div>
-      <div style={{ fontSize:12, color:"#555", marginBottom:"1.25rem" }}>Not happy with a service? We will make it right.</div>
+      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:18, fontWeight:800, color:"#000000", marginBottom:4 }}>Service Guarantee</div>
+      <div style={{ fontSize:12, color:"#777777", marginBottom:"1.25rem" }}>Not happy with a service? We will make it right.</div>
 
       {/* Active vouchers banner */}
       {activeVouchers.length>0&&(
@@ -116,20 +116,20 @@ export default function CustomerClaims() {
             🎟️ You have {activeVouchers.length} active voucher{activeVouchers.length>1?"s":""}
           </div>
           {activeVouchers.map(v=>(
-            <div key={v.id} style={{ background:"#0a0a0a", borderRadius:10, padding:"1rem", marginBottom:8, border:"1px solid #1d9e7530" }}>
+            <div key={v.id} style={{ background:"#ffffff", borderRadius:10, padding:"1rem", marginBottom:8, border:"1px solid #1d9e7530" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", flexWrap:"wrap", gap:8 }}>
                 <div>
                   <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#1d9e75", letterSpacing:2 }}>{v.voucher_code}</div>
-                  <div style={{ fontSize:12, color:"#888", marginTop:2 }}>Worth KES {Number(v.amount).toLocaleString()}</div>
-                  <div style={{ fontSize:11, color:"#555", marginTop:2 }}>Expires: {new Date(v.expires_at).toLocaleDateString()}</div>
+                  <div style={{ fontSize:12, color:"#555555", marginTop:2 }}>Worth KES {Number(v.amount).toLocaleString()}</div>
+                  <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>Expires: {new Date(v.expires_at).toLocaleDateString()}</div>
                   <div style={{ fontSize:11, color:"#1d9e75", marginTop:4 }}>✓ Valid for any service from a different provider</div>
                 </div>
                 <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:8, padding:"0.5rem 1rem", textAlign:"center" }}>
-                  <div style={{ fontSize:10, color:"#555", marginBottom:2 }}>Value</div>
+                  <div style={{ fontSize:10, color:"#777777", marginBottom:2 }}>Value</div>
                   <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#1d9e75" }}>KES {Number(v.amount).toLocaleString()}</div>
                 </div>
               </div>
-              <div style={{ fontSize:11, color:"#555", marginTop:8, padding:"0.5rem", background:"#111", borderRadius:6 }}>
+              <div style={{ fontSize:11, color:"#777777", marginTop:8, padding:"0.5rem", background:"#ffffff", borderRadius:6 }}>
                 💡 Use this code when booking any service — the amount will be deducted from your total
               </div>
             </div>
@@ -138,8 +138,8 @@ export default function CustomerClaims() {
       )}
 
       {/* How it works */}
-      <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1rem", marginBottom:"1.5rem" }}>
-        <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#f0ede6", marginBottom:10 }}>How our Service Guarantee works</div>
+      <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem", marginBottom:"1.5rem" }}>
+        <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000", marginBottom:10 }}>How our Service Guarantee works</div>
         {[
           { icon:"1️⃣", title:"Submit a claim", desc:"Tell us what went wrong within 7 days of completion" },
           { icon:"2️⃣", title:"We review", desc:"Our team reviews your claim within 24 hours" },
@@ -150,8 +150,8 @@ export default function CustomerClaims() {
           <div key={step.icon} style={{ display:"flex", gap:10, alignItems:"flex-start", marginBottom:10 }}>
             <span style={{ fontSize:16, flexShrink:0 }}>{step.icon}</span>
             <div>
-              <div style={{ fontSize:12, color:"#f0ede6", fontWeight:600 }}>{step.title}</div>
-              <div style={{ fontSize:11, color:"#555", lineHeight:1.5 }}>{step.desc}</div>
+              <div style={{ fontSize:12, color:"#000000", fontWeight:600 }}>{step.title}</div>
+              <div style={{ fontSize:11, color:"#777777", lineHeight:1.5 }}>{step.desc}</div>
             </div>
           </div>
         ))}
@@ -176,8 +176,8 @@ export default function CustomerClaims() {
 
       {/* Claim form */}
       {showForm&&(
-        <div style={{ background:"#111", border:"1px solid #e6821e30", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#f0ede6", marginBottom:"1rem" }}>Submit a service claim</div>
+        <div style={{ background:"#ffffff", border:"1px solid #e6821e30", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000", marginBottom:"1rem" }}>Submit a service claim</div>
           <form onSubmit={submitClaim}>
             <label style={lbl}>Select booking *</label>
             <select style={inp} value={form.booking_id} onChange={e=>setForm(f=>({...f,booking_id:e.target.value}))} required>
@@ -195,7 +195,7 @@ export default function CustomerClaims() {
             <textarea style={{ ...inp, resize:"vertical", minHeight:100 }}
               placeholder="Please provide as much detail as possible."
               value={form.description} onChange={e=>setForm(f=>({...f,description:e.target.value}))} required/>
-            <div style={{ background:"#0f0f0f", borderRadius:8, padding:"0.75rem", marginBottom:12, fontSize:11, color:"#666", lineHeight:1.6 }}>
+            <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", marginBottom:12, fontSize:11, color:"#666", lineHeight:1.6 }}>
               ⚠️ Claims must be submitted within 7 days of service completion. False claims may result in account suspension.
             </div>
             <div style={{ display:"flex", gap:8 }}>
@@ -204,7 +204,7 @@ export default function CustomerClaims() {
                 {submitting?"Submitting...":"Submit claim"}
               </button>
               <button type="button" onClick={()=>{ setShowForm(false); setForm({ booking_id:"", reason:"", description:"" }) }}
-                style={{ background:"none", border:"1px solid #333", borderRadius:9, color:"#666", fontSize:13, padding:"11px 16px", cursor:"pointer" }}>
+                style={{ background:"none", border:"1px solid #dddddd", borderRadius:9, color:"#666", fontSize:13, padding:"11px 16px", cursor:"pointer" }}>
                 Cancel
               </button>
             </div>
@@ -212,30 +212,30 @@ export default function CustomerClaims() {
         </div>
       )}
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
 
       {/* Claims tab */}
       {tab==="claims"&&(
         <div>
           {!loading&&claims.length===0&&(
-            <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>
+            <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>
               <div style={{ fontSize:32, marginBottom:10 }}>✅</div>
               No claims yet — we hope all your services have been great!
             </div>
           )}
           {claims.map(c=>(
-            <div key={c.id} style={{ background:"#111", border:`1px solid ${SC[c.status]||"#1e1e1e"}30`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
+            <div key={c.id} style={{ background:"#ffffff", border:`1px solid ${SC[c.status]||"#1e1e1e"}30`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
-                    <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6" }}>{c.bookings?.service_name}</div>
+                    <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{c.bookings?.service_name}</div>
                     <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:`${SC[c.status]||"#888"}20`, color:SC[c.status]||"#888" }}>{c.status?.replace("_"," ")}</span>
                   </div>
-                  <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>#{c.bookings?.booking_number} · {c.bookings?.booking_date}</div>
-                  <div style={{ fontSize:12, color:"#888", marginBottom:2 }}>Reason: {c.reason}</div>
+                  <div style={{ fontSize:11, color:"#777777", marginBottom:2 }}>#{c.bookings?.booking_number} · {c.bookings?.booking_date}</div>
+                  <div style={{ fontSize:12, color:"#555555", marginBottom:2 }}>Reason: {c.reason}</div>
                   <div style={{ fontSize:11, color:"#666", fontStyle:"italic" }}>"{c.description}"</div>
                   {c.admin_notes&&<div style={{ fontSize:11, color:"#378add", marginTop:4 }}>Admin: "{c.admin_notes}"</div>}
-                  <div style={{ fontSize:10, color:"#444", marginTop:4 }}>{new Date(c.created_at).toLocaleString()}</div>
+                  <div style={{ fontSize:10, color:"#888888", marginTop:4 }}>{new Date(c.created_at).toLocaleString()}</div>
                 </div>
                 <div style={{ textAlign:"right", flexShrink:0 }}>
                   <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e" }}>KES {Number(c.bookings?.total_amount||0).toLocaleString()}</div>
@@ -283,36 +283,36 @@ export default function CustomerClaims() {
               {activeVouchers.map(v=>(
                 <div key={v.id} style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:10, padding:"1rem", marginBottom:8 }}>
                   <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#1d9e75", letterSpacing:2, marginBottom:4 }}>{v.voucher_code}</div>
-                  <div style={{ fontSize:12, color:"#888" }}>Worth KES {Number(v.amount).toLocaleString()} · Expires {new Date(v.expires_at).toLocaleDateString()}</div>
-                  <div style={{ fontSize:11, color:"#555", marginTop:4 }}>Use this code when booking any service</div>
+                  <div style={{ fontSize:12, color:"#555555" }}>Worth KES {Number(v.amount).toLocaleString()} · Expires {new Date(v.expires_at).toLocaleDateString()}</div>
+                  <div style={{ fontSize:11, color:"#777777", marginTop:4 }}>Use this code when booking any service</div>
                 </div>
               ))}
             </div>
           )}
           {usedVouchers.length>0&&(
             <div style={{ marginBottom:"1.5rem" }}>
-              <div style={{ fontSize:11, color:"#555", fontWeight:700, textTransform:"uppercase", marginBottom:8 }}>Used vouchers</div>
+              <div style={{ fontSize:11, color:"#777777", fontWeight:700, textTransform:"uppercase", marginBottom:8 }}>Used vouchers</div>
               {usedVouchers.map(v=>(
-                <div key={v.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem", marginBottom:8, opacity:0.6 }}>
-                  <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#555", letterSpacing:2, marginBottom:4 }}>{v.voucher_code}</div>
-                  <div style={{ fontSize:11, color:"#444" }}>KES {Number(v.amount).toLocaleString()} · Used</div>
+                <div key={v.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8, opacity:0.6 }}>
+                  <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#777777", letterSpacing:2, marginBottom:4 }}>{v.voucher_code}</div>
+                  <div style={{ fontSize:11, color:"#888888" }}>KES {Number(v.amount).toLocaleString()} · Used</div>
                 </div>
               ))}
             </div>
           )}
           {expiredVouchers.length>0&&(
             <div>
-              <div style={{ fontSize:11, color:"#444", fontWeight:700, textTransform:"uppercase", marginBottom:8 }}>Expired vouchers</div>
+              <div style={{ fontSize:11, color:"#888888", fontWeight:700, textTransform:"uppercase", marginBottom:8 }}>Expired vouchers</div>
               {expiredVouchers.map(v=>(
-                <div key={v.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem", marginBottom:8, opacity:0.4 }}>
-                  <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#444", letterSpacing:2, marginBottom:4 }}>{v.voucher_code}</div>
+                <div key={v.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8, opacity:0.4 }}>
+                  <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#888888", letterSpacing:2, marginBottom:4 }}>{v.voucher_code}</div>
                   <div style={{ fontSize:11, color:"#333" }}>KES {Number(v.amount).toLocaleString()} · Expired {new Date(v.expires_at).toLocaleDateString()}</div>
                 </div>
               ))}
             </div>
           )}
           {vouchers.length===0&&(
-            <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>
+            <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>
               <div style={{ fontSize:32, marginBottom:10 }}>🎟️</div>
               No vouchers yet
             </div>
@@ -322,6 +322,7 @@ export default function CustomerClaims() {
     </div>
   )
 }
+
 
 
 

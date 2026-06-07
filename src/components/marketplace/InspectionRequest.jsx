@@ -60,27 +60,27 @@ export default function InspectionRequest({ listing, onSuccess }) {
   if (existing && existing.status !== "pending_payment") return (
     <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:10, padding:"1rem" }}>
       <div style={{ fontSize:13, color:"#1d9e75", fontWeight:600, marginBottom:4 }}>✓ Inspection requested</div>
-      <div style={{ fontSize:11, color:"#555" }}>Status: {existing.status}</div>
-      {existing.scheduled_date&&<div style={{ fontSize:11, color:"#555" }}>Scheduled: {existing.scheduled_date}</div>}
+      <div style={{ fontSize:11, color:"#777777" }}>Status: {existing.status}</div>
+      {existing.scheduled_date&&<div style={{ fontSize:11, color:"#777777" }}>Scheduled: {existing.scheduled_date}</div>}
       {existing.result&&<div style={{ fontSize:12, color:existing.result==="passed"?"#1d9e75":"#e24b4a", marginTop:4, fontWeight:600 }}>Result: {existing.result}</div>}
     </div>
   )
 
   return (
-    <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
-      <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>🔍 CCC Vehicle Inspection</div>
-      <div style={{ fontSize:12, color:"#555", marginBottom:16, lineHeight:1.6 }}>
+    <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
+      <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#000000", marginBottom:4 }}>🔍 CCC Vehicle Inspection</div>
+      <div style={{ fontSize:12, color:"#777777", marginBottom:16, lineHeight:1.6 }}>
         Get your vehicle inspected by a CCC certified mechanic. Once passed, your listing will show a verified badge and buyers can make offers.
       </div>
 
-      <div style={{ background:"#0f0f0f", borderRadius:8, padding:"0.75rem", marginBottom:16 }}>
-        <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#888", marginBottom:4 }}>
+      <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", marginBottom:16 }}>
+        <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#555555", marginBottom:4 }}>
           <span>Inspection fee</span><span>KES 500</span>
         </div>
-        <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#888" }}>
+        <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#555555" }}>
           <span>Processing fee (2.5%)</span><span>KES 13</span>
         </div>
-        <div style={{ height:1, background:"#1e1e1e", margin:"6px 0" }}/>
+        <div style={{ height:1, background:"#f0f0f0", margin:"6px 0" }}/>
         <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, color:"#e6821e", fontWeight:700 }}>
           <span>Total</span><span>KES 513</span>
         </div>
@@ -90,7 +90,7 @@ export default function InspectionRequest({ listing, onSuccess }) {
         <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>Preferred inspection date</label>
         <input type="date" value={scheduled} onChange={e=>setScheduled(e.target.value)}
           min={new Date().toISOString().split("T")[0]}
-          style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:12, outline:"none" }}/>
+          style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none" }}/>
       </div>
 
       <button onClick={requestInspection} disabled={paying||!scheduled}
@@ -100,3 +100,4 @@ export default function InspectionRequest({ listing, onSuccess }) {
     </div>
   )
 }
+

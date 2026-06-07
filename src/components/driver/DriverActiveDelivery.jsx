@@ -92,16 +92,16 @@ export default function DriverActiveDelivery() {
 
   return (
     <div>
-      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:18, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>
+      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:18, fontWeight:800, color:"#000000", marginBottom:4 }}>
         {language==="sw"?"Usafirishaji Unaoendelea":"Active Deliveries"}
       </div>
-      <div style={{ fontSize:12, color:"#555", marginBottom:"1.25rem" }}>
+      <div style={{ fontSize:12, color:"#777777", marginBottom:"1.25rem" }}>
         {jobs.length} active job{jobs.length!==1?"s":""}
       </div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&jobs.length===0&&(
-        <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"3rem" }}>
+        <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
           <div style={{ fontSize:32, marginBottom:10 }}>🚗</div>
           No active deliveries
         </div>
@@ -113,11 +113,11 @@ export default function DriverActiveDelivery() {
         const hasDropoff = reports.dropoff
         const vehicle = job.vehicles
         return (
-          <div key={job.id} style={{ background:"#111", border:`1px solid ${SC[job.status]||"#1e1e1e"}30`, borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10 }}>
+          <div key={job.id} style={{ background:"#ffffff", border:`1px solid ${SC[job.status]||"#1e1e1e"}30`, borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10 }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
               <div style={{ flex:1, minWidth:0 }}>
-                <div style={{ fontSize:isMobile?14:15, fontWeight:600, color:"#f0ede6", marginBottom:4 }}>{job.service_name}</div>
-                <div style={{ fontSize:11, color:"#555", marginBottom:4 }}>#{job.booking_number} · {job.booking_date}</div>
+                <div style={{ fontSize:isMobile?14:15, fontWeight:600, color:"#000000", marginBottom:4 }}>{job.service_name}</div>
+                <div style={{ fontSize:11, color:"#777777", marginBottom:4 }}>#{job.booking_number} · {job.booking_date}</div>
                 {vehicle&&(
                   <div style={{ fontSize:11, color:"#378add", marginBottom:4 }}>
                     🚗 {vehicle.make} {vehicle.model} {vehicle.year} — {vehicle.license_plate}
@@ -202,3 +202,4 @@ export default function DriverActiveDelivery() {
     </div>
   )
 }
+

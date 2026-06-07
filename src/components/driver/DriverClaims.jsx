@@ -36,8 +36,8 @@ export default function DriverClaims() {
 
   return (
     <div style={{ maxWidth:700, margin:"0 auto" }}>
-      <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>Service Claims</div>
-      <div style={{ fontSize:12, color:"#555", marginBottom:"1.5rem" }}>Claims related to your deliveries</div>
+      <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#000000", marginBottom:4 }}>Service Claims</div>
+      <div style={{ fontSize:12, color:"#777777", marginBottom:"1.5rem" }}>Claims related to your deliveries</div>
 
       {/* Stats */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginBottom:"1.5rem" }}>
@@ -46,17 +46,17 @@ export default function DriverClaims() {
           { label:"Pending", value:claims.filter(c=>c.status==="pending"||c.status==="under_review").length },
           { label:"Resolved", value:claims.filter(c=>c.status==="approved"||c.status==="rejected").length },
         ].map((s,i)=>(
-          <div key={i} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"0.9rem", textAlign:"center" }}>
-            <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#f0ede6" }}>{s.value}</div>
-            <div style={{ fontSize:11, color:"#555" }}>{s.label}</div>
+          <div key={i} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"0.9rem", textAlign:"center" }}>
+            <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#000000" }}>{s.value}</div>
+            <div style={{ fontSize:11, color:"#777777" }}>{s.label}</div>
           </div>
         ))}
       </div>
 
       {/* Policy */}
-      <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem", marginBottom:"1.5rem" }}>
-        <div style={{ fontSize:12, fontWeight:600, color:"#f0ede6", marginBottom:8 }}>🛡️ Claims Policy for Drivers</div>
-        <div style={{ fontSize:11, color:"#888", lineHeight:1.7 }}>
+      <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:"1.5rem" }}>
+        <div style={{ fontSize:12, fontWeight:600, color:"#000000", marginBottom:8 }}>🛡️ Claims Policy for Drivers</div>
+        <div style={{ fontSize:11, color:"#555555", lineHeight:1.7 }}>
           ⚠️ 1st claim — Warning issued<br/>
           🚫 2nd claim — 24 hour suspension<br/>
           ❌ 3rd claim — 72 hour suspension<br/>
@@ -65,23 +65,23 @@ export default function DriverClaims() {
         </div>
       </div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
 
       {!loading&&claims.length===0&&(
-        <div style={{ textAlign:"center", padding:"3rem", color:"#444" }}>
+        <div style={{ textAlign:"center", padding:"3rem", color:"#888888" }}>
           <div style={{ fontSize:32, marginBottom:10 }}>✅</div>
           <div style={{ fontSize:13 }}>No claims against your deliveries — keep up the great work!</div>
         </div>
       )}
 
       {claims.map(c=>(
-        <div key={c.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", marginBottom:12 }}>
+        <div key={c.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:12 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
             <div>
-              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#f0ede6", marginBottom:2 }}>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000", marginBottom:2 }}>
                 {c.bookings?.service_name||"Service"}
               </div>
-              <div style={{ fontSize:11, color:"#555" }}>
+              <div style={{ fontSize:11, color:"#777777" }}>
                 #{c.bookings?.booking_number} · {c.bookings?.booking_date ? new Date(c.bookings.booking_date).toLocaleDateString() : ""}
               </div>
             </div>
@@ -91,15 +91,15 @@ export default function DriverClaims() {
           </div>
 
           <div style={{ fontSize:12, color:"#e6821e", marginBottom:4 }}>Reason: {c.reason}</div>
-          <div style={{ fontSize:12, color:"#888", marginBottom:4, lineHeight:1.5 }}>{c.description}</div>
+          <div style={{ fontSize:12, color:"#555555", marginBottom:4, lineHeight:1.5 }}>{c.description}</div>
           {c.admin_notes&&(
             <div style={{ background:"#0c1f2e", border:"1px solid #378add30", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
               <div style={{ fontSize:11, color:"#378add", fontWeight:600, marginBottom:2 }}>Admin decision:</div>
-              <div style={{ fontSize:12, color:"#888" }}>{c.admin_notes}</div>
+              <div style={{ fontSize:12, color:"#555555" }}>{c.admin_notes}</div>
             </div>
           )}
 
-          <div style={{ fontSize:10, color:"#444", marginBottom:8 }}>{new Date(c.created_at).toLocaleString()}</div>
+          <div style={{ fontSize:10, color:"#888888", marginBottom:8 }}>{new Date(c.created_at).toLocaleString()}</div>
 
           {(c.status==="pending"||c.status==="under_review")&&(
             <div style={{ marginTop:8 }}>
@@ -124,3 +124,4 @@ export default function DriverClaims() {
     </div>
   )
 }
+

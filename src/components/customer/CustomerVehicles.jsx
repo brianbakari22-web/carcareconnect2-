@@ -46,30 +46,30 @@ export default function CustomerVehicles() {
     toast.success("Default vehicle set"); load()
   }
 
-  const inp = {width:"100%",background:"#111",border:"1px solid #222",borderRadius:8,padding:"10px 12px",color:"#f0ede6",fontSize:13,outline:"none",marginBottom:10,fontFamily:"'DM Sans',sans-serif"}
+  const inp = {width:"100%",background:"#ffffff",border:"1px solid #e5e5e5",borderRadius:8,padding:"10px 12px",color:"#000000",fontSize:13,outline:"none",marginBottom:10,fontFamily:"'DM Sans',sans-serif"}
   const lbl = {fontSize:11,color:"#666",textTransform:"uppercase",letterSpacing:"0.05em",display:"block",marginBottom:4}
 
   return (
     <div>
-      {loading&&<div style={{color:"#555",fontSize:13}}>Loading...</div>}
+      {loading&&<div style={{color:"#777777",fontSize:13}}>Loading...</div>}
       {vehicles.map(v=>(
-        <div key={v.id} style={{background:"#111",border:`1px solid ${v.is_default?"#e6821e40":"#1e1e1e"}`,borderRadius:10,padding:"1rem",marginBottom:10,display:"flex",alignItems:"center",gap:14}}>
+        <div key={v.id} style={{background:"#ffffff",border:`1px solid ${v.is_default?"#e6821e40":"#1e1e1e"}`,borderRadius:10,padding:"1rem",marginBottom:10,display:"flex",alignItems:"center",gap:14}}>
           <div style={{width:54,height:54,background:"#1a1208",borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,overflow:"hidden",flexShrink:0}}>
             {v.photo_url ? <img src={v.photo_url} alt="Vehicle" style={{width:"100%",height:"100%",objectFit:"cover"}}/> : "🚗"}
           </div>
           <div style={{flex:1}}>
             <div style={{fontSize:14,fontWeight:500}}>{v.make} {v.model}</div>
-            <div style={{fontSize:11,color:"#555",marginTop:2}}>{v.year} · {v.color} · {v.license_plate}</div>
+            <div style={{fontSize:11,color:"#777777",marginTop:2}}>{v.year} · {v.color} · {v.license_plate}</div>
             {v.is_default&&<div style={{fontSize:10,color:"#e6821e",marginTop:3}}>Default vehicle</div>}
           </div>
           <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-            {!v.is_default&&<button onClick={()=>setDefault(v.id)} style={{background:"none",border:"1px solid #333",borderRadius:7,color:"#888",fontSize:11,padding:"5px 10px",cursor:"pointer"}}>Set default</button>}
-            <button onClick={()=>{setEditing(v.id);setForm({make:v.make,model:v.model,year:String(v.year),color:v.color||"",license_plate:v.license_plate,photo_url:v.photo_url||""})}} style={{background:"none",border:"1px solid #333",borderRadius:7,color:"#888",fontSize:11,padding:"5px 10px",cursor:"pointer"}}>Edit</button>
+            {!v.is_default&&<button onClick={()=>setDefault(v.id)} style={{background:"none",border:"1px solid #dddddd",borderRadius:7,color:"#555555",fontSize:11,padding:"5px 10px",cursor:"pointer"}}>Set default</button>}
+            <button onClick={()=>{setEditing(v.id);setForm({make:v.make,model:v.model,year:String(v.year),color:v.color||"",license_plate:v.license_plate,photo_url:v.photo_url||""})}} style={{background:"none",border:"1px solid #dddddd",borderRadius:7,color:"#555555",fontSize:11,padding:"5px 10px",cursor:"pointer"}}>Edit</button>
             <button onClick={()=>remove(v.id)} style={{background:"none",border:"1px solid #e24b4a40",borderRadius:7,color:"#e24b4a",fontSize:11,padding:"5px 10px",cursor:"pointer"}}>Remove</button>
           </div>
         </div>
       ))}
-      <div style={{background:"#111",border:"1px solid #1e1e1e",borderRadius:10,padding:"1.25rem",marginTop:"1rem"}}>
+      <div style={{background:"#ffffff",border:"1px solid #eeeeee",borderRadius:10,padding:"1.25rem",marginTop:"1rem"}}>
         <div style={{fontFamily:"Syne",fontSize:14,fontWeight:700,marginBottom:"1rem"}}>{editing?"Edit vehicle":"Add a vehicle"}</div>
         <form onSubmit={save}>
           <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:10}}>
@@ -92,17 +92,18 @@ export default function CustomerVehicles() {
               const { data } = supabase.storage.from("provider-photos").getPublicUrl(path)
               setForm(f=>({...f, photo_url:data.publicUrl}))
               toast.success("Photo ready!")
-            }} style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"8px", color:"#888", fontSize:12, marginBottom:8 }}/>
+            }} style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"8px", color:"#555555", fontSize:12, marginBottom:8 }}/>
           </div>
           <div style={{display:"flex",gap:8}}>
             <button type="submit" style={{background:"#e6821e",border:"none",borderRadius:8,color:"#fff",fontFamily:"Syne,sans-serif",fontSize:13,fontWeight:700,padding:"10px 20px",cursor:"pointer"}}>{editing?"Update vehicle":"Add vehicle"}</button>
-            {editing&&<button type="button" onClick={()=>{setEditing(null);setForm({make:"",model:"",year:"",color:"",license_plate:""})}} style={{background:"none",border:"1px solid #333",borderRadius:8,color:"#888",fontSize:13,padding:"10px 20px",cursor:"pointer"}}>Cancel</button>}
+            {editing&&<button type="button" onClick={()=>{setEditing(null);setForm({make:"",model:"",year:"",color:"",license_plate:""})}} style={{background:"none",border:"1px solid #dddddd",borderRadius:8,color:"#555555",fontSize:13,padding:"10px 20px",cursor:"pointer"}}>Cancel</button>}
           </div>
         </form>
       </div>
     </div>
   )
 }
+
 
 
 

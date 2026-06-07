@@ -135,26 +135,26 @@ export default function DriverOverview() {
   const vehicleConfig = VEHICLE_CONFIG[vehicleType] || VEHICLE_CONFIG.car
   const isDeliveryDriver = ["motorcycle","tuktuk","van"].includes(vehicleType)
 
-  if (loading) return <div style={{ color:"#555", fontSize:13 }}>Loading...</div>
+  if (loading) return <div style={{ color:"#777777", fontSize:13 }}>Loading...</div>
 
   return (
     <div>
       {/* DRIVER IDENTITY HEADER */}
       <div style={{ background:`linear-gradient(135deg,#071a12,#111)`, border:`1px solid ${vehicleConfig.color}30`, borderRadius:16, padding:"1.25rem", marginBottom:"1.5rem", display:"flex", alignItems:"center", gap:16 }}>
-        <div style={{ width:60, height:60, borderRadius:14, background:"#0f0f0f", border:`2px solid ${vehicleConfig.color}60`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:28, flexShrink:0 }}>
+        <div style={{ width:60, height:60, borderRadius:14, background:"#ffffff", border:`2px solid ${vehicleConfig.color}60`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:28, flexShrink:0 }}>
           {vehicleConfig.icon}
         </div>
         <div style={{ flex:1 }}>
-          <div style={{ fontFamily:"Syne", fontSize:isMobile?15:18, fontWeight:800, color:"#f0ede6", marginBottom:2 }}>
+          <div style={{ fontFamily:"Syne", fontSize:isMobile?15:18, fontWeight:800, color:"#000000", marginBottom:2 }}>
             {profile?.first_name} {profile?.last_name}
           </div>
           <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
-            <span style={{ fontSize:12, padding:"3px 10px", borderRadius:20, background:"#0f0f0f", color:vehicleConfig.color, border:`1px solid ${vehicleConfig.color}40`, fontWeight:600 }}>
+            <span style={{ fontSize:12, padding:"3px 10px", borderRadius:20, background:"#ffffff", color:vehicleConfig.color, border:`1px solid ${vehicleConfig.color}40`, fontWeight:600 }}>
               {vehicleConfig.icon} {vehicleConfig.label}
             </span>
             {profile?.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#071a12", padding:"2px 8px", borderRadius:10 }}>✓ Verified</span>}
           </div>
-          <div style={{ fontSize:11, color:"#555", marginTop:4 }}>{vehicleConfig.desc}</div>
+          <div style={{ fontSize:11, color:"#777777", marginTop:4 }}>{vehicleConfig.desc}</div>
         </div>
       </div>
 
@@ -162,12 +162,12 @@ export default function DriverOverview() {
       {isSuspended&&(
         <div style={{ background:"#1a0808", border:"2px solid #e24b4a", borderRadius:12, padding:"1rem", marginBottom:"1.5rem" }}>
           <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e24b4a", marginBottom:4 }}>🚫 Account suspended</div>
-          <div style={{ fontSize:12, color:"#888", marginBottom:4 }}>
+          <div style={{ fontSize:12, color:"#555555", marginBottom:4 }}>
             {driverStatus?.suspension_expires_at
               ? `Suspended until: ${new Date(driverStatus.suspension_expires_at).toLocaleString()}`
               : "You have been permanently suspended."}
           </div>
-          <div style={{ fontSize:11, color:"#555" }}>Contact support if you believe this is an error.</div>
+          <div style={{ fontSize:11, color:"#777777" }}>Contact support if you believe this is an error.</div>
         </div>
       )}
 
@@ -189,7 +189,7 @@ export default function DriverOverview() {
         <div style={{ fontFamily:"Syne", fontSize:isMobile?20:26, fontWeight:800, color:isSuspended?"#e24b4a":isOnline?"#1d9e75":"#555", marginBottom:4 }}>
           {isSuspended?"SUSPENDED":isOnline?"You are ONLINE":"You are OFFLINE"}
         </div>
-        <div style={{ fontSize:12, color:"#555", marginBottom:"1.5rem" }}>
+        <div style={{ fontSize:12, color:"#777777", marginBottom:"1.5rem" }}>
           {isSuspended?"Contact support to appeal your suspension":isOnline?"Visible to customers · Receiving job requests":isDeliveryDriver?"Toggle on to start receiving delivery jobs":"Toggle on to start receiving concierge jobs"}
         </div>
 
@@ -226,16 +226,16 @@ export default function DriverOverview() {
             <div style={{ width:8, height:8, borderRadius:"50%", background:"#378add", boxShadow:"0 0 6px #378add" }}/>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#378add" }}>Active job</div>
           </div>
-          <div style={{ fontSize:13, color:"#f0ede6", marginBottom:4 }}>{activeJob.service_name}</div>
-          {activeJob.vehicles&&<div style={{ fontSize:11, color:"#555" }}>🚗 {activeJob.vehicles.make} {activeJob.vehicles.model} — {activeJob.vehicles.license_plate}</div>}
-          <div style={{ fontSize:11, color:"#555", marginTop:2 }}>Status: {activeJob.concierge_status?.replace("_"," ")||activeJob.status}</div>
+          <div style={{ fontSize:13, color:"#000000", marginBottom:4 }}>{activeJob.service_name}</div>
+          {activeJob.vehicles&&<div style={{ fontSize:11, color:"#777777" }}>🚗 {activeJob.vehicles.make} {activeJob.vehicles.model} — {activeJob.vehicles.license_plate}</div>}
+          <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>Status: {activeJob.concierge_status?.replace("_"," ")||activeJob.status}</div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginTop:8 }}>
-            <div style={{ background:"#0f0f0f", borderRadius:8, padding:"0.6rem", textAlign:"center" }}>
-              <div style={{ fontSize:10, color:"#555" }}>Earnings</div>
+            <div style={{ background:"#ffffff", borderRadius:8, padding:"0.6rem", textAlign:"center" }}>
+              <div style={{ fontSize:10, color:"#777777" }}>Earnings</div>
               <div style={{ fontSize:13, color:"#1d9e75", fontWeight:700 }}>KES {(Number(activeJob.total_amount||0)*0.15).toFixed(0)}</div>
             </div>
-            <div style={{ background:"#0f0f0f", borderRadius:8, padding:"0.6rem", textAlign:"center" }}>
-              <div style={{ fontSize:10, color:"#555" }}>Allowance</div>
+            <div style={{ background:"#ffffff", borderRadius:8, padding:"0.6rem", textAlign:"center" }}>
+              <div style={{ fontSize:10, color:"#777777" }}>Allowance</div>
               <div style={{ fontSize:13, color:"#e6821e", fontWeight:700 }}>KES {Number(activeJob.transport_allowance||200).toLocaleString()}</div>
             </div>
           </div>
@@ -244,7 +244,7 @@ export default function DriverOverview() {
       )}
 
       {/* Transport allowance info */}
-      <div style={{ background:"#111", border:"1px solid #1d9e7520", borderRadius:12, padding:"1rem", marginBottom:"1.5rem" }}>
+      <div style={{ background:"#ffffff", border:"1px solid #1d9e7520", borderRadius:12, padding:"1rem", marginBottom:"1.5rem" }}>
         <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75", marginBottom:8 }}>💰 Your earnings structure</div>
         {[
           { icon:"💵", label:"Commission", desc:"15% of service fee per delivery" },
@@ -255,37 +255,37 @@ export default function DriverOverview() {
           <div key={item.label} style={{ display:"flex", gap:10, alignItems:"flex-start", marginBottom:8 }}>
             <span style={{ fontSize:16, flexShrink:0 }}>{item.icon}</span>
             <div>
-              <div style={{ fontSize:12, color:"#f0ede6", fontWeight:600 }}>{item.label}</div>
-              <div style={{ fontSize:11, color:"#555", lineHeight:1.4 }}>{item.desc}</div>
+              <div style={{ fontSize:12, color:"#000000", fontWeight:600 }}>{item.label}</div>
+              <div style={{ fontSize:11, color:"#777777", lineHeight:1.4 }}>{item.desc}</div>
             </div>
           </div>
         ))}
       </div>
 
       {/* Stats */}
-      <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#555", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:8 }}>Today</div>
+      <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#777777", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:8 }}>Today</div>
       <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {[
           { label:"Jobs", value:todayStats.jobs, color:"#378add" },
           { label:"Total earned", value:`KES ${Number(todayStats.earnings).toLocaleString()}`, color:"#1d9e75" },
           { label:"Rating", value:todayStats.rating, color:"#e6821e" },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"0.9rem", border:"1px solid #1e1e1e", textAlign:"center" }}>
+          <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"0.9rem", border:"1px solid #eeeeee", textAlign:"center" }}>
             <div style={{ fontFamily:"Syne", fontSize:isMobile?14:18, fontWeight:800, color:s.color }}>{s.value}</div>
-            <div style={{ fontSize:10, color:"#555", marginTop:2 }}>{s.label}</div>
+            <div style={{ fontSize:10, color:"#777777", marginTop:2 }}>{s.label}</div>
           </div>
         ))}
       </div>
 
-      <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#555", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:8 }}>This week</div>
+      <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#777777", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:8 }}>This week</div>
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:"1.5rem" }}>
         {[
           { label:"Jobs", value:weekStats.jobs, color:"#8b5cf6" },
           { label:"Total earned", value:`KES ${Number(weekStats.earnings).toLocaleString()}`, color:"#1d9e75" },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"0.9rem", border:"1px solid #1e1e1e", textAlign:"center" }}>
+          <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"0.9rem", border:"1px solid #eeeeee", textAlign:"center" }}>
             <div style={{ fontFamily:"Syne", fontSize:isMobile?14:18, fontWeight:800, color:s.color }}>{s.value}</div>
-            <div style={{ fontSize:10, color:"#555", marginTop:2 }}>{s.label}</div>
+            <div style={{ fontSize:10, color:"#777777", marginTop:2 }}>{s.label}</div>
           </div>
         ))}
       </div>
@@ -296,8 +296,8 @@ export default function DriverOverview() {
           <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e24b4a", marginBottom:8 }}>Active penalties</div>
           {penalties.map(p=>(
             <div key={p.id} style={{ display:"flex", justifyContent:"space-between", padding:"6px 0", borderBottom:"1px solid #2a1a1a", fontSize:12 }}>
-              <span style={{ color:"#888" }}>{p.penalty_type?.replace("_"," ")}</span>
-              <span style={{ color:"#555" }}>{p.reason}</span>
+              <span style={{ color:"#555555" }}>{p.penalty_type?.replace("_"," ")}</span>
+              <span style={{ color:"#777777" }}>{p.reason}</span>
             </div>
           ))}
         </div>
@@ -305,4 +305,5 @@ export default function DriverOverview() {
     </div>
   )
 }
+
 

@@ -122,7 +122,7 @@ export default function CustomerSupport() {
     return null
   }
 
-  const inp = { width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"10px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:10 }
+  const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:10 }
   const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
 
   if (selected) return (
@@ -132,11 +132,11 @@ export default function CustomerSupport() {
           ← {t("back")}
         </button>
         <div style={{ flex:1 }}>
-          <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#f0ede6" }}>{selected.subject}</div>
+          <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#000000" }}>{selected.subject}</div>
           <div style={{ display:"flex", gap:8, marginTop:2, flexWrap:"wrap" }}>
             <span style={{ fontSize:10, padding:"1px 7px", borderRadius:10, background:`${SC[selected.status]}20`, color:SC[selected.status] }}>{selected.status.replace("_"," ")}</span>
             <span style={{ fontSize:10, padding:"1px 7px", borderRadius:10, background:`${PC[selected.priority]}20`, color:PC[selected.priority] }}>{selected.priority}</span>
-            <span style={{ fontSize:10, color:"#444" }}>#{selected.ticket_number}</span>
+            <span style={{ fontSize:10, color:"#888888" }}>#{selected.ticket_number}</span>
           </div>
         </div>
         <div style={{ display:"flex", gap:6 }}>
@@ -148,14 +148,14 @@ export default function CustomerSupport() {
           )}
           {selected.status!=="closed"&&selected.status!=="resolved"&&(
             <button onClick={()=>closeTicket(selected.id)}
-              style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#666", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+              style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#666", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
               {language==="sw"?"Funga":"Close ticket"}
             </button>
           )}
         </div>
       </div>
 
-      <div style={{ flex:1, overflowY:"auto", background:"#111", borderRadius:12, border:"1px solid #1e1e1e", padding:"1rem", display:"flex", flexDirection:"column", gap:10, marginBottom:10 }}>
+      <div style={{ flex:1, overflowY:"auto", background:"#ffffff", borderRadius:12, border:"1px solid #eeeeee", padding:"1rem", display:"flex", flexDirection:"column", gap:10, marginBottom:10 }}>
         {messages.map(m=>{
           const isMine = m.sender_id === user.id
           const isStaff = m.is_staff
@@ -171,14 +171,14 @@ export default function CustomerSupport() {
             </div>
           )
         })}
-        {messages.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No messages yet</div>}
+        {messages.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>No messages yet</div>}
       </div>
 
       {selected.status!=="closed"&&(
         <form onSubmit={sendMessage} style={{ display:"flex", gap:8, flexShrink:0 }}>
           <input value={newMessage} onChange={e=>setNewMessage(e.target.value)} onKeyDown={e=>{ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); sendMessage(e) }}}
             placeholder={language==="sw"?"Andika ujumbe...":"Type a reply..."}
-            style={{ flex:1, background:"#111", border:"1px solid #222", borderRadius:10, padding:"11px 14px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }}/>
+            style={{ flex:1, background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:10, padding:"11px 14px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }}/>
           <button type="submit" disabled={sending||!newMessage.trim()}
             style={{ background:newMessage.trim()?"#e6821e":"#222", border:"none", borderRadius:10, color:newMessage.trim()?"#fff":"#555", fontSize:18, padding:"0 16px", cursor:newMessage.trim()?"pointer":"default" }}>
             ➤
@@ -192,10 +192,10 @@ export default function CustomerSupport() {
     <div>
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1.25rem" }}>
         <div>
-          <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#f0ede6" }}>
+          <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#000000" }}>
             {language==="sw"?"Msaada":"Support"}
           </div>
-          <div style={{ fontSize:12, color:"#555", marginTop:2 }}>
+          <div style={{ fontSize:12, color:"#777777", marginTop:2 }}>
             {tickets.filter(t=>t.status==="open").length} {language==="sw"?"wazi":"open"} · {tickets.length} {language==="sw"?"jumla":"total"}
           </div>
         </div>
@@ -206,8 +206,8 @@ export default function CustomerSupport() {
       </div>
 
       {tab==="new"&&(
-        <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>
+        <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>
             {language==="sw"?"Omba msaada":"Submit a support request"}
           </div>
           <form onSubmit={submitTicket}>
@@ -250,12 +250,12 @@ export default function CustomerSupport() {
 
       {tab==="tickets"&&(
         <div>
-          {loading&&<div style={{ color:"#555", fontSize:13 }}>{t("loading")}</div>}
+          {loading&&<div style={{ color:"#777777", fontSize:13 }}>{t("loading")}</div>}
           {!loading&&tickets.length===0&&(
-            <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"3rem", textAlign:"center" }}>
+            <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"3rem", textAlign:"center" }}>
               <div style={{ fontSize:36, marginBottom:12 }}>🎫</div>
-              <div style={{ fontSize:14, color:"#555", marginBottom:4 }}>{language==="sw"?"Hakuna maombi bado":"No support tickets yet"}</div>
-              <div style={{ fontSize:12, color:"#444", marginBottom:"1.5rem" }}>{language==="sw"?"Bonyeza 'Ombi jipya' kuanza":"Click 'New ticket' to get help"}</div>
+              <div style={{ fontSize:14, color:"#777777", marginBottom:4 }}>{language==="sw"?"Hakuna maombi bado":"No support tickets yet"}</div>
+              <div style={{ fontSize:12, color:"#888888", marginBottom:"1.5rem" }}>{language==="sw"?"Bonyeza 'Ombi jipya' kuanza":"Click 'New ticket' to get help"}</div>
               <button onClick={()=>setTab("new")}
                 style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:"pointer" }}>
                 {language==="sw"?"Omba msaada":"Get help"}
@@ -264,13 +264,13 @@ export default function CustomerSupport() {
           )}
           {tickets.map(ticket=>(
             <div key={ticket.id} onClick={()=>{ setSelected(ticket); loadMessages(ticket.id) }}
-              style={{ background:"#111", border:`1px solid ${ticket.status==="open"?"#e6821e20":"#1e1e1e"}`, borderRadius:10, padding:"1rem", marginBottom:8, cursor:"pointer", transition:"border-color 0.12s" }}
+              style={{ background:"#ffffff", border:`1px solid ${ticket.status==="open"?"#e6821e20":"#1e1e1e"}`, borderRadius:10, padding:"1rem", marginBottom:8, cursor:"pointer", transition:"border-color 0.12s" }}
               onMouseEnter={e=>e.currentTarget.style.borderColor="#e6821e40"}
               onMouseLeave={e=>e.currentTarget.style.borderColor=ticket.status==="open"?"#e6821e20":"#1e1e1e"}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:6 }}>
                 <div style={{ flex:1, minWidth:0 }}>
-                  <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6", marginBottom:2 }}>{ticket.subject}</div>
-                  <div style={{ fontSize:10, color:"#444" }}>#{ticket.ticket_number} · {new Date(ticket.created_at).toLocaleDateString()}</div>
+                  <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:2 }}>{ticket.subject}</div>
+                  <div style={{ fontSize:10, color:"#888888" }}>#{ticket.ticket_number} · {new Date(ticket.created_at).toLocaleDateString()}</div>
                 </div>
                 <div style={{ display:"flex", gap:6, flexShrink:0, marginLeft:10 }}>
                   <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:`${SC[ticket.status]}20`, color:SC[ticket.status], border:`1px solid ${SC[ticket.status]}40` }}>
@@ -281,7 +281,7 @@ export default function CustomerSupport() {
                   </span>
                 </div>
               </div>
-              <div style={{ fontSize:11, color:"#555", marginBottom:4 }}>{ticket.category} · {language==="sw"?"Bonyeza kuona":"Click to view"}</div>
+              <div style={{ fontSize:11, color:"#777777", marginBottom:4 }}>{ticket.category} · {language==="sw"?"Bonyeza kuona":"Click to view"}</div>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                 <div style={{ fontSize:11, color:ticket.status==="open"?"#e6821e":ticket.status==="in_progress"?"#378add":ticket.status==="resolved"?"#1d9e75":"#555" }}>
                   {ticket.status==="open"?"⏳ Awaiting response — within 24hrs":
@@ -290,7 +290,7 @@ export default function CustomerSupport() {
                    "🔒 Closed"}
                 </div>
                 {ticket.status==="open"&&(
-                  <div style={{ fontSize:10, color:"#444" }}>
+                  <div style={{ fontSize:10, color:"#888888" }}>
                     {Math.floor((Date.now()-new Date(ticket.created_at).getTime())/(1000*60*60))}h ago
                   </div>
                 )}
@@ -307,6 +307,7 @@ export default function CustomerSupport() {
 
 
 // cache-bust: 20260602004412
+
 
 
 

@@ -87,31 +87,32 @@ export default function PaymentCallback() {
   }
 
   return (
-    <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", background:"#0a0a0a", padding:"1rem" }}>
+    <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", background:"#ffffff", padding:"1rem" }}>
       <div style={{ textAlign:"center", maxWidth:400 }}>
         {status==="processing"&&(
           <>
             <div style={{ fontSize:48, marginBottom:16 }}>⏳</div>
-            <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#f0ede6", marginBottom:8 }}>Verifying payment...</div>
-            <div style={{ fontSize:13, color:"#555" }}>Please wait while we confirm your payment</div>
+            <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#000000", marginBottom:8 }}>Verifying payment...</div>
+            <div style={{ fontSize:13, color:"#777777" }}>Please wait while we confirm your payment</div>
           </>
         )}
         {status==="success"&&(
           <>
             <div style={{ fontSize:48, marginBottom:16 }}>✅</div>
             <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#1d9e75", marginBottom:8 }}>Payment successful!</div>
-            <div style={{ fontSize:13, color:"#555" }}>Redirecting to your bookings...</div>
+            <div style={{ fontSize:13, color:"#777777" }}>Redirecting to your bookings...</div>
           </>
         )}
         {status==="failed"&&(
           <>
             <div style={{ fontSize:48, marginBottom:16 }}>❌</div>
             <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#e24b4a", marginBottom:8 }}>Payment failed</div>
-            <div style={{ fontSize:13, color:"#555" }}>Redirecting to your bookings...</div>
+            <div style={{ fontSize:13, color:"#777777" }}>Redirecting to your bookings...</div>
           </>
         )}
       </div>
     </div>
   )
 }
+
 

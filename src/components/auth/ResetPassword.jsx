@@ -34,17 +34,17 @@ export default function ResetPassword() {
     }
   }
 
-  const inp = { width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"11px 12px", color:"#f0ede6", fontSize:13, outline:"none", marginBottom:16 }
+  const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"11px 12px", color:"#000000", fontSize:13, outline:"none", marginBottom:16 }
 
   return (
-    <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", background:"#0a0a0a", padding:"1rem" }}>
-      <div style={{ width:"100%", maxWidth:400, background:"#111", border:"1px solid #1e1e1e", borderRadius:16, padding:"2rem" }}>
+    <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", background:"#ffffff", padding:"1rem" }}>
+      <div style={{ width:"100%", maxWidth:400, background:"#ffffff", border:"1px solid #eeeeee", borderRadius:16, padding:"2rem" }}>
         <div style={{ textAlign:"center", marginBottom:"1.5rem" }}>
           <div style={{ fontSize:40, marginBottom:8 }}>🔐</div>
-          <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>
+          <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#000000", marginBottom:4 }}>
             {done ? "Password updated!" : "Set new password"}
           </div>
-          <div style={{ fontSize:12, color:"#555" }}>
+          <div style={{ fontSize:12, color:"#777777" }}>
             {done ? "Redirecting to sign in..." : "Choose a strong password"}
           </div>
         </div>
@@ -64,7 +64,7 @@ export default function ResetPassword() {
               {loading ? "Updating..." : "Update password"}
             </button>
             <button type="button" onClick={()=>navigate("/auth")}
-              style={{ width:"100%", background:"none", border:"1px solid #333", borderRadius:10, color:"#666", fontSize:13, padding:"12px", cursor:"pointer" }}>
+              style={{ width:"100%", background:"none", border:"1px solid #dddddd", borderRadius:10, color:"#666", fontSize:13, padding:"12px", cursor:"pointer" }}>
               Back to sign in
             </button>
           </form>
@@ -73,3 +73,4 @@ export default function ResetPassword() {
     </div>
   )
 }
+

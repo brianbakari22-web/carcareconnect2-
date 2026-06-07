@@ -78,7 +78,7 @@ export default function DriverPayouts() {
 
   const available = earnings - paid
   const RC = { pending:"#e6821e", approved:"#378add", paid:"#1d9e75", rejected:"#e24b4a" }
-  const inp = { width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"10px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:10 }
+  const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:10 }
   const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
 
   return (
@@ -89,8 +89,8 @@ export default function DriverPayouts() {
           { label:"Available", value:`KES \${available.toFixed(2)}`, color:available>0?"#e6821e":undefined },
           { label:"Total paid out", value:`KES \${paid.toFixed(2)}`, color:"#1d9e75" },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"1rem", border:"1px solid #1e1e1e" }}>
-            <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
+          <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
+            <div style={{ fontSize:11, color:"#777777", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
             <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:s.color||"#f0ede6" }}>{s.value}</div>
           </div>
         ))}
@@ -106,9 +106,9 @@ export default function DriverPayouts() {
       </div>
 
       {tab==="bank"&&(
-        <div style={{ background:"#111", border:`1px solid ${bankSaved?"#1d9e7530":"#e6821e30"}`, borderRadius:12, padding:"1.25rem" }}>
+        <div style={{ background:"#ffffff", border:`1px solid ${bankSaved?"#1d9e7530":"#e6821e30"}`, borderRadius:12, padding:"1.25rem" }}>
           <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:"1rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#f0ede6" }}>Bank account details</div>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000" }}>Bank account details</div>
             {bankSaved&&<span style={{ fontSize:11, color:"#1d9e75", background:"#071a12", padding:"2px 8px", borderRadius:10 }}>✓ Saved</span>}
           </div>
           {!bankSaved&&<div style={{ fontSize:12, color:"#e6821e", marginBottom:"1rem", background:"#1a1208", borderRadius:8, padding:"0.75rem" }}>Add your bank details to request payouts</div>}
@@ -133,7 +133,7 @@ export default function DriverPayouts() {
             <div style={{ background:"#1a1208", border:"1px solid #e6821e30", borderRadius:10, padding:"1rem", marginBottom:"1.5rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
               <div>
                 <div style={{ fontSize:13, color:"#e6821e", fontWeight:500 }}>Bank details required</div>
-                <div style={{ fontSize:11, color:"#555", marginTop:2 }}>Add your bank details before requesting a payout</div>
+                <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>Add your bank details before requesting a payout</div>
               </div>
               <button onClick={()=>setTab("bank")}
                 style={{ background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontSize:12, fontWeight:700, padding:"7px 14px", cursor:"pointer", fontFamily:"Syne,sans-serif", whiteSpace:"nowrap" }}>
@@ -143,21 +143,21 @@ export default function DriverPayouts() {
           )}
 
           {bankSaved&&(
-            <div style={{ background:"#111", border:"1px solid #1d9e7530", borderRadius:10, padding:"1rem", marginBottom:"1.5rem" }}>
-              <div style={{ fontSize:11, color:"#555", marginBottom:6 }}>Payout to</div>
-              <div style={{ fontSize:13, fontWeight:500, color:"#f0ede6" }}>{bankInfo.bank_account_name}</div>
-              <div style={{ fontSize:12, color:"#555", marginTop:2 }}>{bankInfo.bank_name} · {bankInfo.bank_account_number}</div>
+            <div style={{ background:"#ffffff", border:"1px solid #1d9e7530", borderRadius:10, padding:"1rem", marginBottom:"1.5rem" }}>
+              <div style={{ fontSize:11, color:"#777777", marginBottom:6 }}>Payout to</div>
+              <div style={{ fontSize:13, fontWeight:500, color:"#000000" }}>{bankInfo.bank_account_name}</div>
+              <div style={{ fontSize:12, color:"#777777", marginTop:2 }}>{bankInfo.bank_name} · {bankInfo.bank_account_number}</div>
               <button onClick={()=>setTab("bank")} style={{ background:"none", border:"none", color:"#e6821e", fontSize:11, cursor:"pointer", marginTop:6, padding:0, fontFamily:"'DM Sans',sans-serif" }}>
                 Change bank details
               </button>
             </div>
           )}
 
-          <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#f0ede6" }}>Request payout</div>
-            <div style={{ fontSize:12, color:"#555", marginBottom:"1rem" }}>Minimum $50 · Available: ${available.toFixed(2)} · Transfer takes 2-3 business days</div>
+          <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#000000" }}>Request payout</div>
+            <div style={{ fontSize:12, color:"#777777", marginBottom:"1rem" }}>Minimum $50 · Available: ${available.toFixed(2)} · Transfer takes 2-3 business days</div>
             {available < 50 ? (
-              <div style={{ fontSize:13, color:"#555", padding:"1rem", background:"#0f0f0f", borderRadius:8 }}>
+              <div style={{ fontSize:13, color:"#777777", padding:"1rem", background:"#ffffff", borderRadius:8 }}>
                 Complete more deliveries to reach the $50 minimum. You need ${(50-available).toFixed(2)} more.
               </div>
             ) : (
@@ -165,7 +165,7 @@ export default function DriverPayouts() {
                 <label style={lbl}>Amount to withdraw ($)</label>
                 <input style={inp} type="number" min="50" max={available} step="0.01" placeholder={`50.00 — ${available.toFixed(2)}`} value={amount} onChange={e=>setAmount(e.target.value)} required/>
                 {amount&&Number(amount)>=50&&(
-                  <div style={{ fontSize:12, color:"#555", marginBottom:10, marginTop:-6 }}>
+                  <div style={{ fontSize:12, color:"#777777", marginBottom:10, marginTop:-6 }}>
                     You will receive: <span style={{ color:"#1d9e75", fontWeight:600 }}>${Number(amount).toFixed(2)}</span> to {bankInfo.bank_name}
                   </div>
                 )}
@@ -179,13 +179,13 @@ export default function DriverPayouts() {
 
           {payouts.length > 0 && (
             <div>
-              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:10, color:"#f0ede6" }}>Payout history</div>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:10, color:"#000000" }}>Payout history</div>
               {payouts.map(p=>(
-                <div key={p.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
+                <div key={p.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
                   <div style={{ flex:1 }}>
-                    <div style={{ fontSize:14, fontWeight:500, color:"#f0ede6" }}>${Number(p.amount).toFixed(2)}</div>
-                    <div style={{ fontSize:11, color:"#555", marginTop:2 }}>{p.bank_name} · {p.bank_account_number}</div>
-                    <div style={{ fontSize:10, color:"#444", marginTop:2 }}>{new Date(p.created_at).toLocaleDateString()}</div>
+                    <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>${Number(p.amount).toFixed(2)}</div>
+                    <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>{p.bank_name} · {p.bank_account_number}</div>
+                    <div style={{ fontSize:10, color:"#888888", marginTop:2 }}>{new Date(p.created_at).toLocaleDateString()}</div>
                     {p.admin_note&&<div style={{ fontSize:11, color:"#666", marginTop:4, fontStyle:"italic" }}>"{p.admin_note}"</div>}
                   </div>
                   <span style={{ fontSize:11, padding:"3px 9px", borderRadius:20, background:`${RC[p.status]}20`, color:RC[p.status], border:`1px solid ${RC[p.status]}40`, flexShrink:0 }}>
@@ -200,6 +200,7 @@ export default function DriverPayouts() {
     </div>
   )
 }
+
 
 
 

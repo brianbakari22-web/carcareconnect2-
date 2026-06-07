@@ -69,23 +69,23 @@ export default function ProviderEarnings() {
           { label:"Total revenue", value:`KES \${totalRevenue.toFixed(2)}` },
           { label:"Platform commission", value:`KES \${totalCommission.toFixed(2)}` },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"1rem", border:"1px solid #1e1e1e" }}>
-            <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
+          <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
+            <div style={{ fontSize:11, color:"#777777", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
             <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:s.color||"#f0ede6" }}>{s.value}</div>
-            <div style={{ fontSize:11, color:"#555", marginTop:4 }}>{filtered.length} completed booking{filtered.length!==1?"s":""}</div>
+            <div style={{ fontSize:11, color:"#777777", marginTop:4 }}>{filtered.length} completed booking{filtered.length!==1?"s":""}</div>
           </div>
         ))}
       </div>
 
       {months.length > 0 && (
-        <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>Monthly earnings</div>
+        <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>Monthly earnings</div>
           <div style={{ display:"flex", gap:8, alignItems:"flex-end", height:120 }}>
             {months.reverse().map(([month, data])=>(
               <div key={month} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", gap:4 }}>
                 <div style={{ fontSize:10, color:"#e6821e", fontWeight:600 }}>${data.earned.toFixed(0)}</div>
                 <div style={{ width:"100%", background:"#e6821e", borderRadius:"4px 4px 0 0", height:`${Math.max(4,(data.earned/maxEarned)*80)}px`, transition:"height 0.5s" }}/>
-                <div style={{ fontSize:9, color:"#555", textAlign:"center" }}>
+                <div style={{ fontSize:9, color:"#777777", textAlign:"center" }}>
                   {new Date(month+"-01").toLocaleString("default",{month:"short"})}
                 </div>
               </div>
@@ -94,25 +94,26 @@ export default function ProviderEarnings() {
         </div>
       )}
 
-      <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:10, color:"#f0ede6" }}>Completed bookings</div>
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
-      {!loading&&filtered.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"1.5rem" }}>No completed bookings in this period</div>}
+      <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:10, color:"#000000" }}>Completed bookings</div>
+      {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
+      {!loading&&filtered.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"1.5rem" }}>No completed bookings in this period</div>}
       {filtered.map(b=>(
-        <div key={b.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
+        <div key={b.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
           <div style={{ flex:1 }}>
-            <div style={{ fontSize:13, fontWeight:500, color:"#f0ede6" }}>{b.service_name}</div>
-            <div style={{ fontSize:11, color:"#555", marginTop:2 }}>{b.booking_date} · #{b.booking_number}</div>
+            <div style={{ fontSize:13, fontWeight:500, color:"#000000" }}>{b.service_name}</div>
+            <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>{b.booking_date} · #{b.booking_number}</div>
           </div>
           <div style={{ textAlign:"right" }}>
               <button onClick={()=>generateInvoice(b, profile, "provider")} style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:6, color:"#378add", fontSize:10, padding:"4px 8px", cursor:"pointer", marginBottom:4, display:"block" }}>Invoice</button>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#e6821e" }}>+${Number(b.provider_earnings||0).toFixed(2)}</div>
-            <div style={{ fontSize:10, color:"#555" }}>of ${Number(b.total_amount).toFixed(2)}</div>
+            <div style={{ fontSize:10, color:"#777777" }}>of ${Number(b.total_amount).toFixed(2)}</div>
           </div>
         </div>
       ))}
     </div>
   )
 }
+
 
 
 

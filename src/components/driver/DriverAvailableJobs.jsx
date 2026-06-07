@@ -110,12 +110,12 @@ export default function DriverAvailableJobs() {
         </div>
       )}
 
-      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:18, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>Available Jobs</div>
-      <div style={{ fontSize:12, color:"#555", marginBottom:"1.25rem" }}>Concierge pickup and delivery requests</div>
+      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:18, fontWeight:800, color:"#000000", marginBottom:4 }}>Available Jobs</div>
+      <div style={{ fontSize:12, color:"#777777", marginBottom:"1.25rem" }}>Concierge pickup and delivery requests</div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&jobs.length===0&&(
-        <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"3rem" }}>
+        <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
           <div style={{ fontSize:32, marginBottom:10 }}>🚗</div>
           <div style={{ marginBottom:6 }}>No available jobs right now</div>
           <div style={{ fontSize:11, color:"#333" }}>New concierge requests will appear here automatically</div>
@@ -127,33 +127,33 @@ export default function DriverAvailableJobs() {
         const customer = job.profiles
         const earnings = Number(job.total_amount||0) * 0.15
         return (
-          <div key={job.id} style={{ background:"#111", border:"1px solid #1d9e7520", borderRadius:12, padding:isMobile?"1rem":"1.25rem", marginBottom:12 }}>
+          <div key={job.id} style={{ background:"#ffffff", border:"1px solid #1d9e7520", borderRadius:12, padding:isMobile?"1rem":"1.25rem", marginBottom:12 }}>
             {/* Header */}
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:12 }}>
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
                   <span style={{ fontSize:18 }}>🚗</span>
-                  <div style={{ fontFamily:"Syne", fontSize:isMobile?14:15, fontWeight:800, color:"#f0ede6" }}>{job.service_name}</div>
+                  <div style={{ fontFamily:"Syne", fontSize:isMobile?14:15, fontWeight:800, color:"#000000" }}>{job.service_name}</div>
                 </div>
-                <div style={{ fontSize:11, color:"#555" }}>#{job.booking_number} · {job.booking_date} · {job.booking_time?.slice(0,5)}</div>
+                <div style={{ fontSize:11, color:"#777777" }}>#{job.booking_number} · {job.booking_date} · {job.booking_time?.slice(0,5)}</div>
               </div>
               <div style={{ textAlign:"right", flexShrink:0 }}>
                 <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#1d9e75" }}>KES {earnings.toFixed(0)}</div>
-                <div style={{ fontSize:10, color:"#555" }}>your earnings (15%)</div>
+                <div style={{ fontSize:10, color:"#777777" }}>your earnings (15%)</div>
               </div>
             </div>
 
             {/* Vehicle info */}
             {vehicle&&(
-              <div style={{ background:"#0f0f0f", borderRadius:10, padding:"0.9rem", marginBottom:10, border:"1px solid #1a1a1a" }}>
-                <div style={{ fontSize:10, color:"#555", textTransform:"uppercase", marginBottom:6 }}>Vehicle to transport</div>
+              <div style={{ background:"#ffffff", borderRadius:10, padding:"0.9rem", marginBottom:10, border:"1px solid #1a1a1a" }}>
+                <div style={{ fontSize:10, color:"#777777", textTransform:"uppercase", marginBottom:6 }}>Vehicle to transport</div>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
                   <div>
-                    <div style={{ fontSize:12, color:"#f0ede6", fontWeight:600 }}>{vehicle.make} {vehicle.model} {vehicle.year}</div>
-                    <div style={{ fontSize:11, color:"#555", marginTop:2 }}>Plate: {vehicle.license_plate}</div>
+                    <div style={{ fontSize:12, color:"#000000", fontWeight:600 }}>{vehicle.make} {vehicle.model} {vehicle.year}</div>
+                    <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>Plate: {vehicle.license_plate}</div>
                   </div>
                   <div>
-                    {vehicle.color&&<div style={{ fontSize:11, color:"#555" }}>Color: {vehicle.color}</div>}
+                    {vehicle.color&&<div style={{ fontSize:11, color:"#777777" }}>Color: {vehicle.color}</div>}
                   </div>
                 </div>
               </div>
@@ -161,23 +161,23 @@ export default function DriverAvailableJobs() {
 
             {/* Customer & location info */}
             <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:8, marginBottom:12 }}>
-              <div style={{ background:"#0f0f0f", borderRadius:8, padding:"0.75rem", border:"1px solid #1a1a1a" }}>
-                <div style={{ fontSize:10, color:"#555", marginBottom:4 }}>Customer</div>
-                <div style={{ fontSize:12, color:"#f0ede6" }}>{customer?.first_name} {customer?.last_name}</div>
-                {customer?.city&&<div style={{ fontSize:11, color:"#555", marginTop:2 }}>📍 {customer.city}</div>}
+              <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", border:"1px solid #1a1a1a" }}>
+                <div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>Customer</div>
+                <div style={{ fontSize:12, color:"#000000" }}>{customer?.first_name} {customer?.last_name}</div>
+                {customer?.city&&<div style={{ fontSize:11, color:"#777777", marginTop:2 }}>📍 {customer.city}</div>}
               </div>
-              <div style={{ background:"#0f0f0f", borderRadius:8, padding:"0.75rem", border:"1px solid #1a1a1a" }}>
-                <div style={{ fontSize:10, color:"#555", marginBottom:4 }}>Service total</div>
+              <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", border:"1px solid #1a1a1a" }}>
+                <div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>Service total</div>
                 <div style={{ fontSize:12, color:"#e6821e", fontWeight:600 }}>KES {Number(job.total_amount||0).toLocaleString()}</div>
-                <div style={{ fontSize:10, color:"#555", marginTop:2 }}>Payment: {job.payment_method||"—"}</div>
+                <div style={{ fontSize:10, color:"#777777", marginTop:2 }}>Payment: {job.payment_method||"—"}</div>
               </div>
             </div>
 
             {/* Problem description */}
             {job.problem_description&&(
-              <div style={{ background:"#0f0f0f", borderRadius:8, padding:"0.75rem", marginBottom:10, border:"1px solid #1a1a1a" }}>
-                <div style={{ fontSize:10, color:"#555", marginBottom:4 }}>Problem description</div>
-                <div style={{ fontSize:12, color:"#888", fontStyle:"italic" }}>"{job.problem_description}"</div>
+              <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", marginBottom:10, border:"1px solid #1a1a1a" }}>
+                <div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>Problem description</div>
+                <div style={{ fontSize:12, color:"#555555", fontStyle:"italic" }}>"{job.problem_description}"</div>
               </div>
             )}
 
@@ -207,3 +207,4 @@ export default function DriverAvailableJobs() {
     </div>
   )
 }
+

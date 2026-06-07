@@ -209,7 +209,7 @@ export default function DriverDashboard() {
       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"1.5rem" }}>
         <div>
           <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800 }}>Driver Hub</div>
-          <div style={{ fontSize:12, color:"#555", marginTop:2 }}>
+          <div style={{ fontSize:12, color:"#777777", marginTop:2 }}>
             {isOnline ? `● Online${shiftStart ? ` · ${Math.floor((Date.now()-shiftStart)/3600000)}h ${Math.floor(((Date.now()-shiftStart)%3600000)/60000)}m shift` : ""}` : "○ Offline"}
           </div>
         </div>
@@ -226,8 +226,8 @@ export default function DriverDashboard() {
           { label:"Deliveries", value:stats.deliveries },
           { label:"Active jobs", value:activeJobs.length, color:activeJobs.length>0?"#8b5cf6":undefined },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"1rem", border:"1px solid #1e1e1e" }}>
-            <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
+          <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
+            <div style={{ fontSize:11, color:"#777777", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
             <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:s.color||"#f0ede6" }}>{s.value}</div>
           </div>
         ))}
@@ -248,27 +248,27 @@ export default function DriverDashboard() {
 
       {tab==="available"&&(
         <div>
-          {!isOnline&&<div style={{ color:"#555", fontSize:13, padding:"1rem", background:"#111", borderRadius:10, border:"1px solid #1e1e1e", marginBottom:10 }}>Go online to see available jobs</div>}
-          {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
-          {isOnline&&!loading&&jobs.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"1.5rem" }}>No available jobs right now</div>}
+          {!isOnline&&<div style={{ color:"#777777", fontSize:13, padding:"1rem", background:"#ffffff", borderRadius:10, border:"1px solid #eeeeee", marginBottom:10 }}>Go online to see available jobs</div>}
+          {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
+          {isOnline&&!loading&&jobs.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"1.5rem" }}>No available jobs right now</div>}
           {isOnline&&jobs.map(j=>{
             const customer = customers[j.customer_id]
             const eta = calculateETA(j.booking_date, j.booking_time)
             return (
-              <div key={j.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem", marginBottom:10 }}>
+              <div key={j.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:10 }}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
                   <div>
                     <div style={{ fontSize:14, fontWeight:500 }}>{j.service_name}</div>
-                    <div style={{ fontSize:11, color:"#555", marginTop:2 }}>{customer?.first_name} {customer?.last_name}</div>
+                    <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>{customer?.first_name} {customer?.last_name}</div>
                   </div>
                   <div style={{ textAlign:"right" }}>
                     <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#e6821e" }}>+$15</div>
-                    <div style={{ fontSize:10, color:"#555" }}>ETA: {eta}</div>
+                    <div style={{ fontSize:10, color:"#777777" }}>ETA: {eta}</div>
                   </div>
                 </div>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:10 }}>
-                  <div><div style={{ fontSize:10, color:"#555" }}>PICKUP</div><div style={{ fontSize:12 }}>{j.pickup_address||"Customer address"}</div></div>
-                  <div><div style={{ fontSize:10, color:"#555" }}>DATE & TIME</div><div style={{ fontSize:12 }}>{j.booking_date} {j.booking_time?.slice(0,5)}</div></div>
+                  <div><div style={{ fontSize:10, color:"#777777" }}>PICKUP</div><div style={{ fontSize:12 }}>{j.pickup_address||"Customer address"}</div></div>
+                  <div><div style={{ fontSize:10, color:"#777777" }}>DATE & TIME</div><div style={{ fontSize:12 }}>{j.booking_date} {j.booking_time?.slice(0,5)}</div></div>
                 </div>
                 <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
                   <button onClick={()=>acceptJob(j.id)}
@@ -292,10 +292,10 @@ export default function DriverDashboard() {
                 {declining===j.id&&(
                   <div style={{ marginTop:10 }}>
                     <input placeholder="Reason for declining..." value={declineReason} onChange={e=>setDeclineReason(e.target.value)}
-                      style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:7, padding:"8px 10px", color:"#f0ede6", fontSize:12, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:8 }}/>
+                      style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:7, padding:"8px 10px", color:"#000000", fontSize:12, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:8 }}/>
                     <div style={{ display:"flex", gap:8 }}>
                       <button onClick={()=>declineJob(j.id)} style={{ background:"#1a0808", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:12, padding:"6px 14px", cursor:"pointer" }}>Confirm decline</button>
-                      <button onClick={()=>{ setDeclining(null); setDeclineReason("") }} style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#666", fontSize:12, padding:"6px 14px", cursor:"pointer" }}>Cancel</button>
+                      <button onClick={()=>{ setDeclining(null); setDeclineReason("") }} style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#666", fontSize:12, padding:"6px 14px", cursor:"pointer" }}>Cancel</button>
                     </div>
                   </div>
                 )}
@@ -307,18 +307,18 @@ export default function DriverDashboard() {
 
       {tab==="myjobs"&&(
         <div>
-          {activeJobs.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"1.5rem" }}>No active jobs</div>}
+          {activeJobs.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"1.5rem" }}>No active jobs</div>}
           {activeJobs.map(j=>{
             const customer = customers[j.customer_id]
             const nextStep = STATUS_NEXT[j.status]
             const currentStepIndex = DELIVERY_STEPS.findIndex(s=>s.status===j.status)
             return (
-              <div key={j.id} style={{ background:"#111", border:`1px solid ${SC[j.status]||"#1e1e1e"}30`, borderRadius:10, padding:"1rem", marginBottom:10 }}>
+              <div key={j.id} style={{ background:"#ffffff", border:`1px solid ${SC[j.status]||"#1e1e1e"}30`, borderRadius:10, padding:"1rem", marginBottom:10 }}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:12 }}>
                   <div>
                     <div style={{ fontSize:14, fontWeight:500 }}>{j.service_name}</div>
-                    <div style={{ fontSize:11, color:"#555", marginTop:2 }}>{customer?.first_name} {customer?.last_name}</div>
-                    <div style={{ fontSize:10, color:"#444" }}>{j.booking_date} · {j.booking_time?.slice(0,5)}</div>
+                    <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>{customer?.first_name} {customer?.last_name}</div>
+                    <div style={{ fontSize:10, color:"#888888" }}>{j.booking_date} · {j.booking_time?.slice(0,5)}</div>
                   </div>
                   <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#e6821e" }}>+$15</div>
                 </div>
@@ -337,7 +337,7 @@ export default function DriverDashboard() {
                   {DELIVERY_STEPS[currentStepIndex]?.label||j.status}
                 </div>
 
-                {j.pickup_address&&<div style={{ fontSize:11, color:"#555", marginBottom:8 }}>📍 {j.pickup_address}</div>}
+                {j.pickup_address&&<div style={{ fontSize:11, color:"#777777", marginBottom:8 }}>📍 {j.pickup_address}</div>}
 
                 <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
                   {nextStep&&(
@@ -367,13 +367,13 @@ export default function DriverDashboard() {
 
       {tab==="history"&&(
         <div>
-          {completedJobs.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"1.5rem" }}>No completed deliveries yet</div>}
+          {completedJobs.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"1.5rem" }}>No completed deliveries yet</div>}
           {completedJobs.map(j=>(
-            <div key={j.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"0.9rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
+            <div key={j.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"0.9rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
               <div style={{ width:36, height:36, background:"#071a12", borderRadius:8, display:"flex", alignItems:"center", justifyContent:"center", fontSize:16 }}>✅</div>
               <div style={{ flex:1 }}>
                 <div style={{ fontSize:13, fontWeight:500 }}>{j.service_name}</div>
-                <div style={{ fontSize:11, color:"#555", marginTop:2 }}>{j.booking_date} · #{j.booking_number}</div>
+                <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>{j.booking_date} · #{j.booking_number}</div>
               </div>
               <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#e6821e" }}>+${Number(j.driver_earnings||15).toFixed(2)}</div>
             </div>
@@ -389,4 +389,5 @@ export default function DriverDashboard() {
     window.open(`https://wa.me/${phone.replace(/\D/g,"")}?text=${msg}`, "_blank")
   }
 }
+
 

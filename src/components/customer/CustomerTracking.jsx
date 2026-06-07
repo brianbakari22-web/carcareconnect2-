@@ -155,12 +155,12 @@ export default function CustomerTracking() {
         ← Back to bookings
       </button>
 
-      <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
-        <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>{selected.service_name}</div>
+      <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
+        <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#000000", marginBottom:4 }}>{selected.service_name}</div>
         <div style={{ display:"flex", gap:10, flexWrap:"wrap", marginBottom:10 }}>
           <span style={{ fontSize:11, padding:"2px 8px", borderRadius:10, background:`${SC[selected.status]||"#888"}20`, color:SC[selected.status]||"#888" }}>{selected.status}</span>
           {selected.concierge_status&&<span style={{ fontSize:11, padding:"2px 8px", borderRadius:10, background:"#160a2e", color:"#8b5cf6" }}>{selected.concierge_status?.replace("_"," ")}</span>}
-          <span style={{ fontSize:11, color:"#555" }}>#{selected.booking_number}</span>
+          <span style={{ fontSize:11, color:"#777777" }}>#{selected.booking_number}</span>
         </div>
 
         {/* Concierge progress */}
@@ -170,12 +170,12 @@ export default function CustomerTracking() {
               <div style={{ width:8, height:8, borderRadius:"50%", background:"#1d9e75", boxShadow:"0 0 6px #1d9e75", animation:"ping 1.5s ease-out infinite" }}/>
               <span style={{ fontSize:12, color:"#1d9e75", fontWeight:600 }}>Live tracking active</span>
             </div>
-            <span style={{ fontSize:11, color:"#555" }}>Updates every 10s</span>
+            <span style={{ fontSize:11, color:"#777777" }}>Updates every 10s</span>
           </div>
         )}
         {selected.is_concierge&&selected.concierge_status&&(
           <div style={{ marginBottom:12 }}>
-            <div style={{ fontSize:11, color:"#555", marginBottom:6 }}>Delivery progress</div>
+            <div style={{ fontSize:11, color:"#777777", marginBottom:6 }}>Delivery progress</div>
             <div style={{ display:"flex", gap:4, flexWrap:"wrap" }}>
               {CONCIERGE_STEPS.map((step,i)=>{
                 const currentIdx = CONCIERGE_STEPS.findIndex(s=>s.key===selected.concierge_status)
@@ -192,15 +192,15 @@ export default function CustomerTracking() {
 
         {/* Driver info */}
         {driver&&(
-          <div style={{ background:"#0f0f0f", borderRadius:10, padding:"0.9rem", marginBottom:10 }}>
-            <div style={{ fontSize:11, color:"#555", marginBottom:6 }}>Your driver</div>
+          <div style={{ background:"#ffffff", borderRadius:10, padding:"0.9rem", marginBottom:10 }}>
+            <div style={{ fontSize:11, color:"#777777", marginBottom:6 }}>Your driver</div>
             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
               <div style={{ width:40, height:40, borderRadius:"50%", background:"#0c1f2e", border:"2px solid #378add40", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#378add", flexShrink:0 }}>
                 {driver.first_name?.[0]}{driver.last_name?.[0]}
               </div>
               <div>
-                <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6" }}>{driver.first_name} {driver.last_name}</div>
-                <div style={{ fontSize:11, color:"#555" }}>Concierge Driver</div>
+                <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{driver.first_name} {driver.last_name}</div>
+                <div style={{ fontSize:11, color:"#777777" }}>Concierge Driver</div>
               </div>
               <div style={{ marginLeft:"auto" }}>
                 <div style={{ display:"flex", alignItems:"center", gap:5 }}>
@@ -216,16 +216,16 @@ export default function CustomerTracking() {
 
         {/* Mechanic info */}
         {mechanic&&(
-          <div style={{ background:"#0f0f0f", borderRadius:10, padding:"0.9rem", marginBottom:10 }}>
-            <div style={{ fontSize:11, color:"#555", marginBottom:6 }}>Your mechanic</div>
+          <div style={{ background:"#ffffff", borderRadius:10, padding:"0.9rem", marginBottom:10 }}>
+            <div style={{ fontSize:11, color:"#777777", marginBottom:6 }}>Your mechanic</div>
             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
               <div style={{ width:40, height:40, borderRadius:"50%", background:"#071a12", border:"2px solid #1d9e7540", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#1d9e75", flexShrink:0 }}>
                 {mechanic.first_name?.[0]}{mechanic.last_name?.[0]}
               </div>
               <div>
-                <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6" }}>{mechanic.first_name} {mechanic.last_name}</div>
-                <div style={{ fontSize:11, color:"#555" }}>🔧 {mechanic.specialization}</div>
-                {mechanic.phone&&<div style={{ fontSize:11, color:"#555" }}>📞 {mechanic.phone}</div>}
+                <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{mechanic.first_name} {mechanic.last_name}</div>
+                <div style={{ fontSize:11, color:"#777777" }}>🔧 {mechanic.specialization}</div>
+                {mechanic.phone&&<div style={{ fontSize:11, color:"#777777" }}>📞 {mechanic.phone}</div>}
               </div>
               <div style={{ marginLeft:"auto" }}>
                 <div style={{ display:"flex", alignItems:"center", gap:5 }}>
@@ -240,20 +240,20 @@ export default function CustomerTracking() {
         )}
 
         {/* Map */}
-        <div ref={mapRef} style={{ height:isMobile?260:350, borderRadius:10, overflow:"hidden", background:"#1a1a1a" }}>
+        <div ref={mapRef} style={{ height:isMobile?260:350, borderRadius:10, overflow:"hidden", background:"#f5f5f5" }}>
           {!driver?.current_lat&&!mechanic?.current_latitude&&(
             <div style={{ height:"100%", display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:8 }}>
               <div style={{ fontSize:32 }}>🗺️</div>
-              <div style={{ fontSize:12, color:"#555" }}>Waiting for location...</div>
+              <div style={{ fontSize:12, color:"#777777" }}>Waiting for location...</div>
             </div>
           )}
         </div>
 
         {/* Map legend */}
         <div style={{ display:"flex", gap:12, marginTop:8, flexWrap:"wrap" }}>
-          {driver&&<div style={{ display:"flex", alignItems:"center", gap:5 }}><span style={{ fontSize:14 }}>🚗</span><span style={{ fontSize:10, color:"#555" }}>Driver</span></div>}
-          {mechanic&&<div style={{ display:"flex", alignItems:"center", gap:5 }}><span style={{ fontSize:14 }}>👨‍🔧</span><span style={{ fontSize:10, color:"#555" }}>Mechanic</span></div>}
-          <div style={{ display:"flex", alignItems:"center", gap:5 }}><span style={{ fontSize:14 }}>👤</span><span style={{ fontSize:10, color:"#555" }}>You</span></div>
+          {driver&&<div style={{ display:"flex", alignItems:"center", gap:5 }}><span style={{ fontSize:14 }}>🚗</span><span style={{ fontSize:10, color:"#777777" }}>Driver</span></div>}
+          {mechanic&&<div style={{ display:"flex", alignItems:"center", gap:5 }}><span style={{ fontSize:14 }}>👨‍🔧</span><span style={{ fontSize:10, color:"#777777" }}>Mechanic</span></div>}
+          <div style={{ display:"flex", alignItems:"center", gap:5 }}><span style={{ fontSize:14 }}>👤</span><span style={{ fontSize:10, color:"#777777" }}>You</span></div>
         </div>
       </div>
     </div>
@@ -261,12 +261,12 @@ export default function CustomerTracking() {
 
   return (
     <div>
-      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:18, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>Track your service</div>
-      <div style={{ fontSize:12, color:"#555", marginBottom:"1.25rem" }}>Live tracking for active bookings</div>
+      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:18, fontWeight:800, color:"#000000", marginBottom:4 }}>Track your service</div>
+      <div style={{ fontSize:12, color:"#777777", marginBottom:"1.25rem" }}>Live tracking for active bookings</div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&activeBookings.length===0&&(
-        <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"3rem" }}>
+        <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
           <div style={{ fontSize:32, marginBottom:10 }}>📍</div>
           No active bookings to track
         </div>
@@ -274,13 +274,13 @@ export default function CustomerTracking() {
 
       {activeBookings.map(b=>(
         <div key={b.id} onClick={()=>{ setSelected(b); setDriver(null); setMechanic(null) }}
-          style={{ background:"#111", border:`1px solid ${SC[b.status]||"#1e1e1e"}30`, borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10, cursor:"pointer" }}
+          style={{ background:"#ffffff", border:`1px solid ${SC[b.status]||"#1e1e1e"}30`, borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10, cursor:"pointer" }}
           onMouseEnter={e=>e.currentTarget.style.background="#161616"}
           onMouseLeave={e=>e.currentTarget.style.background="#111"}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
             <div>
-              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#f0ede6", marginBottom:4 }}>{b.service_name}</div>
-              <div style={{ fontSize:11, color:"#555", marginBottom:4 }}>#{b.booking_number} · {b.booking_date}</div>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000", marginBottom:4 }}>{b.service_name}</div>
+              <div style={{ fontSize:11, color:"#777777", marginBottom:4 }}>#{b.booking_number} · {b.booking_date}</div>
               <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
                 <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:`${SC[b.status]||"#888"}20`, color:SC[b.status]||"#888" }}>{b.status}</span>
                 {b.is_concierge&&<span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:"#0c1f2e", color:"#378add" }}>Concierge</span>}
@@ -289,7 +289,7 @@ export default function CustomerTracking() {
             </div>
             <div style={{ textAlign:"right" }}>
               <div style={{ fontSize:12, color:"#e6821e", marginBottom:4 }}>KES {Number(b.total_amount).toLocaleString()}</div>
-              <div style={{ fontSize:11, color:"#555" }}>
+              <div style={{ fontSize:11, color:"#777777" }}>
                 {b.driver_id?"🚗 Driver assigned":b.assigned_mechanic_id?"👨‍🔧 Mechanic assigned":"⏳ Pending"}
               </div>
               <div style={{ fontSize:11, color:"#378add", marginTop:4 }}>Track →</div>
@@ -300,6 +300,7 @@ export default function CustomerTracking() {
     </div>
   )
 }
+
 
 
 

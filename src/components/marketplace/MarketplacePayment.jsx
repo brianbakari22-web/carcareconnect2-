@@ -69,27 +69,27 @@ export default function MarketplacePayment({ offer, listing, onSuccess, onCancel
   }
 
   return (
-    <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
-      <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#f0ede6", marginBottom:12 }}>
+    <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
+      <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#000000", marginBottom:12 }}>
         Complete Purchase
       </div>
 
-      <div style={{ background:"#0f0f0f", borderRadius:8, padding:"0.75rem", marginBottom:16 }}>
-        <div style={{ fontSize:12, color:"#888", marginBottom:8, fontWeight:600 }}>{listing.title}</div>
-        <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#888", marginBottom:4 }}>
+      <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", marginBottom:16 }}>
+        <div style={{ fontSize:12, color:"#555555", marginBottom:8, fontWeight:600 }}>{listing.title}</div>
+        <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#555555", marginBottom:4 }}>
           <span>Sale price</span><span>KES {Number(salePrice).toLocaleString()}</span>
         </div>
-        <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#888", marginBottom:4 }}>
+        <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#555555", marginBottom:4 }}>
           <span>Processing fee (2.5%)</span><span>KES {processingFee.toFixed(0)}</span>
         </div>
-        <div style={{ height:1, background:"#1e1e1e", margin:"8px 0" }}/>
+        <div style={{ height:1, background:"#f0f0f0", margin:"8px 0" }}/>
         <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, color:"#e6821e", fontWeight:700, marginBottom:4 }}>
           <span>You pay</span><span>KES {totalAmount.toFixed(0)}</span>
         </div>
-        <div style={{ display:"flex", justifyContent:"space-between", fontSize:11, color:"#555" }}>
+        <div style={{ display:"flex", justifyContent:"space-between", fontSize:11, color:"#777777" }}>
           <span>Seller receives</span><span>KES {sellerEarnings.toLocaleString()}</span>
         </div>
-        <div style={{ display:"flex", justifyContent:"space-between", fontSize:11, color:"#555" }}>
+        <div style={{ display:"flex", justifyContent:"space-between", fontSize:11, color:"#777777" }}>
           <span>Platform commission</span><span>KES {commission.toLocaleString()}</span>
         </div>
       </div>
@@ -104,9 +104,10 @@ export default function MarketplacePayment({ offer, listing, onSuccess, onCancel
       </button>
 
       <button onClick={onCancel}
-        style={{ width:"100%", background:"none", border:"1px solid #333", borderRadius:10, color:"#666", fontSize:13, padding:"11px", cursor:"pointer" }}>
+        style={{ width:"100%", background:"none", border:"1px solid #dddddd", borderRadius:10, color:"#666", fontSize:13, padding:"11px", cursor:"pointer" }}>
         Cancel
       </button>
     </div>
   )
 }
+

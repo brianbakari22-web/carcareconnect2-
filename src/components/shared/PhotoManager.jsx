@@ -61,17 +61,18 @@ export default function PhotoManager({ photos=[], onUpdate, bucket="provider-pho
 
       {/* Upload button */}
       {photos.length < maxPhotos && (
-        <label style={{ display:"block", background:"#0f0f0f", border:"2px dashed #333", borderRadius:8, padding:"12px", textAlign:"center", cursor:"pointer" }}>
+        <label style={{ display:"block", background:"#ffffff", border:"2px dashed #333", borderRadius:8, padding:"12px", textAlign:"center", cursor:"pointer" }}>
           <input type="file" accept="image/*" multiple style={{ display:"none" }} 
             onChange={async(e)=>{
               const files = Array.from(e.target.files).slice(0, maxPhotos - photos.length)
               for (const file of files) await uploadPhoto(file)
             }}/>
           <div style={{ fontSize:20, marginBottom:4 }}>📷</div>
-          <div style={{ fontSize:11, color:"#555" }}>{uploading?"Uploading...":"Tap to add photos"}</div>
+          <div style={{ fontSize:11, color:"#777777" }}>{uploading?"Uploading...":"Tap to add photos"}</div>
           <div style={{ fontSize:10, color:"#333", marginTop:2 }}>{photos.length}/{maxPhotos} photos</div>
         </label>
       )}
     </div>
   )
 }
+

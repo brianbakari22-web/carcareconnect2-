@@ -83,7 +83,7 @@ export default function CustomerProfile() {
   }
 
   const initials = `${profile?.first_name?.[0]||""}${profile?.last_name?.[0]||""}`.toUpperCase()
-  const inp = { width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"11px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:12 }
+  const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"11px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:12 }
   const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
 
   return (
@@ -93,8 +93,8 @@ export default function CustomerProfile() {
           {initials}
         </div>
         <div>
-          <div style={{ fontFamily:"Syne", fontSize:17, fontWeight:800, color:"#f0ede6" }}>{profile?.first_name} {profile?.last_name}</div>
-          <div style={{ fontSize:12, color:"#555", marginTop:2 }}>Customer · {profile?.city||"Location not set"}</div>
+          <div style={{ fontFamily:"Syne", fontSize:17, fontWeight:800, color:"#000000" }}>{profile?.first_name} {profile?.last_name}</div>
+          <div style={{ fontSize:12, color:"#777777", marginTop:2 }}>Customer · {profile?.city||"Location not set"}</div>
         </div>
       </div>
 
@@ -114,8 +114,8 @@ export default function CustomerProfile() {
 
       {tab==="profile"&&(
         <form onSubmit={saveProfile}>
-          <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>{t("profile")}</div>
+          <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>{t("profile")}</div>
             <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
               <div><label style={lbl}>Profile photo</label>
             <div style={{ marginBottom:12 }}>
@@ -130,7 +130,7 @@ export default function CustomerProfile() {
                 const { data } = supabase.storage.from("provider-photos").getPublicUrl(path)
                 await updateProfile({ profile_photo_url: data.publicUrl })
                 toast.success("Photo updated!")
-              }} style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"8px", color:"#888", fontSize:12, marginBottom:8 }}/>
+              }} style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"8px", color:"#555555", fontSize:12, marginBottom:8 }}/>
             </div>
             <label style={lbl}>{t("firstName")}</label><input style={inp} value={form.first_name} onChange={e=>setForm(f=>({...f,first_name:e.target.value}))} required/></div>
               <div><label style={lbl}>{t("lastName")}</label><input style={inp} value={form.last_name} onChange={e=>setForm(f=>({...f,last_name:e.target.value}))} required/></div>
@@ -147,10 +147,10 @@ export default function CustomerProfile() {
 
       {tab==="contact"&&(
         <form onSubmit={saveContact}>
-          <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>{t("contactDetails")}</div>
+          <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>{t("contactDetails")}</div>
             <label style={lbl}>{t("email")}</label>
-            <input style={{ ...inp, color:"#555", cursor:"not-allowed" }} value={sensitive.email} readOnly/>
+            <input style={{ ...inp, color:"#777777", cursor:"not-allowed" }} value={sensitive.email} readOnly/>
             <label style={lbl}>{t("phone")}</label>
             <input style={inp} placeholder="+254 700 000 000" value={sensitive.phone} onChange={e=>setSensitive(s=>({...s,phone:e.target.value}))}/>
             <button type="submit" disabled={saving}
@@ -163,8 +163,8 @@ export default function CustomerProfile() {
 
       {tab==="security"&&(
         <form onSubmit={changePassword}>
-          <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>{t("changePassword")}</div>
+          <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>{t("changePassword")}</div>
             <label style={lbl}>{t("newPassword")}</label>
             <input style={inp} type="password" name="password" placeholder="Min 6 characters" required/>
             <label style={lbl}>{t("confirmPassword")}</label>
@@ -179,13 +179,13 @@ export default function CustomerProfile() {
 
       {tab==="data"&&(
         <div>
-          <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", marginBottom:"1rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#f0ede6" }}>Your data</div>
+          <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#000000" }}>Your data</div>
             <div style={{ fontSize:12, color:"#666", marginBottom:"1.25rem", lineHeight:1.6 }}>
               Under the Kenya Data Protection Act 2019, you have the right to access and download all data we hold about you.
             </div>
 
-            {exporting&&<div style={{ color:"#555", fontSize:13, marginBottom:"1rem" }}>Loading your data...</div>}
+            {exporting&&<div style={{ color:"#777777", fontSize:13, marginBottom:"1rem" }}>Loading your data...</div>}
 
             {exportData&&(
               <div style={{ marginBottom:"1.25rem" }}>
@@ -198,9 +198,9 @@ export default function CustomerProfile() {
                     { label:"Support tickets", value:exportData.support_tickets.length },
                     { label:"Vehicles", value:exportData.vehicles.length },
                   ].map(s=>(
-                    <div key={s.label} style={{ background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"0.75rem", textAlign:"center" }}>
+                    <div key={s.label} style={{ background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"0.75rem", textAlign:"center" }}>
                       <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#e6821e" }}>{s.value}</div>
-                      <div style={{ fontSize:10, color:"#555", marginTop:2 }}>{s.label}</div>
+                      <div style={{ fontSize:10, color:"#777777", marginTop:2 }}>{s.label}</div>
                     </div>
                   ))}
                 </div>
@@ -245,6 +245,7 @@ export default function CustomerProfile() {
     </div>
   )
 }
+
 
 
 

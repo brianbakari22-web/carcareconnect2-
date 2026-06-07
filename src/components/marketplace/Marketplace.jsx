@@ -67,12 +67,12 @@ export default function Marketplace() {
   })
 
   function getSellerBadge(seller) {
-    if (!seller) return { label:"Seller", color:"#555", bg:"#1a1a1a" }
+    if (!seller) return { label:"Seller", color:"#777777", bg:"#1a1a1a" }
     if (seller.role==="provider") return { label:"🏪 Verified Seller", color:"#378add", bg:"#0c1f2e" }
-    return { label:"👤 Private Seller", color:"#888", bg:"#1a1a1a" }
+    return { label:"👤 Private Seller", color:"#555555", bg:"#1a1a1a" }
   }
 
-  const inp = { width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:12, outline:"none", fontFamily:"'DM Sans',sans-serif" }
+  const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none", fontFamily:"'DM Sans',sans-serif" }
 
   if (selected) return (
     <ListingDetail
@@ -93,8 +93,8 @@ export default function Marketplace() {
     <div>
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:"1.25rem", flexWrap:"wrap", gap:10 }}>
         <div>
-          <div style={{ fontFamily:"Syne", fontSize:isMobile?18:22, fontWeight:800, color:"#f0ede6" }}>🛒 Marketplace</div>
-          <div style={{ fontSize:12, color:"#555", marginTop:2 }}>Buy and sell vehicles, parts & accessories</div>
+          <div style={{ fontFamily:"Syne", fontSize:isMobile?18:22, fontWeight:800, color:"#000000" }}>🛒 Marketplace</div>
+          <div style={{ fontSize:12, color:"#777777", marginTop:2 }}>Buy and sell vehicles, parts & accessories</div>
         </div>
         <button onClick={()=>navigate("/dashboard/marketplace/new")}
           style={{ background:"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:"pointer" }}>
@@ -121,25 +121,25 @@ export default function Marketplace() {
       </div>
 
       {showFilters&&(
-        <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
+        <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
           <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4,1fr)", gap:10 }}>
-            <div><div style={{ fontSize:10, color:"#555", marginBottom:4 }}>Min price</div><input style={inp} type="number" placeholder="0" value={filters.minPrice} onChange={e=>setFilters(f=>({...f,minPrice:e.target.value}))}/></div>
-            <div><div style={{ fontSize:10, color:"#555", marginBottom:4 }}>Max price</div><input style={inp} type="number" placeholder="Any" value={filters.maxPrice} onChange={e=>setFilters(f=>({...f,maxPrice:e.target.value}))}/></div>
-            <div><div style={{ fontSize:10, color:"#555", marginBottom:4 }}>Condition</div>
+            <div><div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>Min price</div><input style={inp} type="number" placeholder="0" value={filters.minPrice} onChange={e=>setFilters(f=>({...f,minPrice:e.target.value}))}/></div>
+            <div><div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>Max price</div><input style={inp} type="number" placeholder="Any" value={filters.maxPrice} onChange={e=>setFilters(f=>({...f,maxPrice:e.target.value}))}/></div>
+            <div><div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>Condition</div>
               <select style={inp} value={filters.condition} onChange={e=>setFilters(f=>({...f,condition:e.target.value}))}>
                 <option value="">Any</option>
                 {CONDITIONS.map(c=><option key={c} value={c}>{c}</option>)}
               </select>
             </div>
-            <div><div style={{ fontSize:10, color:"#555", marginBottom:4 }}>City</div><input style={inp} placeholder="e.g. Nairobi" value={filters.city} onChange={e=>setFilters(f=>({...f,city:e.target.value}))}/></div>
+            <div><div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>City</div><input style={inp} placeholder="e.g. Nairobi" value={filters.city} onChange={e=>setFilters(f=>({...f,city:e.target.value}))}/></div>
             {tab==="vehicle"&&<>
-              <div><div style={{ fontSize:10, color:"#555", marginBottom:4 }}>Make</div><input style={inp} placeholder="e.g. Toyota" value={filters.make} onChange={e=>setFilters(f=>({...f,make:e.target.value}))}/></div>
-              <div><div style={{ fontSize:10, color:"#555", marginBottom:4 }}>Fuel</div>
+              <div><div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>Make</div><input style={inp} placeholder="e.g. Toyota" value={filters.make} onChange={e=>setFilters(f=>({...f,make:e.target.value}))}/></div>
+              <div><div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>Fuel</div>
                 <select style={inp} value={filters.fuelType} onChange={e=>setFilters(f=>({...f,fuelType:e.target.value}))}>
                   <option value="">Any</option>{FUEL_TYPES.map(f=><option key={f} value={f}>{f}</option>)}
                 </select>
               </div>
-              <div><div style={{ fontSize:10, color:"#555", marginBottom:4 }}>Transmission</div>
+              <div><div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>Transmission</div>
                 <select style={inp} value={filters.transmission} onChange={e=>setFilters(f=>({...f,transmission:e.target.value}))}>
                   <option value="">Any</option>{TRANSMISSIONS.map(t=><option key={t} value={t}>{t}</option>)}
                 </select>
@@ -147,15 +147,15 @@ export default function Marketplace() {
             </>}
           </div>
           <button onClick={()=>setFilters({ minPrice:"", maxPrice:"", condition:"", city:"", make:"", fuelType:"", transmission:"" })}
-            style={{ background:"none", border:"none", color:"#555", fontSize:11, cursor:"pointer", marginTop:8 }}>Clear filters</button>
+            style={{ background:"none", border:"none", color:"#777777", fontSize:11, cursor:"pointer", marginTop:8 }}>Clear filters</button>
         </div>
       )}
 
-      <div style={{ fontSize:12, color:"#555", marginBottom:"1rem" }}>{filtered.length} listing{filtered.length!==1?"s":""}</div>
+      <div style={{ fontSize:12, color:"#777777", marginBottom:"1rem" }}>{filtered.length} listing{filtered.length!==1?"s":""}</div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13, textAlign:"center", padding:"2rem" }}>Loading...</div>}
+      {loading&&<div style={{ color:"#777777", fontSize:13, textAlign:"center", padding:"2rem" }}>Loading...</div>}
       {!loading&&filtered.length===0&&(
-        <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"3rem" }}>
+        <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
           <div style={{ fontSize:40, marginBottom:10 }}>🛒</div>
           No listings found
           <div style={{ marginTop:12 }}>
@@ -172,8 +172,8 @@ export default function Marketplace() {
           const badge = getSellerBadge(l.profiles)
           return (
             <div key={l.id} onClick={()=>openListing(l)}
-              style={{ background:"#111", border:`1px solid ${l.is_featured?"#e6821e40":"#1e1e1e"}`, borderRadius:12, overflow:"hidden", cursor:"pointer" }}>
-              <div style={{ height:isMobile?120:160, background:"#1a1a1a", position:"relative", display:"flex", alignItems:"center", justifyContent:"center" }}>
+              style={{ background:"#ffffff", border:`1px solid ${l.is_featured?"#e6821e40":"#1e1e1e"}`, borderRadius:12, overflow:"hidden", cursor:"pointer" }}>
+              <div style={{ height:isMobile?120:160, background:"#f5f5f5", position:"relative", display:"flex", alignItems:"center", justifyContent:"center" }}>
                 {l.is_featured&&<div style={{ position:"absolute", top:8, left:8, background:"#e6821e", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10 }}>⭐ FEATURED</div>}
                 {l.is_inspected&&<div style={{ position:"absolute", top:8, right:8, background:"#1d9e75", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10 }}>✓ INSPECTED</div>}
                 {l.primary_photo ? (
@@ -183,21 +183,21 @@ export default function Marketplace() {
                 )}
               </div>
               <div style={{ padding:"0.75rem" }}>
-                <div style={{ fontFamily:"Syne", fontSize:isMobile?12:13, fontWeight:700, color:"#f0ede6", marginBottom:4, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{l.title}</div>
-                {l.listing_type==="vehicle"&&<div style={{ fontSize:10, color:"#555", marginBottom:4 }}>{[l.make,l.model,l.year].filter(Boolean).join(" ")}{l.mileage?` · ${Number(l.mileage).toLocaleString()}km`:""}</div>}
-                {l.listing_type==="part"&&<div style={{ fontSize:10, color:"#555", marginBottom:4 }}>{l.part_category}</div>}
+                <div style={{ fontFamily:"Syne", fontSize:isMobile?12:13, fontWeight:700, color:"#000000", marginBottom:4, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{l.title}</div>
+                {l.listing_type==="vehicle"&&<div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>{[l.make,l.model,l.year].filter(Boolean).join(" ")}{l.mileage?` · ${Number(l.mileage).toLocaleString()}km`:""}</div>}
+                {l.listing_type==="part"&&<div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>{l.part_category}</div>}
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
                   <div style={{ fontFamily:"Syne", fontSize:isMobile?13:15, fontWeight:800, color:"#e6821e" }}>KES {Number(l.price).toLocaleString()}</div>
                   {l.negotiable&&<span style={{ fontSize:9, color:"#1d9e75" }}>Negotiable</span>}
                 </div>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
                   <span style={{ fontSize:9, padding:"2px 6px", borderRadius:6, background:badge.bg, color:badge.color }}>{badge.label}</span>
-                  {l.city&&<span style={{ fontSize:9, color:"#444" }}>📍 {l.city}</span>}
+                  {l.city&&<span style={{ fontSize:9, color:"#888888" }}>📍 {l.city}</span>}
                 </div>
                 <div style={{ display:"flex", gap:4, flexWrap:"wrap" }}>
-                  {l.condition&&<span style={{ fontSize:9, padding:"1px 6px", borderRadius:6, background:"#1a1a1a", color:"#666" }}>{l.condition}</span>}
-                  {l.transmission&&<span style={{ fontSize:9, padding:"1px 6px", borderRadius:6, background:"#1a1a1a", color:"#666" }}>{l.transmission}</span>}
-                  {l.fuel_type&&<span style={{ fontSize:9, padding:"1px 6px", borderRadius:6, background:"#1a1a1a", color:"#666" }}>{l.fuel_type}</span>}
+                  {l.condition&&<span style={{ fontSize:9, padding:"1px 6px", borderRadius:6, background:"#f5f5f5", color:"#666" }}>{l.condition}</span>}
+                  {l.transmission&&<span style={{ fontSize:9, padding:"1px 6px", borderRadius:6, background:"#f5f5f5", color:"#666" }}>{l.transmission}</span>}
+                  {l.fuel_type&&<span style={{ fontSize:9, padding:"1px 6px", borderRadius:6, background:"#f5f5f5", color:"#666" }}>{l.fuel_type}</span>}
                 </div>
                 <div style={{ fontSize:9, color:"#333", marginTop:6 }}>👁 {l.views||0} views</div>
               </div>
@@ -219,7 +219,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
 
   const badge = sellerInfo?.role==="provider"
     ? { label:"🏪 Verified Seller", color:"#378add", bg:"#0c1f2e" }
-    : { label:"👤 Private Seller", color:"#888", bg:"#1a1a1a" }
+    : { label:"👤 Private Seller", color:"#555555", bg:"#1a1a1a" }
 
   const existingOffer = offers?.find(o=>o.status==="pending"||o.status==="countered")
 
@@ -255,7 +255,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
 
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:"1.5rem" }}>
         <div>
-          <div style={{ background:"#1a1a1a", borderRadius:12, height:isMobile?220:300, display:"flex", alignItems:"center", justifyContent:"center", marginBottom:8, overflow:"hidden" }}>
+          <div style={{ background:"#f5f5f5", borderRadius:12, height:isMobile?220:300, display:"flex", alignItems:"center", justifyContent:"center", marginBottom:8, overflow:"hidden" }}>
             {photos.length>0
               ? <img src={photos[activePhoto]?.photo_url} alt={listing.title} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
               : <div style={{ fontSize:64 }}>{listing.listing_type==="vehicle"?"🚗":listing.listing_type==="part"?"🔧":"✨"}</div>
@@ -278,18 +278,18 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
             {listing.is_featured&&<span style={{ fontSize:10, background:"#e6821e", color:"#fff", padding:"2px 8px", borderRadius:10, marginRight:4 }}>⭐ Featured</span>}
             {listing.is_inspected&&<span style={{ fontSize:10, background:"#1d9e75", color:"#fff", padding:"2px 8px", borderRadius:10 }}>✓ CCC Inspected</span>}
           </div>
-          <div style={{ fontFamily:"Syne", fontSize:isMobile?18:22, fontWeight:800, color:"#f0ede6", marginBottom:8 }}>{listing.title}</div>
+          <div style={{ fontFamily:"Syne", fontSize:isMobile?18:22, fontWeight:800, color:"#000000", marginBottom:8 }}>{listing.title}</div>
           <div style={{ fontFamily:"Syne", fontSize:isMobile?22:28, fontWeight:800, color:"#e6821e", marginBottom:4 }}>KES {Number(listing.price).toLocaleString()}</div>
           {listing.negotiable&&<div style={{ fontSize:12, color:"#1d9e75", marginBottom:12 }}>✓ Price negotiable</div>}
 
           {listing.listing_type==="vehicle"&&(
-            <div style={{ background:"#111", borderRadius:10, padding:"0.9rem", marginBottom:12 }}>
-              <div style={{ fontSize:11, color:"#555", marginBottom:8, textTransform:"uppercase" }}>Vehicle details</div>
+            <div style={{ background:"#ffffff", borderRadius:10, padding:"0.9rem", marginBottom:12 }}>
+              <div style={{ fontSize:11, color:"#777777", marginBottom:8, textTransform:"uppercase" }}>Vehicle details</div>
               <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
                 {[{l:"Make",v:listing.make},{l:"Model",v:listing.model},{l:"Year",v:listing.year},{l:"Mileage",v:listing.mileage?`${Number(listing.mileage).toLocaleString()}km`:null},{l:"Color",v:listing.color},{l:"Transmission",v:listing.transmission},{l:"Fuel",v:listing.fuel_type},{l:"Engine",v:listing.engine_size},{l:"Body",v:listing.body_type},{l:"Drive",v:listing.drive_type},{l:"Condition",v:listing.condition}].filter(f=>f.v).map(f=>(
                   <div key={f.l}>
-                    <div style={{ fontSize:10, color:"#444" }}>{f.l}</div>
-                    <div style={{ fontSize:12, color:"#f0ede6", fontWeight:500, textTransform:"capitalize" }}>{f.v}</div>
+                    <div style={{ fontSize:10, color:"#888888" }}>{f.l}</div>
+                    <div style={{ fontSize:12, color:"#000000", fontWeight:500, textTransform:"capitalize" }}>{f.v}</div>
                   </div>
                 ))}
               </div>
@@ -297,18 +297,18 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
           )}
 
           {listing.listing_type==="part"&&(
-            <div style={{ background:"#111", borderRadius:10, padding:"0.9rem", marginBottom:12 }}>
-              <div style={{ fontSize:11, color:"#555", marginBottom:8, textTransform:"uppercase" }}>Part details</div>
+            <div style={{ background:"#ffffff", borderRadius:10, padding:"0.9rem", marginBottom:12 }}>
+              <div style={{ fontSize:11, color:"#777777", marginBottom:8, textTransform:"uppercase" }}>Part details</div>
               <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
                 {[{l:"Category",v:listing.part_category},{l:"Condition",v:listing.condition},{l:"Part No.",v:listing.part_number},{l:"Qty",v:listing.quantity}].filter(f=>f.v).map(f=>(
-                  <div key={f.l}><div style={{ fontSize:10, color:"#444" }}>{f.l}</div><div style={{ fontSize:12, color:"#f0ede6" }}>{f.v}</div></div>
+                  <div key={f.l}><div style={{ fontSize:10, color:"#888888" }}>{f.l}</div><div style={{ fontSize:12, color:"#000000" }}>{f.v}</div></div>
                 ))}
               </div>
               {listing.compatible_makes?.length>0&&(
                 <div style={{ marginTop:8 }}>
-                  <div style={{ fontSize:10, color:"#444", marginBottom:4 }}>Compatible with</div>
+                  <div style={{ fontSize:10, color:"#888888", marginBottom:4 }}>Compatible with</div>
                   <div style={{ display:"flex", flexWrap:"wrap", gap:4 }}>
-                    {listing.compatible_makes.map(m=><span key={m} style={{ fontSize:10, padding:"2px 7px", borderRadius:6, background:"#1a1a1a", color:"#888" }}>{m}</span>)}
+                    {listing.compatible_makes.map(m=><span key={m} style={{ fontSize:10, padding:"2px 7px", borderRadius:6, background:"#f5f5f5", color:"#555555" }}>{m}</span>)}
                   </div>
                 </div>
               )}
@@ -316,24 +316,24 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
           )}
 
           {listing.description&&(
-            <div style={{ background:"#111", borderRadius:10, padding:"0.9rem", marginBottom:12 }}>
-              <div style={{ fontSize:11, color:"#555", marginBottom:6, textTransform:"uppercase" }}>Description</div>
-              <div style={{ fontSize:13, color:"#888", lineHeight:1.7 }}>{listing.description}</div>
+            <div style={{ background:"#ffffff", borderRadius:10, padding:"0.9rem", marginBottom:12 }}>
+              <div style={{ fontSize:11, color:"#777777", marginBottom:6, textTransform:"uppercase" }}>Description</div>
+              <div style={{ fontSize:13, color:"#555555", lineHeight:1.7 }}>{listing.description}</div>
             </div>
           )}
 
-          <div style={{ background:"#111", borderRadius:10, padding:"0.9rem", marginBottom:12 }}>
-            <div style={{ fontSize:11, color:"#555", marginBottom:8, textTransform:"uppercase" }}>Seller</div>
+          <div style={{ background:"#ffffff", borderRadius:10, padding:"0.9rem", marginBottom:12 }}>
+            <div style={{ fontSize:11, color:"#777777", marginBottom:8, textTransform:"uppercase" }}>Seller</div>
             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
               <div style={{ width:40, height:40, borderRadius:"50%", background:badge.bg, border:`1px solid ${badge.color}40`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:badge.color, flexShrink:0 }}>
                 {sellerInfo?.first_name?.[0]}{sellerInfo?.last_name?.[0]}
               </div>
               <div>
-                <div style={{ fontSize:13, color:"#f0ede6", fontWeight:600 }}>{sellerInfo?.business_name||`${sellerInfo?.first_name} ${sellerInfo?.last_name}`}</div>
+                <div style={{ fontSize:13, color:"#000000", fontWeight:600 }}>{sellerInfo?.business_name||`${sellerInfo?.first_name} ${sellerInfo?.last_name}`}</div>
                 <span style={{ fontSize:10, padding:"2px 7px", borderRadius:6, background:badge.bg, color:badge.color }}>{badge.label}</span>
               </div>
             </div>
-            {listing.city&&<div style={{ fontSize:11, color:"#555", marginTop:8 }}>📍 {listing.city}</div>}
+            {listing.city&&<div style={{ fontSize:11, color:"#777777", marginTop:8 }}>📍 {listing.city}</div>}
           </div>
 
           {listing.seller_id!==user?.id&&(
@@ -343,7 +343,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
               {!listing.is_inspected&&(
                 <div style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:10, padding:"0.9rem" }}>
                   <div style={{ fontSize:12, color:"#e6821e", fontWeight:600, marginBottom:4 }}>⏳ Pending CCC Inspection</div>
-                  <div style={{ fontSize:11, color:"#888", lineHeight:1.6 }}>
+                  <div style={{ fontSize:11, color:"#555555", lineHeight:1.6 }}>
                     This listing is awaiting Car Care Connect vehicle inspection before offers and messages are enabled. This ensures all vehicles on our platform are verified and trustworthy.
                   </div>
                 </div>
@@ -354,7 +354,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
                   <span style={{ fontSize:14 }}>✓</span>
                   <div>
                     <div style={{ fontSize:12, color:"#1d9e75", fontWeight:600 }}>CCC Verified Vehicle</div>
-                    <div style={{ fontSize:10, color:"#555" }}>Inspected and approved by Car Care Connect</div>
+                    <div style={{ fontSize:10, color:"#777777" }}>Inspected and approved by Car Care Connect</div>
                   </div>
                 </div>
               )}
@@ -364,7 +364,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
                 existingOffer?(
                   <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:10, padding:"0.9rem" }}>
                     <div style={{ fontSize:12, color:"#1d9e75", fontWeight:600 }}>✓ Offer submitted</div>
-                    <div style={{ fontSize:11, color:"#555", marginTop:2 }}>KES {Number(existingOffer.offered_price).toLocaleString()} · {existingOffer.status}</div>
+                    <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>KES {Number(existingOffer.offered_price).toLocaleString()} · {existingOffer.status}</div>
                     {existingOffer.counter_price&&<div style={{ fontSize:11, color:"#e6821e", marginTop:4 }}>Counter: KES {Number(existingOffer.counter_price).toLocaleString()}</div>}
                   </div>
                 ):(
@@ -396,8 +396,8 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
           )}
 
           {listing.seller_id===user?.id&&(
-            <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"0.9rem", textAlign:"center" }}>
-              <div style={{ fontSize:12, color:"#555" }}>This is your listing · 👁 {listing.views||0} views</div>
+            <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"0.9rem", textAlign:"center" }}>
+              <div style={{ fontSize:12, color:"#777777" }}>This is your listing · 👁 {listing.views||0} views</div>
             </div>
           )}
         </div>
@@ -407,18 +407,18 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
         <div style={{ position:"fixed", inset:0, zIndex:200, display:"flex", alignItems:isMobile?"flex-end":"center", justifyContent:"center" }}
           onClick={e=>{ if(e.target===e.currentTarget) setShowOffer(false) }}>
           <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.75)" }} onClick={()=>setShowOffer(false)}/>
-          <div style={{ position:"relative", zIndex:1, background:"#0f0f0f", border:"1px solid #2a2a2a", borderRadius:isMobile?"20px 20px 0 0":"16px", padding:"1.5rem", width:isMobile?"100%":"420px" }}>
-            {isMobile&&<div style={{ width:40, height:4, background:"#333", borderRadius:2, margin:"0 auto 1.5rem" }}/>}
-            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>Make an offer</div>
-            <div style={{ fontSize:12, color:"#555", marginBottom:"1.25rem" }}>Asking: KES {Number(listing.price).toLocaleString()}</div>
+          <div style={{ position:"relative", zIndex:1, background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:isMobile?"20px 20px 0 0":"16px", padding:"1.5rem", width:isMobile?"100%":"420px" }}>
+            {isMobile&&<div style={{ width:40, height:4, background:"#e5e5e5", borderRadius:2, margin:"0 auto 1.5rem" }}/>}
+            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000000", marginBottom:4 }}>Make an offer</div>
+            <div style={{ fontSize:12, color:"#777777", marginBottom:"1.25rem" }}>Asking: KES {Number(listing.price).toLocaleString()}</div>
             <form onSubmit={submitOffer}>
               <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>Your offer (KES) *</label>
               <input type="number" value={offerPrice} onChange={e=>setOfferPrice(e.target.value)} required
-                style={{ width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"11px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:12 }}/>
+                style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"11px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:12 }}/>
               <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>Message (optional)</label>
               <textarea value={offerMessage} onChange={e=>setOfferMessage(e.target.value)}
                 placeholder="Introduce yourself..."
-                style={{ width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"11px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", resize:"vertical", minHeight:70, marginBottom:12 }}/>
+                style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"11px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", resize:"vertical", minHeight:70, marginBottom:12 }}/>
               <div style={{ background:"#1a1208", border:"1px solid #e6821e30", borderRadius:8, padding:"0.75rem", marginBottom:16 }}>
                 <div style={{ fontSize:11, color:"#e6821e" }}>⚠️ Do not share personal contact details. All communication must stay on Car Care Connect.</div>
               </div>
@@ -428,7 +428,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
                   {submitting?"Submitting...":"Submit offer"}
                 </button>
                 <button type="button" onClick={()=>setShowOffer(false)}
-                  style={{ background:"none", border:"1px solid #333", borderRadius:9, color:"#666", fontSize:13, padding:"12px 18px", cursor:"pointer" }}>
+                  style={{ background:"none", border:"1px solid #dddddd", borderRadius:9, color:"#666", fontSize:13, padding:"12px 18px", cursor:"pointer" }}>
                   Cancel
                 </button>
               </div>
@@ -439,6 +439,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
     </div>
   )
 }
+
 
 
 

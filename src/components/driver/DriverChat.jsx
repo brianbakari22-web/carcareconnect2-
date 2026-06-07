@@ -115,7 +115,7 @@ export default function DriverChat() {
       {/* Conversation list */}
       {(!isMobile||!selected)&&(
         <div style={{ width:isMobile?"100%":280, flexShrink:0, display:"flex", flexDirection:"column", gap:8 }}>
-          <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>
+          <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000000", marginBottom:4 }}>
             Messages
             {totalUnread>0&&<span style={{ marginLeft:8, background:"#e24b4a", color:"#fff", borderRadius:20, fontSize:11, padding:"2px 7px" }}>{totalUnread}</span>}
           </div>
@@ -130,9 +130,9 @@ export default function DriverChat() {
             ))}
           </div>
 
-          {loading&&<div style={{ color:"#555", fontSize:12 }}>Loading...</div>}
+          {loading&&<div style={{ color:"#777777", fontSize:12 }}>Loading...</div>}
           {!loading&&filtered.length===0&&(
-            <div style={{ color:"#444", fontSize:12, textAlign:"center", padding:"2rem" }}>
+            <div style={{ color:"#888888", fontSize:12, textAlign:"center", padding:"2rem" }}>
               <div style={{ fontSize:28, marginBottom:8 }}>💬</div>
               No conversations yet
             </div>
@@ -147,23 +147,23 @@ export default function DriverChat() {
                     {c.name?.[0]?.toUpperCase()||"?"}
                   </div>
                   <div style={{ minWidth:0 }}>
-                    <div style={{ fontSize:12, fontWeight:c.unread>0?700:500, color:"#f0ede6", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.name}</div>
-                    <div style={{ fontSize:10, color:"#555", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
+                    <div style={{ fontSize:12, fontWeight:c.unread>0?700:500, color:"#000000", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.name}</div>
+                    <div style={{ fontSize:10, color:"#777777", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
                       {c.type==="marketplace"?"🛒 ":""}{c.subtitle}
                     </div>
                   </div>
                 </div>
                 <div style={{ textAlign:"right", flexShrink:0 }}>
                   {c.unread>0&&<div style={{ background:"#1d9e75", color:"#fff", borderRadius:"50%", fontSize:9, fontWeight:800, width:16, height:16, display:"flex", alignItems:"center", justifyContent:"center", marginBottom:2 }}>{c.unread}</div>}
-                  <div style={{ fontSize:9, color:"#444" }}>{c.lastTime?new Date(c.lastTime).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):""}</div>
+                  <div style={{ fontSize:9, color:"#888888" }}>{c.lastTime?new Date(c.lastTime).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):""}</div>
                 </div>
               </div>
-              {c.lastMessage&&<div style={{ fontSize:11, color:"#555", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.lastMessage}</div>}
+              {c.lastMessage&&<div style={{ fontSize:11, color:"#777777", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.lastMessage}</div>}
               <div style={{ display:"flex", gap:6, marginTop:4, flexWrap:"wrap" }}>
                 <span style={{ fontSize:9, padding:"1px 6px", borderRadius:6, background:c.type==="marketplace"?"#1a1208":"#071a12", color:c.type==="marketplace"?"#e6821e":"#1d9e75" }}>
                   {c.type==="marketplace"?"🛒 Marketplace":"🚗 Job"}
                 </span>
-                {c.status&&<span style={{ fontSize:9, color:"#444" }}>{c.status}</span>}
+                {c.status&&<span style={{ fontSize:9, color:"#888888" }}>{c.status}</span>}
               </div>
             </div>
           ))}
@@ -188,7 +188,7 @@ export default function DriverChat() {
         </div>
       ):(
         !isMobile&&(
-          <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", color:"#444", fontSize:13 }}>
+          <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", color:"#888888", fontSize:13 }}>
             <div style={{ textAlign:"center" }}>
               <div style={{ fontSize:40, marginBottom:10 }}>💬</div>
               Select a conversation
@@ -199,6 +199,7 @@ export default function DriverChat() {
     </div>
   )
 }
+
 
 
 

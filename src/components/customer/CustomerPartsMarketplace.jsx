@@ -186,10 +186,10 @@ export default function CustomerPartsMarketplace() {
     <div>
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1.25rem", flexWrap:"wrap", gap:10 }}>
         <div>
-          <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#f0ede6" }}>Parts & Accessories</div>
-          <div style={{ fontSize:12, color:"#555" }}>Order from verified CCC shops</div>
+          <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#000000" }}>Parts & Accessories</div>
+          <div style={{ fontSize:12, color:"#777777" }}>Order from verified CCC shops</div>
         </div>
-        <button onClick={()=>setShowCart(true)} style={{ background:cart.length>0?"#e6821e":"#111", border:"1px solid #333", borderRadius:9, color:cart.length>0?"#fff":"#666", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"9px 16px", cursor:"pointer", position:"relative" }}>
+        <button onClick={()=>setShowCart(true)} style={{ background:cart.length>0?"#e6821e":"#111", border:"1px solid #dddddd", borderRadius:9, color:cart.length>0?"#fff":"#666", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"9px 16px", cursor:"pointer", position:"relative" }}>
           🛒 Cart {cart.length>0&&`(${cart.length})`}
           {cart.length>0&&<span style={{ position:"absolute", top:-6, right:-6, width:16, height:16, borderRadius:"50%", background:"#e24b4a", fontSize:9, color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:800 }}>{cart.reduce((s,c)=>s+c.qty,0)}</span>}
         </button>
@@ -207,7 +207,7 @@ export default function CustomerPartsMarketplace() {
       {tab==="browse"&&(
         <>
           <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search parts, accessories, brand, car model..."
-            style={{ width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:12, outline:"none", marginBottom:"1rem" }}/>
+            style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none", marginBottom:"1rem" }}/>
           <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
             {CATEGORIES.map(c=>(
               <button key={c.key} onClick={()=>setCategory(c.key)}
@@ -217,23 +217,23 @@ export default function CustomerPartsMarketplace() {
             ))}
           </div>
 
-          {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
-          {!loading&&filtered.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No items found</div>}
+          {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
+          {!loading&&filtered.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>No items found</div>}
 
           <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(2,1fr)", gap:12 }}>
             {filtered.map(item=>(
-              <div key={item.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, overflow:"hidden" }}>
+              <div key={item.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, overflow:"hidden" }}>
                 {item.photos?.[0]&&(
                   <img src={item.photos[0]} alt={item.name} style={{ width:"100%", height:140, objectFit:"cover" }}/>
                 )}
                 <div style={{ padding:"1rem" }}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10, marginBottom:8 }}>
                   <div style={{ flex:1, minWidth:0 }}>
-                    <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6", marginBottom:4 }}>{item.name}</div>
-                    {item.brand&&<div style={{ fontSize:11, color:"#888", marginBottom:2 }}>Brand: {item.brand}</div>}
-                    {item.compatible_cars?.length>0&&<div style={{ fontSize:10, color:"#555", marginBottom:2 }}>🚗 {item.compatible_cars.slice(0,3).join(", ")}{item.compatible_cars.length>3?"...":""}</div>}
-                    {item.description&&<div style={{ fontSize:11, color:"#555", marginBottom:4, lineHeight:1.5 }}>{item.description}</div>}
-                    <div style={{ fontSize:11, color:"#555" }}>
+                    <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:4 }}>{item.name}</div>
+                    {item.brand&&<div style={{ fontSize:11, color:"#555555", marginBottom:2 }}>Brand: {item.brand}</div>}
+                    {item.compatible_cars?.length>0&&<div style={{ fontSize:10, color:"#777777", marginBottom:2 }}>🚗 {item.compatible_cars.slice(0,3).join(", ")}{item.compatible_cars.length>3?"...":""}</div>}
+                    {item.description&&<div style={{ fontSize:11, color:"#777777", marginBottom:4, lineHeight:1.5 }}>{item.description}</div>}
+                    <div style={{ fontSize:11, color:"#777777" }}>
                       🏪 {item.profiles?.business_name||`${item.profiles?.first_name} ${item.profiles?.last_name}`}
                       {item.profiles?.city?` · ${item.profiles.city}`:""}
                       {item.profiles?.is_verified&&<span style={{ color:"#1d9e75", marginLeft:4 }}>✓</span>}
@@ -241,7 +241,7 @@ export default function CustomerPartsMarketplace() {
                   </div>
                   <div style={{ textAlign:"right", flexShrink:0 }}>
                     <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(item.price).toLocaleString()}</div>
-                    <div style={{ fontSize:10, color:"#555" }}>/{item.unit}</div>
+                    <div style={{ fontSize:10, color:"#777777" }}>/{item.unit}</div>
                     <div style={{ fontSize:10, color:item.stock_quantity<=5?"#e24b4a":"#1d9e75", marginTop:4 }}>{item.stock_quantity} in stock</div>
                   </div>
                 </div>
@@ -258,14 +258,14 @@ export default function CustomerPartsMarketplace() {
 
       {tab==="orders"&&(
         <div>
-          {orders.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No orders yet</div>}
+          {orders.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>No orders yet</div>}
           {orders.map(o=>(
-            <div key={o.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem", marginBottom:8 }}>
+            <div key={o.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
                 <div>
-                  <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6" }}>#{o.order_number}</div>
-                  <div style={{ fontSize:11, color:"#555" }}>{o.profiles?.business_name||o.profiles?.first_name} · {o.fulfillment_type}</div>
-                  <div style={{ fontSize:10, color:"#444" }}>{new Date(o.created_at).toLocaleString()}</div>
+                  <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>#{o.order_number}</div>
+                  <div style={{ fontSize:11, color:"#777777" }}>{o.profiles?.business_name||o.profiles?.first_name} · {o.fulfillment_type}</div>
+                  <div style={{ fontSize:10, color:"#888888" }}>{new Date(o.created_at).toLocaleString()}</div>
                 </div>
                 <div style={{ textAlign:"right" }}>
                   <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>KES {Number(o.subtotal||0).toLocaleString()}</div>
@@ -286,10 +286,10 @@ export default function CustomerPartsMarketplace() {
 
       {showCart&&(
         <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.85)", zIndex:200, display:"flex", alignItems:"flex-end", justifyContent:"center" }}>
-          <div style={{ width:"100%", maxWidth:500, background:"#111", borderRadius:"16px 16px 0 0", padding:"1.5rem", maxHeight:"85vh", overflowY:"auto" }}>
+          <div style={{ width:"100%", maxWidth:500, background:"#ffffff", borderRadius:"16px 16px 0 0", padding:"1.5rem", maxHeight:"85vh", overflowY:"auto" }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1.25rem" }}>
               <div>
-              <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#f0ede6" }}>
+              <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000000" }}>
                 {checkoutStep==="cart"?"🛒 Your cart":checkoutStep==="details"?"📋 Delivery details":"💳 Payment"}
               </div>
               <div style={{ display:"flex", gap:4, marginTop:4 }}>
@@ -298,21 +298,21 @@ export default function CustomerPartsMarketplace() {
                 ))}
               </div>
             </div>
-              <button onClick={()=>{ setShowCart(false); setCheckoutStep("cart") }} style={{ background:"none", border:"none", color:"#555", fontSize:22, cursor:"pointer" }}>×</button>
+              <button onClick={()=>{ setShowCart(false); setCheckoutStep("cart") }} style={{ background:"none", border:"none", color:"#777777", fontSize:22, cursor:"pointer" }}>×</button>
             </div>
 
-            {cart.length===0&&<div style={{ color:"#444", textAlign:"center", padding:"2rem" }}>Cart is empty</div>}
+            {cart.length===0&&<div style={{ color:"#888888", textAlign:"center", padding:"2rem" }}>Cart is empty</div>}
 
             {cart.map(item=>(
               <div key={item.id} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 0", borderBottom:"1px solid #1a1a1a" }}>
                 <div style={{ flex:1, minWidth:0 }}>
-                  <div style={{ fontSize:13, color:"#f0ede6" }}>{item.name}</div>
-                  <div style={{ fontSize:11, color:"#555" }}>KES {Number(item.price).toLocaleString()} / {item.unit}</div>
+                  <div style={{ fontSize:13, color:"#000000" }}>{item.name}</div>
+                  <div style={{ fontSize:11, color:"#777777" }}>KES {Number(item.price).toLocaleString()} / {item.unit}</div>
                 </div>
                 <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-                  <button onClick={()=>updateQty(item.id,item.qty-1)} style={{ background:"#1a1a1a", border:"none", borderRadius:6, color:"#f0ede6", width:26, height:26, cursor:"pointer", fontSize:14 }}>−</button>
-                  <span style={{ fontSize:13, color:"#f0ede6", minWidth:20, textAlign:"center" }}>{item.qty}</span>
-                  <button onClick={()=>updateQty(item.id,item.qty+1)} style={{ background:"#1a1a1a", border:"none", borderRadius:6, color:"#f0ede6", width:26, height:26, cursor:"pointer", fontSize:14 }}>+</button>
+                  <button onClick={()=>updateQty(item.id,item.qty-1)} style={{ background:"#f5f5f5", border:"none", borderRadius:6, color:"#000000", width:26, height:26, cursor:"pointer", fontSize:14 }}>−</button>
+                  <span style={{ fontSize:13, color:"#000000", minWidth:20, textAlign:"center" }}>{item.qty}</span>
+                  <button onClick={()=>updateQty(item.id,item.qty+1)} style={{ background:"#f5f5f5", border:"none", borderRadius:6, color:"#000000", width:26, height:26, cursor:"pointer", fontSize:14 }}>+</button>
                   <span style={{ fontSize:12, color:"#e6821e", fontWeight:600, minWidth:60, textAlign:"right" }}>KES {(Number(item.price)*item.qty).toLocaleString()}</span>
                 </div>
               </div>
@@ -334,18 +334,18 @@ export default function CustomerPartsMarketplace() {
 
                 {checkoutStep==="details"&&(
                   <div style={{ marginBottom:12 }}>
-                    <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#f0ede6", marginBottom:10 }}>Your details</div>
+                    <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000", marginBottom:10 }}>Your details</div>
                     <div style={{ marginBottom:8 }}>
                       <div style={{ fontSize:11, color:"#666", marginBottom:4 }}>Full name</div>
                       <input value={customerDetails.name} onChange={e=>setCustomerDetails(d=>({...d,name:e.target.value}))}
                         placeholder="Your full name"
-                        style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:12, outline:"none" }}/>
+                        style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none" }}/>
                     </div>
                     <div style={{ marginBottom:8 }}>
                       <div style={{ fontSize:11, color:"#666", marginBottom:4 }}>Phone number</div>
                       <input value={customerDetails.phone} onChange={e=>setCustomerDetails(d=>({...d,phone:e.target.value}))}
                         placeholder="0712 345 678"
-                        style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:12, outline:"none" }}/>
+                        style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none" }}/>
                     </div>
                   </div>
                 )}
@@ -354,7 +354,7 @@ export default function CustomerPartsMarketplace() {
                     <div style={{ marginBottom:8 }}>
                       <div style={{ fontSize:11, color:"#666", marginBottom:4 }}>Delivery zone</div>
                       <select value={selectedZone} onChange={e=>setSelectedZone(e.target.value)}
-                        style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:12, outline:"none" }}>
+                        style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none" }}>
                         <option value="">Select zone...</option>
                         {zones.map(z=><option key={z.id} value={z.id}>{z.name} — KES {Number(z.base_fee).toLocaleString()}</option>)}
                       </select>
@@ -362,12 +362,12 @@ export default function CustomerPartsMarketplace() {
                     <div style={{ marginBottom:8 }}>
                       <div style={{ fontSize:11, color:"#666", marginBottom:4 }}>Delivery address</div>
                       <input value={deliveryAddress} onChange={e=>setDeliveryAddress(e.target.value)} placeholder="Your full delivery address..."
-                        style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:12, outline:"none" }}/>
+                        style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none" }}/>
                     </div>
                   </>
                 )}
 
-                <div style={{ borderTop:"1px solid #1e1e1e", paddingTop:"1rem", marginTop:"0.5rem" }}>
+                <div style={{ borderTop:"1px solid #eeeeee", paddingTop:"1rem", marginTop:"0.5rem" }}>
                   <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#666", marginBottom:4 }}>
                     <span>Subtotal</span><span>KES {cartTotal.toLocaleString()}</span>
                   </div>
@@ -383,7 +383,7 @@ export default function CustomerPartsMarketplace() {
                     style={{ width:"100%", background:ordering?"#333":"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:ordering?"not-allowed":"pointer" }}>
                     {ordering?"Placing order...":"Place order →"}
                   </button>
-                  <div style={{ fontSize:11, color:"#444", textAlign:"center", marginTop:8 }}>Payment collected on delivery/pickup</div>
+                  <div style={{ fontSize:11, color:"#888888", textAlign:"center", marginTop:8 }}>Payment collected on delivery/pickup</div>
                 </div>
               </>
             )}
@@ -393,6 +393,7 @@ export default function CustomerPartsMarketplace() {
     </div>
   )
 }
+
 
 
 

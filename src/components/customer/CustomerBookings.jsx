@@ -143,7 +143,7 @@ export default function CustomerBookings() {
   }
 
   const filtered = filter==="all" ? bookings : bookings.filter(b=>b.status===filter)
-  const inp = { width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"10px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }
+  const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }
 
   return (
     <div>
@@ -156,16 +156,16 @@ export default function CustomerBookings() {
         ))}
       </div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>{t("loading")}</div>}
-      {!loading&&filtered.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>{t("noBookingsFound")}</div>}
+      {loading&&<div style={{ color:"#777777", fontSize:13 }}>{t("loading")}</div>}
+      {!loading&&filtered.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>{t("noBookingsFound")}</div>}
 
       {filtered.map(b=>(
-        <div key={b.id} style={{ background:"#111", border:`1px solid ${SB[b.status]||"#1e1e1e"}`, borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8 }}>
+        <div key={b.id} style={{ background:"#ffffff", border:`1px solid ${SB[b.status]||"#1e1e1e"}`, borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
             <div style={{ flex:1, minWidth:0, marginRight:8 }}>
-              <div style={{ fontSize:isMobile?13:14, fontWeight:500, color:"#f0ede6", marginBottom:2 }}>{b.service_name}</div>
-              <div style={{ fontSize:11, color:"#555" }}>{b.booking_date} · {b.booking_time?.slice(0,5)}</div>
-              {b.booking_number&&<div style={{ fontSize:10, color:"#444", marginTop:2 }}>#{b.booking_number}</div>}
+              <div style={{ fontSize:isMobile?13:14, fontWeight:500, color:"#000000", marginBottom:2 }}>{b.service_name}</div>
+              <div style={{ fontSize:11, color:"#777777" }}>{b.booking_date} · {b.booking_time?.slice(0,5)}</div>
+              {b.booking_number&&<div style={{ fontSize:10, color:"#888888", marginTop:2 }}>#{b.booking_number}</div>}
             </div>
             <div style={{ textAlign:"right", flexShrink:0 }}>
               <span style={{ fontSize:10, fontWeight:500, padding:"2px 8px", borderRadius:20, background:SB[b.status]||"#111", color:SC[b.status]||"#888", border:`1px solid ${SC[b.status]||"#888"}40`, display:"inline-block" }}>{b.status}</span>
@@ -198,12 +198,12 @@ export default function CustomerBookings() {
               )}
               {(b.status==="completed"||b.status==="cancelled")&&(
                 <button onClick={()=>hideBooking(b.id)}
-                  style={{ background:"none", border:"1px solid #55540", borderRadius:7, color:"#555", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  style={{ background:"none", border:"1px solid #55540", borderRadius:7, color:"#777777", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                   🗑️ Hide
                 </button>
               )}
             <button onClick={()=>setExpanded(expanded===b.id?null:b.id)}
-              style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#666", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+              style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#666", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
               {expanded===b.id?t("less"):t("details")}
             </button>
           </div>
@@ -219,8 +219,8 @@ export default function CustomerBookings() {
                     {driverInfo[b.id]?.first_name?.[0]}{driverInfo[b.id]?.last_name?.[0]}
                   </div>
                   <div>
-                    <div style={{ fontSize:12, color:"#f0ede6" }}>Driver: {driverInfo[b.id]?.first_name} {driverInfo[b.id]?.last_name}</div>
-                    <div style={{ fontSize:10, color:"#555" }}>Concierge driver assigned</div>
+                    <div style={{ fontSize:12, color:"#000000" }}>Driver: {driverInfo[b.id]?.first_name} {driverInfo[b.id]?.last_name}</div>
+                    <div style={{ fontSize:10, color:"#777777" }}>Concierge driver assigned</div>
                   </div>
                 </div>
               )}
@@ -247,7 +247,7 @@ export default function CustomerBookings() {
               </div>
               {/* Transport allowance */}
               {b.transport_allowance>0&&(
-                <div style={{ fontSize:11, color:"#555", marginTop:8 }}>
+                <div style={{ fontSize:11, color:"#777777", marginTop:8 }}>
                   🚌 Transport allowance: KES {Number(b.transport_allowance).toLocaleString()} included
                 </div>
               )}
@@ -259,8 +259,8 @@ export default function CustomerBookings() {
               <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#378add", marginBottom:8 }}>🔧 Parts added by provider</div>
               {b.parts_details.map((p,i)=>(
                 <div key={i} style={{ display:"flex", justifyContent:"space-between", fontSize:12, padding:"4px 0", borderBottom:"1px solid #1a1a1a" }}>
-                  <span style={{ color:"#888" }}>{p.name} × {p.quantity}</span>
-                  <span style={{ color:"#f0ede6" }}>KES {p.total?.toLocaleString()}</span>
+                  <span style={{ color:"#555555" }}>{p.name} × {p.quantity}</span>
+                  <span style={{ color:"#000000" }}>KES {p.total?.toLocaleString()}</span>
                 </div>
               ))}
               <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, fontWeight:700, color:"#e6821e", marginTop:8 }}>
@@ -314,7 +314,7 @@ export default function CustomerBookings() {
             </div>
           )}
           {expanded===b.id&&(
-            <div style={{ marginTop:10, paddingTop:10, borderTop:"1px solid #1e1e1e" }}>
+            <div style={{ marginTop:10, paddingTop:10, borderTop:"1px solid #eeeeee" }}>
               <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(3,1fr)", gap:8 }}>
                 {[
                   { l:t("paymentStatus"), v:b.payment_status },
@@ -322,8 +322,8 @@ export default function CustomerBookings() {
                   { l:b.is_concierge?"Concierge":"Service type", v:b.is_concierge?"Yes":"Standard" },
                 ].map(f=>(
                   <div key={f.l}>
-                    <div style={{ fontSize:10, color:"#555", textTransform:"uppercase", marginBottom:2 }}>{f.l}</div>
-                    <div style={{ fontSize:12, color:"#f0ede6" }}>{f.v||"—"}</div>
+                    <div style={{ fontSize:10, color:"#777777", textTransform:"uppercase", marginBottom:2 }}>{f.l}</div>
+                    <div style={{ fontSize:12, color:"#000000" }}>{f.v||"—"}</div>
                   </div>
                 ))}
               </div>
@@ -332,8 +332,8 @@ export default function CustomerBookings() {
           )}
 
           {rebooking===b.id&&(
-            <div style={{ marginTop:10, background:"#0f0f0f", borderRadius:8, padding:"1rem", border:"1px solid #222" }}>
-              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:10, color:"#f0ede6" }}>{t("rebookService")}</div>
+            <div style={{ marginTop:10, background:"#ffffff", borderRadius:8, padding:"1rem", border:"1px solid #e5e5e5" }}>
+              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:10, color:"#000000" }}>{t("rebookService")}</div>
               <form onSubmit={rebook}>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:10 }}>
                   <div>
@@ -350,7 +350,7 @@ export default function CustomerBookings() {
                 </div>
                 <div style={{ display:"flex", gap:8 }}>
                   <button type="submit" style={{ background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>{t("confirmBooking")}</button>
-                  <button type="button" onClick={()=>setRebooking(null)} style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#888", fontSize:12, padding:"8px 16px", cursor:"pointer" }}>{t("cancel")}</button>
+                  <button type="button" onClick={()=>setRebooking(null)} style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#555555", fontSize:12, padding:"8px 16px", cursor:"pointer" }}>{t("cancel")}</button>
                 </div>
               </form>
             </div>
@@ -360,6 +360,7 @@ export default function CustomerBookings() {
     </div>
   )
 }
+
 
 
 

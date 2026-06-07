@@ -64,12 +64,12 @@ export default function MyOffers() {
 
   return (
     <div>
-      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>My Offers</div>
-      <div style={{ fontSize:12, color:"#555", marginBottom:"1.25rem" }}>Track offers you have made on marketplace listings</div>
+      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#000000", marginBottom:4 }}>My Offers</div>
+      <div style={{ fontSize:12, color:"#777777", marginBottom:"1.25rem" }}>Track offers you have made on marketplace listings</div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&offers.length===0&&(
-        <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"3rem" }}>
+        <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
           <div style={{ fontSize:32, marginBottom:10 }}>💰</div>
           No offers made yet
           <div style={{ marginTop:12 }}>
@@ -82,22 +82,22 @@ export default function MyOffers() {
       )}
 
       {offers.map(o=>(
-        <div key={o.id} style={{ background:"#111", border:`1px solid ${OC[o.status]||"#1e1e1e"}30`, borderRadius:12, padding:"1rem", marginBottom:10 }}>
+        <div key={o.id} style={{ background:"#ffffff", border:`1px solid ${OC[o.status]||"#1e1e1e"}30`, borderRadius:12, padding:"1rem", marginBottom:10 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
                 <span>{o.marketplace_listings?.listing_type==="vehicle"?"🚗":"🔧"}</span>
-                <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6" }}>{o.marketplace_listings?.title}</div>
+                <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{o.marketplace_listings?.title}</div>
                 <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:`${OC[o.status]||"#888"}20`, color:OC[o.status]||"#888" }}>{o.status}</span>
               </div>
-              <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>
+              <div style={{ fontSize:11, color:"#777777", marginBottom:2 }}>
                 Asking: KES {Number(o.marketplace_listings?.price||0).toLocaleString()}
               </div>
-              <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>
+              <div style={{ fontSize:11, color:"#777777", marginBottom:2 }}>
                 Seller: {o.seller?.business_name||`${o.seller?.first_name} ${o.seller?.last_name}`}
               </div>
-              {o.message&&<div style={{ fontSize:11, color:"#888", fontStyle:"italic", marginBottom:4 }}>"{o.message}"</div>}
-              <div style={{ fontSize:10, color:"#444" }}>{new Date(o.created_at).toLocaleString()}</div>
+              {o.message&&<div style={{ fontSize:11, color:"#555555", fontStyle:"italic", marginBottom:4 }}>"{o.message}"</div>}
+              <div style={{ fontSize:10, color:"#888888" }}>{new Date(o.created_at).toLocaleString()}</div>
             </div>
             <div style={{ textAlign:"right", flexShrink:0 }}>
               <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>
@@ -147,13 +147,13 @@ export default function MyOffers() {
           {o.status==="accepted_old"&&o.marketplace_listings?.status!=="sold"&&(
             <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:8, padding:"0.75rem" }}>
               <div style={{ fontSize:12, color:"#1d9e75", fontWeight:600, marginBottom:4 }}>✓ Offer accepted! Proceed to payment</div>
-              <div style={{ fontSize:11, color:"#555" }}>Contact support to complete the transaction securely through Car Care Connect.</div>
+              <div style={{ fontSize:11, color:"#777777" }}>Contact support to complete the transaction securely through Car Care Connect.</div>
             </div>
           )}
 
           {o.status==="pending"&&(
             <button onClick={()=>withdrawOffer(o.id)}
-              style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#555", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+              style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#777777", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
               Withdraw offer
             </button>
           )}
@@ -162,4 +162,5 @@ export default function MyOffers() {
     </div>
   )
 }
+
 

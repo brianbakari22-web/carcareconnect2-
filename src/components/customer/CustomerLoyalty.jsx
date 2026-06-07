@@ -61,33 +61,33 @@ export default function CustomerLoyalty() {
 
   const TIERS = [
     { name:"Bronze", min:0, max:999, rate:100, color:"#cd7f32" },
-    { name:"Silver", min:1000, max:4999, rate:90, color:"#aaa" },
+    { name:"Silver", min:1000, max:4999, rate:90, color:"#666666" },
     { name:"Gold", min:5000, max:9999, rate:80, color:"#e6821e" },
     { name:"Platinum", min:10000, max:null, rate:70, color:"#d4537e" },
   ]
 
-  if (loading) return <div style={{ color:"#555", fontSize:13 }}>Loading...</div>
+  if (loading) return <div style={{ color:"#777777", fontSize:13 }}>Loading...</div>
 
   return (
     <div>
-      <div style={{ background:"#111", border:`1px solid ${tierColor}40`, borderRadius:12, padding:"1.25rem", marginBottom:"1.25rem" }}>
+      <div style={{ background:"#ffffff", border:`1px solid ${tierColor}40`, borderRadius:12, padding:"1.25rem", marginBottom:"1.25rem" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:12 }}>
           <div>
             <div style={{ fontSize:11, color:"#666", marginBottom:4 }}>Your points balance</div>
             <div style={{ fontFamily:"Syne", fontSize:36, fontWeight:800, color:tierColor, lineHeight:1 }}>{points.toLocaleString()}</div>
-            <div style={{ fontSize:11, color:"#555", marginTop:4 }}>Lifetime earned: {lifetime.toLocaleString()} pts</div>
+            <div style={{ fontSize:11, color:"#777777", marginTop:4 }}>Lifetime earned: {lifetime.toLocaleString()} pts</div>
           </div>
           <div style={{ textAlign:"right" }}>
             <span style={{ background:"#1a1208", border:`1px solid ${tierColor}40`, color:tierColor, fontSize:12, padding:"4px 12px", borderRadius:20, fontWeight:600 }}>{tier}</span>
-            <div style={{ fontSize:11, color:"#555", marginTop:6 }}>
+            <div style={{ fontSize:11, color:"#777777", marginTop:6 }}>
               {tier !== "Platinum" ? `${(tierNext-points).toLocaleString()} pts to ${TIERS[TIERS.findIndex(t=>t.name===tier)+1]?.name}` : "Max tier reached"}
             </div>
           </div>
         </div>
-        <div style={{ height:6, background:"#1e1e1e", borderRadius:3, overflow:"hidden", marginBottom:6 }}>
+        <div style={{ height:6, background:"#f0f0f0", borderRadius:3, overflow:"hidden", marginBottom:6 }}>
           <div style={{ height:"100%", background:tierColor, borderRadius:3, width:progress+"%", transition:"width 0.5s" }}/>
         </div>
-        <div style={{ display:"flex", justifyContent:"space-between", fontSize:10, color:"#444" }}>
+        <div style={{ display:"flex", justifyContent:"space-between", fontSize:10, color:"#888888" }}>
           <span>{tier} {tierBase.toLocaleString()}</span>
           {tier !== "Platinum" && <span>{tierNext.toLocaleString()} pts</span>}
         </div>
@@ -99,23 +99,23 @@ export default function CustomerLoyalty() {
           { label:t("cashValue"), value:"KES " + Math.floor(points/redemptionRate).toLocaleString() },
           { label:t("redemptionRate"), value:redemptionRate + " pts = KES 1" },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"1rem", border:"1px solid #1e1e1e" }}>
-            <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
+          <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
+            <div style={{ fontSize:11, color:"#777777", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
             <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:s.color||"#f0ede6" }}>{s.value}</div>
           </div>
         ))}
       </div>
 
-      <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
-        <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:12, color:"#f0ede6" }}>Tier benefits</div>
+      <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
+        <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:12, color:"#000000" }}>Tier benefits</div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8 }}>
           {TIERS.map(t=>(
             <div key={t.name} style={{ background: tier===t.name?"#161208":"#0f0f0f", border:`1px solid ${tier===t.name?t.color+"40":"#222"}`, borderRadius:10, padding:"0.9rem", textAlign:"center" }}>
               <div style={{ fontSize:13, fontWeight:700, color:t.color, marginBottom:4 }}>{t.name}</div>
-              <div style={{ fontSize:10, color:"#555", marginBottom:6 }}>
+              <div style={{ fontSize:10, color:"#777777", marginBottom:6 }}>
                 {t.max ? `KES {t.min.toLocaleString()}–${t.max.toLocaleString()}` : `KES {t.min.toLocaleString()}+`} pts
               </div>
-              <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color: tier===t.name?t.color:"#888" }}>{t.rate} pts = KES 1</div>
+              <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color: tier===t.name?t.color:"#555555" }}>{t.rate} pts = KES 1</div>
               {tier===t.name&&<div style={{ fontSize:9, color:t.color, marginTop:4 }}>Your tier</div>}
             </div>
           ))}
@@ -123,9 +123,9 @@ export default function CustomerLoyalty() {
       </div>
 
       {points >= redemptionRate && (
-        <div style={{ background:"#111", border:`1px solid ${tierColor}30`, borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#f0ede6" }}>Redeem points</div>
-          <div style={{ fontSize:12, color:"#555", marginBottom:"1rem" }}>
+        <div style={{ background:"#ffffff", border:`1px solid ${tierColor}30`, borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#000000" }}>Redeem points</div>
+          <div style={{ fontSize:12, color:"#777777", marginBottom:"1rem" }}>
             You can redeem up to {points.toLocaleString()} points for ${maxRedeemValue} off your next booking
           </div>
           <form onSubmit={redeemPoints}>
@@ -140,11 +140,11 @@ export default function CustomerLoyalty() {
                   value={redeemAmount}
                   onChange={e=>setRedeemAmount(e.target.value)}
                   placeholder={`Min ${redemptionRate} points`}
-                  style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"10px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }}
+                  style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }}
                 />
               </div>
               <div style={{ textAlign:"right", flexShrink:0 }}>
-                <div style={{ fontSize:11, color:"#555", marginBottom:6 }}>Value</div>
+                <div style={{ fontSize:11, color:"#777777", marginBottom:6 }}>Value</div>
                 <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:tierColor }}>
                   KES ${redeemAmount ? Math.floor(parseInt(redeemAmount||0)/redemptionRate).toLocaleString() : "0"}
                 </div>
@@ -159,29 +159,30 @@ export default function CustomerLoyalty() {
       )}
 
       {points < redemptionRate && points > 0 && (
-        <div style={{ background:"#1a1208", border:"1px solid #e6821e20", borderRadius:10, padding:"1rem", marginBottom:"1.5rem", fontSize:13, color:"#888" }}>
+        <div style={{ background:"#1a1208", border:"1px solid #e6821e20", borderRadius:10, padding:"1rem", marginBottom:"1.5rem", fontSize:13, color:"#555555" }}>
           You need {redemptionRate - points} more points to start redeeming. Keep booking to earn more!
         </div>
       )}
 
-      <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:10, color:"#f0ede6" }}>Points earned from bookings</div>
-      {bookings.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"1.5rem" }}>No completed bookings yet</div>}
+      <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:10, color:"#000000" }}>Points earned from bookings</div>
+      {bookings.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"1.5rem" }}>No completed bookings yet</div>}
       {bookings.map((b,i)=>(
-        <div key={i} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"0.9rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
+        <div key={i} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"0.9rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
           <div style={{ width:36, height:36, background:"#071a12", borderRadius:8, display:"flex", alignItems:"center", justifyContent:"center", fontSize:16 }}>🔧</div>
           <div style={{ flex:1 }}>
-            <div style={{ fontSize:13, fontWeight:500, color:"#f0ede6" }}>{b.service_name}</div>
-            <div style={{ fontSize:11, color:"#555", marginTop:2 }}>{b.booking_date}</div>
+            <div style={{ fontSize:13, fontWeight:500, color:"#000000" }}>{b.service_name}</div>
+            <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>{b.booking_date}</div>
           </div>
           <div style={{ textAlign:"right" }}>
             <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75" }}>+{Math.floor(Number(b.total_amount)*10).toLocaleString()} pts</div>
-            <div style={{ fontSize:10, color:"#555" }}>${Number(b.total_amount).toFixed(2)} spent</div>
+            <div style={{ fontSize:10, color:"#777777" }}>${Number(b.total_amount).toFixed(2)} spent</div>
           </div>
         </div>
       ))}
     </div>
   )
 }
+
 
 
 

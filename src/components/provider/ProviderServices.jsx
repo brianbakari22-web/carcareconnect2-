@@ -174,16 +174,16 @@ export default function ProviderServices() {
   }
 
   const filtered = activeCategory==="all" ? services : services.filter(s=>s.category===activeCategory)
-  const inp = { width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"11px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }
+  const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"11px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }
   const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
 
   if (isInventoryProvider) return (
     <div style={{ textAlign:"center", padding:"3rem 1rem" }}>
       <div style={{ fontSize:48, marginBottom:16 }}>📦</div>
-      <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#f0ede6", marginBottom:8 }}>
+      <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000000", marginBottom:8 }}>
         {providerType==="parts_dealer"?"Parts Dealer":providerType==="tyre_shop"?"Tyre Shop":"Accessories Shop"}
       </div>
-      <div style={{ fontSize:13, color:"#555", marginBottom:"1.5rem", lineHeight:1.7 }}>
+      <div style={{ fontSize:13, color:"#777777", marginBottom:"1.5rem", lineHeight:1.7 }}>
         As a {providerType.replace(/_/g," ")}, you manage your products through Inventory, not services.
         Customers browse and order your items from the Parts Marketplace.
       </div>
@@ -191,7 +191,7 @@ export default function ProviderServices() {
         <a href="/dashboard/inventory" style={{ background:"#8b5cf6", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", textDecoration:"none" }}>
           📦 Go to Inventory
         </a>
-        <a href="/dashboard/orders" style={{ background:"#111", border:"1px solid #333", borderRadius:10, color:"#888", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", textDecoration:"none" }}>
+        <a href="/dashboard/orders" style={{ background:"#ffffff", border:"1px solid #dddddd", borderRadius:10, color:"#555555", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", textDecoration:"none" }}>
           🛒 View Orders
         </a>
       </div>
@@ -210,7 +210,7 @@ export default function ProviderServices() {
             </div>
             <div style={{ fontSize:11, color:"#666", marginBottom:4 }}>{c.desc}</div>
             <div style={{ fontSize:10, color:c.color, fontWeight:600 }}>{c.commission}</div>
-            <div style={{ fontSize:10, color:"#444", marginTop:4 }}>
+            <div style={{ fontSize:10, color:"#888888", marginTop:4 }}>
               {services.filter(s=>s.category===c.key).length} service{services.filter(s=>s.category===c.key).length!==1?"s":""}
             </div>
           </div>
@@ -235,8 +235,8 @@ export default function ProviderServices() {
 
       {/* Add/Edit form */}
       {showForm&&(
-        <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>
+        <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>
             {editing?"Edit service":"Add new service"}
           </div>
 
@@ -249,7 +249,7 @@ export default function ProviderServices() {
                   style={{ background:form.category===c.key?c.bg:"#0f0f0f", border:`1px solid ${form.category===c.key?c.color:"#222"}`, borderRadius:9, padding:"0.75rem", cursor:"pointer", textAlign:"left" }}>
                   <div style={{ fontSize:16, marginBottom:4 }}>{c.icon}</div>
                   <div style={{ fontSize:12, fontWeight:600, color:form.category===c.key?c.color:"#666", marginBottom:2 }}>{c.label}</div>
-                  <div style={{ fontSize:10, color:"#444" }}>{c.commission}</div>
+                  <div style={{ fontSize:10, color:"#888888" }}>{c.commission}</div>
                 </button>
               ))}
             </div>
@@ -274,11 +274,11 @@ export default function ProviderServices() {
               <div style={{ display:"flex", flexDirection:"column", justifyContent:"flex-end" }}>
                 {form.category&&(
                   <div style={{ background:CATEGORIES.find(c=>c.key===form.category)?.bg||"#111", border:`1px solid ${CATEGORIES.find(c=>c.key===form.category)?.border||"#222"}`, borderRadius:8, padding:"0.6rem 0.75rem" }}>
-                    <div style={{ fontSize:10, color:"#555", marginBottom:2 }}>Commission preview</div>
+                    <div style={{ fontSize:10, color:"#777777", marginBottom:2 }}>Commission preview</div>
                     <div style={{ fontSize:12, color:CATEGORIES.find(c=>c.key===form.category)?.color||"#888", fontWeight:600 }}>
                       {CATEGORIES.find(c=>c.key===form.category)?.commission}
                     </div>
-                    {form.price&&<div style={{ fontSize:11, color:"#555", marginTop:2 }}>
+                    {form.price&&<div style={{ fontSize:11, color:"#777777", marginTop:2 }}>
                       Your earnings: KES {(parseFloat(form.price||0)*(1-{shop_standard:0.10,shop_premium:0.20,go_service:0.15}[form.category])).toFixed(0)}
                     </div>}
                   </div>
@@ -295,7 +295,7 @@ export default function ProviderServices() {
                 {saving?"Saving...":editing?"Update service":"Add service"}
               </button>
               <button type="button" onClick={()=>{ setShowForm(false); setEditing(null); setForm(EMPTY) }}
-                style={{ background:"none", border:"1px solid #333", borderRadius:9, color:"#666", fontSize:13, padding:"10px 18px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
+                style={{ background:"none", border:"1px solid #dddddd", borderRadius:9, color:"#666", fontSize:13, padding:"10px 18px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
                 Cancel
               </button>
             </div>
@@ -304,9 +304,9 @@ export default function ProviderServices() {
       )}
 
       {/* Services list */}
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&filtered.length===0&&(
-        <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"3rem" }}>
+        <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
           <div style={{ fontSize:32, marginBottom:10 }}>🔧</div>
           No services yet. Add your first service above.
         </div>
@@ -315,19 +315,19 @@ export default function ProviderServices() {
       {filtered.map(s=>{
         const cat = CATEGORIES.find(c=>c.key===s.category)||CATEGORIES[0]
         return (
-          <div key={s.id} style={{ background:"#111", border:`1px solid ${s.is_active?cat.border:"#1e1e1e"}`, borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8, opacity:s.is_active?1:0.6 }}>
+          <div key={s.id} style={{ background:"#ffffff", border:`1px solid ${s.is_active?cat.border:"#1e1e1e"}`, borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8, opacity:s.is_active?1:0.6 }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10 }}>
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
                   <span style={{ fontSize:16 }}>{cat.icon}</span>
-                  <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6" }}>{s.name}</div>
+                  <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{s.name}</div>
                   <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:cat.bg, color:cat.color, border:`1px solid ${cat.border}` }}>{cat.label}</span>
-                  {!s.is_active&&<span style={{ fontSize:10, color:"#555", background:"#1a1a1a", padding:"2px 8px", borderRadius:10 }}>Inactive</span>}
+                  {!s.is_active&&<span style={{ fontSize:10, color:"#777777", background:"#f5f5f5", padding:"2px 8px", borderRadius:10 }}>Inactive</span>}
                 </div>
                 {s.description&&<div style={{ fontSize:11, color:"#666", marginBottom:4, lineHeight:1.5 }}>{s.description}</div>}
                 <div style={{ display:"flex", gap:12, flexWrap:"wrap" }}>
                   <span style={{ fontSize:12, color:"#e6821e", fontFamily:"Syne", fontWeight:700 }}>KES {Number(s.price).toLocaleString()}</span>
-                  <span style={{ fontSize:11, color:"#555" }}>⏱ {s.duration_minutes||60} min</span>
+                  <span style={{ fontSize:11, color:"#777777" }}>⏱ {s.duration_minutes||60} min</span>
                   <span style={{ fontSize:11, color:cat.color }}>{cat.key==="shop_standard"?`You keep ${commissionRate.provider}% · Platform ${commissionRate.platform}%`:cat.key==="shop_premium"?`You keep ${Math.max(commissionRate.provider-10,70)}% · Platform ${Math.min(commissionRate.platform+10,30)}%`:`You keep ${commissionRate.provider}% · Platform ${commissionRate.platform}%`}</span>
                 </div>
               </div>
@@ -352,6 +352,7 @@ export default function ProviderServices() {
     </div>
   )
 }
+
 
 
 

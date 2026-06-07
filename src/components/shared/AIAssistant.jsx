@@ -574,7 +574,7 @@ export default function AIAssistant() {
       )}
 
       {open&&(
-        <div style={{ position:"fixed", bottom:88, right:20, width:340, height:520, background:"#0a0a0a", border:"1px solid "+color+"44", borderRadius:16, boxShadow:"0 8px 40px rgba(0,0,0,0.7)", zIndex:999, display:"flex", flexDirection:"column", overflow:"hidden" }}>
+        <div style={{ position:"fixed", bottom:88, right:20, width:340, height:520, background:"#ffffff", border:"1px solid "+color+"44", borderRadius:16, boxShadow:"0 8px 40px rgba(0,0,0,0.7)", zIndex:999, display:"flex", flexDirection:"column", overflow:"hidden" }}>
           <div style={{ background:"linear-gradient(135deg,"+color+","+color+"cc)", padding:"0.9rem 1rem", display:"flex", alignItems:"center", justifyContent:"space-between", flexShrink:0 }}>
             <div style={{ display:"flex", alignItems:"center", gap:8 }}>
               <div style={{ width:32, height:32, borderRadius:"50%", background:"rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, color:"#fff" }}>✦</div>
@@ -589,22 +589,22 @@ export default function AIAssistant() {
           <div style={{ flex:1, overflowY:"auto", padding:"0.9rem", display:"flex", flexDirection:"column", gap:8 }}>
             {messages.map((m,i)=>(
               <div key={i} style={{ display:"flex", justifyContent:m.role==="user"?"flex-end":"flex-start" }}>
-                <div style={{ maxWidth:"85%", padding:"10px 12px", borderRadius:m.role==="user"?"14px 14px 4px 14px":"14px 14px 14px 4px", background:m.role==="user"?color:"#1a1a1a", color:"#f0ede6", fontSize:12, lineHeight:1.6, whiteSpace:"pre-wrap" }}>
+                <div style={{ maxWidth:"85%", padding:"10px 12px", borderRadius:m.role==="user"?"14px 14px 4px 14px":"14px 14px 14px 4px", background:m.role==="user"?color:"#1a1a1a", color:"#000000", fontSize:12, lineHeight:1.6, whiteSpace:"pre-wrap" }}>
                   {m.content}
                 </div>
               </div>
             ))}
             {loading&&(
               <div style={{ display:"flex" }}>
-                <div style={{ padding:"10px 14px", borderRadius:"14px 14px 14px 4px", background:"#1a1a1a", color:"#555", fontSize:18, letterSpacing:4 }}>•••</div>
+                <div style={{ padding:"10px 14px", borderRadius:"14px 14px 14px 4px", background:"#f5f5f5", color:"#777777", fontSize:18, letterSpacing:4 }}>•••</div>
               </div>
             )}
             {messages.length<=1&&!loading&&(
               <div style={{ display:"flex", flexDirection:"column", gap:6, marginTop:4 }}>
-                <div style={{ fontSize:10, color:"#555", textAlign:"center" }}>Quick questions:</div>
+                <div style={{ fontSize:10, color:"#777777", textAlign:"center" }}>Quick questions:</div>
                 {QUICK[role].map((q,i)=>(
                   <button key={i} onClick={()=>{ setInput(q); inputRef.current?.focus() }}
-                    style={{ background:"#111", border:"1px solid "+color+"33", borderRadius:8, color:"#888", fontSize:11, padding:"7px 10px", cursor:"pointer", textAlign:"left" }}>
+                    style={{ background:"#ffffff", border:"1px solid "+color+"33", borderRadius:8, color:"#555555", fontSize:11, padding:"7px 10px", cursor:"pointer", textAlign:"left" }}>
                     {q}
                   </button>
                 ))}
@@ -613,10 +613,10 @@ export default function AIAssistant() {
             <div ref={bottomRef}/>
           </div>
 
-          <form onSubmit={send} style={{ padding:"0.75rem", borderTop:"1px solid #1e1e1e", display:"flex", gap:8, background:"#111", flexShrink:0 }}>
+          <form onSubmit={send} style={{ padding:"0.75rem", borderTop:"1px solid #eeeeee", display:"flex", gap:8, background:"#ffffff", flexShrink:0 }}>
             <input ref={inputRef} value={input} onChange={e=>setInput(e.target.value)}
               placeholder="Ask me anything..."
-              style={{ flex:1, background:"#0f0f0f", border:"1px solid #222", borderRadius:10, padding:"9px 12px", color:"#f0ede6", fontSize:12, outline:"none" }}/>
+              style={{ flex:1, background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:10, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none" }}/>
             <button type="submit" disabled={!input.trim()||loading}
               style={{ background:input.trim()&&!loading?color:"#222", border:"none", borderRadius:10, color:input.trim()&&!loading?"#fff":"#555", fontSize:16, padding:"0 14px", cursor:input.trim()&&!loading?"pointer":"default" }}>
               🤔
@@ -627,6 +627,7 @@ export default function AIAssistant() {
     </>
   )
 }
+
 
 
 

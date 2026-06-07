@@ -96,18 +96,18 @@ export default function VehicleConditionReport({ bookingId, reportType, onComple
     }
   }
 
-  const inp = { width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"11px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }
+  const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"11px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }
   const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
 
   return (
-    <div style={{ background:"#111", border:`1px solid ${reportType==="pickup"?"#378add40":"#1d9e7540"}`, borderRadius:12, padding:"1.25rem" }}>
+    <div style={{ background:"#ffffff", border:`1px solid ${reportType==="pickup"?"#378add40":"#1d9e7540"}`, borderRadius:12, padding:"1.25rem" }}>
       <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:"1.25rem" }}>
         <span style={{ fontSize:22 }}>{reportType==="pickup"?"🚗":"✅"}</span>
         <div>
           <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:reportType==="pickup"?"#378add":"#1d9e75" }}>
             {reportType==="pickup"?"Vehicle Pickup Report":"Vehicle Dropoff Report"}
           </div>
-          {vehicleInfo&&<div style={{ fontSize:11, color:"#555" }}>{vehicleInfo}</div>}
+          {vehicleInfo&&<div style={{ fontSize:11, color:"#777777" }}>{vehicleInfo}</div>}
         </div>
       </div>
 
@@ -117,7 +117,7 @@ export default function VehicleConditionReport({ bookingId, reportType, onComple
           <label style={lbl}>Odometer reading (km) *</label>
           <input type="number" value={form.odometer_reading} onChange={e=>setForm(f=>({...f,odometer_reading:e.target.value}))}
             placeholder="e.g. 45230" required style={inp}/>
-          <div style={{ fontSize:10, color:"#444", marginTop:4 }}>Enter the exact reading from the dashboard</div>
+          <div style={{ fontSize:10, color:"#888888", marginTop:4 }}>Enter the exact reading from the dashboard</div>
         </div>
 
         {/* Fuel level */}
@@ -138,7 +138,7 @@ export default function VehicleConditionReport({ bookingId, reportType, onComple
           <label style={lbl}>Vehicle condition</label>
           <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(3,1fr)", gap:8 }}>
             {CHECKLIST.map(c=>(
-              <label key={c.key} style={{ display:"flex", alignItems:"center", gap:8, padding:"8px", background:"#0f0f0f", borderRadius:8, cursor:"pointer", border:`1px solid ${form[c.key]?"#e24b4a30":"#1a1a1a"}` }}>
+              <label key={c.key} style={{ display:"flex", alignItems:"center", gap:8, padding:"8px", background:"#ffffff", borderRadius:8, cursor:"pointer", border:`1px solid ${form[c.key]?"#e24b4a30":"#1a1a1a"}` }}>
                 <input type="checkbox" checked={form[c.key]} onChange={e=>setForm(f=>({...f,[c.key]:e.target.checked}))}
                   style={{ accentColor:"#e24b4a", width:14, height:14, flexShrink:0 }}/>
                 <span style={{ fontSize:11, color:form[c.key]?"#e24b4a":"#666" }}>{c.label}</span>
@@ -163,3 +163,4 @@ export default function VehicleConditionReport({ bookingId, reportType, onComple
     </div>
   )
 }
+

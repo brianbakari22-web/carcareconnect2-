@@ -60,7 +60,7 @@ export default function ProviderReviews() {
   return (
     <div>
       {reviews.length > 0 && (
-        <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", marginBottom:"1.25rem", display:"flex", gap:"1.5rem", alignItems:"center" }}>
+        <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.25rem", display:"flex", gap:"1.5rem", alignItems:"center" }}>
           <div style={{ textAlign:"center", flexShrink:0 }}>
             <div style={{ fontFamily:"Syne", fontSize:40, fontWeight:800, color:"#e6821e", lineHeight:1 }}>{avgRating}</div>
             <div style={{ display:"flex", justifyContent:"center", gap:2, margin:"6px 0" }}>
@@ -68,38 +68,38 @@ export default function ProviderReviews() {
                 <span key={s} style={{ color: s <= Math.round(avgRating) ? "#e6821e" : "#333", fontSize:16 }}>★</span>
               ))}
             </div>
-            <div style={{ fontSize:11, color:"#555" }}>{reviews.length} review{reviews.length!==1?"s":""}</div>
+            <div style={{ fontSize:11, color:"#777777" }}>{reviews.length} review{reviews.length!==1?"s":""}</div>
           </div>
           <div style={{ flex:1 }}>
             {dist.map(d => (
               <div key={d.star} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:5 }}>
-                <div style={{ fontSize:11, color:"#888", width:10 }}>{d.star}</div>
+                <div style={{ fontSize:11, color:"#555555", width:10 }}>{d.star}</div>
                 <span style={{ color:"#e6821e", fontSize:12 }}>★</span>
-                <div style={{ flex:1, height:6, background:"#1e1e1e", borderRadius:3, overflow:"hidden" }}>
+                <div style={{ flex:1, height:6, background:"#f0f0f0", borderRadius:3, overflow:"hidden" }}>
                   <div style={{ height:"100%", background:"#e6821e", borderRadius:3, width:`${d.pct}%`, transition:"width 0.5s" }} />
                 </div>
-                <div style={{ fontSize:11, color:"#555", width:24, textAlign:"right" }}>{d.count}</div>
+                <div style={{ fontSize:11, color:"#777777", width:24, textAlign:"right" }}>{d.count}</div>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {loading && <div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {loading && <div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading && reviews.length === 0 && (
-        <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No reviews yet. Complete bookings to receive ratings.</div>
+        <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>No reviews yet. Complete bookings to receive ratings.</div>
       )}
 
       {reviews.map(r => (
-        <div key={r.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem", marginBottom:10 }}>
+        <div key={r.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:10 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
               <div style={{ width:36, height:36, borderRadius:"50%", background:"#1a1208", border:"1px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:700, color:"#e6821e" }}>
                 {r.profile_public?.first_name?.[0]}{r.profile_public?.last_name?.[0]}
               </div>
               <div>
-                <div style={{ fontSize:13, fontWeight:500, color:"#f0ede6" }}>{r.profile_public?.first_name} {r.profile_public?.last_name}</div>
-                <div style={{ fontSize:10, color:"#444" }}>{new Date(r.created_at).toLocaleDateString()}</div>
+                <div style={{ fontSize:13, fontWeight:500, color:"#000000" }}>{r.profile_public?.first_name} {r.profile_public?.last_name}</div>
+                <div style={{ fontSize:10, color:"#888888" }}>{new Date(r.created_at).toLocaleDateString()}</div>
               </div>
             </div>
             <div style={{ display:"flex", gap:1 }}>
@@ -110,27 +110,27 @@ export default function ProviderReviews() {
           </div>
 
           {r.provider_review && (
-            <div style={{ fontSize:13, color:"#aaa", lineHeight:1.6, marginBottom:10 }}>"{r.provider_review}"</div>
+            <div style={{ fontSize:13, color:"#666666", lineHeight:1.6, marginBottom:10 }}>"{r.provider_review}"</div>
           )}
 
           {r.driver_rating > 0 && (
-            <div style={{ fontSize:11, color:"#555", marginBottom:10 }}>
+            <div style={{ fontSize:11, color:"#777777", marginBottom:10 }}>
               Driver rated: {[1,2,3,4,5].map(s=><span key={s} style={{ color: s<=r.driver_rating?"#378add":"#333" }}>★</span>)}
             </div>
           )}
 
           {r.provider_response ? (
-            <div style={{ background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"0.75rem" }}>
-              <div style={{ fontSize:10, color:"#555", marginBottom:4 }}>Your reply</div>
-              <div style={{ fontSize:12, color:"#888", lineHeight:1.5 }}>{r.provider_response}</div>
+            <div style={{ background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"0.75rem" }}>
+              <div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>Your reply</div>
+              <div style={{ fontSize:12, color:"#555555", lineHeight:1.5 }}>{r.provider_response}</div>
               <button onClick={() => { setReplying(r.id); setReplyText(r.provider_response) }}
-                style={{ background:"none", border:"none", color:"#555", fontSize:11, cursor:"pointer", marginTop:6, fontFamily:"'DM Sans',sans-serif", padding:0 }}>
+                style={{ background:"none", border:"none", color:"#777777", fontSize:11, cursor:"pointer", marginTop:6, fontFamily:"'DM Sans',sans-serif", padding:0 }}>
                 Edit reply
               </button>
             </div>
           ) : (
             <button onClick={() => { setReplying(r.id); setReplyText("") }}
-              style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#888", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+              style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#555555", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
               Reply to review
             </button>
           )}
@@ -139,14 +139,14 @@ export default function ProviderReviews() {
             <div style={{ marginTop:10 }}>
               <textarea value={replyText} onChange={e=>setReplyText(e.target.value)} rows={3}
                 placeholder="Write your reply to this review..."
-                style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"10px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", resize:"vertical", marginBottom:8 }} />
+                style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", resize:"vertical", marginBottom:8 }} />
               <div style={{ display:"flex", gap:8 }}>
                 <button onClick={() => submitReply(r.id)} disabled={submitting}
                   style={{ background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontSize:12, fontWeight:700, padding:"7px 16px", cursor:"pointer", fontFamily:"Syne,sans-serif" }}>
                   {submitting ? "Posting..." : language==="sw"?"Chapisha jibu":"Post reply"}
                 </button>
                 <button onClick={() => { setReplying(null); setReplyText("") }}
-                  style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#888", fontSize:12, padding:"7px 16px", cursor:"pointer" }}>
+                  style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#555555", fontSize:12, padding:"7px 16px", cursor:"pointer" }}>
                   Cancel
                 </button>
               </div>
@@ -157,5 +157,6 @@ export default function ProviderReviews() {
     </div>
   )
 }
+
 
 

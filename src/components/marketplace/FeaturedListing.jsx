@@ -61,14 +61,14 @@ export default function FeaturedListing({ listing, onSuccess }) {
   if (isFeatured) return (
     <div style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:12, padding:"1rem" }}>
       <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e", marginBottom:4 }}>⭐ Currently featured</div>
-      <div style={{ fontSize:11, color:"#555" }}>{daysLeft} day{daysLeft!==1?"s":""} remaining</div>
+      <div style={{ fontSize:11, color:"#777777" }}>{daysLeft} day{daysLeft!==1?"s":""} remaining</div>
     </div>
   )
 
   return (
-    <div style={{ background:"#111", border:"1px solid #e6821e30", borderRadius:12, padding:"1.25rem" }}>
-      <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>⭐ Feature this listing</div>
-      <div style={{ fontSize:12, color:"#555", marginBottom:12 }}>Featured listings appear at the top of browse and get 3x more views.</div>
+    <div style={{ background:"#ffffff", border:"1px solid #e6821e30", borderRadius:12, padding:"1.25rem" }}>
+      <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#000000", marginBottom:4 }}>⭐ Feature this listing</div>
+      <div style={{ fontSize:12, color:"#777777", marginBottom:12 }}>Featured listings appear at the top of browse and get 3x more views.</div>
 
       {[
         { icon:"⭐", text:"Pinned at top of all marketplace listings" },
@@ -77,7 +77,7 @@ export default function FeaturedListing({ listing, onSuccess }) {
       ].map((item,i)=>(
         <div key={i} style={{ display:"flex", gap:8, marginBottom:4 }}>
           <span style={{ flexShrink:0 }}>{item.icon}</span>
-          <span style={{ fontSize:11, color:"#888" }}>{item.text}</span>
+          <span style={{ fontSize:11, color:"#555555" }}>{item.text}</span>
         </div>
       ))}
 
@@ -101,3 +101,4 @@ export default function FeaturedListing({ listing, onSuccess }) {
     </div>
   )
 }
+

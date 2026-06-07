@@ -156,8 +156,8 @@ export default function ProviderBookings() {
           { label:"In progress", value:bookings.filter(b=>b.status==="in-progress").length, color:"#8b5cf6" },
           { label:t("completed"), value:bookings.filter(b=>b.status==="completed").length, color:"#1d9e75" },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:isMobile?"0.75rem":"1rem", border:"1px solid #1e1e1e" }}>
-            <div style={{ fontSize:10, color:"#555", textTransform:"uppercase", marginBottom:4 }}>{s.label}</div>
+          <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:isMobile?"0.75rem":"1rem", border:"1px solid #eeeeee" }}>
+            <div style={{ fontSize:10, color:"#777777", textTransform:"uppercase", marginBottom:4 }}>{s.label}</div>
             <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:s.color }}>{s.value}</div>
           </div>
         ))}
@@ -172,24 +172,24 @@ export default function ProviderBookings() {
         ))}
       </div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>{t("loading")}</div>}
-      {!loading&&filtered.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No bookings found</div>}
+      {loading&&<div style={{ color:"#777777", fontSize:13 }}>{t("loading")}</div>}
+      {!loading&&filtered.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>No bookings found</div>}
 
       {filtered.map(b=>{
         const cat = CATEGORIES[b.service_category]||CATEGORIES.shop_standard
         const reports = existingReports[b.id]||{}
         return (
-          <div key={b.id} style={{ background:"#111", border:`1px solid ${SB[b.status]||"#1e1e1e"}`, borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8 }}>
+          <div key={b.id} style={{ background:"#ffffff", border:`1px solid ${SB[b.status]||"#1e1e1e"}`, borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8 }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
               <div style={{ flex:1, minWidth:0, marginRight:8 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:4, flexWrap:"wrap" }}>
                   <span style={{ fontSize:14 }}>{cat.icon}</span>
-                  <div style={{ fontSize:isMobile?13:14, fontWeight:500, color:"#f0ede6" }}>{b.service_name}</div>
+                  <div style={{ fontSize:isMobile?13:14, fontWeight:500, color:"#000000" }}>{b.service_name}</div>
                   <span style={{ fontSize:10, padding:"1px 7px", borderRadius:10, background:`${cat.color}20`, color:cat.color }}>{cat.label}</span>
                 </div>
-                <div style={{ fontSize:11, color:"#555" }}>{b.booking_date} · {b.booking_time?.slice(0,5)}</div>
-                {b.booking_number&&<div style={{ fontSize:10, color:"#444", marginTop:2 }}>#{b.booking_number}</div>}
-                {b.problem_description&&<div style={{ fontSize:11, color:"#888", marginTop:4, fontStyle:"italic" }}>"{b.problem_description}"</div>}
+                <div style={{ fontSize:11, color:"#777777" }}>{b.booking_date} · {b.booking_time?.slice(0,5)}</div>
+                {b.booking_number&&<div style={{ fontSize:10, color:"#888888", marginTop:2 }}>#{b.booking_number}</div>}
+                {b.problem_description&&<div style={{ fontSize:11, color:"#555555", marginTop:4, fontStyle:"italic" }}>"{b.problem_description}"</div>}
                 {b.assigned_mechanic_id&&<div style={{ fontSize:11, color:"#1d9e75", marginTop:2 }}>👨‍🔧 Mechanic assigned</div>}
                 {b.parts_details?.length>0&&(
                   <div style={{ fontSize:11, color:b.parts_approved?"#1d9e75":"#e6821e", marginTop:2 }}>
@@ -266,7 +266,7 @@ export default function ProviderBookings() {
               )}
 
               <button onClick={()=>setExpanded(expanded===b.id?null:b.id)}
-                style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#666", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#666", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                 {expanded===b.id?"Less":"Details"}
               </button>
             </div>
@@ -276,7 +276,7 @@ export default function ProviderBookings() {
               <div style={{ marginTop:10, background:"#160a2e", border:"1px solid #8b5cf630", borderRadius:10, padding:"1rem" }}>
                 <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#8b5cf6", marginBottom:8 }}>Assign mechanic</div>
                 {mechanics.length===0?(
-                  <div style={{ fontSize:12, color:"#555", marginBottom:8 }}>No available mechanics.</div>
+                  <div style={{ fontSize:12, color:"#777777", marginBottom:8 }}>No available mechanics.</div>
                 ):(
                   <div style={{ marginBottom:10 }}>
                     {mechanics.map(m=>(
@@ -286,8 +286,8 @@ export default function ProviderBookings() {
                           {m.first_name[0]}{m.last_name[0]}
                         </div>
                         <div>
-                          <div style={{ fontSize:12, color:"#f0ede6" }}>{m.first_name} {m.last_name}</div>
-                          <div style={{ fontSize:10, color:"#555" }}>{m.specialization}</div>
+                          <div style={{ fontSize:12, color:"#000000" }}>{m.first_name} {m.last_name}</div>
+                          <div style={{ fontSize:10, color:"#777777" }}>{m.specialization}</div>
                         </div>
                         {selectedMechanic===m.id&&<div style={{ marginLeft:"auto", fontSize:14, color:"#8b5cf6" }}>✓</div>}
                       </div>
@@ -300,7 +300,7 @@ export default function ProviderBookings() {
                     Assign & notify customer
                   </button>
                   <button onClick={()=>{ setAssigningMechanic(null); setSelectedMechanic("") }}
-                    style={{ background:"none", border:"1px solid #333", borderRadius:8, color:"#666", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
+                    style={{ background:"none", border:"1px solid #dddddd", borderRadius:8, color:"#666", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
                     Cancel
                   </button>
                 </div>
@@ -314,7 +314,7 @@ export default function ProviderBookings() {
 
             {/* Expanded details */}
             {expanded===b.id&&(
-              <div style={{ marginTop:10, paddingTop:10, borderTop:"1px solid #1e1e1e" }}>
+              <div style={{ marginTop:10, paddingTop:10, borderTop:"1px solid #eeeeee" }}>
                 <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(3,1fr)", gap:8, marginBottom:8 }}>
                   {[
                     { l:"Your earnings", v:`KES ${Number(b.provider_earnings||0).toFixed(0)}`, c:"#1d9e75" },
@@ -325,7 +325,7 @@ export default function ProviderBookings() {
                     { l:"Concierge", v:b.is_concierge?"Yes":"No" },
                   ].map(f=>(
                     <div key={f.l}>
-                      <div style={{ fontSize:10, color:"#555", textTransform:"uppercase", marginBottom:2 }}>{f.l}</div>
+                      <div style={{ fontSize:10, color:"#777777", textTransform:"uppercase", marginBottom:2 }}>{f.l}</div>
                       <div style={{ fontSize:12, color:f.c||"#f0ede6" }}>{f.v||"—"}</div>
                     </div>
                   ))}
@@ -346,7 +346,7 @@ export default function ProviderBookings() {
                   </div>
                 )}
                 {b.notes&&<div style={{ fontSize:11, color:"#666", fontStyle:"italic", marginTop:8 }}>Note: "{b.notes}"</div>}
-                {b.problem_description&&<div style={{ fontSize:11, color:"#888", fontStyle:"italic", marginTop:4 }}>Problem: "{b.problem_description}"</div>}
+                {b.problem_description&&<div style={{ fontSize:11, color:"#555555", fontStyle:"italic", marginTop:4 }}>Problem: "{b.problem_description}"</div>}
               </div>
             )}
           </div>
@@ -355,5 +355,6 @@ export default function ProviderBookings() {
     </div>
   )
 }
+
 
 

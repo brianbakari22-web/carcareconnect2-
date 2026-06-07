@@ -44,27 +44,27 @@ export default function ProviderClaims() {
 
   return (
     <div>
-      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:18, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>Service Claims</div>
-      <div style={{ fontSize:12, color:"#555", marginBottom:"1.25rem" }}>Claims filed against your services</div>
+      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:18, fontWeight:800, color:"#000000", marginBottom:4 }}>Service Claims</div>
+      <div style={{ fontSize:12, color:"#777777", marginBottom:"1.25rem" }}>Claims filed against your services</div>
 
       {/* Stats */}
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {[
-          { label:"Total claims", value:claims.length, color:"#f0ede6" },
+          { label:"Total claims", value:claims.length, color:"#000000" },
           { label:"Approved", value:claims.filter(c=>c.status==="approved").length, color:"#e24b4a" },
           { label:"Active penalties", value:activePenalties.length, color:"#e6821e" },
           { label:"Total deducted", value:`KES ${totalDeducted.toLocaleString()}`, color:"#e24b4a" },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:isMobile?"0.75rem":"1rem", border:"1px solid #1e1e1e" }}>
-            <div style={{ fontSize:10, color:"#555", textTransform:"uppercase", marginBottom:4 }}>{s.label}</div>
+          <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:isMobile?"0.75rem":"1rem", border:"1px solid #eeeeee" }}>
+            <div style={{ fontSize:10, color:"#777777", textTransform:"uppercase", marginBottom:4 }}>{s.label}</div>
             <div style={{ fontFamily:"Syne", fontSize:isMobile?14:18, fontWeight:800, color:s.color }}>{s.value}</div>
           </div>
         ))}
       </div>
 
       {/* Policy reminder */}
-      <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1rem", marginBottom:"1.5rem" }}>
-        <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#f0ede6", marginBottom:8 }}>🛡️ Service Guarantee Policy</div>
+      <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem", marginBottom:"1.5rem" }}>
+        <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000", marginBottom:8 }}>🛡️ Service Guarantee Policy</div>
         {[
           { icon:"⚠️", text:"1st approved claim — Warning + full cost deducted from earnings" },
           { icon:"🚫", text:"2nd approved claim — 7 day suspension + cost deducted" },
@@ -91,29 +91,29 @@ export default function ProviderClaims() {
         ))}
       </div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
 
       {/* Claims tab */}
       {tab==="claims"&&(
         <div>
           {!loading&&claims.length===0&&(
-            <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>
+            <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>
               <div style={{ fontSize:32, marginBottom:10 }}>✅</div>
               No claims against your services — keep up the great work!
             </div>
           )}
           {claims.map(c=>(
-            <div key={c.id} style={{ background:"#111", border:`1px solid ${SC[c.status]||"#1e1e1e"}30`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
+            <div key={c.id} style={{ background:"#ffffff", border:`1px solid ${SC[c.status]||"#1e1e1e"}30`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
-                    <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6" }}>{c.bookings?.service_name}</div>
+                    <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{c.bookings?.service_name}</div>
                     <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:`${SC[c.status]||"#888"}20`, color:SC[c.status]||"#888" }}>{c.status?.replace("_"," ")}</span>
                   </div>
-                  <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>#{c.bookings?.booking_number} · {c.bookings?.booking_date}</div>
+                  <div style={{ fontSize:11, color:"#777777", marginBottom:2 }}>#{c.bookings?.booking_number} · {c.bookings?.booking_date}</div>
                   <div style={{ fontSize:12, color:"#e6821e", marginBottom:2 }}>Reason: {c.reason}</div>
                   {c.admin_notes&&<div style={{ fontSize:11, color:"#378add", marginTop:4 }}>Admin decision: "{c.admin_notes}"</div>}
-                  <div style={{ fontSize:10, color:"#444", marginTop:4 }}>{new Date(c.created_at).toLocaleString()}</div>
+                  <div style={{ fontSize:10, color:"#888888", marginTop:4 }}>{new Date(c.created_at).toLocaleString()}</div>
                 </div>
                 <div style={{ textAlign:"right", flexShrink:0 }}>
                   <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e24b4a" }}>KES {Number(c.bookings?.total_amount||0).toLocaleString()}</div>
@@ -166,15 +166,15 @@ export default function ProviderClaims() {
       {/* Penalties tab */}
       {tab==="penalties"&&(
         <div>
-          {penalties.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No penalties recorded</div>}
+          {penalties.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>No penalties recorded</div>}
           {penalties.map(p=>(
-            <div key={p.id} style={{ background:"#111", border:`1px solid ${p.is_active?"#e24b4a20":"#1e1e1e"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
+            <div key={p.id} style={{ background:"#ffffff", border:`1px solid ${p.is_active?"#e24b4a20":"#1e1e1e"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                 <div>
                   <div style={{ fontSize:12, fontWeight:600, color:p.is_active?"#e24b4a":"#555", marginBottom:2 }}>{p.penalty_type?.replace(/_/g," ").toUpperCase()}</div>
                   <div style={{ fontSize:11, color:"#666", marginBottom:2 }}>{p.reason}</div>
-                  {p.expires_at&&<div style={{ fontSize:10, color:"#555" }}>Until: {new Date(p.expires_at).toLocaleString()}</div>}
-                  <div style={{ fontSize:10, color:"#444", marginTop:2 }}>{new Date(p.created_at).toLocaleDateString()}</div>
+                  {p.expires_at&&<div style={{ fontSize:10, color:"#777777" }}>Until: {new Date(p.expires_at).toLocaleString()}</div>}
+                  <div style={{ fontSize:10, color:"#888888", marginTop:2 }}>{new Date(p.created_at).toLocaleDateString()}</div>
                 </div>
                 <div style={{ textAlign:"right" }}>
                   {p.amount_deducted>0&&<div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e24b4a" }}>-KES {Number(p.amount_deducted).toLocaleString()}</div>}
@@ -188,6 +188,7 @@ export default function ProviderClaims() {
     </div>
   )
 }
+
 
 
 
