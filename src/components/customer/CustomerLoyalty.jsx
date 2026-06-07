@@ -78,7 +78,7 @@ export default function CustomerLoyalty() {
             <div style={{ fontSize:11, color:"#777777", marginTop:4 }}>Lifetime earned: {lifetime.toLocaleString()} pts</div>
           </div>
           <div style={{ textAlign:"right" }}>
-            <span style={{ background:"#1a1208", border:`1px solid ${tierColor}40`, color:tierColor, fontSize:12, padding:"4px 12px", borderRadius:20, fontWeight:600 }}>{tier}</span>
+            <span style={{ background:tierColor+"15", border:`1px solid ${tierColor}40`, color:tierColor, fontSize:12, padding:"4px 12px", borderRadius:20, fontWeight:600 }}>{tier}</span>
             <div style={{ fontSize:11, color:"#777777", marginTop:6 }}>
               {tier !== "Platinum" ? `${(tierNext-points).toLocaleString()} pts to ${TIERS[TIERS.findIndex(t=>t.name===tier)+1]?.name}` : "Max tier reached"}
             </div>
@@ -101,19 +101,19 @@ export default function CustomerLoyalty() {
         ].map(s=>(
           <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
             <div style={{ fontSize:11, color:"#777777", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
-            <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:s.color||"#f0ede6" }}>{s.value}</div>
+            <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:s.color||"#000000" }}>{s.value}</div>
           </div>
         ))}
       </div>
 
       <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
         <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:12, color:"#000000" }}>Tier benefits</div>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8 }}>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:8 }}>
           {TIERS.map(t=>(
-            <div key={t.name} style={{ background: tier===t.name?"#161208":"#0f0f0f", border:`1px solid ${tier===t.name?t.color+"40":"#222"}`, borderRadius:10, padding:"0.9rem", textAlign:"center" }}>
+            <div key={t.name} style={{ background: tier===t.name?t.color+"15":"#f5f5f5", border:`1px solid ${tier===t.name?t.color:"#eeeeee"}`, borderRadius:10, padding:"0.9rem", textAlign:"center" }}>
               <div style={{ fontSize:13, fontWeight:700, color:t.color, marginBottom:4 }}>{t.name}</div>
-              <div style={{ fontSize:10, color:"#777777", marginBottom:6 }}>
-                {t.max ? `KES {t.min.toLocaleString()}–${t.max.toLocaleString()}` : `KES {t.min.toLocaleString()}+`} pts
+              <div style={{ fontSize:10, color:"#555555", marginBottom:6 }}>
+                {t.max ? `${t.min.toLocaleString()} – ${t.max.toLocaleString()} pts` : `${t.min.toLocaleString()}+ pts`}
               </div>
               <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color: tier===t.name?t.color:"#555555" }}>{t.rate} pts = KES 1</div>
               {tier===t.name&&<div style={{ fontSize:9, color:t.color, marginTop:4 }}>Your tier</div>}
@@ -144,7 +144,7 @@ export default function CustomerLoyalty() {
                 />
               </div>
               <div style={{ textAlign:"right", flexShrink:0 }}>
-                <div style={{ fontSize:11, color:"#777777", marginBottom:6 }}>Value</div>
+                <div style={{ fontSize:11, color:"#555555", marginBottom:6 }}>Value</div>
                 <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:tierColor }}>
                   KES ${redeemAmount ? Math.floor(parseInt(redeemAmount||0)/redemptionRate).toLocaleString() : "0"}
                 </div>
@@ -182,6 +182,8 @@ export default function CustomerLoyalty() {
     </div>
   )
 }
+
+
 
 
 
