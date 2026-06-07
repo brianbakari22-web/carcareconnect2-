@@ -435,168 +435,70 @@ export default function AuthPage() {
         .cta-btn { transition: all 0.15s; }
         .cta-btn:hover { opacity:0.9; transform:translateY(-1px); }
         .legal-link { color:#555; text-decoration:none; font-size:12px; }
-        .legal-link:hover { color:#e6821e; }
-      `}</style>
-
-      {/* Nav */}
-      <nav style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"1.25rem 2rem", borderBottom:"1px solid #1a1a1a", position:"sticky", top:0, background:"#0a0a0a", zIndex:10 }}>
-        <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#f0ede6" }}>
-          🚗 Car<span style={{ color:"#e6821e" }}>Care</span> Connect
-        </div>
-        <div style={{ display:"flex", gap:10 }}>
-          <button onClick={()=>{ setStep("role"); setMode("signin") }}
-            style={{ background:"none", border:"1px solid #333", borderRadius:8, color:"#888", fontSize:13, padding:"8px 18px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
-            Sign in
-          </button>
-          <button onClick={()=>{ setStep("role"); setMode("signup") }}
-            style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:13, fontWeight:600, padding:"8px 18px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
-            Get started
-          </button>
-        </div>
-      </nav>
-
-      {/* Hero */}
-      <div style={{ textAlign:"center", padding:isMobile?"2rem 1rem 2rem":"5rem 2rem 3rem", animation:"fadeUp 0.6s ease forwards" }}>
-        <div style={{ display:"inline-block", background:"#1a1208", border:"1px solid #e6821e40", borderRadius:20, padding:"6px 16px", fontSize:12, color:"#e6821e", marginBottom:"1.5rem", fontWeight:500 }}>
-          🇰🇪 Proudly serving Nairobi & beyond
-        </div>
-        <h1 style={{ fontFamily:"Syne", fontSize:"clamp(32px,5vw,56px)", fontWeight:800, color:"#f0ede6", margin:"0 0 1rem", lineHeight:1.15 }}>
-          Your Car, Our Care.<br/>
-          <span style={{ color:"#e6821e" }}>Simplified.</span>
-        </h1>
-        <p style={{ fontSize:"clamp(14px,2vw,17px)", color:"#888", maxWidth:560, margin:"0 auto 2.5rem", lineHeight:1.7 }}>
-          Connect with verified service providers, track your vehicle in real-time, and earn rewards on every service — all in one platform.
-        </p>
-        <div style={{ display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap" }}>
-          <button className="cta-btn" onClick={()=>{ setSelectedRole("customer"); setStep("auth"); setMode("signup") }}
-            style={{ background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px 28px", cursor:"pointer" }}>
-            Book a service →
-          </button>
-          <button className="cta-btn" onClick={()=>{ setSelectedRole("provider"); setStep("auth"); setMode("signup") }}
-            style={{ background:"none", border:"1px solid #333", borderRadius:10, color:"#888", fontSize:14, padding:"14px 28px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
-            List your shop
-          </button>
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div style={{ display:"grid", gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)", gap:1, background:"#1a1a1a", margin:"0 auto", borderRadius:12, overflow:"hidden", maxWidth:700 }}>
-        {STATS.map(s=>(
-          <div key={s.label} style={{ background:"#111", padding:"1.25rem", textAlign:"center" }}>
-            <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#e6821e" }}>{s.value}</div>
-            <div style={{ fontSize:11, color:"#555", marginTop:4 }}>{s.label}</div>
+      {/* Simple role picker - main landing is at / */}
+      <div style={{ minHeight:"100vh", background:"#fff", display:"flex", flexDirection:"column", fontFamily:"DM Sans,sans-serif" }}>
+        {/* Nav */}
+        <nav style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"0 1.25rem", height:56, background:"#000", position:"sticky", top:0, zIndex:10 }}>
+          <div style={{ fontSize:18, fontWeight:700, color:"#fff" }}>Car<span style={{ color:"#e6821e" }}>Care</span></div>
+          <div style={{ display:"flex", gap:8 }}>
+            <button onClick={()=>{ setStep("role"); setMode("signin") }}
+              style={{ background:"none", border:"1px solid #444", borderRadius:500, color:"#fff", fontSize:13, padding:"7px 16px", cursor:"pointer" }}>
+              Sign in
+            </button>
+            <button onClick={()=>{ setStep("role"); setMode("signup") }}
+              style={{ background:"#e6821e", border:"none", borderRadius:500, color:"#fff", fontSize:13, fontWeight:700, padding:"8px 18px", cursor:"pointer" }}>
+              Get started
+            </button>
           </div>
-        ))}
-      </div>
+        </nav>
 
-      {/* Role cards */}
-      <div style={{ padding:"4rem 2rem 2rem" }}>
-        <div style={{ textAlign:"center", marginBottom:"2.5rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:"clamp(22px,3vw,32px)", fontWeight:800, color:"#f0ede6", marginBottom:8 }}>
-            Built for everyone in the ecosystem
+        {/* Hero */}
+        <div style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"3rem 1.25rem", textAlign:"center" }}>
+          <img src="/logo.svg" alt="Car Care Connect" style={{ height:80, marginBottom:"1.5rem" }}/>
+          <div style={{ display:"inline-flex", alignItems:"center", gap:6, background:"#f0fdf4", border:"1px solid #bbf7d0", borderRadius:20, padding:"5px 14px", marginBottom:"1.25rem" }}>
+            <div style={{ width:7, height:7, borderRadius:"50%", background:"#16a34a" }}/>
+            <span style={{ fontSize:12, color:"#16a34a", fontWeight:600 }}>🇰🇪 Built in Kenya · Serving Nairobi</span>
           </div>
-          <div style={{ fontSize:14, color:"#555" }}>Choose your role and get started in minutes</div>
-        </div>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))", gap:16, maxWidth:900, margin:"0 auto" }}>
-          {ROLES.map(r=>(
-            <div key={r.key} className="role-card"
-              style={{ background:"#111", border:`1px solid ${r.border}`, borderRadius:16, padding:"2rem 1.5rem", cursor:"pointer" }}
-              onClick={()=>{ setSelectedRole(r.key); setStep("auth"); setMode("signup") }}>
-              <div style={{ fontSize:40, marginBottom:"1rem", animation:"pulse 3s ease-in-out infinite" }}>{r.icon}</div>
-              <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:r.color, marginBottom:6 }}>{r.label}</div>
-              <div style={{ fontSize:13, color:"#666", marginBottom:"1.25rem", lineHeight:1.6 }}>{r.desc}</div>
-              <div style={{ borderTop:`1px solid ${r.border}`, paddingTop:"1rem" }}>
-                {r.features.map(f=>(
-                  <div key={f} style={{ fontSize:12, color:"#777", marginBottom:6 }}>{f}</div>
-                ))}
+          <h1 style={{ fontSize:"clamp(28px,6vw,52px)", fontWeight:800, lineHeight:1.1, letterSpacing:-1, color:"#000", marginBottom:"1rem" }}>
+            One app.<br/><span style={{ color:"#e6821e" }}>Every car need.</span>
+          </h1>
+          <p style={{ fontSize:15, color:"#666", maxWidth:440, margin:"0 auto 2.5rem", lineHeight:1.7 }}>
+            Nairobi's most trusted automotive platform. Book mechanics, order parts, wash your car and more.
+          </p>
+
+          {/* Role cards */}
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))", gap:12, width:"100%", maxWidth:680, marginBottom:"2rem" }}>
+            {[
+              { key:"customer", icon:"🚗", label:"Customer", desc:"Book services, track drivers, earn rewards", color:"#e6821e" },
+              { key:"provider", icon:"🔧", label:"Service Provider", desc:"List your shop, manage bookings, grow revenue", color:"#378add" },
+              { key:"driver", icon:"🚚", label:"Concierge Driver", desc:"Deliver vehicles and parts, earn per trip", color:"#1d9e75" },
+            ].map(r=>(
+              <div key={r.key} onClick={()=>{ setSelectedRole(r.key); setStep("auth"); setMode("signup") }}
+                style={{ background:"#f5f5f5", border:"2px solid transparent", borderRadius:16, padding:"1.5rem", cursor:"pointer", textAlign:"left", transition:"all 0.2s" }}
+                onMouseEnter={e=>{ e.currentTarget.style.borderColor=r.color; e.currentTarget.style.background="#fff" }}
+                onMouseLeave={e=>{ e.currentTarget.style.borderColor="transparent"; e.currentTarget.style.background="#f5f5f5" }}>
+                <div style={{ fontSize:32, marginBottom:10 }}>{r.icon}</div>
+                <div style={{ fontWeight:700, fontSize:15, color:"#000", marginBottom:4 }}>{r.label}</div>
+                <div style={{ fontSize:12, color:"#888", lineHeight:1.5 }}>{r.desc}</div>
+                <div style={{ marginTop:12, fontSize:12, fontWeight:600, color:r.color }}>Get started →</div>
               </div>
-              <div style={{ marginTop:"1.25rem", display:"flex", alignItems:"center", gap:6, color:r.color, fontSize:13, fontWeight:600 }}>
-                Get started →
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Vision & Mission */}
-      <div style={{ padding:"2rem 2rem", maxWidth:900, margin:"0 auto" }}>
-        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:16 }}>
-          <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:14, padding:"1.75rem" }}>
-            <div style={{ fontSize:24, marginBottom:10 }}>🌟</div>
-            <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#f0ede6", marginBottom:8 }}>Our Vision</div>
-            <div style={{ fontSize:13, color:"#666", lineHeight:1.7 }}>
-              To become Nairobi's most trusted digital ecosystem for automotive care — connecting every vehicle owner with reliable service providers at the click of a button.
-            </div>
+            ))}
           </div>
-          <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:14, padding:"1.75rem" }}>
-            <div style={{ fontSize:24, marginBottom:10 }}>🎯</div>
-            <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#f0ede6", marginBottom:8 }}>Our Mission</div>
-            <div style={{ fontSize:13, color:"#666", lineHeight:1.7 }}>
-              Empowering vehicle owners and service providers through technology — simplifying car maintenance, connecting customers with verified professionals, and ensuring transparent pricing.
-            </div>
+
+          <div style={{ fontSize:13, color:"#888" }}>
+            Already have an account?{" "}
+            <button onClick={()=>{ setStep("role"); setMode("signin") }}
+              style={{ background:"none", border:"none", color:"#e6821e", fontWeight:600, cursor:"pointer", fontSize:13 }}>
+              Sign in
+            </button>
           </div>
         </div>
-      </div>
 
-      {/* How it works */}
-      <div style={{ padding:"2rem 2rem 4rem", maxWidth:900, margin:"0 auto" }}>
-        <div style={{ textAlign:"center", marginBottom:"2rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:"clamp(20px,3vw,28px)", fontWeight:800, color:"#f0ede6", marginBottom:8 }}>How it works</div>
-          <div style={{ fontSize:13, color:"#555" }}>Get started in 3 simple steps</div>
-        </div>
-        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:16 }}>
-          {[
-            { step:"01", title:"Create account", desc:"Sign up as a customer, provider, or driver in under 2 minutes", icon:"👤" },
-            { step:"02", title:"Browse & book", desc:"Find verified service providers near you and book instantly", icon:"🔍" },
-            { step:"03", title:"Track & earn", desc:"Track your service in real-time and earn loyalty points", icon:"💎" },
-          ].map(s=>(
-            <div key={s.step} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:14, padding:"1.5rem", textAlign:"center" }}>
-              <div style={{ fontSize:32, marginBottom:10 }}>{s.icon}</div>
-              <div style={{ fontFamily:"Syne", fontSize:11, fontWeight:700, color:"#e6821e", marginBottom:6, letterSpacing:"0.1em" }}>STEP {s.step}</div>
-              <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:700, color:"#f0ede6", marginBottom:6 }}>{s.title}</div>
-              <div style={{ fontSize:12, color:"#666", lineHeight:1.6 }}>{s.desc}</div>
-            </div>
-          ))}
+        {/* Footer */}
+        <div style={{ background:"#111", padding:"1.25rem", textAlign:"center" }}>
+          <div style={{ fontSize:11, color:"#444" }}>© 2026 Car Care Connect · Nairobi, Kenya · 0113858966 · carcareconnect254@gmail.com</div>
         </div>
       </div>
-
-      {/* CTA Banner */}
-      <div style={{ margin:"0 2rem 4rem", background:"linear-gradient(135deg,#1a1208 0%,#0f0f0f 100%)", border:"1px solid #e6821e30", borderRadius:16, padding:"3rem 2rem", textAlign:"center", maxWidth:900, marginLeft:"auto", marginRight:"auto" }}>
-        <div style={{ fontFamily:"Syne", fontSize:"clamp(20px,3vw,28px)", fontWeight:800, color:"#f0ede6", marginBottom:8 }}>
-          Ready to get started?
-        </div>
-        <div style={{ fontSize:14, color:"#888", marginBottom:"1.75rem" }}>
-          Join vehicle owners and service providers in Nairobi
-        </div>
-        <div style={{ display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap" }}>
-          <button className="cta-btn" onClick={()=>{ setSelectedRole("customer"); setStep("auth"); setMode("signup") }}
-            style={{ background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px 28px", cursor:"pointer" }}>
-            Book a service today →
-          </button>
-          <button className="cta-btn" onClick={()=>{ setStep("role"); setMode("signin") }}
-            style={{ background:"none", border:"1px solid #333", borderRadius:10, color:"#888", fontSize:14, padding:"13px 28px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
-            Sign in
-          </button>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <footer style={{ borderTop:"1px solid #1a1a1a", padding:"2rem", textAlign:"center" }}>
-        <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#f0ede6", marginBottom:12 }}>
-          🚗 Car<span style={{ color:"#e6821e" }}>Care</span> Connect
-        </div>
-        <div style={{ display:"flex", gap:20, justifyContent:"center", flexWrap:"wrap", marginBottom:12 }}>
-          <span style={{ fontSize:12, color:"#555" }}>📍 Nairobi, Kenya</span>
-          <span style={{ fontSize:12, color:"#555" }}>📧 carcareconnect254@gmail.com</span>
-          <span style={{ fontSize:12, color:"#555" }}>📞 0113858966</span>
-        </div>
-        <div style={{ display:"flex", gap:20, justifyContent:"center", flexWrap:"wrap", marginBottom:12 }}>
-          <a href="/terms" className="legal-link">Terms of Service</a>
-          <a href="/privacy" className="legal-link">Privacy Policy</a>
-        </div>
-        <div style={{ fontSize:11, color:"#333" }}>© 2026 Car Care Connect · Drive Confidently, Service Simply</div>
-      </footer>
-    </div>
   )
 }
 
