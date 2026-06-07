@@ -38,10 +38,10 @@ function NetworkCanvas() {
     const resize = () => { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight }
     resize()
     window.addEventListener("resize", resize)
-    const dots = Array.from({ length: 80 }, () => ({
-      x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-      vx: (Math.random()-0.5)*0.6, vy: (Math.random()-0.5)*0.6,
-      r: Math.random()*3+1,
+    const dots = Array.from({ length: 120 }, () => ({
+      x: Math.random() * canvas.width, y: Math.random() * canvas.height * 10,
+      vx: (Math.random()-0.5)*0.7, vy: (Math.random()-0.5)*0.7,
+      r: Math.random()*3.5+1.5,
       color: Math.random()>0.5?"#e6821e":Math.random()>0.5?"#1d9e75":"#378add"
     }))
     function draw() {
@@ -51,14 +51,14 @@ function NetworkCanvas() {
         if(d.x<0||d.x>canvas.width) d.vx*=-1
         if(d.y<0||d.y>canvas.height) d.vy*=-1
         ctx.beginPath(); ctx.arc(d.x,d.y,d.r,0,Math.PI*2)
-        ctx.fillStyle=d.color+"99"; ctx.fill()
+        ctx.fillStyle=d.color+"cc"; ctx.fill()
       })
       for(let i=0;i<dots.length;i++) for(let j=i+1;j<dots.length;j++) {
         const dx=dots[i].x-dots[j].x, dy=dots[i].y-dots[j].y
         const dist=Math.sqrt(dx*dx+dy*dy)
         if(dist<110) {
           ctx.beginPath(); ctx.moveTo(dots[i].x,dots[i].y); ctx.lineTo(dots[j].x,dots[j].y)
-          ctx.strokeStyle=`rgba(230,130,30,${0.4*(1-dist/110)})`; ctx.lineWidth=1; ctx.stroke()
+          ctx.strokeStyle=`rgba(230,130,30,${0.6*(1-dist/130)})`; ctx.lineWidth=1.2; ctx.stroke()
         }
       }
       animId=requestAnimationFrame(draw)
@@ -66,7 +66,7 @@ function NetworkCanvas() {
     draw()
     return () => { cancelAnimationFrame(animId); window.removeEventListener("resize",resize) }
   },[])
-  return <canvas ref={canvasRef} style={{ position:"absolute", inset:0, width:"100%", height:"100%", pointerEvents:"none" }}/>
+  return <canvas ref={canvasRef} style={{ position:"fixed", top:0, left:0, width:"100vw", height:"100vh", pointerEvents:"none" }}/>
 }
 
 export default function LandingPage() {
@@ -459,4 +459,5 @@ export default function LandingPage() {
     </div>
   )
 }
+
 
