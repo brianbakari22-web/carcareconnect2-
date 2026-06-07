@@ -68,8 +68,8 @@ export default function Marketplace() {
 
   function getSellerBadge(seller) {
     if (!seller) return { label:"Seller", color:"#777777", bg:"#1a1a1a" }
-    if (seller.role==="provider") return { label:"🏪 Verified Seller", color:"#378add", bg:"#0c1f2e" }
-    return { label:"👤 Private Seller", color:"#555555", bg:"#1a1a1a" }
+    if (seller.role==="provider") return { label:"🏪 Verified Seller", color:"#378add", bg:"#eff6ff" }
+    return { label:"👤 Private Seller", color:"#555555", bg:"#f5f5f5" }
   }
 
   const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none", fontFamily:"'DM Sans',sans-serif" }
@@ -105,7 +105,7 @@ export default function Marketplace() {
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
         {[{k:"all",l:"All",icon:"🛒"},{k:"vehicle",l:"Vehicles",icon:"🚗"},{k:"part",l:"Parts",icon:"🔧"},{k:"accessory",l:"Accessories",icon:"✨"}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#111", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
+            style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#f0f0f0", color:tab===t.k?"#fff":"#555", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
             {t.icon} {t.l}
           </button>
         ))}
@@ -115,7 +115,7 @@ export default function Marketplace() {
         <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search vehicles, parts, makes..."
           style={{ ...inp, flex:1 }}/>
         <button onClick={()=>setShowFilters(f=>!f)}
-          style={{ background:showFilters?"#e6821e":"#111", border:`1px solid ${showFilters?"#e6821e":"#333"}`, borderRadius:8, color:showFilters?"#fff":"#666", fontSize:12, padding:"9px 14px", cursor:"pointer" }}>
+          style={{ background:showFilters?"#e6821e":"#f0f0f0", border:`1px solid ${showFilters?"#e6821e":"#e0e0e0"}`, borderRadius:8, color:showFilters?"#fff":"#555", fontSize:12, padding:"9px 14px", cursor:"pointer" }}>
           🔽 Filter
         </button>
       </div>
@@ -172,7 +172,7 @@ export default function Marketplace() {
           const badge = getSellerBadge(l.profiles)
           return (
             <div key={l.id} onClick={()=>openListing(l)}
-              style={{ background:"#ffffff", border:`1px solid ${l.is_featured?"#e6821e40":"#1e1e1e"}`, borderRadius:12, overflow:"hidden", cursor:"pointer" }}>
+              style={{ background:"#ffffff", border:`1px solid ${l.is_featured?"#e6821e":"#eeeeee"}`, borderRadius:12, overflow:"hidden", cursor:"pointer" }}>
               <div style={{ height:isMobile?120:160, background:"#f5f5f5", position:"relative", display:"flex", alignItems:"center", justifyContent:"center" }}>
                 {l.is_featured&&<div style={{ position:"absolute", top:8, left:8, background:"#e6821e", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10 }}>⭐ FEATURED</div>}
                 {l.is_inspected&&<div style={{ position:"absolute", top:8, right:8, background:"#1d9e75", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10 }}>✓ INSPECTED</div>}
@@ -218,10 +218,32 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
   const navigate = useNavigate()
 
   const badge = sellerInfo?.role==="provider"
-    ? { label:"🏪 Verified Seller", color:"#378add", bg:"#0c1f2e" }
-    : { label:"👤 Private Seller", color:"#555555", bg:"#1a1a1a" }
+    ? { label:"🏪 Verified Seller", color:"#378add", bg:"#eff6ff" }
+    : { label:"👤 Private Seller", color:"#555555", bg:"#f5f5f5" }
 
   const existingOffer = offers?.find(o=>o.status==="pending"||o.status==="countered")
+
+  if (showChat) return (
+    <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.7)", zIndex:200, display:"flex", alignItems:"flex-end", justifyContent:"center" }}>
+      <div style={{ width:"100%", maxWidth:500, background:"#fff", borderRadius:"16px 16px 0 0", height:"70vh", display:"flex", flexDirection:"column", overflow:"hidden" }}>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"1rem", borderBottom:"1px solid #eee", flexShrink:0 }}>
+          <div>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#000" }}>{listing.title}</div>
+            <div style={{ fontSize:11, color:"#888" }}>Chat with {sellerInfo?.business_name||sellerInfo?.first_name||"Seller"}</div>
+          </div>
+          <button onClick={()=>setShowChat(false)} style={{ background:"#f5f5f5", border:"none", borderRadius:"50%", width:32, height:32, cursor:"pointer", fontSize:18 }}>×</button>
+        </div>
+        <div style={{ flex:1, minHeight:0 }}>
+          <ChatWindow
+            listingId={listing.id}
+            otherUserId={listing.seller_id}
+            otherUserName={sellerInfo?.business_name||sellerInfo?.first_name||"Seller"}
+            onClose={()=>setShowChat(false)}
+          />
+        </div>
+      </div>
+    </div>
+  )
 
   async function submitOffer(e) {
     e.preventDefault()
@@ -338,6 +360,10 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
 
           {listing.seller_id!==user?.id&&(
             <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+              <button onClick={()=>setShowChat(true)}
+                style={{ width:"100%", background:"#000", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:"pointer" }}>
+                💬 Message seller
+              </button>
 
               {/* Status banner */}
               {!listing.is_inspected&&(
@@ -439,6 +465,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
     </div>
   )
 }
+
 
 
 
