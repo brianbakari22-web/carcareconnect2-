@@ -381,28 +381,28 @@ export default function AuthPage() {
 
   // Role selection
   if (step === "role") return (
-    <div style={{ minHeight:"100vh", background:"#1a1a1a", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"'DM Sans',sans-serif", padding:"1rem" }}>
+    <div style={{ minHeight:"100vh", background:"#ffffff", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"DM Sans,sans-serif", padding:"1rem" }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');`}</style>
       <div style={{ width:"100%", maxWidth:640 }}>
         <button onClick={()=>setStep("landing")} style={{ background:"none", border:"none", color:"#333", cursor:"pointer", fontSize:13, marginBottom:"1.5rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
           ← Back
         </button>
         <div style={{ textAlign:"center", marginBottom:"2rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#ffffff", marginBottom:6 }}>Who are you?</div>
+          <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#000000", marginBottom:6 }}>Who are you?</div>
           <div style={{ fontSize:15, color:"#555555" }}>Choose your role to get started</div>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:12, marginBottom:"1.5rem" }}>
           {ROLES.map(r=>(
             <div key={r.key} onClick={()=>setSelectedRole(r.key)}
-              style={{ background:selectedRole===r.key?r.bg:"#111", border:`2px solid ${selectedRole===r.key?r.color:"#1e1e1e"}`, borderRadius:14, padding:"1.5rem 1rem", cursor:"pointer", textAlign:"center", transition:"all 0.15s" }}
+              style={{ background:selectedRole===r.key?r.bg:"#f5f5f5", border:`2px solid ${selectedRole===r.key?r.color:"#e5e5e5"}`, borderRadius:14, padding:"1.5rem 1rem", cursor:"pointer", textAlign:"center", transition:"all 0.15s" }}
               onMouseEnter={e=>{ if(selectedRole!==r.key){ e.currentTarget.style.borderColor=r.border; e.currentTarget.style.transform="translateY(-4px)" }}}
-              onMouseLeave={e=>{ if(selectedRole!==r.key){ e.currentTarget.style.borderColor="#1e1e1e"; e.currentTarget.style.transform="translateY(0)" }}}>
+              onMouseLeave={e=>{ if(selectedRole!==r.key){ e.currentTarget.style.borderColor="#e5e5e5"; e.currentTarget.style.transform="translateY(0)" }}}>
               <div style={{ fontSize:36, marginBottom:10 }}>{r.icon}</div>
-              <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:selectedRole===r.key?r.color:"#ffffff", marginBottom:6 }}>{r.label}</div>
+              <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:selectedRole===r.key?r.color:"#000000", marginBottom:6 }}>{r.label}</div>
               <div style={{ fontSize:13, color:"#666666", lineHeight:1.5, marginBottom:12 }}>{r.desc}</div>
               <div style={{ textAlign:"left" }}>
                 {r.features.map(f=>(
-                  <div key={f} style={{ fontSize:13, color:selectedRole===r.key?r.color:"#fff", marginBottom:4 }}>{f}</div>
+                  <div key={f} style={{ fontSize:13, color:selectedRole===r.key?r.color:"#555555", marginBottom:4 }}>{f}</div>
                 ))}
               </div>
             </div>
@@ -410,14 +410,14 @@ export default function AuthPage() {
         </div>
         <button onClick={()=>{ if(!selectedRole) return toast.error("Please select a role"); setStep("auth") }}
           disabled={!selectedRole}
-          style={{ width:"100%", background:selectedRole?"#e6821e":"#222", border:"none", borderRadius:10, color:selectedRole?"#fff":"#555", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:selectedRole?"pointer":"not-allowed", transition:"all 0.15s" }}>
+          style={{ width:"100%", background:selectedRole?"#e6821e":"#e5e5e5", border:"none", borderRadius:10, color:selectedRole?"#fff":"#999", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:selectedRole?"pointer":"not-allowed", transition:"all 0.15s" }}>
           Continue as {selectedRole ? ROLES.find(r=>r.key===selectedRole)?.label : "..."} →
         </button>
-        <div style={{ textAlign:"center", marginTop:16, fontSize:12, color:"#999" }}>
+        <div style={{ textAlign:"center", marginTop:16, fontSize:12, color:"#666" }}>
           By continuing you agree to our{" "}
-          <a href="/terms" target="_blank" style={{ color:"#fff", textDecoration:"none" }}>Terms</a>
+          <a href="/terms" target="_blank" style={{ color:"#e6821e", textDecoration:"none" }}>Terms</a>
           {" "}and{" "}
-          <a href="/privacy" target="_blank" style={{ color:"#fff", textDecoration:"none" }}>Privacy Policy</a>
+          <a href="/privacy" target="_blank" style={{ color:"#e6821e", textDecoration:"none" }}>Privacy Policy</a>
         </div>
       </div>
     </div>
@@ -464,6 +464,7 @@ export default function AuthPage() {
     </div>
   )
 }
+
 
 
 
