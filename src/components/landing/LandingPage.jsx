@@ -3,23 +3,23 @@ import { useNavigate } from "react-router-dom"
 
 function FloatingParts() {
   const items = [
-    { id:0, icon:"🛞", left:5, top:15, size:52, duration:7, delay:0, opacity:0.45 },
-    { id:1, icon:"⚙️", left:88, top:10, size:48, duration:9, delay:1, opacity:0.40 },
-    { id:2, icon:"🔧", left:15, top:75, size:40, duration:6, delay:2, opacity:0.38 },
-    { id:3, icon:"🚗", left:78, top:65, size:56, duration:8, delay:0.5, opacity:0.35 },
-    { id:4, icon:"🔋", left:45, top:5, size:38, duration:7, delay:1.5, opacity:0.40 },
-    { id:5, icon:"🛢️", left:92, top:45, size:44, duration:10, delay:3, opacity:0.38 },
-    { id:6, icon:"🔩", left:25, top:45, size:34, duration:5, delay:0, opacity:0.42 },
-    { id:7, icon:"⚡", left:60, top:80, size:42, duration:8, delay:2, opacity:0.40 },
-    { id:8, icon:"🪛", left:70, top:25, size:36, duration:6, delay:1, opacity:0.38 },
-    { id:9, icon:"🔑", left:35, top:90, size:34, duration:9, delay:4, opacity:0.35 },
-    { id:10, icon:"🛠️", left:50, top:55, size:38, duration:7, delay:2.5, opacity:0.32 },
-    { id:11, icon:"🏎️", left:10, top:55, size:46, duration:11, delay:0.5, opacity:0.38 },
+    { id:0, icon:"🛞", left:5, top:15, size:52, duration:7, delay:0, opacity:0.18 },
+    { id:1, icon:"⚙️", left:88, top:10, size:48, duration:9, delay:1, opacity:0.15 },
+    { id:2, icon:"🔧", left:15, top:75, size:40, duration:6, delay:2, opacity:0.14 },
+    { id:3, icon:"🚗", left:78, top:65, size:56, duration:8, delay:0.5, opacity:0.13 },
+    { id:4, icon:"🔋", left:45, top:5, size:38, duration:7, delay:1.5, opacity:0.15 },
+    { id:5, icon:"🛢️", left:92, top:45, size:44, duration:10, delay:3, opacity:0.14 },
+    { id:6, icon:"🔩", left:25, top:45, size:34, duration:5, delay:0, opacity:0.16 },
+    { id:7, icon:"⚡", left:60, top:80, size:42, duration:8, delay:2, opacity:0.15 },
+    { id:8, icon:"🪛", left:70, top:25, size:36, duration:6, delay:1, opacity:0.14 },
+    { id:9, icon:"🔑", left:35, top:90, size:34, duration:9, delay:4, opacity:0.13 },
+    { id:10, icon:"🛠️", left:50, top:55, size:38, duration:7, delay:2.5, opacity:0.12 },
+    { id:11, icon:"🏎️", left:10, top:55, size:46, duration:11, delay:0.5, opacity:0.14 },
   ]
   return (
     <div style={{ position:"absolute", inset:0, pointerEvents:"none", overflow:"hidden", zIndex:0 }}>
       {items.map(item => (
-        <div key={item.id} style={{ position:"absolute", left:item.left+"%", top:item.top+"%", fontSize:item.size, opacity:item.opacity, animation:`float-${item.id%3} ${item.duration}s ease-in-out infinite`, animationDelay:item.delay+"s", filter:"drop-shadow(0 4px 16px rgba(230,130,30,0.5))" }}>
+        <div key={item.id} style={{ position:"absolute", left:item.left+"%", top:item.top+"%", fontSize:item.size, opacity:item.opacity, animation:`float-${item.id%3} ${item.duration}s ease-in-out infinite`, animationDelay:item.delay+"s", filter:"drop-shadow(0 2px 8px rgba(230,130,30,0.2))" }}>
           {item.icon}
         </div>
       ))}
@@ -92,7 +92,7 @@ function NetworkCanvas() {
         ctx.lineTo(pts[1].x,pts[1].y)
         ctx.lineTo(pts[2].x,pts[2].y)
         ctx.closePath()
-        ctx.fillStyle=g.color+"22"
+        ctx.fillStyle=g.color+"0e"
         ctx.fill()
 
         // Triangle edges
@@ -101,20 +101,20 @@ function NetworkCanvas() {
         ctx.lineTo(pts[1].x,pts[1].y)
         ctx.lineTo(pts[2].x,pts[2].y)
         ctx.closePath()
-        ctx.strokeStyle=g.color+"dd"
-        ctx.lineWidth=1.8
+        ctx.strokeStyle=g.color+"55"
+        ctx.lineWidth=1
         ctx.stroke()
 
         // Glowing vertex dots
         pts.forEach(pt => {
-          const grad=ctx.createRadialGradient(pt.x,pt.y,0,pt.x,pt.y,12)
-          grad.addColorStop(0,g.color+"ff")
-          grad.addColorStop(0.4,g.color+"88")
+          const grad=ctx.createRadialGradient(pt.x,pt.y,0,pt.x,pt.y,7)
+          grad.addColorStop(0,g.color+"99")
+          grad.addColorStop(0.4,g.color+"33")
           grad.addColorStop(1,g.color+"00")
-          ctx.beginPath(); ctx.arc(pt.x,pt.y,12,0,Math.PI*2)
+          ctx.beginPath(); ctx.arc(pt.x,pt.y,7,0,Math.PI*2)
           ctx.fillStyle=grad; ctx.fill()
-          ctx.beginPath(); ctx.arc(pt.x,pt.y,4,0,Math.PI*2)
-          ctx.fillStyle=g.color+"ff"; ctx.fill()
+          ctx.beginPath(); ctx.arc(pt.x,pt.y,2.5,0,Math.PI*2)
+          ctx.fillStyle=g.color+"bb"; ctx.fill()
         })
 
         // Connect triangle vertices to nearby singles
@@ -125,7 +125,7 @@ function NetworkCanvas() {
             if(dist<100) {
               ctx.beginPath()
               ctx.moveTo(pt.x,pt.y); ctx.lineTo(s.x,s.y)
-              const alpha=Math.round(100*(1-dist/100)).toString(16).padStart(2,"0")
+              const alpha=Math.round(50*(1-dist/100)).toString(16).padStart(2,"0")
               ctx.strokeStyle=g.color+alpha
               ctx.lineWidth=0.9; ctx.stroke()
             }
@@ -141,13 +141,13 @@ function NetworkCanvas() {
         s.pulse+=s.pulseSpeed
         const r=s.r*(1+Math.sin(s.pulse)*0.3)
         const grad=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,r*5)
-        grad.addColorStop(0,s.color+"ee")
-        grad.addColorStop(0.5,s.color+"55")
+        grad.addColorStop(0,s.color+"77")
+        grad.addColorStop(0.5,s.color+"22")
         grad.addColorStop(1,s.color+"00")
         ctx.beginPath(); ctx.arc(s.x,s.y,r*5,0,Math.PI*2)
         ctx.fillStyle=grad; ctx.fill()
         ctx.beginPath(); ctx.arc(s.x,s.y,r,0,Math.PI*2)
-        ctx.fillStyle=s.color+"ff"; ctx.fill()
+        ctx.fillStyle=s.color+"99"; ctx.fill()
       })
 
       // Connect close singles
@@ -158,7 +158,7 @@ function NetworkCanvas() {
           ctx.beginPath()
           ctx.moveTo(singles[i].x,singles[i].y)
           ctx.lineTo(singles[j].x,singles[j].y)
-          ctx.strokeStyle=`rgba(230,130,30,${0.55*(1-dist/110)})`
+          ctx.strokeStyle=`rgba(230,130,30,${0.2*(1-dist/110)})`
           ctx.lineWidth=0.9; ctx.stroke()
         }
       }
@@ -569,3 +569,4 @@ export default function LandingPage() {
     </div>
   )
 }
+
