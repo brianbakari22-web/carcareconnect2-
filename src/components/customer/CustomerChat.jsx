@@ -31,7 +31,7 @@ export default function CustomerChat() {
       .order("created_at", { ascending:false })
       .order("created_at", { ascending:false })
 
-    if (!bookings||bookings.length===0) { setConversations([]); setLoading(false); return }
+    // Continue even if no bookings - need to load listing messages too
 
     const providerIds = [...new Set(bookings.map(b=>b.provider_id))]
     const { data: profs } = await supabase.from("profiles")
@@ -173,6 +173,7 @@ export default function CustomerChat() {
     </>
   )
 }
+
 
 
 
