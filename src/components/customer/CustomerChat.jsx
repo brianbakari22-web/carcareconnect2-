@@ -4,6 +4,7 @@ import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
 import ChatWindow from "../shared/ChatWindow"
+import { useSearchParams } from "react-router-dom"
 
 export default function CustomerChat() {
   const { user } = useAuth()
@@ -12,6 +13,7 @@ export default function CustomerChat() {
   const [conversations, setConversations] = useState([])
   const [selected, setSelected] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [searchParams] = useSearchParams()
 
   useEffect(() => {
     if (!user) return
@@ -58,8 +60,15 @@ export default function CustomerChat() {
         unread,
       }
     })
-    setConversations(convs.filter(c=>c._hasMessages))
+    const filtered = convs.filter(c=>c._hasMessages)
+    setConversations(filtered)
     setLoading(false)
+    // Auto-open from notification redirect
+    const bookingId = searchParams.get("booking")
+    if (bookingId) {
+      const conv = filtered.find(c=>c.bookingId===bookingId)
+      if (conv) setSelected(conv)
+    }
   }
 
   const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", completed:"#1d9e75", cancelled:"#e24b4a" }
@@ -134,11 +143,11 @@ export default function CustomerChat() {
 
       {conversations.map(c=>(
         <div key={c.bookingId} onClick={()=>setSelected(c)}
-          style={{ background:"#ffffff", border:`1px solid ${selected?.bookingId===c.bookingId?"#e6821e40":"#1a1a1a"}`, borderRadius:10, padding:"0.9rem", marginBottom:8, cursor:"pointer" }}
-          onMouseEnter={e=>e.currentTarget.style.background="#161616"}
-          onMouseLeave={e=>e.currentTarget.style.background="#111"}>
+          style={{ background:"#ffffff", border:`1px solid ${selected?.bookingId===c.bookingId?"#e6821e":"#eeeeee"}`, borderRadius:10, padding:"0.9rem", marginBottom:8, cursor:"pointer" }}
+          onMouseEnter={e=>e.currentTarget.style.background="#fff8f0"}
+          onMouseLeave={e=>e.currentTarget.style.background="#ffffff"}>
           <div style={{ display:"flex", alignItems:"flex-start", gap:10 }}>
-            <div style={{ width:44, height:44, borderRadius:"50%", background:"#1a1208", border:"1px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#e6821e", flexShrink:0 }}>
+            <div style={{ width:44, height:44, borderRadius:"50%", background:"#fff8f0", border:"1px solid #e6821e40", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#e6821e", flexShrink:0 }}>
               {c.otherUserName[0]?.toUpperCase()}
             </div>
             <div style={{ flex:1, minWidth:0 }}>
@@ -162,6 +171,7 @@ export default function CustomerChat() {
     </>
   )
 }
+
 
 
 

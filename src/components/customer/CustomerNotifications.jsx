@@ -88,7 +88,9 @@ export default function CustomerNotifications() {
         <div key={n.id} onClick={()=>{ 
     if(!n.is_read) markRead(n.id)
     if(n.type==="message"||n.title?.toLowerCase().includes("message")||n.message?.toLowerCase().includes("message")) {
-      navigate("/dashboard/chat")
+      const bookingMatch = n.message?.match(/booking[:\s]+([a-f0-9-]{36})/i)
+      if(bookingMatch) navigate(`/dashboard/chat?booking=${bookingMatch[1]}`)
+      else navigate("/dashboard/chat")
     }
   }}
           style={{ background:n.is_read?"#f8f8f8":"#ffffff", border:`1px solid ${n.is_read?"#eeeeee":typeColor[n.type]||"#e6821e"}50`, borderRadius:10, padding:"1rem", marginBottom:8, cursor:n.is_read?"default":"pointer", display:"flex", alignItems:"flex-start", gap:12 }}>
@@ -109,6 +111,7 @@ export default function CustomerNotifications() {
     </div>
   )
 }
+
 
 
 
