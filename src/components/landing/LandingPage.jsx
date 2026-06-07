@@ -27,149 +27,7 @@ function FloatingParts() {
   )
 }
 
-function NetworkCanvas() {
-  const canvasRef = useRef(null)
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext("2d")
-    let animId
-    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight }
-    resize()
-    window.addEventListener("resize", resize)
-    const COLORS = ["#e6821e","#1d9e75","#378add","#f5a623","#e24b4a"]
 
-    // Triangle groups
-    const groups = Array.from({ length: 20 }, (_, gi) => {
-      const color = COLORS[gi % COLORS.length]
-      return {
-        color,
-        cx: Math.random() * canvas.width,
-        cy: Math.random() * canvas.height,
-        vx: (Math.random()-0.5)*0.6,
-        vy: (Math.random()-0.5)*0.6,
-        rotation: Math.random() * Math.PI * 2,
-        rotSpeed: (Math.random()-0.5)*0.018,
-        size: Math.random()*40+20,
-        pulse: Math.random()*Math.PI*2,
-        pulseSpeed: Math.random()*0.03+0.01,
-      }
-    })
-
-    // Single floating dots
-    const singles = Array.from({ length: 60 }, () => ({
-      x: Math.random()*canvas.width,
-      y: Math.random()*canvas.height,
-      vx: (Math.random()-0.5)*0.7,
-      vy: (Math.random()-0.5)*0.7,
-      r: Math.random()*2.5+1.5,
-      color: COLORS[Math.floor(Math.random()*COLORS.length)],
-      pulse: Math.random()*Math.PI*2,
-      pulseSpeed: Math.random()*0.04+0.01,
-    }))
-
-    function draw() {
-      ctx.clearRect(0,0,canvas.width,canvas.height)
-
-      // Draw triangle groups
-      groups.forEach(g => {
-        g.cx+=g.vx; g.cy+=g.vy
-        if(g.cx<-60) g.cx=canvas.width+60
-        if(g.cx>canvas.width+60) g.cx=-60
-        if(g.cy<-60) g.cy=canvas.height+60
-        if(g.cy>canvas.height+60) g.cy=-60
-        g.rotation+=g.rotSpeed
-        g.pulse+=g.pulseSpeed
-        const pf = 1+Math.sin(g.pulse)*0.18
-        const pts = [0,1,2].map(i => ({
-          x: g.cx+Math.cos((i*Math.PI*2/3)+g.rotation)*g.size*pf,
-          y: g.cy+Math.sin((i*Math.PI*2/3)+g.rotation)*g.size*pf,
-        }))
-
-        // Filled triangle
-        ctx.beginPath()
-        ctx.moveTo(pts[0].x,pts[0].y)
-        ctx.lineTo(pts[1].x,pts[1].y)
-        ctx.lineTo(pts[2].x,pts[2].y)
-        ctx.closePath()
-        ctx.fillStyle=g.color+"0e"
-        ctx.fill()
-
-        // Triangle edges
-        ctx.beginPath()
-        ctx.moveTo(pts[0].x,pts[0].y)
-        ctx.lineTo(pts[1].x,pts[1].y)
-        ctx.lineTo(pts[2].x,pts[2].y)
-        ctx.closePath()
-        ctx.strokeStyle=g.color+"55"
-        ctx.lineWidth=1
-        ctx.stroke()
-
-        // Glowing vertex dots
-        pts.forEach(pt => {
-          const grad=ctx.createRadialGradient(pt.x,pt.y,0,pt.x,pt.y,7)
-          grad.addColorStop(0,g.color+"99")
-          grad.addColorStop(0.4,g.color+"33")
-          grad.addColorStop(1,g.color+"00")
-          ctx.beginPath(); ctx.arc(pt.x,pt.y,7,0,Math.PI*2)
-          ctx.fillStyle=grad; ctx.fill()
-          ctx.beginPath(); ctx.arc(pt.x,pt.y,2.5,0,Math.PI*2)
-          ctx.fillStyle=g.color+"bb"; ctx.fill()
-        })
-
-        // Connect triangle vertices to nearby singles
-        singles.forEach(s => {
-          pts.forEach(pt => {
-            const dx=pt.x-s.x, dy=pt.y-s.y
-            const dist=Math.sqrt(dx*dx+dy*dy)
-            if(dist<100) {
-              ctx.beginPath()
-              ctx.moveTo(pt.x,pt.y); ctx.lineTo(s.x,s.y)
-              const alpha=Math.round(50*(1-dist/100)).toString(16).padStart(2,"0")
-              ctx.strokeStyle=g.color+alpha
-              ctx.lineWidth=0.9; ctx.stroke()
-            }
-          })
-        })
-      })
-
-      // Draw singles
-      singles.forEach(s => {
-        s.x+=s.vx; s.y+=s.vy
-        if(s.x<0||s.x>canvas.width) s.vx*=-1
-        if(s.y<0||s.y>canvas.height) s.vy*=-1
-        s.pulse+=s.pulseSpeed
-        const r=s.r*(1+Math.sin(s.pulse)*0.3)
-        const grad=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,r*5)
-        grad.addColorStop(0,s.color+"77")
-        grad.addColorStop(0.5,s.color+"22")
-        grad.addColorStop(1,s.color+"00")
-        ctx.beginPath(); ctx.arc(s.x,s.y,r*5,0,Math.PI*2)
-        ctx.fillStyle=grad; ctx.fill()
-        ctx.beginPath(); ctx.arc(s.x,s.y,r,0,Math.PI*2)
-        ctx.fillStyle=s.color+"99"; ctx.fill()
-      })
-
-      // Connect close singles
-      for(let i=0;i<singles.length;i++) for(let j=i+1;j<singles.length;j++) {
-        const dx=singles[i].x-singles[j].x, dy=singles[i].y-singles[j].y
-        const dist=Math.sqrt(dx*dx+dy*dy)
-        if(dist<110) {
-          ctx.beginPath()
-          ctx.moveTo(singles[i].x,singles[i].y)
-          ctx.lineTo(singles[j].x,singles[j].y)
-          ctx.strokeStyle=`rgba(230,130,30,${0.2*(1-dist/110)})`
-          ctx.lineWidth=0.9; ctx.stroke()
-        }
-      }
-
-      animId=requestAnimationFrame(draw)
-    }
-    draw()
-    return () => { cancelAnimationFrame(animId); window.removeEventListener("resize",resize) }
-  },[])
-  return <canvas ref={canvasRef} style={{ position:"fixed", top:0, left:0, width:"100vw", height:"100vh", pointerEvents:"none", zIndex:0 }}/>
-}
 
 export default function LandingPage() {
   const navigate = useNavigate()
@@ -218,10 +76,7 @@ export default function LandingPage() {
     <div style={{ fontFamily:"DM Sans,sans-serif", background:"transparent", color:"#000", minHeight:"100vh", position:"relative" }}>
       {/* White base */}
       <div style={{ position:"fixed", inset:0, zIndex:-1, background:"#fff" }}/>
-      {/* Full page canvas */}
-      <div style={{ position:"fixed", inset:0, zIndex:0, pointerEvents:"none" }}>
-        <NetworkCanvas/>
-      </div>
+
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
@@ -569,4 +424,5 @@ export default function LandingPage() {
     </div>
   )
 }
+
 
