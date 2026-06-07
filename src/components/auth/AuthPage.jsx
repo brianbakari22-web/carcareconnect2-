@@ -7,51 +7,51 @@ import { useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
 
 const PROVIDER_TYPES = [
-  { key:"garage", label:"Garage/Mechanic", icon:"🔧", desc:"Car service and repair" },
-  { key:"parts_dealer", label:"Parts Dealer", icon:"⚙️", desc:"Auto parts and spares" },
-  { key:"accessories_shop", label:"Accessories Shop", icon:"✨", desc:"Car accessories" },
-  { key:"tyre_shop", label:"Tyre Shop", icon:"🛞", desc:"Tyre sales and fitting" },
-  { key:"auto_electrician", label:"Auto Electrician", icon:"⚡", desc:"Electrical specialist" },
-  { key:"car_wash", label:"Car Wash", icon:"🚿", desc:"Wash and detailing" },
-  { key:"panel_beater", label:"Panel Beater", icon:"🔨", desc:"Body and spray paint" },
-  { key:"auto_glass", label:"Auto Glass", icon:"🪟", desc:"Windscreen specialist" },
+  { key:"garage", label:"Garage/Mechanic", icon:"≡ƒöº", desc:"Car service and repair" },
+  { key:"parts_dealer", label:"Parts Dealer", icon:"ΓÜÖ∩╕Å", desc:"Auto parts and spares" },
+  { key:"accessories_shop", label:"Accessories Shop", icon:"Γ£¿", desc:"Car accessories" },
+  { key:"tyre_shop", label:"Tyre Shop", icon:"≡ƒ¢₧", desc:"Tyre sales and fitting" },
+  { key:"auto_electrician", label:"Auto Electrician", icon:"ΓÜí", desc:"Electrical specialist" },
+  { key:"car_wash", label:"Car Wash", icon:"≡ƒÜ┐", desc:"Wash and detailing" },
+  { key:"panel_beater", label:"Panel Beater", icon:"≡ƒö¿", desc:"Body and spray paint" },
+  { key:"auto_glass", label:"Auto Glass", icon:"≡ƒ¬ƒ", desc:"Windscreen specialist" },
 ]
 const DRIVER_VEHICLE_TYPES = [
-  { key:"car", label:"Car", icon:"🚗", desc:"Standard delivery" },
-  { key:"motorcycle", label:"Boda Boda", icon:"🏍️", desc:"Fast parts delivery" },
-  { key:"tuktuk", label:"Tuktuk", icon:"🛺", desc:"Local delivery" },
-  { key:"van", label:"Van/Pickup", icon:"🚐", desc:"Large items" },
+  { key:"car", label:"Car", icon:"≡ƒÜù", desc:"Standard delivery" },
+  { key:"motorcycle", label:"Boda Boda", icon:"≡ƒÅì∩╕Å", desc:"Fast parts delivery" },
+  { key:"tuktuk", label:"Tuktuk", icon:"≡ƒ¢║", desc:"Local delivery" },
+  { key:"van", label:"Van/Pickup", icon:"≡ƒÜÉ", desc:"Large items" },
 ]
 const ROLES = [
   {
     key: "customer",
     label: "Customer",
-    icon: "🚗",
+    icon: "≡ƒÜù",
     desc: "Book services, track drivers, earn loyalty points",
     color: "#e6821e",
     bg: "#1a1208",
     border: "#e6821e40",
-    features: ["🔧 Browse verified services", "📍 Live driver tracking", "💎 Loyalty rewards", "⭐ Rate your experience"]
+    features: ["≡ƒöº Browse verified services", "≡ƒôì Live driver tracking", "≡ƒÆÄ Loyalty rewards", "Γ¡É Rate your experience"]
   },
   {
     key: "provider",
     label: "Service Provider",
-    icon: "🔧",
+    icon: "≡ƒöº",
     desc: "List services, manage bookings, grow your business",
     color: "#378add",
     bg: "#0c1f2e",
     border: "#378add40",
-    features: ["📊 Analytics dashboard", "💰 Fast payouts", "📅 Booking management", "⭐ Customer reviews"]
+    features: ["≡ƒôè Analytics dashboard", "≡ƒÆ░ Fast payouts", "≡ƒôà Booking management", "Γ¡É Customer reviews"]
   },
   {
     key: "driver",
     label: "Driver",
-    icon: "🚚",
+    icon: "≡ƒÜÜ",
     desc: "Earn by delivering vehicles, set your own schedule",
     color: "#1d9e75",
     bg: "#071a12",
     border: "#1d9e7540",
-    features: ["📍 GPS navigation", "💵 Competitive earnings", "📈 Earnings dashboard", "✅ Flexible hours"]
+    features: ["≡ƒôì GPS navigation", "≡ƒÆ╡ Competitive earnings", "≡ƒôê Earnings dashboard", "Γ£à Flexible hours"]
   },
 ]
 
@@ -164,14 +164,14 @@ export default function AuthPage() {
     <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", background:"#0a0a0a", padding:"1rem" }}>
       <div style={{ width:"100%", maxWidth:400, background:"#111", border:"1px solid #1e1e1e", borderRadius:16, padding:"2rem" }}>
         <div style={{ textAlign:"center", marginBottom:"1.5rem" }}>
-          <div style={{ fontSize:36, marginBottom:8 }}>🔐</div>
+          <div style={{ fontSize:36, marginBottom:8 }}>≡ƒöÉ</div>
           <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>Reset password</div>
           <div style={{ fontSize:12, color:"#555" }}>Enter your email to receive a reset link</div>
         </div>
         {resetSent ? (
           <div>
             <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:10, padding:"1.25rem", marginBottom:"1.5rem", textAlign:"center" }}>
-              <div style={{ fontSize:32, marginBottom:8 }}>📧</div>
+              <div style={{ fontSize:32, marginBottom:8 }}>≡ƒôº</div>
               <div style={{ fontSize:13, color:"#1d9e75", fontWeight:600, marginBottom:4 }}>Reset link sent!</div>
               <div style={{ fontSize:12, color:"#888", lineHeight:1.6 }}>
                 Check your email at <strong style={{ color:"#f0ede6" }}>{form.email}</strong>. Check spam if you dont see it.
@@ -210,7 +210,7 @@ export default function AuthPage() {
       <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", padding:isMobile?"1rem":"2rem" }}>
         <div style={{ width:"100%", maxWidth:420 }}>
           <button onClick={()=>setStep("role")} style={{ background:"none", border:"none", color:"#555", cursor:"pointer", fontSize:13, marginBottom:"1.5rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
-            ← Back
+            ΓåÉ Back
           </button>
 
           <div style={{ marginBottom:"1.5rem" }}>
@@ -329,7 +329,7 @@ export default function AuthPage() {
 
             <button type="submit" disabled={loading||(mode==="signup"&&!agreed)}
               style={{ width:"100%", background:loading||(mode==="signup"&&!agreed)?"#333":"#e6821e", border:"none", borderRadius:9, color:loading||(mode==="signup"&&!agreed)?"#666":"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:loading||(mode==="signup"&&!agreed)?"not-allowed":"pointer", transition:"all 0.15s" }}>
-              {loading ? "Please wait..." : mode==="signin" ? "Sign in →" : "Create account →"}
+              {loading ? "Please wait..." : mode==="signin" ? "Sign in ΓåÆ" : "Create account ΓåÆ"}
             </button>
           </form>
 
@@ -349,7 +349,7 @@ export default function AuthPage() {
             Car<span style={{ color:"#e6821e" }}>Care</span> Connect
           </div>
           <div style={{ fontSize:13, color:"#555", marginBottom:"2rem", lineHeight:1.6 }}>
-            Nairobi's trusted auto care network — connecting vehicle owners with verified service providers.
+            Nairobi's trusted auto care network ΓÇö connecting vehicle owners with verified service providers.
           </div>
           {ROLES.map(r=>(
             <div key={r.key} style={{ display:"flex", alignItems:"flex-start", gap:12, marginBottom:16, padding:"0.9rem", background:selectedRole===r.key?r.bg:"transparent", border:`1px solid ${selectedRole===r.key?r.border:"transparent"}`, borderRadius:10, transition:"all 0.15s" }}>
@@ -385,7 +385,7 @@ export default function AuthPage() {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');`}</style>
       <div style={{ width:"100%", maxWidth:640 }}>
         <button onClick={()=>setStep("landing")} style={{ background:"none", border:"none", color:"#555", cursor:"pointer", fontSize:13, marginBottom:"1.5rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
-          ← Back
+          ΓåÉ Back
         </button>
         <div style={{ textAlign:"center", marginBottom:"2rem" }}>
           <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#f0ede6", marginBottom:6 }}>Who are you?</div>
@@ -411,7 +411,7 @@ export default function AuthPage() {
         <button onClick={()=>{ if(!selectedRole) return toast.error("Please select a role"); setStep("auth") }}
           disabled={!selectedRole}
           style={{ width:"100%", background:selectedRole?"#e6821e":"#222", border:"none", borderRadius:10, color:selectedRole?"#fff":"#555", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:selectedRole?"pointer":"not-allowed", transition:"all 0.15s" }}>
-          Continue as {selectedRole ? ROLES.find(r=>r.key===selectedRole)?.label : "..."} →
+          Continue as {selectedRole ? ROLES.find(r=>r.key===selectedRole)?.label : "..."} ΓåÆ
         </button>
         <div style={{ textAlign:"center", marginTop:16, fontSize:12, color:"#444" }}>
           By continuing you agree to our{" "}
@@ -423,113 +423,44 @@ export default function AuthPage() {
     </div>
   )
 
-  // Landing page
+  // Landing page - simple role picker
   return (
-    <div style={{ minHeight:"100vh", background:"#0a0a0a", fontFamily:"'DM Sans',sans-serif", opacity:visible?1:0, transition:"opacity 0.5s" }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
-        @keyframes fadeUp { from { opacity:0; transform:translateY(24px) } to { opacity:1; transform:translateY(0) } }
-        @keyframes pulse { 0%,100% { transform:scale(1) } 50% { transform:scale(1.05) } }
-        .role-card { transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s !important; }
-        .role-card:hover { transform: translateY(-6px) !important; box-shadow: 0 20px 40px rgba(0,0,0,0.4) !important; }
-        .cta-btn { transition: all 0.15s; }
-        .cta-btn:hover { opacity:0.9; transform:translateY(-1px); }
-        .legal-link { color:#555; text-decoration:none; font-size:12px; }
-      {/* Simple role picker - main landing is at / */}
-      <div style={{ minHeight:"100vh", background:"#fff", display:"flex", flexDirection:"column", fontFamily:"DM Sans,sans-serif" }}>
-        {/* Nav */}
-        <nav style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"0 1.25rem", height:56, background:"#000", position:"sticky", top:0, zIndex:10 }}>
-          <div style={{ fontSize:18, fontWeight:700, color:"#fff" }}>Car<span style={{ color:"#e6821e" }}>Care</span></div>
-          <div style={{ display:"flex", gap:8 }}>
-            <button onClick={()=>{ setStep("role"); setMode("signin") }}
-              style={{ background:"none", border:"1px solid #444", borderRadius:500, color:"#fff", fontSize:13, padding:"7px 16px", cursor:"pointer" }}>
-              Sign in
-            </button>
-            <button onClick={()=>{ setStep("role"); setMode("signup") }}
-              style={{ background:"#e6821e", border:"none", borderRadius:500, color:"#fff", fontSize:13, fontWeight:700, padding:"8px 18px", cursor:"pointer" }}>
-              Get started
-            </button>
-          </div>
-        </nav>
-
-        {/* Hero */}
-        <div style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"3rem 1.25rem", textAlign:"center" }}>
-          <img src="/logo.svg" alt="Car Care Connect" style={{ height:80, marginBottom:"1.5rem" }}/>
-          <div style={{ display:"inline-flex", alignItems:"center", gap:6, background:"#f0fdf4", border:"1px solid #bbf7d0", borderRadius:20, padding:"5px 14px", marginBottom:"1.25rem" }}>
-            <div style={{ width:7, height:7, borderRadius:"50%", background:"#16a34a" }}/>
-            <span style={{ fontSize:12, color:"#16a34a", fontWeight:600 }}>🇰🇪 Built in Kenya · Serving Nairobi</span>
-          </div>
-          <h1 style={{ fontSize:"clamp(28px,6vw,52px)", fontWeight:800, lineHeight:1.1, letterSpacing:-1, color:"#000", marginBottom:"1rem" }}>
-            One app.<br/><span style={{ color:"#e6821e" }}>Every car need.</span>
-          </h1>
-          <p style={{ fontSize:15, color:"#666", maxWidth:440, margin:"0 auto 2.5rem", lineHeight:1.7 }}>
-            Nairobi's most trusted automotive platform. Book mechanics, order parts, wash your car and more.
-          </p>
-
-          {/* Role cards */}
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))", gap:12, width:"100%", maxWidth:680, marginBottom:"2rem" }}>
-            {[
-              { key:"customer", icon:"🚗", label:"Customer", desc:"Book services, track drivers, earn rewards", color:"#e6821e" },
-              { key:"provider", icon:"🔧", label:"Service Provider", desc:"List your shop, manage bookings, grow revenue", color:"#378add" },
-              { key:"driver", icon:"🚚", label:"Concierge Driver", desc:"Deliver vehicles and parts, earn per trip", color:"#1d9e75" },
-            ].map(r=>(
-              <div key={r.key} onClick={()=>{ setSelectedRole(r.key); setStep("auth"); setMode("signup") }}
-                style={{ background:"#f5f5f5", border:"2px solid transparent", borderRadius:16, padding:"1.5rem", cursor:"pointer", textAlign:"left", transition:"all 0.2s" }}
-                onMouseEnter={e=>{ e.currentTarget.style.borderColor=r.color; e.currentTarget.style.background="#fff" }}
-                onMouseLeave={e=>{ e.currentTarget.style.borderColor="transparent"; e.currentTarget.style.background="#f5f5f5" }}>
-                <div style={{ fontSize:32, marginBottom:10 }}>{r.icon}</div>
-                <div style={{ fontWeight:700, fontSize:15, color:"#000", marginBottom:4 }}>{r.label}</div>
-                <div style={{ fontSize:12, color:"#888", lineHeight:1.5 }}>{r.desc}</div>
-                <div style={{ marginTop:12, fontSize:12, fontWeight:600, color:r.color }}>Get started →</div>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ fontSize:13, color:"#888" }}>
-            Already have an account?{" "}
-            <button onClick={()=>{ setStep("role"); setMode("signin") }}
-              style={{ background:"none", border:"none", color:"#e6821e", fontWeight:600, cursor:"pointer", fontSize:13 }}>
-              Sign in
-            </button>
-          </div>
+    <div style={{ minHeight:"100vh", background:"#fff", fontFamily:"DM Sans,sans-serif", display:"flex", flexDirection:"column" }}>
+      <nav style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"0 1.25rem", height:56, background:"#000", position:"sticky", top:0, zIndex:10 }}>
+        <div style={{ fontSize:18, fontWeight:700, color:"#fff" }}>Car<span style={{ color:"#e6821e" }}>Care</span></div>
+        <div style={{ display:"flex", gap:8 }}>
+          <button onClick={()=>{ setStep("role"); setMode("signin") }} style={{ background:"none", border:"1px solid #444", borderRadius:500, color:"#fff", fontSize:13, padding:"7px 16px", cursor:"pointer" }}>Sign in</button>
+          <button onClick={()=>{ setStep("role"); setMode("signup") }} style={{ background:"#e6821e", border:"none", borderRadius:500, color:"#fff", fontSize:13, fontWeight:700, padding:"8px 18px", cursor:"pointer" }}>Get started</button>
         </div>
-
-        {/* Footer */}
-        <div style={{ background:"#111", padding:"1.25rem", textAlign:"center" }}>
-          <div style={{ fontSize:11, color:"#444" }}>© 2026 Car Care Connect · Nairobi, Kenya · 0113858966 · carcareconnect254@gmail.com</div>
+      </nav>
+      <div style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"3rem 1.25rem", textAlign:"center" }}>
+        <img src="/logo.svg" alt="Car Care Connect" style={{ height:80, marginBottom:"1.5rem" }}/>
+        <h1 style={{ fontSize:"clamp(28px,6vw,52px)", fontWeight:800, lineHeight:1.1, letterSpacing:-1, color:"#000", marginBottom:"1rem" }}>One app.<br/><span style={{ color:"#e6821e" }}>Every car need.</span></h1>
+        <p style={{ fontSize:15, color:"#666", maxWidth:440, margin:"0 auto 2.5rem", lineHeight:1.7 }}>Nairobi most trusted automotive platform. Book mechanics, order parts, wash your car and more.</p>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))", gap:12, width:"100%", maxWidth:620, marginBottom:"2rem" }}>
+          {[
+            { key:"customer", icon:"🚗", label:"Customer", desc:"Book services, track drivers, earn rewards", color:"#e6821e" },
+            { key:"provider", icon:"🔧", label:"Service Provider", desc:"List your shop, manage bookings, grow revenue", color:"#378add" },
+            { key:"driver", icon:"🚚", label:"Driver", desc:"Deliver vehicles and parts, earn per trip", color:"#1d9e75" },
+          ].map(r=>(
+            <div key={r.key} onClick={()=>{ setSelectedRole(r.key); setStep("auth"); setMode("signup") }}
+              style={{ background:"#f5f5f5", borderRadius:16, padding:"1.5rem", cursor:"pointer", textAlign:"left", border:"2px solid transparent", transition:"all 0.2s" }}
+              onMouseEnter={e=>{ e.currentTarget.style.borderColor=r.color; e.currentTarget.style.background="#fff"; e.currentTarget.style.transform="translateY(-4px)" }}
+              onMouseLeave={e=>{ e.currentTarget.style.borderColor="transparent"; e.currentTarget.style.background="#f5f5f5"; e.currentTarget.style.transform="translateY(0)" }}>
+              <div style={{ fontSize:32, marginBottom:10 }}>{r.icon}</div>
+              <div style={{ fontWeight:700, fontSize:15, color:"#000", marginBottom:4 }}>{r.label}</div>
+              <div style={{ fontSize:12, color:"#888", lineHeight:1.5, marginBottom:10 }}>{r.desc}</div>
+              <div style={{ fontSize:12, fontWeight:600, color:r.color }}>Get started →</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ fontSize:13, color:"#888" }}>Already have an account?{" "}
+          <button onClick={()=>{ setStep("role"); setMode("signin") }} style={{ background:"none", border:"none", color:"#e6821e", fontWeight:600, cursor:"pointer", fontSize:13 }}>Sign in</button>
         </div>
       </div>
+      <div style={{ background:"#111", padding:"1.25rem", textAlign:"center" }}>
+        <div style={{ fontSize:11, color:"#444" }}>© 2026 Car Care Connect · Nairobi, Kenya · 0113858966</div>
+      </div>
+    </div>
   )
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
