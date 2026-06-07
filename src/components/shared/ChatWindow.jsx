@@ -130,9 +130,9 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
     } catch(_) {}
 
 
-        type: "info"
-      })
-    } catch(_) {}
+
+
+
   }
 
   async function deleteMessage(id) {
