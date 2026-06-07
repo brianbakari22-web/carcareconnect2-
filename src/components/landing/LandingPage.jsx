@@ -95,7 +95,7 @@ export default function LandingPage() {
           <h1 style={{ fontFamily:"Syne", fontSize:"clamp(38px,6vw,74px)", fontWeight:800, lineHeight:1.1, marginBottom:"1.5rem" }}>
             One app.<br/>
             <span style={{ color:"#000000" }}>Every car need.</span><br/>
-            Nairobi.
+          <h1 style={{ fontFamily:"Syne", fontSize:"clamp(38px,6vw,74px)", fontWeight:800, lineHeight:1.1, marginBottom:"1.5rem", color:"#000000" }}>
           </h1>
           <p style={{ fontSize:"clamp(15px,2vw,18px)", color:"#777", lineHeight:1.8, maxWidth:580, margin:"0 auto 2.5rem" }}>
             Nairobi's most trusted automotive platform. Verified mechanics, 24/7 emergency roadside help, live tracking, parts marketplace — everything your car needs, one tap away.
@@ -147,7 +147,7 @@ export default function LandingPage() {
       {/* HOW IT WORKS */}
       <div style={{ position:"relative", zIndex:1, maxWidth:1000, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
         <div style={{ textAlign:"center", marginBottom:"3rem" }}>
-          <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#000000", marginBottom:8 }}>How it works</div>
+          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800, color:"#000000" }}>Car care has never been this easy</h2>
           <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>Car care has never been this easy</h2>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))", gap:20 }}>
@@ -170,7 +170,7 @@ export default function LandingPage() {
       <div style={{ position:"relative", zIndex:1, maxWidth:1000, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
         <div style={{ textAlign:"center", marginBottom:"3rem" }}>
           <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#000000", marginBottom:8 }}>Features</div>
-          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>Everything your car needs, in one place</h2>
+          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800, color:"#000000" }}>Everything your car needs, in one place</h2>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))", gap:16 }}>
           {[
@@ -196,7 +196,7 @@ export default function LandingPage() {
       <div style={{ position:"relative", zIndex:1, maxWidth:1000, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
         <div style={{ textAlign:"center", marginBottom:"3rem" }}>
           <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#000000", marginBottom:8 }}>Why CCC</div>
-          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>Built for Kenya. Built for trust.</h2>
+          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800, color:"#000000" }}>Built for Kenya. Built for trust.</h2>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))", gap:16 }}>
           {[
@@ -220,7 +220,7 @@ export default function LandingPage() {
       <div style={{ position:"relative", zIndex:1, maxWidth:1000, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
         <div style={{ textAlign:"center", marginBottom:"3rem" }}>
           <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#000000", marginBottom:8 }}>Who is it for</div>
-          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>Join Built for everyone in the ecosystem</h2>
+          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800, color:"#000000" }}>Join Built for everyone in the ecosystem</h2>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))", gap:16 }}>
           {[
@@ -250,7 +250,7 @@ export default function LandingPage() {
       <div style={{ position:"relative", zIndex:1, maxWidth:1000, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
         <div style={{ textAlign:"center", marginBottom:"3rem" }}>
           <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#000000", marginBottom:8 }}>For businesses</div>
-          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>All automotive businesses welcome</h2>
+          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800, color:"#000000" }}>All automotive businesses welcome</h2>
           <p style={{ fontSize:14, color:"#555555", marginTop:8 }}>Not just mechanics — list any automotive business and reach thousands of customers in Nairobi</p>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))", gap:12 }}>
@@ -282,7 +282,7 @@ export default function LandingPage() {
       <div style={{ position:"relative", zIndex:1, maxWidth:900, margin:"0 auto 5rem", padding:"0 1.5rem" }}>
         <div style={{ textAlign:"center", marginBottom:"3rem" }}>
           <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#000000", marginBottom:8 }}>Pricing</div>
-          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800 }}>Earn more. Keep more.</h2>
+          <h2 style={{ fontFamily:"Syne", fontSize:"clamp(24px,4vw,40px)", fontWeight:800, color:"#000000" }}>Earn more. Keep more.</h2>
           <p style={{ fontSize:14, color:"#555555", marginTop:8 }}>No monthly fees. No hidden charges. We only make money when you make money.</p>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(190px,1fr))", gap:16 }}>
@@ -308,7 +308,7 @@ export default function LandingPage() {
         <div style={{ background:"#141414", border:"1px solid #1e1e1e", borderRadius:20, padding:"2rem" }}>
           <div style={{ textAlign:"center", marginBottom:"1.5rem" }}>
             <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"#000000", marginBottom:8 }}>Nairobi market prices</div>
-            <h2 style={{ fontFamily:"Syne", fontSize:"clamp(20px,3vw,28px)", fontWeight:800 }}>What services cost in Nairobi 2026</h2>
+            <h2 style={{ fontFamily:"Syne", fontSize:"clamp(20px,3vw,28px)", fontWeight:800, color:"#000000" }}>What services cost in Nairobi 2026</h2>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))", gap:12 }}>
             {[
@@ -374,7 +374,7 @@ export default function LandingPage() {
       <div style={{ position:"relative", zIndex:1, textAlign:"center", padding:"4rem 1.5rem 6rem", overflow:"hidden" }}>
         <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse at center, #e6821e08, transparent)", pointerEvents:"none" }}/>
         <img src="/logo.svg" alt="Car Care Connect" style={{ height:80, marginBottom:"1.5rem", animation:"glow 3s ease-in-out infinite", position:"relative" }}/>
-        <h2 style={{ fontFamily:"Syne", fontSize:"clamp(28px,5vw,52px)", fontWeight:800, marginBottom:16, position:"relative" }}>
+        <h2 style={{ fontFamily:"Syne", fontSize:"clamp(28px,5vw,52px)", fontWeight:800, marginBottom:16, position:"relative", color:"#000000" }}>
           Nairobi's car care platform<br/><span style={{ color:"#000000" }}>starts here.</span>
         </h2>
         <p style={{ fontSize:15, color:"#666", maxWidth:440, margin:"0 auto 2.5rem", lineHeight:1.7, position:"relative" }}>
@@ -384,7 +384,7 @@ export default function LandingPage() {
           <button onClick={()=>navigate("/auth")} style={{ background:"#e6821e", border:"none", borderRadius:12, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:16, fontWeight:700, padding:"16px 40px", cursor:"pointer" }}>
             🚗 Get started free
           </button>
-          <button onClick={()=>navigate("/auth")} style={{ background:"none", border:"2px solid #333", borderRadius:12, color:"#666", fontFamily:"Syne,sans-serif", fontSize:16, fontWeight:700, padding:"14px 38px", cursor:"pointer" }}>
+          <button onClick={()=>navigate("/auth")} style={{ background:"none", border:"2px solid #000", borderRadius:12, color:"#000", fontFamily:"Syne,sans-serif", fontSize:16, fontWeight:700, padding:"14px 38px", cursor:"pointer" }}>
             Sign in →
           </button>
         </div>
@@ -405,6 +405,12 @@ export default function LandingPage() {
     </div>
   )
 }
+
+
+
+
+
+
 
 
 
