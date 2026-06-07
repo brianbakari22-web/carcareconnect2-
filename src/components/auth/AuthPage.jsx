@@ -31,7 +31,7 @@ const ROLES = [
     color: "#e6821e",
     bg: "#1a1208",
     border: "#e6821e40",
-    features: ["🔧 Browse verified services", "≡ƒôì Live driver tracking", "≡ƒÆÄ Loyalty rewards", "Γ¡É Rate your experience"]
+    features: ["🔧 Browse verified services", "📍 Live driver tracking", "🎁 Loyalty rewards", "⭐ Rate your experience"]
   },
   {
     key: "provider",
@@ -41,7 +41,7 @@ const ROLES = [
     color: "#378add",
     bg: "#0c1f2e",
     border: "#378add40",
-    features: ["≡ƒôè Analytics dashboard", "≡ƒÆ░ Fast payouts", "≡ƒôà Booking management", "Γ¡É Customer reviews"]
+    features: ["📊 Analytics dashboard", "💰 Fast payouts", "📅 Booking management", "⭐ Customer reviews"]
   },
   {
     key: "driver",
@@ -51,7 +51,7 @@ const ROLES = [
     color: "#1d9e75",
     bg: "#071a12",
     border: "#1d9e7540",
-    features: ["≡ƒôì GPS navigation", "≡ƒÆ╡ Competitive earnings", "≡ƒôê Earnings dashboard", "Γ£à Flexible hours"]
+    features: ["📍 GPS navigation", "💵 Competitive earnings", "📈 Earnings dashboard", "✅ Flexible hours"]
   },
 ]
 
@@ -464,6 +464,7 @@ export default function AuthPage() {
     </div>
   )
 }
+
 
 
 
