@@ -49,6 +49,11 @@ import EscrowManager from "./components/marketplace/EscrowManager"
 import CreateListing from "./components/marketplace/CreateListing"
 import CustomerGoService from "./components/customer/CustomerGoService"
 import CustomerVehicleReports from "./components/customer/CustomerVehicleReports"
+import Marketplace from "./components/marketplace/Marketplace"
+import CreateListing from "./components/marketplace/CreateListing"
+import MyListings from "./components/marketplace/MyListings"
+import MyOffers from "./components/marketplace/MyOffers"
+import EscrowManager from "./components/marketplace/EscrowManager"
 import ProviderChat from "./components/provider/ProviderChat"
 import ProviderDashboard from "./components/provider/ProviderDashboard"
 import ProviderBookings from "./components/provider/ProviderBookings"
@@ -326,6 +331,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 
