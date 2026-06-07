@@ -122,14 +122,14 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
     }
 
     setMessages(prev => prev.map(m => m.id===tempId ? {...m, _pending:false} : m))
-    setSending(false)
-
+    // Message sent - receiver will see unread badge on Messages tab
+    // No notification needed - direct messages go to Messages inbox
     try {
       if (!otherUserId) return
-      await supabase.from("notifications").insert({
-        user_id: otherUserId,
-        title: claimId ? "New message about your claim 📋" : listingId ? "New message about your listing 💬" : "New message",
-        message: messageText.slice(0, 60),
+      // Update unread count only - no notification popup
+    } catch(_) {}
+
+
         type: "info"
       })
     } catch(_) {}
