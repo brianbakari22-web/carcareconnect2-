@@ -7,9 +7,9 @@ import toast from "react-hot-toast"
 import PesapalPayment from "../shared/PesapalPayment"
 
 const CATEGORIES = [
-  { key:"shop_standard", label:"Shop Standard", icon:"🏪", desc:"You bring your car to the shop", color:"#378add", bg:"#0c1f2e", border:"#378add40" },
-  { key:"shop_premium", label:"Shop Premium", icon:"🏡", desc:"Mechanic comes to your home", color:"#8b5cf6", bg:"#160a2e", border:"#8b5cf640" },
-  { key:"go_service", label:"GO Service", icon:"🚨", desc:"Emergency roadside assistance", color:"#e24b4a", bg:"#1a0808", border:"#e24b4a40" },
+  { key:"shop_standard", label:"Shop Standard", icon:"🏪", desc:"You bring your car to the shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
+  { key:"shop_premium", label:"Shop Premium", icon:"🏡", desc:"Mechanic comes to your home", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
+  { key:"go_service", label:"GO Service", icon:"🚨", desc:"Emergency roadside assistance", color:"#e24b4a", bg:"#fff5f5", border:"#fecaca" },
 ]
 
 export default function CustomerServices() {
@@ -139,7 +139,7 @@ export default function CustomerServices() {
         {CATEGORIES.map(c=>(
           <div key={c.key}
             onClick={()=>setActiveCategory(activeCategory===c.key?"all":c.key)}
-            style={{ background:activeCategory===c.key?c.bg:"#111", border:`1px solid ${activeCategory===c.key?c.color:"#1e1e1e"}`, borderRadius:12, padding:"1rem", cursor:"pointer", transition:"all 0.15s" }}>
+            style={{ background:activeCategory===c.key?c.bg:"#f5f5f5", border:`1px solid ${activeCategory===c.key?c.color:"#e5e5e5"}`, borderRadius:12, padding:"1rem", cursor:"pointer", transition:"all 0.15s" }}>
             <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
               <span style={{ fontSize:22 }}>{c.icon}</span>
               <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:activeCategory===c.key?c.color:"#000000" }}>{c.label}</div>
@@ -160,7 +160,7 @@ export default function CustomerServices() {
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
         {["all",...CATEGORIES.map(c=>c.key)].map(k=>(
           <button key={k} onClick={()=>setActiveCategory(k)}
-            style={{ padding:"6px 12px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:activeCategory===k?"#e6821e":"#111", color:activeCategory===k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif" }}>
+            style={{ padding:"6px 12px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:activeCategory===k?"#e6821e":"#f0f0f0", color:activeCategory===k?"#fff":"#555", fontFamily:"'DM Sans',sans-serif" }}>
             {k==="all"?"All services":CATEGORIES.find(c=>c.key===k)?.label}
           </button>
         ))}
@@ -200,14 +200,14 @@ export default function CustomerServices() {
                 <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:"0.75rem", color:"#000000" }}>Book — {s.name}</div>
 
                 {s.category==="go_service"&&(
-                  <div style={{ background:"#1a0808", border:"1px solid #e24b4a30", borderRadius:8, padding:"0.75rem", marginBottom:12 }}>
+                  <div style={{ background:"#fff5f5", border:"1px solid #ffd5d5", borderRadius:8, padding:"0.75rem", marginBottom:12 }}>
                     <div style={{ fontSize:12, color:"#e24b4a", fontWeight:600, marginBottom:2 }}>🚨 Emergency GO Service</div>
                     <div style={{ fontSize:11, color:"#666" }}>A mechanic will be dispatched to your location. Online payment required. Provider has 15 minutes to accept.</div>
                   </div>
                 )}
 
                 {s.category==="shop_premium"&&(
-                  <div style={{ background:"#160a2e", border:"1px solid #8b5cf630", borderRadius:8, padding:"0.75rem", marginBottom:12 }}>
+                  <div style={{ background:"#faf5ff", border:"1px solid #e9d5ff", borderRadius:8, padding:"0.75rem", marginBottom:12 }}>
                     <div style={{ fontSize:12, color:"#8b5cf6", fontWeight:600, marginBottom:2 }}>🏡 Premium Home Service</div>
                     <div style={{ fontSize:11, color:"#666" }}>A mechanic will come to your home or office. Please provide your address in the notes.</div>
                   </div>
@@ -289,7 +289,7 @@ export default function CustomerServices() {
                       </button>
                     </div>
                     {voucherData&&(
-                      <div style={{ marginTop:6, background:"#071a12", border:"1px solid #1d9e7540", borderRadius:8, padding:"0.5rem 0.75rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                      <div style={{ marginTop:6, background:"#f0fff8", border:"1px solid #bbf7d0", borderRadius:8, padding:"0.5rem 0.75rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                         <div style={{ fontSize:11, color:"#1d9e75" }}>✅ Voucher applied — KES {Number(voucherData.value).toLocaleString()} off</div>
                         <button type="button" onClick={()=>{ setVoucherData(null); setVoucherCode("") }} style={{ background:"none", border:"none", color:"#e24b4a", cursor:"pointer", fontSize:12 }}>×</button>
                       </div>
@@ -320,7 +320,7 @@ export default function CustomerServices() {
 
                   <div style={{ display:"flex", gap:8 }}>
                     <button type="submit" disabled={bookingLoading}
-                      style={{ background:bookingLoading?"#333":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:bookingLoading?"not-allowed":"pointer" }}>
+                      style={{ background:bookingLoading?"#ccc":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:bookingLoading?"not-allowed":"pointer" }}>
                       {bookingLoading?"Booking...":"Confirm booking"}
                     </button>
                     <button type="button" onClick={()=>setBooking(null)}
@@ -354,6 +354,8 @@ export default function CustomerServices() {
     </div>
   )
 }
+
+
 
 
 
