@@ -34,6 +34,9 @@ export default function DriverProfile() {
   const [licenseDocFile, setLicenseDocFile] = useState(null)
   const [profilePhotoFile, setProfilePhotoFile] = useState(null)
   const [uploading, setUploading] = useState(false)
+  const [docs, setDocs] = useState([])
+  const [docForm, setDocForm] = useState({ type:"license", expiry_date:"", notes:"" })
+  const [docUploading, setDocUploading] = useState(false)
   const [kraPinFile, setKraPinFile] = useState(null)
   const [medicalCertFile, setMedicalCertFile] = useState(null)
   const [psvBadgeFile, setPsvBadgeFile] = useState(null)
@@ -51,6 +54,7 @@ export default function DriverProfile() {
   const [passwordForm, setPasswordForm] = useState({ password:"", confirm:"" })
 
   useEffect(() => {
+    if (user) loadDocs()
     if (profile) {
       setPersonalForm({
         first_name: profile?.first_name||"",
@@ -146,6 +150,64 @@ export default function DriverProfile() {
       toast.success("Credentials saved — pending admin verification")
     } catch(err) { toast.error(err.message) }
     finally { setSaving(false) }
+  }
+
+  async function loadDocs() {
+    const { data } = await supabase.from("driver_documents")
+      .select("*").eq("driver_id", user.id).order("created_at", { ascending:false })
+    setDocs(data||[])
+  }
+
+  async function uploadDoc(file, docType, expiryDate) {
+    if (!file) return null
+    const ext = file.name.split(".").pop()
+    const path = `${user.id}/${docType}-${Date.now()}.${ext}`
+    const { error } = await supabase.storage.from("driver-documents").upload(path, file, { upsert:true })
+    if (error) throw error
+    const { data } = supabase.storage.from("driver-documents").getPublicUrl(path)
+    return data.publicUrl
+  }
+
+  async function addDocument(e) {
+    e.preventDefault()
+    if (!docForm.file) return toast.error("Please select a file")
+    setDocUploading(true)
+    try {
+      const url = await uploadDoc(docForm.file, docForm.type, docForm.expiry_date)
+      await supabase.from("driver_documents").insert({
+        driver_id: user.id,
+        document_type: docForm.type,
+        document_url: url,
+        expiry_date: docForm.expiry_date||null,
+        notes: docForm.notes||"",
+        status: "pending",
+      })
+
+      // Also update profile URL columns
+      const urlMap = {
+        license: "license_doc_url",
+        id_front: "id_doc_front_url",
+        id_back: "id_doc_back_url",
+        psv_badge: "psv_badge_url",
+        good_conduct: "good_conduct_url",
+        insurance: "insurance_url",
+      }
+      if (urlMap[docForm.type]) {
+        await updateProfile({ [urlMap[docForm.type]]: url })
+      }
+
+      toast.success("Document uploaded!")
+      setDocForm({ type:"license", expiry_date:"", notes:"" })
+      loadDocs()
+    } catch(err) { toast.error(err.message) }
+    finally { setDocUploading(false) }
+  }
+
+  async function deleteDoc(id) {
+    if (!confirm("Remove this document?")) return
+    await supabase.from("driver_documents").delete().eq("id", id)
+    loadDocs()
+    toast.success("Document removed")
   }
 
   async function saveContact(e) {
@@ -365,6 +427,68 @@ export default function DriverProfile() {
           </div>
         </form>
       )}
+      {/* DOCUMENTS TAB */}
+      {tab==="documents"&&(
+        <div>
+          {/* Existing documents */}
+          <div style={{ marginBottom:"1.5rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>My Documents</div>
+            {docs.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"1.5rem", background:"#f5f5f5", borderRadius:10 }}>No documents uploaded yet</div>}
+            {docs.map(doc=>(
+              <div key={doc.id} style={{ background:"#f5f5f5", border:"1px solid #eeeeee", borderRadius:10, padding:"0.9rem", marginBottom:8, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                <div style={{ flex:1 }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
+                    <span style={{ fontSize:18 }}>{doc.document_type==="license"?"🪪":doc.document_type==="insurance"?"🛡️":doc.document_type==="id_front"||doc.document_type==="id_back"?"🪪":doc.document_type==="psv_badge"?"🏅":doc.document_type==="good_conduct"?"📋":"📄"}</span>
+                    <div style={{ fontWeight:600, fontSize:13, color:"#000", textTransform:"capitalize" }}>{doc.document_type.replace(/_/g," ")}</div>
+                    <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:doc.status==="approved"?"#f0fdf4":doc.status==="rejected"?"#fff5f5":"#fff8f0", color:doc.status==="approved"?"#1d9e75":doc.status==="rejected"?"#e24b4a":"#e6821e", border:"1px solid "+(doc.status==="approved"?"#bbf7d0":doc.status==="rejected"?"#fecaca":"#fed7aa") }}>{doc.status||"pending"}</span>
+                  </div>
+                  {doc.expiry_date&&<div style={{ fontSize:11, color:"#888" }}>Expires: {new Date(doc.expiry_date).toLocaleDateString()}</div>}
+                  {doc.document_url&&<a href={doc.document_url} target="_blank" rel="noreferrer" style={{ fontSize:11, color:"#e6821e", textDecoration:"none" }}>View document →</a>}
+                </div>
+                <button onClick={()=>deleteDoc(doc.id)} style={{ background:"none", border:"none", color:"#e24b4a", cursor:"pointer", fontSize:12, padding:"4px 8px" }}>Remove</button>
+              </div>
+            ))}
+          </div>
+
+          {/* Add new document */}
+          <div style={{ background:"#f5f5f5", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>Add document</div>
+            <form onSubmit={addDocument}>
+              <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Document type</label>
+              <select value={docForm.type} onChange={e=>setDocForm(f=>({...f,type:e.target.value}))}
+                style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", color:"#000", fontSize:13, outline:"none", marginBottom:10 }}>
+                <option value="license">Driver License</option>
+                <option value="id_front">National ID (Front)</option>
+                <option value="id_back">National ID (Back)</option>
+                <option value="psv_badge">PSV Badge</option>
+                <option value="insurance">Insurance Certificate</option>
+                <option value="good_conduct">Good Conduct Certificate</option>
+                <option value="vehicle_registration">Vehicle Registration</option>
+              </select>
+
+              <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Upload file</label>
+              <input type="file" accept="image/*,.pdf"
+                onChange={e=>setDocForm(f=>({...f,file:e.target.files[0]}))}
+                style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"8px 12px", color:"#000", fontSize:13, marginBottom:10 }}
+                required/>
+
+              <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Expiry date (optional)</label>
+              <input type="date" value={docForm.expiry_date} onChange={e=>setDocForm(f=>({...f,expiry_date:e.target.value}))}
+                style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", color:"#000", fontSize:13, outline:"none", marginBottom:10 }}/>
+
+              <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Notes (optional)</label>
+              <input value={docForm.notes} onChange={e=>setDocForm(f=>({...f,notes:e.target.value}))}
+                placeholder="Any additional notes..."
+                style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", color:"#000", fontSize:13, outline:"none", marginBottom:14 }}/>
+
+              <button type="submit" disabled={docUploading}
+                style={{ width:"100%", background:docUploading?"#ccc":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:docUploading?"not-allowed":"pointer" }}>
+                {docUploading?"Uploading...":"Upload document"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* CONTACT TAB */}
       {tab==="contact"&&(
@@ -402,6 +526,7 @@ export default function DriverProfile() {
     </div>
   )
 }
+
 
 
 
