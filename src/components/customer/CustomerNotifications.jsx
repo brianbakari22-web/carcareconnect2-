@@ -91,6 +91,7 @@ export default function CustomerNotifications() {
       try {
         const meta = n.metadata ? JSON.parse(n.metadata) : {}
         if(meta.booking_id) navigate(`/dashboard/chat?booking=${meta.booking_id}`)
+        else if(meta.listing_id) navigate(`/dashboard/chat?listing=${meta.listing_id}`)
         else navigate("/dashboard/chat")
       } catch(_) { navigate("/dashboard/chat") }
     }
@@ -113,6 +114,7 @@ export default function CustomerNotifications() {
     </div>
   )
 }
+
 
 
 
