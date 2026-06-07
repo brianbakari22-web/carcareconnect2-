@@ -2,25 +2,24 @@ import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 
 function FloatingParts() {
-  const parts = ["🛞","⚙️","🔧","🔩","🪛","🛢️","🔋","🚗","⚡","🔑","🛠️","🪝","🏎️","🔌","💨","🚘","🔦","🪤"]
   const items = [
-    { id:0, icon:"🛞", left:5, top:15, size:52, duration:7, delay:0, opacity:0.35 },
-    { id:1, icon:"⚙️", left:88, top:10, size:48, duration:9, delay:1, opacity:0.30 },
-    { id:2, icon:"🔧", left:15, top:75, size:40, duration:6, delay:2, opacity:0.28 },
-    { id:3, icon:"🚗", left:78, top:65, size:56, duration:8, delay:0.5, opacity:0.25 },
-    { id:4, icon:"🔋", left:45, top:5, size:38, duration:7, delay:1.5, opacity:0.30 },
-    { id:5, icon:"🛢️", left:92, top:45, size:44, duration:10, delay:3, opacity:0.28 },
-    { id:6, icon:"🔩", left:25, top:45, size:34, duration:5, delay:0, opacity:0.32 },
-    { id:7, icon:"⚡", left:60, top:80, size:42, duration:8, delay:2, opacity:0.30 },
-    { id:8, icon:"🪛", left:70, top:25, size:36, duration:6, delay:1, opacity:0.28 },
-    { id:9, icon:"🔑", left:35, top:90, size:34, duration:9, delay:4, opacity:0.25 },
-    { id:10, icon:"🛠️", left:50, top:55, size:38, duration:7, delay:2.5, opacity:0.22 },
-    { id:11, icon:"🏎️", left:10, top:55, size:46, duration:11, delay:0.5, opacity:0.28 },
+    { id:0, icon:"🛞", left:5, top:15, size:52, duration:7, delay:0, opacity:0.45 },
+    { id:1, icon:"⚙️", left:88, top:10, size:48, duration:9, delay:1, opacity:0.40 },
+    { id:2, icon:"🔧", left:15, top:75, size:40, duration:6, delay:2, opacity:0.38 },
+    { id:3, icon:"🚗", left:78, top:65, size:56, duration:8, delay:0.5, opacity:0.35 },
+    { id:4, icon:"🔋", left:45, top:5, size:38, duration:7, delay:1.5, opacity:0.40 },
+    { id:5, icon:"🛢️", left:92, top:45, size:44, duration:10, delay:3, opacity:0.38 },
+    { id:6, icon:"🔩", left:25, top:45, size:34, duration:5, delay:0, opacity:0.42 },
+    { id:7, icon:"⚡", left:60, top:80, size:42, duration:8, delay:2, opacity:0.40 },
+    { id:8, icon:"🪛", left:70, top:25, size:36, duration:6, delay:1, opacity:0.38 },
+    { id:9, icon:"🔑", left:35, top:90, size:34, duration:9, delay:4, opacity:0.35 },
+    { id:10, icon:"🛠️", left:50, top:55, size:38, duration:7, delay:2.5, opacity:0.32 },
+    { id:11, icon:"🏎️", left:10, top:55, size:46, duration:11, delay:0.5, opacity:0.38 },
   ]
   return (
     <div style={{ position:"absolute", inset:0, pointerEvents:"none", overflow:"hidden", zIndex:0 }}>
       {items.map(item => (
-        <div key={item.id} style={{ position:"absolute", left:item.left+"%", top:item.top+"%", fontSize:item.size, opacity:item.opacity, animation:`float-${item.id%3} ${item.duration}s ease-in-out infinite`, animationDelay:item.delay+"s", filter:"drop-shadow(0 4px 12px rgba(230,130,30,0.4))" }}>
+        <div key={item.id} style={{ position:"absolute", left:item.left+"%", top:item.top+"%", fontSize:item.size, opacity:item.opacity, animation:`float-${item.id%3} ${item.duration}s ease-in-out infinite`, animationDelay:item.delay+"s", filter:"drop-shadow(0 4px 16px rgba(230,130,30,0.5))" }}>
           {item.icon}
         </div>
       ))}
@@ -35,32 +34,135 @@ function NetworkCanvas() {
     if (!canvas) return
     const ctx = canvas.getContext("2d")
     let animId
-    const resize = () => { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight }
+    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight }
     resize()
     window.addEventListener("resize", resize)
-    const dots = Array.from({ length: 120 }, () => ({
-      x: Math.random() * canvas.width, y: Math.random() * canvas.height * 10,
-      vx: (Math.random()-0.5)*0.7, vy: (Math.random()-0.5)*0.7,
-      r: Math.random()*3.5+1.5,
-      color: Math.random()>0.5?"#e6821e":Math.random()>0.5?"#1d9e75":"#378add"
+    const COLORS = ["#e6821e","#1d9e75","#378add","#f5a623","#e24b4a"]
+
+    // Triangle groups
+    const groups = Array.from({ length: 20 }, (_, gi) => {
+      const color = COLORS[gi % COLORS.length]
+      return {
+        color,
+        cx: Math.random() * canvas.width,
+        cy: Math.random() * canvas.height,
+        vx: (Math.random()-0.5)*0.6,
+        vy: (Math.random()-0.5)*0.6,
+        rotation: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random()-0.5)*0.018,
+        size: Math.random()*40+20,
+        pulse: Math.random()*Math.PI*2,
+        pulseSpeed: Math.random()*0.03+0.01,
+      }
+    })
+
+    // Single floating dots
+    const singles = Array.from({ length: 60 }, () => ({
+      x: Math.random()*canvas.width,
+      y: Math.random()*canvas.height,
+      vx: (Math.random()-0.5)*0.7,
+      vy: (Math.random()-0.5)*0.7,
+      r: Math.random()*2.5+1.5,
+      color: COLORS[Math.floor(Math.random()*COLORS.length)],
+      pulse: Math.random()*Math.PI*2,
+      pulseSpeed: Math.random()*0.04+0.01,
     }))
+
     function draw() {
       ctx.clearRect(0,0,canvas.width,canvas.height)
-      dots.forEach(d => {
-        d.x+=d.vx; d.y+=d.vy
-        if(d.x<0||d.x>canvas.width) d.vx*=-1
-        if(d.y<0||d.y>canvas.height) d.vy*=-1
-        ctx.beginPath(); ctx.arc(d.x,d.y,d.r,0,Math.PI*2)
-        ctx.fillStyle=d.color+"cc"; ctx.fill()
+
+      // Draw triangle groups
+      groups.forEach(g => {
+        g.cx+=g.vx; g.cy+=g.vy
+        if(g.cx<-60) g.cx=canvas.width+60
+        if(g.cx>canvas.width+60) g.cx=-60
+        if(g.cy<-60) g.cy=canvas.height+60
+        if(g.cy>canvas.height+60) g.cy=-60
+        g.rotation+=g.rotSpeed
+        g.pulse+=g.pulseSpeed
+        const pf = 1+Math.sin(g.pulse)*0.18
+        const pts = [0,1,2].map(i => ({
+          x: g.cx+Math.cos((i*Math.PI*2/3)+g.rotation)*g.size*pf,
+          y: g.cy+Math.sin((i*Math.PI*2/3)+g.rotation)*g.size*pf,
+        }))
+
+        // Filled triangle
+        ctx.beginPath()
+        ctx.moveTo(pts[0].x,pts[0].y)
+        ctx.lineTo(pts[1].x,pts[1].y)
+        ctx.lineTo(pts[2].x,pts[2].y)
+        ctx.closePath()
+        ctx.fillStyle=g.color+"22"
+        ctx.fill()
+
+        // Triangle edges
+        ctx.beginPath()
+        ctx.moveTo(pts[0].x,pts[0].y)
+        ctx.lineTo(pts[1].x,pts[1].y)
+        ctx.lineTo(pts[2].x,pts[2].y)
+        ctx.closePath()
+        ctx.strokeStyle=g.color+"dd"
+        ctx.lineWidth=1.8
+        ctx.stroke()
+
+        // Glowing vertex dots
+        pts.forEach(pt => {
+          const grad=ctx.createRadialGradient(pt.x,pt.y,0,pt.x,pt.y,12)
+          grad.addColorStop(0,g.color+"ff")
+          grad.addColorStop(0.4,g.color+"88")
+          grad.addColorStop(1,g.color+"00")
+          ctx.beginPath(); ctx.arc(pt.x,pt.y,12,0,Math.PI*2)
+          ctx.fillStyle=grad; ctx.fill()
+          ctx.beginPath(); ctx.arc(pt.x,pt.y,4,0,Math.PI*2)
+          ctx.fillStyle=g.color+"ff"; ctx.fill()
+        })
+
+        // Connect triangle vertices to nearby singles
+        singles.forEach(s => {
+          pts.forEach(pt => {
+            const dx=pt.x-s.x, dy=pt.y-s.y
+            const dist=Math.sqrt(dx*dx+dy*dy)
+            if(dist<100) {
+              ctx.beginPath()
+              ctx.moveTo(pt.x,pt.y); ctx.lineTo(s.x,s.y)
+              const alpha=Math.round(100*(1-dist/100)).toString(16).padStart(2,"0")
+              ctx.strokeStyle=g.color+alpha
+              ctx.lineWidth=0.9; ctx.stroke()
+            }
+          })
+        })
       })
-      for(let i=0;i<dots.length;i++) for(let j=i+1;j<dots.length;j++) {
-        const dx=dots[i].x-dots[j].x, dy=dots[i].y-dots[j].y
+
+      // Draw singles
+      singles.forEach(s => {
+        s.x+=s.vx; s.y+=s.vy
+        if(s.x<0||s.x>canvas.width) s.vx*=-1
+        if(s.y<0||s.y>canvas.height) s.vy*=-1
+        s.pulse+=s.pulseSpeed
+        const r=s.r*(1+Math.sin(s.pulse)*0.3)
+        const grad=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,r*5)
+        grad.addColorStop(0,s.color+"ee")
+        grad.addColorStop(0.5,s.color+"55")
+        grad.addColorStop(1,s.color+"00")
+        ctx.beginPath(); ctx.arc(s.x,s.y,r*5,0,Math.PI*2)
+        ctx.fillStyle=grad; ctx.fill()
+        ctx.beginPath(); ctx.arc(s.x,s.y,r,0,Math.PI*2)
+        ctx.fillStyle=s.color+"ff"; ctx.fill()
+      })
+
+      // Connect close singles
+      for(let i=0;i<singles.length;i++) for(let j=i+1;j<singles.length;j++) {
+        const dx=singles[i].x-singles[j].x, dy=singles[i].y-singles[j].y
         const dist=Math.sqrt(dx*dx+dy*dy)
         if(dist<110) {
-          ctx.beginPath(); ctx.moveTo(dots[i].x,dots[i].y); ctx.lineTo(dots[j].x,dots[j].y)
-          ctx.strokeStyle=`rgba(230,130,30,${0.6*(1-dist/130)})`; ctx.lineWidth=1.2; ctx.stroke()
+          ctx.beginPath()
+          ctx.moveTo(singles[i].x,singles[i].y)
+          ctx.lineTo(singles[j].x,singles[j].y)
+          ctx.strokeStyle=`rgba(230,130,30,${0.55*(1-dist/110)})`
+          ctx.lineWidth=0.9; ctx.stroke()
         }
       }
+
       animId=requestAnimationFrame(draw)
     }
     draw()
@@ -75,11 +177,13 @@ export default function LandingPage() {
   const btnOrange = { background:"#e6821e", border:"none", borderRadius:500, color:"#fff", fontSize:14, fontWeight:700, padding:"13px 26px", cursor:"pointer", fontFamily:"DM Sans,sans-serif" }
   const btnOutline = { background:"none", border:"1.5px solid #000", borderRadius:500, color:"#000", fontSize:14, fontWeight:600, padding:"12px 24px", cursor:"pointer", fontFamily:"DM Sans,sans-serif" }
   const btnOutlineOrange = { background:"none", border:"1.5px solid #e6821e", borderRadius:500, color:"#e6821e", fontSize:14, fontWeight:600, padding:"12px 24px", cursor:"pointer", fontFamily:"DM Sans,sans-serif" }
-  const card = { background:"rgba(245,245,245,0.84)", borderRadius:16, padding:"1.25rem" }
+  const card = { background:"rgba(245,245,245,0.85)", borderRadius:16, padding:"1.25rem" }
+  const cardWhite = { background:"rgba(255,255,255,0.85)", borderRadius:16, padding:"1.25rem" }
   const sLabel = { fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.12em", color:"#e6821e", marginBottom:10, display:"block" }
   const h2 = { fontSize:"clamp(24px,4vw,42px)", fontWeight:800, lineHeight:1.1, letterSpacing:-0.5, color:"#000", marginBottom:12 }
   const h2w = { fontSize:"clamp(24px,4vw,42px)", fontWeight:800, lineHeight:1.1, letterSpacing:-0.5, color:"#fff", marginBottom:12 }
   const body = { fontSize:15, color:"#555", lineHeight:1.7 }
+  const sec = (bg) => ({ background:bg, padding:"3rem 1.25rem", position:"relative", overflow:"hidden", zIndex:1 })
 
   const providerTypes = [
     { icon:"🔧", type:"Garage/Mechanic", keep:"90%" },
@@ -111,23 +215,30 @@ export default function LandingPage() {
   ]
 
   return (
-    <div style={{ fontFamily:"DM Sans,sans-serif", background:"rgba(255,255,255,0.82)", color:"#000", minHeight:"100vh" }}>
+    <div style={{ fontFamily:"DM Sans,sans-serif", background:"transparent", color:"#000", minHeight:"100vh", position:"relative" }}>
+      {/* White base */}
+      <div style={{ position:"fixed", inset:0, zIndex:-1, background:"#fff" }}/>
+      {/* Full page canvas */}
+      <div style={{ position:"fixed", inset:0, zIndex:0, pointerEvents:"none" }}>
+        <NetworkCanvas/>
+      </div>
+
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
         *{box-sizing:border-box;}
         .hcard{transition:all 0.2s;}
-        .hcard:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.1);}
-        .faq-row{border-bottom:1px solid #e5e5e5;padding:1.1rem 0;cursor:pointer;}
-        .faq-row:first-child{border-top:1px solid #e5e5e5;}
+        .hcard:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(230,130,30,0.15);}
+        .faq-row{border-bottom:1px solid rgba(229,229,229,0.8);padding:1.1rem 0;cursor:pointer;}
+        .faq-row:first-child{border-top:1px solid rgba(229,229,229,0.8);}
         @keyframes glow{0%,100%{opacity:1}50%{opacity:0.85}}
         @keyframes ping{0%{transform:scale(1);opacity:1}100%{transform:scale(2.2);opacity:0}}
-        @keyframes float-0{0%{transform:translateY(0px) rotate(0deg) scale(1)}25%{transform:translateY(-35px) rotate(15deg) scale(1.1)}50%{transform:translateY(-55px) rotate(5deg) scale(1.05)}75%{transform:translateY(-30px) rotate(-10deg) scale(1.08)}100%{transform:translateY(0px) rotate(0deg) scale(1)}}
-        @keyframes float-1{0%{transform:translateY(0px) rotate(0deg) scale(1)}33%{transform:translateY(-45px) rotate(-12deg) scale(1.12)}66%{transform:translateY(-25px) rotate(8deg) scale(1.06)}100%{transform:translateY(0px) rotate(0deg) scale(1)}}
-        @keyframes float-2{0%{transform:translateY(0px) rotate(0deg) scale(1)}40%{transform:translateY(-40px) rotate(20deg) scale(1.15)}80%{transform:translateY(-15px) rotate(-5deg) scale(1.05)}100%{transform:translateY(0px) rotate(0deg) scale(1)}}
+        @keyframes float-0{0%,100%{transform:translateY(0px) rotate(0deg) scale(1)}25%{transform:translateY(-35px) rotate(15deg) scale(1.1)}50%{transform:translateY(-55px) rotate(5deg) scale(1.05)}75%{transform:translateY(-30px) rotate(-10deg) scale(1.08)}}
+        @keyframes float-1{0%,100%{transform:translateY(0px) rotate(0deg) scale(1)}33%{transform:translateY(-45px) rotate(-12deg) scale(1.12)}66%{transform:translateY(-25px) rotate(8deg) scale(1.06)}}
+        @keyframes float-2{0%,100%{transform:translateY(0px) rotate(0deg) scale(1)}40%{transform:translateY(-40px) rotate(20deg) scale(1.15)}80%{transform:translateY(-15px) rotate(-5deg) scale(1.05)}}
       `}</style>
 
       {/* NAV */}
-      <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:100, background:"rgba(0,0,0,0.87)", padding:"0 1.25rem", height:56, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+      <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:100, background:"rgba(0,0,0,0.95)", padding:"0 1.25rem", height:56, display:"flex", alignItems:"center", justifyContent:"space-between", backdropFilter:"blur(10px)" }}>
         <div style={{ fontSize:20, fontWeight:700, color:"#fff", letterSpacing:-0.5 }}>Car<span style={{ color:"#e6821e" }}>Care</span></div>
         <div style={{ display:"flex", gap:8, alignItems:"center" }}>
           <button onClick={()=>navigate("/auth")} style={{ background:"none", border:"1px solid #444", borderRadius:500, color:"#fff", fontSize:13, fontWeight:500, padding:"7px 16px", cursor:"pointer" }}>Sign in</button>
@@ -136,12 +247,11 @@ export default function LandingPage() {
       </nav>
 
       {/* HERO */}
-      <div style={{ paddingTop:56, position:"relative", overflow:"hidden", background:"rgba(255,255,255,0.82)", minHeight:"92vh", display:"flex", flexDirection:"column", justifyContent:"center" }}>
-        <NetworkCanvas/>
+      <div style={{ paddingTop:56, position:"relative", overflow:"hidden", minHeight:"92vh", display:"flex", flexDirection:"column", justifyContent:"center", zIndex:1 }}>
         <FloatingParts/>
-        <div style={{ padding:"3rem 1.25rem 2.5rem", maxWidth:620, margin:"0 auto", textAlign:"center", position:"relative", zIndex:1 }}>
+        <div style={{ padding:"3rem 1.25rem 2.5rem", maxWidth:620, margin:"0 auto", textAlign:"center", position:"relative", zIndex:2 }}>
           <img src="/logo.svg" alt="Car Care Connect" style={{ height:90, marginBottom:"1.5rem", animation:"glow 3s ease-in-out infinite" }}/>
-          <div style={{ display:"inline-flex", alignItems:"center", gap:6, background:"#f0fdf4", border:"1px solid #bbf7d0", borderRadius:20, padding:"5px 14px", marginBottom:"1.5rem" }}>
+          <div style={{ display:"inline-flex", alignItems:"center", gap:6, background:"rgba(240,253,244,0.9)", border:"1px solid #bbf7d0", borderRadius:20, padding:"5px 14px", marginBottom:"1.5rem" }}>
             <div style={{ position:"relative", width:7, height:7 }}>
               <div style={{ width:7, height:7, borderRadius:"50%", background:"#16a34a", position:"absolute" }}/>
               <div style={{ position:"absolute", inset:0, borderRadius:"50%", background:"#16a34a", animation:"ping 1.5s ease-out infinite" }}/>
@@ -162,14 +272,14 @@ export default function LandingPage() {
           </div>
           <div style={{ display:"flex", gap:6, justifyContent:"center", flexWrap:"wrap" }}>
             {[["24/7","Emergency service"],["5min","Avg response"],["100%","Verified providers"],["🇰🇪","Made in Kenya"]].map(([v,l])=>(
-              <div key={l} style={{ textAlign:"center", padding:"0.5rem 0.9rem", background:"rgba(245,245,245,0.84)", borderRadius:10 }}>
+              <div key={l} style={{ textAlign:"center", padding:"0.5rem 0.9rem", background:"rgba(245,245,245,0.9)", borderRadius:10 }}>
                 <div style={{ fontWeight:800, fontSize:16, color:"#000" }}>{v}</div>
                 <div style={{ fontSize:10, color:"#888", marginTop:1 }}>{l}</div>
               </div>
             ))}
           </div>
         </div>
-        <div style={{ background:"rgba(0,0,0,0.87)", padding:"1.25rem", textAlign:"center", position:"relative", zIndex:1 }}>
+        <div style={{ background:"rgba(0,0,0,0.9)", padding:"1.25rem", textAlign:"center", position:"relative", zIndex:2 }}>
           <div style={{ display:"flex", gap:16, justifyContent:"center", flexWrap:"wrap" }}>
             {[["🚗","Service booking"],["🚨","24/7 emergency"],["📍","Live tracking"],["🛒","Marketplace"],["🎁","Loyalty rewards"]].map(([icon,label])=>(
               <div key={label} style={{ fontSize:13, color:"#aaa", display:"flex", alignItems:"center", gap:6 }}><span>{icon}</span><span>{label}</span></div>
@@ -179,15 +289,15 @@ export default function LandingPage() {
       </div>
 
       {/* GO SERVICE */}
-      <div style={{ background:"rgba(17,17,17,0.88)", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
+      <div style={sec("rgba(17,17,17,0.88)")}>
         <FloatingParts/>
-        <div style={{ maxWidth:580, margin:"0 auto", textAlign:"center", position:"relative", zIndex:1 }}>
+        <div style={{ maxWidth:580, margin:"0 auto", textAlign:"center", position:"relative", zIndex:2 }}>
           <span style={sLabel}>GO Service</span>
           <h2 style={h2w}>Broke down? We come to you.</h2>
           <p style={{ ...body, color:"#aaa", marginBottom:"1.5rem" }}>Kenya's only 24/7 emergency roadside service. Our certified mechanics come to your exact GPS location — highway, parking lot, or home. Just KES 500 callout fee.</p>
           <div style={{ display:"flex", gap:8, flexWrap:"wrap", justifyContent:"center", marginBottom:"1.5rem" }}>
             {["🛞 Flat tyre","🔋 Dead battery","⛽ Out of fuel","🌡️ Overheating","🚚 Towing"].map(item=>(
-              <span key={item} style={{ background:"#222", border:"1px solid #333", borderRadius:20, padding:"6px 14px", fontSize:13, color:"#ddd" }}>{item}</span>
+              <span key={item} style={{ background:"rgba(34,34,34,0.9)", border:"1px solid #333", borderRadius:20, padding:"6px 14px", fontSize:13, color:"#ddd" }}>{item}</span>
             ))}
           </div>
           <button onClick={()=>navigate("/auth")} style={{ ...btnOrange, background:"#e24b4a", fontSize:15, padding:"14px 32px" }}>🚨 Request emergency help</button>
@@ -195,9 +305,9 @@ export default function LandingPage() {
       </div>
 
       {/* HOW IT WORKS */}
-      <div style={{ background:"rgba(255,255,255,0.82)", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
+      <div style={sec("rgba(255,255,255,0.82)")}>
         <FloatingParts/>
-        <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:1 }}>
+        <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:2 }}>
           <div style={{ textAlign:"center", marginBottom:"2rem" }}>
             <span style={sLabel}>How it works</span>
             <h2 style={h2}>Car care has never been this easy</h2>
@@ -208,8 +318,8 @@ export default function LandingPage() {
               { n:"02", icon:"📱", title:"Book and pay", desc:"Book in seconds. Pay securely via M-Pesa or card through Pesapal, regulated by Central Bank of Kenya." },
               { n:"03", icon:"✅", title:"Track and review", desc:"Track your mechanic live on the map. Rate your experience and earn loyalty points on every booking." },
             ].map(s=>(
-              <div key={s.n} className="hcard" style={{ ...card, position:"relative", overflow:"hidden" }}>
-                <div style={{ fontWeight:800, fontSize:52, color:"#e6821e08", position:"absolute", top:-8, right:10, lineHeight:1 }}>{s.n}</div>
+              <div key={s.n} className="hcard" style={{ ...cardWhite, position:"relative", overflow:"hidden" }}>
+                <div style={{ fontWeight:800, fontSize:52, color:"#e6821e10", position:"absolute", top:-8, right:10, lineHeight:1 }}>{s.n}</div>
                 <div style={{ fontSize:36, marginBottom:12 }}>{s.icon}</div>
                 <div style={{ fontWeight:700, fontSize:15, color:"#000", marginBottom:6 }}>{s.title}</div>
                 <div style={{ fontSize:13, color:"#666", lineHeight:1.7 }}>{s.desc}</div>
@@ -220,16 +330,16 @@ export default function LandingPage() {
       </div>
 
       {/* FEATURES */}
-      <div style={{ background:"rgba(245,245,245,0.84)", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
+      <div style={sec("rgba(245,245,245,0.84)")}>
         <FloatingParts/>
-        <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:1 }}>
+        <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:2 }}>
           <div style={{ textAlign:"center", marginBottom:"2rem" }}>
             <span style={sLabel}>Features</span>
             <h2 style={h2}>Everything your car needs, in one place</h2>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(170px,1fr))", gap:10 }}>
             {features.map(f=>(
-              <div key={f.title} className="hcard" style={{ ...card, background:"#fff" }}>
+              <div key={f.title} className="hcard" style={cardWhite}>
                 <div style={{ fontSize:28, marginBottom:10 }}>{f.icon}</div>
                 <div style={{ fontWeight:700, fontSize:13, color:"#000", marginBottom:4 }}>{f.title}</div>
                 <div style={{ fontSize:12, color:"#666", lineHeight:1.6 }}>{f.desc}</div>
@@ -240,9 +350,9 @@ export default function LandingPage() {
       </div>
 
       {/* TRUST */}
-      <div style={{ background:"rgba(255,255,255,0.82)", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
+      <div style={sec("rgba(255,255,255,0.82)")}>
         <FloatingParts/>
-        <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:1 }}>
+        <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:2 }}>
           <div style={{ textAlign:"center", marginBottom:"2rem" }}>
             <span style={sLabel}>Why CCC</span>
             <h2 style={h2}>Built for Kenya. Built for trust.</h2>
@@ -267,9 +377,9 @@ export default function LandingPage() {
       </div>
 
       {/* WHO IS IT FOR */}
-      <div style={{ background:"rgba(17,17,17,0.88)", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
+      <div style={sec("rgba(17,17,17,0.88)")}>
         <FloatingParts/>
-        <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:1 }}>
+        <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:2 }}>
           <div style={{ textAlign:"center", marginBottom:"2rem" }}>
             <span style={sLabel}>Who is it for</span>
             <h2 style={h2w}>Built for everyone in the ecosystem</h2>
@@ -280,7 +390,7 @@ export default function LandingPage() {
               { icon:"🔧", role:"Service Provider", color:"#378add", desc:"List services, manage bookings, earn commissions, dispatch mechanics", features:["Manage bookings","GO Service requests","Parts inventory","Earnings dashboard"] },
               { icon:"🚗", role:"Concierge Driver", color:"#1d9e75", desc:"Pick up and deliver customer vehicles and parts, earn per delivery", features:["Accept deliveries","Parts delivery jobs","Live navigation","KES 200 allowance per trip"] },
             ].map(r=>(
-              <div key={r.role} style={{ background:"rgba(26,26,26,0.88)", border:"1px solid "+r.color+"30", borderRadius:16, padding:"1.5rem" }}>
+              <div key={r.role} style={{ background:"rgba(26,26,26,0.92)", border:"1px solid "+r.color+"40", borderRadius:16, padding:"1.5rem" }}>
                 <div style={{ fontSize:36, marginBottom:10 }}>{r.icon}</div>
                 <div style={{ fontWeight:800, fontSize:16, color:r.color, marginBottom:6 }}>{r.role}</div>
                 <div style={{ fontSize:12, color:"#aaa", marginBottom:12, lineHeight:1.6 }}>{r.desc}</div>
@@ -300,9 +410,9 @@ export default function LandingPage() {
       </div>
 
       {/* PROVIDER TYPES */}
-      <div style={{ background:"rgba(255,255,255,0.82)", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
+      <div style={sec("rgba(255,255,255,0.82)")}>
         <FloatingParts/>
-        <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:1 }}>
+        <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:2 }}>
           <div style={{ textAlign:"center", marginBottom:"2rem" }}>
             <span style={sLabel}>For businesses</span>
             <h2 style={h2}>All automotive businesses welcome</h2>
@@ -310,10 +420,10 @@ export default function LandingPage() {
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))", gap:10, marginBottom:"1.5rem" }}>
             {providerTypes.map(p=>(
-              <div key={p.type} className="hcard" style={{ ...card, textAlign:"center" }}>
-                <div style={{ fontSize:28, marginBottom:6 }}>{p.icon}</div>
-                <div style={{ fontWeight:700, fontSize:12, color:"#000", marginBottom:2 }}>{p.type}</div>
-                <div style={{ fontSize:12, color:"#e6821e", fontWeight:600 }}>Keep {p.keep}</div>
+              <div key={p.type} className="hcard" style={card}>
+                <div style={{ fontSize:28, marginBottom:6, textAlign:"center" }}>{p.icon}</div>
+                <div style={{ fontWeight:700, fontSize:12, color:"#000", marginBottom:2, textAlign:"center" }}>{p.type}</div>
+                <div style={{ fontSize:12, color:"#e6821e", fontWeight:600, textAlign:"center" }}>Keep {p.keep}</div>
               </div>
             ))}
           </div>
@@ -324,9 +434,9 @@ export default function LandingPage() {
       </div>
 
       {/* PRICING */}
-      <div style={{ background:"rgba(245,245,245,0.84)", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
+      <div style={sec("rgba(245,245,245,0.84)")}>
         <FloatingParts/>
-        <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:1 }}>
+        <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:2 }}>
           <div style={{ textAlign:"center", marginBottom:"2rem" }}>
             <span style={sLabel}>Pricing</span>
             <h2 style={h2}>Earn more. Keep more.</h2>
@@ -339,7 +449,7 @@ export default function LandingPage() {
               { type:"GO Service", provider:"85%", platform:"15%", desc:"Emergency roadside assistance", color:"#e24b4a" },
               { type:"Marketplace", provider:"92-98%", platform:"2-8%", desc:"Buy and sell vehicles and parts", color:"#1d9e75" },
             ].map(p=>(
-              <div key={p.type} style={{ background:"rgba(255,255,255,0.82)", border:"1px solid "+p.color+"30", borderRadius:14, padding:"1.25rem", textAlign:"center" }}>
+              <div key={p.type} style={{ ...cardWhite, border:"1px solid "+p.color+"30", textAlign:"center" }}>
                 <div style={{ fontWeight:700, fontSize:13, color:p.color, marginBottom:10 }}>{p.type}</div>
                 <div style={{ fontWeight:800, fontSize:32, color:"#000", marginBottom:2 }}>{p.provider}</div>
                 <div style={{ fontSize:11, color:"#888", marginBottom:8 }}>Your earnings</div>
@@ -352,16 +462,16 @@ export default function LandingPage() {
       </div>
 
       {/* NAIROBI PRICES */}
-      <div style={{ background:"rgba(0,0,0,0.87)", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
+      <div style={sec("rgba(0,0,0,0.88)")}>
         <FloatingParts/>
-        <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:1 }}>
+        <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:2 }}>
           <div style={{ textAlign:"center", marginBottom:"2rem" }}>
             <span style={sLabel}>Nairobi market prices</span>
             <h2 style={h2w}>What services cost in Nairobi 2026</h2>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))", gap:8 }}>
             {[["Oil change (minor service)","KES 4,000 - 7,000"],["Brake pads replacement","KES 7,000 - 15,000"],["Minor service","KES 12,000 - 15,000"],["Major service","KES 30,000 - 35,000"],["Battery replacement","KES 5,000 - 12,000"],["Wheel alignment","KES 2,500 - 5,000"],["AC service","KES 5,000 - 12,000"],["Suspension repair","KES 15,000 - 25,000"],["Full diagnostic","KES 3,000 - 8,000"],["Tyre replacement (each)","KES 8,000 - 30,000"],["GO callout fee","KES 500 flat"],["Transmission repair","KES 20,000 - 50,000"]].map(([service,price])=>(
-              <div key={service} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 12px", background:"rgba(26,26,26,0.88)", borderRadius:8, gap:8 }}>
+              <div key={service} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 12px", background:"rgba(26,26,26,0.9)", borderRadius:8, gap:8 }}>
                 <span style={{ fontSize:12, color:"#aaa" }}>{service}</span>
                 <span style={{ fontSize:12, color:"#e6821e", fontWeight:700, flexShrink:0 }}>{price}</span>
               </div>
@@ -371,9 +481,9 @@ export default function LandingPage() {
       </div>
 
       {/* PARTS MARKETPLACE */}
-      <div style={{ background:"rgba(255,255,255,0.82)", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
+      <div style={sec("rgba(255,255,255,0.82)")}>
         <FloatingParts/>
-        <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:1 }}>
+        <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:2 }}>
           <div style={{ textAlign:"center", marginBottom:"2rem" }}>
             <span style={sLabel}>Parts marketplace</span>
             <h2 style={h2}>Order parts online. Delivered to your door.</h2>
@@ -381,7 +491,7 @@ export default function LandingPage() {
           </div>
           <div style={{ display:"flex", flexDirection:"column", gap:8, marginBottom:"1.5rem" }}>
             {[["⚙️","Engine and mechanical parts"],["✨","Car accessories"],["🛞","Tyres all brands"],["🔋","Batteries and electrical"],["🛢️","Engine oils and fluids"]].map(([icon,item])=>(
-              <div key={item} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 16px", background:"rgba(245,245,245,0.84)", borderRadius:10, fontSize:14, color:"#000", fontWeight:500 }}>
+              <div key={item} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 16px", background:"rgba(245,245,245,0.9)", borderRadius:10, fontSize:14, color:"#000", fontWeight:500 }}>
                 <span style={{ fontSize:20 }}>{icon}</span>{item}
               </div>
             ))}
@@ -402,7 +512,7 @@ export default function LandingPage() {
       </div>
 
       {/* FAQ */}
-      <div style={{ background:"rgba(245,245,245,0.84)", padding:"3rem 1.25rem" }}>
+      <div style={{ background:"rgba(245,245,245,0.84)", padding:"3rem 1.25rem", position:"relative", zIndex:1 }}>
         <div style={{ maxWidth:600, margin:"0 auto" }}>
           <div style={{ textAlign:"center", marginBottom:"2rem" }}>
             <span style={sLabel}>FAQ</span>
@@ -421,9 +531,9 @@ export default function LandingPage() {
       </div>
 
       {/* CTA */}
-      <div style={{ background:"rgba(0,0,0,0.87)", padding:"4rem 1.25rem", textAlign:"center", position:"relative", overflow:"hidden" }}>
+      <div style={{ background:"rgba(0,0,0,0.90)", padding:"4rem 1.25rem", textAlign:"center", position:"relative", overflow:"hidden", zIndex:1 }}>
         <FloatingParts/>
-        <div style={{ maxWidth:500, margin:"0 auto", position:"relative", zIndex:1 }}>
+        <div style={{ maxWidth:500, margin:"0 auto", position:"relative", zIndex:2 }}>
           <img src="/logo.svg" alt="Car Care Connect" style={{ height:70, marginBottom:"1.5rem", animation:"glow 3s ease-in-out infinite" }}/>
           <h2 style={{ fontWeight:800, fontSize:"clamp(26px,5vw,48px)", lineHeight:1.1, color:"#fff", marginBottom:12, letterSpacing:-0.5 }}>
             Nairobi's car care platform<br/><span style={{ color:"#e6821e" }}>starts here.</span>
@@ -437,7 +547,7 @@ export default function LandingPage() {
       </div>
 
       {/* FOOTER */}
-      <div style={{ background:"rgba(17,17,17,0.88)", padding:"2rem 1.25rem", borderTop:"1px solid #222" }}>
+      <div style={{ background:"rgba(17,17,17,0.95)", padding:"2rem 1.25rem", borderTop:"1px solid #222", position:"relative", zIndex:1 }}>
         <div style={{ maxWidth:800, margin:"0 auto" }}>
           <div style={{ fontWeight:700, fontSize:18, color:"#fff", marginBottom:8 }}>Car<span style={{ color:"#e6821e" }}>Care</span> Connect</div>
           <p style={{ fontSize:12, color:"#666", marginBottom:"1rem", lineHeight:1.6 }}>🇰🇪 Nairobi's most trusted automotive platform</p>
@@ -452,14 +562,10 @@ export default function LandingPage() {
       </div>
 
       {/* STICKY CTA */}
-      <div style={{ position:"fixed", bottom:0, left:0, right:0, background:"rgba(255,255,255,0.82)", borderTop:"2px solid #e6821e", padding:"0.75rem 1.25rem", zIndex:50 }}>
+      <div style={{ position:"fixed", bottom:0, left:0, right:0, background:"rgba(255,255,255,0.95)", borderTop:"2px solid #e6821e", padding:"0.75rem 1.25rem", zIndex:50, backdropFilter:"blur(10px)" }}>
         <button onClick={()=>navigate("/auth")} style={{ ...btnOrange, width:"100%", fontSize:15, padding:"13px" }}>Get started free</button>
       </div>
       <div style={{ height:64 }}/>
     </div>
   )
 }
-
-
-
-
