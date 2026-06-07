@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
 
 const PROVIDER_TYPES = [
-  { key:"garage", label:"Garage/Mechanic", icon:"≡ƒöº", desc:"Car service and repair" },
+  { key:"garage", label:"Garage/Mechanic", icon:"🔧", desc:"Car service and repair" },
   { key:"parts_dealer", label:"Parts Dealer", icon:"ΓÜÖ∩╕Å", desc:"Auto parts and spares" },
   { key:"accessories_shop", label:"Accessories Shop", icon:"Γ£¿", desc:"Car accessories" },
   { key:"tyre_shop", label:"Tyre Shop", icon:"≡ƒ¢₧", desc:"Tyre sales and fitting" },
@@ -17,26 +17,26 @@ const PROVIDER_TYPES = [
   { key:"auto_glass", label:"Auto Glass", icon:"≡ƒ¬ƒ", desc:"Windscreen specialist" },
 ]
 const DRIVER_VEHICLE_TYPES = [
-  { key:"car", label:"Car", icon:"≡ƒÜù", desc:"Standard delivery" },
-  { key:"motorcycle", label:"Boda Boda", icon:"≡ƒÅì∩╕Å", desc:"Fast parts delivery" },
-  { key:"tuktuk", label:"Tuktuk", icon:"≡ƒ¢║", desc:"Local delivery" },
-  { key:"van", label:"Van/Pickup", icon:"≡ƒÜÉ", desc:"Large items" },
+  { key:"car", label:"Car", icon:"🚗", desc:"Standard delivery" },
+  { key:"motorcycle", label:"Boda Boda", icon:"🏍️", desc:"Fast parts delivery" },
+  { key:"tuktuk", label:"Tuktuk", icon:"🛺", desc:"Local delivery" },
+  { key:"van", label:"Van/Pickup", icon:"🚐", desc:"Large items" },
 ]
 const ROLES = [
   {
     key: "customer",
     label: "Customer",
-    icon: "≡ƒÜù",
+    icon: "🚗",
     desc: "Book services, track drivers, earn loyalty points",
     color: "#e6821e",
     bg: "#1a1208",
     border: "#e6821e40",
-    features: ["≡ƒöº Browse verified services", "≡ƒôì Live driver tracking", "≡ƒÆÄ Loyalty rewards", "Γ¡É Rate your experience"]
+    features: ["🔧 Browse verified services", "≡ƒôì Live driver tracking", "≡ƒÆÄ Loyalty rewards", "Γ¡É Rate your experience"]
   },
   {
     key: "provider",
     label: "Service Provider",
-    icon: "≡ƒöº",
+    icon: "🔧",
     desc: "List services, manage bookings, grow your business",
     color: "#378add",
     bg: "#0c1f2e",
@@ -46,7 +46,7 @@ const ROLES = [
   {
     key: "driver",
     label: "Driver",
-    icon: "≡ƒÜÜ",
+    icon: "🚚",
     desc: "Earn by delivering vehicles, set your own schedule",
     color: "#1d9e75",
     bg: "#071a12",
@@ -155,8 +155,8 @@ export default function AuthPage() {
     }
   }
 
-  const inp = { width:"100%", background:"#111", border:"1px solid #2a2a2a", borderRadius:9, padding:"12px 14px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:12 }
-  const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
+  const inp = { width:"100%", background:"#111", border:"1px solid #2a2a2a", borderRadius:9, padding:"12px 14px", color:"#000", fontSize:15, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:12 }
+  const lbl = { fontSize:13, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
   const roleData = ROLES.find(r=>r.key===selectedRole)
 
   // Forgot password
@@ -166,7 +166,7 @@ export default function AuthPage() {
         <div style={{ textAlign:"center", marginBottom:"1.5rem" }}>
           <div style={{ fontSize:36, marginBottom:8 }}>≡ƒöÉ</div>
           <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#000000", marginBottom:4 }}>Reset password</div>
-          <div style={{ fontSize:12, color:"#888" }}>Enter your email to receive a reset link</div>
+          <div style={{ fontSize:12, color:"#666" }}>Enter your email to receive a reset link</div>
         </div>
         {resetSent ? (
           <div>
@@ -178,18 +178,18 @@ export default function AuthPage() {
               </div>
             </div>
             <button onClick={()=>{ setMode("signin"); setResetSent(false) }}
-              style={{ width:"100%", background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:"pointer" }}>
+              style={{ width:"100%", background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:16, fontWeight:700, padding:"15px", cursor:"pointer" }}>
               Back to sign in
             </button>
           </div>
         ) : (
           <form onSubmit={handleAuth}>
-            <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>Email address</label>
+            <label style={{ fontSize:13, color:"#666", display:"block", marginBottom:4 }}>Email address</label>
             <input type="email" required value={form.email} onChange={e=>setForm(f=>({...f,email:e.target.value}))}
               placeholder="your@email.com"
-              style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"11px 12px", color:"#000000", fontSize:13, outline:"none", marginBottom:16 }}/>
+              style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"11px 12px", color:"#000", fontSize:15, outline:"none", marginBottom:16 }}/>
             <button type="submit" disabled={loading}
-              style={{ width:"100%", background:loading?"#333":"#e6821e", border:"none", borderRadius:10, color:loading?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:loading?"not-allowed":"pointer", marginBottom:12 }}>
+              style={{ width:"100%", background:loading?"#333":"#e6821e", border:"none", borderRadius:10, color:loading?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:16, fontWeight:700, padding:"15px", cursor:loading?"not-allowed":"pointer", marginBottom:12 }}>
               {loading ? "Sending..." : "Send reset link"}
             </button>
             <button type="button" onClick={()=>setMode("signin")}
@@ -209,15 +209,15 @@ export default function AuthPage() {
 
       <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", padding:isMobile?"1rem":"2rem" }}>
         <div style={{ width:"100%", maxWidth:420 }}>
-          <button onClick={()=>setStep("role")} style={{ background:"none", border:"none", color:"#888", cursor:"pointer", fontSize:13, marginBottom:"1.5rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
-            ΓåÉ Back
+          <button onClick={()=>setStep("role")} style={{ background:"none", border:"none", color:"#666", cursor:"pointer", fontSize:13, marginBottom:"1.5rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
+            ← Back
           </button>
 
           <div style={{ marginBottom:"1.5rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:24, fontWeight:800, color:"#000000", marginBottom:4 }}>
+            <div style={{ fontFamily:"Syne", fontSize:30, fontWeight:800, color:"#000000", marginBottom:4 }}>
               {mode==="signin" ? "Welcome back" : "Create account"}
             </div>
-            <div style={{ fontSize:13, color:"#888" }}>
+            <div style={{ fontSize:15, color:"#555" }}>
               {mode==="signin" ? "Sign in to your Car Care Connect account" : `Joining as a ${roleData?.label}`}
             </div>
           </div>
@@ -226,8 +226,8 @@ export default function AuthPage() {
             <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:"1.25rem", padding:"0.9rem 1rem", background:roleData.bg, border:`1px solid ${roleData.border}`, borderRadius:10 }}>
               <span style={{ fontSize:22 }}>{roleData.icon}</span>
               <div>
-                <div style={{ fontSize:13, fontWeight:600, color:roleData.color }}>{roleData.label}</div>
-                <div style={{ fontSize:11, color:"#666" }}>{roleData.desc}</div>
+                <div style={{ fontSize:15, fontWeight:600, color:roleData.color }}>{roleData.label}</div>
+                <div style={{ fontSize:13, color:"#666" }}>{roleData.desc}</div>
               </div>
             </div>
           )}
@@ -244,7 +244,7 @@ export default function AuthPage() {
           <form onSubmit={handleAuth}>
             {mode==="signin"&&(
               <button type="button" onClick={()=>{ setMode("forgot"); setResetSent(false) }}
-                style={{ background:"none", border:"none", color:"#e6821e", fontSize:11, cursor:"pointer", padding:"0 0 12px", width:"100%", textAlign:"right", display:"block", fontFamily:"DM Sans,sans-serif" }}>
+                style={{ background:"none", border:"none", color:"#e6821e", fontSize:13, cursor:"pointer", padding:"0 0 12px", width:"100%", textAlign:"right", display:"block", fontFamily:"DM Sans,sans-serif" }}>
                 Forgot password?
               </button>
             )}
@@ -270,8 +270,8 @@ export default function AuthPage() {
                         <div key={pt.key} onClick={()=>setForm(f=>({...f,providerType:pt.key}))}
                           style={{ background:form.providerType===pt.key?"#0c1f2e":"#0f0f0f", border:"1px solid "+(form.providerType===pt.key?"#378add":"#222"), borderRadius:8, padding:"8px 10px", cursor:"pointer" }}>
                           <div style={{ fontSize:18, marginBottom:2 }}>{pt.icon}</div>
-                          <div style={{ fontSize:11, fontWeight:600, color:form.providerType===pt.key?"#378add":"#888" }}>{pt.label}</div>
-                          <div style={{ fontSize:10, color:"#999" }}>{pt.desc}</div>
+                          <div style={{ fontSize:13, fontWeight:600, color:form.providerType===pt.key?"#378add":"#888" }}>{pt.label}</div>
+                          <div style={{ fontSize:12, color:"#999" }}>{pt.desc}</div>
                         </div>
                       ))}
                     </div>
@@ -285,8 +285,8 @@ export default function AuthPage() {
                         <div key={vt.key} onClick={()=>setForm(f=>({...f,driverVehicleType:vt.key}))}
                           style={{ background:form.driverVehicleType===vt.key?"#071a12":"#0f0f0f", border:"1px solid "+(form.driverVehicleType===vt.key?"#1d9e75":"#222"), borderRadius:8, padding:"8px 10px", cursor:"pointer" }}>
                           <div style={{ fontSize:18, marginBottom:2 }}>{vt.icon}</div>
-                          <div style={{ fontSize:11, fontWeight:600, color:form.driverVehicleType===vt.key?"#1d9e75":"#888" }}>{vt.label}</div>
-                          <div style={{ fontSize:10, color:"#999" }}>{vt.desc}</div>
+                          <div style={{ fontSize:13, fontWeight:600, color:form.driverVehicleType===vt.key?"#1d9e75":"#888" }}>{vt.label}</div>
+                          <div style={{ fontSize:12, color:"#999" }}>{vt.desc}</div>
                         </div>
                       ))}
                     </div>
@@ -305,7 +305,7 @@ export default function AuthPage() {
 
             {mode==="signin"&&(
               <button type="button" onClick={()=>{ setMode("forgot"); setResetSent(false) }}
-                style={{ background:"none", border:"none", color:"#e6821e", fontSize:11, cursor:"pointer", padding:"0 0 12px", width:"100%", textAlign:"right", display:"block", fontFamily:"DM Sans,sans-serif" }}>
+                style={{ background:"none", border:"none", color:"#e6821e", fontSize:13, cursor:"pointer", padding:"0 0 12px", width:"100%", textAlign:"right", display:"block", fontFamily:"DM Sans,sans-serif" }}>
                 Forgot password?
               </button>
             )}
@@ -328,8 +328,8 @@ export default function AuthPage() {
             )}
 
             <button type="submit" disabled={loading||(mode==="signup"&&!agreed)}
-              style={{ width:"100%", background:loading||(mode==="signup"&&!agreed)?"#333":"#e6821e", border:"none", borderRadius:9, color:loading||(mode==="signup"&&!agreed)?"#666":"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:loading||(mode==="signup"&&!agreed)?"not-allowed":"pointer", transition:"all 0.15s" }}>
-              {loading ? "Please wait..." : mode==="signin" ? "Sign in ΓåÆ" : "Create account ΓåÆ"}
+              style={{ width:"100%", background:loading||(mode==="signup"&&!agreed)?"#333":"#e6821e", border:"none", borderRadius:9, color:loading||(mode==="signup"&&!agreed)?"#666":"#fff", fontFamily:"Syne,sans-serif", fontSize:16, fontWeight:700, padding:"15px", cursor:loading||(mode==="signup"&&!agreed)?"not-allowed":"pointer", transition:"all 0.15s" }}>
+              {loading ? "Please wait..." : mode==="signin" ? "Sign in →" : "Create account →"}
             </button>
           </form>
 
@@ -348,15 +348,15 @@ export default function AuthPage() {
           <div style={{ fontFamily:"Syne", fontSize:28, fontWeight:800, color:"#000000", marginBottom:8, lineHeight:1.2 }}>
             Car<span style={{ color:"#e6821e" }}>Care</span> Connect
           </div>
-          <div style={{ fontSize:13, color:"#888", marginBottom:"2rem", lineHeight:1.6 }}>
-            Nairobi's trusted auto care network ΓÇö connecting vehicle owners with verified service providers.
+          <div style={{ fontSize:15, color:"#555", marginBottom:"2rem", lineHeight:1.6 }}>
+            Nairobi's trusted auto care network — connecting vehicle owners with verified service providers.
           </div>
           {ROLES.map(r=>(
             <div key={r.key} style={{ display:"flex", alignItems:"flex-start", gap:12, marginBottom:16, padding:"0.9rem", background:selectedRole===r.key?r.bg:"transparent", border:`1px solid ${selectedRole===r.key?r.border:"transparent"}`, borderRadius:10, transition:"all 0.15s" }}>
               <span style={{ fontSize:20, marginTop:2 }}>{r.icon}</span>
               <div>
-                <div style={{ fontSize:13, fontWeight:600, color:selectedRole===r.key?r.color:"#666", marginBottom:2 }}>{r.label}</div>
-                <div style={{ fontSize:11, color:"#888", lineHeight:1.5 }}>{r.desc}</div>
+                <div style={{ fontSize:15, fontWeight:600, color:selectedRole===r.key?r.color:"#666", marginBottom:2 }}>{r.label}</div>
+                <div style={{ fontSize:13, color:"#666", lineHeight:1.5 }}>{r.desc}</div>
               </div>
             </div>
           ))}
@@ -366,13 +366,13 @@ export default function AuthPage() {
             {STATS.map(s=>(
               <div key={s.label}>
                 <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#e6821e" }}>{s.value}</div>
-                <div style={{ fontSize:10, color:"#888", marginTop:2 }}>{s.label}</div>
+                <div style={{ fontSize:12, color:"#666", marginTop:2 }}>{s.label}</div>
               </div>
             ))}
           </div>
           <div style={{ display:"flex", gap:12 }}>
-            <a href="/terms" target="_blank" style={{ fontSize:11, color:"#999", textDecoration:"none" }}>Terms</a>
-            <a href="/privacy" target="_blank" style={{ fontSize:11, color:"#999", textDecoration:"none" }}>Privacy</a>
+            <a href="/terms" target="_blank" style={{ fontSize:13, color:"#999", textDecoration:"none" }}>Terms</a>
+            <a href="/privacy" target="_blank" style={{ fontSize:13, color:"#999", textDecoration:"none" }}>Privacy</a>
           </div>
         </div>
       </div>
@@ -384,12 +384,12 @@ export default function AuthPage() {
     <div style={{ minHeight:"100vh", background:"#0a0a0a", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"'DM Sans',sans-serif", padding:"1rem" }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');`}</style>
       <div style={{ width:"100%", maxWidth:640 }}>
-        <button onClick={()=>setStep("landing")} style={{ background:"none", border:"none", color:"#888", cursor:"pointer", fontSize:13, marginBottom:"1.5rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
-          ΓåÉ Back
+        <button onClick={()=>setStep("landing")} style={{ background:"none", border:"none", color:"#666", cursor:"pointer", fontSize:13, marginBottom:"1.5rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
+          ← Back
         </button>
         <div style={{ textAlign:"center", marginBottom:"2rem" }}>
           <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#000000", marginBottom:6 }}>Who are you?</div>
-          <div style={{ fontSize:13, color:"#888" }}>Choose your role to get started</div>
+          <div style={{ fontSize:15, color:"#555" }}>Choose your role to get started</div>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:12, marginBottom:"1.5rem" }}>
           {ROLES.map(r=>(
@@ -399,10 +399,10 @@ export default function AuthPage() {
               onMouseLeave={e=>{ if(selectedRole!==r.key){ e.currentTarget.style.borderColor="#1e1e1e"; e.currentTarget.style.transform="translateY(0)" }}}>
               <div style={{ fontSize:36, marginBottom:10 }}>{r.icon}</div>
               <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:selectedRole===r.key?r.color:"#000000", marginBottom:6 }}>{r.label}</div>
-              <div style={{ fontSize:11, color:"#666", lineHeight:1.5, marginBottom:12 }}>{r.desc}</div>
+              <div style={{ fontSize:13, color:"#666", lineHeight:1.5, marginBottom:12 }}>{r.desc}</div>
               <div style={{ textAlign:"left" }}>
                 {r.features.map(f=>(
-                  <div key={f} style={{ fontSize:11, color:selectedRole===r.key?r.color:"#888", marginBottom:4 }}>{f}</div>
+                  <div key={f} style={{ fontSize:13, color:selectedRole===r.key?r.color:"#666", marginBottom:4 }}>{f}</div>
                 ))}
               </div>
             </div>
@@ -411,7 +411,7 @@ export default function AuthPage() {
         <button onClick={()=>{ if(!selectedRole) return toast.error("Please select a role"); setStep("auth") }}
           disabled={!selectedRole}
           style={{ width:"100%", background:selectedRole?"#e6821e":"#222", border:"none", borderRadius:10, color:selectedRole?"#fff":"#555", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:selectedRole?"pointer":"not-allowed", transition:"all 0.15s" }}>
-          Continue as {selectedRole ? ROLES.find(r=>r.key===selectedRole)?.label : "..."} ΓåÆ
+          Continue as {selectedRole ? ROLES.find(r=>r.key===selectedRole)?.label : "..."} →
         </button>
         <div style={{ textAlign:"center", marginTop:16, fontSize:12, color:"#999" }}>
           By continuing you agree to our{" "}
@@ -430,7 +430,7 @@ export default function AuthPage() {
         <div style={{ fontSize:18, fontWeight:700, color:"#fff" }}>Car<span style={{ color:"#e6821e" }}>Care</span></div>
         <div style={{ display:"flex", gap:8 }}>
           <button onClick={()=>{ setStep("role"); setMode("signin") }} style={{ background:"none", border:"1px solid #444", borderRadius:500, color:"#fff", fontSize:13, padding:"7px 16px", cursor:"pointer" }}>Sign in</button>
-          <button onClick={()=>{ setStep("role"); setMode("signup") }} style={{ background:"#e6821e", border:"none", borderRadius:500, color:"#fff", fontSize:13, fontWeight:700, padding:"8px 18px", cursor:"pointer" }}>Get started</button>
+          <button onClick={()=>{ setStep("role"); setMode("signup") }} style={{ background:"#e6821e", border:"none", borderRadius:500, color:"#fff", fontSize:15, fontWeight:700, padding:"8px 18px", cursor:"pointer" }}>Get started</button>
         </div>
       </nav>
       <div style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"3rem 1.25rem", textAlign:"center" }}>
@@ -449,20 +449,22 @@ export default function AuthPage() {
               onMouseLeave={e=>{ e.currentTarget.style.borderColor="transparent"; e.currentTarget.style.background="#f5f5f5"; e.currentTarget.style.transform="translateY(0)" }}>
               <div style={{ fontSize:42, marginBottom:14 }}>{r.icon}</div>
               <div style={{ fontWeight:700, fontSize:17, color:"#000", marginBottom:6 }}>{r.label}</div>
-              <div style={{ fontSize:13, color:"#666", lineHeight:1.6, marginBottom:12 }}>{r.desc}</div>
+              <div style={{ fontSize:15, color:"#555", lineHeight:1.6, marginBottom:12 }}>{r.desc}</div>
               <div style={{ fontSize:12, fontWeight:600, color:r.color }}>Get started →</div>
             </div>
           ))}
         </div>
-        <div style={{ fontSize:13, color:"#666" }}>Already have an account?{" "}
+        <div style={{ fontSize:15, color:"#555" }}>Already have an account?{" "}
           <button onClick={()=>{ setStep("role"); setMode("signin") }} style={{ background:"none", border:"none", color:"#e6821e", fontWeight:600, cursor:"pointer", fontSize:13 }}>Sign in</button>
         </div>
       </div>
       <div style={{ background:"#111", padding:"1.25rem", textAlign:"center" }}>
-        <div style={{ fontSize:11, color:"#999" }}>© 2026 Car Care Connect · Nairobi, Kenya · 0113858966</div>
+        <div style={{ fontSize:13, color:"#999" }}>© 2026 Car Care Connect · Nairobi, Kenya · 0113858966</div>
       </div>
     </div>
   )
 }
+
+
 
 
