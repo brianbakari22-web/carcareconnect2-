@@ -61,7 +61,44 @@ export default function CustomerChat() {
       }
     })
     const filtered = convs.filter(c=>c._hasMessages)
-    setConversations(filtered)
+    // Load listing messages
+    const { data: listingMsgs } = await supabase.from("chat_messages")
+      .select("id,listing_id,sender_id,receiver_id,message,created_at,is_read")
+      .eq("receiver_id", user.id)
+      .not("listing_id","is",null)
+      .order("created_at", { ascending:false })
+    const listingConvs = []
+    if (listingMsgs?.length > 0) {
+      const senderIds = [...new Set(listingMsgs.map(m=>m.sender_id))]
+      const listingIds = [...new Set(listingMsgs.map(m=>m.listing_id))]
+      const [{ data: senderProfs }, { data: listings }] = await Promise.all([
+        supabase.from("profiles").select("id,first_name,last_name,business_name").in("id", senderIds),
+        supabase.from("marketplace_listings").select("id,title").in("id", listingIds)
+      ])
+      const grouped = {}
+      listingMsgs.forEach(m => {
+        const key = `${m.sender_id}-${m.listing_id}`
+        if (!grouped[key]) grouped[key] = []
+        grouped[key].push(m)
+      })
+      Object.entries(grouped).forEach(([key, msgs]) => {
+        const last = msgs[0]
+        const sender = senderProfs?.find(p=>p.id===last.sender_id)
+        const listing = listings?.find(l=>l.id===last.listing_id)
+        listingConvs.push({
+          listingId: last.listing_id,
+          serviceName: listing?.title||"Marketplace item",
+          otherUserId: last.sender_id,
+          otherUserName: sender?.business_name||`${sender?.first_name||""} ${sender?.last_name||""}`.trim()||"Buyer",
+          lastMessage: last.message||"",
+          lastTime: last.created_at,
+          unread: msgs.filter(m=>!m.is_read).length,
+          type: "listing"
+        })
+      })
+    }
+    const allConvs = [...filtered, ...listingConvs].sort((a,b)=>new Date(b.lastTime||0)-new Date(a.lastTime||0))
+    setConversations(allConvs)
     setLoading(false)
     // Auto-open from notification redirect
     const bookingId = searchParams.get("booking")
