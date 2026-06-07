@@ -66,7 +66,7 @@ function NetworkCanvas() {
     draw()
     return () => { cancelAnimationFrame(animId); window.removeEventListener("resize",resize) }
   },[])
-  return <canvas ref={canvasRef} style={{ position:"fixed", top:0, left:0, width:"100vw", height:"100vh", pointerEvents:"none" }}/>
+  return <canvas ref={canvasRef} style={{ position:"fixed", top:0, left:0, width:"100vw", height:"100vh", pointerEvents:"none", zIndex:0 }}/>
 }
 
 export default function LandingPage() {
@@ -75,7 +75,7 @@ export default function LandingPage() {
   const btnOrange = { background:"#e6821e", border:"none", borderRadius:500, color:"#fff", fontSize:14, fontWeight:700, padding:"13px 26px", cursor:"pointer", fontFamily:"DM Sans,sans-serif" }
   const btnOutline = { background:"none", border:"1.5px solid #000", borderRadius:500, color:"#000", fontSize:14, fontWeight:600, padding:"12px 24px", cursor:"pointer", fontFamily:"DM Sans,sans-serif" }
   const btnOutlineOrange = { background:"none", border:"1.5px solid #e6821e", borderRadius:500, color:"#e6821e", fontSize:14, fontWeight:600, padding:"12px 24px", cursor:"pointer", fontFamily:"DM Sans,sans-serif" }
-  const card = { background:"#f5f5f5", borderRadius:16, padding:"1.25rem" }
+  const card = { background:"rgba(245,245,245,0.84)", borderRadius:16, padding:"1.25rem" }
   const sLabel = { fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.12em", color:"#e6821e", marginBottom:10, display:"block" }
   const h2 = { fontSize:"clamp(24px,4vw,42px)", fontWeight:800, lineHeight:1.1, letterSpacing:-0.5, color:"#000", marginBottom:12 }
   const h2w = { fontSize:"clamp(24px,4vw,42px)", fontWeight:800, lineHeight:1.1, letterSpacing:-0.5, color:"#fff", marginBottom:12 }
@@ -111,7 +111,7 @@ export default function LandingPage() {
   ]
 
   return (
-    <div style={{ fontFamily:"DM Sans,sans-serif", background:"#fff", color:"#000", minHeight:"100vh" }}>
+    <div style={{ fontFamily:"DM Sans,sans-serif", background:"rgba(255,255,255,0.82)", color:"#000", minHeight:"100vh" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
         *{box-sizing:border-box;}
@@ -127,7 +127,7 @@ export default function LandingPage() {
       `}</style>
 
       {/* NAV */}
-      <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:100, background:"#000", padding:"0 1.25rem", height:56, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+      <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:100, background:"rgba(0,0,0,0.87)", padding:"0 1.25rem", height:56, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
         <div style={{ fontSize:20, fontWeight:700, color:"#fff", letterSpacing:-0.5 }}>Car<span style={{ color:"#e6821e" }}>Care</span></div>
         <div style={{ display:"flex", gap:8, alignItems:"center" }}>
           <button onClick={()=>navigate("/auth")} style={{ background:"none", border:"1px solid #444", borderRadius:500, color:"#fff", fontSize:13, fontWeight:500, padding:"7px 16px", cursor:"pointer" }}>Sign in</button>
@@ -136,7 +136,7 @@ export default function LandingPage() {
       </nav>
 
       {/* HERO */}
-      <div style={{ paddingTop:56, position:"relative", overflow:"hidden", background:"#fff", minHeight:"92vh", display:"flex", flexDirection:"column", justifyContent:"center" }}>
+      <div style={{ paddingTop:56, position:"relative", overflow:"hidden", background:"rgba(255,255,255,0.82)", minHeight:"92vh", display:"flex", flexDirection:"column", justifyContent:"center" }}>
         <NetworkCanvas/>
         <FloatingParts/>
         <div style={{ padding:"3rem 1.25rem 2.5rem", maxWidth:620, margin:"0 auto", textAlign:"center", position:"relative", zIndex:1 }}>
@@ -162,14 +162,14 @@ export default function LandingPage() {
           </div>
           <div style={{ display:"flex", gap:6, justifyContent:"center", flexWrap:"wrap" }}>
             {[["24/7","Emergency service"],["5min","Avg response"],["100%","Verified providers"],["🇰🇪","Made in Kenya"]].map(([v,l])=>(
-              <div key={l} style={{ textAlign:"center", padding:"0.5rem 0.9rem", background:"#f5f5f5", borderRadius:10 }}>
+              <div key={l} style={{ textAlign:"center", padding:"0.5rem 0.9rem", background:"rgba(245,245,245,0.84)", borderRadius:10 }}>
                 <div style={{ fontWeight:800, fontSize:16, color:"#000" }}>{v}</div>
                 <div style={{ fontSize:10, color:"#888", marginTop:1 }}>{l}</div>
               </div>
             ))}
           </div>
         </div>
-        <div style={{ background:"#000", padding:"1.25rem", textAlign:"center", position:"relative", zIndex:1 }}>
+        <div style={{ background:"rgba(0,0,0,0.87)", padding:"1.25rem", textAlign:"center", position:"relative", zIndex:1 }}>
           <div style={{ display:"flex", gap:16, justifyContent:"center", flexWrap:"wrap" }}>
             {[["🚗","Service booking"],["🚨","24/7 emergency"],["📍","Live tracking"],["🛒","Marketplace"],["🎁","Loyalty rewards"]].map(([icon,label])=>(
               <div key={label} style={{ fontSize:13, color:"#aaa", display:"flex", alignItems:"center", gap:6 }}><span>{icon}</span><span>{label}</span></div>
@@ -179,7 +179,7 @@ export default function LandingPage() {
       </div>
 
       {/* GO SERVICE */}
-      <div style={{ background:"#111", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
+      <div style={{ background:"rgba(17,17,17,0.88)", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
         <FloatingParts/>
         <div style={{ maxWidth:580, margin:"0 auto", textAlign:"center", position:"relative", zIndex:1 }}>
           <span style={sLabel}>GO Service</span>
@@ -195,7 +195,7 @@ export default function LandingPage() {
       </div>
 
       {/* HOW IT WORKS */}
-      <div style={{ background:"#fff", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
+      <div style={{ background:"rgba(255,255,255,0.82)", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
         <FloatingParts/>
         <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:1 }}>
           <div style={{ textAlign:"center", marginBottom:"2rem" }}>
@@ -220,7 +220,7 @@ export default function LandingPage() {
       </div>
 
       {/* FEATURES */}
-      <div style={{ background:"#f5f5f5", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
+      <div style={{ background:"rgba(245,245,245,0.84)", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
         <FloatingParts/>
         <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:1 }}>
           <div style={{ textAlign:"center", marginBottom:"2rem" }}>
@@ -240,7 +240,7 @@ export default function LandingPage() {
       </div>
 
       {/* TRUST */}
-      <div style={{ background:"#fff", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
+      <div style={{ background:"rgba(255,255,255,0.82)", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
         <FloatingParts/>
         <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:1 }}>
           <div style={{ textAlign:"center", marginBottom:"2rem" }}>
@@ -267,7 +267,7 @@ export default function LandingPage() {
       </div>
 
       {/* WHO IS IT FOR */}
-      <div style={{ background:"#111", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
+      <div style={{ background:"rgba(17,17,17,0.88)", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
         <FloatingParts/>
         <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:1 }}>
           <div style={{ textAlign:"center", marginBottom:"2rem" }}>
@@ -280,7 +280,7 @@ export default function LandingPage() {
               { icon:"🔧", role:"Service Provider", color:"#378add", desc:"List services, manage bookings, earn commissions, dispatch mechanics", features:["Manage bookings","GO Service requests","Parts inventory","Earnings dashboard"] },
               { icon:"🚗", role:"Concierge Driver", color:"#1d9e75", desc:"Pick up and deliver customer vehicles and parts, earn per delivery", features:["Accept deliveries","Parts delivery jobs","Live navigation","KES 200 allowance per trip"] },
             ].map(r=>(
-              <div key={r.role} style={{ background:"#1a1a1a", border:"1px solid "+r.color+"30", borderRadius:16, padding:"1.5rem" }}>
+              <div key={r.role} style={{ background:"rgba(26,26,26,0.88)", border:"1px solid "+r.color+"30", borderRadius:16, padding:"1.5rem" }}>
                 <div style={{ fontSize:36, marginBottom:10 }}>{r.icon}</div>
                 <div style={{ fontWeight:800, fontSize:16, color:r.color, marginBottom:6 }}>{r.role}</div>
                 <div style={{ fontSize:12, color:"#aaa", marginBottom:12, lineHeight:1.6 }}>{r.desc}</div>
@@ -300,7 +300,7 @@ export default function LandingPage() {
       </div>
 
       {/* PROVIDER TYPES */}
-      <div style={{ background:"#fff", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
+      <div style={{ background:"rgba(255,255,255,0.82)", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
         <FloatingParts/>
         <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:1 }}>
           <div style={{ textAlign:"center", marginBottom:"2rem" }}>
@@ -324,7 +324,7 @@ export default function LandingPage() {
       </div>
 
       {/* PRICING */}
-      <div style={{ background:"#f5f5f5", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
+      <div style={{ background:"rgba(245,245,245,0.84)", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
         <FloatingParts/>
         <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:1 }}>
           <div style={{ textAlign:"center", marginBottom:"2rem" }}>
@@ -339,7 +339,7 @@ export default function LandingPage() {
               { type:"GO Service", provider:"85%", platform:"15%", desc:"Emergency roadside assistance", color:"#e24b4a" },
               { type:"Marketplace", provider:"92-98%", platform:"2-8%", desc:"Buy and sell vehicles and parts", color:"#1d9e75" },
             ].map(p=>(
-              <div key={p.type} style={{ background:"#fff", border:"1px solid "+p.color+"30", borderRadius:14, padding:"1.25rem", textAlign:"center" }}>
+              <div key={p.type} style={{ background:"rgba(255,255,255,0.82)", border:"1px solid "+p.color+"30", borderRadius:14, padding:"1.25rem", textAlign:"center" }}>
                 <div style={{ fontWeight:700, fontSize:13, color:p.color, marginBottom:10 }}>{p.type}</div>
                 <div style={{ fontWeight:800, fontSize:32, color:"#000", marginBottom:2 }}>{p.provider}</div>
                 <div style={{ fontSize:11, color:"#888", marginBottom:8 }}>Your earnings</div>
@@ -352,7 +352,7 @@ export default function LandingPage() {
       </div>
 
       {/* NAIROBI PRICES */}
-      <div style={{ background:"#000", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
+      <div style={{ background:"rgba(0,0,0,0.87)", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
         <FloatingParts/>
         <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:1 }}>
           <div style={{ textAlign:"center", marginBottom:"2rem" }}>
@@ -361,7 +361,7 @@ export default function LandingPage() {
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))", gap:8 }}>
             {[["Oil change (minor service)","KES 4,000 - 7,000"],["Brake pads replacement","KES 7,000 - 15,000"],["Minor service","KES 12,000 - 15,000"],["Major service","KES 30,000 - 35,000"],["Battery replacement","KES 5,000 - 12,000"],["Wheel alignment","KES 2,500 - 5,000"],["AC service","KES 5,000 - 12,000"],["Suspension repair","KES 15,000 - 25,000"],["Full diagnostic","KES 3,000 - 8,000"],["Tyre replacement (each)","KES 8,000 - 30,000"],["GO callout fee","KES 500 flat"],["Transmission repair","KES 20,000 - 50,000"]].map(([service,price])=>(
-              <div key={service} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 12px", background:"#1a1a1a", borderRadius:8, gap:8 }}>
+              <div key={service} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 12px", background:"rgba(26,26,26,0.88)", borderRadius:8, gap:8 }}>
                 <span style={{ fontSize:12, color:"#aaa" }}>{service}</span>
                 <span style={{ fontSize:12, color:"#e6821e", fontWeight:700, flexShrink:0 }}>{price}</span>
               </div>
@@ -371,7 +371,7 @@ export default function LandingPage() {
       </div>
 
       {/* PARTS MARKETPLACE */}
-      <div style={{ background:"#fff", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
+      <div style={{ background:"rgba(255,255,255,0.82)", padding:"3rem 1.25rem", position:"relative", overflow:"hidden" }}>
         <FloatingParts/>
         <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:1 }}>
           <div style={{ textAlign:"center", marginBottom:"2rem" }}>
@@ -381,7 +381,7 @@ export default function LandingPage() {
           </div>
           <div style={{ display:"flex", flexDirection:"column", gap:8, marginBottom:"1.5rem" }}>
             {[["⚙️","Engine and mechanical parts"],["✨","Car accessories"],["🛞","Tyres all brands"],["🔋","Batteries and electrical"],["🛢️","Engine oils and fluids"]].map(([icon,item])=>(
-              <div key={item} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 16px", background:"#f5f5f5", borderRadius:10, fontSize:14, color:"#000", fontWeight:500 }}>
+              <div key={item} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 16px", background:"rgba(245,245,245,0.84)", borderRadius:10, fontSize:14, color:"#000", fontWeight:500 }}>
                 <span style={{ fontSize:20 }}>{icon}</span>{item}
               </div>
             ))}
@@ -402,7 +402,7 @@ export default function LandingPage() {
       </div>
 
       {/* FAQ */}
-      <div style={{ background:"#f5f5f5", padding:"3rem 1.25rem" }}>
+      <div style={{ background:"rgba(245,245,245,0.84)", padding:"3rem 1.25rem" }}>
         <div style={{ maxWidth:600, margin:"0 auto" }}>
           <div style={{ textAlign:"center", marginBottom:"2rem" }}>
             <span style={sLabel}>FAQ</span>
@@ -421,7 +421,7 @@ export default function LandingPage() {
       </div>
 
       {/* CTA */}
-      <div style={{ background:"#000", padding:"4rem 1.25rem", textAlign:"center", position:"relative", overflow:"hidden" }}>
+      <div style={{ background:"rgba(0,0,0,0.87)", padding:"4rem 1.25rem", textAlign:"center", position:"relative", overflow:"hidden" }}>
         <FloatingParts/>
         <div style={{ maxWidth:500, margin:"0 auto", position:"relative", zIndex:1 }}>
           <img src="/logo.svg" alt="Car Care Connect" style={{ height:70, marginBottom:"1.5rem", animation:"glow 3s ease-in-out infinite" }}/>
@@ -437,7 +437,7 @@ export default function LandingPage() {
       </div>
 
       {/* FOOTER */}
-      <div style={{ background:"#111", padding:"2rem 1.25rem", borderTop:"1px solid #222" }}>
+      <div style={{ background:"rgba(17,17,17,0.88)", padding:"2rem 1.25rem", borderTop:"1px solid #222" }}>
         <div style={{ maxWidth:800, margin:"0 auto" }}>
           <div style={{ fontWeight:700, fontSize:18, color:"#fff", marginBottom:8 }}>Car<span style={{ color:"#e6821e" }}>Care</span> Connect</div>
           <p style={{ fontSize:12, color:"#666", marginBottom:"1rem", lineHeight:1.6 }}>🇰🇪 Nairobi's most trusted automotive platform</p>
@@ -452,12 +452,13 @@ export default function LandingPage() {
       </div>
 
       {/* STICKY CTA */}
-      <div style={{ position:"fixed", bottom:0, left:0, right:0, background:"#fff", borderTop:"2px solid #e6821e", padding:"0.75rem 1.25rem", zIndex:50 }}>
+      <div style={{ position:"fixed", bottom:0, left:0, right:0, background:"rgba(255,255,255,0.82)", borderTop:"2px solid #e6821e", padding:"0.75rem 1.25rem", zIndex:50 }}>
         <button onClick={()=>navigate("/auth")} style={{ ...btnOrange, width:"100%", fontSize:15, padding:"13px" }}>Get started free</button>
       </div>
       <div style={{ height:64 }}/>
     </div>
   )
 }
+
 
 
