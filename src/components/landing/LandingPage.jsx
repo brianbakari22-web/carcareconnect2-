@@ -75,8 +75,8 @@ export default function LandingPage() {
       <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:200, padding:"0.6rem 1rem", display:"flex", justifyContent:"space-between", alignItems:"center", background:"rgba(13,13,13,0.97)", backdropFilter:"blur(12px)", borderBottom:"1px solid #1e1e1e", transition:"all 0.3s" }}>
         <img src="/logo.svg" alt="Car Care Connect" style={{ height:36 }}/>
         <div style={{ display:"flex", gap:6, alignItems:"center" }}>
-          <button onClick={()=>navigate("/auth")} style={{ background:"none", border:"1px solid #444", borderRadius:8, color:"#aaa", fontSize:12, padding:"8px 14px", cursor:"pointer", fontFamily:"DM Sans,sans-serif" }}>Sign in</button>
-          <button onClick={()=>navigate("/auth")} style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"9px 16px", cursor:"pointer", fontFamily:"Syne,sans-serif", whiteSpace:"nowrap" }}>Get started →</button>
+          <button onClick={()=>navigate("/auth")} style={{ background:"none", border:"1px solid #000", borderRadius:24, color:"#000", fontSize:12, padding:"8px 18px", cursor:"pointer", fontFamily:"DM Sans,sans-serif", fontWeight:500 }}>Sign in</button>
+          <button onClick={()=>navigate("/auth")} style={{ background:"#000000", border:"none", borderRadius:24, color:"#fff", fontSize:12, fontWeight:700, padding:"9px 18px", cursor:"pointer", fontFamily:"DM Sans,sans-serif", whiteSpace:"nowrap" }}>Get started →</button>
         </div>
       </nav>
 
@@ -405,6 +405,7 @@ export default function LandingPage() {
     </div>
   )
 }
+
 
 
 
