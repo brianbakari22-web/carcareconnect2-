@@ -37,9 +37,15 @@
         var key = userId ? "ccc_theme_" + userId : "ccc_theme_guest"
         var saved = localStorage.getItem(key)
         if (!saved || saved === "dark") { localStorage.setItem(key, "light") }
-      } catch(e) {}
+        document.documentElement.style.background = "#ffffff"
+        document.body.style.background = "#ffffff"
+      } catch(e) {
+        document.documentElement.style.background = "#ffffff"
+        document.body.style.background = "#ffffff"
+      }
     </script>
     <div id="root"></div>
   </body>
 </html>
+
 
