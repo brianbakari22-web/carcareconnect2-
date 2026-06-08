@@ -275,7 +275,7 @@ export default function CustomerGoService() {
 
   if (step==="waiting") return (
     <div>
-      <div style={{ background:"#1a0808", border:"1px solid #e24b4a40", borderRadius:16, padding:"1.5rem", marginBottom:"1rem", textAlign:"center" }}>
+      <div style={{ background:"#fff5f5", border:"1px solid #fecaca", borderRadius:16, padding:"1.5rem", marginBottom:"1rem", textAlign:"center" }}>
         <div style={{ fontSize:40, marginBottom:10 }}>🚨</div>
         <div style={{ fontFamily:"Syne", fontSize:isMobile?18:22, fontWeight:800, color:"#e24b4a", marginBottom:6 }}>
           Emergency request sent
@@ -327,7 +327,7 @@ export default function CustomerGoService() {
           { icon:"📞", text:"If blocking traffic — call NTSA: 0800 723 573", priority:"emergency" },
           { icon:"🚔", text:"If you are in danger — call Police: 999", priority:"emergency" },
         ].map(item=>(
-          <div key={item.text} style={{ display:"flex", gap:10, alignItems:"flex-start", marginBottom:10, padding:"0.6rem", background:item.priority==="emergency"?"#1a0808":item.priority==="high"?"#1a1208":"#0f0f0f", borderRadius:8, border:`1px solid ${item.priority==="emergency"?"#e24b4a30":item.priority==="high"?"#e6821e30":"#1e1e1e"}` }}>
+          <div key={item.text} style={{ display:"flex", gap:10, alignItems:"flex-start", marginBottom:10, padding:"0.6rem", background:item.priority==="emergency"?"#fff5f5":item.priority==="high"?"#fff8f0":"#f5f5f5", borderRadius:8, border:`1px solid ${item.priority==="emergency"?"#fecaca":item.priority==="high"?"#fed7aa":"#eeeeee"}` }}>
             <span style={{ fontSize:18, flexShrink:0 }}>{item.icon}</span>
             <span style={{ fontSize:12, color:item.priority==="emergency"?"#e24b4a":item.priority==="high"?"#e6821e":"#888", lineHeight:1.5 }}>{item.text}</span>
           </div>
@@ -339,7 +339,7 @@ export default function CustomerGoService() {
         </div>
       </div>
 
-      <div style={{ background:"#1a0808", border:"1px solid #e24b4a40", borderRadius:16, padding:"1.5rem", marginBottom:"1rem", textAlign:"center" }}>
+      <div style={{ background:"#fff5f5", border:"1px solid #fecaca", borderRadius:16, padding:"1.5rem", marginBottom:"1rem", textAlign:"center" }}>
         <button onClick={cancelRequest}
           style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:10, color:"#e24b4a", fontSize:13, padding:"10px 24px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
           Cancel request
@@ -350,7 +350,7 @@ export default function CustomerGoService() {
 
   if (step==="accepted") return (
     <div>
-      <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:16, padding:"1.5rem", marginBottom:"1rem", textAlign:"center" }}>
+      <div style={{ background:"#f0fdf4", border:"1px solid #bbf7d0", borderRadius:16, padding:"1.5rem", marginBottom:"1rem", textAlign:"center" }}>
         <div style={{ fontSize:40, marginBottom:10 }}>✅</div>
         <div style={{ fontFamily:"Syne", fontSize:isMobile?18:22, fontWeight:800, color:"#1d9e75", marginBottom:6 }}>
           Help is on the way!
@@ -371,7 +371,7 @@ export default function CustomerGoService() {
   )
 
   if (step==="no_providers") return (
-    <div style={{ background:"#1a0808", border:"1px solid #e24b4a40", borderRadius:16, padding:"2rem", textAlign:"center" }}>
+    <div style={{ background:"#fff5f5", border:"1px solid #fecaca", borderRadius:16, padding:"2rem", textAlign:"center" }}>
       <div style={{ fontSize:40, marginBottom:10 }}>😔</div>
       <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#e24b4a", marginBottom:8 }}>No providers available</div>
       <div style={{ fontSize:13, color:"#555555", marginBottom:"1.5rem", lineHeight:1.6 }}>
@@ -382,7 +382,7 @@ export default function CustomerGoService() {
           style={{ background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:"pointer" }}>
           Try again
         </button>
-        <a href="tel:999" style={{ background:"#1a0808", border:"1px solid #e24b4a40", borderRadius:10, color:"#e24b4a", fontSize:13, fontWeight:600, padding:"11px 24px", textDecoration:"none", fontFamily:"'DM Sans',sans-serif" }}>
+        <a href="tel:999" style={{ background:"#fff5f5", border:"1px solid #fecaca", borderRadius:10, color:"#e24b4a", fontSize:13, fontWeight:600, padding:"11px 24px", textDecoration:"none", fontFamily:"'DM Sans',sans-serif" }}>
           📞 Call emergency
         </a>
       </div>
@@ -393,7 +393,7 @@ export default function CustomerGoService() {
     <div>
       {/* Active GO bookings */}
       {activeGoBookings.length>0&&(
-        <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:12, padding:"1rem", marginBottom:"1.5rem" }}>
+        <div style={{ background:"#f0fdf4", border:"1px solid #bbf7d0", borderRadius:12, padding:"1rem", marginBottom:"1.5rem" }}>
           <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75", marginBottom:8 }}>Active emergency requests</div>
           {activeGoBookings.map(b=>(
             <div key={b.id} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"8px 0", borderBottom:"1px solid #eeeeee" }}>
@@ -410,7 +410,7 @@ export default function CustomerGoService() {
         </div>
       )}
 
-      <div style={{ background:"#1a0808", border:"1px solid #e24b4a30", borderRadius:16, padding:"1.25rem", marginBottom:"1.5rem" }}>
+      <div style={{ background:"#fff5f5", border:"1px solid #fecaca", borderRadius:16, padding:"1.25rem", marginBottom:"1.5rem" }}>
         <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:6 }}>
           <span style={{ fontSize:24 }}>🚨</span>
           <div>
@@ -431,9 +431,9 @@ export default function CustomerGoService() {
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)", gap:8 }}>
           {EMERGENCY_TYPES.map(e=>(
             <button key={e.key} onClick={()=>setEmergencyType(e.key)}
-              style={{ background:emergencyType===e.key?"#1a0808":"#0f0f0f", border:`1px solid ${emergencyType===e.key?"#e24b4a":"#222"}`, borderRadius:10, padding:"0.75rem", cursor:"pointer", textAlign:"center" }}>
+              style={{ background:emergencyType===e.key?"#fff5f5":"#f5f5f5", border:`1px solid ${emergencyType===e.key?"#e24b4a":"#e5e5e5"}`, borderRadius:10, padding:"0.75rem", cursor:"pointer", textAlign:"center" }}>
               <div style={{ fontSize:24, marginBottom:4 }}>{e.icon}</div>
-              <div style={{ fontSize:11, color:emergencyType===e.key?"#e24b4a":"#666", fontWeight:emergencyType===e.key?600:400 }}>{e.label}</div>
+              <div style={{ fontSize:11, color:emergencyType===e.key?"#e24b4a":"#333", fontWeight:emergencyType===e.key?600:400 }}>{e.label}</div>
             </button>
           ))}
         </div>
@@ -575,6 +575,8 @@ export default function CustomerGoService() {
     </div>
   )
 }
+
+
 
 
 
