@@ -162,7 +162,7 @@ export default function DriverPayouts() {
               </div>
             ) : (
               <form onSubmit={requestPayout}>
-                <label style={lbl}>Amount to withdraw ($)</label>
+                <label style={lbl}>Amount to withdraw (KES)</label>
                 <input style={inp} type="number" min="50" max={available} step="0.01" placeholder={`50.00 — ${available.toLocaleString()}`} value={amount} onChange={e=>setAmount(e.target.value)} required/>
                 {amount&&Number(amount)>=50&&(
                   <div style={{ fontSize:12, color:"#777777", marginBottom:10, marginTop:-6 }}>
@@ -200,6 +200,7 @@ export default function DriverPayouts() {
     </div>
   )
 }
+
 
 
 

@@ -156,7 +156,7 @@ export default function ProviderPayouts() {
               </div>
             ) : (
               <form onSubmit={requestPayout}>
-                <label style={lbl}>Amount to withdraw ($)</label>
+                <label style={lbl}>Amount to withdraw (KES)</label>
                 <input style={inp} type="number" min="5000" max={available} placeholder={`5,000 — ${Number(available).toLocaleString()}`} value={amount} onChange={e=>setAmount(e.target.value)} required/>
                 {amount&&Number(amount)>=50&&(
                   <div style={{ fontSize:12, color:"#777777", marginBottom:10, marginTop:-6 }}>
@@ -194,6 +194,7 @@ export default function ProviderPayouts() {
     </div>
   )
 }
+
 
 
 
