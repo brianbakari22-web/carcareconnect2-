@@ -31,8 +31,8 @@ export function ThemeProvider({ children }) {
     const saved = localStorage.getItem(key)
     if (!saved || saved === "dark") { localStorage.setItem(key, "light"); return "light" }
     return saved
-
-  const theme = THEMES[themeName] || THEMES.dark
+  })
+  const theme = THEMES[themeName] || THEMES.light
 
   function setThemeName(name) {
     const key = getUserThemeKey()
