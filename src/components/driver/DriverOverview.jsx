@@ -140,7 +140,7 @@ export default function DriverOverview() {
   return (
     <div>
       {/* DRIVER IDENTITY HEADER */}
-      <div style={{ background:`linear-gradient(135deg,#071a12,#111)`, border:`1px solid ${vehicleConfig.color}30`, borderRadius:16, padding:"1.25rem", marginBottom:"1.5rem", display:"flex", alignItems:"center", gap:16 }}>
+      <div style={{ background:`linear-gradient(135deg,#f0fdf4,#f5f5f5)`, border:`1px solid ${vehicleConfig.color}30`, borderRadius:16, padding:"1.25rem", marginBottom:"1.5rem", display:"flex", alignItems:"center", gap:16 }}>
         <div style={{ width:60, height:60, borderRadius:14, background:"#ffffff", border:`2px solid ${vehicleConfig.color}60`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:28, flexShrink:0 }}>
           {vehicleConfig.icon}
         </div>
@@ -152,7 +152,7 @@ export default function DriverOverview() {
             <span style={{ fontSize:12, padding:"3px 10px", borderRadius:20, background:"#ffffff", color:vehicleConfig.color, border:`1px solid ${vehicleConfig.color}40`, fontWeight:600 }}>
               {vehicleConfig.icon} {vehicleConfig.label}
             </span>
-            {profile?.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#071a12", padding:"2px 8px", borderRadius:10 }}>✓ Verified</span>}
+            {profile?.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#f0fdf4", padding:"2px 8px", borderRadius:10 }}>✓ Verified</span>}
           </div>
           <div style={{ fontSize:11, color:"#777777", marginTop:4 }}>{vehicleConfig.desc}</div>
         </div>
@@ -160,7 +160,7 @@ export default function DriverOverview() {
 
       {/* Suspension banner */}
       {isSuspended&&(
-        <div style={{ background:"#1a0808", border:"2px solid #e24b4a", borderRadius:12, padding:"1rem", marginBottom:"1.5rem" }}>
+        <div style={{ background:"#fff5f5", border:"2px solid #e24b4a", borderRadius:12, padding:"1rem", marginBottom:"1.5rem" }}>
           <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e24b4a", marginBottom:4 }}>🚫 Account suspended</div>
           <div style={{ fontSize:12, color:"#555555", marginBottom:4 }}>
             {driverStatus?.suspension_expires_at
@@ -173,7 +173,7 @@ export default function DriverOverview() {
 
       {/* Penalties warning */}
       {noShowCount>0&&!isSuspended&&(
-        <div style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:10, padding:"0.9rem", marginBottom:"1.25rem" }}>
+        <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.9rem", marginBottom:"1.25rem" }}>
           <div style={{ fontSize:13, color:"#e6821e", fontWeight:600, marginBottom:2 }}>⚠️ No-show warning</div>
           <div style={{ fontSize:11, color:"#666" }}>
             You have {noShowCount} no-show{noShowCount>1?"s":""} recorded.
@@ -184,7 +184,7 @@ export default function DriverOverview() {
       )}
 
       {/* Online/Offline toggle */}
-      <div style={{ background:isOnline?"#071a12":isSuspended?"#1a0808":"#111", border:`2px solid ${isOnline?"#1d9e75":isSuspended?"#e24b4a":"#333"}`, borderRadius:16, padding:"1.5rem", marginBottom:"1.5rem", textAlign:"center", transition:"all 0.3s" }}>
+      <div style={{ background:isOnline?"#f0fdf4":isSuspended?"#fff5f5":"#f5f5f5", border:`2px solid ${isOnline?"#1d9e75":isSuspended?"#e24b4a":"#e0e0e0"}`, borderRadius:16, padding:"1.5rem", marginBottom:"1.5rem", textAlign:"center", transition:"all 0.3s" }}>
         <div style={{ fontSize:isMobile?32:48, marginBottom:8 }}>{isSuspended?"🚫":isOnline?"🟢":"🔴"}</div>
         <div style={{ fontFamily:"Syne", fontSize:isMobile?20:26, fontWeight:800, color:isSuspended?"#e24b4a":isOnline?"#1d9e75":"#555", marginBottom:4 }}>
           {isSuspended?"SUSPENDED":isOnline?"You are ONLINE":"You are OFFLINE"}
@@ -194,14 +194,14 @@ export default function DriverOverview() {
         </div>
 
         {!isVerified&&!isSuspended&&(
-          <div style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:10, padding:"0.75rem", marginBottom:"1.25rem" }}>
+          <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.75rem", marginBottom:"1.25rem" }}>
             <div style={{ fontSize:12, color:"#e6821e" }}>⚠️ Documents pending verification — go to Profile → Credentials</div>
           </div>
         )}
 
         <button onClick={toggleOnline} disabled={toggling||!isVerified||isSuspended}
           style={{
-            background:isSuspended?"#1a0808":!isVerified?"#1a1a1a":isOnline?"#1a0808":"#071a12",
+            background:isSuspended?"#fff5f5":!isVerified?"#f5f5f5":isOnline?"#fff5f5":"#f0fdf4",
             border:`2px solid ${isSuspended?"#e24b4a":!isVerified?"#333":isOnline?"#e24b4a":"#1d9e75"}`,
             borderRadius:50, color:isSuspended?"#e24b4a":!isVerified?"#333":isOnline?"#e24b4a":"#1d9e75",
             fontFamily:"Syne,sans-serif", fontSize:isMobile?16:18, fontWeight:800,
@@ -305,6 +305,7 @@ export default function DriverOverview() {
     </div>
   )
 }
+
 
 
 

@@ -92,8 +92,8 @@ export default function DriverNotifications() {
           } catch(_) { navigate("/dashboard/chat") }
         }
       }}
-          style={{ background:n.is_read?"#111":"#071a12", border:`1px solid ${n.is_read?"#1e1e1e":typeColor[n.type]||"#1d9e75"}30`, borderRadius:10, padding:"1rem", marginBottom:8, cursor:n.is_read?"default":"pointer", display:"flex", alignItems:"flex-start", gap:12 }}>
-          <div style={{ width:38, height:38, borderRadius:9, background:typeBg[n.type]||"#071a12", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>
+          style={{ background:n.is_read?"#f8f8f8":"#ffffff", border:`1px solid ${n.is_read?"#eeeeee":typeColor[n.type]||"#1d9e75"}50`, borderRadius:10, padding:"1rem", marginBottom:8, cursor:n.is_read?"default":"pointer", display:"flex", alignItems:"flex-start", gap:12 }}>
+          <div style={{ width:38, height:38, borderRadius:9, background:typeBg[n.type]||"#f0fdf4", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>
             {typeIcon[n.type]||"🔔"}
           </div>
           <div style={{ flex:1, minWidth:0 }}>
@@ -110,6 +110,7 @@ export default function DriverNotifications() {
     </div>
   )
 }
+
 
 
 
