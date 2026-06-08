@@ -445,7 +445,7 @@ export default function CustomerGoService() {
           2. Your location
         </div>
         <button onClick={detectLocation} disabled={locating}
-          style={{ background:locating?"#333":"#1a0808", border:"1px solid #e24b4a40", borderRadius:9, color:locating?"#555":"#e24b4a", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 20px", cursor:locating?"not-allowed":"pointer", width:"100%", marginBottom:10 }}>
+          style={{ background:locating?"#f0f0f0":"#fff5f5", border:"1px solid #fecaca", borderRadius:9, color:locating?"#999":"#e24b4a", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 20px", cursor:locating?"not-allowed":"pointer", width:"100%", marginBottom:10 }}>
           {locating?"📍 Detecting...":"📍 Use my current location"}
         </button>
         {location.address&&(
@@ -469,7 +469,7 @@ export default function CustomerGoService() {
         {goServices.length===0&&<div style={{ fontSize:12, color:"#777777" }}>No GO services available in your area right now</div>}
         {goServices.map(s=>(
           <div key={s.id} onClick={()=>setSelectedService(s)}
-            style={{ background:selectedService?.id===s.id?"#1a0808":"#0f0f0f", border:`1px solid ${selectedService?.id===s.id?"#e24b4a":"#222"}`, borderRadius:10, padding:"0.9rem", cursor:"pointer", marginBottom:8 }}>
+            style={{ background:selectedService?.id===s.id?"#fff5f5":"#f5f5f5", border:`1px solid ${selectedService?.id===s.id?"#e24b4a":"#eeeeee"}`, borderRadius:10, padding:"0.9rem", cursor:"pointer", marginBottom:8 }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
               <div>
                 <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:2 }}>{s.name}</div>
@@ -575,6 +575,7 @@ export default function CustomerGoService() {
     </div>
   )
 }
+
 
 
 
