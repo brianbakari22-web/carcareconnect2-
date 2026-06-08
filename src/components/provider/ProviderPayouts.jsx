@@ -152,7 +152,7 @@ export default function ProviderPayouts() {
             <div style={{ fontSize:12, color:"#777777", marginBottom:"1rem" }}>Minimum KES 5,000 · Available: KES ${Number(available).toLocaleString()} · Transfer takes 2-3 business days</div>
             {available < 50 ? (
               <div style={{ fontSize:13, color:"#777777", padding:"1rem", background:"#ffffff", borderRadius:8 }}>
-                You need KES ${Number(5000-available).toLocaleString()} more to reach the minimum payout threshold.
+                {`You need KES ${Number(5000-available).toLocaleString()} more to reach the minimum payout threshold.`}
               </div>
             ) : (
               <form onSubmit={requestPayout}>
