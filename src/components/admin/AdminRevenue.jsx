@@ -37,10 +37,10 @@ export default function AdminRevenue() {
     <div>
       <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {[
-          { label:"Total revenue", value:`KES \${total.toFixed(2)}` },
-          { label:"Platform commission (15%)", value:`KES \${commission.toFixed(2)}`, color:"#e6821e" },
-          { label:"Paid to providers", value:`KES \${providerPaid.toFixed(2)}` },
-          { label:"Paid to drivers", value:`KES \${driverPaid.toFixed(2)}` },
+          { label:"Total revenue", value:`KES ${total.toFixed(2)}` },
+          { label:"Platform commission (15%)", value:`KES ${commission.toFixed(2)}`, color:"#e6821e" },
+          { label:"Paid to providers", value:`KES ${providerPaid.toFixed(2)}` },
+          { label:"Paid to drivers", value:`KES ${driverPaid.toFixed(2)}` },
         ].map(s => (
           <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"1rem", border:"1px solid #1e1e1e" }}>
             <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
@@ -59,6 +59,7 @@ export default function AdminRevenue() {
     </div>
   )
 }
+
 
 
 

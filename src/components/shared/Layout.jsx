@@ -57,23 +57,23 @@ const NAV = {
   admin: [
     { path:"/admin-dashboard", key:"overview", icon:"🏠" },
     { path:"/admin-dashboard/users", label:"Users", icon:"👥" },
-    { path:"/admin-dashboard/providers", label:"Providers", icon:"≡ƒöº" },
+    { path:"/admin-dashboard/providers", label:"Providers", icon:"🔧" },
     { path:"/admin-dashboard/drivers", label:"Drivers", icon:"🚗" },
-    { path:"/admin-dashboard/mechanics", label:"Mechanics & Services", icon:"≡ƒæ¿ΓÇì≡ƒöº" },
+    { path:"/admin-dashboard/mechanics", label:"Mechanics & Services", icon:"👨‍🔧" },
     { path:"/admin-dashboard/disputes", label:"Disputes & Reports", icon:"⚠️" },
     { path:"/admin-dashboard/claims", label:"Service Claims", icon:"🛡️" },
     { path:"/admin-dashboard/bookings", key:"bookings", icon:"📅" },
     { path:"/admin-dashboard/services", label:"Services", icon:"⚙️" },
     { path:"/admin-dashboard/revenue", label:"Revenue", icon:"💰" },
     { path:"/admin-dashboard/payouts", label:"Payouts", icon:"🏦" },
-    { path:"/admin-dashboard/promos", label:"Promo Codes", icon:"≡ƒÅ╖∩╕Å" },
+    { path:"/admin-dashboard/promos", label:"Promo Codes", icon:"🏷️" },
     { path:"/admin-dashboard/reviews", key:"reviews", icon:"⭐" },
     { path:"/admin-dashboard/loyalty", key:"loyalty", icon:"🏠" },
     { path:"/admin-dashboard/categories", label:"Categories", icon:"📂" },
     { path:"/admin-dashboard/security", label:"2FA Security", icon:"🔐" },
     { path:"/admin-dashboard/support", label:"Support Tickets", icon:"🎫" },
     { path:"/admin-dashboard/notifications", label:"Notifications", icon:"🔔" },
-    { path:"/admin-dashboard/health", label:"System Health", icon:"≡ƒÆè" },
+    { path:"/admin-dashboard/health", label:"System Health", icon:"💊" },
     { path:"/admin-dashboard/diagnostics", label:"Diagnostics", icon:"🔬" },
     { path:"/admin-dashboard/commissions", label:"Commissions", icon:"💹" },
     { path:"/admin-dashboard/marketplace", label:"Marketplace", icon:"🛒" },
@@ -95,8 +95,8 @@ const BOTTOM_NAV = {
   provider: [
     { path:"/dashboard", key:"overview", icon:"🏠" },
     { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
-    { path:"/dashboard/services", key:"myServices", icon:"≡ƒöº" },
-    { path:"/dashboard/mechanics", label:"Mechanics", icon:"≡ƒæ¿ΓÇì≡ƒöº" },
+    { path:"/dashboard/services", key:"myServices", icon:"🔧" },
+    { path:"/dashboard/mechanics", label:"Mechanics", icon:"👨‍🔧" },
     { path:"more", label:"Menu", icon:"☰" },
   ],
   driver: [
@@ -185,7 +185,7 @@ export default function Layout({ children }) {
   const providerNav = [
     { path:"/dashboard", key:"overview", icon:"🏠" },
     { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
-    { path:"/dashboard/services", key:"myServices", icon:"≡ƒöº" },
+    { path:"/dashboard/services", key:"myServices", icon:"🔧" },
     ...( ["parts_dealer","accessories_shop","tyre_shop","auto_glass"].includes(providerType) ? [
       { path:"/dashboard/inventory", label:"Inventory", icon:"📦" },
       { path:"/dashboard/orders", label:"Orders", icon:"🛒" },
@@ -194,10 +194,10 @@ export default function Layout({ children }) {
     { path:"/dashboard/analytics", key:"analytics", icon:"📊" },
     { path:"/dashboard/reviews", key:"reviews", icon:"⭐" },
     { path:"/dashboard/business-hours", label:"Business Hours", icon:"🕐" },
-    { path:"/dashboard/availability", key:"availability", icon:"≡ƒùô∩╕Å" },
+    { path:"/dashboard/availability", key:"availability", icon:"🗓️" },
     { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
     ...( ["garage","garage_premium","panel_beater","auto_glass","car_wash","auto_electrician"].includes(providerType) ? [
-      { path:"/dashboard/mechanics", label:"My Mechanics", icon:"≡ƒæ¿ΓÇì≡ƒöº" },
+      { path:"/dashboard/mechanics", label:"My Mechanics", icon:"👨‍🔧" },
     ] : []),
     ...( ["garage","garage_premium","auto_electrician"].includes(providerType) ? [
       { path:"/dashboard/go-requests", label:"GO Requests", icon:"🚨" },
@@ -219,7 +219,7 @@ export default function Layout({ children }) {
   ] : [
     { path:"/dashboard", key:"overview", icon:"🏠" },
     { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
-    { path:"/dashboard/services", key:"myServices", icon:"≡ƒöº" },
+    { path:"/dashboard/services", key:"myServices", icon:"🔧" },
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"more", label:"Menu", icon:"☰" },
   ]
@@ -260,7 +260,7 @@ export default function Layout({ children }) {
 
       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0.75rem 1rem", borderBottom:`1px solid ${theme.border}`, background:theme.bgSecondary, position:"sticky", top:0, zIndex:50 }}>
         <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:theme.text }}>
-          {{"garage":"🔧","garage_premium":"🚗","parts_dealer":"ΓÜÖ∩╕Å","accessories_shop":"✨","tyre_shop":"🛞","auto_electrician":"⚡","car_wash":"🚿","panel_beater":"🔨","auto_glass":"🪟"}[providerType]||"🚗"} Car<span style={{ color:activeColor }}>Care</span>
+          {{"garage":"🔧","garage_premium":"🚗","parts_dealer":"⚙️","accessories_shop":"✨","tyre_shop":"🛞","auto_electrician":"⚡","car_wash":"🚿","panel_beater":"🔨","auto_glass":"🪟"}[providerType]||"🚗"} Car<span style={{ color:activeColor }}>Care</span>
         </div>
         <div style={{ display:"flex", alignItems:"center", gap:10 }}>
           <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:theme.textMuted }}>
@@ -436,6 +436,8 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
+
 
 
 

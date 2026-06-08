@@ -65,9 +65,9 @@ export default function ProviderEarnings() {
 
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {[
-          { label:t("earnings"), value:`KES \${totalEarned.toFixed(2)}`, color:"#e6821e" },
-          { label:"Total revenue", value:`KES \${totalRevenue.toFixed(2)}` },
-          { label:"Platform commission", value:`KES \${totalCommission.toFixed(2)}` },
+          { label:t("earnings"), value:`KES ${totalEarned.toFixed(2)}`, color:"#e6821e" },
+          { label:"Total revenue", value:`KES ${totalRevenue.toFixed(2)}` },
+          { label:"Platform commission", value:`KES ${totalCommission.toFixed(2)}` },
         ].map(s=>(
           <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
             <div style={{ fontSize:11, color:"#777777", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
@@ -113,6 +113,8 @@ export default function ProviderEarnings() {
     </div>
   )
 }
+
+
 
 
 

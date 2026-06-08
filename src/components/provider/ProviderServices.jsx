@@ -333,7 +333,7 @@ export default function ProviderServices() {
               </div>
               <div style={{ display:"flex", gap:6, flexShrink:0, flexWrap:"wrap", justifyContent:"flex-end" }}>
                 <button onClick={()=>startEdit(s)}
-                  style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                   Edit
                 </button>
                 <button onClick={()=>toggleActive(s.id, s.is_active)}
@@ -352,6 +352,7 @@ export default function ProviderServices() {
     </div>
   )
 }
+
 
 
 

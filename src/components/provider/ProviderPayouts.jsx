@@ -84,9 +84,9 @@ export default function ProviderPayouts() {
     <div>
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {[
-          { label:"Total earned", value:`KES \${earnings.toFixed(2)}` },
-          { label:"Available", value:`KES \${available.toFixed(2)}`, color:available>0?"#e6821e":undefined },
-          { label:"Total paid out", value:`KES \${paid.toFixed(2)}`, color:"#1d9e75" },
+          { label:"Total earned", value:`KES ${earnings.toFixed(2)}` },
+          { label:"Available", value:`KES ${available.toFixed(2)}`, color:available>0?"#e6821e":undefined },
+          { label:"Total paid out", value:`KES ${paid.toFixed(2)}`, color:"#1d9e75" },
         ].map(s=>(
           <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
             <div style={{ fontSize:11, color:"#777777", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
@@ -110,7 +110,7 @@ export default function ProviderPayouts() {
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000" }}>Bank account details</div>
             {bankSaved&&<span style={{ fontSize:11, color:"#1d9e75", background:"#071a12", padding:"2px 8px", borderRadius:10 }}>✓ Saved</span>}
           </div>
-          {!bankSaved&&<div style={{ fontSize:12, color:"#e6821e", marginBottom:"1rem", background:"#1a1208", borderRadius:8, padding:"0.75rem" }}>Add your bank details to receive payouts</div>}
+          {!bankSaved&&<div style={{ fontSize:12, color:"#e6821e", marginBottom:"1rem", background:"#fff8f0", borderRadius:8, padding:"0.75rem" }}>Add your bank details to receive payouts</div>}
           <form onSubmit={saveBank}>
             <label style={lbl}>Bank name</label>
             <input style={inp} placeholder="e.g. Equity Bank, KCB, Co-op Bank" value={bankInfo.bank_name} onChange={e=>setBankInfo(b=>({...b,bank_name:e.target.value}))} required/>
@@ -129,7 +129,7 @@ export default function ProviderPayouts() {
       {tab==="payouts"&&(
         <div>
           {!bankSaved&&(
-            <div style={{ background:"#1a1208", border:"1px solid #e6821e30", borderRadius:10, padding:"1rem", marginBottom:"1.5rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+            <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:10, padding:"1rem", marginBottom:"1.5rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
               <div>
                 <div style={{ fontSize:13, color:"#e6821e", fontWeight:500 }}>Bank details required</div>
                 <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>Add your bank details to request payouts</div>
@@ -194,6 +194,8 @@ export default function ProviderPayouts() {
     </div>
   )
 }
+
+
 
 
 

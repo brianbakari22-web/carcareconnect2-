@@ -221,8 +221,8 @@ export default function DriverDashboard() {
 
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {[
-          { label:"Today", value:`KES \${stats.today.toFixed(2)}`, color:"#e6821e" },
-          { label:"Total earned", value:`KES \${stats.total.toFixed(2)}` },
+          { label:"Today", value:`KES ${stats.today.toFixed(2)}`, color:"#e6821e" },
+          { label:"Total earned", value:`KES ${stats.total.toFixed(2)}` },
           { label:"Deliveries", value:stats.deliveries },
           { label:"Active jobs", value:activeJobs.length, color:activeJobs.length>0?"#8b5cf6":undefined },
         ].map(s=>(
@@ -389,5 +389,6 @@ export default function DriverDashboard() {
     window.open(`https://wa.me/${phone.replace(/\D/g,"")}?text=${msg}`, "_blank")
   }
 }
+
 
 

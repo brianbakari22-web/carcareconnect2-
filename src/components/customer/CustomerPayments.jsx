@@ -57,7 +57,7 @@ export default function CustomerPayments() {
     <div>
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {[
-          { label:"Total spent", value:`KES \${totalSpent.toFixed(2)}` },
+          { label:"Total spent", value:`KES ${totalSpent.toFixed(2)}` },
           { label:"Transactions", value:paid.length },
           { label:"Refunded", value:`KES ${totalRefunded.toLocaleString()}`, color:"#1d9e75" },
         ].map(s=>(
@@ -191,6 +191,7 @@ export default function CustomerPayments() {
     </div>
   )
 }
+
 
 
 

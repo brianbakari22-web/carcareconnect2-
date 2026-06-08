@@ -85,9 +85,9 @@ export default function DriverPayouts() {
     <div>
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {[
-          { label:"Total earned", value:`KES \${earnings.toFixed(2)}` },
-          { label:"Available", value:`KES \${available.toFixed(2)}`, color:available>0?"#e6821e":undefined },
-          { label:"Total paid out", value:`KES \${paid.toFixed(2)}`, color:"#1d9e75" },
+          { label:"Total earned", value:`KES ${earnings.toFixed(2)}` },
+          { label:"Available", value:`KES ${available.toFixed(2)}`, color:available>0?"#e6821e":undefined },
+          { label:"Total paid out", value:`KES ${paid.toFixed(2)}`, color:"#1d9e75" },
         ].map(s=>(
           <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
             <div style={{ fontSize:11, color:"#777777", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
@@ -200,6 +200,7 @@ export default function DriverPayouts() {
     </div>
   )
 }
+
 
 
 

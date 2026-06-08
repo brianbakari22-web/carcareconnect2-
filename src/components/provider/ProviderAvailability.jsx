@@ -248,7 +248,7 @@ export default function ProviderAvailability() {
                 Block all weekends
               </button>
               <button onClick={()=>bulkBlock("all")} disabled={saving}
-                style={{ background:"#1a0808", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
+                style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
                 Block entire month
               </button>
               <button onClick={clearMonth} disabled={saving}
@@ -267,7 +267,7 @@ export default function ProviderAvailability() {
                 {bookingCounts[selected]||0} booking{(bookingCounts[selected]||0)!==1?"s":""} today
               </div>
               <form onSubmit={saveDay}>
-                <label style={{ display:"flex", alignItems:"center", gap:10, cursor:"pointer", marginBottom:"1rem", padding:"0.75rem", background:"#1a0808", borderRadius:8, border:"1px solid #e24b4a20" }}>
+                <label style={{ display:"flex", alignItems:"center", gap:10, cursor:"pointer", marginBottom:"1rem", padding:"0.75rem", background:"#fff5f5", borderRadius:8, border:"1px solid #e24b4a20" }}>
                   <input type="checkbox" checked={form.is_blocked} onChange={e=>setForm(f=>({...f,is_blocked:e.target.checked}))} style={{ width:16, height:16, cursor:"pointer" }}/>
                   <div>
                     <div style={{ fontSize:13, color:"#e24b4a", fontWeight:500 }}>Block this day</div>
@@ -353,6 +353,7 @@ export default function ProviderAvailability() {
     </div>
   )
 }
+
 
 
 

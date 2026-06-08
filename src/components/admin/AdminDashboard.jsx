@@ -205,7 +205,7 @@ export default function AdminDashboard() {
         {/* Stat strip */}
         <div style={{ position:"relative", zIndex:1, display:"grid", gridTemplateColumns:"repeat(2,1fr)", borderTop:"1px solid #1e1e1e" }}>
           {[
-            { label:"Platform revenue", value:`KES \${stats.revenue.toFixed(2)}`, color:"#e6821e" },
+            { label:"Platform revenue", value:`KES ${stats.revenue.toFixed(2)}`, color:"#e6821e" },
             { label:"Total bookings", value:stats.bookings, color:"#f0ede6" },
             { label:"Pending now", value:stats.pending, color:stats.pending>0?"#e6821e":"#f0ede6" },
             { label:"Total users", value:stats.users, color:"#f0ede6" },
@@ -316,6 +316,7 @@ export default function AdminDashboard() {
     </div>
   )
 }
+
 
 
 

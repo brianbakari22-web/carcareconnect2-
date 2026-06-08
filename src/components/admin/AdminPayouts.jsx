@@ -84,8 +84,8 @@ export default function AdminPayouts() {
         {[
           { label:"Pending", value:payouts.filter(p=>p.status==="pending").length, color:"#e6821e" },
           { label:"Approved", value:payouts.filter(p=>p.status==="approved").length, color:"#378add" },
-          { label:"Total paid", value:`KES \${payouts.filter(p=>p.status==="paid").reduce((s,p)=>s+Number(p.amount),0).toFixed(2)}`, color:"#1d9e75" },
-          { label:"Total requested", value:`KES \${payouts.reduce((s,p)=>s+Number(p.amount),0).toFixed(2)}` },
+          { label:"Total paid", value:`KES ${payouts.filter(p=>p.status==="paid").reduce((s,p)=>s+Number(p.amount),0).toFixed(2)}`, color:"#1d9e75" },
+          { label:"Total requested", value:`KES ${payouts.reduce((s,p)=>s+Number(p.amount),0).toFixed(2)}` },
         ].map(s=>(
           <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"1rem", border:"1px solid #1e1e1e" }}>
             <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
@@ -168,6 +168,7 @@ export default function AdminPayouts() {
     </div>
   )
 }
+
 
 
 
