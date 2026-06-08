@@ -359,7 +359,7 @@ export default function Layout({ children }) {
     </div>
   )
 
-    <div style={{ display:"flex", flexDirection:"row", minHeight:"100vh", background:theme.bg||"#ffffff", fontFamily:"DM Sans,sans-serif", color:theme.text||"#000000" }}>
+
     <div style={{ display:"flex", flexDirection:"column", minHeight:"100vh", background:theme.bg||"#ffffff", fontFamily:"DM Sans,sans-serif", color:theme.text||"#000000" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
