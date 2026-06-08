@@ -129,7 +129,7 @@ export default function ProviderDashboard() {
     <div>
       {/* SERVICE GUARANTEE POLICY */}
       {showPolicy&&(
-        <div style={{ background:"#1a0808", border:"2px solid #e24b4a", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
+        <div style={{ background:"#fff5f5", border:"2px solid #e24b4a", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
           <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e24b4a", marginBottom:8 }}>🚗 Important — Service Guarantee Policy</div>
           <div style={{ fontSize:12, color:"#555555", lineHeight:1.8, marginBottom:"1rem" }}>
             Car Care Connect operates a <strong style={{ color:"#000000" }}>Service Guarantee</strong> for all customers. As a provider, you must be aware of the following:
@@ -161,7 +161,7 @@ export default function ProviderDashboard() {
       )}
 
       {/* PROVIDER IDENTITY HEADER */}
-      <div style={{ background:`linear-gradient(135deg,${config.bg},#111)`, border:`1px solid ${config.color}30`, borderRadius:16, padding:"1.5rem", marginBottom:"1.5rem" }}>
+      <div style={{ background:"#f5f5f5", border:`1px solid ${config.color}30`, borderRadius:16, padding:"1.5rem", marginBottom:"1.5rem" }}>
         <div style={{ display:"flex", alignItems:"center", gap:16, flexWrap:"wrap" }}>
           {/* Profile Photo */}
           <div style={{ position:"relative", flexShrink:0 }}>
@@ -182,7 +182,7 @@ export default function ProviderDashboard() {
               <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#000000" }}>
                 {profile?.business_name||`${profile?.first_name||""} ${profile?.last_name||""}`}
               </div>
-              {profile?.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#071a12", padding:"2px 8px", borderRadius:10, border:"1px solid #1d9e7540" }}>✓ Verified</span>}
+              {profile?.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#f0fdf4", padding:"2px 8px", borderRadius:10, border:"1px solid #1d9e7540" }}>✓ Verified</span>}
             </div>
             <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
               <span style={{ fontSize:12, padding:"3px 10px", borderRadius:20, background:config.bg, color:config.color, border:`1px solid ${config.color}40`, fontWeight:600 }}>
@@ -233,7 +233,7 @@ export default function ProviderDashboard() {
         <>
           {/* Low stock alert */}
           {orderStats.lowStock>0&&(
-            <div style={{ background:"#1a0808", border:"1px solid #e24b4a40", borderRadius:10, padding:"0.75rem", marginBottom:"1rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+            <div style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:10, padding:"0.75rem", marginBottom:"1rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
               <div style={{ fontSize:13, color:"#e24b4a", fontWeight:600 }}>⚠️ {orderStats.lowStock} item{orderStats.lowStock>1?"s":""} low on stock</div>
               <a href="/dashboard/inventory" style={{ fontSize:11, color:"#e6821e", textDecoration:"none" }}>Manage inventory →</a>
             </div>
@@ -241,7 +241,7 @@ export default function ProviderDashboard() {
 
           {/* Pending orders */}
           {orderStats.pending>0&&(
-            <div style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:10, padding:"0.75rem", marginBottom:"1rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+            <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.75rem", marginBottom:"1rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
               <div style={{ fontSize:13, color:"#e6821e", fontWeight:600 }}>🛒 {orderStats.pending} order{orderStats.pending>1?"s":""} waiting for confirmation</div>
               <a href="/dashboard/orders" style={{ fontSize:11, color:"#e6821e", textDecoration:"none" }}>View orders →</a>
             </div>
@@ -285,7 +285,7 @@ export default function ProviderDashboard() {
               </div>
               {o.status==="pending"&&(
                 <div style={{ display:"flex", gap:8, marginTop:8 }}>
-                  <button onClick={()=>updateOrderStatus(o.id,"confirmed")} style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer", fontWeight:600 }}>✓ Confirm</button>
+                  <button onClick={()=>updateOrderStatus(o.id,"confirmed")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer", fontWeight:600 }}>✓ Confirm</button>
                   <button onClick={()=>updateOrderStatus(o.id,"cancelled")} style={{ background:"none", border:"1px solid #e24b4a30", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Cancel</button>
                 </div>
               )}
@@ -352,9 +352,9 @@ export default function ProviderDashboard() {
                 </div>
               </div>
               <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
-                {b.status==="pending"&&<button onClick={()=>updateBookingStatus(b.id,"confirmed")} style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>✓ Confirm</button>}
-                {b.status==="confirmed"&&<button onClick={()=>updateBookingStatus(b.id,"in-progress")} style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Start service</button>}
-                {b.status==="in-progress"&&<button onClick={()=>updateBookingStatus(b.id,"completed")} style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Complete</button>}
+                {b.status==="pending"&&<button onClick={()=>updateBookingStatus(b.id,"confirmed")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>✓ Confirm</button>}
+                {b.status==="confirmed"&&<button onClick={()=>updateBookingStatus(b.id,"in-progress")} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Start service</button>}
+                {b.status==="in-progress"&&<button onClick={()=>updateBookingStatus(b.id,"completed")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Complete</button>}
                 {(b.status==="pending"||b.status==="confirmed")&&<button onClick={()=>updateBookingStatus(b.id,"cancelled")} style={{ background:"none", border:"1px solid #e24b4a30", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Cancel</button>}
               </div>
             </div>
@@ -364,6 +364,8 @@ export default function ProviderDashboard() {
     </div>
   )
 }
+
+
 
 
 

@@ -104,7 +104,7 @@ export default function ProviderEarnings() {
             <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>{b.booking_date} · #{b.booking_number}</div>
           </div>
           <div style={{ textAlign:"right" }}>
-              <button onClick={()=>generateInvoice(b, profile, "provider")} style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:6, color:"#378add", fontSize:10, padding:"4px 8px", cursor:"pointer", marginBottom:4, display:"block" }}>Invoice</button>
+              <button onClick={()=>generateInvoice(b, profile, "provider")} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:6, color:"#378add", fontSize:10, padding:"4px 8px", cursor:"pointer", marginBottom:4, display:"block" }}>Invoice</button>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#e6821e" }}>+${Number(b.provider_earnings||0).toFixed(2)}</div>
             <div style={{ fontSize:10, color:"#777777" }}>of ${Number(b.total_amount).toFixed(2)}</div>
           </div>
@@ -113,6 +113,7 @@ export default function ProviderEarnings() {
     </div>
   )
 }
+
 
 
 

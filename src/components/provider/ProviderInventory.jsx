@@ -230,7 +230,7 @@ export default function ProviderInventory() {
                 <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{item.name}</div>
                 {item.brand&&<span style={{ fontSize:10, color:"#555555", background:"#f5f5f5", padding:"1px 6px", borderRadius:6 }}>{item.brand}</span>}
                 <span style={{ fontSize:10, color:item.is_active?"#1d9e75":"#555", background:item.is_active?"#071a12":"#1a1a1a", padding:"1px 6px", borderRadius:6 }}>{item.is_active?"Active":"Hidden"}</span>
-                {item.stock_quantity<=5&&item.is_active&&<span style={{ fontSize:10, color:"#e24b4a", background:"#1a0808", padding:"1px 6px", borderRadius:6 }}>⚠️ Low stock</span>}
+                {item.stock_quantity<=5&&item.is_active&&<span style={{ fontSize:10, color:"#e24b4a", background:"#fff5f5", padding:"1px 6px", borderRadius:6 }}>⚠️ Low stock</span>}
               </div>
               <div style={{ fontSize:11, color:"#777777", marginBottom:4 }}>
                 {CATEGORIES.find(c=>c.key===item.category)?.icon} {item.category} {item.subcategory?`· ${item.subcategory}`:""}
@@ -253,7 +253,7 @@ export default function ProviderInventory() {
               <span style={{ fontSize:10, color:"#777777" }}>{item.unit}s</span>
             </div>
             <button onClick={()=>{ setEditing(item.id); setForm({...item, compatible_cars:item.compatible_cars?.join(", ")||""}); setShowForm(true) }}
-              style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Edit</button>
+              style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Edit</button>
             <button onClick={()=>toggleActive(item)}
               style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#666", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>{item.is_active?"Hide":"Show"}</button>
             <button onClick={()=>deleteItem(item.id)}
@@ -264,6 +264,7 @@ export default function ProviderInventory() {
     </div>
   )
 }
+
 
 
 

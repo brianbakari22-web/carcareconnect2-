@@ -207,24 +207,24 @@ export default function ProviderBookings() {
 
             <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
               {b.status==="pending"&&<>
-                <button onClick={()=>updateStatus(b.id,"confirmed")} style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Confirm</button>
+                <button onClick={()=>updateStatus(b.id,"confirmed")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Confirm</button>
                 <button onClick={()=>updateStatus(b.id,"cancelled")} style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Decline</button>
               </>}
 
               {b.status==="confirmed"&&<>
                 <button onClick={()=>{ setAssigningMechanic(b.id); setSelectedMechanic("") }}
-                  style={{ background:"#160a2e", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                   👨‍🔧 Assign mechanic
                 </button>
                 <button onClick={()=>updateStatus(b.id,"in-progress")}
-                  style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                   Start
                 </button>
               </>}
 
               {b.status==="in-progress"&&(
                 <button onClick={()=>completeAndFreeMechanic(b.id, b.assigned_mechanic_id)}
-                  style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                   ✓ Complete
                 </button>
               )}
@@ -232,13 +232,13 @@ export default function ProviderBookings() {
               {(b.service_category==="shop_premium"||b.service_category==="go_service")&&b.assigned_mechanic_id&&<>
                 {!reports.pickup&&(
                   <button onClick={()=>{ setShowReport(b.id); setReportType("pickup") }}
-                    style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                    style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                     📋 Pickup report
                   </button>
                 )}
                 {reports.pickup&&!reports.dropoff&&(
                   <button onClick={()=>{ setShowReport(b.id); setReportType("dropoff") }}
-                    style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                    style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                     📋 Dropoff report
                   </button>
                 )}
@@ -246,21 +246,21 @@ export default function ProviderBookings() {
 
               {["confirmed","in-progress"].includes(b.status)&&(
                 <button onClick={()=>setShowParts(showParts===b.id?null:b.id)}
-                  style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                   🔧 {b.parts_details?.length>0?"Edit parts":"Add parts"}
                 </button>
               )}
 
               {b.status==="completed"&&(
                 <button onClick={()=>downloadBookingInvoice(b)}
-                  style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                   ⬇ Invoice
                 </button>
               )}
 
               {b.status==="completed"&&b.payment_status!=="paid"&&(
                 <button onClick={()=>markPaid(b.id)}
-                  style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                   Mark paid
                 </button>
               )}
@@ -273,7 +273,7 @@ export default function ProviderBookings() {
 
             {/* Assign mechanic panel */}
             {assigningMechanic===b.id&&(
-              <div style={{ marginTop:10, background:"#160a2e", border:"1px solid #8b5cf630", borderRadius:10, padding:"1rem" }}>
+              <div style={{ marginTop:10, background:"#faf5ff", border:"1px solid #8b5cf630", borderRadius:10, padding:"1rem" }}>
                 <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#8b5cf6", marginBottom:8 }}>Assign mechanic</div>
                 {mechanics.length===0?(
                   <div style={{ fontSize:12, color:"#777777", marginBottom:8 }}>No available mechanics.</div>
@@ -282,7 +282,7 @@ export default function ProviderBookings() {
                     {mechanics.map(m=>(
                       <div key={m.id} onClick={()=>setSelectedMechanic(m.id)}
                         style={{ display:"flex", alignItems:"center", gap:10, padding:"8px", borderRadius:8, cursor:"pointer", background:selectedMechanic===m.id?"#1e0a3e":"transparent", border:`1px solid ${selectedMechanic===m.id?"#8b5cf6":"transparent"}`, marginBottom:4 }}>
-                        <div style={{ width:32, height:32, borderRadius:"50%", background:"#071a12", border:"1px solid #1d9e7540", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:12, fontWeight:800, color:"#1d9e75", flexShrink:0 }}>
+                        <div style={{ width:32, height:32, borderRadius:"50%", background:"#f0fdf4", border:"1px solid #1d9e7540", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:12, fontWeight:800, color:"#1d9e75", flexShrink:0 }}>
                           {m.first_name[0]}{m.last_name[0]}
                         </div>
                         <div>
@@ -355,6 +355,7 @@ export default function ProviderBookings() {
     </div>
   )
 }
+
 
 
 

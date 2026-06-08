@@ -143,7 +143,7 @@ export default function ProviderMechanics() {
       </button>
       <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
         <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:12 }}>
-          <div style={{ width:48, height:48, borderRadius:"50%", background:"#071a12", border:"2px solid #1d9e7540", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#1d9e75", flexShrink:0 }}>
+          <div style={{ width:48, height:48, borderRadius:"50%", background:"#f0fdf4", border:"2px solid #1d9e7540", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#1d9e75", flexShrink:0 }}>
             {trackingMechanic.first_name[0]}{trackingMechanic.last_name[0]}
           </div>
           <div>
@@ -285,11 +285,11 @@ export default function ProviderMechanics() {
             </div>
             <div style={{ display:"flex", gap:6, flexShrink:0, flexWrap:"wrap", justifyContent:"flex-end", marginTop:isMobile?8:0 }}>
               <button onClick={()=>openTracking(m)}
-                style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                 📍 Track
               </button>
               <button onClick={()=>startEdit(m)}
-                style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                 Edit
               </button>
               {m.is_active&&(
@@ -327,6 +327,7 @@ function LocationHistory({ mechanicId }) {
     </div>
   ))
 }
+
 
 
 

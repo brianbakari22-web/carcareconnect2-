@@ -126,14 +126,14 @@ export default function ProviderProfile() {
   return (
     <div style={{ maxWidth:isMobile?"100%":520 }}>
       <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:"1.5rem" }}>
-        <div style={{ width:60, height:60, borderRadius:14, background:"#0c1f2e", border:"2px solid #378add40", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#378add" }}>
+        <div style={{ width:60, height:60, borderRadius:14, background:"#eff6ff", border:"2px solid #378add40", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#378add" }}>
           {initials}
         </div>
         <div>
           <div style={{ fontFamily:"Syne", fontSize:17, fontWeight:800, color:"#000000" }}>{profile?.business_name||`${profile?.first_name} ${profile?.last_name}`}</div>
           <div style={{ fontSize:12, color:"#777777", marginTop:2 }}>
             Provider · {profile?.city||"Location not set"}
-            {profile?.provider_type&&<span style={{ marginLeft:6, fontSize:10, color:"#378add", background:"#0c1f2e", padding:"1px 7px", borderRadius:10 }}>
+            {profile?.provider_type&&<span style={{ marginLeft:6, fontSize:10, color:"#378add", background:"#eff6ff", padding:"1px 7px", borderRadius:10 }}>
             {PROVIDER_TYPES.find(p=>p.key===profile?.provider_type)?.icon} {profile?.provider_type?.replace(/_/g," ")}
             </span>}
           </div>
@@ -264,11 +264,11 @@ export default function ProviderProfile() {
                 </div>
                 <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
                   <button onClick={()=>downloadPDF(exportData, `provider-data-${new Date().toISOString().split("T")[0]}.pdf`)}
-                    style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:8, color:"#1d9e75", fontSize:12, fontWeight:600, padding:"9px 16px", cursor:"pointer" }}>
+                    style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:8, color:"#1d9e75", fontSize:12, fontWeight:600, padding:"9px 16px", cursor:"pointer" }}>
                     ⬇ Download PDF report
                   </button>
                   <button onClick={()=>downloadCSV(exportData.bookings, `bookings-${new Date().toISOString().split("T")[0]}.csv`)}
-                    style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:8, color:"#378add", fontSize:12, fontWeight:600, padding:"9px 16px", cursor:"pointer" }}>
+                    style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:8, color:"#378add", fontSize:12, fontWeight:600, padding:"9px 16px", cursor:"pointer" }}>
                     ⬇ Bookings CSV
                   </button>
                 </div>
@@ -286,6 +286,7 @@ export default function ProviderProfile() {
     </div>
   )
 }
+
 
 
 

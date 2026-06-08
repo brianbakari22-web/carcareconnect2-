@@ -94,7 +94,7 @@ export default function ProviderReviews() {
         <div key={r.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:10 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-              <div style={{ width:36, height:36, borderRadius:"50%", background:"#1a1208", border:"1px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:700, color:"#e6821e" }}>
+              <div style={{ width:36, height:36, borderRadius:"50%", background:"#fff8f0", border:"1px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:700, color:"#e6821e" }}>
                 {r.profile_public?.first_name?.[0]}{r.profile_public?.last_name?.[0]}
               </div>
               <div>
@@ -157,6 +157,7 @@ export default function ProviderReviews() {
     </div>
   )
 }
+
 
 
 

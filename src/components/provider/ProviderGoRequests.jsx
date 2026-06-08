@@ -190,7 +190,7 @@ export default function ProviderGoRequests() {
   return (
     <div>
       {pending.length > 0 && (
-        <div style={{ background:"#1a0808", border:"2px solid #e24b4a", borderRadius:12, padding:"1rem", marginBottom:"1.5rem" }}>
+        <div style={{ background:"#fff5f5", border:"2px solid #e24b4a", borderRadius:12, padding:"1rem", marginBottom:"1.5rem" }}>
           <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:10 }}>
             <div style={{ width:10, height:10, borderRadius:"50%", background:"#e24b4a", boxShadow:"0 0 8px #e24b4a" }}/>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e24b4a" }}>
@@ -223,12 +223,12 @@ export default function ProviderGoRequests() {
               </div>
 
               {assigning===r.id&&mechanics.length>0&&(
-                <div style={{ background:"#160a2e", border:"1px solid #8b5cf630", borderRadius:8, padding:"0.75rem", marginBottom:10 }}>
+                <div style={{ background:"#faf5ff", border:"1px solid #8b5cf630", borderRadius:8, padding:"0.75rem", marginBottom:10 }}>
                   <div style={{ fontSize:11, color:"#8b5cf6", marginBottom:8, fontWeight:600 }}>Select mechanic to dispatch:</div>
                   {mechanics.map(m=>(
                     <div key={m.id} onClick={()=>setSelectedMechanic(m.id)}
                       style={{ display:"flex", alignItems:"center", gap:8, padding:"6px", borderRadius:7, cursor:"pointer", background:selectedMechanic===m.id?"#1e0a3e":"transparent", marginBottom:4 }}>
-                      <div style={{ width:28, height:28, borderRadius:"50%", background:"#071a12", border:"1px solid #1d9e7540", display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:800, color:"#1d9e75" }}>
+                      <div style={{ width:28, height:28, borderRadius:"50%", background:"#f0fdf4", border:"1px solid #1d9e7540", display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:800, color:"#1d9e75" }}>
                         {m.first_name[0]}{m.last_name[0]}
                       </div>
                       <div>
@@ -295,6 +295,7 @@ export default function ProviderGoRequests() {
     </div>
   )
 }
+
 
 
 

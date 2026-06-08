@@ -108,7 +108,7 @@ export default function ProviderPayouts() {
         <div style={{ background:"#ffffff", border:`1px solid ${bankSaved?"#1d9e7530":"#e6821e30"}`, borderRadius:12, padding:"1.25rem" }}>
           <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:"1rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000" }}>Bank account details</div>
-            {bankSaved&&<span style={{ fontSize:11, color:"#1d9e75", background:"#071a12", padding:"2px 8px", borderRadius:10 }}>✓ Saved</span>}
+            {bankSaved&&<span style={{ fontSize:11, color:"#1d9e75", background:"#f0fdf4", padding:"2px 8px", borderRadius:10 }}>✓ Saved</span>}
           </div>
           {!bankSaved&&<div style={{ fontSize:12, color:"#e6821e", marginBottom:"1rem", background:"#fff8f0", borderRadius:8, padding:"0.75rem" }}>Add your bank details to receive payouts</div>}
           <form onSubmit={saveBank}>
@@ -149,18 +149,18 @@ export default function ProviderPayouts() {
 
           <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#000000" }}>Request payout</div>
-            <div style={{ fontSize:12, color:"#777777", marginBottom:"1rem" }}>Minimum $50 · Available: ${available.toFixed(2)} · Transfer takes 2-3 business days</div>
+            <div style={{ fontSize:12, color:"#777777", marginBottom:"1rem" }}>Minimum KES 5,000 · Available: KES ${available.toLocaleString()} · Transfer takes 2-3 business days</div>
             {available < 50 ? (
               <div style={{ fontSize:13, color:"#777777", padding:"1rem", background:"#ffffff", borderRadius:8 }}>
-                You need ${(50-available).toFixed(2)} more to reach the minimum payout threshold.
+                You need KES ${(5000-available).toLocaleString()} more to reach the minimum payout threshold.
               </div>
             ) : (
               <form onSubmit={requestPayout}>
                 <label style={lbl}>Amount to withdraw ($)</label>
-                <input style={inp} type="number" min="50" max={available} step="0.01" placeholder={`50.00 — ${available.toFixed(2)}`} value={amount} onChange={e=>setAmount(e.target.value)} required/>
+                <input style={inp} type="number" min="5000" max={available} placeholder={`5000 — ${available.toLocaleString()}`} value={amount} onChange={e=>setAmount(e.target.value)} required/>
                 {amount&&Number(amount)>=50&&(
                   <div style={{ fontSize:12, color:"#777777", marginBottom:10, marginTop:-6 }}>
-                    You will receive: <span style={{ color:"#1d9e75", fontWeight:600 }}>${Number(amount).toFixed(2)}</span> to {bankInfo.bank_name}
+                    You will receive: <span style={{ color:"#1d9e75", fontWeight:600 }}>KES {Number(amount).toLocaleString()}</span> to {bankInfo.bank_name}
                   </div>
                 )}
                 <button type="submit" disabled={submitting||!bankSaved}
@@ -177,7 +177,7 @@ export default function ProviderPayouts() {
               {payouts.map(p=>(
                 <div key={p.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
                   <div style={{ flex:1 }}>
-                    <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>${Number(p.amount).toFixed(2)}</div>
+                    <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>KES {Number(p.amount).toLocaleString()}</div>
                     <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>{p.bank_name} · {p.bank_account_number}</div>
                     <div style={{ fontSize:10, color:"#888888", marginTop:2 }}>{new Date(p.created_at).toLocaleDateString()}</div>
                     {p.admin_note&&<div style={{ fontSize:11, color:"#666", marginTop:4, fontStyle:"italic" }}>"{p.admin_note}"</div>}
@@ -194,6 +194,8 @@ export default function ProviderPayouts() {
     </div>
   )
 }
+
+
 
 
 

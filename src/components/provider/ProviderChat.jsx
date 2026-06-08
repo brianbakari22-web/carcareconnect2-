@@ -87,7 +87,7 @@ export default function ProviderChat() {
         <div key={c.bookingId} onClick={()=>setSelected(c)}
           style={{ background:"#ffffff", border:`1px solid ${selected?.bookingId===c.bookingId?"#378add40":"#1a1a1a"}`, borderRadius:10, padding:"0.9rem", marginBottom:8, cursor:"pointer" }}>
           <div style={{ display:"flex", alignItems:"flex-start", gap:10 }}>
-            <div style={{ width:44, height:44, borderRadius:"50%", background:"#0c1f2e", border:"1px solid #378add30", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#378add", flexShrink:0 }}>
+            <div style={{ width:44, height:44, borderRadius:"50%", background:"#eff6ff", border:"1px solid #378add30", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#378add", flexShrink:0 }}>
               {c.otherUserName[0]?.toUpperCase()}
             </div>
             <div style={{ flex:1, minWidth:0 }}>
@@ -111,6 +111,7 @@ export default function ProviderChat() {
     </>
   )
 }
+
 
 
 
