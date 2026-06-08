@@ -108,6 +108,15 @@ export function AuthProvider({ children }) {
   async function signIn({ email, password }) {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) throw error
+    // Set light theme on sign in
+    try {
+      if (data?.user?.id) {
+        const themeKey = `ccc_theme_${data.user.id}`
+        if (!localStorage.getItem(themeKey) || localStorage.getItem(themeKey) === "dark") {
+          localStorage.setItem(themeKey, "light")
+        }
+      }
+    } catch(_) {}
     return data
   }
 
@@ -130,6 +139,13 @@ export function AuthProvider({ children }) {
     })
     if (error) throw error
     if (data.user) {
+      // Set default light theme for new user
+      try {
+        const themeKey = `ccc_theme_${data.user.id}`
+        if (!localStorage.getItem(themeKey)) {
+          localStorage.setItem(themeKey, "light")
+        }
+      } catch(_) {}
       const { error: profileError } = await supabase.from("profiles").upsert({
         id: data.user.id,
         first_name: firstName,
@@ -178,6 +194,8 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   )
 }
+
+
 
 
 
