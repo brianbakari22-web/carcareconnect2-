@@ -43,7 +43,7 @@ function getUserThemeKey() {
 export function ThemeProvider({ children }) {
   const [themeName, setThemeNameState] = useState(() => {
     const key = getUserThemeKey()
-    // Always default to light theme
+    if (!saved || saved === "dark") { localStorage.setItem(key, "light"); return "light" }
     const saved = localStorage.getItem(key)
     if (!saved || saved === "dark") { localStorage.setItem(key, "light"); return "light" }
     return saved
