@@ -181,9 +181,9 @@ export default function CustomerServices() {
                   <div style={{ fontFamily:"Syne", fontSize:isMobile?14:15, fontWeight:800, color:"#000000" }}>{s.name}</div>
                   <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:cat.bg, color:cat.color, border:`1px solid ${cat.border}` }}>{cat.label}</span>
                 </div>
-                {s.description&&<div style={{ fontSize:12, color:"#666", marginBottom:6, lineHeight:1.5 }}>{s.description}</div>}
+                {s.description&&<div style={{ fontSize:12, color:"#666", marginBottom:6, lineHeight:1.5 }}>{s.description.length>120?s.description.slice(0,120)+"...":s.description}</div>}
                 <div style={{ display:"flex", gap:12, flexWrap:"wrap", alignItems:"center" }}>
-                  <span style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(s.price).toLocaleString()}</span>
+                  <span style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(s.price)>=1?Number(s.price).toLocaleString():Number(s.price*100).toLocaleString()}</span>
                   <span style={{ fontSize:11, color:"#777777" }}>⏱ {s.duration_minutes||60} min</span>
                   {provider&&<span style={{ fontSize:11, color:"#777777" }}>🏪 {provider.business_name||`${provider.first_name} ${provider.last_name}`}{provider.city?` · ${provider.city}`:""}</span>}
                   {provider?.is_verified&&<span style={{ fontSize:10, color:"#1d9e75" }}>✓ Verified</span>}
@@ -354,6 +354,7 @@ export default function CustomerServices() {
     </div>
   )
 }
+
 
 
 
