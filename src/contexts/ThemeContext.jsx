@@ -12,6 +12,22 @@ export const THEMES = {
   sunset: { name:"Sunset", icon:"🌅", bg:"#1a0a0f", bgSecondary:"#220d14", bgCard:"#2a1018", bgCardHover:"#381520", border:"#501828", borderLight:"#602030", text:"#f5e8ea", textMuted:"#c89098", textFaint:"#a06070", textVeryFaint:"#804858", primary:"#f43f5e", primaryBg:"#2a0a14", primaryBorder:"#f43f5e40" },
 }
 
+// Set theme immediately before React renders to prevent flash
+if (typeof window !== "undefined") {
+  try {
+    const raw = localStorage.getItem("sb-gcnefnqtjxtqbhynyoxe-auth-token")
+    const session = raw ? JSON.parse(raw) : null
+    const userId = session?.user?.id
+    const key = userId ? `ccc_theme_${userId}` : "ccc_theme_guest"
+    const saved = localStorage.getItem(key)
+    if (!saved || saved === "dark") {
+      localStorage.setItem(key, "light")
+    }
+  } catch(_) {
+    localStorage.setItem("ccc_theme_guest", "light")
+  }
+}
+
 function getUserThemeKey() {
   try {
     const raw = localStorage.getItem("sb-gcnefnqtjxtqbhynyoxe-auth-token")
@@ -69,6 +85,7 @@ export function ThemeProvider({ children }) {
 export function useTheme() {
   return useContext(ThemeContext)
 }
+
 
 
 
