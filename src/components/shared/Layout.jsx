@@ -360,8 +360,8 @@ export default function Layout({ children }) {
   )
 
   return (
-    <div style={{ display:"flex", flexDirection:"column", minHeight:"100vh", background:theme.bg||"#ffffff", fontFamily:"DM Sans,sans-serif", color:theme.text||"#000000" }}>
     <div style={{ display:"flex", flexDirection:"row", minHeight:"100vh", background:theme.bg||"#ffffff", fontFamily:"DM Sans,sans-serif", color:theme.text||"#000000" }}>
+      <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
         .nav-btn { display:flex; align-items:center; gap:9px; padding:8px 1rem; cursor:pointer; font-size:13px; color:${theme.textFaint}; border:none; background:none; width:100%; text-align:left; border-right:2px solid transparent; transition:all 0.12s; white-space:nowrap; overflow:hidden; }
         .nav-btn:hover { background:${theme.bgCardHover}; color:${theme.textMuted}; }
