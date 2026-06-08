@@ -307,7 +307,7 @@ export default function Layout({ children }) {
                 🌐 {language==="en"?"Kiswahili":"English"}
               </button>
               <button onClick={()=>{ signOut(); setMobileMenuOpen(false) }}
-                style={{ background:"#1a0808", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", cursor:"pointer", fontSize:13, fontWeight:700, width:"100%", textAlign:"center", fontFamily:"'DM Sans',sans-serif", padding:"10px 0" }}>
+                style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", cursor:"pointer", fontSize:13, fontWeight:700, width:"100%", textAlign:"center", fontFamily:"'DM Sans',sans-serif", padding:"10px 0" }}>
                 🚪 {t("signOut")}
               </button>
             </div>
@@ -359,7 +359,7 @@ export default function Layout({ children }) {
     </div>
   )
 
-  return (
+    <div style={{ display:"flex", flexDirection:"row", minHeight:"100vh", background:theme.bg||"#ffffff", fontFamily:"DM Sans,sans-serif", color:theme.text||"#000000" }}>
     <div style={{ display:"flex", flexDirection:"column", minHeight:"100vh", background:theme.bg||"#ffffff", fontFamily:"DM Sans,sans-serif", color:theme.text||"#000000" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
@@ -417,7 +417,7 @@ export default function Layout({ children }) {
           </button>
 
           <button onClick={signOut}
-            style={{ background:"#1a0808", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", cursor:"pointer", fontSize:12, fontWeight:700, width:"100%", textAlign:"center", fontFamily:"'DM Sans',sans-serif", padding:"8px 0", transition:"all 0.12s" }}>
+            style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", cursor:"pointer", fontSize:12, fontWeight:700, width:"100%", textAlign:"center", fontFamily:"'DM Sans',sans-serif", padding:"8px 0", transition:"all 0.12s" }}>
             {collapsed?"🚪":`🚪 ${t("signOut")}`}
           </button>
         </div>
@@ -436,6 +436,7 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 
 
