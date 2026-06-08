@@ -58,8 +58,8 @@ export default function DriverPayouts() {
     if (!bankSaved) return toast.error("Save your bank details first")
     const amt = Number(amount)
     const available = earnings - paid
-    if (amt < 50) return toast.error("Minimum payout is $50")
-    if (amt > available) return toast.error(`Maximum available is KES ${available.toFixed(2)}`)
+    if (amt < 5000) return toast.error("Minimum payout is KES 5,000")
+    if (amt > available) return toast.error(`Maximum available is KES ${available.toLocaleString()}`)
     setSubmitting(true)
     const { error } = await supabase.from("payout_requests").insert({
       user_id: user.id,
@@ -85,9 +85,9 @@ export default function DriverPayouts() {
     <div>
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {[
-          { label:"Total earned", value:`KES ${earnings.toFixed(2)}` },
-          { label:"Available", value:`KES ${available.toFixed(2)}`, color:available>0?"#e6821e":undefined },
-          { label:"Total paid out", value:`KES ${paid.toFixed(2)}`, color:"#1d9e75" },
+          { label:"Total earned", value:`KES ${earnings.toLocaleString()}` },
+          { label:"Available", value:`KES ${available.toLocaleString()}`, color:available>0?"#e6821e":undefined },
+          { label:"Total paid out", value:`KES ${paid.toLocaleString()}`, color:"#1d9e75" },
         ].map(s=>(
           <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
             <div style={{ fontSize:11, color:"#777777", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
@@ -155,18 +155,18 @@ export default function DriverPayouts() {
 
           <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#000000" }}>Request payout</div>
-            <div style={{ fontSize:12, color:"#777777", marginBottom:"1rem" }}>Minimum $50 · Available: ${available.toFixed(2)} · Transfer takes 2-3 business days</div>
+            <div style={{ fontSize:12, color:"#777777", marginBottom:"1rem" }}>Minimum KES 5,000 · Available: ${available.toLocaleString()} · Transfer takes 2-3 business days</div>
             {available < 50 ? (
               <div style={{ fontSize:13, color:"#777777", padding:"1rem", background:"#ffffff", borderRadius:8 }}>
-                Complete more deliveries to reach the $50 minimum. You need ${(50-available).toFixed(2)} more.
+                Complete more deliveries to reach the KES 5,000 minimum. You need ${(50-available).toLocaleString()} more.
               </div>
             ) : (
               <form onSubmit={requestPayout}>
                 <label style={lbl}>Amount to withdraw ($)</label>
-                <input style={inp} type="number" min="50" max={available} step="0.01" placeholder={`50.00 — ${available.toFixed(2)}`} value={amount} onChange={e=>setAmount(e.target.value)} required/>
+                <input style={inp} type="number" min="50" max={available} step="0.01" placeholder={`50.00 — ${available.toLocaleString()}`} value={amount} onChange={e=>setAmount(e.target.value)} required/>
                 {amount&&Number(amount)>=50&&(
                   <div style={{ fontSize:12, color:"#777777", marginBottom:10, marginTop:-6 }}>
-                    You will receive: <span style={{ color:"#1d9e75", fontWeight:600 }}>${Number(amount).toFixed(2)}</span> to {bankInfo.bank_name}
+                    You will receive: <span style={{ color:"#1d9e75", fontWeight:600 }}>${Number(amount).toLocaleString()}</span> to {bankInfo.bank_name}
                   </div>
                 )}
                 <button type="submit" disabled={submitting||!bankSaved}
@@ -183,7 +183,7 @@ export default function DriverPayouts() {
               {payouts.map(p=>(
                 <div key={p.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
                   <div style={{ flex:1 }}>
-                    <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>${Number(p.amount).toFixed(2)}</div>
+                    <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>${Number(p.amount).toLocaleString()}</div>
                     <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>{p.bank_name} · {p.bank_account_number}</div>
                     <div style={{ fontSize:10, color:"#888888", marginTop:2 }}>{new Date(p.created_at).toLocaleDateString()}</div>
                     {p.admin_note&&<div style={{ fontSize:11, color:"#666", marginTop:4, fontStyle:"italic" }}>"{p.admin_note}"</div>}
@@ -200,6 +200,7 @@ export default function DriverPayouts() {
     </div>
   )
 }
+
 
 
 

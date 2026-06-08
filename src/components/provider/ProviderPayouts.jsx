@@ -57,8 +57,8 @@ export default function ProviderPayouts() {
     if (!bankSaved) return toast.error("Save your bank details first")
     const amt = Number(amount)
     const available = earnings - paid
-    if (amt < 50) return toast.error("Minimum payout is $50")
-    if (amt > available) return toast.error(`Maximum available is KES ${available.toFixed(2)}`)
+    if (amt < 5000) return toast.error("Minimum payout is KES 5,000")
+    if (amt > available) return toast.error(`Maximum available is KES ${Number(available).toLocaleString()}`)
     setSubmitting(true)
     const { error } = await supabase.from("payout_requests").insert({
       user_id: user.id,
@@ -84,9 +84,9 @@ export default function ProviderPayouts() {
     <div>
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {[
-          { label:"Total earned", value:`KES ${earnings.toFixed(2)}` },
-          { label:"Available", value:`KES ${available.toFixed(2)}`, color:available>0?"#e6821e":undefined },
-          { label:"Total paid out", value:`KES ${paid.toFixed(2)}`, color:"#1d9e75" },
+          { label:"Total earned", value:`KES ${Number(earnings).toLocaleString()}` },
+          { label:"Available", value:`KES ${Number(available).toLocaleString()}`, color:available>0?"#e6821e":undefined },
+          { label:"Total paid out", value:`KES ${Number(paid).toLocaleString()}`, color:"#1d9e75" },
         ].map(s=>(
           <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
             <div style={{ fontSize:11, color:"#777777", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
@@ -149,15 +149,15 @@ export default function ProviderPayouts() {
 
           <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#000000" }}>Request payout</div>
-            <div style={{ fontSize:12, color:"#777777", marginBottom:"1rem" }}>Minimum KES 5,000 · Available: KES ${available.toLocaleString()} · Transfer takes 2-3 business days</div>
+            <div style={{ fontSize:12, color:"#777777", marginBottom:"1rem" }}>Minimum KES 5,000 · Available: KES ${Number(available).toLocaleString()} · Transfer takes 2-3 business days</div>
             {available < 50 ? (
               <div style={{ fontSize:13, color:"#777777", padding:"1rem", background:"#ffffff", borderRadius:8 }}>
-                You need KES ${(5000-available).toLocaleString()} more to reach the minimum payout threshold.
+                You need KES ${Number(5000-available).toLocaleString()} more to reach the minimum payout threshold.
               </div>
             ) : (
               <form onSubmit={requestPayout}>
                 <label style={lbl}>Amount to withdraw ($)</label>
-                <input style={inp} type="number" min="5000" max={available} placeholder={`5000 — ${available.toLocaleString()}`} value={amount} onChange={e=>setAmount(e.target.value)} required/>
+                <input style={inp} type="number" min="5000" max={available} placeholder={`5,000 — ${Number(available).toLocaleString()}`} value={amount} onChange={e=>setAmount(e.target.value)} required/>
                 {amount&&Number(amount)>=50&&(
                   <div style={{ fontSize:12, color:"#777777", marginBottom:10, marginTop:-6 }}>
                     You will receive: <span style={{ color:"#1d9e75", fontWeight:600 }}>KES {Number(amount).toLocaleString()}</span> to {bankInfo.bank_name}
@@ -194,6 +194,8 @@ export default function ProviderPayouts() {
     </div>
   )
 }
+
+
 
 
 
