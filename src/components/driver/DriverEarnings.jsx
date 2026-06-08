@@ -64,7 +64,7 @@ export default function DriverEarnings() {
       </div>
 
       {/* Earnings breakdown */}
-      <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
+      <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
         <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75", marginBottom:"1rem" }}>💰 Earnings breakdown</div>
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4,1fr)", gap:10, marginBottom:12 }}>
           {[
@@ -161,4 +161,5 @@ export default function DriverEarnings() {
     </div>
   )
 }
+
 

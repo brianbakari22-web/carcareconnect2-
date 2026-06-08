@@ -44,7 +44,7 @@ const NAV = {
     { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
     { path:"/dashboard/claims", label:"My Claims", icon:"🛡️" },
     { path:"/dashboard/vehicle", label:"My Vehicle", icon:"🚗" },
-    { path:"/dashboard/performance", label:"Performance", icon:"≡ƒôè" },
+    { path:"/dashboard/performance", label:"Performance", icon:"📊" },
 
 
 
@@ -191,7 +191,7 @@ export default function Layout({ children }) {
       { path:"/dashboard/orders", label:"Orders", icon:"🛒" },
     ] : []),
     { path:"/dashboard/earnings", key:"earnings", icon:"💰" },
-    { path:"/dashboard/analytics", key:"analytics", icon:"≡ƒôè" },
+    { path:"/dashboard/analytics", key:"analytics", icon:"📊" },
     { path:"/dashboard/reviews", key:"reviews", icon:"⭐" },
     { path:"/dashboard/business-hours", label:"Business Hours", icon:"🕐" },
     { path:"/dashboard/availability", key:"availability", icon:"≡ƒùô∩╕Å" },
@@ -436,6 +436,7 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 
 
