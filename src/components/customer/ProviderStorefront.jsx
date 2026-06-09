@@ -15,8 +15,43 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
   const [loading, setLoading] = useState(true)
   const [activePhoto, setActivePhoto] = useState(0)
   const [tab, setTab] = useState("about")
+  const [bookingService, setBookingService] = useState(null)
+  const [bookForm, setBookForm] = useState({ date:"", time:"", notes:"", payment_method:"mpesa" })
+  const [bookingLoading, setBookingLoading] = useState(false)
 
   useEffect(() => { load() }, [provider.id])
+
+  async function bookService(e) {
+    e.preventDefault()
+    if (!bookingService) return
+    setBookingLoading(true)
+    try {
+      const platformRate = 0.10
+      const providerRate = 0.90
+      await supabase.from("bookings").insert({
+        customer_id: user.id,
+        provider_id: provider.id,
+        service_id: bookingService.id,
+        service_name: bookingService.name,
+        service_category: bookingService.category||"shop_standard",
+        booking_date: bookForm.date,
+        booking_time: bookForm.time,
+        total_amount: Number(bookingService.price),
+        platform_commission: Number(bookingService.price)*platformRate,
+        provider_earnings: Number(bookingService.price)*providerRate,
+        platform_commission_rate: platformRate,
+        provider_commission_rate: providerRate,
+        payment_method: bookForm.payment_method,
+        payment_status: "pending",
+        status: "pending",
+        notes: bookForm.notes,
+      })
+      toast.success("Booking submitted! 🎉")
+      setBookingService(null)
+      setBookForm({ date:"", time:"", notes:"", payment_method:"mpesa" })
+    } catch(err) { toast.error(err.message) }
+    finally { setBookingLoading(false) }
+  }
 
   async function load() {
     const [{ data: svcs }, { data: inv }, { data: revs }] = await Promise.all([
@@ -92,7 +127,7 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
           {/* CTA Buttons */}
           <div style={{ display:"flex", gap:8, marginBottom:"1.5rem" }}>
             {!isInventoryProvider&&(
-              <button onClick={()=>{ onClose(); navigate("/dashboard/services") }}
+              <button onClick={()=>setTab("services")}
                 style={{ flex:1, background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px", cursor:"pointer" }}>
                 Book service
               </button>
@@ -160,7 +195,7 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
                     </div>
                     <div style={{ textAlign:"right" }}>
                       <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(s.price||0).toLocaleString()}</div>
-                      <button onClick={()=>{ onClose(); navigate("/dashboard/services") }}
+                      <button onClick={()=>setBookingService(s)}
                         style={{ marginTop:6, background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"5px 12px", cursor:"pointer" }}>
                         Book
                       </button>
@@ -211,5 +246,6 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
     </div>
   )
 }
+
 
 
