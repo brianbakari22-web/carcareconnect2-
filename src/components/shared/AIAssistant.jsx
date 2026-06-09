@@ -358,7 +358,67 @@ KENYA ROAD REGULATIONS (NTSA):
 - Third party insurance mandatory
 - NTSA emergency: 0800 723 573
 - Traffic Police: 999 or 0722 722 203
-`
+CAR WASH PROVIDERS:
+- Car wash providers have dedicated features: Wash Queue, Wash Packages, Staff Management
+- Wash categories: Basic Wash (exterior only), Standard Wash (exterior + interior), Premium Detail (full detailing)
+- Wash Queue: providers can track active bookings, update status (confirmed > in-progress > completed), upload before/after photos
+- Staff Management: providers can add staff members with roles (washer, supervisor, cashier, detailer) and shifts
+- Customers find car wash providers via Discover > filter by Car Wash category
+- Car wash commission: Provider 90%, Platform 10%
+
+PARTS MARKETPLACE (Provider Inventory):
+- Parts dealers, accessories shops, and tyre shops list inventory items
+- Customers browse via Parts & Accessories section
+- Cart system with pickup or delivery fulfillment options
+- Delivery zones with fees configured by provider
+- Order flow: Add to cart > Select fulfillment > Enter details > Place order
+- Customers can message seller directly via chat button on each item
+- Contact sharing (phone/email) is blocked in chat — all communication stays on platform
+
+C2C MARKETPLACE (Customer to Customer):
+- Customers can list their own vehicles, car parts and accessories for sale
+- Listing types: Vehicle, Car part, Accessory
+- Platform commission: Vehicles 2%, Parts/Accessories 8%
+- Buyers can make offers on listings
+- Direct messaging between buyer and seller via built-in chat
+- Listings reviewed within 24 hours before going live
+- No personal contact sharing allowed — violates platform rules
+
+LOYALTY PROGRAM:
+- Bronze: 0-999 pts, 100 pts = KES 1
+- Silver: 1000-4999 pts, 90 pts = KES 1
+- Gold: 5000-9999 pts, 80 pts = KES 1
+- Platinum: 10000+ pts, 70 pts = KES 1
+- Points earned on every booking
+- Minimum redemption: 100 points
+
+DRIVER FEATURES:
+- Drivers deliver vehicles and parts
+- Vehicle types: Car, Boda Boda, Tuktuk, Van/Pickup
+- Documents required: Driver license, National ID, PSV Badge, Insurance, Good Conduct
+- Documents have expiry tracking with reminders
+- Commission: 15% of service fee + KES 200 transport allowance per job
+- Minimum payout: KES 5,000
+
+MESSAGES & CHAT:
+- All users have a Messages inbox
+- Booking conversations between customers and providers
+- Marketplace listing conversations between buyers and sellers
+- Contact sharing (phone numbers, emails, social media) is blocked
+- Message notifications show "Open in Messages" button
+
+SERVICE GUARANTEE (Claims):
+- Customers can file claims if service was not delivered as promised
+- Providers must respond within 48 hours
+- Platform mediates disputes
+- Refunds processed via original payment method
+
+BUSINESS REGISTRATION:
+- Business name: Car Care Connect
+- Location: Nairobi, Kenya
+- Contact: carcareconnect254@gmail.com | 0113858966
+- BRS registration in progress
+- Trademark application pending for Class 35, 37, 39`
 
 const SYSTEM_PROMPTS = {
   customer: `You are the Car Care Connect AI Assistant for customers. Be helpful, friendly and concise. Always give prices in KES.
