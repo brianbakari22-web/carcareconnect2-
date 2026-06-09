@@ -169,9 +169,9 @@ export default function LandingPage() {
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))", gap:12 }}>
             {[
-              { n:"01", icon:"≡ƒöì", title:"Find a service", desc:"Browse verified providers near you. Compare prices, read reviews, and pick the best mechanic for your car and budget." },
-              { n:"02", icon:"📱", title:"Book and pay", desc:"Book in seconds. Pay securely via M-Pesa or card through Pesapal, regulated by Central Bank of Kenya." },
-              { n:"03", icon:"✅", title:"Track and review", desc:"Track your mechanic live on the map. Rate your experience and earn loyalty points on every booking." },
+              { n:"01", icon:"search", title:"Find a service", desc:"Browse verified providers near you. Compare prices, read reviews, and pick the best mechanic for your car and budget." },
+              { n:"02", icon:"bookings", title:"Book and pay", desc:"Book in seconds. Pay securely via M-Pesa or card through Pesapal, regulated by Central Bank of Kenya." },
+              { n:"03", icon:"claims", title:"Track and review", desc:"Track your mechanic live on the map. Rate your experience and earn loyalty points on every booking." },
             ].map(s=>(
               <div key={s.n} className="hcard" style={{ ...cardWhite, position:"relative", overflow:"hidden" }}>
                 <div style={{ fontWeight:800, fontSize:52, color:"#e6821e10", position:"absolute", top:-8, right:10, lineHeight:1 }}>{s.n}</div>
@@ -424,6 +424,7 @@ export default function LandingPage() {
     </div>
   )
 }
+
 
 
 
