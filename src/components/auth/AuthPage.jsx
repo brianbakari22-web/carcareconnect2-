@@ -7,51 +7,51 @@ import { useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
 
 const PROVIDER_TYPES = [
-  { key:"garage", label:"Garage/Mechanic", icon:"≡ƒöº", desc:"Car service and repair" },
-  { key:"parts_dealer", label:"Parts Dealer", icon:"ΓÜÖ∩╕Å", desc:"Auto parts and spares" },
-  { key:"accessories_shop", label:"Accessories Shop", icon:"Γ£¿", desc:"Car accessories" },
-  { key:"tyre_shop", label:"Tyre Shop", icon:"≡ƒ¢₧", desc:"Tyre sales and fitting" },
-  { key:"auto_electrician", label:"Auto Electrician", icon:"ΓÜí", desc:"Electrical specialist" },
-  { key:"car_wash", label:"Car Wash", icon:"≡ƒÜ┐", desc:"Wash and detailing" },
-  { key:"panel_beater", label:"Panel Beater", icon:"≡ƒö¿", desc:"Body and spray paint" },
-  { key:"auto_glass", label:"Auto Glass", icon:"≡ƒ¬ƒ", desc:"Windscreen specialist" },
+  { key:"garage", label:"Garage/Mechanic", icon:"🔧", desc:"Car service and repair" },
+  { key:"parts_dealer", label:"Parts Dealer", icon:"⚙️", desc:"Auto parts and spares" },
+  { key:"accessories_shop", label:"Accessories Shop", icon:"✨", desc:"Car accessories" },
+  { key:"tyre_shop", label:"Tyre Shop", icon:"🛞", desc:"Tyre sales and fitting" },
+  { key:"auto_electrician", label:"Auto Electrician", icon:"⚡", desc:"Electrical specialist" },
+  { key:"car_wash", label:"Car Wash", icon:"🚿", desc:"Wash and detailing" },
+  { key:"panel_beater", label:"Panel Beater", icon:"🔨", desc:"Body and spray paint" },
+  { key:"auto_glass", label:"Auto Glass", icon:"🪟", desc:"Windscreen specialist" },
 ]
 const DRIVER_VEHICLE_TYPES = [
-  { key:"car", label:"Car", icon:"≡ƒÜù", desc:"Standard delivery" },
-  { key:"motorcycle", label:"Boda Boda", icon:"≡ƒÅì∩╕Å", desc:"Fast parts delivery" },
-  { key:"tuktuk", label:"Tuktuk", icon:"≡ƒ¢║", desc:"Local delivery" },
-  { key:"van", label:"Van/Pickup", icon:"≡ƒÜÉ", desc:"Large items" },
+  { key:"car", label:"Car", icon:"🚗", desc:"Standard delivery" },
+  { key:"motorcycle", label:"Boda Boda", icon:"🏍️", desc:"Fast parts delivery" },
+  { key:"tuktuk", label:"Tuktuk", icon:"🛺", desc:"Local delivery" },
+  { key:"van", label:"Van/Pickup", icon:"🚐", desc:"Large items" },
 ]
 const ROLES = [
   {
     key: "customer",
     label: "Customer",
-    icon: "≡ƒÜù",
+    icon: "🚗",
     desc: "Book services, track drivers, earn loyalty points",
     color: "#e6821e",
     bg: "#1a1208",
     border: "#e6821e40",
-    features: ["≡ƒöº Browse verified services", "≡ƒôì Live driver tracking", "≡ƒÄü Loyalty rewards", "Γ¡É Rate your experience"]
+    features: ["🔧 Browse verified services", "📍 Live driver tracking", "≡ƒÄü Loyalty rewards", "⭐ Rate your experience"]
   },
   {
     key: "provider",
     label: "Service Provider",
-    icon: "≡ƒöº",
+    icon: "🔧",
     desc: "List services, manage bookings, grow your business",
     color: "#378add",
     bg: "#0c1f2e",
     border: "#378add40",
-    features: ["≡ƒôè Analytics dashboard", "≡ƒÆ░ Fast payouts", "≡ƒôà Booking management", "Γ¡É Customer reviews"]
+    features: ["📊 Analytics dashboard", "💰 Fast payouts", "📅 Booking management", "⭐ Customer reviews"]
   },
   {
     key: "driver",
     label: "Driver",
-    icon: "≡ƒÜÜ",
+    icon: "🚚",
     desc: "Earn by delivering vehicles, set your own schedule",
     color: "#1d9e75",
     bg: "#071a12",
     border: "#1d9e7540",
-    features: ["≡ƒôì GPS navigation", "≡ƒÆ╡ Competitive earnings", "≡ƒôê Earnings dashboard", "Γ£à Flexible hours"]
+    features: ["📍 GPS navigation", "💵 Competitive earnings", "📈 Earnings dashboard", "✅ Flexible hours"]
   },
 ]
 
@@ -210,7 +210,7 @@ export default function AuthPage() {
       <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", padding:isMobile?"1rem":"2rem" }}>
         <div style={{ width:"100%", maxWidth:420 }}>
           <button onClick={()=>setStep("role")} style={{ background:"none", border:"none", color:"#333", cursor:"pointer", fontSize:13, marginBottom:"1.5rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
-            ΓåÉ Back
+            ← Back
           </button>
 
           <div style={{ marginBottom:"1.5rem" }}>
@@ -329,7 +329,7 @@ export default function AuthPage() {
 
             <button type="submit" disabled={loading||(mode==="signup"&&!agreed)}
               style={{ width:"100%", background:loading||(mode==="signup"&&!agreed)?"#333":"#e6821e", border:"none", borderRadius:9, color:loading||(mode==="signup"&&!agreed)?"#666":"#fff", fontFamily:"Syne,sans-serif", fontSize:16, fontWeight:700, padding:"15px", cursor:loading||(mode==="signup"&&!agreed)?"not-allowed":"pointer", transition:"all 0.15s" }}>
-              {loading ? "Please wait..." : mode==="signin" ? "Sign in ΓåÆ" : "Create account ΓåÆ"}
+              {loading ? "Please wait..." : mode==="signin" ? "Sign in →" : "Create account →"}
             </button>
           </form>
 
@@ -385,7 +385,7 @@ export default function AuthPage() {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');`}</style>
       <div style={{ width:"100%", maxWidth:640 }}>
         <button onClick={()=>setStep("landing")} style={{ background:"none", border:"none", color:"#333", cursor:"pointer", fontSize:13, marginBottom:"1.5rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
-          ΓåÉ Back
+          ← Back
         </button>
         <div style={{ textAlign:"center", marginBottom:"2rem" }}>
           <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#000000", marginBottom:6 }}>Who are you?</div>
@@ -411,7 +411,7 @@ export default function AuthPage() {
         <button onClick={()=>{ if(!selectedRole) return toast.error("Please select a role"); setStep("auth") }}
           disabled={!selectedRole}
           style={{ width:"100%", background:selectedRole?"#e6821e":"#e5e5e5", border:"none", borderRadius:10, color:selectedRole?"#fff":"#999", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:selectedRole?"pointer":"not-allowed", transition:"all 0.15s" }}>
-          Continue as {selectedRole ? ROLES.find(r=>r.key===selectedRole)?.label : "..."} ΓåÆ
+          Continue as {selectedRole ? ROLES.find(r=>r.key===selectedRole)?.label : "..."} →
         </button>
         <div style={{ textAlign:"center", marginTop:16, fontSize:12, color:"#666" }}>
           By continuing you agree to our{" "}
@@ -439,9 +439,9 @@ export default function AuthPage() {
         <p style={{ fontSize:15, color:"#fff", maxWidth:440, margin:"0 auto 2.5rem", lineHeight:1.7 }}>Nairobi most trusted automotive platform. Book mechanics, order parts, wash your car and more.</p>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))", gap:14, width:"100%", maxWidth:680, marginBottom:"2rem" }}>
           {[
-            { key:"customer", icon:"≡ƒÜù", label:"Customer", desc:"Book services, track drivers, earn rewards", color:"#e6821e" },
-            { key:"provider", icon:"≡ƒöº", label:"Service Provider", desc:"List your shop, manage bookings, grow revenue", color:"#378add" },
-            { key:"driver", icon:"≡ƒÜÜ", label:"Driver", desc:"Deliver vehicles and parts, earn per trip", color:"#1d9e75" },
+            { key:"customer", icon:"🚗", label:"Customer", desc:"Book services, track drivers, earn rewards", color:"#e6821e" },
+            { key:"provider", icon:"🔧", label:"Service Provider", desc:"List your shop, manage bookings, grow revenue", color:"#378add" },
+            { key:"driver", icon:"🚚", label:"Driver", desc:"Deliver vehicles and parts, earn per trip", color:"#1d9e75" },
           ].map(r=>(
             <div key={r.key} onClick={()=>{ setSelectedRole(r.key); setStep("auth"); setMode("signup") }}
               style={{ background:"#f5f5f5", borderRadius:20, padding:"2rem", cursor:"pointer", textAlign:"left", border:"2px solid transparent", transition:"all 0.2s" }}
@@ -450,7 +450,7 @@ export default function AuthPage() {
               <div style={{ fontSize:42, marginBottom:14 }}>{r.icon}</div>
               <div style={{ fontWeight:700, fontSize:17, color:"#000", marginBottom:6 }}>{r.label}</div>
               <div style={{ fontSize:15, color:"#555555", lineHeight:1.6, marginBottom:12 }}>{r.desc}</div>
-              <div style={{ fontSize:12, fontWeight:600, color:r.color }}>Get started ΓåÆ</div>
+              <div style={{ fontSize:12, fontWeight:600, color:r.color }}>Get started →</div>
             </div>
           ))}
         </div>
@@ -464,6 +464,7 @@ export default function AuthPage() {
     </div>
   )
 }
+
 
 
 
