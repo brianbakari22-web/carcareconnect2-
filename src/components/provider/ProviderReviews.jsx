@@ -1,6 +1,5 @@
 import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
-import CCCIcon from "../shared/CCCIcon"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
@@ -22,7 +21,7 @@ export default function ProviderReviews() {
     const sub = supabase.channel("provider-reviews")
       .on("postgres_changes", { event:"INSERT", schema:"public", table:"reviews", filter:`provider_id=eq.${user.id}` }, () => {
         load()
-        toast("New review received!", { icon:"⭐" })
+        toast("New review received!", { icon:"Γ¡É" })
       }).subscribe()
     return () => supabase.removeChannel(sub)
   }, [user])
@@ -66,7 +65,7 @@ export default function ProviderReviews() {
             <div style={{ fontFamily:"Syne", fontSize:40, fontWeight:800, color:"#e6821e", lineHeight:1 }}>{avgRating}</div>
             <div style={{ display:"flex", justifyContent:"center", gap:2, margin:"6px 0" }}>
               {[1,2,3,4,5].map(s=>(
-                <span key={s} style={{ color: s <= Math.round(avgRating) ? "#e6821e" : "#333", fontSize:16 }}>★</span>
+                <span key={s} style={{ color: s <= Math.round(avgRating) ? "#e6821e" : "#333", fontSize:16 }}>Γÿà</span>
               ))}
             </div>
             <div style={{ fontSize:11, color:"#777777" }}>{reviews.length} review{reviews.length!==1?"s":""}</div>
@@ -75,7 +74,7 @@ export default function ProviderReviews() {
             {dist.map(d => (
               <div key={d.star} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:5 }}>
                 <div style={{ fontSize:11, color:"#555555", width:10 }}>{d.star}</div>
-                <span style={{ color:"#e6821e", fontSize:12 }}>★</span>
+                <span style={{ color:"#e6821e", fontSize:12 }}>Γÿà</span>
                 <div style={{ flex:1, height:6, background:"#f0f0f0", borderRadius:3, overflow:"hidden" }}>
                   <div style={{ height:"100%", background:"#e6821e", borderRadius:3, width:`${d.pct}%`, transition:"width 0.5s" }} />
                 </div>
@@ -105,7 +104,7 @@ export default function ProviderReviews() {
             </div>
             <div style={{ display:"flex", gap:1 }}>
               {[1,2,3,4,5].map(s=>(
-                <span key={s} style={{ color: s <= r.provider_rating ? "#e6821e" : "#333", fontSize:16 }}>★</span>
+                <span key={s} style={{ color: s <= r.provider_rating ? "#e6821e" : "#333", fontSize:16 }}>Γÿà</span>
               ))}
             </div>
           </div>
@@ -116,7 +115,7 @@ export default function ProviderReviews() {
 
           {r.driver_rating > 0 && (
             <div style={{ fontSize:11, color:"#777777", marginBottom:10 }}>
-              Driver rated: {[1,2,3,4,5].map(s=><span key={s} style={{ color: s<=r.driver_rating?"#378add":"#333" }}>★</span>)}
+              Driver rated: {[1,2,3,4,5].map(s=><span key={s} style={{ color: s<=r.driver_rating?"#378add":"#333" }}>Γÿà</span>)}
             </div>
           )}
 
@@ -158,7 +157,6 @@ export default function ProviderReviews() {
     </div>
   )
 }
-
 
 
 

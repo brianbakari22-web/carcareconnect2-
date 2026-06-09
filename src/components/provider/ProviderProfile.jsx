@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import CCCIcon from "../shared/CCCIcon"
 import { supabase } from "../../lib/supabase"
 import PhotoManager from "../shared/PhotoManager"
 import { useAuth } from "../../contexts/AuthContext"
@@ -9,14 +8,14 @@ import { exportUserData, downloadJSON, downloadCSV, downloadPDF } from "../../li
 import toast from "react-hot-toast"
 
 const PROVIDER_TYPES = [
-  { key:"garage", label:"Garage/Mechanic", icon:"🔧" },
-  { key:"parts_dealer", label:"Parts Dealer", icon:"⚙️" },
-  { key:"accessories_shop", label:"Accessories Shop", icon:"✨" },
-  { key:"tyre_shop", label:"Tyre Shop", icon:"🛞" },
-  { key:"auto_electrician", label:"Auto Electrician", icon:"⚡" },
-  { key:"car_wash", label:"Car Wash", icon:"carWash" },
-  { key:"panel_beater", label:"Panel Beater", icon:"🔨" },
-  { key:"auto_glass", label:"Auto Glass", icon:"🪟" },
+  { key:"garage", label:"Garage/Mechanic", icon:"≡ƒöº" },
+  { key:"parts_dealer", label:"Parts Dealer", icon:"ΓÜÖ∩╕Å" },
+  { key:"accessories_shop", label:"Accessories Shop", icon:"Γ£¿" },
+  { key:"tyre_shop", label:"Tyre Shop", icon:"≡ƒ¢₧" },
+  { key:"auto_electrician", label:"Auto Electrician", icon:"ΓÜí" },
+  { key:"car_wash", label:"Car Wash", icon:"≡ƒÜ┐" },
+  { key:"panel_beater", label:"Panel Beater", icon:"≡ƒö¿" },
+  { key:"auto_glass", label:"Auto Glass", icon:"≡ƒ¬ƒ" },
 ]
 
 export default function ProviderProfile() {
@@ -133,7 +132,7 @@ export default function ProviderProfile() {
         <div>
           <div style={{ fontFamily:"Syne", fontSize:17, fontWeight:800, color:"#000000" }}>{profile?.business_name||`${profile?.first_name} ${profile?.last_name}`}</div>
           <div style={{ fontSize:12, color:"#777777", marginTop:2 }}>
-            Provider · {profile?.city||"Location not set"}
+            Provider ┬╖ {profile?.city||"Location not set"}
             {profile?.provider_type&&<span style={{ marginLeft:6, fontSize:10, color:"#378add", background:"#eff6ff", padding:"1px 7px", borderRadius:10 }}>
             {PROVIDER_TYPES.find(p=>p.key===profile?.provider_type)?.icon} {profile?.provider_type?.replace(/_/g," ")}
             </span>}
@@ -203,7 +202,7 @@ export default function ProviderProfile() {
             <div style={{ fontSize:12, color:"#777777", marginBottom:"1rem" }}>Help customers find you and enable distance-based search</div>
             <button type="button" onClick={detectLocation} disabled={locating}
               style={{ background:locating?"#333":"#071a12", border:"1px solid #1d9e7540", borderRadius:9, color:"#1d9e75", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:locating?"not-allowed":"pointer", marginBottom:16, width:"100%" }}>
-              {locating?"Detecting...":"📍 Use my current location"}
+              {locating?"Detecting...":"≡ƒôì Use my current location"}
             </button>
             {location.address&&<div style={{ fontSize:11, color:"#777777", marginBottom:12, padding:"0.6rem", background:"#ffffff", borderRadius:7 }}>{location.address}</div>}
             <label style={lbl}>Or enter coordinates manually</label>
@@ -266,11 +265,11 @@ export default function ProviderProfile() {
                 <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
                   <button onClick={()=>downloadPDF(exportData, `provider-data-${new Date().toISOString().split("T")[0]}.pdf`)}
                     style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:8, color:"#1d9e75", fontSize:12, fontWeight:600, padding:"9px 16px", cursor:"pointer" }}>
-                    ⬇ Download PDF report
+                    Γ¼ç Download PDF report
                   </button>
                   <button onClick={()=>downloadCSV(exportData.bookings, `bookings-${new Date().toISOString().split("T")[0]}.csv`)}
                     style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:8, color:"#378add", fontSize:12, fontWeight:600, padding:"9px 16px", cursor:"pointer" }}>
-                    ⬇ Bookings CSV
+                    Γ¼ç Bookings CSV
                   </button>
                 </div>
               </div>
@@ -287,7 +286,6 @@ export default function ProviderProfile() {
     </div>
   )
 }
-
 
 
 

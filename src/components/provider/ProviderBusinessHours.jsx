@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import CCCIcon from "../shared/CCCIcon"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
@@ -128,7 +127,7 @@ export default function ProviderBusinessHours() {
           {closures.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"1.5rem" }}>No closures set</div>}
           {closures.map(c=>(
             <div key={c.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
-              <div style={{ width:36, height:36, background:"#fff5f5", borderRadius:8, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}>🚫</div>
+              <div style={{ width:36, height:36, background:"#fff5f5", borderRadius:8, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}>≡ƒÜ½</div>
               <div style={{ flex:1 }}>
                 <div style={{ fontSize:13, fontWeight:500, color:"#000000" }}>
                   {new Date(c.closure_date+"T00:00:00").toLocaleDateString("default",{weekday:"long",year:"numeric",month:"long",day:"numeric"})}
@@ -164,7 +163,6 @@ export default function ProviderBusinessHours() {
     </div>
   )
 }
-
 
 
 

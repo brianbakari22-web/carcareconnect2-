@@ -1,6 +1,5 @@
 import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
-import CCCIcon from "../shared/CCCIcon"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
@@ -191,12 +190,12 @@ export default function ProviderAvailability() {
             <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
                 <button onClick={()=>setCurrentMonth(new Date(year,month-1,1))}
-                  style={{ background:"none", border:"none", color:"#555555", cursor:"pointer", fontSize:18, padding:"4px 8px" }}>‹</button>
+                  style={{ background:"none", border:"none", color:"#555555", cursor:"pointer", fontSize:18, padding:"4px 8px" }}>ΓÇ╣</button>
                 <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:700, color:"#000000" }}>
                   {currentMonth.toLocaleString("default",{month:"long",year:"numeric"})}
                 </div>
                 <button onClick={()=>setCurrentMonth(new Date(year,month+1,1))}
-                  style={{ background:"none", border:"none", color:"#555555", cursor:"pointer", fontSize:18, padding:"4px 8px" }}>›</button>
+                  style={{ background:"none", border:"none", color:"#555555", cursor:"pointer", fontSize:18, padding:"4px 8px" }}>ΓÇ║</button>
               </div>
 
               <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:2, marginBottom:6 }}>
@@ -290,13 +289,13 @@ export default function ProviderAvailability() {
                     <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Max bookings this day</label>
                     <div style={{ display:"flex", alignItems:"center", gap:10 }}>
                       <button type="button" onClick={()=>setForm(f=>({...f,max_bookings:Math.max(1,f.max_bookings-1)}))}
-                        style={{ width:36, height:36, borderRadius:8, background:"#f5f5f5", border:"1px solid #dddddd", color:"#000000", fontSize:18, cursor:"pointer" }}>−</button>
+                        style={{ width:36, height:36, borderRadius:8, background:"#f5f5f5", border:"1px solid #dddddd", color:"#000000", fontSize:18, cursor:"pointer" }}>ΓêÆ</button>
                       <div style={{ fontFamily:"Syne", fontSize:24, fontWeight:800, color:"#378add", width:40, textAlign:"center" }}>{form.max_bookings}</div>
                       <button type="button" onClick={()=>setForm(f=>({...f,max_bookings:Math.min(20,f.max_bookings+1)}))}
                         style={{ width:36, height:36, borderRadius:8, background:"#f5f5f5", border:"1px solid #dddddd", color:"#000000", fontSize:18, cursor:"pointer" }}>+</button>
                     </div>
                     <div style={{ fontSize:11, color:"#777777", marginTop:6 }}>
-                      {bookingCounts[selected]||0} booked · {Math.max(0,form.max_bookings-(bookingCounts[selected]||0))} slots remaining
+                      {bookingCounts[selected]||0} booked ┬╖ {Math.max(0,form.max_bookings-(bookingCounts[selected]||0))} slots remaining
                     </div>
                   </div>
                 )}
@@ -326,7 +325,7 @@ export default function ProviderAvailability() {
             <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:8 }}>Default max bookings per day</label>
             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
               <button onClick={()=>setDefaultMaxBookings(m=>Math.max(1,m-1))}
-                style={{ width:40, height:40, borderRadius:8, background:"#f5f5f5", border:"1px solid #dddddd", color:"#000000", fontSize:20, cursor:"pointer" }}>−</button>
+                style={{ width:40, height:40, borderRadius:8, background:"#f5f5f5", border:"1px solid #dddddd", color:"#000000", fontSize:20, cursor:"pointer" }}>ΓêÆ</button>
               <div style={{ fontFamily:"Syne", fontSize:28, fontWeight:800, color:"#378add", width:50, textAlign:"center" }}>{defaultMaxBookings}</div>
               <button onClick={()=>setDefaultMaxBookings(m=>Math.min(20,m+1))}
                 style={{ width:40, height:40, borderRadius:8, background:"#f5f5f5", border:"1px solid #dddddd", color:"#000000", fontSize:20, cursor:"pointer" }}>+</button>
@@ -339,10 +338,10 @@ export default function ProviderAvailability() {
           <div style={{ background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:10, padding:"1rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8, color:"#000000" }}>How it works</div>
             {[
-              { icon:"🟢", text:"Open — day has available slots" },
-              { icon:"🟡", text:"Partial — some bookings made" },
-              { icon:"🔴", text:"Full — max bookings reached" },
-              { icon:"⛔", text:"Blocked — no bookings allowed" },
+              { icon:"≡ƒƒó", text:"Open ΓÇö day has available slots" },
+              { icon:"≡ƒƒí", text:"Partial ΓÇö some bookings made" },
+              { icon:"≡ƒö┤", text:"Full ΓÇö max bookings reached" },
+              { icon:"Γ¢ö", text:"Blocked ΓÇö no bookings allowed" },
             ].map(i=>(
               <div key={i.text} style={{ display:"flex", gap:8, marginBottom:6, fontSize:12, color:"#555555" }}>
                 <span>{i.icon}</span><span>{i.text}</span>
@@ -354,7 +353,6 @@ export default function ProviderAvailability() {
     </div>
   )
 }
-
 
 
 

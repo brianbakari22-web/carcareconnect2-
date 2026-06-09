@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react"
-import CCCIcon from "../shared/CCCIcon"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
-const ROLES = {washer:"🚿 Washer",supervisor:"👔 Supervisor",cashier:"💰 Cashier",detailer:"✨ Detailer"}
-const SHIFTS = {morning:"🌅 Morning (6am-2pm)",afternoon:"☀️ Afternoon (2pm-10pm)",fullday:"🕐 Full Day"}
+const ROLES = {washer:"≡ƒÜ┐ Washer",supervisor:"≡ƒæö Supervisor",cashier:"≡ƒÆ░ Cashier",detailer:"Γ£¿ Detailer"}
+const SHIFTS = {morning:"≡ƒîà Morning (6am-2pm)",afternoon:"ΓÿÇ∩╕Å Afternoon (2pm-10pm)",fullday:"≡ƒòÉ Full Day"}
 export default function StaffManagement() {
   const { user } = useAuth()
   const [staff, setStaff] = useState([])
@@ -31,7 +30,7 @@ export default function StaffManagement() {
   return (
     <div>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"1.5rem"}}>
-        <div><div style={{fontFamily:"Syne",fontSize:18,fontWeight:800,color:"#000"}}>👥 Staff Management</div><div style={{fontSize:12,color:"#777"}}>{staff.filter(s=>s.is_active).length} active staff</div></div>
+        <div><div style={{fontFamily:"Syne",fontSize:18,fontWeight:800,color:"#000"}}>≡ƒæÑ Staff Management</div><div style={{fontSize:12,color:"#777"}}>{staff.filter(s=>s.is_active).length} active staff</div></div>
         <button onClick={()=>setShowForm(f=>!f)} style={{background:"#e6821e",border:"none",borderRadius:9,color:"#fff",fontFamily:"Syne,sans-serif",fontSize:13,fontWeight:700,padding:"9px 18px",cursor:"pointer"}}>+ Add staff</button>
       </div>
       {showForm&&(
@@ -51,17 +50,17 @@ export default function StaffManagement() {
         </div>
       )}
       {loading&&<div style={{color:"#777",fontSize:13}}>Loading...</div>}
-      {!loading&&staff.length===0&&<div style={{textAlign:"center",padding:"3rem",background:"#f5f5f5",borderRadius:12}}><div style={{fontSize:40,marginBottom:10}}>👥</div><div style={{fontSize:14,color:"#888"}}>No staff added yet</div></div>}
+      {!loading&&staff.length===0&&<div style={{textAlign:"center",padding:"3rem",background:"#f5f5f5",borderRadius:12}}><div style={{fontSize:40,marginBottom:10}}>≡ƒæÑ</div><div style={{fontSize:14,color:"#888"}}>No staff added yet</div></div>}
       {staff.map(s=>(
         <div key={s.id} style={{background:"#fff",border:"1px solid #eeeeee",borderRadius:12,padding:"1rem",marginBottom:8,display:"flex",alignItems:"center",gap:12}}>
-          <div style={{width:44,height:44,borderRadius:"50%",background:s.is_active?"#f0fdf4":"#f5f5f5",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{ROLES[s.role]?.split(" ")[0]||"👤"}</div>
+          <div style={{width:44,height:44,borderRadius:"50%",background:s.is_active?"#f0fdf4":"#f5f5f5",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{ROLES[s.role]?.split(" ")[0]||"≡ƒæñ"}</div>
           <div style={{flex:1}}>
             <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:2}}>
               <div style={{fontFamily:"Syne",fontSize:14,fontWeight:700,color:"#000"}}>{s.name}</div>
               <span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:s.is_active?"#f0fdf4":"#f5f5f5",color:s.is_active?"#1d9e75":"#888"}}>{s.is_active?"Active":"Off duty"}</span>
             </div>
-            <div style={{fontSize:11,color:"#666"}}>{ROLES[s.role]} · {SHIFTS[s.shift]}</div>
-            <div style={{fontSize:11,color:"#888"}}>📞 {s.phone}</div>
+            <div style={{fontSize:11,color:"#666"}}>{ROLES[s.role]} ┬╖ {SHIFTS[s.shift]}</div>
+            <div style={{fontSize:11,color:"#888"}}>≡ƒô₧ {s.phone}</div>
           </div>
           <div style={{display:"flex",gap:6}}>
             <button onClick={()=>toggle(s.id,s.is_active)} style={{background:"none",border:`1px solid ${s.is_active?"#e24b4a40":"#1d9e7540"}`,borderRadius:7,color:s.is_active?"#e24b4a":"#1d9e75",fontSize:11,padding:"5px 10px",cursor:"pointer"}}>{s.is_active?"Off duty":"On duty"}</button>
@@ -72,4 +71,3 @@ export default function StaffManagement() {
     </div>
   )
 }
-

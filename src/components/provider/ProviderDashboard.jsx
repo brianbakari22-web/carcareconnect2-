@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from "react"
-import CCCIcon from "../shared/CCCIcon"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
@@ -19,15 +18,15 @@ const COMMISSION_RATES = {
 }
 
 const TYPE_CONFIG = {
-  garage:          { label:"Garage / Mechanic",   icon:"🔧", color:"#e6821e", bg:"#1a1208", focus:"bookings" },
-  garage_premium:  { label:"Mobile Mechanic",      icon:"🚗", color:"#378add", bg:"#0c1f2e", focus:"bookings" },
-  parts_dealer:    { label:"Parts Dealer",          icon:"⚙️", color:"#8b5cf6", bg:"#160a2e", focus:"inventory" },
-  accessories_shop:{ label:"Accessories Shop",      icon:"✨", color:"#e6821e", bg:"#1a1208", focus:"inventory" },
-  tyre_shop:       { label:"Tyre Shop",             icon:"🛞", color:"#1d9e75", bg:"#071a12", focus:"inventory" },
-  auto_electrician:{ label:"Auto Electrician",      icon:"⚡", color:"#e6821e", bg:"#1a1208", focus:"bookings" },
-  car_wash:        { label:"Car Wash",              icon:"carWash", color:"#378add", bg:"#0c1f2e", focus:"bookings" },
-  panel_beater:    { label:"Panel Beater",          icon:"⚙️", color:"#e24b4a", bg:"#1a0808", focus:"bookings" },
-  auto_glass:      { label:"Auto Glass",            icon:"🪟", color:"#1d9e75", bg:"#071a12", focus:"bookings" },
+  garage:          { label:"Garage / Mechanic",   icon:"≡ƒöº", color:"#e6821e", bg:"#1a1208", focus:"bookings" },
+  garage_premium:  { label:"Mobile Mechanic",      icon:"≡ƒÜù", color:"#378add", bg:"#0c1f2e", focus:"bookings" },
+  parts_dealer:    { label:"Parts Dealer",          icon:"ΓÜÖ∩╕Å", color:"#8b5cf6", bg:"#160a2e", focus:"inventory" },
+  accessories_shop:{ label:"Accessories Shop",      icon:"Γ£¿", color:"#e6821e", bg:"#1a1208", focus:"inventory" },
+  tyre_shop:       { label:"Tyre Shop",             icon:"≡ƒ¢₧", color:"#1d9e75", bg:"#071a12", focus:"inventory" },
+  auto_electrician:{ label:"Auto Electrician",      icon:"ΓÜí", color:"#e6821e", bg:"#1a1208", focus:"bookings" },
+  car_wash:        { label:"Car Wash",              icon:"≡ƒÜ┐", color:"#378add", bg:"#0c1f2e", focus:"bookings" },
+  panel_beater:    { label:"Panel Beater",          icon:"ΓÜÖ∩╕Å", color:"#e24b4a", bg:"#1a0808", focus:"bookings" },
+  auto_glass:      { label:"Auto Glass",            icon:"≡ƒ¬ƒ", color:"#1d9e75", bg:"#071a12", focus:"bookings" },
 }
 
 export default function ProviderDashboard() {
@@ -131,17 +130,17 @@ export default function ProviderDashboard() {
       {/* SERVICE GUARANTEE POLICY */}
       {showPolicy&&(
         <div style={{ background:"#fff5f5", border:"2px solid #e24b4a", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e24b4a", marginBottom:8 }}>🚗 Important — Service Guarantee Policy</div>
+          <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e24b4a", marginBottom:8 }}>≡ƒÜù Important ΓÇö Service Guarantee Policy</div>
           <div style={{ fontSize:12, color:"#555555", lineHeight:1.8, marginBottom:"1rem" }}>
             Car Care Connect operates a <strong style={{ color:"#000000" }}>Service Guarantee</strong> for all customers. As a provider, you must be aware of the following:
           </div>
           {[
-            { icon:"1️⃣", text:"If a customer is unhappy with your service, they can submit a Service Guarantee claim within 7 days." },
-            { icon:"2️⃣", text:"If the claim is approved, the full service cost is deducted from your earnings and a voucher is issued to the customer." },
-            { icon:"3️⃣", text:"1st approved claim → Warning + cost deduction." },
-            { icon:"4️⃣", text:"2nd approved claim → 7 day suspension + cost deduction." },
-            { icon:"5️⃣", text:"3rd approved claim → Permanent ban from the platform." },
-            { icon:"✅", text:"The best protection is to always deliver excellent, professional service." },
+            { icon:"1∩╕ÅΓâú", text:"If a customer is unhappy with your service, they can submit a Service Guarantee claim within 7 days." },
+            { icon:"2∩╕ÅΓâú", text:"If the claim is approved, the full service cost is deducted from your earnings and a voucher is issued to the customer." },
+            { icon:"3∩╕ÅΓâú", text:"1st approved claim ΓåÆ Warning + cost deduction." },
+            { icon:"4∩╕ÅΓâú", text:"2nd approved claim ΓåÆ 7 day suspension + cost deduction." },
+            { icon:"5∩╕ÅΓâú", text:"3rd approved claim ΓåÆ Permanent ban from the platform." },
+            { icon:"Γ£à", text:"The best protection is to always deliver excellent, professional service." },
           ].map(item=>(
             <div key={item.icon} style={{ display:"flex", gap:10, alignItems:"flex-start", marginBottom:6 }}>
               <span style={{ fontSize:14, flexShrink:0 }}>{item.icon}</span>
@@ -151,7 +150,7 @@ export default function ProviderDashboard() {
           <div style={{ display:"flex", gap:8, marginTop:"1rem" }}>
             <button onClick={()=>{ localStorage.setItem("ccc_policy_acknowledged","true"); setShowPolicy(false) }}
               style={{ background:"#e24b4a", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 18px", cursor:"pointer" }}>
-              I understand — got it
+              I understand ΓÇö got it
             </button>
             <button onClick={()=>window.open("/terms","_blank")}
               style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", fontSize:12, padding:"9px 14px", cursor:"pointer" }}>
@@ -173,7 +172,7 @@ export default function ProviderDashboard() {
                 <span style={{ fontFamily:"Syne", fontSize:24, fontWeight:800, color:config.color }}>{initials||config.icon}</span>
               )}
               <div style={{ position:"absolute", bottom:0, left:0, right:0, background:"rgba(0,0,0,0.6)", fontSize:9, color:"#fff", textAlign:"center", padding:"2px 0" }}>
-                {uploadingPhoto?"...":"📷"}
+                {uploadingPhoto?"...":"≡ƒô╖"}
               </div>
             </div>
             <input ref={fileRef} type="file" accept="image/*" onChange={uploadPhoto} style={{ display:"none" }}/>
@@ -183,22 +182,22 @@ export default function ProviderDashboard() {
               <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#000000" }}>
                 {profile?.business_name||`${profile?.first_name||""} ${profile?.last_name||""}`}
               </div>
-              {profile?.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#f0fdf4", padding:"2px 8px", borderRadius:10, border:"1px solid #1d9e7540" }}>✓ Verified</span>}
+              {profile?.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#f0fdf4", padding:"2px 8px", borderRadius:10, border:"1px solid #1d9e7540" }}>Γ£ô Verified</span>}
             </div>
             <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
               <span style={{ fontSize:12, padding:"3px 10px", borderRadius:20, background:config.bg, color:config.color, border:`1px solid ${config.color}40`, fontWeight:600 }}>
                 {config.icon} {config.label}
               </span>
-              {profile?.city&&<span style={{ fontSize:11, color:"#777777" }}>📍 {profile.city}</span>}
+              {profile?.city&&<span style={{ fontSize:11, color:"#777777" }}>≡ƒôì {profile.city}</span>}
             </div>
             <div style={{ fontSize:12, color:config.color, marginTop:6, fontWeight:600 }}>
-              Keep {commission.provider}% · Platform {commission.platform}%
+              Keep {commission.provider}% ┬╖ Platform {commission.platform}%
             </div>
           </div>
         </div>
       </div>
 
-      {/* STATS — different per type */}
+      {/* STATS ΓÇö different per type */}
       {isInventoryFocus ? (
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)", gap:10, marginBottom:"1.5rem" }}>
           {[
@@ -229,30 +228,30 @@ export default function ProviderDashboard() {
         </div>
       )}
 
-      {/* PARTS/ACCESSORIES/TYRES FOCUS — show orders and inventory */}
+      {/* PARTS/ACCESSORIES/TYRES FOCUS ΓÇö show orders and inventory */}
       {isInventoryFocus&&(
         <>
           {/* Low stock alert */}
           {orderStats.lowStock>0&&(
             <div style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:10, padding:"0.75rem", marginBottom:"1rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-              <div style={{ fontSize:13, color:"#e24b4a", fontWeight:600 }}>⚠️ {orderStats.lowStock} item{orderStats.lowStock>1?"s":""} low on stock</div>
-              <a href="/dashboard/inventory" style={{ fontSize:11, color:"#e6821e", textDecoration:"none" }}>Manage inventory →</a>
+              <div style={{ fontSize:13, color:"#e24b4a", fontWeight:600 }}>ΓÜá∩╕Å {orderStats.lowStock} item{orderStats.lowStock>1?"s":""} low on stock</div>
+              <a href="/dashboard/inventory" style={{ fontSize:11, color:"#e6821e", textDecoration:"none" }}>Manage inventory ΓåÆ</a>
             </div>
           )}
 
           {/* Pending orders */}
           {orderStats.pending>0&&(
             <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.75rem", marginBottom:"1rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-              <div style={{ fontSize:13, color:"#e6821e", fontWeight:600 }}>🛒 {orderStats.pending} order{orderStats.pending>1?"s":""} waiting for confirmation</div>
-              <a href="/dashboard/orders" style={{ fontSize:11, color:"#e6821e", textDecoration:"none" }}>View orders →</a>
+              <div style={{ fontSize:13, color:"#e6821e", fontWeight:600 }}>≡ƒ¢Æ {orderStats.pending} order{orderStats.pending>1?"s":""} waiting for confirmation</div>
+              <a href="/dashboard/orders" style={{ fontSize:11, color:"#e6821e", textDecoration:"none" }}>View orders ΓåÆ</a>
             </div>
           )}
 
           {/* Quick links */}
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:"1.5rem" }}>
             {[
-              { href:"/dashboard/inventory", icon:"📦", label:"Manage Inventory", desc:"Add, edit, update stock", color:config.color },
-              { href:"/dashboard/orders", icon:"🛒", label:"Manage Orders", desc:"Confirm, pack, dispatch", color:"#1d9e75" },
+              { href:"/dashboard/inventory", icon:"≡ƒôª", label:"Manage Inventory", desc:"Add, edit, update stock", color:config.color },
+              { href:"/dashboard/orders", icon:"≡ƒ¢Æ", label:"Manage Orders", desc:"Confirm, pack, dispatch", color:"#1d9e75" },
             ].map(q=>(
               <a key={q.label} href={q.href} style={{ background:"#ffffff", border:`1px solid ${q.color}30`, borderRadius:12, padding:"1rem", textDecoration:"none", display:"block" }}>
                 <div style={{ fontSize:24, marginBottom:6 }}>{q.icon}</div>
@@ -267,8 +266,8 @@ export default function ProviderDashboard() {
           {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
           {!loading&&orders.length===0&&(
             <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>
-              <div style={{ fontSize:32, marginBottom:10 }}><CCCIcon name="inventory" size={20}/></div>
-              No orders yet — add inventory to start selling
+              <div style={{ fontSize:32, marginBottom:10 }}>≡ƒôª</div>
+              No orders yet ΓÇö add inventory to start selling
             </div>
           )}
           {orders.slice(0,5).map(o=>(
@@ -276,7 +275,7 @@ export default function ProviderDashboard() {
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                 <div>
                   <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>#{o.order_number}</div>
-                  <div style={{ fontSize:11, color:"#777777" }}>{o.fulfillment_type==="delivery"?"🚚 Delivery":"🏪 Pickup"} · {new Date(o.created_at).toLocaleDateString()}</div>
+                  <div style={{ fontSize:11, color:"#777777" }}>{o.fulfillment_type==="delivery"?"≡ƒÜÜ Delivery":"≡ƒÅ¬ Pickup"} ┬╖ {new Date(o.created_at).toLocaleDateString()}</div>
                   <div style={{ fontSize:11, color:"#777777" }}>{o.order_items?.length||0} item(s)</div>
                 </div>
                 <div style={{ textAlign:"right" }}>
@@ -286,7 +285,7 @@ export default function ProviderDashboard() {
               </div>
               {o.status==="pending"&&(
                 <div style={{ display:"flex", gap:8, marginTop:8 }}>
-                  <button onClick={()=>updateOrderStatus(o.id,"confirmed")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer", fontWeight:600 }}>✓ Confirm</button>
+                  <button onClick={()=>updateOrderStatus(o.id,"confirmed")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer", fontWeight:600 }}>Γ£ô Confirm</button>
                   <button onClick={()=>updateOrderStatus(o.id,"cancelled")} style={{ background:"none", border:"1px solid #e24b4a30", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Cancel</button>
                 </div>
               )}
@@ -299,28 +298,28 @@ export default function ProviderDashboard() {
             <div key={item.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"0.75rem 1rem", marginBottom:6, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
               <div>
                 <div style={{ fontSize:12, fontWeight:600, color:"#000000" }}>{item.name}</div>
-                <div style={{ fontSize:10, color:"#777777" }}>{item.category} · {item.stock_quantity} {item.unit}s in stock</div>
+                <div style={{ fontSize:10, color:"#777777" }}>{item.category} ┬╖ {item.stock_quantity} {item.unit}s in stock</div>
               </div>
               <div style={{ textAlign:"right" }}>
                 <div style={{ fontSize:13, fontWeight:700, color:"#e6821e" }}>KES {Number(item.price).toLocaleString()}</div>
-                {item.stock_quantity<=5&&<div style={{ fontSize:9, color:"#e24b4a" }}>⚠️ Low stock</div>}
+                {item.stock_quantity<=5&&<div style={{ fontSize:9, color:"#e24b4a" }}>ΓÜá∩╕Å Low stock</div>}
               </div>
             </div>
           ))}
           {inventory.length===0&&!loading&&(
             <div style={{ color:"#888888", fontSize:12, textAlign:"center", padding:"1rem" }}>
-              No inventory yet — <a href="/dashboard/inventory" style={{ color:config.color }}>add items</a>
+              No inventory yet ΓÇö <a href="/dashboard/inventory" style={{ color:config.color }}>add items</a>
             </div>
           )}
         </>
       )}
 
-      {/* GARAGE/SERVICE FOCUS — show bookings */}
+      {/* GARAGE/SERVICE FOCUS ΓÇö show bookings */}
       {!isInventoryFocus&&(
         <>
           {!showPolicy&&(
             <div style={{ background:"#ffffff", border:"1px solid #e24b4a20", borderRadius:10, padding:"0.75rem", marginBottom:"1.25rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-              <div style={{ fontSize:11, color:"#777777" }}>🚨 Service Guarantee active — deliver quality service to avoid claims</div>
+              <div style={{ fontSize:11, color:"#777777" }}>≡ƒÜ¿ Service Guarantee active ΓÇö deliver quality service to avoid claims</div>
               <button onClick={()=>setShowPolicy(true)} style={{ background:"none", border:"none", color:"#e24b4a", fontSize:11, cursor:"pointer" }}>View policy</button>
             </div>
           )}
@@ -331,7 +330,7 @@ export default function ProviderDashboard() {
           {loading&&<div style={{ color:"#777777", fontSize:13 }}>{t("loading")}</div>}
           {!loading&&bookings.length===0&&(
             <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>
-              <div style={{ fontSize:32, marginBottom:10 }}>📅</div>
+              <div style={{ fontSize:32, marginBottom:10 }}>≡ƒôà</div>
               {language==="sw"?"Hakuna miadi bado":"No bookings yet"}
             </div>
           )}
@@ -340,7 +339,7 @@ export default function ProviderDashboard() {
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
                 <div style={{ flex:1, minWidth:0, marginRight:8 }}>
                   <div style={{ fontSize:isMobile?13:14, fontWeight:500, color:"#000000", marginBottom:4 }}>{b.service_name}</div>
-                  <div style={{ fontSize:11, color:"#777777" }}>{b.booking_date} · {b.booking_time?.slice(0,5)}</div>
+                  <div style={{ fontSize:11, color:"#777777" }}>{b.booking_date} ┬╖ {b.booking_time?.slice(0,5)}</div>
                   {b.booking_number&&<div style={{ fontSize:10, color:"#888888", marginTop:2 }}>#{b.booking_number}</div>}
                 </div>
                 <div style={{ textAlign:"right", flexShrink:0 }}>
@@ -353,7 +352,7 @@ export default function ProviderDashboard() {
                 </div>
               </div>
               <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
-                {b.status==="pending"&&<button onClick={()=>updateBookingStatus(b.id,"confirmed")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>✓ Confirm</button>}
+                {b.status==="pending"&&<button onClick={()=>updateBookingStatus(b.id,"confirmed")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Γ£ô Confirm</button>}
                 {b.status==="confirmed"&&<button onClick={()=>updateBookingStatus(b.id,"in-progress")} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Start service</button>}
                 {b.status==="in-progress"&&<button onClick={()=>updateBookingStatus(b.id,"completed")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Complete</button>}
                 {(b.status==="pending"||b.status==="confirmed")&&<button onClick={()=>updateBookingStatus(b.id,"cancelled")} style={{ background:"none", border:"1px solid #e24b4a30", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Cancel</button>}
@@ -365,7 +364,6 @@ export default function ProviderDashboard() {
     </div>
   )
 }
-
 
 
 

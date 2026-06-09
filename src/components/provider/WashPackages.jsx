@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import CCCIcon from "../shared/CCCIcon"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
@@ -35,17 +34,17 @@ export default function WashPackages() {
   return (
     <div>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"1.5rem"}}>
-        <div><div style={{fontFamily:"Syne",fontSize:18,fontWeight:800,color:"#000"}}>✨ Wash Packages</div><div style={{fontSize:12,color:"#777"}}>Manage your service packages</div></div>
+        <div><div style={{fontFamily:"Syne",fontSize:18,fontWeight:800,color:"#000"}}>Γ£¿ Wash Packages</div><div style={{fontSize:12,color:"#777"}}>Manage your service packages</div></div>
         <button onClick={()=>setShowForm(f=>!f)} style={{background:"#e6821e",border:"none",borderRadius:9,color:"#fff",fontFamily:"Syne,sans-serif",fontSize:13,fontWeight:700,padding:"9px 18px",cursor:"pointer"}}>+ Add package</button>
       </div>
       {packages.length===0&&!showForm&&(
         <div style={{background:"#fff8f0",border:"1px solid #fed7aa",borderRadius:12,padding:"1.25rem",marginBottom:"1.5rem"}}>
-          <div style={{fontFamily:"Syne",fontSize:13,fontWeight:700,color:"#e6821e",marginBottom:8}}>💡 Suggested packages</div>
+          <div style={{fontFamily:"Syne",fontSize:13,fontWeight:700,color:"#e6821e",marginBottom:8}}>≡ƒÆí Suggested packages</div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
             {DEFAULTS.map(p=>(
               <div key={p.name} onClick={()=>{setForm({name:p.name,price:p.price,duration:p.duration,description:p.description});setShowForm(true)}} style={{background:"#fff",border:"1px solid #e5e5e5",borderRadius:10,padding:"0.75rem",cursor:"pointer"}}>
                 <div style={{fontSize:13,fontWeight:700,color:"#000"}}>{p.name}</div>
-                <div style={{fontSize:11,color:"#666"}}>KES {p.price.toLocaleString()} · {p.duration} min</div>
+                <div style={{fontSize:11,color:"#666"}}>KES {p.price.toLocaleString()} ┬╖ {p.duration} min</div>
               </div>
             ))}
           </div>
@@ -79,7 +78,7 @@ export default function WashPackages() {
               <span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:p.is_active?"#f0fdf4":"#f5f5f5",color:p.is_active?"#1d9e75":"#888"}}>{p.is_active?"Active":"Inactive"}</span>
             </div>
             <div style={{fontSize:13,color:"#e6821e",fontWeight:700}}>KES {Number(p.price).toLocaleString()}</div>
-            <div style={{fontSize:11,color:"#888"}}>⏱ {p.duration_minutes} min · {p.description}</div>
+            <div style={{fontSize:11,color:"#888"}}>ΓÅ▒ {p.duration_minutes} min ┬╖ {p.description}</div>
           </div>
           <div style={{display:"flex",gap:6}}>
             <button onClick={()=>toggle(p.id,p.is_active)} style={{background:"none",border:`1px solid ${p.is_active?"#e24b4a40":"#1d9e7540"}`,borderRadius:7,color:p.is_active?"#e24b4a":"#1d9e75",fontSize:11,padding:"5px 10px",cursor:"pointer"}}>{p.is_active?"Deactivate":"Activate"}</button>
@@ -90,5 +89,4 @@ export default function WashPackages() {
     </div>
   )
 }
-
 
