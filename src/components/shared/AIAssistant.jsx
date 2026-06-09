@@ -447,7 +447,7 @@ PROVIDER TYPES AND THEIR FOCUS:
 - Accessories Shop: manages accessories inventory, confirms orders, earns 92% commission
 - Tyre Shop: manages tyre inventory + fitting appointments, earns 94% commission
 - Auto Electrician: manages electrical service bookings, earns 88% commission
-- Car Wash: manages wash/detailing bookings and schedule, earns 90% commission
+- Car Wash: manages wash/detailing bookings, Wash Queue (track active washes, upload before/after photos), Wash Packages (Basic/Standard/Premium), Staff Management, earns 90% commission
 - Panel Beater: manages bodywork/spray paint bookings, earns 85% commission
 - Auto Glass: manages windscreen/glass bookings, earns 88% commission
 
@@ -515,7 +515,18 @@ FOR ADMINS specifically:
 - Provider performance: claims rate, review scores, booking completion rate
 - Auto-actions: cancel stuck bookings, re-engage inactive customers
 - Financial controls: payments never auto-released, admin must manually approve all payouts
-- Policies: Privacy Policy and Terms of Service updated June 1 2026`
+- Policies: Privacy Policy and Terms of Service updated June 1 2026
+- CAR WASH MANAGEMENT: Monitor wash queues, before/after photo verification, staff management
+- PARTS MARKETPLACE ORDERS: Monitor order status (pending/confirmed/processing/ready/delivered), delivery zones, fulfillment tracking
+- C2C MARKETPLACE: Approve/reject listings within 24hrs, inspect vehicles, feature listings, manage escrow payments
+- CHAT MONITORING: Can view flagged conversations, blocked contact sharing attempts
+- DRIVER DOCUMENTS: Track expiry dates, send renewal reminders, suspend expired drivers
+- LOYALTY PROGRAM ADMIN: Adjust tier thresholds, set redemption rates, issue bonus points
+- WASH PACKAGES: Monitor car wash service categories (basic_wash, standard_wash, premium_detail)
+- NEW PLATFORM METRICS (June 2026): 22+ registered users, multiple provider types active, C2C marketplace live, parts ordering functional
+- BRS STATUS: 3 names submitted (NAIRO CAR CONNECT, KEN CAR CONNECT, CARCARE KE CONNECT) — awaiting approval
+- PESAPAL: Contract pending with Rachel Owino (rachel.owino@pesapal.com)
+- TRADEMARK: KIPI application pending — Class 35 (business services), 37 (vehicle repair), 39 (transport)`
 }
 
 const PROVIDER_GREETINGS = {
@@ -525,7 +536,7 @@ const PROVIDER_GREETINGS = {
   accessories_shop: "Hello! I am your CCC Accessories Shop assistant. I can help with inventory, orders, delivery and your 92% earnings rate. How can I assist?",
   tyre_shop: "Hello! I am your CCC Tyre Shop assistant. I can help with tyre inventory, fitting appointments, orders and your 94% earnings rate. How can I assist?",
   auto_electrician: "Hello! I am your CCC Auto Electrician assistant. I can help with bookings, electrical services and your 88% earnings rate. How can I assist?",
-  car_wash: "Hello! I am your CCC Car Wash assistant. I can help with booking schedules, wash management and your 90% earnings rate. How can I assist?",
+  car_wash: "Hello! I am your CCC Car Wash assistant. I can help with your Wash Queue, Wash Packages, Staff Management, booking schedules and your 90% earnings rate. How can I assist?",
   panel_beater: "Hello! I am your CCC Panel Beater assistant. I can help with bodywork bookings, job tracking and your 85% earnings rate. How can I assist?",
   auto_glass: "Hello! I am your CCC Auto Glass assistant. I can help with windscreen bookings, glass services and your 88% earnings rate. How can I assist?",
 }
@@ -687,6 +698,7 @@ export default function AIAssistant() {
     </>
   )
 }
+
 
 
 
