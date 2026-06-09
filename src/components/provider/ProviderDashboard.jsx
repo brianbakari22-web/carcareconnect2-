@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react"
+import CCCIcon from "../shared/CCCIcon"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
@@ -24,7 +25,7 @@ const TYPE_CONFIG = {
   accessories_shop:{ label:"Accessories Shop",      icon:"✨", color:"#e6821e", bg:"#1a1208", focus:"inventory" },
   tyre_shop:       { label:"Tyre Shop",             icon:"🛞", color:"#1d9e75", bg:"#071a12", focus:"inventory" },
   auto_electrician:{ label:"Auto Electrician",      icon:"⚡", color:"#e6821e", bg:"#1a1208", focus:"bookings" },
-  car_wash:        { label:"Car Wash",              icon:"🚿", color:"#378add", bg:"#0c1f2e", focus:"bookings" },
+  car_wash:        { label:"Car Wash",              icon:"carWash", color:"#378add", bg:"#0c1f2e", focus:"bookings" },
   panel_beater:    { label:"Panel Beater",          icon:"⚙️", color:"#e24b4a", bg:"#1a0808", focus:"bookings" },
   auto_glass:      { label:"Auto Glass",            icon:"🪟", color:"#1d9e75", bg:"#071a12", focus:"bookings" },
 }
@@ -266,7 +267,7 @@ export default function ProviderDashboard() {
           {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
           {!loading&&orders.length===0&&(
             <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>
-              <div style={{ fontSize:32, marginBottom:10 }}>📦</div>
+              <div style={{ fontSize:32, marginBottom:10 }}><CCCIcon name="inventory" size={20}/></div>
               No orders yet — add inventory to start selling
             </div>
           )}
@@ -364,6 +365,7 @@ export default function ProviderDashboard() {
     </div>
   )
 }
+
 
 
 

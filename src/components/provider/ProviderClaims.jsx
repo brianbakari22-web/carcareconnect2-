@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import CCCIcon from "../shared/CCCIcon"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -188,6 +189,7 @@ export default function ProviderClaims() {
     </div>
   )
 }
+
 
 
 

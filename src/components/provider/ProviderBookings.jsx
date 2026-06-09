@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import CCCIcon from "../shared/CCCIcon"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
@@ -11,9 +12,9 @@ import ProviderPartsManager from "./ProviderPartsManager"
 const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", completed:"#1d9e75", cancelled:"#e24b4a" }
 const SB = { pending:"#1a1208", confirmed:"#0c1f2e", "in-progress":"#160a2e", completed:"#071a12", cancelled:"#1a0808" }
 const CATEGORIES = {
-  shop_standard: { label:"Shop Standard", icon:"🏪", color:"#378add" },
-  shop_premium: { label:"Shop Premium", icon:"🏡", color:"#8b5cf6" },
-  go_service: { label:"GO Service", icon:"🚨", color:"#e24b4a" },
+  shop_standard: { label:"Shop Standard", icon:"bookings", color:"#378add" },
+  shop_premium: { label:"Shop Premium", icon:"home", color:"#8b5cf6" },
+  go_service: { label:"GO Service", icon:"emergency", color:"#e24b4a" },
 }
 
 export default function ProviderBookings() {
@@ -355,6 +356,7 @@ export default function ProviderBookings() {
     </div>
   )
 }
+
 
 
 

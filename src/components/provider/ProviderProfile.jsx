@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import CCCIcon from "../shared/CCCIcon"
 import { supabase } from "../../lib/supabase"
 import PhotoManager from "../shared/PhotoManager"
 import { useAuth } from "../../contexts/AuthContext"
@@ -13,7 +14,7 @@ const PROVIDER_TYPES = [
   { key:"accessories_shop", label:"Accessories Shop", icon:"✨" },
   { key:"tyre_shop", label:"Tyre Shop", icon:"🛞" },
   { key:"auto_electrician", label:"Auto Electrician", icon:"⚡" },
-  { key:"car_wash", label:"Car Wash", icon:"🚿" },
+  { key:"car_wash", label:"Car Wash", icon:"carWash" },
   { key:"panel_beater", label:"Panel Beater", icon:"🔨" },
   { key:"auto_glass", label:"Auto Glass", icon:"🪟" },
 ]
@@ -286,6 +287,7 @@ export default function ProviderProfile() {
     </div>
   )
 }
+
 
 
 

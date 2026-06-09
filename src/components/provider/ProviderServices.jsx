@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import CCCIcon from "../shared/CCCIcon"
 import { supabase } from "../../lib/supabase"
 import PhotoManager from "../shared/PhotoManager"
 import { useAuth } from "../../contexts/AuthContext"
@@ -7,18 +8,18 @@ import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
 const GARAGE_CATEGORIES = [
-  { key:"shop_standard", label:"Shop Standard", icon:"🏪", desc:"Customer brings car to your shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
-  { key:"shop_premium", label:"Shop Premium", icon:"🏡", desc:"Your mechanic goes to customer", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
-  { key:"go_service", label:"GO Service", icon:"🚨", desc:"Emergency roadside assistance", color:"#e24b4a", bg:"#fff5f5", border:"#fecaca" },
+  { key:"shop_standard", label:"Shop Standard", icon:"bookings", desc:"Customer brings car to your shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
+  { key:"shop_premium", label:"Shop Premium", icon:"home", desc:"Your mechanic goes to customer", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
+  { key:"go_service", label:"GO Service", icon:"emergency", desc:"Emergency roadside assistance", color:"#e24b4a", bg:"#fff5f5", border:"#fecaca" },
 ]
 const WASH_CATEGORIES = [
-  { key:"basic_wash", label:"Basic Wash", icon:"🚿", desc:"Exterior rinse and dry", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
-  { key:"standard_wash", label:"Standard Wash", icon:"✨", desc:"Exterior + interior clean", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
-  { key:"premium_detail", label:"Premium Detail", icon:"💎", desc:"Full detailing service", color:"#1d9e75", bg:"#f0fdf4", border:"#bbf7d0" },
+  { key:"basic_wash", label:"Basic Wash", icon:"carWash", desc:"Exterior rinse and dry", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
+  { key:"standard_wash", label:"Standard Wash", icon:"favorites", desc:"Exterior + interior clean", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
+  { key:"premium_detail", label:"Premium Detail", icon:"loyalty", desc:"Full detailing service", color:"#1d9e75", bg:"#f0fdf4", border:"#bbf7d0" },
 ]
 const PANEL_CATEGORIES = [
-  { key:"shop_standard", label:"In Shop", icon:"🏪", desc:"Customer brings car to shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
-  { key:"shop_premium", label:"On Site", icon:"🔨", desc:"Go to customer location", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
+  { key:"shop_standard", label:"In Shop", icon:"bookings", desc:"Customer brings car to shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
+  { key:"shop_premium", label:"On Site", icon:"panelBeater", desc:"Go to customer location", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
 ]
 function getCategories(providerType) {
   if (providerType === "car_wash") return WASH_CATEGORIES
@@ -167,7 +168,7 @@ export default function ProviderServices() {
 
   if (isInventoryProvider) return (
     <div style={{ textAlign:"center", padding:"3rem 1rem" }}>
-      <div style={{ fontSize:48, marginBottom:16 }}>📦</div>
+      <div style={{ fontSize:48, marginBottom:16 }}><CCCIcon name="inventory" size={20}/></div>
       <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000000", marginBottom:8 }}>
         {providerType==="parts_dealer"?"Parts Dealer":providerType==="tyre_shop"?"Tyre Shop":"Accessories Shop"}
       </div>
@@ -295,7 +296,7 @@ export default function ProviderServices() {
       {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&filtered.length===0&&(
         <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
-          <div style={{ fontSize:32, marginBottom:10 }}>🔧</div>
+          <div style={{ fontSize:32, marginBottom:10 }}><CCCIcon name="garage" size={20}/></div>
           No services yet. Add your first service above.
         </div>
       )}
@@ -340,6 +341,8 @@ export default function ProviderServices() {
     </div>
   )
 }
+
+
 
 
 

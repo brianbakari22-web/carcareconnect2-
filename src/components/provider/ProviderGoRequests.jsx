@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react"
+import CCCIcon from "../shared/CCCIcon"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -24,7 +25,7 @@ export default function ProviderGoRequests() {
         payload => {
           playAlarm()
           sendPushNotification("🚨 EMERGENCY GO REQUEST!", "Customer needs help urgently. Open CCC now!")
-          toast("🚨 NEW EMERGENCY — Customer needs help NOW!", { duration:30000, icon:"🚨", style:{ background:"#e24b4a", color:"#fff", fontWeight:800, fontSize:13 } })
+          toast("🚨 NEW EMERGENCY — Customer needs help NOW!", { duration:30000, icon:"emergency", style:{ background:"#e24b4a", color:"#fff", fontWeight:800, fontSize:13 } })
           load()
           let count = 0
           const interval = setInterval(() => {
@@ -300,7 +301,7 @@ export default function ProviderGoRequests() {
       {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&recent.length===0&&pending.length===0&&(
         <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>
-          <div style={{ fontSize:32, marginBottom:10 }}>🚨</div>
+          <div style={{ fontSize:32, marginBottom:10 }}><CCCIcon name="emergency" size={20}/></div>
           No GO service requests yet
         </div>
       )}
@@ -326,6 +327,7 @@ export default function ProviderGoRequests() {
     </div>
   )
 }
+
 
 
 

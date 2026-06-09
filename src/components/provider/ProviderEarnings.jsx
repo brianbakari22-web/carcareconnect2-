@@ -2,6 +2,7 @@ import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { useLanguage } from "../../contexts/LanguageContext"
 import { generateInvoice } from "../../lib/invoice"
+import CCCIcon from "../shared/CCCIcon"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 
@@ -113,6 +114,7 @@ export default function ProviderEarnings() {
     </div>
   )
 }
+
 
 
 
