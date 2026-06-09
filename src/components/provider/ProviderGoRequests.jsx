@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
 export default function ProviderGoRequests() {
+  const locationWatchRef = useRef(null)
   const { user } = useAuth()
   const isMobile = useIsMobile()
   const [requests, setRequests] = useState([])
@@ -118,6 +119,34 @@ export default function ProviderGoRequests() {
     }
   }
 
+  function startMechanicTracking(bookingId) {
+    if (!navigator.geolocation) return
+    if (locationWatchRef.current) navigator.geolocation.clearWatch(locationWatchRef.current)
+    locationWatchRef.current = navigator.geolocation.watchPosition(
+      async pos => {
+        const { latitude, longitude } = pos.coords
+        try {
+          await supabase.from("mechanic_location_history").insert({
+            mechanic_id: user.id,
+            booking_id: bookingId,
+            latitude,
+            longitude,
+            recorded_at: new Date().toISOString(),
+          })
+        } catch(err) { console.error("Mechanic location error:", err) }
+      },
+      err => console.error("GPS error:", err),
+      { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
+    )
+  }
+
+  function stopMechanicTracking() {
+    if (locationWatchRef.current) {
+      navigator.geolocation.clearWatch(locationWatchRef.current)
+      locationWatchRef.current = null
+    }
+  }
+
   async function load() {
     const [{ data: reqs }, { data: mechs }] = await Promise.all([
       supabase.from("go_service_requests").select("*, bookings(*)").eq("provider_id", user.id).order("sent_at", { ascending:false }).limit(20),
@@ -147,6 +176,8 @@ export default function ProviderGoRequests() {
         await supabase.from("mechanics").update({ is_available:false, current_booking_id:request.booking_id }).eq("id", selectedMechanic)
       }
       toast.success("Emergency accepted — mechanic dispatched! 🚨")
+      // Start GPS tracking for this booking
+      startMechanicTracking(request.booking_id)
       const mechanic = mechanics.find(m=>m.id===selectedMechanic)
       const mName = mechanic ? mechanic.first_name+" "+mechanic.last_name : "Our mechanic"
       const mPhone = mechanic?.phone || "Check notifications"
@@ -295,6 +326,8 @@ export default function ProviderGoRequests() {
     </div>
   )
 }
+
+
 
 
 

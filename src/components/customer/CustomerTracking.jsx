@@ -55,15 +55,14 @@ export default function CustomerTracking() {
     const sub = supabase.channel(`tracking-${selected.id}`)
       .on("postgres_changes", { event:"INSERT", schema:"public", table:"driver_location_history", filter:`booking_id=eq.${selected.id}` },
         payload => {
-          const { latitude, longitude } = payload.new
-          setDriver(d=>d?{...d,current_lat:latitude,current_lng:longitude}:d)
+          const lat = payload.new.lat || payload.new.latitude
+          const lng = payload.new.lng || payload.new.longitude
+          setDriver(d=>d?{...d,current_lat:lat,current_lng:lng}:d)
           // Smoothly move marker
           if (driverMarkerRef.current) {
-            driverMarkerRef.current.setLatLng([latitude, longitude])
-            if (mapInstanceRef.current) mapInstanceRef.current.panTo([latitude, longitude], {animate:true, duration:1})
+            driverMarkerRef.current.setLatLng([lat, lng])
+            if (mapInstanceRef.current) mapInstanceRef.current.panTo([lat, lng], {animate:true, duration:1})
           }
-          if (driverMarkerRef.current) driverMarkerRef.current.setLatLng([latitude, longitude])
-          if (mapInstanceRef.current) mapInstanceRef.current.panTo([latitude, longitude])
         })
       .on("postgres_changes", { event:"INSERT", schema:"public", table:"mechanic_location_history", filter:`booking_id=eq.${selected.id}` },
         payload => {
@@ -88,7 +87,7 @@ export default function CustomerTracking() {
       const lng = driver?.current_lng || mechanic?.current_longitude || 36.8219
       const map = L.map(mapRef.current, { zoomControl:true, attributionControl:false }).setView([lat, lng], 14)
       // Better looking map tiles
-      L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
         maxZoom:19,
         subdomains:"abcd"
       }).addTo(map)
@@ -300,6 +299,7 @@ export default function CustomerTracking() {
     </div>
   )
 }
+
 
 
 

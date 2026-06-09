@@ -94,6 +94,37 @@ export default function DriverOverview() {
     setPenalties(data||[])
   }
 
+  async function updateLocation(lat, lng) {
+    try {
+      await supabase.from("driver_status").upsert({
+        driver_id: user.id,
+        current_latitude: lat,
+        current_longitude: lng,
+        last_location_updated: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      }, { onConflict: "driver_id" })
+      // Also update profiles table
+      await supabase.from("profiles").update({ latitude: lat, longitude: lng }).eq("id", user.id)
+    } catch(err) { console.error("Location update failed:", err) }
+  }
+
+  function startLocationTracking() {
+    if (!navigator.geolocation) return
+    // Get initial location
+    navigator.geolocation.getCurrentPosition(
+      pos => updateLocation(pos.coords.latitude, pos.coords.longitude),
+      err => console.error("GPS error:", err),
+      { enableHighAccuracy: true }
+    )
+    // Watch for location changes
+    const watchId = navigator.geolocation.watchPosition(
+      pos => updateLocation(pos.coords.latitude, pos.coords.longitude),
+      err => console.error("GPS watch error:", err),
+      { enableHighAccuracy: true, maximumAge: 10000, timeout: 15000 }
+    )
+    return watchId
+  }
+
   async function toggleOnline() {
     if (!profile?.documents_verified) return toast.error("Your documents must be verified before going online")
     if (driverStatus?.is_suspended) {
@@ -305,6 +336,7 @@ export default function DriverOverview() {
     </div>
   )
 }
+
 
 
 
