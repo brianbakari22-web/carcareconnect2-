@@ -49,6 +49,9 @@ import EscrowManager from "./components/marketplace/EscrowManager"
 import CreateListing from "./components/marketplace/CreateListing"
 import CustomerGoService from "./components/customer/CustomerGoService"
 import CustomerVehicleReports from "./components/customer/CustomerVehicleReports"
+import WashQueue from "./components/provider/WashQueue"
+import WashPackages from "./components/provider/WashPackages"
+import StaffManagement from "./components/provider/StaffManagement"
 
 
 
@@ -235,6 +238,9 @@ function DashboardRouter() {
           <Route path="marketplace/my-offers" element={<MyOffers />} />
           <Route path="marketplace/transactions" element={<EscrowManager />} />
           <Route path="profile" element={<ProviderProfile />} />
+          <Route path="wash-queue" element={<WashQueue />} />
+          <Route path="wash-packages" element={<WashPackages />} />
+          <Route path="staff" element={<StaffManagement />} />
           <Route path="inventory" element={<ProviderInventory />} />
           <Route path="orders" element={<ProviderOrders />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
@@ -331,6 +337,7 @@ export default function App() {
     </ThemeProvider>
   )
 }
+
 
 
 
