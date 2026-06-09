@@ -44,24 +44,24 @@ export default function LandingPage() {
   const sec = (bg) => ({ background:bg, padding:"3rem 1.25rem", position:"relative", overflow:"hidden", zIndex:1 })
 
   const providerTypes = [
-    { icon:"🔧", type:"Garage/Mechanic", keep:"90%" },
-    { icon:"⚙️", type:"Parts Dealer", keep:"95%" },
-    { icon:"✨", type:"Accessories Shop", keep:"92%" },
-    { icon:"🛞", type:"Tyre Shop", keep:"94%" },
-    { icon:"⚡", type:"Auto Electrician", keep:"88%" },
-    { icon:"🚿", type:"Car Wash", keep:"90%" },
-    { icon:"🔨", type:"Panel Beater", keep:"85%" },
-    { icon:"🪟", type:"Auto Glass", keep:"88%" },
+    { icon:"garage", type:"Garage/Mechanic", keep:"90%" },
+    { icon:"partsDealer", type:"Parts Dealer", keep:"95%" },
+    { icon:"accessories", type:"Accessories Shop", keep:"92%" },
+    { icon:"tyreShop", type:"Tyre Shop", keep:"94%" },
+    { icon:"autoElectrician", type:"Auto Electrician", keep:"88%" },
+    { icon:"carWash", type:"Car Wash", keep:"90%" },
+    { icon:"panelBeater", type:"Panel Beater", keep:"85%" },
+    { icon:"autoGlass", type:"Auto Glass", keep:"88%" },
   ]
   const features = [
-    { icon:"🔧", title:"Service booking", desc:"Oil change, brakes, AC, full diagnostics from verified Nairobi providers" },
-    { icon:"🚨", title:"GO Service", desc:"24/7 emergency roadside. Mechanic dispatched to your GPS location fast" },
-    { icon:"🚗", title:"Concierge delivery", desc:"We collect your car, service it, and return it to your door" },
-    { icon:"🛒", title:"Parts marketplace", desc:"Buy genuine and aftermarket parts from verified Nairobi shops" },
-    { icon:"🎁", title:"Loyalty rewards", desc:"Earn points every booking. Redeem for discounts on future services" },
-    { icon:"📍", title:"Live tracking", desc:"Track your driver or mechanic on a live map in real time" },
-    { icon:"🛡️", title:"Service guarantee", desc:"Not happy? We investigate and issue a full service voucher refund" },
-    { icon:"🤖", title:"24/7 assistant", desc:"Always-on help for car problems, bookings, and platform guidance" },
+    { icon:"garage", title:"Service booking", desc:"Oil change, brakes, AC, full diagnostics from verified Nairobi providers" },
+    { icon:"emergency", title:"GO Service", desc:"24/7 emergency roadside. Mechanic dispatched to your GPS location fast" },
+    { icon:"vehicles", title:"Concierge delivery", desc:"We collect your car, service it, and return it to your door" },
+    { icon:"marketplace", title:"Parts marketplace", desc:"Buy genuine and aftermarket parts from verified Nairobi shops" },
+    { icon:"referral", title:"Loyalty rewards", desc:"Earn points every booking. Redeem for discounts on future services" },
+    { icon:"tracking", title:"Live tracking", desc:"Track your driver or mechanic on a live map in real time" },
+    { icon:"guarantee", title:"Service guarantee", desc:"Not happy? We investigate and issue a full service voucher refund" },
+    { icon:"support", title:"24/7 assistant", desc:"Always-on help for car problems, bookings, and platform guidance" },
   ]
   const faqs = [
     { q:"How do I book a service?", a:"Search for a provider near you, select a service, pick a time and confirm. You will receive a notification once the provider confirms." },
@@ -136,7 +136,7 @@ export default function LandingPage() {
         </div>
         <div style={{ background:"rgba(0,0,0,0.9)", padding:"1.25rem", textAlign:"center", position:"relative", zIndex:2 }}>
           <div style={{ display:"flex", gap:16, justifyContent:"center", flexWrap:"wrap" }}>
-            {[["🚗","Service booking"],["🚨","24/7 emergency"],["📍","Live tracking"],["🛒","Marketplace"],["🎁","Loyalty rewards"]].map(([icon,label])=>(
+            {[["vehicles","Service booking"],["emergency","24/7 emergency"],["tracking","Live tracking"],["marketplace","Marketplace"],["referral","Loyalty rewards"]].map(([icon,label])=>(
               <div key={label} style={{ fontSize:13, color:"#aaa", display:"flex", alignItems:"center", gap:6 }}><span>{icon}</span><span>{label}</span></div>
             ))}
           </div>
@@ -155,7 +155,7 @@ export default function LandingPage() {
               <span key={item} style={{ background:"rgba(34,34,34,0.9)", border:"1px solid #333", borderRadius:20, padding:"6px 14px", fontSize:13, color:"#ddd" }}>{item}</span>
             ))}
           </div>
-          <button onClick={()=>navigate("/auth")} style={{ ...btnOrange, background:"#e24b4a", fontSize:15, padding:"14px 32px" }}>🚨 Request emergency help</button>
+          <button onClick={()=>navigate("/auth")} style={{ ...btnOrange, background:"#e24b4a", fontSize:15, padding:"14px 32px" }}>Request emergency help</button>
         </div>
       </div>
 
@@ -214,12 +214,12 @@ export default function LandingPage() {
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))", gap:12 }}>
             {[
-              { icon:"🛡️", title:"Service Guarantee", desc:"Not happy with the service? We investigate and issue a full refund voucher. No questions asked." },
-              { icon:"✅", title:"Verified providers only", desc:"Every mechanic, parts dealer and service provider is manually verified before listing on CCC." },
-              { icon:"📍", title:"Real-time tracking", desc:"Know exactly where your mechanic or driver is at all times. Live GPS tracking on every job." },
-              { icon:"🔐", title:"Secure payments", desc:"All payments processed through Pesapal, regulated by the Central Bank of Kenya." },
-              { icon:"🤖", title:"24/7 support", desc:"Always-on support to help diagnose car problems, guide bookings, and answer any question." },
-              { icon:"🇰🇪", title:"Made in Kenya", desc:"Built by Kenyans for Kenyan roads. We understand Nairobi traffic, local mechanics, and Kenyan cars." },
+              { icon:"guarantee", title:"Service Guarantee", desc:"Not happy with the service? We investigate and issue a full refund voucher. No questions asked." },
+              { icon:"claims", title:"Verified providers only", desc:"Every mechanic, parts dealer and service provider is manually verified before listing on CCC." },
+              { icon:"tracking", title:"Real-time tracking", desc:"Know exactly where your mechanic or driver is at all times. Live GPS tracking on every job." },
+              { icon:"settings", title:"Secure payments", desc:"All payments processed through Pesapal, regulated by the Central Bank of Kenya." },
+              { icon:"support", title:"24/7 support", desc:"Always-on support to help diagnose car problems, guide bookings, and answer any question." },
+              { icon:"discover", title:"Made in Kenya", desc:"Built by Kenyans for Kenyan roads. We understand Nairobi traffic, local mechanics, and Kenyan cars." },
             ].map(t=>(
               <div key={t.title} className="hcard" style={card}>
                 <div style={{ fontSize:28, marginBottom:10 }}>{t.icon}</div>
@@ -241,9 +241,9 @@ export default function LandingPage() {
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))", gap:12 }}>
             {[
-              { icon:"🚗", role:"Customer", color:"#e6821e", desc:"Book services, get emergency help, track your car, earn rewards", features:["Book car services","Emergency GO Service","Live mechanic tracking","Parts marketplace"] },
-              { icon:"🔧", role:"Service Provider", color:"#378add", desc:"List services, manage bookings, earn commissions, dispatch mechanics", features:["Manage bookings","GO Service requests","Parts inventory","Earnings dashboard"] },
-              { icon:"🚗", role:"Concierge Driver", color:"#1d9e75", desc:"Pick up and deliver customer vehicles and parts, earn per delivery", features:["Accept deliveries","Parts delivery jobs","Live navigation","KES 200 allowance per trip"] },
+              { icon:"vehicles", role:"Customer", color:"#e6821e", desc:"Book services, get emergency help, track your car, earn rewards", features:["Book car services","Emergency GO Service","Live mechanic tracking","Parts marketplace"] },
+              { icon:"garage", role:"Service Provider", color:"#378add", desc:"List services, manage bookings, earn commissions, dispatch mechanics", features:["Manage bookings","GO Service requests","Parts inventory","Earnings dashboard"] },
+              { icon:"tracking", role:"Concierge Driver", color:"#1d9e75", desc:"Pick up and deliver customer vehicles and parts, earn per delivery", features:["Accept deliveries","Parts delivery jobs","Live navigation","KES 200 allowance per trip"] },
             ].map(r=>(
               <div key={r.role} style={{ background:"rgba(26,26,26,0.92)", border:"1px solid "+r.color+"40", borderRadius:16, padding:"1.5rem" }}>
                 <div style={{ fontSize:36, marginBottom:10 }}>{r.icon}</div>
@@ -345,7 +345,7 @@ export default function LandingPage() {
             <p style={{ ...body, maxWidth:480, margin:"0 auto" }}>Browse genuine and aftermarket parts from verified Nairobi shops. Order online, pay securely via M-Pesa, get it delivered by CCC riders.</p>
           </div>
           <div style={{ display:"flex", flexDirection:"column", gap:8, marginBottom:"1.5rem" }}>
-            {[["⚙️","Engine and mechanical parts"],["✨","Car accessories"],["🛞","Tyres all brands"],["🔋","Batteries and electrical"],["🛢️","Engine oils and fluids"]].map(([icon,item])=>(
+            {[["partsDealer","Engine and mechanical parts"],["accessories","Car accessories"],["tyreShop","Tyres all brands"],["autoElectrician","Batteries and electrical"],["earnings","Engine oils and fluids"]].map(([icon,item])=>(
               <div key={item} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 16px", background:"rgba(245,245,245,0.9)", borderRadius:10, fontSize:14, color:"#000", fontWeight:500 }}>
                 <span style={{ fontSize:20 }}>{icon}</span>{item}
               </div>
@@ -424,6 +424,7 @@ export default function LandingPage() {
     </div>
   )
 }
+
 
 
 
