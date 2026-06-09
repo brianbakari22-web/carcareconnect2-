@@ -156,10 +156,10 @@ export default function DriverPayouts() {
           <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
             <div style={{ fontSize:12, color:"#777777", marginBottom:"1rem" }}>{`Minimum KES 5,000 · Available: KES ${Number(available).toLocaleString()} · Transfer takes 2-3 business days`}</div>
             {available < 5000 ? (
-            {available < 50 ? (
+
                 Complete more deliveries to reach the KES 5,000 minimum. You need KES {Number(5000-available).toLocaleString()} more.
-                Complete more deliveries to reach the KES 5,000 minimum. You need ${(50-available).toLocaleString()} more.
-              </div>
+
+                {`Complete more deliveries to reach the KES 5,000 minimum. You need KES ${Number(5000-available).toLocaleString()} more.`}
             ) : (
                 <input style={inp} type="number" min="5000" max={available} placeholder={`5,000 — ${Number(available).toLocaleString()}`} value={amount} onChange={e=>setAmount(e.target.value)} required/>
                 {amount&&Number(amount)>=5000&&(
