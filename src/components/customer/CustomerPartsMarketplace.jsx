@@ -99,6 +99,11 @@ export default function CustomerPartsMarketplace() {
     return acc
   }, {})
 
+  async function loadOrders() {
+    const { data } = await supabase.from("orders").select("*, order_items(*, inventory(name,unit))").eq("customer_id", user.id).order("created_at", { ascending:false })
+    setOrders(data||[])
+  }
+
   async function placeOrder() {
     if (cart.length===0) return toast.error("Cart is empty")
     if (fulfillment==="delivery"&&!selectedZone) return toast.error("Please select delivery zone")
@@ -183,6 +188,78 @@ export default function CustomerPartsMarketplace() {
   })
 
   const SC = { pending:"#e6821e", confirmed:"#378add", processing:"#8b5cf6", ready:"#1d9e75", delivered:"#1d9e75", cancelled:"#e24b4a" }
+  async function loadOrders() {
+    const { data } = await supabase.from("orders").select("*, order_items(*, inventory(name,unit))").eq("customer_id", user.id).order("created_at", { ascending:false })
+    setOrders(data||[])
+  }
+
+  async function placeOrder() {
+    if (cart.length === 0) return toast.error("Cart is empty")
+    if (checkoutStep === "cart") { setCheckoutStep("details"); return }
+    if (checkoutStep === "details") {
+      if (!customerDetails.name) return toast.error("Please enter your name")
+      if (!customerDetails.phone) return toast.error("Please enter your phone")
+      if (fulfillment === "delivery" && !selectedZone) return toast.error("Please select a delivery zone")
+      if (fulfillment === "delivery" && !deliveryAddress) return toast.error("Please enter delivery address")
+      setCheckoutStep("payment"); return
+    }
+    setOrdering(true)
+    try {
+      const zone = zones.find(z => z.id === selectedZone)
+      const deliveryFee = fulfillment === "delivery" && zone ? Number(zone.base_fee) : 0
+      const subtotal = cart.reduce((s, i) => s + Number(i.price) * i.qty, 0)
+      const total = subtotal + deliveryFee
+      // Group cart by provider
+      const byProvider = {}
+      cart.forEach(item => {
+        if (!byProvider[item.provider_id]) byProvider[item.provider_id] = []
+        byProvider[item.provider_id].push(item)
+      })
+      for (const [providerId, items] of Object.entries(byProvider)) {
+        const providerTotal = items.reduce((s, i) => s + Number(i.price) * i.qty, 0)
+        const { data: order, error } = await supabase.from("orders").insert({
+          customer_id: user.id,
+          provider_id: providerId,
+          total_amount: providerTotal + (Object.keys(byProvider).length === 1 ? deliveryFee : 0),
+          fulfillment_type: fulfillment,
+          delivery_zone_id: selectedZone || null,
+          delivery_address: deliveryAddress || null,
+          delivery_fee: deliveryFee,
+          customer_name: customerDetails.name,
+          customer_phone: customerDetails.phone,
+          payment_method: "cash",
+          status: "pending",
+        }).select("id").single()
+        if (error) throw error
+        for (const item of items) {
+          await supabase.from("order_items").insert({
+            order_id: order.id,
+            inventory_id: item.id,
+            quantity: item.qty,
+            unit_price: Number(item.price),
+            total_price: Number(item.price) * item.qty,
+          })
+          await supabase.from("inventory").update({ stock_quantity: item.stock_quantity - item.qty }).eq("id", item.id)
+        }
+        await supabase.from("notifications").insert({
+          user_id: providerId,
+          title: "New order received! 📦",
+          message: `${customerDetails.name} ordered ${items.length} item(s) — KES ${providerTotal.toLocaleString()}`,
+          type: "success",
+        })
+      }
+      toast.success("Order placed successfully! 🎉")
+      setCart([])
+      setShowCart(false)
+      setCheckoutStep("cart")
+      setCustomerDetails({ name: "", phone: "", email: "" })
+      setDeliveryAddress("")
+      setSelectedZone("")
+      loadOrders()
+    } catch(err) { toast.error(err.message) }
+    finally { setOrdering(false) }
+  }
+
 
   return (
     <div>
@@ -191,7 +268,7 @@ export default function CustomerPartsMarketplace() {
           <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#000000" }}>Parts & Accessories</div>
           <div style={{ fontSize:12, color:"#777777" }}>Order from verified CCC shops</div>
         </div>
-        <button onClick={()=>setShowCart(true)} style={{ background:cart.length>0?"#e6821e":"#111", border:"1px solid #dddddd", borderRadius:9, color:cart.length>0?"#fff":"#666", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"9px 16px", cursor:"pointer", position:"relative" }}>
+        <button onClick={()=>setShowCart(true)} style={{ background:cart.length>0?"#e6821e":"#f5f5f5", border:"1px solid #e0e0e0", borderRadius:9, color:cart.length>0?"#fff":"#666", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"9px 16px", cursor:"pointer", position:"relative" }}>
           🛒 Cart {cart.length>0&&`(${cart.length})`}
           {cart.length>0&&<span style={{ position:"absolute", top:-6, right:-6, width:16, height:16, borderRadius:"50%", background:"#e24b4a", fontSize:9, color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:800 }}>{cart.reduce((s,c)=>s+c.qty,0)}</span>}
         </button>
@@ -200,7 +277,7 @@ export default function CustomerPartsMarketplace() {
       <div style={{ display:"flex", gap:6, marginBottom:"1rem" }}>
         {[{k:"browse",l:"Browse"},{k:"orders",l:"My Orders"}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"7px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#111", color:tab===t.k?"#fff":"#666", fontWeight:tab===t.k?700:400 }}>
+            style={{ padding:"7px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#f0f0f0", color:tab===t.k?"#fff":"#555", fontWeight:tab===t.k?700:400 }}>
             {t.l} {t.k==="orders"&&orders.length>0&&`(${orders.length})`}
           </button>
         ))}
@@ -213,7 +290,7 @@ export default function CustomerPartsMarketplace() {
           <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
             {CATEGORIES.map(c=>(
               <button key={c.key} onClick={()=>setCategory(c.key)}
-                style={{ padding:"5px 10px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:category===c.key?"#e6821e":"#111", color:category===c.key?"#fff":"#666" }}>
+                style={{ padding:"5px 10px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:category===c.key?"#e6821e":"#f0f0f0", color:category===c.key?"#fff":"#555" }}>
                 {c.icon} {c.label}
               </button>
             ))}
@@ -317,7 +394,7 @@ export default function CustomerPartsMarketplace() {
               </div>
               <div style={{ display:"flex", gap:4, marginTop:4 }}>
                 {["cart","details","payment"].map((s,i)=>(
-                  <div key={s} style={{ flex:1, height:3, borderRadius:2, background:checkoutStep===s||["details","payment"].includes(checkoutStep)&&i===0||checkoutStep==="payment"&&i===1?"#e6821e":"#333" }}/>
+                  <div key={s} style={{ flex:1, height:3, borderRadius:2, background:checkoutStep===s||["details","payment"].includes(checkoutStep)&&i===0||checkoutStep==="payment"&&i===1?"#e6821e":"#e0e0e0" }}/>
                 ))}
               </div>
             </div>
@@ -348,7 +425,7 @@ export default function CustomerPartsMarketplace() {
                   <div style={{ display:"flex", gap:8 }}>
                     {["pickup","delivery"].map(f=>(
                       <button key={f} onClick={()=>setFulfillment(f)}
-                        style={{ flex:1, padding:"8px", borderRadius:8, border:"1px solid "+(fulfillment===f?"#e6821e":"#333"), background:fulfillment===f?"#1a1208":"#0f0f0f", color:fulfillment===f?"#e6821e":"#666", fontSize:12, cursor:"pointer", fontWeight:fulfillment===f?700:400 }}>
+                        style={{ flex:1, padding:"8px", borderRadius:8, border:"1px solid "+(fulfillment===f?"#e6821e":"#e0e0e0"), background:fulfillment===f?"#fff8f0":"#f5f5f5", color:fulfillment===f?"#e6821e":"#555", fontSize:12, cursor:"pointer", fontWeight:fulfillment===f?700:400 }}>
                         {f==="pickup"?"🏪 Pickup from shop":"🚚 Delivery to me"}
                       </button>
                     ))}
@@ -403,7 +480,7 @@ export default function CustomerPartsMarketplace() {
                     <span>Total</span><span>KES {orderTotal.toLocaleString()}</span>
                   </div>
                   <button onClick={placeOrder} disabled={ordering}
-                    style={{ width:"100%", background:ordering?"#333":"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:ordering?"not-allowed":"pointer" }}>
+                    style={{ width:"100%", background:ordering?"#ccc":"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:ordering?"not-allowed":"pointer" }}>
                     {ordering?"Placing order...":"Place order →"}
                   </button>
                   <div style={{ fontSize:11, color:"#888888", textAlign:"center", marginTop:8 }}>Payment collected on delivery/pickup</div>
@@ -416,6 +493,8 @@ export default function CustomerPartsMarketplace() {
     </div>
   )
 }
+
+
 
 
 
