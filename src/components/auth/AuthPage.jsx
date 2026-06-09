@@ -1,4 +1,4 @@
-import useIsMobile from "../../lib/useIsMobile"
+﻿import useIsMobile from "../../lib/useIsMobile"
 import { useState, useEffect } from "react"
 
 import { supabase } from "../../lib/supabase"
@@ -29,9 +29,9 @@ const ROLES = [
     icon: "🚗",
     desc: "Book services, track drivers, earn loyalty points",
     color: "#e6821e",
-    bg: "#1a1208",
+    bg: "#fff8f0",
     border: "#e6821e40",
-    features: ["🔧 Browse verified services", "📍 Live driver tracking", "≡ƒÄü Loyalty rewards", "⭐ Rate your experience"]
+    features: ["🔧 Browse verified services", "📍 Live driver tracking", "🎁 Loyalty rewards", "⭐ Rate your experience"]
   },
   {
     key: "provider",
@@ -39,7 +39,7 @@ const ROLES = [
     icon: "🔧",
     desc: "List services, manage bookings, grow your business",
     color: "#378add",
-    bg: "#0c1f2e",
+    bg: "#eff6ff",
     border: "#378add40",
     features: ["📊 Analytics dashboard", "💰 Fast payouts", "📅 Booking management", "⭐ Customer reviews"]
   },
@@ -49,7 +49,7 @@ const ROLES = [
     icon: "🚚",
     desc: "Earn by delivering vehicles, set your own schedule",
     color: "#1d9e75",
-    bg: "#071a12",
+    bg: "#f0fdf4",
     border: "#1d9e7540",
     features: ["📍 GPS navigation", "💵 Competitive earnings", "📈 Earnings dashboard", "✅ Flexible hours"]
   },
@@ -161,20 +161,20 @@ export default function AuthPage() {
 
   // Forgot password
   if (mode === "forgot") return (
-    <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", background:"#1a1a1a", padding:"1rem" }}>
-      <div style={{ width:"100%", maxWidth:400, background:"#000000", border:"1px solid #1e1e1e", borderRadius:16, padding:"2rem" }}>
+    <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", background:"#fff", padding:"1rem" }}>
+      <div style={{ width:"100%", maxWidth:400, background:"#ffffff", border:"1px solid #eeeeee", borderRadius:16, padding:"2rem" }}>
         <div style={{ textAlign:"center", marginBottom:"1.5rem" }}>
-          <div style={{ fontSize:36, marginBottom:8 }}>Γëí╞Æ├╢├ë</div>
+          <div style={{ fontSize:36, marginBottom:8 }}>🔐</div>
           <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#000000", marginBottom:4 }}>Reset password</div>
-          <div style={{ fontSize:12, color:"#fff" }}>Enter your email to receive a reset link</div>
+          <div style={{ fontSize:12, color:"#666" }}>Enter your email to receive a reset link</div>
         </div>
         {resetSent ? (
           <div>
-            <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:10, padding:"1.25rem", marginBottom:"1.5rem", textAlign:"center" }}>
-              <div style={{ fontSize:32, marginBottom:8 }}>Γëí╞Æ├┤┬║</div>
+            <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:10, padding:"1.25rem", marginBottom:"1.5rem", textAlign:"center" }}>
+              <div style={{ fontSize:32, marginBottom:8 }}>✉️</div>
               <div style={{ fontSize:13, color:"#1d9e75", fontWeight:600, marginBottom:4 }}>Reset link sent!</div>
-              <div style={{ fontSize:12, color:"#fff", lineHeight:1.6 }}>
-                Check your email at <strong style={{ color:"#ffffff" }}>{form.email}</strong>. Check spam if you dont see it.
+              <div style={{ fontSize:12, color:"#555", lineHeight:1.6 }}>
+                Check your email at <strong style={{ color:"#000" }}>{form.email}</strong>. Check spam if you dont see it.
               </div>
             </div>
             <button onClick={()=>{ setMode("signin"); setResetSent(false) }}
@@ -187,13 +187,13 @@ export default function AuthPage() {
             <label style={{ fontSize:13, color:"#666666", display:"block", marginBottom:4 }}>Email address</label>
             <input type="email" required value={form.email} onChange={e=>setForm(f=>({...f,email:e.target.value}))}
               placeholder="your@email.com"
-              style={{ width:"100%", background:"#1a1a1a", border:"1px solid #222", borderRadius:8, padding:"11px 12px", color:"#000", fontSize:15, outline:"none", marginBottom:16 }}/>
+              style={{ width:"100%", background:"#f5f5f5", border:"1px solid #e0e0e0", borderRadius:8, padding:"11px 12px", color:"#000", fontSize:15, outline:"none", marginBottom:16 }}/>
             <button type="submit" disabled={loading}
-              style={{ width:"100%", background:loading?"#333":"#e6821e", border:"none", borderRadius:10, color:loading?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:16, fontWeight:700, padding:"15px", cursor:loading?"not-allowed":"pointer", marginBottom:12 }}>
+              style={{ width:"100%", background:loading?"#ccc":"#e6821e", border:"none", borderRadius:10, color:loading?"#999":"#fff", fontFamily:"Syne,sans-serif", fontSize:16, fontWeight:700, padding:"15px", cursor:loading?"not-allowed":"pointer", marginBottom:12 }}>
               {loading ? "Sending..." : "Send reset link"}
             </button>
             <button type="button" onClick={()=>setMode("signin")}
-              style={{ width:"100%", background:"none", border:"1px solid #333", borderRadius:10, color:"#fff", fontSize:13, padding:"12px", cursor:"pointer" }}>
+              style={{ width:"100%", background:"none", border:"1px solid #ddd", borderRadius:10, color:"#333", fontSize:13, padding:"12px", cursor:"pointer" }}>
               Back to sign in
             </button>
           </form>
@@ -317,7 +317,7 @@ export default function AuthPage() {
                 <label style={{ display:"flex", alignItems:"flex-start", gap:10, cursor:"pointer", marginBottom:20, padding:"0.9rem", background:"#000000", border:"1px solid #222", borderRadius:9 }}>
                   <input type="checkbox" checked={agreed} onChange={e=>setAgreed(e.target.checked)}
                     style={{ marginTop:2, width:16, height:16, cursor:"pointer", flexShrink:0, accentColor:"#e6821e" }}/>
-                  <span style={{ fontSize:12, color:"#fff", lineHeight:1.6 }}>
+                  <span style={{ fontSize:12, color:"#555", lineHeight:1.6 }}>
                     I have read and agree to the{" "}
                     <a href="/terms" target="_blank" style={{ color:"#e6821e", textDecoration:"none", fontWeight:500 }}>Terms of Service</a>
                     {" "}and{" "}
@@ -436,7 +436,7 @@ export default function AuthPage() {
       <div style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"3rem 1.25rem", textAlign:"center" }}>
         <img src="/logo.svg" alt="Car Care Connect" style={{ height:110, marginBottom:"1.75rem" }}/>
         <h1 style={{ fontSize:"clamp(28px,6vw,52px)", fontWeight:800, lineHeight:1.1, letterSpacing:-1, color:"#000", marginBottom:"1rem" }}>One app.<br/><span style={{ color:"#e6821e" }}>Every car need.</span></h1>
-        <p style={{ fontSize:15, color:"#fff", maxWidth:440, margin:"0 auto 2.5rem", lineHeight:1.7 }}>Nairobi most trusted automotive platform. Book mechanics, order parts, wash your car and more.</p>
+        <p style={{ fontSize:15, color:"#555", maxWidth:440, margin:"0 auto 2.5rem", lineHeight:1.7 }}>Nairobi most trusted automotive platform. Book mechanics, order parts, wash your car and more.</p>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))", gap:14, width:"100%", maxWidth:680, marginBottom:"2rem" }}>
           {[
             { key:"customer", icon:"🚗", label:"Customer", desc:"Book services, track drivers, earn rewards", color:"#e6821e" },
@@ -459,7 +459,7 @@ export default function AuthPage() {
         </div>
       </div>
       <div style={{ background:"#000000", padding:"1.25rem", textAlign:"center" }}>
-        <div style={{ fontSize:13, color:"#999" }}>┬⌐ 2026 Car Care Connect ┬╖ Nairobi, Kenya ┬╖ 0113858966</div>
+        <div style={{ fontSize:13, color:"#999" }}>© 2026 Car Care Connect · Nairobi, Kenya · 0113858966</div>
       </div>
     </div>
   )
