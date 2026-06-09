@@ -196,13 +196,18 @@ export default function Layout({ children }) {
     { path:"/dashboard/business-hours", label:"Business Hours", icon:"🕐" },
     { path:"/dashboard/availability", key:"availability", icon:"🗓️" },
     { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
-    ...( ["garage","garage_premium","panel_beater","auto_glass","car_wash","auto_electrician"].includes(providerType) ? [
+    ...( ["garage","garage_premium","auto_electrician"].includes(providerType) ? [
       { path:"/dashboard/mechanics", label:"My Mechanics", icon:"👨‍🔧" },
     ] : []),
     ...( ["garage","garage_premium","auto_electrician"].includes(providerType) ? [
       { path:"/dashboard/go-requests", label:"GO Requests", icon:"🚨" },
     ] : []),
     { path:"/dashboard/claims", label:"Service Claims", icon:"🛡️" },
+    ...( ["car_wash"].includes(providerType) ? [
+      { path:"/dashboard/wash-queue", label:"Wash Queue", icon:"🚿" },
+      { path:"/dashboard/wash-packages", label:"Wash Packages", icon:"✨" },
+      { path:"/dashboard/staff", label:"Staff Management", icon:"👥" },
+    ] : []),
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
