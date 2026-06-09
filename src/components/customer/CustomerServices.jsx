@@ -4,12 +4,13 @@ import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
+import CCCIcon from "../shared/CCCIcon"
 import PesapalPayment from "../shared/PesapalPayment"
 
 const CATEGORIES = [
-  { key:"shop_standard", label:"Shop Standard", icon:"🏪", desc:"You bring your car to the shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
-  { key:"shop_premium", label:"Shop Premium", icon:"🏡", desc:"Mechanic comes to your home", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
-  { key:"go_service", label:"GO Service", icon:"🚨", desc:"Emergency roadside assistance", color:"#e24b4a", bg:"#fff5f5", border:"#fecaca" },
+  { key:"shop_standard", label:"Shop Standard", icon:"bookings", desc:"You bring your car to the shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
+  { key:"shop_premium", label:"Shop Premium", icon:"home", desc:"Mechanic comes to your home", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
+  { key:"go_service", label:"GO Service", icon:"emergency", desc:"Emergency roadside assistance", color:"#e24b4a", bg:"#fff5f5", border:"#fecaca" },
 ]
 
 export default function CustomerServices() {
@@ -141,7 +142,7 @@ export default function CustomerServices() {
             onClick={()=>setActiveCategory(activeCategory===c.key?"all":c.key)}
             style={{ background:activeCategory===c.key?c.bg:"#f5f5f5", border:`1px solid ${activeCategory===c.key?c.color:"#e5e5e5"}`, borderRadius:12, padding:"1rem", cursor:"pointer", transition:"all 0.15s" }}>
             <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
-              <span style={{ fontSize:22 }}>{c.icon}</span>
+              <span style={{ display:"flex" }}><CCCIcon name={c.icon} size={24}/></span>
               <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:activeCategory===c.key?c.color:"#000000" }}>{c.label}</div>
             </div>
             <div style={{ fontSize:11, color:"#666" }}>{c.desc}</div>
@@ -161,7 +162,7 @@ export default function CustomerServices() {
         {["all",...CATEGORIES.map(c=>c.key)].map(k=>(
           <button key={k} onClick={()=>setActiveCategory(k)}
             style={{ padding:"6px 12px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:activeCategory===k?"#e6821e":"#f0f0f0", color:activeCategory===k?"#fff":"#555", fontFamily:"'DM Sans',sans-serif" }}>
-            {k==="all"?"All services":CATEGORIES.find(c=>c.key===k)?.label}
+            {k==="all"?"All services":<span style={{display:"flex",alignItems:"center",gap:4}}><CCCIcon name={CATEGORIES.find(c=>c.key===k)?.icon||"settings"} size={14}/>{CATEGORIES.find(c=>c.key===k)?.label}</span>}
           </button>
         ))}
       </div>
@@ -177,9 +178,9 @@ export default function CustomerServices() {
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10 }}>
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6, flexWrap:"wrap" }}>
-                  <span style={{ fontSize:18 }}>{cat.icon}</span>
+                  <span style={{ display:"flex" }}><CCCIcon name={cat.icon} size={20}/></span>
                   <div style={{ fontFamily:"Syne", fontSize:isMobile?14:15, fontWeight:800, color:"#000000" }}>{s.name}</div>
-                  <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:cat.bg, color:cat.color, border:`1px solid ${cat.border}` }}>{cat.label}</span>
+                  <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:cat.bg, color:cat.color, border:`1px solid ${cat.border}` }}><CCCIcon name={cat.icon} size={12}/> {cat.label}</span>
                 </div>
                 {s.description&&<div style={{ fontSize:12, color:"#666", marginBottom:6, lineHeight:1.5 }}>{s.description.length>120?s.description.slice(0,120)+"...":s.description}</div>}
                 <div style={{ display:"flex", gap:12, flexWrap:"wrap", alignItems:"center" }}>
@@ -354,6 +355,7 @@ export default function CustomerServices() {
     </div>
   )
 }
+
 
 
 

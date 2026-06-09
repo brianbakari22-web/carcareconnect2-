@@ -5,6 +5,7 @@ import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import { useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
+import CCCIcon from "../shared/CCCIcon"
 import ProviderStorefront from "./ProviderStorefront"
 
 const DAYS_EN = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
@@ -258,19 +259,19 @@ export default function CustomerDiscover() {
       {/* Provider type filter */}
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
         {[
-          { key:"all", label:"All", icon:"🔍" },
-          { key:"garage", label:"Garage", icon:"🔧" },
-          { key:"parts_dealer", label:"Parts", icon:"⚙️" },
-          { key:"accessories_shop", label:"Accessories", icon:"✨" },
-          { key:"tyre_shop", label:"Tyres", icon:"🛞" },
-          { key:"auto_electrician", label:"Electrician", icon:"⚡" },
-          { key:"car_wash", label:"Car Wash", icon:"🚿" },
-          { key:"panel_beater", label:"Panel Beater", icon:"🔨" },
-          { key:"auto_glass", label:"Auto Glass", icon:"🪟" },
+          { key:"all", label:"All", icon:"search" },
+          { key:"garage", label:"Garage", icon:"garage" },
+          { key:"parts_dealer", label:"Parts", icon:"partsDealer" },
+          { key:"accessories_shop", label:"Accessories", icon:"accessories" },
+          { key:"tyre_shop", label:"Tyres", icon:"tyreShop" },
+          { key:"auto_electrician", label:"Electrician", icon:"autoElectrician" },
+          { key:"car_wash", label:"Car Wash", icon:"carWash" },
+          { key:"panel_beater", label:"Panel Beater", icon:"panelBeater" },
+          { key:"auto_glass", label:"Auto Glass", icon:"autoGlass" },
         ].map(tp=>(
           <button key={tp.key} onClick={()=>setProviderTypeFilter(tp.key)}
             style={{ padding:"6px 12px", borderRadius:8, border:"none", fontSize:11, cursor:"pointer", background:providerTypeFilter===tp.key?"#e6821e":"#f0f0f0", color:providerTypeFilter===tp.key?"#fff":"#555", fontFamily:"DM Sans,sans-serif", whiteSpace:"nowrap" }}>
-            {tp.icon} {tp.label}
+            <span style={{display:"flex",alignItems:"center",gap:5}}><CCCIcon name={tp.icon} size={14}/>{tp.label}</span>
           </button>
         ))}
       </div>
@@ -585,6 +586,7 @@ export default function CustomerDiscover() {
     </div>
   )
 }
+
 
 
 
