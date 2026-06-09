@@ -156,21 +156,21 @@ export default function DriverPayouts() {
           <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
             <div style={{ fontSize:12, color:"#777777", marginBottom:"1rem" }}>{`Minimum KES 5,000 · Available: KES ${Number(available).toLocaleString()} · Transfer takes 2-3 business days`}</div>
             {available < 5000 ? (
-
-                Complete more deliveries to reach the KES 5,000 minimum. You need KES {Number(5000-available).toLocaleString()} more.
-
+              <div style={{ fontSize:13, color:"#777777", padding:"1rem", background:"#f5f5f5", borderRadius:8 }}>
                 {`Complete more deliveries to reach the KES 5,000 minimum. You need KES ${Number(5000-available).toLocaleString()} more.`}
+              </div>
             ) : (
+              <form onSubmit={requestPayout}>
+                <label style={lbl}>Amount to withdraw (KES)</label>
                 <input style={inp} type="number" min="5000" max={available} placeholder={`5,000 — ${Number(available).toLocaleString()}`} value={amount} onChange={e=>setAmount(e.target.value)} required/>
                 {amount&&Number(amount)>=5000&&(
-                <input style={inp} type="number" min="50" max={available} step="0.01" placeholder={`50.00 — ${available.toLocaleString()}`} value={amount} onChange={e=>setAmount(e.target.value)} required/>
-                    You will receive: <span style={{ color:"#1d9e75", fontWeight:600 }}>KES {Number(amount).toLocaleString()}</span> to {bankInfo.bank_name}
                   <div style={{ fontSize:12, color:"#777777", marginBottom:10, marginTop:-6 }}>
-                    You will receive: <span style={{ color:"#1d9e75", fontWeight:600 }}>${Number(amount).toLocaleString()}</span> to {bankInfo.bank_name}
+                    You will receive: <span style={{ color:"#1d9e75", fontWeight:600 }}>KES {Number(amount).toLocaleString()}</span> to {bankInfo.bank_name}
                   </div>
                 )}
                 <button type="submit" disabled={submitting||!bankSaved}
                   style={{ background:submitting||!bankSaved?"#ccc":"#e6821e", border:"none", borderRadius:9, color:submitting||!bankSaved?"#999":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:submitting||!bankSaved?"not-allowed":"pointer" }}>
+                  {submitting?"Submitting...":"Request payout"}
                   {submitting?"Submitting...":"Request payout"}
                 </button>
               </form>
