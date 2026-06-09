@@ -352,7 +352,7 @@ export default function LandingPage() {
             ))}
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:10, marginBottom:"1.5rem" }}>
-            {[["🏪","Pickup","Collect from shop"],["≡ƒÜÜ","Delivery","CCC riders deliver"],["✅","Verified shops","All shops checked"],["💳","Secure pay","M-Pesa or card"]].map(([icon,title,desc])=>(
+            {[["🏪","Pickup","Collect from shop"],["🚚","Delivery","CCC riders deliver"],["✅","Verified shops","All shops checked"],["💳","Secure pay","M-Pesa or card"]].map(([icon,title,desc])=>(
               <div key={title} style={{ ...card, display:"flex", alignItems:"center", gap:12 }}>
                 <span style={{ fontSize:22 }}>{icon}</span>
                 <div>
