@@ -23,7 +23,7 @@ export default function WashPackages() {
   async function save(e) {
     e.preventDefault(); setSaving(true)
     try {
-      await supabase.from("services").insert({provider_id:user.id,name:form.name,price:Number(form.price),duration_minutes:Number(form.duration),description:form.description,category:"shop_standard",is_active:true})
+      await supabase.from("services").insert({provider_id:user.id,name:form.name,price:Number(form.price),duration_minutes:Number(form.duration),description:form.description,category:"car_wash",is_active:true})
       toast.success("Package added!"); setForm({name:"",price:"",duration:60,description:""}); setShowForm(false); load()
     } catch(err){toast.error(err.message)} finally{setSaving(false)}
   }
@@ -89,3 +89,4 @@ export default function WashPackages() {
     </div>
   )
 }
+

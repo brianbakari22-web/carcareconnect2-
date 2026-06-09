@@ -246,11 +246,11 @@ export default function CustomerDiscover() {
           placeholder={t("searchGarages")}
           style={{ ...inp, flex:1, minWidth:180 }}/>
         <button onClick={detectLocation} disabled={locating}
-          style={{ background:userLocation?"#071a12":"#111", border:`1px solid ${userLocation?"#1d9e7540":"#333"}`, borderRadius:8, color:userLocation?"#1d9e75":"#888", fontSize:12, padding:"0 14px", cursor:"pointer", whiteSpace:"nowrap", fontFamily:"'DM Sans',sans-serif" }}>
+          style={{ background:userLocation?"#f0fdf4":"#f5f5f5", border:`1px solid ${userLocation?"#1d9e7540":"#e0e0e0"}`, borderRadius:8, color:userLocation?"#1d9e75":"#555", fontSize:12, padding:"0 14px", cursor:"pointer", whiteSpace:"nowrap", fontFamily:"'DM Sans',sans-serif" }}>
           {locating?t("detecting"):`📍 ${t("nearMe")}`}
         </button>
         <button onClick={()=>setShowFilters(f=>!f)}
-          style={{ background:showFilters?"#1a1208":"#111", border:`1px solid ${showFilters?"#e6821e40":"#333"}`, borderRadius:8, color:showFilters?"#e6821e":"#888", fontSize:12, padding:"0 14px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
+          style={{ background:showFilters?"#fff8f0":"#f5f5f5", border:`1px solid ${showFilters?"#e6821e40":"#e0e0e0"}`, borderRadius:8, color:showFilters?"#e6821e":"#555", fontSize:12, padding:"0 14px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
           {t("filters")} {showFilters?"▲":"▼"}
         </button>
       </div>
@@ -269,7 +269,7 @@ export default function CustomerDiscover() {
           { key:"auto_glass", label:"Auto Glass", icon:"🪟" },
         ].map(tp=>(
           <button key={tp.key} onClick={()=>setProviderTypeFilter(tp.key)}
-            style={{ padding:"6px 12px", borderRadius:8, border:"none", fontSize:11, cursor:"pointer", background:providerTypeFilter===tp.key?"#e6821e":"#111", color:providerTypeFilter===tp.key?"#fff":"#666", fontFamily:"DM Sans,sans-serif", whiteSpace:"nowrap" }}>
+            style={{ padding:"6px 12px", borderRadius:8, border:"none", fontSize:11, cursor:"pointer", background:providerTypeFilter===tp.key?"#e6821e":"#f0f0f0", color:providerTypeFilter===tp.key?"#fff":"#555", fontFamily:"DM Sans,sans-serif", whiteSpace:"nowrap" }}>
             {tp.icon} {tp.label}
           </button>
         ))}
@@ -585,6 +585,7 @@ export default function CustomerDiscover() {
     </div>
   )
 }
+
 
 
 
