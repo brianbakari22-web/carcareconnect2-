@@ -99,7 +99,7 @@ export default function DriverPayouts() {
       <div style={{ display:"flex", gap:6, marginBottom:"1.5rem" }}>
         {[{k:"payouts",l:"Payouts"},{k:"bank",l:"Bank details"}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#111", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
+            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#f0f0f0", color:tab===t.k?"#fff":"#555", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
             {t.l} {t.k==="bank"&&!bankSaved&&<span style={{ color:"#e24b4a", marginLeft:4 }}>⚠️</span>}
           </button>
         ))}
@@ -109,7 +109,7 @@ export default function DriverPayouts() {
         <div style={{ background:"#ffffff", border:`1px solid ${bankSaved?"#1d9e7530":"#e6821e30"}`, borderRadius:12, padding:"1.25rem" }}>
           <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:"1rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000" }}>Bank account details</div>
-            {bankSaved&&<span style={{ fontSize:11, color:"#1d9e75", background:"#071a12", padding:"2px 8px", borderRadius:10 }}>✓ Saved</span>}
+            {bankSaved&&<span style={{ fontSize:11, color:"#1d9e75", background:"#f0fdf4", padding:"2px 8px", borderRadius:10 }}>✓ Saved</span>}
           </div>
           {!bankSaved&&<div style={{ fontSize:12, color:"#e6821e", marginBottom:"1rem", background:"#1a1208", borderRadius:8, padding:"0.75rem" }}>Add your bank details to request payouts</div>}
           <form onSubmit={saveBank}>
@@ -120,7 +120,7 @@ export default function DriverPayouts() {
             <label style={lbl}>Account number / M-Pesa number</label>
             <input style={inp} placeholder="Account or phone number" value={bankInfo.bank_account_number} onChange={e=>setBankInfo(b=>({...b,bank_account_number:e.target.value}))} required/>
             <button type="submit" disabled={savingBank}
-              style={{ background:savingBank?"#333":"#e6821e", border:"none", borderRadius:9, color:savingBank?"#666":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:savingBank?"not-allowed":"pointer" }}>
+              style={{ background:savingBank?"#ccc":"#e6821e", border:"none", borderRadius:9, color:savingBank?"#999":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:savingBank?"not-allowed":"pointer" }}>
               {savingBank?"Saving...":"Save bank details"}
             </button>
           </form>
@@ -130,7 +130,7 @@ export default function DriverPayouts() {
       {tab==="payouts"&&(
         <div>
           {!bankSaved&&(
-            <div style={{ background:"#1a1208", border:"1px solid #e6821e30", borderRadius:10, padding:"1rem", marginBottom:"1.5rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+            <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:10, padding:"1rem", marginBottom:"1.5rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
               <div>
                 <div style={{ fontSize:13, color:"#e6821e", fontWeight:500 }}>Bank details required</div>
                 <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>Add your bank details before requesting a payout</div>
@@ -154,23 +154,23 @@ export default function DriverPayouts() {
           )}
 
           <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#000000" }}>Request payout</div>
-            <div style={{ fontSize:12, color:"#777777", marginBottom:"1rem" }}>Minimum KES 5,000 · Available: ${available.toLocaleString()} · Transfer takes 2-3 business days</div>
+            <div style={{ fontSize:12, color:"#777777", marginBottom:"1rem" }}>{`Minimum KES 5,000 · Available: KES ${Number(available).toLocaleString()} · Transfer takes 2-3 business days`}</div>
+            {available < 5000 ? (
             {available < 50 ? (
-              <div style={{ fontSize:13, color:"#777777", padding:"1rem", background:"#ffffff", borderRadius:8 }}>
+                Complete more deliveries to reach the KES 5,000 minimum. You need KES {Number(5000-available).toLocaleString()} more.
                 Complete more deliveries to reach the KES 5,000 minimum. You need ${(50-available).toLocaleString()} more.
               </div>
             ) : (
-              <form onSubmit={requestPayout}>
-                <label style={lbl}>Amount to withdraw (KES)</label>
+                <input style={inp} type="number" min="5000" max={available} placeholder={`5,000 — ${Number(available).toLocaleString()}`} value={amount} onChange={e=>setAmount(e.target.value)} required/>
+                {amount&&Number(amount)>=5000&&(
                 <input style={inp} type="number" min="50" max={available} step="0.01" placeholder={`50.00 — ${available.toLocaleString()}`} value={amount} onChange={e=>setAmount(e.target.value)} required/>
-                {amount&&Number(amount)>=50&&(
+                    You will receive: <span style={{ color:"#1d9e75", fontWeight:600 }}>KES {Number(amount).toLocaleString()}</span> to {bankInfo.bank_name}
                   <div style={{ fontSize:12, color:"#777777", marginBottom:10, marginTop:-6 }}>
                     You will receive: <span style={{ color:"#1d9e75", fontWeight:600 }}>${Number(amount).toLocaleString()}</span> to {bankInfo.bank_name}
                   </div>
                 )}
                 <button type="submit" disabled={submitting||!bankSaved}
-                  style={{ background:submitting||!bankSaved?"#333":"#e6821e", border:"none", borderRadius:9, color:submitting||!bankSaved?"#666":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:submitting||!bankSaved?"not-allowed":"pointer" }}>
+                  style={{ background:submitting||!bankSaved?"#ccc":"#e6821e", border:"none", borderRadius:9, color:submitting||!bankSaved?"#999":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:submitting||!bankSaved?"not-allowed":"pointer" }}>
                   {submitting?"Submitting...":"Request payout"}
                 </button>
               </form>
@@ -184,7 +184,7 @@ export default function DriverPayouts() {
                 <div key={p.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
                   <div style={{ flex:1 }}>
                     <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>${Number(p.amount).toLocaleString()}</div>
-                    <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>{p.bank_name} · {p.bank_account_number}</div>
+                    <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>KES {Number(p.amount).toLocaleString()}</div>
                     <div style={{ fontSize:10, color:"#888888", marginTop:2 }}>{new Date(p.created_at).toLocaleDateString()}</div>
                     {p.admin_note&&<div style={{ fontSize:11, color:"#666", marginTop:4, fontStyle:"italic" }}>"{p.admin_note}"</div>}
                   </div>
@@ -200,6 +200,7 @@ export default function DriverPayouts() {
     </div>
   )
 }
+
 
 
 
