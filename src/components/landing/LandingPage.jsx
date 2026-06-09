@@ -377,7 +377,7 @@ export default function LandingPage() {
             <div key={i} className="faq-row" onClick={()=>setOpenFaq(openFaq===i?null:i)}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", gap:12 }}>
                 <span style={{ fontSize:15, fontWeight:500, color:"#000" }}>{faq.q}</span>
-                <span style={{ fontSize:22, color:"#e6821e", flexShrink:0, fontWeight:300 }}>{openFaq===i?"ΓêÆ":"+"}</span>
+                <span style={{ fontSize:22, color:"#e6821e", flexShrink:0, fontWeight:300 }}>{openFaq===i?"→":"+"}</span>
               </div>
               {openFaq===i&&<div style={{ fontSize:14, color:"#666", marginTop:10, lineHeight:1.7 }}>{faq.a}</div>}
             </div>
