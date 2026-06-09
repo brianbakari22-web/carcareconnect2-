@@ -6,43 +6,32 @@ import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
-const CATEGORIES = [
-  {
-    key: "shop_standard",
-    label: "Shop Standard",
-    icon: "🏪",
-    desc: "Customer brings car to your shop",
-    commission: "You keep X% · Platform Y%",
-    color: "#378add",
-    bg: "#0c1f2e",
-    border: "#378add40",
-  },
-  {
-    key: "shop_premium",
-    label: "Shop Premium",
-    icon: "🏡",
-    desc: "Your mechanic drives to customer home",
-    commission: "You keep X% · Platform Y%",
-    color: "#8b5cf6",
-    bg: "#160a2e",
-    border: "#8b5cf640",
-  },
-  {
-    key: "go_service",
-    label: "GO Service",
-    icon: "🚨",
-    desc: "Emergency roadside assistance",
-    commission: "You keep X% · Platform Y%",
-    color: "#e24b4a",
-    bg: "#1a0808",
-    border: "#e24b4a40",
-  },
+const GARAGE_CATEGORIES = [
+  { key:"shop_standard", label:"Shop Standard", icon:"🏪", desc:"Customer brings car to your shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
+  { key:"shop_premium", label:"Shop Premium", icon:"🏡", desc:"Your mechanic goes to customer", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
+  { key:"go_service", label:"GO Service", icon:"🚨", desc:"Emergency roadside assistance", color:"#e24b4a", bg:"#fff5f5", border:"#fecaca" },
 ]
+const WASH_CATEGORIES = [
+  { key:"basic_wash", label:"Basic Wash", icon:"🚿", desc:"Exterior rinse and dry", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
+  { key:"standard_wash", label:"Standard Wash", icon:"✨", desc:"Exterior + interior clean", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
+  { key:"premium_detail", label:"Premium Detail", icon:"💎", desc:"Full detailing service", color:"#1d9e75", bg:"#f0fdf4", border:"#bbf7d0" },
+]
+const PANEL_CATEGORIES = [
+  { key:"shop_standard", label:"In Shop", icon:"🏪", desc:"Customer brings car to shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
+  { key:"shop_premium", label:"On Site", icon:"🔨", desc:"Go to customer location", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
+]
+function getCategories(providerType) {
+  if (providerType === "car_wash") return WASH_CATEGORIES
+  if (["panel_beater","auto_glass","auto_electrician"].includes(providerType)) return PANEL_CATEGORIES
+  return GARAGE_CATEGORIES
+}
 
 const EMPTY = { name:"", description:"", price:"", duration_minutes:"", category:"shop_standard" }
 
 export default function ProviderServices() {
   const { user, profile } = useAuth()
+  const providerType = profile?.provider_type || "garage"
+  const CATEGORIES = getCategories(providerType)
   const providerType = profile?.provider_type || "garage"
   const isInventoryProvider = ["parts_dealer","accessories_shop","tyre_shop"].includes(providerType)
   const { t } = useLanguage()
@@ -352,6 +341,8 @@ export default function ProviderServices() {
     </div>
   )
 }
+
+
 
 
 
