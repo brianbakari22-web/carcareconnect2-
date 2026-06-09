@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
+import CCCIcon from "../shared/CCCIcon"
 
 function FloatingParts() {
   const items = [
@@ -424,6 +425,7 @@ export default function LandingPage() {
     </div>
   )
 }
+
 
 
 
