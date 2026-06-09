@@ -32,7 +32,6 @@ export default function ProviderServices() {
   const { user, profile } = useAuth()
   const providerType = profile?.provider_type || "garage"
   const CATEGORIES = getCategories(providerType)
-  const providerType = profile?.provider_type || "garage"
   const isInventoryProvider = ["parts_dealer","accessories_shop","tyre_shop"].includes(providerType)
   const { t } = useLanguage()
   const isMobile = useIsMobile()
@@ -341,6 +340,7 @@ export default function ProviderServices() {
     </div>
   )
 }
+
 
 
 
