@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "../../contexts/AuthContext"
+import CCCIcon from "./CCCIcon"
 import { useLanguage } from "../../contexts/LanguageContext"
 import { useTheme } from "../../contexts/ThemeContext"
 import { useNavigate, useLocation } from "react-router-dom"
@@ -9,110 +10,110 @@ import AIAssistant from "./AIAssistant"
 
 const NAV = {
   customer: [
-    { path:"/dashboard", key:"overview", icon:"🏠" },
-    { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
-    { path:"/dashboard/services", key:"findServices", icon:"🔍" },
-    { path:"/dashboard/vehicles", key:"myVehicles", icon:"🚗" },
-    { path:"/dashboard/discover", key:"discover", icon:"🌍" },
-    { path:"/dashboard/tracking", key:"trackDriver", icon:"📍" },
-    { path:"/dashboard/loyalty", key:"loyalty", icon:"⭐" },
-    { path:"/dashboard/payments", key:"payments", icon:"💳" },
-    { path:"/dashboard/reviews", key:"reviews", icon:"⭐" },
-    { path:"/dashboard/favorites", key:"favorites", icon:"❤️" },
-    { path:"/dashboard/referral", key:"referEarn", icon:"🎁" },
-    { path:"/dashboard/support", label:"Support", icon:"🎫" },
-    { path:"/dashboard/emergency", label:"GO Service 🚨", icon:"🚨" },
-    { path:"/dashboard/vehicle-reports", label:"Vehicle Reports", icon:"📋" },
-    { path:"/dashboard/claims", label:"Service Guarantee", icon:"🛡️" },
-    { path:"/dashboard/marketplace", label:"Marketplace", icon:"🛒" },
-    { path:"/dashboard/parts", label:"Parts & Accessories", icon:"⚙️" },
-    { path:"/dashboard/marketplace/my-listings", label:"My Listings", icon:"📦" },
-    { path:"/dashboard/marketplace/my-offers", label:"My Offers", icon:"💰" },
-    { path:"/dashboard/marketplace/transactions", label:"My Transactions", icon:"💳" },
-    { path:"/dashboard/chat", key:"messages", icon:"✉️" },
-    { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
-    { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
+    { path:"/dashboard", key:"overview", icon:<CCCIcon name="home" size={18}/> },
+    { path:"/dashboard/bookings", key:"bookings", icon:<CCCIcon name="bookings" size={18}/> },
+    { path:"/dashboard/services", key:"findServices", icon:<CCCIcon name="search" size={18}/> },
+    { path:"/dashboard/vehicles", key:"myVehicles", icon:<CCCIcon name="vehicles" size={18}/> },
+    { path:"/dashboard/discover", key:"discover", icon:<CCCIcon name="discover" size={18}/> },
+    { path:"/dashboard/tracking", key:"trackDriver", icon:<CCCIcon name="tracking" size={18}/> },
+    { path:"/dashboard/loyalty", key:"loyalty", icon:<CCCIcon name="loyalty" size={18}/> },
+    { path:"/dashboard/payments", key:"payments", icon:<CCCIcon name="payments" size={18}/> },
+    { path:"/dashboard/reviews", key:"reviews", icon:<CCCIcon name="loyalty" size={18}/> },
+    { path:"/dashboard/favorites", key:"favorites", icon:<CCCIcon name="favorites" size={18}/> },
+    { path:"/dashboard/referral", key:"referEarn", icon:<CCCIcon name="referral" size={18}/> },
+    { path:"/dashboard/support", label:"Support", icon:<CCCIcon name="support" size={18}/> },
+    { path:"/dashboard/emergency", label:"GO Service 🚨", icon:<CCCIcon name="emergency" size={18}/> },
+    { path:"/dashboard/vehicle-reports", label:"Vehicle Reports", icon:<CCCIcon name="reports" size={18}/> },
+    { path:"/dashboard/claims", label:"Service Guarantee", icon:<CCCIcon name="guarantee" size={18}/> },
+    { path:"/dashboard/marketplace", label:"Marketplace", icon:<CCCIcon name="marketplace" size={18}/> },
+    { path:"/dashboard/parts", label:"Parts & Accessories", icon:<CCCIcon name="parts" size={18}/> },
+    { path:"/dashboard/marketplace/my-listings", label:"My Listings", icon:<CCCIcon name="inventory" size={18}/> },
+    { path:"/dashboard/marketplace/my-offers", label:"My Offers", icon:<CCCIcon name="earnings" size={18}/> },
+    { path:"/dashboard/marketplace/transactions", label:"My Transactions", icon:<CCCIcon name="payments" size={18}/> },
+    { path:"/dashboard/chat", key:"messages", icon:<CCCIcon name="messages" size={18}/> },
+    { path:"/dashboard/notifications", key:"notifications", icon:<CCCIcon name="notifications" size={18}/> },
+    { path:"/dashboard/profile", key:"profile", icon:<CCCIcon name="parts" size={18}/> },
   ],
   provider: [], // built dynamically below
 
   driver: [
-    { path:"/dashboard", key:"overview", icon:"🏠" },
-    { path:"/dashboard/jobs", key:"availableJobs", icon:"📦" },
-    { path:"/dashboard/active", key:"activeDelivery", icon:"🚗" },
-    { path:"/dashboard/earnings", key:"earnings", icon:"💰" },
-    { path:"/dashboard/reviews", key:"myRatings", icon:"⭐" },
-    { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
-    { path:"/dashboard/claims", label:"My Claims", icon:"🛡️" },
-    { path:"/dashboard/vehicle", label:"My Vehicle", icon:"🚗" },
-    { path:"/dashboard/performance", label:"Performance", icon:"📊" },
+    { path:"/dashboard", key:"overview", icon:<CCCIcon name="home" size={18}/> },
+    { path:"/dashboard/jobs", key:"availableJobs", icon:<CCCIcon name="inventory" size={18}/> },
+    { path:"/dashboard/active", key:"activeDelivery", icon:<CCCIcon name="vehicles" size={18}/> },
+    { path:"/dashboard/earnings", key:"earnings", icon:<CCCIcon name="earnings" size={18}/> },
+    { path:"/dashboard/reviews", key:"myRatings", icon:<CCCIcon name="loyalty" size={18}/> },
+    { path:"/dashboard/payouts", key:"payouts", icon:<CCCIcon name="payouts" size={18}/> },
+    { path:"/dashboard/claims", label:"My Claims", icon:<CCCIcon name="guarantee" size={18}/> },
+    { path:"/dashboard/vehicle", label:"My Vehicle", icon:<CCCIcon name="vehicles" size={18}/> },
+    { path:"/dashboard/performance", label:"Performance", icon:<CCCIcon name="analytics" size={18}/> },
 
 
 
 
 
-    { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
-    { path:"/dashboard/chat", key:"messages", icon:"✉️" },
-    { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
+    { path:"/dashboard/notifications", key:"notifications", icon:<CCCIcon name="notifications" size={18}/> },
+    { path:"/dashboard/chat", key:"messages", icon:<CCCIcon name="messages" size={18}/> },
+    { path:"/dashboard/profile", key:"profile", icon:<CCCIcon name="parts" size={18}/> },
   ],
   admin: [
-    { path:"/admin-dashboard", key:"overview", icon:"🏠" },
-    { path:"/admin-dashboard/users", label:"Users", icon:"👥" },
-    { path:"/admin-dashboard/providers", label:"Providers", icon:"🔧" },
-    { path:"/admin-dashboard/drivers", label:"Drivers", icon:"🚗" },
-    { path:"/admin-dashboard/mechanics", label:"Mechanics & Services", icon:"👨‍🔧" },
-    { path:"/admin-dashboard/disputes", label:"Disputes & Reports", icon:"⚠️" },
-    { path:"/admin-dashboard/claims", label:"Service Claims", icon:"🛡️" },
-    { path:"/admin-dashboard/bookings", key:"bookings", icon:"📅" },
-    { path:"/admin-dashboard/services", label:"Services", icon:"⚙️" },
-    { path:"/admin-dashboard/revenue", label:"Revenue", icon:"💰" },
-    { path:"/admin-dashboard/payouts", label:"Payouts", icon:"🏦" },
-    { path:"/admin-dashboard/promos", label:"Promo Codes", icon:"🏷️" },
-    { path:"/admin-dashboard/reviews", key:"reviews", icon:"⭐" },
-    { path:"/admin-dashboard/loyalty", key:"loyalty", icon:"🏠" },
-    { path:"/admin-dashboard/categories", label:"Categories", icon:"📂" },
-    { path:"/admin-dashboard/security", label:"2FA Security", icon:"🔐" },
-    { path:"/admin-dashboard/support", label:"Support Tickets", icon:"🎫" },
-    { path:"/admin-dashboard/notifications", label:"Notifications", icon:"🔔" },
-    { path:"/admin-dashboard/health", label:"System Health", icon:"💊" },
-    { path:"/admin-dashboard/diagnostics", label:"Diagnostics", icon:"🔬" },
-    { path:"/admin-dashboard/commissions", label:"Commissions", icon:"💹" },
-    { path:"/admin-dashboard/marketplace", label:"Marketplace", icon:"🛒" },
-    { path:"/admin-dashboard/employees", label:"Employees", icon:"👨‍💼" },
-    { path:"/admin-dashboard/orders", label:"Orders", icon:"🛒" },
-    { path:"/admin-dashboard/inventory", label:"Inventory", icon:"📦" },
-    { path:"/admin-dashboard/payment-tracking", label:"Payment Tracking", icon:"💹" },
+    { path:"/admin-dashboard", key:"overview", icon:<CCCIcon name="home" size={18}/> },
+    { path:"/admin-dashboard/users", label:"Users", icon:<CCCIcon name="profile" size={18}/> },
+    { path:"/admin-dashboard/providers", label:"Providers", icon:<CCCIcon name="garage" size={18}/> },
+    { path:"/admin-dashboard/drivers", label:"Drivers", icon:<CCCIcon name="vehicles" size={18}/> },
+    { path:"/admin-dashboard/mechanics", label:"Mechanics & Services", icon:<CCCIcon name="mechanics" size={18}/> },
+    { path:"/admin-dashboard/disputes", label:"Disputes & Reports", icon:<CCCIcon name="claims" size={18}/> },
+    { path:"/admin-dashboard/claims", label:"Service Claims", icon:<CCCIcon name="guarantee" size={18}/> },
+    { path:"/admin-dashboard/bookings", key:"bookings", icon:<CCCIcon name="bookings" size={18}/> },
+    { path:"/admin-dashboard/services", label:"Services", icon:<CCCIcon name="parts" size={18}/> },
+    { path:"/admin-dashboard/revenue", label:"Revenue", icon:<CCCIcon name="earnings" size={18}/> },
+    { path:"/admin-dashboard/payouts", label:"Payouts", icon:<CCCIcon name="payouts" size={18}/> },
+    { path:"/admin-dashboard/promos", label:"Promo Codes", icon:<CCCIcon name="marketplace" size={18}/> },
+    { path:"/admin-dashboard/reviews", key:"reviews", icon:<CCCIcon name="loyalty" size={18}/> },
+    { path:"/admin-dashboard/loyalty", key:"loyalty", icon:<CCCIcon name="home" size={18}/> },
+    { path:"/admin-dashboard/categories", label:"Categories", icon:<CCCIcon name="inventory" size={18}/> },
+    { path:"/admin-dashboard/security", label:"2FA Security", icon:<CCCIcon name="guarantee" size={18}/> },
+    { path:"/admin-dashboard/support", label:"Support Tickets", icon:<CCCIcon name="support" size={18}/> },
+    { path:"/admin-dashboard/notifications", label:"Notifications", icon:<CCCIcon name="notifications" size={18}/> },
+    { path:"/admin-dashboard/health", label:"System Health", icon:<CCCIcon name="support" size={18}/> },
+    { path:"/admin-dashboard/diagnostics", label:"Diagnostics", icon:<CCCIcon name="reports" size={18}/> },
+    { path:"/admin-dashboard/commissions", label:"Commissions", icon:<CCCIcon name="earnings" size={18}/> },
+    { path:"/admin-dashboard/marketplace", label:"Marketplace", icon:<CCCIcon name="marketplace" size={18}/> },
+    { path:"/admin-dashboard/employees", label:"Employees", icon:<CCCIcon name="mechanics" size={18}/> },
+    { path:"/admin-dashboard/orders", label:"Orders", icon:<CCCIcon name="marketplace" size={18}/> },
+    { path:"/admin-dashboard/inventory", label:"Inventory", icon:<CCCIcon name="inventory" size={18}/> },
+    { path:"/admin-dashboard/payment-tracking", label:"Payment Tracking", icon:<CCCIcon name="earnings" size={18}/> },
 
   ],
 }
 const BOTTOM_NAV = {
   customer: [
-    { path:"/dashboard", key:"overview", icon:"🏠" },
-    { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
-    { path:"/dashboard/services", key:"findServices", icon:"🔍" },
-    { path:"/dashboard/chat", key:"messages", icon:"✉️" },
-    { path:"more", label:"Menu", icon:"☰" },
+    { path:"/dashboard", key:"overview", icon:<CCCIcon name="home" size={18}/> },
+    { path:"/dashboard/bookings", key:"bookings", icon:<CCCIcon name="bookings" size={18}/> },
+    { path:"/dashboard/services", key:"findServices", icon:<CCCIcon name="search" size={18}/> },
+    { path:"/dashboard/chat", key:"messages", icon:<CCCIcon name="messages" size={18}/> },
+    { path:"more", label:"Menu", icon:<CCCIcon name="menu" size={18}/> },
   ],
   provider: [
-    { path:"/dashboard", key:"overview", icon:"🏠" },
-    { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
-    { path:"/dashboard/services", key:"myServices", icon:"🔧" },
-    { path:"/dashboard/mechanics", label:"Mechanics", icon:"👨‍🔧" },
-    { path:"more", label:"Menu", icon:"☰" },
+    { path:"/dashboard", key:"overview", icon:<CCCIcon name="home" size={18}/> },
+    { path:"/dashboard/bookings", key:"bookings", icon:<CCCIcon name="bookings" size={18}/> },
+    { path:"/dashboard/services", key:"myServices", icon:<CCCIcon name="garage" size={18}/> },
+    { path:"/dashboard/mechanics", label:"Mechanics", icon:<CCCIcon name="mechanics" size={18}/> },
+    { path:"more", label:"Menu", icon:<CCCIcon name="menu" size={18}/> },
   ],
   driver: [
-    { path:"/dashboard", key:"overview", icon:"🏠" },
-    { path:"/dashboard/jobs", key:"availableJobs", icon:"📦" },
-    { path:"/dashboard/active", key:"activeDelivery", icon:"🚗" },
-    { path:"/dashboard/earnings", key:"earnings", icon:"💰" },
-    { path:"more", label:"Menu", icon:"☰" },
+    { path:"/dashboard", key:"overview", icon:<CCCIcon name="home" size={18}/> },
+    { path:"/dashboard/jobs", key:"availableJobs", icon:<CCCIcon name="inventory" size={18}/> },
+    { path:"/dashboard/active", key:"activeDelivery", icon:<CCCIcon name="vehicles" size={18}/> },
+    { path:"/dashboard/earnings", key:"earnings", icon:<CCCIcon name="earnings" size={18}/> },
+    { path:"more", label:"Menu", icon:<CCCIcon name="menu" size={18}/> },
 
   ],
   admin: [
-    { path:"/admin-dashboard", key:"overview", icon:"🏠" },
-    { path:"/admin-dashboard/users", label:"Users", icon:"👥" },
-    { path:"/admin-dashboard/bookings", key:"bookings", icon:"📅" },
-    { path:"/admin-dashboard/revenue", label:"Revenue", icon:"💰" },
-    { path:"more", label:"Menu", icon:"☰" },
+    { path:"/admin-dashboard", key:"overview", icon:<CCCIcon name="home" size={18}/> },
+    { path:"/admin-dashboard/users", label:"Users", icon:<CCCIcon name="profile" size={18}/> },
+    { path:"/admin-dashboard/bookings", key:"bookings", icon:<CCCIcon name="bookings" size={18}/> },
+    { path:"/admin-dashboard/revenue", label:"Revenue", icon:<CCCIcon name="earnings" size={18}/> },
+    { path:"more", label:"Menu", icon:<CCCIcon name="menu" size={18}/> },
   ],
 }
 export default function Layout({ children }) {
@@ -183,50 +184,50 @@ export default function Layout({ children }) {
 
 
   const providerNav = [
-    { path:"/dashboard", key:"overview", icon:"🏠" },
-    { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
-    { path:"/dashboard/services", key:"myServices", icon:"🔧" },
+    { path:"/dashboard", key:"overview", icon:<CCCIcon name="home" size={18}/> },
+    { path:"/dashboard/bookings", key:"bookings", icon:<CCCIcon name="bookings" size={18}/> },
+    { path:"/dashboard/services", key:"myServices", icon:<CCCIcon name="garage" size={18}/> },
     ...( ["parts_dealer","accessories_shop","tyre_shop","auto_glass"].includes(providerType) ? [
-      { path:"/dashboard/inventory", label:"Inventory", icon:"📦" },
-      { path:"/dashboard/orders", label:"Orders", icon:"🛒" },
+      { path:"/dashboard/inventory", label:"Inventory", icon:<CCCIcon name="inventory" size={18}/> },
+      { path:"/dashboard/orders", label:"Orders", icon:<CCCIcon name="marketplace" size={18}/> },
     ] : []),
-    { path:"/dashboard/earnings", key:"earnings", icon:"💰" },
-    { path:"/dashboard/analytics", key:"analytics", icon:"📊" },
-    { path:"/dashboard/reviews", key:"reviews", icon:"⭐" },
-    { path:"/dashboard/business-hours", label:"Business Hours", icon:"🕐" },
-    { path:"/dashboard/availability", key:"availability", icon:"🗓️" },
-    { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
+    { path:"/dashboard/earnings", key:"earnings", icon:<CCCIcon name="earnings" size={18}/> },
+    { path:"/dashboard/analytics", key:"analytics", icon:<CCCIcon name="analytics" size={18}/> },
+    { path:"/dashboard/reviews", key:"reviews", icon:<CCCIcon name="loyalty" size={18}/> },
+    { path:"/dashboard/business-hours", label:"Business Hours", icon:<CCCIcon name="businessHours" size={18}/> },
+    { path:"/dashboard/availability", key:"availability", icon:<CCCIcon name="availability" size={18}/> },
+    { path:"/dashboard/payouts", key:"payouts", icon:<CCCIcon name="payouts" size={18}/> },
     ...( ["garage","garage_premium","auto_electrician"].includes(providerType) ? [
-      { path:"/dashboard/mechanics", label:"My Mechanics", icon:"👨‍🔧" },
+      { path:"/dashboard/mechanics", label:"My Mechanics", icon:<CCCIcon name="mechanics" size={18}/> },
     ] : []),
     ...( ["garage","garage_premium","auto_electrician"].includes(providerType) ? [
-      { path:"/dashboard/go-requests", label:"GO Requests", icon:"🚨" },
+      { path:"/dashboard/go-requests", label:"GO Requests", icon:<CCCIcon name="emergency" size={18}/> },
     ] : []),
-    { path:"/dashboard/claims", label:"Service Claims", icon:"🛡️" },
+    { path:"/dashboard/claims", label:"Service Claims", icon:<CCCIcon name="guarantee" size={18}/> },
     ...( ["car_wash"].includes(providerType) ? [
       { path:"/dashboard/wash-queue", label:"Wash Queue", icon:"🚿" },
       { path:"/dashboard/wash-packages", label:"Wash Packages", icon:"✨" },
-      { path:"/dashboard/staff", label:"Staff Management", icon:"👥" },
+      { path:"/dashboard/staff", label:"Staff Management", icon:<CCCIcon name="profile" size={18}/> },
     ] : []),
-    { path:"/dashboard/chat", key:"messages", icon:"✉️" },
-    { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
-    { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
+    { path:"/dashboard/chat", key:"messages", icon:<CCCIcon name="messages" size={18}/> },
+    { path:"/dashboard/notifications", key:"notifications", icon:<CCCIcon name="notifications" size={18}/> },
+    { path:"/dashboard/profile", key:"profile", icon:<CCCIcon name="parts" size={18}/> },
   ]
 
   const nav = role === "provider" ? providerNav : (NAV[role] || [])
   const isDeliveryDriver = ["motorcycle","tuktuk","van"].includes(profile?.driver_vehicle_type||"car")
   const providerBottomNav = isInventoryProvider ? [
-    { path:"/dashboard", key:"overview", icon:"🏠" },
-    { path:"/dashboard/inventory", label:"Inventory", icon:"📦" },
-    { path:"/dashboard/orders", label:"Orders", icon:"🛒" },
-    { path:"/dashboard/chat", key:"messages", icon:"✉️" },
-    { path:"more", label:"Menu", icon:"☰" },
+    { path:"/dashboard", key:"overview", icon:<CCCIcon name="home" size={18}/> },
+    { path:"/dashboard/inventory", label:"Inventory", icon:<CCCIcon name="inventory" size={18}/> },
+    { path:"/dashboard/orders", label:"Orders", icon:<CCCIcon name="marketplace" size={18}/> },
+    { path:"/dashboard/chat", key:"messages", icon:<CCCIcon name="messages" size={18}/> },
+    { path:"more", label:"Menu", icon:<CCCIcon name="menu" size={18}/> },
   ] : [
-    { path:"/dashboard", key:"overview", icon:"🏠" },
-    { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
-    { path:"/dashboard/services", key:"myServices", icon:"🔧" },
-    { path:"/dashboard/chat", key:"messages", icon:"✉️" },
-    { path:"more", label:"Menu", icon:"☰" },
+    { path:"/dashboard", key:"overview", icon:<CCCIcon name="home" size={18}/> },
+    { path:"/dashboard/bookings", key:"bookings", icon:<CCCIcon name="bookings" size={18}/> },
+    { path:"/dashboard/services", key:"myServices", icon:<CCCIcon name="garage" size={18}/> },
+    { path:"/dashboard/chat", key:"messages", icon:<CCCIcon name="messages" size={18}/> },
+    { path:"more", label:"Menu", icon:<CCCIcon name="menu" size={18}/> },
   ]
   const bottomNav = role==="provider" ? providerBottomNav : (BOTTOM_NAV[role] || [])
   const initials = `${profile?.first_name?.[0]||""}${profile?.last_name?.[0]||""}`.toUpperCase()
@@ -265,7 +266,7 @@ export default function Layout({ children }) {
 
       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0.75rem 1rem", borderBottom:`1px solid ${theme.border}`, background:theme.bgSecondary, position:"sticky", top:0, zIndex:50 }}>
         <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:theme.text }}>
-          {{"garage":"🔧","garage_premium":"🚗","parts_dealer":"⚙️","accessories_shop":"✨","tyre_shop":"🛞","auto_electrician":"⚡","car_wash":"🚿","panel_beater":"🔨","auto_glass":"🪟"}[providerType]||"🚗"} Car<span style={{ color:activeColor }}>Care</span>
+          {{"garage":<CCCIcon name="garage" size={20}/>,"garage_premium":<CCCIcon name="vehicles" size={20}/>,"parts_dealer":<CCCIcon name="partsDealer" size={20}/>,"accessories_shop":<CCCIcon name="accessories" size={20}/>,"tyre_shop":<CCCIcon name="tyreShop" size={20}/>,"auto_electrician":<CCCIcon name="autoElectrician" size={20}/>,"car_wash":<CCCIcon name="carWash" size={20}/>,"panel_beater":<CCCIcon name="panelBeater" size={20}/>,"auto_glass":<CCCIcon name="autoGlass" size={20}/>}[providerType]||<CCCIcon name="vehicles" size={20}/>} Car<span style={{ color:activeColor }}>Care</span>
         </div>
         <div style={{ display:"flex", alignItems:"center", gap:10 }}>
           <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:theme.textMuted }}>
@@ -273,7 +274,7 @@ export default function Layout({ children }) {
           </div>
           <button onClick={()=>setMobileMenuOpen(o=>!o)}
             style={{ background:theme.bgCard, border:`1px solid ${theme.border}`, borderRadius:8, color:theme.text, cursor:"pointer", fontSize:18, padding:"4px 10px" }}>
-            {mobileMenuOpen?"✕":"☰"}
+            {mobileMenuOpen?<CCCIcon name="close" size={20}/>:<CCCIcon name="menu" size={20}/>}
           </button>
         </div>
       </div>
@@ -386,7 +387,7 @@ export default function Layout({ children }) {
               className={`nav-btn${isActive(item)?" active":""}`}
               onClick={()=>navigate(item.path)}
               title={collapsed?getLabel(item):""}>
-              <span style={{ fontSize:16, flexShrink:0 }}>{item.icon}</span>
+              <span style={{ flexShrink:0, display:"flex", alignItems:"center" }}>{item.icon}</span>
               {!collapsed&&<span style={{ overflow:"hidden", textOverflow:"ellipsis" }}>{getLabel(item)}</span>}
             </button>
           ))}
@@ -423,7 +424,7 @@ export default function Layout({ children }) {
 
           <button onClick={signOut}
             style={{ background:"#1a0808", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", cursor:"pointer", fontSize:12, fontWeight:700, width:"100%", textAlign:"center", fontFamily:"'DM Sans',sans-serif", padding:"8px 0", transition:"all 0.12s" }}>
-            {collapsed?"🚪":`🚪 ${t("signOut")}`}
+            {collapsed?"→":"→ "+t("signOut")}
           </button>
         </div>
       </div>
@@ -441,6 +442,7 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 
 
