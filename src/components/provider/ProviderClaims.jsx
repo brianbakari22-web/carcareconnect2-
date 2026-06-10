@@ -66,10 +66,10 @@ export default function ProviderClaims() {
       <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem", marginBottom:"1.5rem" }}>
         <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000", marginBottom:8 }}>🛡️ Service Guarantee Policy</div>
         {[
-          { icon:"ΓÜá∩╕Å", text:"1st approved claim — Warning + full cost deducted from earnings" },
-          { icon:"≡ƒÜ½", text:"2nd approved claim — 7 day suspension + cost deducted" },
-          { icon:"Γ¥î", text:"3rd approved claim — Permanent ban from platform" },
-          { icon:"≡ƒÆí", text:"Dispute a claim by contacting support within 48 hours of notification" },
+          { icon:"⚠️", text:"1st approved claim — Warning + full cost deducted from earnings" },
+          { icon:"🚫", text:"2nd approved claim — 7 day suspension + cost deducted" },
+          { icon:"❗", text:"3rd approved claim — Permanent ban from platform" },
+          { icon:"💡", text:"Dispute a claim by contacting support within 48 hours of notification" },
         ].map(item=>(
           <div key={item.text} style={{ display:"flex", gap:8, alignItems:"flex-start", marginBottom:6 }}>
             <span style={{ fontSize:13, flexShrink:0 }}>{item.icon}</span>
@@ -140,11 +140,11 @@ export default function ProviderClaims() {
               {c.status==="approved"&&(
                 <div style={{ marginTop:8 }}>
                   <div style={{ padding:"0.6rem", background:"#fff5f5", borderRadius:7, fontSize:11, color:"#e24b4a", marginBottom:6 }}>
-                    Γ¥î Claim approved — KES {Number(c.bookings?.total_amount||0).toLocaleString()} deducted. Dispute within 48 hours.
+                    ❗ Claim approved — KES {Number(c.bookings?.total_amount||0).toLocaleString()} deducted. Dispute within 48 hours.
                   </div>
                   <button onClick={()=>setChatClaim(chatClaim===c.id?null:c.id)}
                     style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
-                    ΓÜá∩╕Å {chatClaim===c.id?"Close":"Dispute this decision"}
+                    ⚠️ {chatClaim===c.id?"Close":"Dispute this decision"}
                   </button>
                   {chatClaim===c.id&&(
                     <div style={{ height:280, marginTop:8 }}>
