@@ -99,7 +99,7 @@ export default function ProviderPayouts() {
         {[{k:"payouts",l:"Payouts"},{k:"bank",l:"Bank details"}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
             style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#378add":"#111", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
-            {t.l} {t.k==="bank"&&!bankSaved&&<span style={{ color:"#e24b4a" }}>ΓÜá∩╕Å</span>}
+            {t.l} {t.k==="bank"&&!bankSaved&&<span style={{ color:"#e24b4a" }}>⚠️</span>}
           </button>
         ))}
       </div>
