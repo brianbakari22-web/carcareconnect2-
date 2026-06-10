@@ -2,7 +2,7 @@
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
-const ROLES = {washer:"🚿 Washer",supervisor:"≡ƒæö Supervisor",cashier:"≡ƒÆ░ Cashier",detailer:"✨ Detailer"}
+const ROLES = {washer:"🚿 Washer",supervisor:"≡ƒæö Supervisor",cashier:"💰 Cashier",detailer:"✨ Detailer"}
 const SHIFTS = {morning:"≡ƒîà Morning (6am-2pm)",afternoon:"ΓÿÇ∩╕Å Afternoon (2pm-10pm)",fullday:"≡ƒòÉ Full Day"}
 export default function StaffManagement() {
   const { user } = useAuth()

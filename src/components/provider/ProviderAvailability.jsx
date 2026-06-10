@@ -190,12 +190,12 @@ export default function ProviderAvailability() {
             <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
                 <button onClick={()=>setCurrentMonth(new Date(year,month-1,1))}
-                  style={{ background:"none", border:"none", color:"#555555", cursor:"pointer", fontSize:18, padding:"4px 8px" }}>ΓÇ╣</button>
+                  style={{ background:"none", border:"none", color:"#555555", cursor:"pointer", fontSize:18, padding:"4px 8px" }}>‹</button>
                 <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:700, color:"#000000" }}>
                   {currentMonth.toLocaleString("default",{month:"long",year:"numeric"})}
                 </div>
                 <button onClick={()=>setCurrentMonth(new Date(year,month+1,1))}
-                  style={{ background:"none", border:"none", color:"#555555", cursor:"pointer", fontSize:18, padding:"4px 8px" }}>ΓÇ║</button>
+                  style={{ background:"none", border:"none", color:"#555555", cursor:"pointer", fontSize:18, padding:"4px 8px" }}>›</button>
               </div>
 
               <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:2, marginBottom:6 }}>

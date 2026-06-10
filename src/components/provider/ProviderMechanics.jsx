@@ -63,7 +63,7 @@ export default function ProviderMechanics() {
       if (!L) return
       const map = L.map(mapRef.current).setView([lat, lng], 14)
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map)
-      const icon = L.divIcon({ className:"", html:`<div style="background:#1d9e75;width:32px;height:32px;border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:16px;">≡ƒæ¿ΓÇì🔧</div>`, iconSize:[32,32], iconAnchor:[16,16] })
+      const icon = L.divIcon({ className:"", html:`<div style="background:#1d9e75;width:32px;height:32px;border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:16px;">👨‍🔧</div>`, iconSize:[32,32], iconAnchor:[16,16] })
       markerRef.current = L.marker([lat, lng], { icon }).addTo(map).bindPopup(`${trackingMechanic.first_name} ${trackingMechanic.last_name}`)
       mapInstanceRef.current = map
     }, 100)
@@ -260,7 +260,7 @@ export default function ProviderMechanics() {
       {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&mechanics.length===0&&(
         <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
-          <div style={{ fontSize:32, marginBottom:10 }}>≡ƒæ¿ΓÇì🔧</div>
+          <div style={{ fontSize:32, marginBottom:10 }}>👨‍🔧</div>
           No mechanics added yet.
         </div>
       )}

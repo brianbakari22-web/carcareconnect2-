@@ -79,7 +79,7 @@ export default function ProviderBookings() {
       if (selectedMechanic) {
         await supabase.from("mechanics").update({ is_available:false, current_booking_id:bookingId }).eq("id", selectedMechanic)
       }
-      toast.success("Mechanic assigned — customer notified! ≡ƒæ¿ΓÇì🔧")
+      toast.success("Mechanic assigned — customer notified! 👨‍🔧")
       setAssigningMechanic(null)
       setSelectedMechanic("")
       load()
@@ -110,7 +110,7 @@ export default function ProviderBookings() {
         },
         {
           user_id: booking.customer_id,
-          title: "Payment reminder ≡ƒÆ│",
+          title: "Payment reminder 💳",
           message: "Please complete payment for your "+booking.service_name+" service. Amount: KES "+Number(booking.updated_total||booking.total_amount).toLocaleString(),
           type: "info"
         }
@@ -190,7 +190,7 @@ export default function ProviderBookings() {
                 <div style={{ fontSize:11, color:"#777777" }}>{b.booking_date} · {b.booking_time?.slice(0,5)}</div>
                 {b.booking_number&&<div style={{ fontSize:10, color:"#888888", marginTop:2 }}>#{b.booking_number}</div>}
                 {b.problem_description&&<div style={{ fontSize:11, color:"#555555", marginTop:4, fontStyle:"italic" }}>"{b.problem_description}"</div>}
-                {b.assigned_mechanic_id&&<div style={{ fontSize:11, color:"#1d9e75", marginTop:2 }}>≡ƒæ¿ΓÇì🔧 Mechanic assigned</div>}
+                {b.assigned_mechanic_id&&<div style={{ fontSize:11, color:"#1d9e75", marginTop:2 }}>👨‍🔧 Mechanic assigned</div>}
                 {b.parts_details?.length>0&&(
                   <div style={{ fontSize:11, color:b.parts_approved?"#1d9e75":"#e6821e", marginTop:2 }}>
                     🔧 Parts: {b.parts_details.length} item{b.parts_details.length!==1?"s":""} · {b.parts_approved?"Γ£ô Approved":"Awaiting approval"}
@@ -214,7 +214,7 @@ export default function ProviderBookings() {
               {b.status==="confirmed"&&<>
                 <button onClick={()=>{ setAssigningMechanic(b.id); setSelectedMechanic("") }}
                   style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                  ≡ƒæ¿ΓÇì🔧 Assign mechanic
+                  👨‍🔧 Assign mechanic
                 </button>
                 <button onClick={()=>updateStatus(b.id,"in-progress")}
                   style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
