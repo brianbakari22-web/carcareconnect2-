@@ -1,4 +1,4 @@
-import useIsMobile from "../../lib/useIsMobile"
+﻿import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
@@ -165,7 +165,7 @@ export default function CustomerDiscover() {
     const dayOfWeek = today.getDay()
     const todayStr = today.toISOString().split("T")[0]
     const todayClosure = closures[providerId]?.find(c=>c.closure_date===todayStr)
-    if (todayClosure) return { open:false, label:`${t("closed")} ΓÇö ${todayClosure.reason||""}`, color:"#e24b4a" }
+    if (todayClosure) return { open:false, label:`${t("closed")} — ${todayClosure.reason||""}`, color:"#e24b4a" }
     const provHours = businessHours[providerId]
     if (!provHours||Object.keys(provHours).length===0) return null
     const hours = provHours[dayOfWeek]
@@ -175,7 +175,7 @@ export default function CustomerDiscover() {
     const closeStr = hours.close_time?.slice(0,5)||"18:00"
     const open = parseInt(openStr.split(":")[0])*60+parseInt(openStr.split(":")[1])
     const close = parseInt(closeStr.split(":")[0])*60+parseInt(closeStr.split(":")[1])
-    if (now>=open&&now<=close) return { open:true, label:`${t("open")} ┬╖ ${language==="sw"?"Inafunga":"Closes"} ${closeStr}`, color:"#1d9e75" }
+    if (now>=open&&now<=close) return { open:true, label:`${t("open")} · ${language==="sw"?"Inafunga":"Closes"} ${closeStr}`, color:"#1d9e75" }
     if (now<open) return { open:false, label:`${language==="sw"?"Inafungua":"Opens at"} ${openStr}`, color:"#e6821e" }
     return { open:false, label:t("closedNow"), color:"#e24b4a" }
   }
@@ -237,7 +237,7 @@ export default function CustomerDiscover() {
           {t("discoverServices")}
         </div>
         <div style={{ fontSize:12, color:"#777777" }}>
-          {providers.length} {t("providers").toLowerCase()} ┬╖ {drivers.filter(d=>d.is_online).length} {t("drivers").toLowerCase()} {t("online").toLowerCase()} ┬╖ {services.length} {t("services").toLowerCase()}
+          {providers.length} {t("providers").toLowerCase()} · {drivers.filter(d=>d.is_online).length} {t("drivers").toLowerCase()} {t("online").toLowerCase()} · {services.length} {t("services").toLowerCase()}
         </div>
       </div>
 
@@ -247,26 +247,26 @@ export default function CustomerDiscover() {
           style={{ ...inp, flex:1, minWidth:180 }}/>
         <button onClick={detectLocation} disabled={locating}
           style={{ background:userLocation?"#f0fdf4":"#f5f5f5", border:`1px solid ${userLocation?"#1d9e7540":"#e0e0e0"}`, borderRadius:8, color:userLocation?"#1d9e75":"#555", fontSize:12, padding:"0 14px", cursor:"pointer", whiteSpace:"nowrap", fontFamily:"'DM Sans',sans-serif" }}>
-          {locating?t("detecting"):`≡ƒôì ${t("nearMe")}`}
+          {locating?t("detecting"):`📍 ${t("nearMe")}`}
         </button>
         <button onClick={()=>setShowFilters(f=>!f)}
           style={{ background:showFilters?"#fff8f0":"#f5f5f5", border:`1px solid ${showFilters?"#e6821e40":"#e0e0e0"}`, borderRadius:8, color:showFilters?"#e6821e":"#555", fontSize:12, padding:"0 14px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
-          {t("filters")} {showFilters?"Γû▓":"Γû╝"}
+          {t("filters")} {showFilters?"Γû▓":"▼"}
         </button>
       </div>
 
       {/* Provider type filter */}
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
         {[
-          { key:"all", label:"All", icon:"≡ƒöì" },
-          { key:"garage", label:"Garage", icon:"≡ƒöº" },
-          { key:"parts_dealer", label:"Parts", icon:"ΓÜÖ∩╕Å" },
-          { key:"accessories_shop", label:"Accessories", icon:"Γ£¿" },
-          { key:"tyre_shop", label:"Tyres", icon:"≡ƒ¢₧" },
-          { key:"auto_electrician", label:"Electrician", icon:"ΓÜí" },
-          { key:"car_wash", label:"Car Wash", icon:"≡ƒÜ┐" },
-          { key:"panel_beater", label:"Panel Beater", icon:"≡ƒö¿" },
-          { key:"auto_glass", label:"Auto Glass", icon:"≡ƒ¬ƒ" },
+          { key:"all", label:"All", icon:"🔍" },
+          { key:"garage", label:"Garage", icon:"🔧" },
+          { key:"parts_dealer", label:"Parts", icon:"⚙️" },
+          { key:"accessories_shop", label:"Accessories", icon:"✨" },
+          { key:"tyre_shop", label:"Tyres", icon:"🛞" },
+          { key:"auto_electrician", label:"Electrician", icon:"⚡" },
+          { key:"car_wash", label:"Car Wash", icon:"🚿" },
+          { key:"panel_beater", label:"Panel Beater", icon:"🔨" },
+          { key:"auto_glass", label:"Auto Glass", icon:"🪟" },
         ].map(tp=>(
           <button key={tp.key} onClick={()=>setProviderTypeFilter(tp.key)}
             style={{ padding:"6px 12px", borderRadius:8, border:"none", fontSize:11, cursor:"pointer", background:providerTypeFilter===tp.key?"#e6821e":"#f0f0f0", color:providerTypeFilter===tp.key?"#fff":"#555", fontFamily:"DM Sans,sans-serif", whiteSpace:"nowrap" }}>
@@ -364,24 +364,24 @@ export default function CustomerDiscover() {
                     </div>
                     <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
                       {p.business_name&&<div style={{ fontSize:11, color:"#666" }}>{t("owner")}: {p.first_name} {p.last_name}</div>}
-                      {p.city&&<span style={{ fontSize:11, color:"#777777" }}>≡ƒôì {p.city}</span>}
-                      {dist!==null&&<span style={{ fontSize:11, color:"#378add" }}>┬╖ {dist.toFixed(1)} {t("kmAway")}</span>}
+                      {p.city&&<span style={{ fontSize:11, color:"#777777" }}>📍 {p.city}</span>}
+                      {dist!==null&&<span style={{ fontSize:11, color:"#378add" }}>· {dist.toFixed(1)} {t("kmAway")}</span>}
                     </div>
                     {status&&<div style={{ fontSize:11, color:status.color, marginTop:3, fontWeight:500 }}>ΓùÅ {status.label}</div>}
                   </div>
                   <div style={{ display:"flex", alignItems:"center", gap:8, flexShrink:0 }}>
                     <button onClick={e=>toggleFavorite(e,p.id)}
                       style={{ background:"none", border:"none", fontSize:20, cursor:"pointer", color:isFav?"#e24b4a":"#444", padding:"2px", lineHeight:1 }}>
-                      {isFav?"ΓÖÑ":"ΓÖí"}
+                      {isFav?"ΓÖÑ":"⭐"}
                     </button>
-                    <div style={{ fontSize:12, color:"#e6821e", fontWeight:500 }}>{t("viewProfile")} ΓåÆ</div>
+                    <div style={{ fontSize:12, color:"#e6821e", fontWeight:500 }}>{t("viewProfile")} →</div>
                   </div>
                 </div>
                 {ps.length>0&&(
                   <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
                     {ps.slice(0,4).map(s=>(
                       <span key={s.id} style={{ fontSize:10, padding:"3px 8px", borderRadius:6, background:"#f5f5f5", color:"#555555", border:"1px solid #e5e5e5" }}>
-                        {s.name} ┬╖ Ksh {formatPrice(s)}
+                        {s.name} · Ksh {formatPrice(s)}
                       </span>
                     ))}
                     {ps.length>4&&<span style={{ fontSize:10, padding:"3px 8px", borderRadius:6, background:"#f5f5f5", color:"#777777" }}>+{ps.length-4} {t("more")}</span>}
@@ -412,9 +412,9 @@ export default function CustomerDiscover() {
                   <div style={{ fontSize:12, color:"#555555", marginBottom:3 }}>{t("owner")}: {selectedProvider.first_name} {selectedProvider.last_name}</div>
                 )}
                 <div style={{ display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
-                  {selectedProvider.city&&<span style={{ fontSize:12, color:"#777777" }}>≡ƒôì {selectedProvider.city}</span>}
+                  {selectedProvider.city&&<span style={{ fontSize:12, color:"#777777" }}>📍 {selectedProvider.city}</span>}
                   {selectedProvider.is_verified&&<span style={{ fontSize:11, color:"#1d9e75", background:"#071a12", padding:"2px 8px", borderRadius:10 }}>Γ£ô {t("verified")}</span>}
-                  {getDistance(selectedProvider)!==null&&<span style={{ fontSize:11, color:"#378add" }}>≡ƒôì {getDistance(selectedProvider).toFixed(1)} {t("kmAway")}</span>}
+                  {getDistance(selectedProvider)!==null&&<span style={{ fontSize:11, color:"#378add" }}>📍 {getDistance(selectedProvider).toFixed(1)} {t("kmAway")}</span>}
                 </div>
                 {getProviderStatus(selectedProvider.id)&&(
                   <div style={{ fontSize:12, color:getProviderStatus(selectedProvider.id).color, marginTop:4, fontWeight:500 }}>
@@ -424,7 +424,7 @@ export default function CustomerDiscover() {
               </div>
               <button onClick={e=>toggleFavorite(e,selectedProvider.id)}
                 style={{ background:"none", border:"none", fontSize:26, cursor:"pointer", color:favorites.includes(selectedProvider.id)?"#e24b4a":"#444", padding:"4px", flexShrink:0 }}>
-                {favorites.includes(selectedProvider.id)?"ΓÖÑ":"ΓÖí"}
+                {favorites.includes(selectedProvider.id)?"ΓÖÑ":"⭐"}
               </button>
             </div>
           </div>
@@ -440,7 +440,7 @@ export default function CustomerDiscover() {
                       {h.day}{isToday?` (${t("today")})` :""}
                     </div>
                     <div style={{ fontSize:12, color:h.is_open?"#f0ede6":"#555" }}>
-                      {h.is_open?`${h.open_time} ΓÇö ${h.close_time}`:t("closed")}
+                      {h.is_open?`${h.open_time} — ${h.close_time}`:t("closed")}
                     </div>
                   </div>
                 )
@@ -454,7 +454,7 @@ export default function CustomerDiscover() {
               {closures[selectedProvider.id].map(c=>(
                 <div key={c.id} style={{ fontSize:12, color:"#555555", marginBottom:4 }}>
                   ≡ƒÜ½ {new Date(c.closure_date+"T00:00:00").toLocaleDateString("default",{weekday:"long",month:"long",day:"numeric"})}
-                  {c.reason&&` ΓÇö ${c.reason}`}
+                  {c.reason&&` — ${c.reason}`}
                 </div>
               ))}
             </div>
@@ -525,10 +525,10 @@ export default function CustomerDiscover() {
           {searchingParts&&<div style={{ color:"#777777", fontSize:13 }}>Searching...</div>}
           {!searchingParts&&partsSearch===("")&&carModel===("")&&(
             <div style={{ textAlign:"center", padding:"2rem", color:"#888888" }}>
-              <div style={{ fontSize:32, marginBottom:10 }}>≡ƒöì</div>
+              <div style={{ fontSize:32, marginBottom:10 }}>🔍</div>
               <div style={{ fontSize:13 }}>Search for parts, accessories or filter by your car model</div>
               <button onClick={()=>navigate("/dashboard/parts")} style={{ marginTop:"1rem", background:"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne", fontSize:13, fontWeight:700, padding:"10px 24px", cursor:"pointer" }}>
-                Browse all parts ΓåÆ
+                Browse all parts →
               </button>
             </div>
           )}
@@ -541,13 +541,13 @@ export default function CustomerDiscover() {
                 {item.photos?.[0]&&<img src={item.photos[0]} alt={item.name} style={{ width:"100%", height:120, objectFit:"cover", borderRadius:8, marginBottom:8 }}/>}
                 <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:4 }}>{item.name}</div>
                 {item.brand&&<div style={{ fontSize:11, color:"#555555", marginBottom:2 }}>Brand: {item.brand}</div>}
-                {item.compatible_cars?.length>0&&<div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>≡ƒÜù {item.compatible_cars.slice(0,2).join(", ")}</div>}
+                {item.compatible_cars?.length>0&&<div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>🚗 {item.compatible_cars.slice(0,2).join(", ")}</div>}
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                   <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>KES {Number(item.price).toLocaleString()}</div>
                   <div style={{ fontSize:10, color:item.stock_quantity>5?"#1d9e75":"#e24b4a" }}>{item.stock_quantity} in stock</div>
                 </div>
                 <div style={{ fontSize:11, color:"#777777", marginTop:4 }}>
-                  ≡ƒÅ¬ {item.profiles?.business_name||item.profiles?.first_name}
+                  🏪 {item.profiles?.business_name||item.profiles?.first_name}
                   {item.profiles?.is_verified&&<span style={{ color:"#1d9e75", marginLeft:4 }}>Γ£ô</span>}
                 </div>
               </div>
@@ -573,7 +573,7 @@ export default function CustomerDiscover() {
                   <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>{d.first_name} {d.last_name}</div>
                   {d.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#071a12", padding:"1px 6px", borderRadius:10 }}>Γ£ô</span>}
                 </div>
-                <div style={{ fontSize:11, color:"#777777" }}>{language==="sw"?"Dereva wa kuchukua":"Concierge driver"} ┬╖ {d.city||"Nairobi"}</div>
+                <div style={{ fontSize:11, color:"#777777" }}>{language==="sw"?"Dereva wa kuchukua":"Concierge driver"} · {d.city||"Nairobi"}</div>
               </div>
               <span style={{ fontSize:11, fontWeight:600, padding:"4px 10px", borderRadius:20, background:d.is_online?"#071a12":"#1a1a1a", color:d.is_online?"#1d9e75":"#555", border:`1px solid ${d.is_online?"#1d9e7530":"#33333330"}`, flexShrink:0 }}>
                 {d.is_online?t("online"):t("offline")}

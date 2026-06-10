@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+﻿import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
@@ -7,9 +7,9 @@ import toast from "react-hot-toast"
 import PesapalPayment from "../shared/PesapalPayment"
 
 const CATEGORIES = [
-  { key:"shop_standard", label:"Shop Standard", icon:"≡ƒÅ¬", desc:"You bring your car to the shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
-  { key:"shop_premium", label:"Shop Premium", icon:"≡ƒÅí", desc:"Mechanic comes to your home", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
-  { key:"go_service", label:"GO Service", icon:"≡ƒÜ¿", desc:"Emergency roadside assistance", color:"#e24b4a", bg:"#fff5f5", border:"#fecaca" },
+  { key:"shop_standard", label:"Shop Standard", icon:"🏪", desc:"You bring your car to the shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
+  { key:"shop_premium", label:"Shop Premium", icon:"🏡", desc:"Mechanic comes to your home", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
+  { key:"go_service", label:"GO Service", icon:"🚨", desc:"Emergency roadside assistance", color:"#e24b4a", bg:"#fff5f5", border:"#fecaca" },
 ]
 
 export default function CustomerServices() {
@@ -62,7 +62,7 @@ export default function CustomerServices() {
         setVoucherData(null)
       } else {
         setVoucherData(data)
-        toast.success(`Voucher applied ΓÇö KES ${Number(data.value).toLocaleString()} discount!`)
+        toast.success(`Voucher applied — KES ${Number(data.value).toLocaleString()} discount!`)
       }
     } catch(err) {
       toast.error("Could not validate voucher")
@@ -184,8 +184,8 @@ export default function CustomerServices() {
                 {s.description&&<div style={{ fontSize:12, color:"#666", marginBottom:6, lineHeight:1.5 }}>{s.description.length>120?s.description.slice(0,120)+"...":s.description}</div>}
                 <div style={{ display:"flex", gap:12, flexWrap:"wrap", alignItems:"center" }}>
                   <span style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(s.price)>=1?Number(s.price).toLocaleString():Number(s.price*100).toLocaleString()}</span>
-                  <span style={{ fontSize:11, color:"#777777" }}>ΓÅ▒ {s.duration_minutes||60} min</span>
-                  {provider&&<span style={{ fontSize:11, color:"#777777" }}>≡ƒÅ¬ {provider.business_name||`${provider.first_name} ${provider.last_name}`}{provider.city?` ┬╖ ${provider.city}`:""}</span>}
+                  <span style={{ fontSize:11, color:"#777777" }}>⏱ {s.duration_minutes||60} min</span>
+                  {provider&&<span style={{ fontSize:11, color:"#777777" }}>🏪 {provider.business_name||`${provider.first_name} ${provider.last_name}`}{provider.city?` · ${provider.city}`:""}</span>}
                   {provider?.is_verified&&<span style={{ fontSize:10, color:"#1d9e75" }}>Γ£ô Verified</span>}
                 </div>
               </div>
@@ -197,18 +197,18 @@ export default function CustomerServices() {
 
             {booking?.id===s.id&&(
               <div style={{ marginTop:"1rem", paddingTop:"1rem", borderTop:`1px solid ${cat.border}` }}>
-                <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:"0.75rem", color:"#000000" }}>Book ΓÇö {s.name}</div>
+                <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:"0.75rem", color:"#000000" }}>Book — {s.name}</div>
 
                 {s.category==="go_service"&&(
                   <div style={{ background:"#fff5f5", border:"1px solid #ffd5d5", borderRadius:8, padding:"0.75rem", marginBottom:12 }}>
-                    <div style={{ fontSize:12, color:"#e24b4a", fontWeight:600, marginBottom:2 }}>≡ƒÜ¿ Emergency GO Service</div>
+                    <div style={{ fontSize:12, color:"#e24b4a", fontWeight:600, marginBottom:2 }}>🚨 Emergency GO Service</div>
                     <div style={{ fontSize:11, color:"#666" }}>A mechanic will be dispatched to your location. Online payment required. Provider has 15 minutes to accept.</div>
                   </div>
                 )}
 
                 {s.category==="shop_premium"&&(
                   <div style={{ background:"#faf5ff", border:"1px solid #e9d5ff", borderRadius:8, padding:"0.75rem", marginBottom:12 }}>
-                    <div style={{ fontSize:12, color:"#8b5cf6", fontWeight:600, marginBottom:2 }}>≡ƒÅí Premium Home Service</div>
+                    <div style={{ fontSize:12, color:"#8b5cf6", fontWeight:600, marginBottom:2 }}>🏡 Premium Home Service</div>
                     <div style={{ fontSize:11, color:"#666" }}>A mechanic will come to your home or office. Please provide your address in the notes.</div>
                   </div>
                 )}
@@ -233,7 +233,7 @@ export default function CustomerServices() {
                       <label style={lbl}>Select vehicle (optional)</label>
                       <select value={selectedVehicle} onChange={e=>setSelectedVehicle(e.target.value)} style={inp}>
                         <option value="">Select a vehicle</option>
-                        {vehicles.map(v=><option key={v.id} value={v.id}>{v.make} {v.model} {v.year} ΓÇö {v.license_plate}</option>)}
+                        {vehicles.map(v=><option key={v.id} value={v.id}>{v.make} {v.model} {v.year} — {v.license_plate}</option>)}
                       </select>
                     </div>
                   )}
@@ -273,7 +273,7 @@ export default function CustomerServices() {
                   {s.category!=="go_service"&&(
                     <label style={{ display:"flex", alignItems:"center", gap:8, marginBottom:14, cursor:"pointer" }}>
                       <input type="checkbox" checked={bookForm.is_concierge} onChange={e=>setBookForm(f=>({...f,is_concierge:e.target.checked}))} style={{ accentColor:"#e6821e" }}/>
-                      <span style={{ fontSize:12, color:"#666" }}>Add concierge driver (pick up & drop off my car) ΓÇö extra 15%</span>
+                      <span style={{ fontSize:12, color:"#666" }}>Add concierge driver (pick up & drop off my car) — extra 15%</span>
                     </label>
                   )}
 
@@ -290,7 +290,7 @@ export default function CustomerServices() {
                     </div>
                     {voucherData&&(
                       <div style={{ marginTop:6, background:"#f0fff8", border:"1px solid #bbf7d0", borderRadius:8, padding:"0.5rem 0.75rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                        <div style={{ fontSize:11, color:"#1d9e75" }}>Γ£à Voucher applied ΓÇö KES {Number(voucherData.value).toLocaleString()} off</div>
+                        <div style={{ fontSize:11, color:"#1d9e75" }}>✅ Voucher applied — KES {Number(voucherData.value).toLocaleString()} off</div>
                         <button type="button" onClick={()=>{ setVoucherData(null); setVoucherCode("") }} style={{ background:"none", border:"none", color:"#e24b4a", cursor:"pointer", fontSize:12 }}>├ù</button>
                       </div>
                     )}

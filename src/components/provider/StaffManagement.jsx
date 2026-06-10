@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react"
+﻿import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
-const ROLES = {washer:"≡ƒÜ┐ Washer",supervisor:"≡ƒæö Supervisor",cashier:"≡ƒÆ░ Cashier",detailer:"Γ£¿ Detailer"}
+const ROLES = {washer:"🚿 Washer",supervisor:"≡ƒæö Supervisor",cashier:"≡ƒÆ░ Cashier",detailer:"✨ Detailer"}
 const SHIFTS = {morning:"≡ƒîà Morning (6am-2pm)",afternoon:"ΓÿÇ∩╕Å Afternoon (2pm-10pm)",fullday:"≡ƒòÉ Full Day"}
 export default function StaffManagement() {
   const { user } = useAuth()
@@ -59,7 +59,7 @@ export default function StaffManagement() {
               <div style={{fontFamily:"Syne",fontSize:14,fontWeight:700,color:"#000"}}>{s.name}</div>
               <span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:s.is_active?"#f0fdf4":"#f5f5f5",color:s.is_active?"#1d9e75":"#888"}}>{s.is_active?"Active":"Off duty"}</span>
             </div>
-            <div style={{fontSize:11,color:"#666"}}>{ROLES[s.role]} ┬╖ {SHIFTS[s.shift]}</div>
+            <div style={{fontSize:11,color:"#666"}}>{ROLES[s.role]} · {SHIFTS[s.shift]}</div>
             <div style={{fontSize:11,color:"#888"}}>≡ƒô₧ {s.phone}</div>
           </div>
           <div style={{display:"flex",gap:6}}>

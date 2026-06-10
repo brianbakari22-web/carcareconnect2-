@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+﻿import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
@@ -11,9 +11,9 @@ import ProviderPartsManager from "./ProviderPartsManager"
 const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", completed:"#1d9e75", cancelled:"#e24b4a" }
 const SB = { pending:"#1a1208", confirmed:"#0c1f2e", "in-progress":"#160a2e", completed:"#071a12", cancelled:"#1a0808" }
 const CATEGORIES = {
-  shop_standard: { label:"Shop Standard", icon:"≡ƒÅ¬", color:"#378add" },
-  shop_premium: { label:"Shop Premium", icon:"≡ƒÅí", color:"#8b5cf6" },
-  go_service: { label:"GO Service", icon:"≡ƒÜ¿", color:"#e24b4a" },
+  shop_standard: { label:"Shop Standard", icon:"🏪", color:"#378add" },
+  shop_premium: { label:"Shop Premium", icon:"🏡", color:"#8b5cf6" },
+  go_service: { label:"GO Service", icon:"🚨", color:"#e24b4a" },
 }
 
 export default function ProviderBookings() {
@@ -79,7 +79,7 @@ export default function ProviderBookings() {
       if (selectedMechanic) {
         await supabase.from("mechanics").update({ is_available:false, current_booking_id:bookingId }).eq("id", selectedMechanic)
       }
-      toast.success("Mechanic assigned ΓÇö customer notified! ≡ƒæ¿ΓÇì≡ƒöº")
+      toast.success("Mechanic assigned — customer notified! ≡ƒæ¿ΓÇì🔧")
       setAssigningMechanic(null)
       setSelectedMechanic("")
       load()
@@ -105,7 +105,7 @@ export default function ProviderBookings() {
         {
           user_id: booking.customer_id,
           title: "Service completed! How was it? Γ¡É",
-          message: "Your "+booking.service_name+" has been completed! Please go to My Bookings ΓåÆ tap the booking ΓåÆ Leave a Review. Your feedback helps other customers and earns you 50 bonus loyalty points!",
+          message: "Your "+booking.service_name+" has been completed! Please go to My Bookings → tap the booking → Leave a Review. Your feedback helps other customers and earns you 50 bonus loyalty points!",
           type: "success"
         },
         {
@@ -116,7 +116,7 @@ export default function ProviderBookings() {
         }
       ])
     }
-    toast.success("Booking completed ΓÇö customer notified!")
+    toast.success("Booking completed — customer notified!")
     load()
   }
 
@@ -187,13 +187,13 @@ export default function ProviderBookings() {
                   <div style={{ fontSize:isMobile?13:14, fontWeight:500, color:"#000000" }}>{b.service_name}</div>
                   <span style={{ fontSize:10, padding:"1px 7px", borderRadius:10, background:`${cat.color}20`, color:cat.color }}>{cat.label}</span>
                 </div>
-                <div style={{ fontSize:11, color:"#777777" }}>{b.booking_date} ┬╖ {b.booking_time?.slice(0,5)}</div>
+                <div style={{ fontSize:11, color:"#777777" }}>{b.booking_date} · {b.booking_time?.slice(0,5)}</div>
                 {b.booking_number&&<div style={{ fontSize:10, color:"#888888", marginTop:2 }}>#{b.booking_number}</div>}
                 {b.problem_description&&<div style={{ fontSize:11, color:"#555555", marginTop:4, fontStyle:"italic" }}>"{b.problem_description}"</div>}
-                {b.assigned_mechanic_id&&<div style={{ fontSize:11, color:"#1d9e75", marginTop:2 }}>≡ƒæ¿ΓÇì≡ƒöº Mechanic assigned</div>}
+                {b.assigned_mechanic_id&&<div style={{ fontSize:11, color:"#1d9e75", marginTop:2 }}>≡ƒæ¿ΓÇì🔧 Mechanic assigned</div>}
                 {b.parts_details?.length>0&&(
                   <div style={{ fontSize:11, color:b.parts_approved?"#1d9e75":"#e6821e", marginTop:2 }}>
-                    ≡ƒöº Parts: {b.parts_details.length} item{b.parts_details.length!==1?"s":""} ┬╖ {b.parts_approved?"Γ£ô Approved":"Awaiting approval"}
+                    🔧 Parts: {b.parts_details.length} item{b.parts_details.length!==1?"s":""} · {b.parts_approved?"Γ£ô Approved":"Awaiting approval"}
                   </div>
                 )}
               </div>
@@ -214,7 +214,7 @@ export default function ProviderBookings() {
               {b.status==="confirmed"&&<>
                 <button onClick={()=>{ setAssigningMechanic(b.id); setSelectedMechanic("") }}
                   style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                  ≡ƒæ¿ΓÇì≡ƒöº Assign mechanic
+                  ≡ƒæ¿ΓÇì🔧 Assign mechanic
                 </button>
                 <button onClick={()=>updateStatus(b.id,"in-progress")}
                   style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
@@ -247,7 +247,7 @@ export default function ProviderBookings() {
               {["confirmed","in-progress"].includes(b.status)&&(
                 <button onClick={()=>setShowParts(showParts===b.id?null:b.id)}
                   style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                  ≡ƒöº {b.parts_details?.length>0?"Edit parts":"Add parts"}
+                  🔧 {b.parts_details?.length>0?"Edit parts":"Add parts"}
                 </button>
               )}
 
@@ -326,7 +326,7 @@ export default function ProviderBookings() {
                   ].map(f=>(
                     <div key={f.l}>
                       <div style={{ fontSize:10, color:"#777777", textTransform:"uppercase", marginBottom:2 }}>{f.l}</div>
-                      <div style={{ fontSize:12, color:f.c||"#f0ede6" }}>{f.v||"ΓÇö"}</div>
+                      <div style={{ fontSize:12, color:f.c||"#f0ede6" }}>{f.v||"—"}</div>
                     </div>
                   ))}
                 </div>

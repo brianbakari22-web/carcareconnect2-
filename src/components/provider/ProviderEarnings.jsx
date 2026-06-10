@@ -1,4 +1,4 @@
-import useIsMobile from "../../lib/useIsMobile"
+﻿import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { useLanguage } from "../../contexts/LanguageContext"
 import { generateInvoice } from "../../lib/invoice"
@@ -101,7 +101,7 @@ export default function ProviderEarnings() {
         <div key={b.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
           <div style={{ flex:1 }}>
             <div style={{ fontSize:13, fontWeight:500, color:"#000000" }}>{b.service_name}</div>
-            <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>{b.booking_date} ┬╖ #{b.booking_number}</div>
+            <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>{b.booking_date} · #{b.booking_number}</div>
           </div>
           <div style={{ textAlign:"right" }}>
               <button onClick={()=>generateInvoice(b, profile, "provider")} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:6, color:"#378add", fontSize:10, padding:"4px 8px", cursor:"pointer", marginBottom:4, display:"block" }}>Invoice</button>

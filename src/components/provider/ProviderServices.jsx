@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+﻿import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import PhotoManager from "../shared/PhotoManager"
 import { useAuth } from "../../contexts/AuthContext"
@@ -7,18 +7,18 @@ import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
 const GARAGE_CATEGORIES = [
-  { key:"shop_standard", label:"Shop Standard", icon:"≡ƒÅ¬", desc:"Customer brings car to your shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
-  { key:"shop_premium", label:"Shop Premium", icon:"≡ƒÅí", desc:"Your mechanic goes to customer", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
-  { key:"go_service", label:"GO Service", icon:"≡ƒÜ¿", desc:"Emergency roadside assistance", color:"#e24b4a", bg:"#fff5f5", border:"#fecaca" },
+  { key:"shop_standard", label:"Shop Standard", icon:"🏪", desc:"Customer brings car to your shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
+  { key:"shop_premium", label:"Shop Premium", icon:"🏡", desc:"Your mechanic goes to customer", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
+  { key:"go_service", label:"GO Service", icon:"🚨", desc:"Emergency roadside assistance", color:"#e24b4a", bg:"#fff5f5", border:"#fecaca" },
 ]
 const WASH_CATEGORIES = [
-  { key:"basic_wash", label:"Basic Wash", icon:"≡ƒÜ┐", desc:"Exterior rinse and dry", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
-  { key:"standard_wash", label:"Standard Wash", icon:"Γ£¿", desc:"Exterior + interior clean", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
+  { key:"basic_wash", label:"Basic Wash", icon:"🚿", desc:"Exterior rinse and dry", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
+  { key:"standard_wash", label:"Standard Wash", icon:"✨", desc:"Exterior + interior clean", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
   { key:"premium_detail", label:"Premium Detail", icon:"≡ƒÆÄ", desc:"Full detailing service", color:"#1d9e75", bg:"#f0fdf4", border:"#bbf7d0" },
 ]
 const PANEL_CATEGORIES = [
-  { key:"shop_standard", label:"In Shop", icon:"≡ƒÅ¬", desc:"Customer brings car to shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
-  { key:"shop_premium", label:"On Site", icon:"≡ƒö¿", desc:"Go to customer location", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
+  { key:"shop_standard", label:"In Shop", icon:"🏪", desc:"Customer brings car to shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
+  { key:"shop_premium", label:"On Site", icon:"🔨", desc:"Go to customer location", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
 ]
 function getCategories(providerType) {
   if (providerType === "car_wash") return WASH_CATEGORIES
@@ -147,7 +147,7 @@ export default function ProviderServices() {
           type: "warning",
         })
       }
-      toast.success(`Service deactivated ┬╖ ${pendingBookings.length} pending booking(s) cancelled and customers notified`)
+      toast.success(`Service deactivated · ${pendingBookings.length} pending booking(s) cancelled and customers notified`)
     } else {
       toast.success("Service deactivated")
     }
@@ -180,7 +180,7 @@ export default function ProviderServices() {
           ≡ƒôª Go to Inventory
         </a>
         <a href="/dashboard/orders" style={{ background:"#ffffff", border:"1px solid #dddddd", borderRadius:10, color:"#555555", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", textDecoration:"none" }}>
-          ≡ƒ¢Æ View Orders
+          🛒 View Orders
         </a>
       </div>
     </div>
@@ -295,7 +295,7 @@ export default function ProviderServices() {
       {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&filtered.length===0&&(
         <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
-          <div style={{ fontSize:32, marginBottom:10 }}>≡ƒöº</div>
+          <div style={{ fontSize:32, marginBottom:10 }}>🔧</div>
           No services yet. Add your first service above.
         </div>
       )}
@@ -315,8 +315,8 @@ export default function ProviderServices() {
                 {s.description&&<div style={{ fontSize:11, color:"#666", marginBottom:4, lineHeight:1.5 }}>{s.description}</div>}
                 <div style={{ display:"flex", gap:12, flexWrap:"wrap" }}>
                   <span style={{ fontSize:12, color:"#e6821e", fontFamily:"Syne", fontWeight:700 }}>KES {Number(s.price).toLocaleString()}</span>
-                  <span style={{ fontSize:11, color:"#777777" }}>ΓÅ▒ {s.duration_minutes||60} min</span>
-                  <span style={{ fontSize:11, color:cat.color }}>{cat.key==="shop_standard"?`You keep ${commissionRate.provider}% ┬╖ Platform ${commissionRate.platform}%`:cat.key==="shop_premium"?`You keep ${Math.max(commissionRate.provider-10,70)}% ┬╖ Platform ${Math.min(commissionRate.platform+10,30)}%`:`You keep ${commissionRate.provider}% ┬╖ Platform ${commissionRate.platform}%`}</span>
+                  <span style={{ fontSize:11, color:"#777777" }}>⏱ {s.duration_minutes||60} min</span>
+                  <span style={{ fontSize:11, color:cat.color }}>{cat.key==="shop_standard"?`You keep ${commissionRate.provider}% · Platform ${commissionRate.platform}%`:cat.key==="shop_premium"?`You keep ${Math.max(commissionRate.provider-10,70)}% · Platform ${Math.min(commissionRate.platform+10,30)}%`:`You keep ${commissionRate.provider}% · Platform ${commissionRate.platform}%`}</span>
                 </div>
               </div>
               <div style={{ display:"flex", gap:6, flexShrink:0, flexWrap:"wrap", justifyContent:"flex-end" }}>

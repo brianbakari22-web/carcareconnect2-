@@ -256,7 +256,7 @@ export default function LandingPage() {
                   </div>
                 ))}
                 <button onClick={()=>navigate("/auth")} style={{ marginTop:14, width:"100%", background:r.color+"22", border:"1px solid "+r.color+"50", borderRadius:9, color:r.color, fontSize:13, fontWeight:700, padding:"10px", cursor:"pointer" }}>
-                  Join as {r.role} ΓåÆ
+                  Join as {r.role} →
                 </button>
               </div>
             ))}

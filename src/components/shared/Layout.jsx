@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+﻿import { useState, useEffect } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import { useTheme } from "../../contexts/ThemeContext"
@@ -204,8 +204,8 @@ export default function Layout({ children }) {
     ] : []),
     { path:"/dashboard/claims", label:"Service Claims", icon:"🛡️" },
     ...( ["car_wash"].includes(providerType) ? [
-      { path:"/dashboard/wash-queue", label:"Wash Queue", icon:"≡ƒÜ┐" },
-      { path:"/dashboard/wash-packages", label:"Wash Packages", icon:"Γ£¿" },
+      { path:"/dashboard/wash-queue", label:"Wash Queue", icon:"🚿" },
+      { path:"/dashboard/wash-packages", label:"Wash Packages", icon:"✨" },
       { path:"/dashboard/staff", label:"Staff Management", icon:"👥" },
     ] : []),
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react"
+﻿import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -63,7 +63,7 @@ export default function ProviderMechanics() {
       if (!L) return
       const map = L.map(mapRef.current).setView([lat, lng], 14)
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map)
-      const icon = L.divIcon({ className:"", html:`<div style="background:#1d9e75;width:32px;height:32px;border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:16px;">≡ƒæ¿ΓÇì≡ƒöº</div>`, iconSize:[32,32], iconAnchor:[16,16] })
+      const icon = L.divIcon({ className:"", html:`<div style="background:#1d9e75;width:32px;height:32px;border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:16px;">≡ƒæ¿ΓÇì🔧</div>`, iconSize:[32,32], iconAnchor:[16,16] })
       markerRef.current = L.marker([lat, lng], { icon }).addTo(map).bindPopup(`${trackingMechanic.first_name} ${trackingMechanic.last_name}`)
       mapInstanceRef.current = map
     }, 100)
@@ -148,7 +148,7 @@ export default function ProviderMechanics() {
           </div>
           <div>
             <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000000" }}>{trackingMechanic.first_name} {trackingMechanic.last_name}</div>
-            <div style={{ fontSize:12, color:"#777777" }}>≡ƒöº {trackingMechanic.specialization}</div>
+            <div style={{ fontSize:12, color:"#777777" }}>🔧 {trackingMechanic.specialization}</div>
             {trackingMechanic.phone&&<div style={{ fontSize:12, color:"#777777" }}>≡ƒô₧ {trackingMechanic.phone}</div>}
           </div>
           <div style={{ marginLeft:"auto" }}>
@@ -181,7 +181,7 @@ export default function ProviderMechanics() {
         <div ref={mapRef} style={{ height:300, borderRadius:10, overflow:"hidden", background:"#f5f5f5" }}>
           {!trackingMechanic.current_latitude&&(
             <div style={{ height:"100%", display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:8 }}>
-              <div style={{ fontSize:28 }}>≡ƒôì</div>
+              <div style={{ fontSize:28 }}>📍</div>
               <div style={{ fontSize:12, color:"#777777" }}>No location shared yet</div>
             </div>
           )}
@@ -260,7 +260,7 @@ export default function ProviderMechanics() {
       {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&mechanics.length===0&&(
         <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
-          <div style={{ fontSize:32, marginBottom:10 }}>≡ƒæ¿ΓÇì≡ƒöº</div>
+          <div style={{ fontSize:32, marginBottom:10 }}>≡ƒæ¿ΓÇì🔧</div>
           No mechanics added yet.
         </div>
       )}
@@ -277,16 +277,16 @@ export default function ProviderMechanics() {
                 <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:m.is_available&&m.is_active?"#071a12":"#1a1a1a", color:m.is_available&&m.is_active?"#1d9e75":"#555" }}>
                   {m.is_active?(m.is_available?"Available":"On job"):"Inactive"}
                 </span>
-                {m.current_latitude&&<span style={{ fontSize:10, color:"#1d9e75" }}>≡ƒôì Live</span>}
+                {m.current_latitude&&<span style={{ fontSize:10, color:"#1d9e75" }}>📍 Live</span>}
               </div>
-              <div style={{ fontSize:11, color:"#777777", marginBottom:2 }}>≡ƒöº {m.specialization}</div>
+              <div style={{ fontSize:11, color:"#777777", marginBottom:2 }}>🔧 {m.specialization}</div>
               {m.phone&&<div style={{ fontSize:11, color:"#777777", marginBottom:2 }}>≡ƒô₧ {m.phone}</div>}
               {m.last_location_update&&<div style={{ fontSize:10, color:"#888888" }}>Last seen: {new Date(m.last_location_update).toLocaleTimeString()}</div>}
             </div>
             <div style={{ display:"flex", gap:6, flexShrink:0, flexWrap:"wrap", justifyContent:"flex-end", marginTop:isMobile?8:0 }}>
               <button onClick={()=>openTracking(m)}
                 style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                ≡ƒôì Track
+                📍 Track
               </button>
               <button onClick={()=>startEdit(m)}
                 style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>

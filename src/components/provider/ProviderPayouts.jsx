@@ -1,4 +1,4 @@
-import useIsMobile from "../../lib/useIsMobile"
+﻿import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
@@ -142,14 +142,14 @@ export default function ProviderPayouts() {
             <div style={{ background:"#ffffff", border:"1px solid #1d9e7530", borderRadius:10, padding:"1rem", marginBottom:"1.5rem" }}>
               <div style={{ fontSize:11, color:"#777777", marginBottom:6 }}>Payout to</div>
               <div style={{ fontSize:13, fontWeight:500, color:"#000000" }}>{bankInfo.bank_account_name}</div>
-              <div style={{ fontSize:12, color:"#777777", marginTop:2 }}>{bankInfo.bank_name} ┬╖ {bankInfo.bank_account_number}</div>
+              <div style={{ fontSize:12, color:"#777777", marginTop:2 }}>{bankInfo.bank_name} · {bankInfo.bank_account_number}</div>
               <button onClick={()=>setTab("bank")} style={{ background:"none", border:"none", color:"#378add", fontSize:11, cursor:"pointer", marginTop:6, padding:0, fontFamily:"'DM Sans',sans-serif" }}>Change bank details</button>
             </div>
           )}
 
           <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#000000" }}>Request payout</div>
-            <div style={{ fontSize:12, color:"#777777", marginBottom:"1rem" }}>{`Minimum KES 5,000 ┬╖ Available: KES ${Number(available).toLocaleString()} ┬╖ Transfer takes 2-3 business days`}</div>
+            <div style={{ fontSize:12, color:"#777777", marginBottom:"1rem" }}>{`Minimum KES 5,000 · Available: KES ${Number(available).toLocaleString()} · Transfer takes 2-3 business days`}</div>
             {available < 5000 ? (
               <div style={{ fontSize:13, color:"#777777", padding:"1rem", background:"#ffffff", borderRadius:8 }}>
                 {`You need KES ${Number(5000-available).toLocaleString()} more to reach the minimum payout threshold.`}
@@ -157,7 +157,7 @@ export default function ProviderPayouts() {
             ) : (
               <form onSubmit={requestPayout}>
                 <label style={lbl}>Amount to withdraw (KES)</label>
-                <input style={inp} type="number" min="5000" max={available} placeholder={`5,000 ΓÇö ${Number(available).toLocaleString()}`} value={amount} onChange={e=>setAmount(e.target.value)} required/>
+                <input style={inp} type="number" min="5000" max={available} placeholder={`5,000 — ${Number(available).toLocaleString()}`} value={amount} onChange={e=>setAmount(e.target.value)} required/>
                 {amount&&Number(amount)>=50&&(
                   <div style={{ fontSize:12, color:"#777777", marginBottom:10, marginTop:-6 }}>
                     You will receive: <span style={{ color:"#1d9e75", fontWeight:600 }}>KES {Number(amount).toLocaleString()}</span> to {bankInfo.bank_name}
@@ -178,7 +178,7 @@ export default function ProviderPayouts() {
                 <div key={p.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
                   <div style={{ flex:1 }}>
                     <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>KES {Number(p.amount).toLocaleString()}</div>
-                    <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>{p.bank_name} ┬╖ {p.bank_account_number}</div>
+                    <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>{p.bank_name} · {p.bank_account_number}</div>
                     <div style={{ fontSize:10, color:"#888888", marginTop:2 }}>{new Date(p.created_at).toLocaleDateString()}</div>
                     {p.admin_note&&<div style={{ fontSize:11, color:"#666", marginTop:4, fontStyle:"italic" }}>"{p.admin_note}"</div>}
                   </div>

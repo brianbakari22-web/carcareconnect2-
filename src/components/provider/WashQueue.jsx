@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+﻿import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
@@ -28,24 +28,24 @@ export default function WashQueue() {
   if (loading) return <div style={{color:"#777",fontSize:13}}>Loading...</div>
   return (
     <div>
-      <div style={{fontFamily:"Syne",fontSize:18,fontWeight:800,color:"#000",marginBottom:4}}>≡ƒÜ┐ Active Wash Queue</div>
+      <div style={{fontFamily:"Syne",fontSize:18,fontWeight:800,color:"#000",marginBottom:4}}>🚿 Active Wash Queue</div>
       <div style={{fontSize:12,color:"#777",marginBottom:"1.5rem"}}>{bookings.length} active booking{bookings.length!==1?"s":""}</div>
-      {bookings.length===0&&<div style={{textAlign:"center",padding:"3rem",background:"#f5f5f5",borderRadius:12}}><div style={{fontSize:40,marginBottom:10}}>≡ƒÜù</div><div style={{fontSize:14,color:"#888"}}>No active bookings right now</div></div>}
+      {bookings.length===0&&<div style={{textAlign:"center",padding:"3rem",background:"#f5f5f5",borderRadius:12}}><div style={{fontSize:40,marginBottom:10}}>🚗</div><div style={{fontSize:14,color:"#888"}}>No active bookings right now</div></div>}
       {bookings.map(b=>(
         <div key={b.id} style={{background:"#fff",border:`2px solid ${STATUS_COLORS[b.status]||"#eee"}30`,borderRadius:14,padding:"1.25rem",marginBottom:12,borderLeft:`4px solid ${STATUS_COLORS[b.status]||"#eee"}`}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}>
             <div>
               <div style={{fontFamily:"Syne",fontSize:15,fontWeight:700,color:"#000"}}>{b.service_name}</div>
               <div style={{fontSize:12,color:"#666"}}>≡ƒæñ {b.profiles?.first_name} {b.profiles?.last_name}</div>
-              {b.vehicles&&<div style={{fontSize:12,color:"#666"}}>≡ƒÜù {b.vehicles.color} {b.vehicles.make} {b.vehicles.model} ┬╖ {b.vehicles.license_plate}</div>}
-              <div style={{fontSize:11,color:"#888"}}>≡ƒôà {b.booking_date} ┬╖ {b.booking_time}</div>
+              {b.vehicles&&<div style={{fontSize:12,color:"#666"}}>🚗 {b.vehicles.color} {b.vehicles.make} {b.vehicles.model} · {b.vehicles.license_plate}</div>}
+              <div style={{fontSize:11,color:"#888"}}>≡ƒôà {b.booking_date} · {b.booking_time}</div>
             </div>
             <span style={{fontSize:11,padding:"3px 10px",borderRadius:20,background:`${STATUS_COLORS[b.status]}20`,color:STATUS_COLORS[b.status],fontWeight:600}}>{b.status}</span>
           </div>
           <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:10}}>
             {b.status==="pending"&&<button onClick={()=>updateStatus(b.id,"confirmed")} style={{background:"#378add",border:"none",borderRadius:8,color:"#fff",fontSize:12,fontWeight:600,padding:"7px 14px",cursor:"pointer"}}>Γ£ô Confirm</button>}
-            {b.status==="confirmed"&&<button onClick={()=>updateStatus(b.id,"in-progress")} style={{background:"#8b5cf6",border:"none",borderRadius:8,color:"#fff",fontSize:12,fontWeight:600,padding:"7px 14px",cursor:"pointer"}}>≡ƒÜ┐ Start Wash</button>}
-            {b.status==="in-progress"&&<button onClick={()=>updateStatus(b.id,"completed")} style={{background:"#1d9e75",border:"none",borderRadius:8,color:"#fff",fontSize:12,fontWeight:600,padding:"7px 14px",cursor:"pointer"}}>Γ£à Complete</button>}
+            {b.status==="confirmed"&&<button onClick={()=>updateStatus(b.id,"in-progress")} style={{background:"#8b5cf6",border:"none",borderRadius:8,color:"#fff",fontSize:12,fontWeight:600,padding:"7px 14px",cursor:"pointer"}}>🚿 Start Wash</button>}
+            {b.status==="in-progress"&&<button onClick={()=>updateStatus(b.id,"completed")} style={{background:"#1d9e75",border:"none",borderRadius:8,color:"#fff",fontSize:12,fontWeight:600,padding:"7px 14px",cursor:"pointer"}}>✅ Complete</button>}
             <button onClick={()=>updateStatus(b.id,"cancelled")} style={{background:"none",border:"1px solid #e24b4a40",borderRadius:8,color:"#e24b4a",fontSize:12,padding:"7px 14px",cursor:"pointer"}}>Cancel</button>
           </div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>

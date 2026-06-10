@@ -1,17 +1,17 @@
-import { useEffect, useState, useRef } from "react"
+﻿import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
 const CATEGORIES = [
-  { key:"parts", label:"Parts", icon:"ΓÜÖ∩╕Å", desc:"Engine, brake, suspension parts" },
-  { key:"accessories", label:"Accessories", icon:"Γ£¿", desc:"Mats, cameras, audio, lights" },
-  { key:"tyres", label:"Tyres", icon:"≡ƒ¢₧", desc:"All tyre brands and sizes" },
-  { key:"tools", label:"Tools", icon:"≡ƒöº", desc:"Mechanical tools and equipment" },
-  { key:"oils", label:"Oils & Fluids", icon:"≡ƒ¢ó∩╕Å", desc:"Engine oil, brake fluid, coolant" },
-  { key:"electrical", label:"Electrical", icon:"ΓÜí", desc:"Batteries, bulbs, wiring" },
-  { key:"body", label:"Body Parts", icon:"≡ƒÜù", desc:"Bumpers, doors, mirrors, glass" },
+  { key:"parts", label:"Parts", icon:"⚙️", desc:"Engine, brake, suspension parts" },
+  { key:"accessories", label:"Accessories", icon:"✨", desc:"Mats, cameras, audio, lights" },
+  { key:"tyres", label:"Tyres", icon:"🛞", desc:"All tyre brands and sizes" },
+  { key:"tools", label:"Tools", icon:"🔧", desc:"Mechanical tools and equipment" },
+  { key:"oils", label:"Oils & Fluids", icon:"🛢️", desc:"Engine oil, brake fluid, coolant" },
+  { key:"electrical", label:"Electrical", icon:"⚡", desc:"Batteries, bulbs, wiring" },
+  { key:"body", label:"Body Parts", icon:"🚗", desc:"Bumpers, doors, mirrors, glass" },
   { key:"other", label:"Other", icon:"≡ƒôª", desc:"Other automotive items" },
 ]
 
@@ -41,7 +41,7 @@ export default function ProviderInventory() {
     load()
     const sub = supabase.channel("provider-inventory-live")
       .on("postgres_changes", { event:"*", schema:"public", table:"inventory", filter:`provider_id=eq.${user.id}` }, () => load())
-      .on("postgres_changes", { event:"*", schema:"public", table:"orders", filter:`provider_id=eq.${user.id}` }, () => { toast("New order received! ≡ƒ¢Æ", { duration:5000 }); load() })
+      .on("postgres_changes", { event:"*", schema:"public", table:"orders", filter:`provider_id=eq.${user.id}` }, () => { toast("New order received! 🛒", { duration:5000 }); load() })
       .subscribe()
     return () => supabase.removeChannel(sub)
   }, [user])
@@ -112,8 +112,8 @@ export default function ProviderInventory() {
 
   async function updateStock(id, qty) {
     await supabase.from("inventory").update({ stock_quantity:qty, updated_at:new Date().toISOString() }).eq("id", id)
-    if (qty<=3&&qty>0) toast("ΓÜá∩╕Å Low stock warning ΓÇö only "+qty+" left!", { icon:"ΓÜá∩╕Å", duration:5000 })
-    if (qty===0) toast.error("Γ¥î Item out of stock ΓÇö customers cannot order this item")
+    if (qty<=3&&qty>0) toast("ΓÜá∩╕Å Low stock warning — only "+qty+" left!", { icon:"ΓÜá∩╕Å", duration:5000 })
+    if (qty===0) toast.error("Γ¥î Item out of stock — customers cannot order this item")
     load()
   }
 
@@ -233,10 +233,10 @@ export default function ProviderInventory() {
                 {item.stock_quantity<=5&&item.is_active&&<span style={{ fontSize:10, color:"#e24b4a", background:"#fff5f5", padding:"1px 6px", borderRadius:6 }}>ΓÜá∩╕Å Low stock</span>}
               </div>
               <div style={{ fontSize:11, color:"#777777", marginBottom:4 }}>
-                {CATEGORIES.find(c=>c.key===item.category)?.icon} {item.category} {item.subcategory?`┬╖ ${item.subcategory}`:""}
+                {CATEGORIES.find(c=>c.key===item.category)?.icon} {item.category} {item.subcategory?`· ${item.subcategory}`:""}
               </div>
               {item.compatible_cars?.length>0&&(
-                <div style={{ fontSize:10, color:"#888888", marginBottom:4 }}>≡ƒÜù {item.compatible_cars.join(", ")}</div>
+                <div style={{ fontSize:10, color:"#888888", marginBottom:4 }}>🚗 {item.compatible_cars.join(", ")}</div>
               )}
               {item.description&&<div style={{ fontSize:11, color:"#777777", fontStyle:"italic" }}>{item.description}</div>}
             </div>

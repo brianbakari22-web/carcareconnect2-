@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+﻿import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -64,11 +64,11 @@ export default function ProviderClaims() {
 
       {/* Policy reminder */}
       <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem", marginBottom:"1.5rem" }}>
-        <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000", marginBottom:8 }}>≡ƒ¢í∩╕Å Service Guarantee Policy</div>
+        <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000", marginBottom:8 }}>🛡️ Service Guarantee Policy</div>
         {[
-          { icon:"ΓÜá∩╕Å", text:"1st approved claim ΓÇö Warning + full cost deducted from earnings" },
-          { icon:"≡ƒÜ½", text:"2nd approved claim ΓÇö 7 day suspension + cost deducted" },
-          { icon:"Γ¥î", text:"3rd approved claim ΓÇö Permanent ban from platform" },
+          { icon:"ΓÜá∩╕Å", text:"1st approved claim — Warning + full cost deducted from earnings" },
+          { icon:"≡ƒÜ½", text:"2nd approved claim — 7 day suspension + cost deducted" },
+          { icon:"Γ¥î", text:"3rd approved claim — Permanent ban from platform" },
           { icon:"≡ƒÆí", text:"Dispute a claim by contacting support within 48 hours of notification" },
         ].map(item=>(
           <div key={item.text} style={{ display:"flex", gap:8, alignItems:"flex-start", marginBottom:6 }}>
@@ -98,8 +98,8 @@ export default function ProviderClaims() {
         <div>
           {!loading&&claims.length===0&&(
             <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>
-              <div style={{ fontSize:32, marginBottom:10 }}>Γ£à</div>
-              No claims against your services ΓÇö keep up the great work!
+              <div style={{ fontSize:32, marginBottom:10 }}>✅</div>
+              No claims against your services — keep up the great work!
             </div>
           )}
           {claims.map(c=>(
@@ -110,7 +110,7 @@ export default function ProviderClaims() {
                     <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{c.bookings?.service_name}</div>
                     <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:`${SC[c.status]||"#888"}20`, color:SC[c.status]||"#888" }}>{c.status?.replace("_"," ")}</span>
                   </div>
-                  <div style={{ fontSize:11, color:"#777777", marginBottom:2 }}>#{c.bookings?.booking_number} ┬╖ {c.bookings?.booking_date}</div>
+                  <div style={{ fontSize:11, color:"#777777", marginBottom:2 }}>#{c.bookings?.booking_number} · {c.bookings?.booking_date}</div>
                   <div style={{ fontSize:12, color:"#e6821e", marginBottom:2 }}>Reason: {c.reason}</div>
                   {c.admin_notes&&<div style={{ fontSize:11, color:"#378add", marginTop:4 }}>Admin decision: "{c.admin_notes}"</div>}
                   <div style={{ fontSize:10, color:"#888888", marginTop:4 }}>{new Date(c.created_at).toLocaleString()}</div>
@@ -140,7 +140,7 @@ export default function ProviderClaims() {
               {c.status==="approved"&&(
                 <div style={{ marginTop:8 }}>
                   <div style={{ padding:"0.6rem", background:"#fff5f5", borderRadius:7, fontSize:11, color:"#e24b4a", marginBottom:6 }}>
-                    Γ¥î Claim approved ΓÇö KES {Number(c.bookings?.total_amount||0).toLocaleString()} deducted. Dispute within 48 hours.
+                    Γ¥î Claim approved — KES {Number(c.bookings?.total_amount||0).toLocaleString()} deducted. Dispute within 48 hours.
                   </div>
                   <button onClick={()=>setChatClaim(chatClaim===c.id?null:c.id)}
                     style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
@@ -155,7 +155,7 @@ export default function ProviderClaims() {
               )}
               {c.status==="pending"&&(
                 <div style={{ marginTop:8, padding:"0.6rem", background:"#fff8f0", borderRadius:7, fontSize:11, color:"#e6821e" }}>
-                  ΓÅ│ Under review ΓÇö our team will make a decision within 24 hours
+                  ΓÅ│ Under review — our team will make a decision within 24 hours
                 </div>
               )}
             </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+﻿import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -20,7 +20,7 @@ export default function ProviderOrders() {
     const sub = supabase.channel("provider-orders")
       .on("postgres_changes", { event:"INSERT", schema:"public", table:"orders", filter:`provider_id=eq.${user.id}` },
         payload => {
-          toast("≡ƒ¢Æ New order received!", { duration:8000, icon:"≡ƒ¢Æ" })
+          toast("🛒 New order received!", { duration:8000, icon:"🛒" })
           load()
         })
       .subscribe()
@@ -43,7 +43,7 @@ export default function ProviderOrders() {
       const messages = {
         confirmed: "Your order has been confirmed! We are preparing your items.",
         processing: "Your order is being processed and packed.",
-        ready: order.fulfillment_type==="delivery"?"Your order is ready ΓÇö driver will pick up soon!":"Your order is ready for pickup!",
+        ready: order.fulfillment_type==="delivery"?"Your order is ready — driver will pick up soon!":"Your order is ready for pickup!",
         delivered: "Your order has been delivered. Thank you! ≡ƒÄë",
         cancelled: "Your order has been cancelled. Contact support for refund."
       }
@@ -75,7 +75,7 @@ export default function ProviderOrders() {
     await supabase.from("orders").update({ delivery_driver_id:driver.id, delivery_status:"driver_assigned" }).eq("id", orderId)
     await supabase.from("notifications").insert({
       user_id: driver.id,
-      title: "≡ƒÜÜ New delivery job!",
+      title: "🚚 New delivery job!",
       message: "New delivery assigned: "+order?.order_items?.length+" item(s) to "+order?.delivery_address+". Zone: "+order?.delivery_zone+". Check your deliveries now!",
       type: "success"
     })
@@ -132,8 +132,8 @@ export default function ProviderOrders() {
             <div>
               <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:2 }}>#{o.order_number}</div>
               <div style={{ fontSize:11, color:"#777777" }}>≡ƒæñ {o.profiles?.first_name} {o.profiles?.last_name}</div>
-              <div style={{ fontSize:11, color:"#777777" }}>{o.fulfillment_type==="delivery"?"≡ƒÜÜ Delivery to "+o.delivery_address:"≡ƒÅ¬ Customer pickup"}</div>
-              {o.delivery_zone&&<div style={{ fontSize:11, color:"#378add" }}>≡ƒôì Zone: {o.delivery_zone}</div>}
+              <div style={{ fontSize:11, color:"#777777" }}>{o.fulfillment_type==="delivery"?"🚚 Delivery to "+o.delivery_address:"🏪 Customer pickup"}</div>
+              {o.delivery_zone&&<div style={{ fontSize:11, color:"#378add" }}>📍 Zone: {o.delivery_zone}</div>}
               <div style={{ fontSize:10, color:"#888888" }}>{new Date(o.created_at).toLocaleString()}</div>
             </div>
             <div style={{ textAlign:"right" }}>
@@ -168,10 +168,10 @@ export default function ProviderOrders() {
               <button onClick={()=>updateStatus(o.id,"processing")} style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>≡ƒôª Start packing</button>
             )}
             {o.status==="processing"&&(
-              <button onClick={()=>updateStatus(o.id,"ready")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>Γ£à Mark ready</button>
+              <button onClick={()=>updateStatus(o.id,"ready")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>✅ Mark ready</button>
             )}
             {o.status==="ready"&&o.fulfillment_type==="delivery"&&!o.delivery_driver_id&&(
-              <button onClick={()=>assignDriver(o.id)} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>≡ƒÜÜ Assign driver</button>
+              <button onClick={()=>assignDriver(o.id)} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>🚚 Assign driver</button>
             )}
             {o.status==="ready"&&o.fulfillment_type==="pickup"&&(
               <button onClick={()=>updateStatus(o.id,"delivered")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>Γ£ô Customer picked up</button>

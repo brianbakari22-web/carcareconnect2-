@@ -1,4 +1,4 @@
-import useIsMobile from "../../lib/useIsMobile"
+﻿import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
@@ -295,7 +295,7 @@ export default function ProviderAvailability() {
                         style={{ width:36, height:36, borderRadius:8, background:"#f5f5f5", border:"1px solid #dddddd", color:"#000000", fontSize:18, cursor:"pointer" }}>+</button>
                     </div>
                     <div style={{ fontSize:11, color:"#777777", marginTop:6 }}>
-                      {bookingCounts[selected]||0} booked ┬╖ {Math.max(0,form.max_bookings-(bookingCounts[selected]||0))} slots remaining
+                      {bookingCounts[selected]||0} booked · {Math.max(0,form.max_bookings-(bookingCounts[selected]||0))} slots remaining
                     </div>
                   </div>
                 )}
@@ -338,10 +338,10 @@ export default function ProviderAvailability() {
           <div style={{ background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:10, padding:"1rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8, color:"#000000" }}>How it works</div>
             {[
-              { icon:"≡ƒƒó", text:"Open ΓÇö day has available slots" },
-              { icon:"≡ƒƒí", text:"Partial ΓÇö some bookings made" },
-              { icon:"≡ƒö┤", text:"Full ΓÇö max bookings reached" },
-              { icon:"Γ¢ö", text:"Blocked ΓÇö no bookings allowed" },
+              { icon:"≡ƒƒó", text:"Open — day has available slots" },
+              { icon:"≡ƒƒí", text:"Partial — some bookings made" },
+              { icon:"≡ƒö┤", text:"Full — max bookings reached" },
+              { icon:"Γ¢ö", text:"Blocked — no bookings allowed" },
             ].map(i=>(
               <div key={i.text} style={{ display:"flex", gap:8, marginBottom:6, fontSize:12, color:"#555555" }}>
                 <span>{i.icon}</span><span>{i.text}</span>

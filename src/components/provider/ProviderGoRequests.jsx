@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react"
+﻿import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -23,8 +23,8 @@ export default function ProviderGoRequests() {
       .on("postgres_changes", { event:"INSERT", schema:"public", table:"go_service_requests", filter:`provider_id=eq.${user.id}` },
         payload => {
           playAlarm()
-          sendPushNotification("≡ƒÜ¿ EMERGENCY GO REQUEST!", "Customer needs help urgently. Open CCC now!")
-          toast("≡ƒÜ¿ NEW EMERGENCY ΓÇö Customer needs help NOW!", { duration:30000, icon:"≡ƒÜ¿", style:{ background:"#e24b4a", color:"#fff", fontWeight:800, fontSize:13 } })
+          sendPushNotification("🚨 EMERGENCY GO REQUEST!", "Customer needs help urgently. Open CCC now!")
+          toast("🚨 NEW EMERGENCY — Customer needs help NOW!", { duration:30000, icon:"🚨", style:{ background:"#e24b4a", color:"#fff", fontWeight:800, fontSize:13 } })
           load()
           let count = 0
           const interval = setInterval(() => {
@@ -175,7 +175,7 @@ export default function ProviderGoRequests() {
       if (selectedMechanic) {
         await supabase.from("mechanics").update({ is_available:false, current_booking_id:request.booking_id }).eq("id", selectedMechanic)
       }
-      toast.success("Emergency accepted ΓÇö mechanic dispatched! ≡ƒÜ¿")
+      toast.success("Emergency accepted — mechanic dispatched! 🚨")
       // Start GPS tracking for this booking
       startMechanicTracking(request.booking_id)
       const mechanic = mechanics.find(m=>m.id===selectedMechanic)
@@ -186,7 +186,7 @@ export default function ProviderGoRequests() {
       if (bkData?.customer_id) {
         await supabase.from("notifications").insert({
           user_id: bkData.customer_id,
-          title: "≡ƒÜ¿ Mechanic dispatched ΓÇö help is on the way!",
+          title: "🚨 Mechanic dispatched — help is on the way!",
           message: "Mechanic: "+mName+" | "+mSpec+" | Phone: "+mPhone+" | They are heading to your location now. Please stay safe.",
           type: "success"
         })
@@ -216,7 +216,7 @@ export default function ProviderGoRequests() {
   const pending = requests.filter(r=>r.status==="pending")
   const recent = requests.filter(r=>r.status!=="pending")
 
-  const EMERGENCY_ICONS = { flat_tire:"≡ƒ¢₧", dead_battery:"≡ƒöï", out_of_fuel:"Γ¢╜", car_wont_start:"≡ƒöæ", overheating:"≡ƒîí∩╕Å", towing:"≡ƒÜÜ", other:"≡ƒåÿ" }
+  const EMERGENCY_ICONS = { flat_tire:"🛞", dead_battery:"🔋", out_of_fuel:"⛽", car_wont_start:"🔑", overheating:"🌡️", towing:"🚚", other:"≡ƒåÿ" }
 
   return (
     <div>
@@ -225,7 +225,7 @@ export default function ProviderGoRequests() {
           <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:10 }}>
             <div style={{ width:10, height:10, borderRadius:"50%", background:"#e24b4a", boxShadow:"0 0 8px #e24b4a" }}/>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e24b4a" }}>
-              ≡ƒÜ¿ {pending.length} Emergency request{pending.length!==1?"s":""} pending
+              🚨 {pending.length} Emergency request{pending.length!==1?"s":""} pending
             </div>
           </div>
           {pending.map(r=>(
@@ -238,10 +238,10 @@ export default function ProviderGoRequests() {
                       {r.bookings?.emergency_type?.replace(/_/g," ").toUpperCase()}
                     </div>
                   </div>
-                  <div style={{ fontSize:12, color:"#555555", marginBottom:2 }}>≡ƒôì {r.bookings?.emergency_location_address}</div>
+                  <div style={{ fontSize:12, color:"#555555", marginBottom:2 }}>📍 {r.bookings?.emergency_location_address}</div>
                   {r.bookings?.notes&&<div style={{ fontSize:11, color:"#666" }}>≡ƒô¥ {r.bookings.notes}</div>}
                   <div style={{ fontSize:11, color:"#e6821e", marginTop:4 }}>
-                    ≡ƒÆ░ KES {Number(r.bookings?.total_amount||0).toLocaleString()} ┬╖ Your earnings: KES {(Number(r.bookings?.total_amount||0)*0.85).toFixed(0)}
+                    ≡ƒÆ░ KES {Number(r.bookings?.total_amount||0).toLocaleString()} · Your earnings: KES {(Number(r.bookings?.total_amount||0)*0.85).toFixed(0)}
                   </div>
                   <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>Attempt {r.attempt_number} of 5</div>
                 </div>
@@ -275,7 +275,7 @@ export default function ProviderGoRequests() {
               <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
                 <button onClick={()=>{ setAssigning(assigning===r.id?null:r.id); setSelectedMechanic("") }}
                   style={{ background:"#e24b4a", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 18px", cursor:"pointer" }}>
-                  {assigning===r.id?"Cancel":"≡ƒÜ¿ Accept & dispatch"}
+                  {assigning===r.id?"Cancel":"🚨 Accept & dispatch"}
                 </button>
                 {assigning===r.id&&(
                   <button onClick={()=>acceptRequest(r)} disabled={mechanics.length>0&&!selectedMechanic}
@@ -300,7 +300,7 @@ export default function ProviderGoRequests() {
       {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&recent.length===0&&pending.length===0&&(
         <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>
-          <div style={{ fontSize:32, marginBottom:10 }}>≡ƒÜ¿</div>
+          <div style={{ fontSize:32, marginBottom:10 }}>🚨</div>
           No GO service requests yet
         </div>
       )}
@@ -314,7 +314,7 @@ export default function ProviderGoRequests() {
                 <span style={{ fontSize:13, color:"#000000" }}>{r.bookings?.emergency_type?.replace(/_/g," ")}</span>
                 <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:r.status==="accepted"?"#071a12":r.status==="declined"?"#1a0808":"#1a1a1a", color:r.status==="accepted"?"#1d9e75":r.status==="declined"?"#e24b4a":"#888" }}>{r.status}</span>
               </div>
-              <div style={{ fontSize:11, color:"#777777" }}>≡ƒôì {r.bookings?.emergency_location_address}</div>
+              <div style={{ fontSize:11, color:"#777777" }}>📍 {r.bookings?.emergency_location_address}</div>
               <div style={{ fontSize:10, color:"#888888", marginTop:2 }}>{new Date(r.sent_at).toLocaleString()}</div>
             </div>
             <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e" }}>
