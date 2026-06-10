@@ -1,144 +1,205 @@
 import { useNavigate } from "react-router-dom"
-
 export default function PrivacyPolicy() {
   const navigate = useNavigate()
-
+  const Section = ({ title, children }) => (
+    <div style={{ marginBottom:"2.5rem" }}>
+      <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#000", marginBottom:"1rem", paddingBottom:"0.5rem", borderBottom:"2px solid #e6821e20" }}>{title}</div>
+      <div style={{ fontSize:14, color:"#444", lineHeight:1.9 }}>{children}</div>
+    </div>
+  )
+  const Li = ({ children }) => (
+    <div style={{ display:"flex", gap:10, marginBottom:6 }}>
+      <span style={{ color:"#e6821e", flexShrink:0 }}>•</span>
+      <span>{children}</span>
+    </div>
+  )
   return (
-    <div style={{ minHeight:"100vh", background:"#ffffff", fontFamily:"'DM Sans',sans-serif", color:"#000000" }}>
+    <div style={{ minHeight:"100vh", background:"#ffffff", fontFamily:"DM Sans,sans-serif", color:"#000000" }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');`}</style>
-
       <nav style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"1.25rem 2rem", borderBottom:"1px solid #eeeeee", position:"sticky", top:0, background:"#ffffff", zIndex:10 }}>
-        <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000000", cursor:"pointer" }} onClick={()=>navigate("/auth")}>
-          🚗 Car<span style={{ color:"#e6821e" }}>Care</span> Connect
-        </div>
-        <button onClick={()=>navigate("/auth")}
-          style={{ background:"none", border:"1px solid #dddddd", borderRadius:8, color:"#555555", fontSize:13, padding:"8px 16px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
-          ← Back
-        </button>
+        <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000000", cursor:"pointer" }} onClick={()=>navigate("/")}>Car<span style={{ color:"#e6821e" }}>Care</span> Connect</div>
+        <button onClick={()=>navigate(-1)} style={{ background:"none", border:"1px solid #ddd", borderRadius:8, color:"#555", fontSize:13, padding:"8px 16px", cursor:"pointer" }}>Back</button>
       </nav>
-
       <div style={{ maxWidth:760, margin:"0 auto", padding:"3rem 2rem 5rem" }}>
         <div style={{ marginBottom:"2.5rem" }}>
           <div style={{ fontSize:12, color:"#e6821e", fontWeight:600, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>Legal</div>
-          <div style={{ fontFamily:"Syne", fontSize:"clamp(28px,4vw,40px)", fontWeight:800, color:"#000000", marginBottom:8 }}>Privacy Policy</div>
-          <div style={{ fontSize:13, color:"#777777" }}>Last updated: January 1, 2026 · Effective: January 1, 2026</div>
+          <div style={{ fontFamily:"Syne", fontSize:"clamp(28px,4vw,40px)", fontWeight:800, color:"#000", marginBottom:8 }}>Privacy Policy</div>
+          <div style={{ fontSize:13, color:"#777" }}>Last updated: June 10, 2026 - Effective: June 10, 2026</div>
         </div>
-
-        <div style={{ background:"#ffffff", border:"1px solid #e6821e30", borderRadius:12, padding:"1.25rem", marginBottom:"2rem" }}>
-          <div style={{ fontSize:13, color:"#555555", lineHeight:1.7 }}>
-            Car Care Connect ("we", "us", or "our") is committed to protecting your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform. Please read it carefully. By using Car Care Connect, you consent to the practices described in this policy.
-          </div>
+        <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:12, padding:"1.25rem", marginBottom:"2rem" }}>
+          <div style={{ fontSize:14, color:"#555", lineHeight:1.8 }}>Car Care Connect ("we", "us", or "our") is committed to protecting your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform at carcareconnect.care. By using Car Care Connect, you consent to the practices described in this policy.</div>
         </div>
-
-        {[
-          {
-            title: "1. Information We Collect",
-            content: [
-              { sub: "1.1 Information you provide directly", text: "When you create an account, we collect your full name, email address, phone number, and password. Service providers additionally provide business name, location, and banking details for payouts. Drivers provide their driver's license, vehicle information, and insurance documents." },
-              { sub: "1.2 Information collected automatically", text: "When you use our platform, we automatically collect your device type, browser type, IP address, operating system, pages visited, time spent on pages, and referring URLs. We also collect GPS location data when you use our location-based features or driver tracking." },
-              { sub: "1.3 Payment information", text: "Payment transactions are processed through Flutterwave. We do not store your full card details on our servers. We receive transaction IDs, payment status, and partial payment information (last 4 digits) from our payment processor." },
-              { sub: "1.4 Communications", text: "We collect messages you send through our chat system between customers, providers, and drivers. We also collect support tickets and correspondence with our team." },
-            ]
-          },
-          {
-            title: "2. How We Use Your Information",
-            content: [
-              { sub: "2.1 Service delivery", text: "We use your information to create and manage your account, process bookings, connect customers with service providers and drivers, process payments and payouts, and send service-related notifications." },
-              { sub: "2.2 Platform improvement", text: "We analyze usage patterns to improve our platform, personalize your experience, develop new features, and conduct research and analytics." },
-              { sub: "2.3 Communications", text: "We send transactional emails (booking confirmations, receipts, reminders), service notifications, and where permitted, promotional communications. You may opt out of promotional communications at any time." },
-              { sub: "2.4 Safety and security", text: "We use your information to verify identities, prevent fraud, investigate disputes, enforce our Terms of Service, and comply with legal obligations." },
-            ]
-          },
-          {
-            title: "3. Information Sharing",
-            content: [
-              { sub: "3.1 With service providers and drivers", text: "When you make a booking, we share your name and contact information with the relevant service provider and/or driver to fulfill the service. Providers and drivers can only see information relevant to their assigned bookings." },
-              { sub: "3.2 With payment processors", text: "We share necessary information with Flutterwave to process payments. Flutterwave's privacy policy governs how they handle this information." },
-              { sub: "3.3 With service providers (vendors)", text: "We use trusted third-party services including Supabase (database and authentication), Resend (email delivery), and Flutterwave (payments). These parties are contractually bound to protect your information." },
-              { sub: "3.4 Legal requirements", text: "We may disclose your information if required by law, court order, or government authority, or if we believe disclosure is necessary to protect our rights, your safety, or the safety of others." },
-              { sub: "3.5 No selling of data", text: "We do not sell, rent, or trade your personal information to third parties for their marketing purposes." },
-            ]
-          },
-          {
-            title: "4. Data Storage and Security",
-            content: [
-              { sub: "4.1 Storage location", text: "Your data is stored on Supabase servers. We implement industry-standard security measures including encryption in transit (TLS/SSL), encryption at rest, row-level security policies, and access controls." },
-              { sub: "4.2 Retention", text: "We retain your personal data for as long as your account is active or as needed to provide services. You may request deletion of your account and associated data at any time by contacting us." },
-              { sub: "4.3 Security measures", text: "We use two-factor authentication for admin access, role-based access control, secure password hashing, and regular security reviews. However, no method of transmission over the internet is 100% secure." },
-            ]
-          },
-          {
-            title: "5. Your Rights (Kenya Data Protection Act 2019)",
-            content: [
-              { sub: "5.1 Right to access", text: "You have the right to request a copy of the personal data we hold about you." },
-              { sub: "5.2 Right to rectification", text: "You have the right to correct inaccurate or incomplete personal data." },
-              { sub: "5.3 Right to erasure", text: "You have the right to request deletion of your personal data, subject to our legal obligations." },
-              { sub: "5.4 Right to data portability", text: "You have the right to receive your data in a structured, machine-readable format." },
-              { sub: "5.5 Right to object", text: "You have the right to object to processing of your personal data for marketing purposes." },
-              { sub: "5.6 How to exercise your rights", text: "To exercise any of these rights, contact us at carcareconnect254@gmail.com. We will respond within 30 days." },
-            ]
-          },
-          {
-            title: "6. Cookies and Tracking",
-            content: [
-              { sub: "6.1 What we use", text: "We use essential cookies and local storage to maintain your session, remember your language preference and theme settings, and keep you logged in. We do not use advertising or tracking cookies." },
-              { sub: "6.2 Your choices", text: "You can clear cookies and local storage through your browser settings. Note that this will log you out and reset your preferences." },
-            ]
-          },
-          {
-            title: "7. Children's Privacy",
-            content: [
-              { sub: "", text: "Car Care Connect is not intended for users under 18 years of age. We do not knowingly collect personal information from minors. If you believe a minor has provided us with personal information, please contact us immediately." },
-            ]
-          },
-          {
-            title: "8. Changes to This Policy",
-            content: [
-              { sub: "", text: "We may update this Privacy Policy from time to time. We will notify you of significant changes by email or through an in-app notification. Your continued use of the platform after changes constitutes acceptance of the updated policy." },
-            ]
-          },
-          {
-            title: "9. Contact Us",
-            content: [
-              { sub: "", text: "For privacy-related questions, concerns, or to exercise your rights, contact us at:" },
-            ],
-            contact: true
-          },
-        ].map(section=>(
-          <div key={section.title} style={{ marginBottom:"2.5rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000000", marginBottom:"1rem", paddingBottom:"0.5rem", borderBottom:"1px solid #eeeeee" }}>{section.title}</div>
-            {section.content.map((item,i)=>(
-              <div key={i} style={{ marginBottom:"1rem" }}>
-                {item.sub&&<div style={{ fontSize:13, fontWeight:600, color:"#e6821e", marginBottom:4 }}>{item.sub}</div>}
-                <div style={{ fontSize:13, color:"#555555", lineHeight:1.8 }}>{item.text}</div>
-              </div>
-            ))}
-            {section.contact&&(
-              <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginTop:8 }}>
-                {[
-                  { icon:"🏢", text:"Car Care Connect" },
-                  { icon:"📍", text:"Nairobi, Kenya" },
-                  { icon:"📧", text:"carcareconnect254@gmail.com" },
-                  { icon:"📞", text:"0113858966" },
-                ].map(c=>(
-                  <div key={c.text} style={{ display:"flex", gap:10, alignItems:"center", marginBottom:8, fontSize:13, color:"#555555" }}>
-                    <span>{c.icon}</span><span>{c.text}</span>
-                  </div>
-                ))}
-              </div>
-            )}
+        <Section title="1. Who We Are">
+          <div>Car Care Connect is an automotive services marketplace based in Nairobi, Kenya. We connect car owners with verified mechanics, parts dealers, car wash providers and concierge drivers.</div>
+          <div style={{ marginTop:12 }}>
+            <Li>Platform: carcareconnect.care</Li>
+            <Li>Contact: carcareconnect254@gmail.com</Li>
+            <Li>Phone: 0113858966</Li>
+            <Li>Location: Nairobi, Kenya</Li>
           </div>
-        ))}
+        </Section>
+        <Section title="2. Information We Collect">
+          <div><strong>Account Information:</strong></div>
+          <div style={{ marginTop:8, marginBottom:12 }}>
+            <Li>Full name, email address, phone number</Li>
+            <Li>Profile photo (optional)</Li>
+            <Li>Role: Customer, Service Provider, or Driver</Li>
+            <Li>Business name and type (for providers)</Li>
+            <Li>Vehicle type and driver documents (for drivers)</Li>
+          </div>
+          <div><strong>Location Data:</strong></div>
+          <div style={{ marginTop:8, marginBottom:12 }}>
+            <Li>Precise GPS location when using GO Service emergency feature</Li>
+            <Li>Approximate location for finding nearby providers</Li>
+            <Li>Driver location during active deliveries</Li>
+            <Li>Mechanic location during GO Service jobs</Li>
+          </div>
+          <div><strong>Transaction Data:</strong></div>
+          <div style={{ marginTop:8, marginBottom:12 }}>
+            <Li>Booking details, service history, payment amounts</Li>
+            <Li>Payment method type (M-Pesa, card) - we do not store card numbers</Li>
+            <Li>Commission and earnings records for providers and drivers</Li>
+          </div>
+          <div><strong>Usage Data:</strong></div>
+          <div style={{ marginTop:8, marginBottom:12 }}>
+            <Li>Pages visited, features used, search queries</Li>
+            <Li>Device type, browser type, IP address</Li>
+            <Li>Crash reports and performance data</Li>
+          </div>
+          <div><strong>User Content:</strong></div>
+          <div style={{ marginTop:8 }}>
+            <Li>Reviews and ratings you submit</Li>
+            <Li>Before and after photos uploaded by providers</Li>
+            <Li>Vehicle condition reports</Li>
+            <Li>Chat messages between users (contact sharing is blocked)</Li>
+          </div>
+        </Section>
+        <Section title="3. How We Use Your Information">
+          <Li>To create and manage your account</Li>
+          <Li>To connect customers with service providers</Li>
+          <Li>To process bookings and payments via Pesapal</Li>
+          <Li>To enable live GPS tracking of drivers and mechanics</Li>
+          <Li>To dispatch mechanics for GO Service emergency requests</Li>
+          <Li>To calculate and process earnings and payouts</Li>
+          <Li>To send booking confirmations and service notifications</Li>
+          <Li>To manage loyalty points and rewards</Li>
+          <Li>To investigate service guarantee claims</Li>
+          <Li>To improve the platform and fix bugs</Li>
+          <Li>To comply with Kenyan law and regulations</Li>
+          <Li>To prevent fraud and abuse</Li>
+        </Section>
+        <Section title="4. How We Share Your Information">
+          <div><strong>With Service Providers:</strong> When you book a service, your name and vehicle details are shared with the relevant provider.</div>
+          <div style={{ marginTop:10 }}><strong>With Drivers:</strong> Your pickup/delivery address is shared with the assigned driver.</div>
+          <div style={{ marginTop:10 }}><strong>With Pesapal:</strong> Payment data is processed by Pesapal, regulated by the Central Bank of Kenya. We do not store your card details.</div>
+          <div style={{ marginTop:10 }}><strong>With Supabase:</strong> Our database and authentication provider stores your account data securely.</div>
+          <div style={{ marginTop:12 }}><strong>We do NOT:</strong></div>
+          <div style={{ marginTop:8 }}>
+            <Li>Sell your personal data to third parties</Li>
+            <Li>Share your data with advertisers</Li>
+            <Li>Allow providers or drivers to see your full contact details without your consent</Li>
+            <Li>Share your data outside Kenya except with our cloud service providers</Li>
+          </div>
+        </Section>
+        <Section title="5. Location Data">
+          <div>We collect location data for the following purposes:</div>
+          <div style={{ marginTop:8 }}>
+            <Li>Finding service providers near you</Li>
+            <Li>Dispatching mechanics to your GPS location during GO Service emergencies</Li>
+            <Li>Tracking driver and mechanic location during active bookings</Li>
+            <Li>Recording location history for safety and dispute resolution</Li>
+          </div>
+          <div style={{ marginTop:12 }}>Location tracking is only active when you are using the app. You can disable location access in your device settings, but this will limit GO Service and tracking features.</div>
+        </Section>
+        <Section title="6. Data Security">
+          <Li>All data is transmitted over encrypted HTTPS connections</Li>
+          <Li>Passwords are hashed and never stored in plain text</Li>
+          <Li>Database access is protected by Row Level Security (RLS)</Li>
+          <Li>Payment processing is handled by Pesapal (PCI DSS compliant)</Li>
+          <Li>We conduct regular security reviews</Li>
+          <Li>Access to user data is restricted to authorised staff only</Li>
+        </Section>
+        <Section title="7. Data Retention">
+          <Li>Account data is retained for as long as your account is active</Li>
+          <Li>Booking and transaction records are retained for 7 years for legal and tax purposes</Li>
+          <Li>Location history is retained for 90 days then automatically deleted</Li>
+          <Li>Chat messages are retained for 12 months</Li>
+          <Li>After account deletion, anonymised data may be retained for analytics</Li>
+        </Section>
+        <Section title="8. Your Rights">
+          <div>You have the right to:</div>
+          <div style={{ marginTop:8 }}>
+            <Li>Access the personal data we hold about you</Li>
+            <Li>Correct inaccurate personal data</Li>
+            <Li>Request deletion of your account and personal data</Li>
+            <Li>Object to processing of your personal data</Li>
+            <Li>Export your data in a portable format</Li>
+            <Li>Withdraw consent at any time</Li>
+          </div>
+          <div style={{ marginTop:12 }}>To exercise any of these rights, contact us at carcareconnect254@gmail.com.</div>
+        </Section>
+        <Section title="9. Account Deletion">
+          <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:10, padding:"1rem", marginBottom:12 }}>
+            <strong>How to delete your account and data:</strong>
+          </div>
+          <div style={{ marginBottom:8 }}>You can request deletion of your account and all associated personal data by:</div>
+          <Li>Emailing carcareconnect254@gmail.com with subject "Delete My Account"</Li>
+          <Li>Including your registered email address in the request</Li>
+          <Li>We will process your request within 30 days</Li>
+          <div style={{ marginTop:12 }}><strong>What gets deleted:</strong></div>
+          <div style={{ marginTop:8 }}>
+            <Li>Your profile and account credentials</Li>
+            <Li>Your vehicles, bookings history and reviews</Li>
+            <Li>Your chat messages and notifications</Li>
+            <Li>Your loyalty points and referral data</Li>
+          </div>
+          <div style={{ marginTop:12 }}><strong>What may be retained:</strong></div>
+          <div style={{ marginTop:8 }}>
+            <Li>Transaction records required by Kenyan tax law (7 years)</Li>
+            <Li>Anonymised analytics data with no personal identifiers</Li>
+          </div>
+        </Section>
+        <Section title="10. Cookies and Tracking">
+          <Li>We use essential cookies to keep you logged in</Li>
+          <Li>We use analytics to understand how the platform is used</Li>
+          <Li>We do not use advertising cookies or tracking pixels</Li>
+          <Li>You can clear cookies in your browser settings at any time</Li>
+        </Section>
+        <Section title="11. Children Privacy">
+          Car Care Connect is not intended for users under 18 years of age. We do not knowingly collect personal data from children. If you believe a child has provided us with personal data, please contact us immediately at carcareconnect254@gmail.com.
+        </Section>
+        <Section title="12. Third Party Services">
+          <div>Our platform integrates with:</div>
+          <div style={{ marginTop:8 }}>
+            <Li>Supabase - database and authentication</Li>
+            <Li>Pesapal - payment processing, regulated by Central Bank of Kenya</Li>
+            <Li>Cloudflare - hosting and CDN</Li>
+            <Li>Leaflet - mapping and location services</Li>
+            <Li>Anthropic Claude - AI assistant feature</Li>
+          </div>
+        </Section>
+        <Section title="13. Changes to This Policy">
+          <div>We may update this Privacy Policy from time to time. We will notify you of any significant changes by:</div>
+          <div style={{ marginTop:8 }}>
+            <Li>Posting the updated policy on this page with a new effective date</Li>
+            <Li>Sending a notification to your registered email address</Li>
+          </div>
+          <div style={{ marginTop:12 }}>Continued use of the platform after changes constitutes acceptance of the updated policy.</div>
+        </Section>
+        <Section title="14. Contact Us">
+          <div>If you have any questions about this Privacy Policy or how we handle your data:</div>
+          <div style={{ marginTop:12, background:"#f8f8f8", borderRadius:10, padding:"1rem" }}>
+            <Li>Email: carcareconnect254@gmail.com</Li>
+            <Li>Phone: 0113858966</Li>
+            <Li>Location: Nairobi, Kenya</Li>
+            <Li>Website: carcareconnect.care</Li>
+          </div>
+          <div style={{ marginTop:12 }}>We aim to respond to all privacy enquiries within 5 business days.</div>
+        </Section>
+        <div style={{ borderTop:"1px solid #eeeeee", paddingTop:"2rem", marginTop:"2rem", fontSize:13, color:"#999", textAlign:"center" }}>
+          2026 Car Care Connect - Nairobi, Kenya - All rights reserved
+        </div>
       </div>
-
-      <footer style={{ borderTop:"1px solid #eeeeee", padding:"1.5rem 2rem", textAlign:"center" }}>
-        <div style={{ fontSize:11, color:"#333" }}>© 2026 Car Care Connect · All rights reserved</div>
-      </footer>
     </div>
   )
 }
-
-
-
-
-
