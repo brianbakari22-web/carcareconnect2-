@@ -172,7 +172,7 @@ export default function ProviderDashboard() {
                 <span style={{ fontFamily:"Syne", fontSize:24, fontWeight:800, color:config.color }}>{initials||config.icon}</span>
               )}
               <div style={{ position:"absolute", bottom:0, left:0, right:0, background:"rgba(0,0,0,0.6)", fontSize:9, color:"#fff", textAlign:"center", padding:"2px 0" }}>
-                {uploadingPhoto?"...":"≡ƒô╖"}
+                {uploadingPhoto?"...":"📷"}
               </div>
             </div>
             <input ref={fileRef} type="file" accept="image/*" onChange={uploadPhoto} style={{ display:"none" }}/>
@@ -330,7 +330,7 @@ export default function ProviderDashboard() {
           {loading&&<div style={{ color:"#777777", fontSize:13 }}>{t("loading")}</div>}
           {!loading&&bookings.length===0&&(
             <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>
-              <div style={{ fontSize:32, marginBottom:10 }}>≡ƒôà</div>
+              <div style={{ fontSize:32, marginBottom:10 }}>📭</div>
               {language==="sw"?"Hakuna miadi bado":"No bookings yet"}
             </div>
           )}
