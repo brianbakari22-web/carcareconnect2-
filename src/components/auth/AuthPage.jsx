@@ -381,49 +381,72 @@ export default function AuthPage() {
 
   // Role selection
   if (step === "role") return (
-    <div style={{ minHeight:"100vh", background:"#ffffff", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"DM Sans,sans-serif", padding:"1rem" }}>
+    <div style={{ minHeight:"100vh", background:"#f8f8f8", fontFamily:"DM Sans,sans-serif" }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');`}</style>
-      <div style={{ width:"100%", maxWidth:640 }}>
-        <button onClick={()=>setStep("landing")} style={{ background:"none", border:"none", color:"#333", cursor:"pointer", fontSize:13, marginBottom:"1.5rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
+      <div style={{ background:"#fff", padding:"1rem 1.25rem", borderBottom:"1px solid #eee", display:"flex", alignItems:"center", gap:12, position:"sticky", top:0, zIndex:10 }}>
+        <button onClick={()=>setStep("landing")} style={{ background:"none", border:"none", color:"#333", cursor:"pointer", fontSize:13, padding:0 }}>
           ← Back
         </button>
-        <div style={{ textAlign:"center", marginBottom:"2rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#000000", marginBottom:6 }}>Who are you?</div>
-          <div style={{ fontSize:15, color:"#555555" }}>Choose your role to get started</div>
-        </div>
-        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:12, marginBottom:"1.5rem" }}>
-          {ROLES.map(r=>(
-            <div key={r.key} onClick={()=>setSelectedRole(r.key)}
-              style={{ background:selectedRole===r.key?r.bg:"#f5f5f5", border:`2px solid ${selectedRole===r.key?r.color:"#e5e5e5"}`, borderRadius:14, padding:"1.5rem 1rem", cursor:"pointer", textAlign:"center", transition:"all 0.15s" }}
-              onMouseEnter={e=>{ if(selectedRole!==r.key){ e.currentTarget.style.borderColor=r.border; e.currentTarget.style.transform="translateY(-4px)" }}}
-              onMouseLeave={e=>{ if(selectedRole!==r.key){ e.currentTarget.style.borderColor="#e5e5e5"; e.currentTarget.style.transform="translateY(0)" }}}>
-              <div style={{ fontSize:36, marginBottom:10 }}>{r.icon}</div>
-              <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:selectedRole===r.key?r.color:"#000000", marginBottom:6 }}>{r.label}</div>
-              <div style={{ fontSize:13, color:"#666666", lineHeight:1.5, marginBottom:12 }}>{r.desc}</div>
-              <div style={{ textAlign:"left" }}>
+        <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800 }}>Car<span style={{ color:"#e6821e" }}>Care</span> Connect</div>
+      </div>
+      <div style={{ padding:"1.5rem 1.25rem 0.5rem" }}>
+        <div style={{ fontFamily:"Syne", fontSize:26, fontWeight:800, color:"#000", marginBottom:4 }}>Who are you?</div>
+        <div style={{ fontSize:14, color:"#888" }}>Choose your role to get started</div>
+        <div style={{ width:40, height:3, background:"#e6821e", borderRadius:2, marginTop:10 }}/>
+      </div>
+      <div style={{ padding:"1rem 1.25rem", display:"flex", flexDirection:"column", gap:16 }}>
+        {ROLES.map(r=>(
+          <div key={r.key}
+            style={{ background:"#fff", borderRadius:20, border:`2px solid ${selectedRole===r.key?r.color:"#f0f0f0"}`, overflow:"hidden", boxShadow:"0 2px 12px rgba(0,0,0,0.06)", transition:"all 0.2s", cursor:"pointer" }}
+            onClick={()=>setSelectedRole(r.key)}>
+            <div style={{ padding:"1.25rem 1.25rem 1rem", background:selectedRole===r.key?r.bg:"#fff" }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                  <div style={{ width:48, height:48, borderRadius:12, background:selectedRole===r.key?r.color+"20":"#f5f5f5", display:"flex", alignItems:"center", justifyContent:"center", fontSize:26 }}>
+                    {r.icon}
+                  </div>
+                  <div>
+                    <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:selectedRole===r.key?r.color:"#000" }}>{r.label}</div>
+                    <div style={{ fontSize:12, color:"#888", marginTop:1 }}>{r.desc}</div>
+                  </div>
+                </div>
+                <div style={{ fontSize:32 }}>
+                  {r.key==="customer"?"🗺️":r.key==="provider"?"📊":"🚗"}
+                </div>
+              </div>
+              <div style={{ display:"flex", flexDirection:"column", gap:6, background:selectedRole===r.key?r.color+"10":"#f8f8f8", borderRadius:12, padding:"0.75rem" }}>
                 {r.features.map(f=>(
-                  <div key={f} style={{ fontSize:13, color:selectedRole===r.key?r.color:"#555555", marginBottom:4 }}>{f}</div>
+                  <div key={f} style={{ display:"flex", alignItems:"center", gap:8, fontSize:13, color:selectedRole===r.key?r.color:"#444" }}>
+                    <span style={{ fontSize:14 }}>{f.split(" ")[0]}</span>
+                    <span>{f.split(" ").slice(1).join(" ")}</span>
+                  </div>
                 ))}
               </div>
             </div>
-          ))}
+            <button
+              onClick={e=>{ e.stopPropagation(); setSelectedRole(r.key); setStep("auth") }}
+              style={{ width:"100%", background:selectedRole===r.key?r.color:"#f0f0f0", border:"none", color:selectedRole===r.key?"#fff":"#555", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:8, transition:"all 0.2s" }}>
+              Continue as {r.label} →
+            </button>
+          </div>
+        ))}
+      </div>
+      <div style={{ padding:"1rem 1.25rem 2rem" }}>
+        <div style={{ background:"#fff", borderRadius:14, padding:"0.85rem 1rem", display:"flex", alignItems:"center", gap:10, border:"1px solid #f0f0f0" }}>
+          <div style={{ width:32, height:32, borderRadius:8, background:"#fff8f0", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, flexShrink:0 }}>shield</div>
+          <div>
+            <div style={{ fontSize:12, fontWeight:600, color:"#000" }}>Safe and Secure</div>
+            <div style={{ fontSize:11, color:"#888" }}>Your data is protected and secure with us.</div>
+          </div>
         </div>
-        <button onClick={()=>{ if(!selectedRole) return toast.error("Please select a role"); setStep("auth") }}
-          disabled={!selectedRole}
-          style={{ width:"100%", background:selectedRole?"#e6821e":"#e5e5e5", border:"none", borderRadius:10, color:selectedRole?"#fff":"#999", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:selectedRole?"pointer":"not-allowed", transition:"all 0.15s" }}>
-          Continue as {selectedRole ? ROLES.find(r=>r.key===selectedRole)?.label : "..."} →
-        </button>
-        <div style={{ textAlign:"center", marginTop:16, fontSize:12, color:"#666" }}>
-          By continuing you agree to our{" "}
-          <a href="/terms" target="_blank" style={{ color:"#e6821e", textDecoration:"none" }}>Terms</a>
-          {" "}and{" "}
-          <a href="/privacy" target="_blank" style={{ color:"#e6821e", textDecoration:"none" }}>Privacy Policy</a>
+        <div style={{ textAlign:"center", marginTop:12, fontSize:12, color:"#aaa" }}>
+          By continuing you agree to our <a href="/terms" target="_blank" style={{ color:"#e6821e", textDecoration:"none" }}>Terms</a> and <a href="/privacy" target="_blank" style={{ color:"#e6821e", textDecoration:"none" }}>Privacy Policy</a>
         </div>
       </div>
     </div>
   )
 
-  // Landing page - simple role picker
+    // Landing page - simple role picker
   return (
     <div style={{ minHeight:"100vh", background:"#fff", fontFamily:"DM Sans,sans-serif", display:"flex", flexDirection:"column" }}>
       <nav style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"0 1.25rem", height:56, background:"#000", position:"sticky", top:0, zIndex:10 }}>
