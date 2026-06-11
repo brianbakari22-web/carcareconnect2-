@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
@@ -177,3 +178,4 @@ export default function CustomerDashboard() {
     </div>
   )
 }
+
