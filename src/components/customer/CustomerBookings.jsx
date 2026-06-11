@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+﻿import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
@@ -150,7 +150,7 @@ export default function CustomerBookings() {
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
         {["all","pending","confirmed","in-progress","completed","cancelled"].map(s=>(
           <button key={s} onClick={()=>setFilter(s)}
-            style={{ padding:isMobile?"5px 10px":"6px 14px", borderRadius:6, border:"none", fontSize:isMobile?11:12, cursor:"pointer", background:filter===s?"#1a1208":"#111", color:filter===s?"#e6821e":"#666", fontFamily:"'DM Sans',sans-serif" }}>
+            style={{ padding:isMobile?"5px 10px":"6px 14px", borderRadius:6, border:"none", fontSize:isMobile?11:12, cursor:"pointer", background:filter===s?"#e6821e":"#f0f0f0", color:filter===s?"#fff":"#555", fontFamily:"'DM Sans',sans-serif" }}>
             {s==="all"?"All":s.charAt(0).toUpperCase()+s.slice(1)}
           </button>
         ))}
@@ -160,10 +160,15 @@ export default function CustomerBookings() {
       {!loading&&filtered.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>{t("noBookingsFound")}</div>}
 
       {filtered.map(b=>(
-        <div key={b.id} style={{ background:"#ffffff", border:`1px solid ${SB[b.status]||"#1e1e1e"}`, borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8 }}>
+        <div key={b.id} style={{ background:"#ffffff", border:`1px solid ${SC[b.status]||"#eee"}30`, borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
             <div style={{ flex:1, minWidth:0, marginRight:8 }}>
-              <div style={{ fontSize:isMobile?13:14, fontWeight:500, color:"#000000", marginBottom:2 }}>{b.service_name}</div>
+              <div style={{ fontSize:isMobile?13:14, fontWeight:500, color:"#000000", marginBottom:2, display:"flex", alignItems:"center", gap:6 }}>
+                <span style={{ fontSize:16 }}>
+                  {b.service_category==="go_service"?"🚨":b.service_category==="shop_premium"?"🏡":b.service_category==="car_wash"||b.service_category==="basic_wash"||b.service_category==="standard_wash"||b.service_category==="premium_detail"?"🚿":b.service_category==="basic_wash"?"🚿":"🏪"}
+                </span>
+                {b.service_name}
+              </div>
               <div style={{ fontSize:11, color:"#777777" }}>{b.booking_date} · {b.booking_time?.slice(0,5)}</div>
               {b.booking_number&&<div style={{ fontSize:10, color:"#888888", marginTop:2 }}>#{b.booking_number}</div>}
             </div>
@@ -183,15 +188,15 @@ export default function CustomerBookings() {
             {b.status==="completed"&&(
               <>
                 <button onClick={()=>navigate(`/dashboard/claims?booking=${b.id}`)}
-                  style={{ background:"#1a0808", border:"1px solid #e24b4a30", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                   🛡️ Service guarantee
                 </button>
                 <button onClick={()=>downloadBookingInvoice(b)} disabled={invoiceLoading===b.id}
-                  style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                   {invoiceLoading===b.id?"...":"⬇ Invoice"}
                 </button>
                 <button onClick={()=>{ setRebooking(b.id); setRebookForm({ date:"", time:"" }) }}
-                style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                 {t("rebookService")}
                 </button>
               </>
@@ -215,7 +220,7 @@ export default function CustomerBookings() {
               {b.driver_id&&(
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:10 }}
                   ref={el=>{ if(el&&!driverInfo[b.id]) loadDriverInfo(b.driver_id,b.id) }}>
-                  <div style={{ width:32, height:32, borderRadius:"50%", background:"#071a12", border:"1px solid #1d9e7540", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:12, fontWeight:800, color:"#1d9e75", flexShrink:0 }}>
+                  <div style={{ width:32, height:32, borderRadius:"50%", background:"#f0fdf4", border:"1px solid #1d9e7540", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:12, fontWeight:800, color:"#1d9e75", flexShrink:0 }}>
                     {driverInfo[b.id]?.first_name?.[0]}{driverInfo[b.id]?.last_name?.[0]}
                   </div>
                   <div>
@@ -297,7 +302,7 @@ export default function CustomerBookings() {
               )}
               {b.driver_id&&(
                 <button onClick={()=>setChatBooking(chatBooking===b.id+"driver"?null:b.id+"driver")}
-                  style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer", width:"100%", marginTop:6 }}>
+                  style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer", width:"100%", marginTop:6 }}>
                   💬 {chatBooking===b.id+"driver"?"Close chat":"Message driver"}
                 </button>
               )}
