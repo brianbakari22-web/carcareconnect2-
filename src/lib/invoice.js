@@ -1,4 +1,4 @@
-import jsPDF from "jspdf"
+﻿import jsPDF from "jspdf"
 
 export function generateInvoice(booking, provider, customer, mechanic, driver) {
   const doc = new jsPDF()
@@ -148,8 +148,9 @@ export function generateInvoice(booking, provider, customer, mechanic, driver) {
     doc.setFontSize(8)
     doc.setFont("helvetica", "italic")
     doc.setTextColor(130, 130, 130)
-    const noteLines = doc.splitTextToSize("Note: " + booking.notes, pageW - 50)
-    noteLines.forEach(l => { checkPage(); text(l, 18, y); y += 4 })
+    const cleanNote = ("Note: " + booking.notes).replace(/[^\x20-\x7E]/g, "")
+    const noteLines = doc.splitTextToSize(cleanNote, pageW - 36)
+    noteLines.forEach(l => { checkPage(); text(l, 18, y); y += 5 })
   }
 
   y += 4
