@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react"
+﻿import { useState, useRef, useEffect } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 
 const ROLE_COLORS = { customer:"#e6821e", provider:"#378add", driver:"#1d9e75", admin:"#8b5cf6" }
@@ -78,6 +78,20 @@ CLAIM INVESTIGATION CHAT:
 - Customer can add evidence via Add evidence button in their Service Guarantee page
 - All messages stored against the claim ID for full audit trail
 - Admin makes decision only after hearing both sides
+
+PENALTY & VIOLATION SYSTEM (NEW - June 2026):
+Admin can issue violations to any user (customer, provider, driver).
+Violation types: no_show, cancellation, abuse, false_claim, fraud, other.
+Progressive penalty system:
+- 1st violation: Warning + notification sent to user
+- 2nd violation: Suspension (24hrs to 30 days, admin configurable)
+- 3rd violation: Permanent ban
+Suspended users see a blue suspension screen with expiry time and cannot access any dashboard features.
+Banned users see a red banned screen and cannot access the platform.
+Admin can lift restrictions at any time from /admin-dashboard/penalties.
+Driver status is also updated when a driver is suspended.
+Real-time notifications sent to user when penalized or reinstated.
+All violations recorded with description and evidence for audit trail.
 
 SERVICE GUARANTEE POLICY:
 - Customer submits claim within 7 days of completed service
