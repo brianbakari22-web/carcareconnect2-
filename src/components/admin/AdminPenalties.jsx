@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+﻿import { useState, useEffect } from "react"
 import { supabase } from "../../lib/supabase"
 import toast from "react-hot-toast"
 
@@ -55,7 +55,7 @@ export default function AdminPenalties() {
     const [{ data: v }, { data: p }, { data: u }] = await Promise.all([
       supabase.from("user_violations").select("*, profiles!user_id(first_name,last_name,role)").order("created_at",{ascending:false}),
       supabase.from("user_penalties").select("*, profiles!user_id(first_name,last_name,role)").order("created_at",{ascending:false}),
-      supabase.from("profiles").select("id,first_name,last_name,role,is_suspended,is_banned,violation_count,warning_count,suspension_expires_at").order("first_name"),
+      supabase.from("profiles").select("id,first_name,last_name,role,is_suspended,is_banned,violation_count,warning_count,suspension_expires_at").neq("role","admin").order("first_name"),
     ])
     setViolations(v||[])
     setPenalties(p||[])
