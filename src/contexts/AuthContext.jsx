@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react"
+﻿import { createContext, useContext, useEffect, useState } from "react"
 import { supabase } from "../lib/supabase"
 
 const AuthContext = createContext({})
@@ -45,6 +45,17 @@ export function AuthProvider({ children }) {
         filter: `id=eq.${user.id}`
       }, payload => {
         setProfile(prev => ({ ...prev, ...payload.new }))
+        // Check if user was suspended or banned
+        if (payload.new.is_suspended && !payload.old?.is_suspended) {
+          import("react-hot-toast").then(({ default: toast }) => {
+            toast.error("Your account has been suspended. Please contact support.")
+          })
+        }
+        if (payload.new.is_banned && !payload.old?.is_banned) {
+          import("react-hot-toast").then(({ default: toast }) => {
+            toast.error("Your account has been permanently banned. Please contact support.")
+          })
+        }
         // Show toast if verification status changed
         if (payload.new.documents_verified && !payload.old?.documents_verified) {
           import("react-hot-toast").then(({ default: toast }) => {
