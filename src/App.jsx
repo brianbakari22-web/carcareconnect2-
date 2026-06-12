@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
+﻿import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import React, { useState, useEffect } from "react"
 import { supabase } from "./lib/supabase"
 
@@ -106,6 +106,7 @@ import AdminSupport from "./components/admin/AdminSupport"
 import AdminNotifications from "./components/admin/AdminNotifications"
 import AdminHealth from "./components/admin/AdminHealth"
 import AdminMarketplace from "./components/admin/AdminMarketplace"
+import AdminPenalties from "./components/admin/AdminPenalties"
 import AdminMechanics from "./components/admin/AdminMechanics"
 import AdminDisputes from "./components/admin/AdminDisputes"
 import AdminClaims from "./components/admin/AdminClaims"
@@ -303,6 +304,7 @@ function AdminDashboardRouter() {
           <Route path="drivers" element={<AdminDrivers />} />
           <Route path="mechanics" element={<AdminMechanics />} />
           <Route path="disputes" element={<AdminDisputes />} />
+          <Route path="penalties" element={<AdminPenalties />} />
               <Route path="claims" element={<AdminClaims />} />
           <Route path="*" element={<Navigate to="/admin-dashboard" replace />} />
         </Routes>

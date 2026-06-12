@@ -60,6 +60,7 @@ const NAV = {
     { path:"/admin-dashboard/providers", label:"Providers", icon:"🔧" },
     { path:"/admin-dashboard/drivers", label:"Drivers", icon:"🚗" },
     { path:"/admin-dashboard/mechanics", label:"Mechanics & Services", icon:"👨‍🔧" },
+    { path:"/admin-dashboard/penalties", label:"Penalties", icon:"🚫" },
     { path:"/admin-dashboard/disputes", label:"Disputes & Reports", icon:"⚠️" },
     { path:"/admin-dashboard/claims", label:"Service Claims", icon:"🛡️" },
     { path:"/admin-dashboard/bookings", key:"bookings", icon:"📅" },
