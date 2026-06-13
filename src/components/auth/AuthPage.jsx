@@ -1,5 +1,6 @@
 ﻿import useIsMobile from "../../lib/useIsMobile"
 import { useState, useEffect } from "react"
+import { Capacitor } from "@capacitor/core"
 
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
@@ -67,7 +68,8 @@ export default function AuthPage() {
 
   const { signIn, signUp, profile, user } = useAuth()
   const navigate = useNavigate()
-  const [step, setStep] = useState("landing")
+  const isNativeApp = Capacitor.isNativePlatform()
+  const [step, setStep] = useState(isNativeApp ? "role" : "landing")
   const [selectedRole, setSelectedRole] = useState(null)
   const [mode, setMode] = useState("signin")
   const [resetSent, setResetSent] = useState(false)
