@@ -83,7 +83,11 @@ export function ThemeProvider({ children }) {
 }
 
 export function useTheme() {
-  return useContext(ThemeContext)
+  const ctx = useContext(ThemeContext)
+  if (typeof window !== "undefined" && window.location.pathname.startsWith("/admin-dashboard")) {
+    return { ...ctx, theme: THEMES.light }
+  }
+  return ctx
 }
 
 
