@@ -321,7 +321,7 @@ export default function Layout({ children }) {
         </div>
       )}
 
-      <div style={{ flex:1, padding:"1rem", overflowY:"auto", paddingBottom:80 }}>
+      <div style={{ flex:1, padding:"1rem", overflowY:"auto", paddingBottom:80, background: role==="admin" ? "#f5f5f5" : "transparent" }}>
         {children}
       </div>
 
