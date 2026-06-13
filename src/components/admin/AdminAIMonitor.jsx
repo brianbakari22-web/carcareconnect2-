@@ -424,20 +424,20 @@ Be specific and actionable. Max 300 words. Use bullet points.`
   }
 
   return (
-    <div style={{ background:"#111", border:"1px solid #8b5cf640", borderRadius:14, marginBottom:"1.5rem", overflow:"hidden" }}>
+    <div style={{ background:"#f8f8f8", border:"1px solid #8b5cf640", borderRadius:14, marginBottom:"1.5rem", overflow:"hidden" }}>
       <div onClick={()=>setOpen(o=>!o)} style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"1rem 1.25rem", cursor:"pointer", background:"linear-gradient(135deg,#160a2e,#0a0a0a)" }}>
         <div style={{ display:"flex", alignItems:"center", gap:10 }}>
           <div style={{ width:36, height:36, borderRadius:"50%", background:"#8b5cf6", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}>✦</div>
           <div>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#8b5cf6" }}>AI Admin Monitor</div>
-            <div style={{ fontSize:10, color:"#555" }}>{loading?"Scanning platform...":report?.generatedAt?"Last scan: "+report.generatedAt:"Ready"}</div>
+            <div style={{ fontSize:10, color:"#888" }}>{loading?"Scanning platform...":report?.generatedAt?"Last scan: "+report.generatedAt:"Ready"}</div>
           </div>
         </div>
         <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-          <button onClick={e=>{ e.stopPropagation(); scanPlatform() }} style={{ background:"#160a2e", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"4px 10px", cursor:"pointer" }}>
+          <button onClick={e=>{ e.stopPropagation(); scanPlatform() }} style={{ background:"#f5f3ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"4px 10px", cursor:"pointer" }}>
             🔄 Refresh
           </button>
-          <span style={{ color:"#555", fontSize:16 }}>{open?"▲":"▼"}</span>
+          <span style={{ color:"#888", fontSize:16 }}>{open?"▲":"▼"}</span>
         </div>
       </div>
 
@@ -447,12 +447,12 @@ Be specific and actionable. Max 300 words. Use bullet points.`
             <div style={{ textAlign:"center", padding:"2rem" }}>
               <div style={{ fontSize:28, marginBottom:8 }}>✦</div>
               <div style={{ fontSize:13, color:"#8b5cf6" }}>AI scanning platform...</div>
-              <div style={{ fontSize:11, color:"#555", marginTop:4 }}>Checking all systems and data</div>
+              <div style={{ fontSize:11, color:"#888", marginTop:4 }}>Checking all systems and data</div>
             </div>
           )}
           {!loading&&report&&(
             <>
-              <div style={{ background:"#0f0f0f", borderRadius:10, padding:"1rem", marginBottom:"1rem", whiteSpace:"pre-wrap", fontSize:13, color:"#f0ede6", lineHeight:1.8 }}>
+              <div style={{ background:"#ffffff", borderRadius:10, padding:"1rem", marginBottom:"1rem", whiteSpace:"pre-wrap", fontSize:13, color:"#000000", lineHeight:1.8 }}>
                 {report.text}
               </div>
               <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8, marginBottom:"1rem" }}>
@@ -462,9 +462,9 @@ Be specific and actionable. Max 300 words. Use bullet points.`
                   { l:"Support tickets", v:report.platformData.pending_support, c:report.platformData.pending_support>0?"#e6821e":"#1d9e75" },
                   { l:"Unpaid (KES)", v:Number(report.platformData.unpaid_amount||0).toLocaleString(), c:"#e6821e" },
                 ].map(s=>(
-                  <div key={s.l} style={{ background:"#111", borderRadius:8, padding:"0.6rem", border:"1px solid #1e1e1e", textAlign:"center" }}>
+                  <div key={s.l} style={{ background:"#f8f8f8", borderRadius:8, padding:"0.6rem", border:"1px solid #eeeeee", textAlign:"center" }}>
                     <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:s.c }}>{s.v}</div>
-                    <div style={{ fontSize:9, color:"#555", marginTop:2 }}>{s.l}</div>
+                    <div style={{ fontSize:9, color:"#888", marginTop:2 }}>{s.l}</div>
                   </div>
                 ))}
               </div>
@@ -475,18 +475,18 @@ Be specific and actionable. Max 300 words. Use bullet points.`
                   { l:"Pesapal Pay", k:"pesapal" },
                   { l:"AI Assistant", k:"ai" },
                 ].map(s=>(
-                  <div key={s.k} style={{ background:"#0f0f0f", borderRadius:8, padding:"0.6rem", textAlign:"center", border:"1px solid "+(report.platformData.api_health?.[s.k]?.status==="ok"?"#1d9e7540":"#e24b4a40") }}>
+                  <div key={s.k} style={{ background:"#ffffff", borderRadius:8, padding:"0.6rem", textAlign:"center", border:"1px solid "+(report.platformData.api_health?.[s.k]?.status==="ok"?"#1d9e7540":"#e24b4a40") }}>
                     <div style={{ fontSize:10, color:report.platformData.api_health?.[s.k]?.status==="ok"?"#1d9e75":"#e24b4a", fontWeight:600 }}>
                       {report.platformData.api_health?.[s.k]?.status==="ok"?"✅":"❌"} {s.l}
                     </div>
-                    <div style={{ fontSize:9, color:"#555", marginTop:2 }}>{report.platformData.api_health?.[s.k]?.ms||0}ms</div>
+                    <div style={{ fontSize:9, color:"#888", marginTop:2 }}>{report.platformData.api_health?.[s.k]?.ms||0}ms</div>
                   </div>
                 ))}
               </div>
 
               {/* Auto-actions */}
               {report.platformData.stuck_bookings>0&&(
-                <div style={{ background:"#1a0808", border:"1px solid #e24b4a30", borderRadius:10, padding:"0.75rem", marginBottom:"1rem" }}>
+                <div style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:10, padding:"0.75rem", marginBottom:"1rem" }}>
                   <div style={{ fontSize:12, color:"#e24b4a", fontWeight:600, marginBottom:8 }}>⚡ Quick Actions</div>
                   <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
                     {report.platformData.stuck_bookings>0&&(
@@ -523,8 +523,8 @@ Be specific and actionable. Max 300 words. Use bullet points.`
                 </div>
               )}
               {/* Feature sync checklist */}
-              <div style={{ background:"#0f0f0f", borderRadius:10, padding:"1rem", marginBottom:"1rem" }}>
-                <div style={{ fontSize:12, fontWeight:600, color:"#f0ede6", marginBottom:10 }}>🔄 Feature Sync Checklist</div>
+              <div style={{ background:"#ffffff", borderRadius:10, padding:"1rem", marginBottom:"1rem" }}>
+                <div style={{ fontSize:12, fontWeight:600, color:"#000000", marginBottom:10 }}>🔄 Feature Sync Checklist</div>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:6 }}>
                   {[
                     { f:"Customer booking", ok:report.platformData.total_bookings>0 },
@@ -556,24 +556,24 @@ Be specific and actionable. Max 300 words. Use bullet points.`
                 </div>
               </div>
 
-              <div style={{ borderTop:"1px solid #1e1e1e", paddingTop:"1rem" }}>
+              <div style={{ borderTop:"1px solid #eeeeee", paddingTop:"1rem" }}>
                 <div style={{ fontSize:11, color:"#8b5cf6", marginBottom:8, fontWeight:600 }}>Ask AI about any issue:</div>
                 <div style={{ maxHeight:200, overflowY:"auto", marginBottom:8, display:"flex", flexDirection:"column", gap:6 }}>
                   {chatMessages.slice(1).map((m,i)=>(
                     <div key={i} style={{ display:"flex", justifyContent:m.role==="user"?"flex-end":"flex-start" }}>
-                      <div style={{ maxWidth:"85%", padding:"8px 12px", borderRadius:m.role==="user"?"12px 12px 4px 12px":"12px 12px 12px 4px", background:m.role==="user"?"#8b5cf6":"#1a1a1a", color:"#f0ede6", fontSize:12, lineHeight:1.5, whiteSpace:"pre-wrap" }}>
+                      <div style={{ maxWidth:"85%", padding:"8px 12px", borderRadius:m.role==="user"?"12px 12px 4px 12px":"12px 12px 12px 4px", background:m.role==="user"?"#8b5cf6":"#f5f5f5", color:"#000000", fontSize:12, lineHeight:1.5, whiteSpace:"pre-wrap" }}>
                         {m.content}
                       </div>
                     </div>
                   ))}
-                  {chatLoading&&<div style={{ fontSize:20, color:"#555", letterSpacing:4 }}>•••</div>}
+                  {chatLoading&&<div style={{ fontSize:20, color:"#888", letterSpacing:4 }}>•••</div>}
                 </div>
                 <form onSubmit={sendChat} style={{ display:"flex", gap:8 }}>
                   <input value={chatInput} onChange={e=>setChatInput(e.target.value)}
                     placeholder="e.g. Cancel stuck bookings, show claim details..."
-                    style={{ flex:1, background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"8px 12px", color:"#f0ede6", fontSize:12, outline:"none" }}/>
+                    style={{ flex:1, background:"#ffffff", border:"1px solid #222", borderRadius:8, padding:"8px 12px", color:"#000000", fontSize:12, outline:"none" }}/>
                   <button type="submit" disabled={!chatInput.trim()||chatLoading}
-                    style={{ background:chatInput.trim()&&!chatLoading?"#8b5cf6":"#222", border:"none", borderRadius:8, color:chatInput.trim()&&!chatLoading?"#fff":"#555", fontSize:14, padding:"0 14px", cursor:"pointer" }}>
+                    style={{ background:chatInput.trim()&&!chatLoading?"#8b5cf6":"#f0f0f0", border:"none", borderRadius:8, color:chatInput.trim()&&!chatLoading?"#fff":"#555", fontSize:14, padding:"0 14px", cursor:"pointer" }}>
                     ➤
                   </button>
                 </form>
@@ -581,24 +581,24 @@ Be specific and actionable. Max 300 words. Use bullet points.`
             </>
           )}
       {/* CODE DIAGNOSTICS */}
-      <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", marginTop:"1.25rem" }}>
+      <div style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginTop:"1.25rem" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#f0ede6" }}>🔍 Code Diagnostics</div>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000" }}>🔍 Code Diagnostics</div>
           <button onClick={scanCode} disabled={scanning}
-            style={{ background:scanning?"#333":"#8b5cf6", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:600, padding:"6px 14px", cursor:scanning?"not-allowed":"pointer" }}>
+            style={{ background:scanning?"#e0e0e0":"#8b5cf6", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:600, padding:"6px 14px", cursor:scanning?"not-allowed":"pointer" }}>
             {scanning?"Scanning...":"Scan source code"}
           </button>
         </div>
-        {!codeScan&&<div style={{ fontSize:12, color:"#555" }}>Click scan to check source files for common React errors.</div>}
+        {!codeScan&&<div style={{ fontSize:12, color:"#888" }}>Click scan to check source files for common React errors.</div>}
         {codeScan&&(
           <div>
-            <div style={{ fontSize:11, color:"#555", marginBottom:8 }}>Scanned {codeScan.filesScanned} files · {codeScan.scannedAt}</div>
+            <div style={{ fontSize:11, color:"#888", marginBottom:8 }}>Scanned {codeScan.filesScanned} files · {codeScan.scannedAt}</div>
             {codeScan.issues.length===0&&<div style={{ fontSize:12, color:"#1d9e75" }}>✅ No issues found!</div>}
             {codeScan.issues.map((issue,i)=>(
-              <div key={i} style={{ background:"#1a0808", border:"1px solid #e24b4a30", borderRadius:8, padding:"0.75rem", marginBottom:6 }}>
+              <div key={i} style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:8, padding:"0.75rem", marginBottom:6 }}>
                 <div style={{ fontSize:11, color:"#e24b4a", fontWeight:600, marginBottom:2 }}>⚠️ {issue.file} — Line {issue.line}</div>
                 <div style={{ fontSize:11, color:"#888", marginBottom:4, fontFamily:"monospace" }}>{issue.code}</div>
-                <div style={{ fontSize:11, color:"#555" }}>{issue.issue}</div>
+                <div style={{ fontSize:11, color:"#888" }}>{issue.issue}</div>
               </div>
             ))}
           </div>
@@ -607,7 +607,7 @@ Be specific and actionable. Max 300 words. Use bullet points.`
         </div>
       )}
       {/* LIVE ERROR TRACKER */}
-      <div style={{ background:"#111", border:"1px solid #e24b4a30", borderRadius:12, padding:"1.25rem", marginTop:"1.25rem" }}>
+      <div style={{ background:"#f8f8f8", border:"1px solid #e24b4a30", borderRadius:12, padding:"1.25rem", marginTop:"1.25rem" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
           <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#e24b4a" }}>🔴 Live Error Tracker</div>
           <div style={{ display:"flex", gap:8 }}>
@@ -616,20 +616,20 @@ Be specific and actionable. Max 300 words. Use bullet points.`
               {loadingErrors?"Loading...":"Refresh errors"}
             </button>
             {errorLogs.length>0&&<button onClick={clearErrorLogs}
-              style={{ background:"#333", border:"none", borderRadius:8, color:"#888", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+              style={{ background:"#e0e0e0", border:"none", borderRadius:8, color:"#888", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
               Clear
             </button>}
           </div>
         </div>
-        {errorLogs.length===0&&<div style={{ fontSize:12, color:"#555" }}>No errors logged yet. Click Refresh after reproducing an error.</div>}
+        {errorLogs.length===0&&<div style={{ fontSize:12, color:"#888" }}>No errors logged yet. Click Refresh after reproducing an error.</div>}
         {errorLogs.map((e,i)=>(
-          <div key={e.id||i} style={{ background:"#1a0808", border:"1px solid #e24b4a20", borderRadius:8, padding:"0.75rem", marginBottom:6 }}>
+          <div key={e.id||i} style={{ background:"#fff5f5", border:"1px solid #e24b4a20", borderRadius:8, padding:"0.75rem", marginBottom:6 }}>
             <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4, flexWrap:"wrap", gap:4 }}>
               <span style={{ fontSize:10, color:"#e24b4a", fontWeight:600 }}>{e.user_role}{e.provider_type?" ("+e.provider_type+")":""} · {e.page_url}</span>
-              <span style={{ fontSize:10, color:"#444" }}>{new Date(e.created_at).toLocaleTimeString()}</span>
+              <span style={{ fontSize:10, color:"#888" }}>{new Date(e.created_at).toLocaleTimeString()}</span>
             </div>
-            <div style={{ fontSize:11, color:"#f0ede6", marginBottom:2, fontFamily:"monospace", wordBreak:"break-all" }}>{e.error_message}</div>
-            <div style={{ fontSize:10, color:"#555" }}>{e.error_source} · line {e.error_line}:{e.error_col}</div>
+            <div style={{ fontSize:11, color:"#000000", marginBottom:2, fontFamily:"monospace", wordBreak:"break-all" }}>{e.error_message}</div>
+            <div style={{ fontSize:10, color:"#888" }}>{e.error_source} · line {e.error_line}:{e.error_col}</div>
           </div>
         ))}
       </div>

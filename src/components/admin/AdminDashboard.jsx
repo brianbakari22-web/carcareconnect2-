@@ -243,7 +243,7 @@ export default function AdminDashboard() {
           <div style={{ display:"flex", gap:6, alignItems:"flex-end" }}>
             {bookingTrend.map(m=>(
               <div key={m.month} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", gap:2 }}>
-                <div style={{ fontSize:8, color:"#666", fontWeight:600 }}>{m.total}</div>
+                <div style={{ fontSize:8, color:"#888", fontWeight:600 }}>{m.total}</div>
                 <div style={{ width:"100%", display:"flex", flexDirection:"column", gap:1 }}>
                   <div style={{ width:"100%", background:"#1d9e75", borderRadius:"2px 2px 0 0", height:`${Math.max(2,(m.completed/maxBookings)*50)}px` }}/>
                   <div style={{ width:"100%", background:"#e6821e", height:`${Math.max(2,(m.pending/maxBookings)*50)}px` }}/>
@@ -270,7 +270,7 @@ export default function AdminDashboard() {
           <div style={{ display:"flex", gap:6, alignItems:"flex-end" }}>
             {userGrowth.map(m=>(
               <div key={m.month} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", gap:2 }}>
-                <div style={{ fontSize:8, color:"#666", fontWeight:600 }}>{m.total}</div>
+                <div style={{ fontSize:8, color:"#888", fontWeight:600 }}>{m.total}</div>
                 <div style={{ width:"100%", display:"flex", flexDirection:"column", gap:1 }}>
                   <div style={{ width:"100%", background:"#1d9e75", borderRadius:"2px 2px 0 0", height:`${Math.max(2,(m.customers/maxUsers)*50)}px` }}/>
                   <div style={{ width:"100%", background:"#378add", height:`${Math.max(2,(m.providers/maxUsers)*50)}px` }}/>

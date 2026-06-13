@@ -87,9 +87,9 @@ export default function AdminPayouts() {
           { label:"Total paid", value:`KES ${payouts.filter(p=>p.status==="paid").reduce((s,p)=>s+Number(p.amount),0).toFixed(2)}`, color:"#1d9e75" },
           { label:"Total requested", value:`KES ${payouts.reduce((s,p)=>s+Number(p.amount),0).toFixed(2)}` },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"1rem", border:"1px solid #1e1e1e" }}>
-            <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
-            <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:s.color||"#f0ede6" }}>{s.value}</div>
+          <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
+            <div style={{ fontSize:11, color:"#888", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
+            <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:s.color||"#000000" }}>{s.value}</div>
           </div>
         ))}
       </div>
@@ -97,7 +97,7 @@ export default function AdminPayouts() {
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap", alignItems:"center" }}>
         {[{k:"pending",l:"Pending"},{k:"approved",l:"Approved"},{k:"paid",l:"Paid"},{k:"rejected",l:"Rejected"},{k:"all",l:"All"}].map(t=>(
           <button key={t.k} onClick={()=>{ setFilter(t.k); setSelected([]) }}
-            style={{ padding:"6px 14px", borderRadius:6, border:"none", fontSize:12, cursor:"pointer", background:filter===t.k?"#e6821e":"#111", color:filter===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif" }}>
+            style={{ padding:"6px 14px", borderRadius:6, border:"none", fontSize:12, cursor:"pointer", background:filter===t.k?"#e6821e":"#f8f8f8", color:filter===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif" }}>
             {t.l}
           </button>
         ))}
@@ -106,38 +106,38 @@ export default function AdminPayouts() {
             {selected.length===filtered.length?"Deselect all":"Select all"}
           </button>
           {selected.length>0&&<>
-            <button onClick={bulkApprove} style={{ padding:"6px 14px", borderRadius:6, border:"1px solid #378add40", fontSize:12, cursor:"pointer", background:"#0c1f2e", color:"#378add", fontFamily:"'DM Sans',sans-serif" }}>
+            <button onClick={bulkApprove} style={{ padding:"6px 14px", borderRadius:6, border:"1px solid #378add40", fontSize:12, cursor:"pointer", background:"#eff6ff", color:"#378add", fontFamily:"'DM Sans',sans-serif" }}>
               Approve {selected.length}
             </button>
-            <button onClick={bulkMarkPaid} style={{ padding:"6px 14px", borderRadius:6, border:"1px solid #1d9e7540", fontSize:12, cursor:"pointer", background:"#071a12", color:"#1d9e75", fontFamily:"'DM Sans',sans-serif" }}>
+            <button onClick={bulkMarkPaid} style={{ padding:"6px 14px", borderRadius:6, border:"1px solid #1d9e7540", fontSize:12, cursor:"pointer", background:"#f0fdf4", color:"#1d9e75", fontFamily:"'DM Sans',sans-serif" }}>
               Mark paid {selected.length}
             </button>
           </>}
         </>}
       </div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
-      {!loading&&filtered.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No payout requests</div>}
+      {loading&&<div style={{ color:"#888", fontSize:13 }}>Loading...</div>}
+      {!loading&&filtered.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No payout requests</div>}
 
       {filtered.map(p=>(
-        <div key={p.id} style={{ background:"#111", border:`1px solid ${selected.includes(p.id)?"#e6821e40":p.status==="pending"?"#e6821e20":"#1e1e1e"}`, borderRadius:10, padding:"1rem", marginBottom:10 }}>
+        <div key={p.id} style={{ background:"#f8f8f8", border:`1px solid ${selected.includes(p.id)?"#e6821e40":p.status==="pending"?"#e6821e20":"#eeeeee"}`, borderRadius:10, padding:"1rem", marginBottom:10 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
             <div style={{ display:"flex", alignItems:"flex-start", gap:10 }}>
               <input type="checkbox" checked={selected.includes(p.id)} onChange={()=>toggleSelect(p.id)} style={{ marginTop:3, cursor:"pointer" }}/>
               <div>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:2 }}>
-                  <div style={{ fontSize:14, fontWeight:500, color:"#f0ede6" }}>${Number(p.amount).toFixed(2)}</div>
+                  <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>${Number(p.amount).toFixed(2)}</div>
                   <span style={{ fontSize:10, padding:"2px 7px", borderRadius:10, background:`${roleColor[p.profile_public?.role]||"#444"}20`, color:roleColor[p.profile_public?.role]||"#888" }}>
                     {p.profile_public?.role}
                   </span>
                 </div>
-                <div style={{ fontSize:12, color:"#555" }}>
+                <div style={{ fontSize:12, color:"#888" }}>
                   {p.profile_public?.business_name||`${p.profile_public?.first_name} ${p.profile_public?.last_name}`}
                 </div>
-                <div style={{ fontSize:11, color:"#444", marginTop:2 }}>
+                <div style={{ fontSize:11, color:"#888", marginTop:2 }}>
                   {p.bank_name} · {p.bank_account_name} · {p.bank_account_number}
                 </div>
-                <div style={{ fontSize:10, color:"#444" }}>{new Date(p.created_at).toLocaleDateString()}</div>
+                <div style={{ fontSize:10, color:"#888" }}>{new Date(p.created_at).toLocaleDateString()}</div>
               </div>
             </div>
             <span style={{ fontSize:11, padding:"3px 9px", borderRadius:20, background:`${RC[p.status]}20`, color:RC[p.status], border:`1px solid ${RC[p.status]}40`, flexShrink:0 }}>
@@ -148,9 +148,9 @@ export default function AdminPayouts() {
           {p.status==="pending"&&(
             <div>
               <input placeholder="Admin note (optional)" value={note[p.id]||""} onChange={e=>setNote(n=>({...n,[p.id]:e.target.value}))}
-                style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:7, padding:"8px 10px", color:"#f0ede6", fontSize:12, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:8 }}/>
+                style={{ width:"100%", background:"#ffffff", border:"1px solid #222", borderRadius:7, padding:"8px 10px", color:"#000000", fontSize:12, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:8 }}/>
               <div style={{ display:"flex", gap:8 }}>
-                <button onClick={()=>updatePayout(p.id,"approved")} style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:12, padding:"6px 14px", cursor:"pointer" }}>Approve</button>
+                <button onClick={()=>updatePayout(p.id,"approved")} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:12, padding:"6px 14px", cursor:"pointer" }}>Approve</button>
                 <button onClick={()=>updatePayout(p.id,"rejected")} style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:12, padding:"6px 14px", cursor:"pointer" }}>Reject</button>
               </div>
             </div>
@@ -158,11 +158,11 @@ export default function AdminPayouts() {
           {p.status==="approved"&&(
             <div style={{ display:"flex", gap:8, alignItems:"center" }}>
               <input placeholder="Payment reference (optional)" value={note[p.id]||""} onChange={e=>setNote(n=>({...n,[p.id]:e.target.value}))}
-                style={{ flex:1, background:"#0f0f0f", border:"1px solid #222", borderRadius:7, padding:"8px 10px", color:"#f0ede6", fontSize:12, outline:"none", fontFamily:"'DM Sans',sans-serif" }}/>
-              <button onClick={()=>updatePayout(p.id,"paid")} style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:12, padding:"6px 14px", cursor:"pointer", whiteSpace:"nowrap" }}>Mark paid</button>
+                style={{ flex:1, background:"#ffffff", border:"1px solid #222", borderRadius:7, padding:"8px 10px", color:"#000000", fontSize:12, outline:"none", fontFamily:"'DM Sans',sans-serif" }}/>
+              <button onClick={()=>updatePayout(p.id,"paid")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:12, padding:"6px 14px", cursor:"pointer", whiteSpace:"nowrap" }}>Mark paid</button>
             </div>
           )}
-          {p.admin_note&&<div style={{ fontSize:11, color:"#666", marginTop:8, fontStyle:"italic" }}>Note: "{p.admin_note}"</div>}
+          {p.admin_note&&<div style={{ fontSize:11, color:"#888", marginTop:8, fontStyle:"italic" }}>Note: "{p.admin_note}"</div>}
         </div>
       ))}
     </div>

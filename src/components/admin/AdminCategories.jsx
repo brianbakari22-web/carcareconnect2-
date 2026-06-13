@@ -79,8 +79,8 @@ export default function AdminCategories() {
     window.scrollTo({ top:document.body.scrollHeight, behavior:"smooth" })
   }
 
-  const inp = { width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"10px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:10 }
-  const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
+  const inp = { width:"100%", background:"#ffffff", border:"1px solid #222", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:10 }
+  const lbl = { fontSize:11, color:"#888", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
 
   return (
     <div>
@@ -90,27 +90,27 @@ export default function AdminCategories() {
           { label:"Active", value:categories.filter(c=>c.is_active!==false).length, color:"#1d9e75" },
           { label:"Hidden", value:categories.filter(c=>c.is_active===false).length },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"1rem", border:"1px solid #1e1e1e" }}>
-            <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
-            <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:s.color||"#f0ede6" }}>{s.value}</div>
+          <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
+            <div style={{ fontSize:11, color:"#888", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
+            <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:s.color||"#000000" }}>{s.value}</div>
           </div>
         ))}
       </div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {loading&&<div style={{ color:"#888", fontSize:13 }}>Loading...</div>}
 
       <div style={{ display:"grid", gap:8, marginBottom:"1.5rem" }}>
         {categories.map(c=>(
-          <div key={c.id} style={{ background:"#111", border:`1px solid ${c.is_active===false?"#e24b4a20":"#1e1e1e"}`, borderRadius:10, padding:"1rem", display:"flex", alignItems:"center", gap:12 }}>
-            <div style={{ width:44, height:44, borderRadius:10, background:"#1a1a1a", display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, flexShrink:0 }}>
+          <div key={c.id} style={{ background:"#f8f8f8", border:`1px solid ${c.is_active===false?"#e24b4a20":"#eeeeee"}`, borderRadius:10, padding:"1rem", display:"flex", alignItems:"center", gap:12 }}>
+            <div style={{ width:44, height:44, borderRadius:10, background:"#f5f5f5", display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, flexShrink:0 }}>
               {c.icon||"🔧"}
             </div>
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:2 }}>
-                <div style={{ fontSize:13, fontWeight:600, color:c.is_active===false?"#555":"#f0ede6" }}>{c.name}</div>
-                {c.is_active===false&&<span style={{ fontSize:10, color:"#e24b4a", background:"#1a0808", padding:"1px 6px", borderRadius:10 }}>Hidden</span>}
+                <div style={{ fontSize:13, fontWeight:600, color:c.is_active===false?"#555":"#000000" }}>{c.name}</div>
+                {c.is_active===false&&<span style={{ fontSize:10, color:"#e24b4a", background:"#fff5f5", padding:"1px 6px", borderRadius:10 }}>Hidden</span>}
               </div>
-              {c.description&&<div style={{ fontSize:11, color:"#555" }}>{c.description}</div>}
+              {c.description&&<div style={{ fontSize:11, color:"#888" }}>{c.description}</div>}
             </div>
             <div style={{ display:"flex", gap:6, flexShrink:0 }}>
               <button onClick={()=>startEdit(c)}
@@ -132,8 +132,8 @@ export default function AdminCategories() {
         ))}
       </div>
 
-      <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem" }}>
-        <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#f0ede6" }}>
+      <div style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
+        <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>
           {editing ? "Edit category" : "Add new category"}
         </div>
         <form onSubmit={save}>
@@ -151,7 +151,7 @@ export default function AdminCategories() {
           <input style={inp} placeholder="Brief description of this category" value={form.description} onChange={e=>setForm(f=>({...f,description:e.target.value}))}/>
           <div style={{ display:"flex", gap:8 }}>
             <button type="submit" disabled={saving}
-              style={{ background:saving?"#333":"#8b5cf6", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:saving?"not-allowed":"pointer" }}>
+              style={{ background:saving?"#e0e0e0":"#8b5cf6", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:saving?"not-allowed":"pointer" }}>
               {saving?"Saving...":editing?"Update category":"Add category"}
             </button>
             {editing&&(

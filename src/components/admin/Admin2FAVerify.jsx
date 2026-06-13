@@ -75,7 +75,7 @@ export default function Admin2FAVerify({ onVerified }) {
             style={{ width:"100%", background:theme.bgCard, border:`1px solid ${theme.borderLight}`, borderRadius:10, padding:"16px", color:theme.text, fontSize:24, outline:"none", fontFamily:"monospace", letterSpacing:8, textAlign:"center", marginBottom:12 }}
           />
           <button type="submit" disabled={verifying||!code}
-            style={{ width:"100%", background:code?"#8b5cf6":"#333", border:"none", borderRadius:10, color:code?"#fff":"#666", fontFamily:"Syne,sans-serif", fontSize:15, fontWeight:700, padding:"14px", cursor:code?"pointer":"not-allowed", transition:"all 0.12s" }}>
+            style={{ width:"100%", background:code?"#8b5cf6":"#e0e0e0", border:"none", borderRadius:10, color:code?"#fff":"#666", fontFamily:"Syne,sans-serif", fontSize:15, fontWeight:700, padding:"14px", cursor:code?"pointer":"not-allowed", transition:"all 0.12s" }}>
             {verifying?"Verifying...":"Verify"}
           </button>
         </form>

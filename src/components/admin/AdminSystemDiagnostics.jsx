@@ -119,13 +119,13 @@ export default function AdminSystemDiagnostics() {
 
   return (
     <div>
-      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>System Diagnostics</div>
-      <div style={{ fontSize:12, color:"#555", marginBottom:"1.5rem" }}>Full platform health check and error tracking</div>
+      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#000000", marginBottom:4 }}>System Diagnostics</div>
+      <div style={{ fontSize:12, color:"#888", marginBottom:"1.5rem" }}>Full platform health check and error tracking</div>
 
       <div style={{ display:"flex", gap:6, marginBottom:"1.5rem" }}>
         {[{k:"diagnostics",l:"Diagnostics"},{k:"errors",l:`Error Log (${errorLogs.length})`},{k:"fixes",l:"Auto-fixes"}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#8b5cf6":"#111", color:tab===t.k?"#fff":"#666", fontWeight:tab===t.k?700:400 }}>
+            style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#8b5cf6":"#f8f8f8", color:tab===t.k?"#fff":"#666", fontWeight:tab===t.k?700:400 }}>
             {t.l}
           </button>
         ))}
@@ -134,36 +134,36 @@ export default function AdminSystemDiagnostics() {
       {tab==="diagnostics"&&(
         <div>
           <button onClick={runDiagnostics} disabled={running}
-            style={{ background:running?"#333":"#8b5cf6", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px 28px", cursor:running?"not-allowed":"pointer", marginBottom:"1.5rem", width:"100%" }}>
+            style={{ background:running?"#e0e0e0":"#8b5cf6", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px 28px", cursor:running?"not-allowed":"pointer", marginBottom:"1.5rem", width:"100%" }}>
             {running?"🔍 Running diagnostics...":"🔍 Run full diagnostics"}
           </button>
 
           {results&&(
             <div>
               {/* User counts */}
-              <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
-                <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#f0ede6", marginBottom:8 }}>👥 Users</div>
+              <div style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
+                <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000", marginBottom:8 }}>👥 Users</div>
                 <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8 }}>
                   {Object.entries(results.users||{}).filter(([k])=>k!=="error").map(([k,v])=>(
-                    <div key={k} style={{ background:"#0f0f0f", borderRadius:8, padding:"0.5rem", textAlign:"center" }}>
+                    <div key={k} style={{ background:"#ffffff", borderRadius:8, padding:"0.5rem", textAlign:"center" }}>
                       <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#e6821e" }}>{v}</div>
-                      <div style={{ fontSize:9, color:"#555" }}>{k}</div>
+                      <div style={{ fontSize:9, color:"#888" }}>{k}</div>
                     </div>
                   ))}
                 </div>
                 {results.providerTypes&&Object.keys(results.providerTypes).length>0&&(
-                  <div style={{ marginTop:8, fontSize:11, color:"#555" }}>
+                  <div style={{ marginTop:8, fontSize:11, color:"#888" }}>
                     Provider types: {Object.entries(results.providerTypes).map(([k,v])=>`${k}(${v})`).join(", ")}
                   </div>
                 )}
               </div>
 
               {/* Table status */}
-              <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
-                <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#f0ede6", marginBottom:8 }}>🗄️ Tables</div>
+              <div style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
+                <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000", marginBottom:8 }}>🗄️ Tables</div>
                 <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(140px,1fr))", gap:6 }}>
                   {Object.entries(results.tables||{}).map(([table,status])=>(
-                    <div key={table} style={{ background:"#0f0f0f", borderRadius:8, padding:"6px 8px", display:"flex", alignItems:"center", gap:6 }}>
+                    <div key={table} style={{ background:"#ffffff", borderRadius:8, padding:"6px 8px", display:"flex", alignItems:"center", gap:6 }}>
                       <span style={{ fontSize:10 }}>{status.ok?"✅":"❌"}</span>
                       <span style={{ fontSize:11, color:status.ok?"#888":"#e24b4a" }}>{table}</span>
                     </div>
@@ -172,23 +172,23 @@ export default function AdminSystemDiagnostics() {
               </div>
 
               {/* Query tests */}
-              <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
-                <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#f0ede6", marginBottom:8 }}>🔌 Query Tests</div>
+              <div style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
+                <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000", marginBottom:8 }}>🔌 Query Tests</div>
                 {Object.entries(results.queries||{}).map(([query,status])=>(
-                  <div key={query} style={{ display:"flex", justifyContent:"space-between", padding:"6px 0", borderBottom:"1px solid #1a1a1a" }}>
+                  <div key={query} style={{ display:"flex", justifyContent:"space-between", padding:"6px 0", borderBottom:"1px solid #f5f5f5" }}>
                     <span style={{ fontSize:12, color:"#888" }}>{query}</span>
                     <div style={{ textAlign:"right" }}>
                       <span style={{ fontSize:10, color:status.ok?"#1d9e75":"#e24b4a", fontWeight:600 }}>{status.ok?"✅ OK":"❌ FAIL"}</span>
                       {!status.ok&&<div style={{ fontSize:10, color:"#e24b4a" }}>{status.error}</div>}
-                      {status.data&&<div style={{ fontSize:10, color:"#555" }}>{JSON.stringify(status.data)}</div>}
+                      {status.data&&<div style={{ fontSize:10, color:"#888" }}>{JSON.stringify(status.data)}</div>}
                     </div>
                   </div>
                 ))}
               </div>
 
               {/* Storage */}
-              <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1rem" }}>
-                <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#f0ede6", marginBottom:8 }}>📦 Storage Buckets</div>
+              <div style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem" }}>
+                <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000", marginBottom:8 }}>📦 Storage Buckets</div>
                 <div style={{ fontSize:12, color:results.storage?.ok?"#1d9e75":"#e24b4a" }}>
                   {results.storage?.buckets?.join(", ")||results.storage?.error}
                 </div>
@@ -201,23 +201,23 @@ export default function AdminSystemDiagnostics() {
       {tab==="errors"&&(
         <div>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
-            <div style={{ fontSize:12, color:"#555" }}>{errorLogs.length} errors logged</div>
+            <div style={{ fontSize:12, color:"#888" }}>{errorLogs.length} errors logged</div>
             <div style={{ display:"flex", gap:8 }}>
-              <button onClick={loadErrorLogs} style={{ background:"#111", border:"1px solid #333", borderRadius:7, color:"#888", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>Refresh</button>
-              {errorLogs.length>0&&<button onClick={clearLogs} style={{ background:"#1a0808", border:"1px solid #e24b4a30", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>Clear all</button>}
+              <button onClick={loadErrorLogs} style={{ background:"#f8f8f8", border:"1px solid #333", borderRadius:7, color:"#888", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>Refresh</button>
+              {errorLogs.length>0&&<button onClick={clearLogs} style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>Clear all</button>}
             </div>
           </div>
-          {errorLogs.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No errors logged yet</div>}
+          {errorLogs.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No errors logged yet</div>}
           {errorLogs.map((e,i)=>(
-            <div key={e.id||i} style={{ background:"#111", border:"1px solid #e24b4a20", borderRadius:10, padding:"0.75rem", marginBottom:8 }}>
+            <div key={e.id||i} style={{ background:"#f8f8f8", border:"1px solid #e24b4a20", borderRadius:10, padding:"0.75rem", marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4, flexWrap:"wrap", gap:4 }}>
                 <span style={{ fontSize:11, color:"#e24b4a", fontWeight:600 }}>
                   {e.user_role||"unknown"} {e.provider_type?"("+e.provider_type+")":""} · {e.page_url}
                 </span>
-                <span style={{ fontSize:10, color:"#444" }}>{new Date(e.created_at).toLocaleString()}</span>
+                <span style={{ fontSize:10, color:"#888" }}>{new Date(e.created_at).toLocaleString()}</span>
               </div>
-              <div style={{ fontSize:12, color:"#f0ede6", marginBottom:4, fontFamily:"monospace", wordBreak:"break-all" }}>{e.error_message}</div>
-              <div style={{ fontSize:10, color:"#555" }}>{e.error_source} · line {e.error_line}:{e.error_col}</div>
+              <div style={{ fontSize:12, color:"#000000", marginBottom:4, fontFamily:"monospace", wordBreak:"break-all" }}>{e.error_message}</div>
+              <div style={{ fontSize:10, color:"#888" }}>{e.error_source} · line {e.error_line}:{e.error_col}</div>
             </div>
           ))}
         </div>
@@ -225,14 +225,14 @@ export default function AdminSystemDiagnostics() {
 
       {tab==="fixes"&&(
         <div>
-          <div style={{ fontSize:12, color:"#555", marginBottom:"1rem" }}>
+          <div style={{ fontSize:12, color:"#888", marginBottom:"1rem" }}>
             {results ? `${results.fixes?.length||0} issues found` : "Run diagnostics first to see fixes"}
           </div>
           {!results&&<button onClick={runDiagnostics} style={{ background:"#8b5cf6", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne", fontSize:13, fontWeight:700, padding:"10px 24px", cursor:"pointer" }}>Run diagnostics first</button>}
           {results?.fixes?.map((fix,i)=>(
-            <div key={i} style={{ background:"#111", border:`1px solid ${SC[fix.severity]||"#1e1e1e"}30`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
+            <div key={i} style={{ background:"#f8f8f8", border:`1px solid ${SC[fix.severity]||"#eeeeee"}30`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
               <div style={{ fontSize:13, fontWeight:600, color:SC[fix.severity]||"#888", marginBottom:6 }}>{fix.severity} {fix.issue}</div>
-              <div style={{ fontSize:12, color:"#555", fontFamily:"monospace", background:"#0f0f0f", padding:"8px", borderRadius:6, wordBreak:"break-all" }}>{fix.fix}</div>
+              <div style={{ fontSize:12, color:"#888", fontFamily:"monospace", background:"#ffffff", padding:"8px", borderRadius:6, wordBreak:"break-all" }}>{fix.fix}</div>
             </div>
           ))}
         </div>

@@ -47,22 +47,22 @@ export default function AdminPromos() {
     load()
   }
 
-  const inp = { width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"10px 12px", color:"#f0ede6", fontSize:13, outline:"none", marginBottom:10, fontFamily:"'DM Sans',sans-serif" }
-  const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
+  const inp = { width:"100%", background:"#ffffff", border:"1px solid #222", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", marginBottom:10, fontFamily:"'DM Sans',sans-serif" }
+  const lbl = { fontSize:11, color:"#888", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
 
   return (
     <div>
-      {loading && <div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {loading && <div style={{ color:"#888", fontSize:13 }}>Loading...</div>}
       {promos.map(p => (
-        <div key={p.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
+        <div key={p.id} style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
           <div style={{ flex:1 }}>
             <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
               <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>{p.code}</div>
-              <span style={{ fontSize:10, padding:"2px 8px", borderRadius:20, background:p.is_active?"#071a12":"#1a1a1a", color:p.is_active?"#1d9e75":"#555" }}>
+              <span style={{ fontSize:10, padding:"2px 8px", borderRadius:20, background:p.is_active?"#071a12":"#f5f5f5", color:p.is_active?"#1d9e75":"#555" }}>
                 {p.is_active?"Active":"Inactive"}
               </span>
             </div>
-            <div style={{ fontSize:11, color:"#555" }}>
+            <div style={{ fontSize:11, color:"#888" }}>
               {p.discount_type==="percentage"?`${p.discount_value}% off`:`KES ${p.discount_value} off`}
               {p.min_purchase>0&&` · min KES ${p.min_purchase}`}
               {` · ${p.used_count}/${p.usage_limit} used`}
@@ -79,9 +79,9 @@ export default function AdminPromos() {
           </div>
         </div>
       ))}
-      {!loading && promos.length===0 && <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"1.5rem" }}>No promo codes yet</div>}
+      {!loading && promos.length===0 && <div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"1.5rem" }}>No promo codes yet</div>}
 
-      <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1.25rem", marginTop:"1.5rem" }}>
+      <div style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:10, padding:"1.25rem", marginTop:"1.5rem" }}>
         <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem" }}>Create promo code</div>
         <form onSubmit={create}>
           <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>

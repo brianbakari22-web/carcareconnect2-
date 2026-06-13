@@ -121,19 +121,19 @@ export default function AdminSupport() {
     <div style={{ display:"flex", flexDirection:"column", height:"calc(100vh - 120px)" }}>
       <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:"1rem", flexShrink:0, flexWrap:"wrap" }}>
         <button onClick={()=>{ setSelected(null); setMessages([]) }}
-          style={{ background:"none", border:"none", color:"#666", cursor:"pointer", fontSize:13, padding:0 }}>
+          style={{ background:"none", border:"none", color:"#888", cursor:"pointer", fontSize:13, padding:0 }}>
           ← Back
         </button>
         <div style={{ flex:1, minWidth:0 }}>
-          <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#f0ede6" }}>{selected.subject}</div>
-          <div style={{ fontSize:11, color:"#555", marginTop:2 }}>
+          <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#000000" }}>{selected.subject}</div>
+          <div style={{ fontSize:11, color:"#888", marginTop:2 }}>
             #{selected.ticket_number} · {selected.profiles?.first_name} {selected.profiles?.last_name} · {selected.category} · {selected.profiles?.role}
           </div>
         </div>
         <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
           {["open","in_progress","resolved","closed"].map(s=>(
             <button key={s} onClick={()=>updateStatus(selected.id, s)}
-              style={{ background:selected.status===s?SC[s]+"20":"none", border:"1px solid "+(selected.status===s?SC[s]:"#333"), borderRadius:7, color:selected.status===s?SC[s]:"#666", fontSize:11, padding:"4px 10px", cursor:"pointer" }}>
+              style={{ background:selected.status===s?SC[s]+"20":"none", border:"1px solid "+(selected.status===s?SC[s]:"#e0e0e0"), borderRadius:7, color:selected.status===s?SC[s]:"#666", fontSize:11, padding:"4px 10px", cursor:"pointer" }}>
               {s.replace("_"," ")}
             </button>
           ))}
@@ -146,12 +146,12 @@ export default function AdminSupport() {
         </div>
       )}
 
-      <div style={{ flex:1, overflowY:"auto", background:"#111", borderRadius:12, border:"1px solid #1e1e1e", padding:"1rem", display:"flex", flexDirection:"column", gap:10, marginBottom:10 }}>
+      <div style={{ flex:1, overflowY:"auto", background:"#f8f8f8", borderRadius:12, border:"1px solid #eeeeee", padding:"1rem", display:"flex", flexDirection:"column", gap:10, marginBottom:10 }}>
         {messages.map(m=>{
           const isStaff = m.is_staff
           return (
             <div key={m.id} style={{ display:"flex", justifyContent:isStaff?"flex-end":"flex-start" }}>
-              <div style={{ maxWidth:"75%", padding:"10px 14px", borderRadius:isStaff?"14px 14px 4px 14px":"14px 14px 14px 4px", background:isStaff?"#8b5cf6":"#1a1a1a", color:"#fff", fontSize:13, lineHeight:1.5 }}>
+              <div style={{ maxWidth:"75%", padding:"10px 14px", borderRadius:isStaff?"14px 14px 4px 14px":"14px 14px 14px 4px", background:isStaff?"#8b5cf6":"#f5f5f5", color:"#fff", fontSize:13, lineHeight:1.5 }}>
                 <div style={{ fontSize:10, opacity:0.7, marginBottom:4 }}>
                   {isStaff?"Support Team":m.profiles?.first_name+" ("+m.profiles?.role+")"}
                 </div>
@@ -163,7 +163,7 @@ export default function AdminSupport() {
             </div>
           )
         })}
-        {messages.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No messages yet — send the first reply</div>}
+        {messages.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No messages yet — send the first reply</div>}
       </div>
 
       {selected.status!=="closed"&&(
@@ -171,9 +171,9 @@ export default function AdminSupport() {
           <input value={reply} onChange={e=>setReply(e.target.value)}
             onKeyDown={e=>{ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); sendReply(e) }}}
             placeholder="Type your reply to the customer..."
-            style={{ flex:1, background:"#111", border:"1px solid #222", borderRadius:10, padding:"11px 14px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"DM Sans,sans-serif" }}/>
+            style={{ flex:1, background:"#f8f8f8", border:"1px solid #222", borderRadius:10, padding:"11px 14px", color:"#000000", fontSize:13, outline:"none", fontFamily:"DM Sans,sans-serif" }}/>
           <button type="submit" disabled={sending||!reply.trim()}
-            style={{ background:reply.trim()&&!sending?"#8b5cf6":"#222", border:"none", borderRadius:10, color:reply.trim()&&!sending?"#fff":"#555", fontSize:18, padding:"0 16px", cursor:reply.trim()&&!sending?"pointer":"default" }}>
+            style={{ background:reply.trim()&&!sending?"#8b5cf6":"#f0f0f0", border:"none", borderRadius:10, color:reply.trim()&&!sending?"#fff":"#555", fontSize:18, padding:"0 16px", cursor:reply.trim()&&!sending?"pointer":"default" }}>
             ➤
           </button>
         </form>
@@ -190,15 +190,15 @@ export default function AdminSupport() {
           { label:"SLA breached", value:slaBreached, color:slaBreached>0?"#e24b4a":"#555" },
           { label:"Resolved", value:tickets.filter(tk=>tk.status==="resolved").length, color:"#1d9e75" },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"1rem", border:"1px solid #1e1e1e" }}>
-            <div style={{ fontSize:10, color:"#555", textTransform:"uppercase", marginBottom:4 }}>{s.label}</div>
+          <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
+            <div style={{ fontSize:10, color:"#888", textTransform:"uppercase", marginBottom:4 }}>{s.label}</div>
             <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:s.color }}>{s.value}</div>
           </div>
         ))}
       </div>
 
       {urgentCount>0&&(
-        <div style={{ background:"#1a0808", border:"1px solid #e24b4a40", borderRadius:10, padding:"0.75rem", marginBottom:"1rem" }}>
+        <div style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:10, padding:"0.75rem", marginBottom:"1rem" }}>
           <div style={{ fontSize:13, color:"#e24b4a", fontWeight:600 }}>🚨 {urgentCount} urgent ticket{urgentCount>1?"s":""} need immediate attention</div>
         </div>
       )}
@@ -206,27 +206,27 @@ export default function AdminSupport() {
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
         {[{k:"open",l:"Open"},{k:"in_progress",l:"In progress"},{k:"resolved",l:"Resolved"},{k:"closed",l:"Closed"},{k:"all",l:"All"}].map(f=>(
           <button key={f.k} onClick={()=>setFilter(f.k)}
-            style={{ padding:"6px 14px", borderRadius:7, border:"none", fontSize:12, cursor:"pointer", background:filter===f.k?"#8b5cf6":"#111", color:filter===f.k?"#fff":"#666", fontFamily:"DM Sans,sans-serif" }}>
+            style={{ padding:"6px 14px", borderRadius:7, border:"none", fontSize:12, cursor:"pointer", background:filter===f.k?"#8b5cf6":"#f8f8f8", color:filter===f.k?"#fff":"#666", fontFamily:"DM Sans,sans-serif" }}>
             {f.l} ({f.k==="all"?tickets.length:tickets.filter(tk=>tk.status===f.k).length})
           </button>
         ))}
       </div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
-      {!loading&&filtered.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No tickets found</div>}
+      {loading&&<div style={{ color:"#888", fontSize:13 }}>Loading...</div>}
+      {!loading&&filtered.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No tickets found</div>}
 
       {filtered.map(ticket=>{
         const sla = getSLAStatus(ticket)
         return (
           <div key={ticket.id} onClick={()=>{ setSelected(ticket); loadMessages(ticket.id) }}
-            style={{ background:"#111", border:"1px solid "+(ticket.priority==="urgent"&&ticket.status==="open"?"#e24b4a30":sla?"#e6821e20":"#1e1e1e"), borderRadius:10, padding:"1rem", marginBottom:8, cursor:"pointer" }}>
+            style={{ background:"#f8f8f8", border:"1px solid "+(ticket.priority==="urgent"&&ticket.status==="open"?"#e24b4a30":sla?"#e6821e20":"#eeeeee"), borderRadius:10, padding:"1rem", marginBottom:8, cursor:"pointer" }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:6 }}>
               <div style={{ flex:1, minWidth:0 }}>
-                <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6", marginBottom:2 }}>{ticket.subject}</div>
-                <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>
+                <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:2 }}>{ticket.subject}</div>
+                <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>
                   {ticket.profiles?.first_name} {ticket.profiles?.last_name} ({ticket.profiles?.role}) · #{ticket.ticket_number}
                 </div>
-                <div style={{ fontSize:10, color:"#444" }}>{ticket.category} · {new Date(ticket.created_at).toLocaleString()}</div>
+                <div style={{ fontSize:10, color:"#888" }}>{ticket.category} · {new Date(ticket.created_at).toLocaleString()}</div>
                 {sla&&(
                   <span style={{ fontSize:10, padding:"2px 8px", borderRadius:8, background:sla.color+"20", color:sla.color, fontWeight:600, display:"inline-block", marginTop:4 }}>
                     ⏱ {sla.label}
@@ -242,13 +242,13 @@ export default function AdminSupport() {
                 </span>
                 {ticket.status==="open"&&ticket.priority!=="urgent"&&(
                   <button onClick={e=>escalateTicket(ticket.id, e)}
-                    style={{ fontSize:10, padding:"2px 8px", borderRadius:7, background:"#1a0808", border:"1px solid #e24b4a30", color:"#e24b4a", cursor:"pointer" }}>
+                    style={{ fontSize:10, padding:"2px 8px", borderRadius:7, background:"#fff5f5", border:"1px solid #e24b4a30", color:"#e24b4a", cursor:"pointer" }}>
                     🔺 Escalate
                   </button>
                 )}
                 {ticket.status==="open"&&(
                   <button onClick={e=>{ e.stopPropagation(); updateStatus(ticket.id,"in_progress") }}
-                    style={{ fontSize:10, padding:"2px 8px", borderRadius:7, background:"#0c1f2e", border:"1px solid #378add30", color:"#378add", cursor:"pointer" }}>
+                    style={{ fontSize:10, padding:"2px 8px", borderRadius:7, background:"#eff6ff", border:"1px solid #378add30", color:"#378add", cursor:"pointer" }}>
                     ▶ Start
                   </button>
                 )}

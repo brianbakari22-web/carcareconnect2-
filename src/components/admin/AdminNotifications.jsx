@@ -92,21 +92,21 @@ export default function AdminNotifications() {
       {/* Header */}
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1.5rem", flexWrap:"wrap", gap:10 }}>
         <div>
-          <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#f0ede6" }}>
+          <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#000000" }}>
             Notifications
             {unreadCount>0&&<span style={{ marginLeft:8, background:"#e24b4a", color:"#fff", borderRadius:20, fontSize:11, padding:"2px 8px", fontFamily:"'DM Sans',sans-serif" }}>{unreadCount} new</span>}
           </div>
-          <div style={{ fontSize:12, color:"#555", marginTop:2 }}>Real-time platform activity</div>
+          <div style={{ fontSize:12, color:"#888", marginTop:2 }}>Real-time platform activity</div>
         </div>
         <div style={{ display:"flex", gap:8 }}>
           {unreadCount>0&&(
             <button onClick={markAllRead}
-              style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:8, color:"#1d9e75", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
+              style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:8, color:"#1d9e75", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
               ✓ Mark all read
             </button>
           )}
           <button onClick={clearAll}
-            style={{ background:"none", border:"1px solid #333", borderRadius:8, color:"#555", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
+            style={{ background:"none", border:"1px solid #333", borderRadius:8, color:"#888", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
             Clear all
           </button>
         </div>
@@ -115,13 +115,13 @@ export default function AdminNotifications() {
       {/* Stats */}
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {[
-          { label:"Total", value:notifications.length, color:"#f0ede6" },
+          { label:"Total", value:notifications.length, color:"#000000" },
           { label:"Unread", value:unreadCount, color:"#e24b4a" },
           { label:"Urgent", value:grouped.urgent.length, color:"#e6821e" },
           { label:"Today", value:notifications.filter(n=>n.created_at?.startsWith(new Date().toISOString().split("T")[0])).length, color:"#378add" },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:isMobile?"0.75rem":"1rem", border:"1px solid #1e1e1e" }}>
-            <div style={{ fontSize:10, color:"#555", textTransform:"uppercase", marginBottom:4 }}>{s.label}</div>
+          <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:isMobile?"0.75rem":"1rem", border:"1px solid #eeeeee" }}>
+            <div style={{ fontSize:10, color:"#888", textTransform:"uppercase", marginBottom:4 }}>{s.label}</div>
             <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:s.color }}>{s.value}</div>
           </div>
         ))}
@@ -136,15 +136,15 @@ export default function AdminNotifications() {
           { k:"info", l:"Info" },
         ].map(f=>(
           <button key={f.k} onClick={()=>setFilter(f.k)}
-            style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:filter===f.k?"#8b5cf6":"#111", color:filter===f.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:filter===f.k?700:400 }}>
+            style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:filter===f.k?"#8b5cf6":"#f8f8f8", color:filter===f.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:filter===f.k?700:400 }}>
             {f.l}
           </button>
         ))}
       </div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {loading&&<div style={{ color:"#888", fontSize:13 }}>Loading...</div>}
       {!loading&&filtered.length===0&&(
-        <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"3rem" }}>
+        <div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"3rem" }}>
           <div style={{ fontSize:32, marginBottom:10 }}>🔔</div>
           No notifications
         </div>
@@ -194,7 +194,7 @@ function NotifCard({ n, onRead, onDelete }) {
   }
 
   return (
-    <div style={{ background:n.is_read?"#111":c.bg, border:`1px solid ${n.is_read?"#1e1e1e":c.border}`, borderRadius:10, padding:"0.9rem", marginBottom:8, opacity:n.is_read?0.7:1, transition:"all 0.2s" }}>
+    <div style={{ background:n.is_read?"#f8f8f8":c.bg, border:`1px solid ${n.is_read?"#eeeeee":c.border}`, borderRadius:10, padding:"0.9rem", marginBottom:8, opacity:n.is_read?0.7:1, transition:"all 0.2s" }}>
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10 }}>
         <div style={{ flex:1, minWidth:0 }}>
           <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
@@ -202,7 +202,7 @@ function NotifCard({ n, onRead, onDelete }) {
             <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:n.is_read?"#666":c.color }}>{n.title}</div>
           </div>
           <div style={{ fontSize:12, color:"#888", lineHeight:1.5, marginBottom:4 }}>{n.message}</div>
-          <div style={{ fontSize:10, color:"#444" }}>{timeAgo(n.created_at)}</div>
+          <div style={{ fontSize:10, color:"#888" }}>{timeAgo(n.created_at)}</div>
         </div>
         <div style={{ display:"flex", gap:6, flexShrink:0 }}>
           {!n.is_read&&(
@@ -212,7 +212,7 @@ function NotifCard({ n, onRead, onDelete }) {
             </button>
           )}
           <button onClick={()=>onDelete(n.id)}
-            style={{ background:"none", border:"1px solid #333", borderRadius:6, color:"#444", fontSize:10, padding:"3px 8px", cursor:"pointer" }}>
+            style={{ background:"none", border:"1px solid #333", borderRadius:6, color:"#888", fontSize:10, padding:"3px 8px", cursor:"pointer" }}>
             ×
           </button>
         </div>

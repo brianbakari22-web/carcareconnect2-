@@ -156,13 +156,13 @@ export default function AdminDrivers() {
       {/* Stats */}
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {[
-          { label:"Total drivers", value:drivers.length, color:"#f0ede6" },
+          { label:"Total drivers", value:drivers.length, color:"#000000" },
           { label:"Online now", value:onlineCount, color:"#1d9e75" },
           { label:"Verified", value:verifiedCount, color:"#378add" },
           { label:"Pending verification", value:pendingCount, color:"#e6821e" },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:isMobile?"0.75rem":"1rem", border:"1px solid #1e1e1e" }}>
-            <div style={{ fontSize:10, color:"#555", textTransform:"uppercase", marginBottom:4 }}>{s.label}</div>
+          <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:isMobile?"0.75rem":"1rem", border:"1px solid #eeeeee" }}>
+            <div style={{ fontSize:10, color:"#888", textTransform:"uppercase", marginBottom:4 }}>{s.label}</div>
             <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:s.color }}>{s.value}</div>
           </div>
         ))}
@@ -172,7 +172,7 @@ export default function AdminDrivers() {
       <div style={{ display:"flex", gap:6, marginBottom:"1.25rem", flexWrap:"wrap" }}>
         {TABS.map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#8b5cf6":"#111", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
+            style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#8b5cf6":"#f8f8f8", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
             {t.l}
           </button>
         ))}
@@ -181,19 +181,19 @@ export default function AdminDrivers() {
       {/* Search */}
       {tab!=="map"&&(
         <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search by name, ID or license..."
-          style={{ width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:13, outline:"none", marginBottom:"1rem", fontFamily:"'DM Sans',sans-serif" }}/>
+          style={{ width:"100%", background:"#f8f8f8", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none", marginBottom:"1rem", fontFamily:"'DM Sans',sans-serif" }}/>
       )}
 
       {/* MAP */}
       {tab==="map"&&(
-        <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#f0ede6", marginBottom:6 }}>Live driver locations</div>
-          <div style={{ fontSize:11, color:"#555", marginBottom:10 }}>{onlineCount} driver{onlineCount!==1?"s":""} online</div>
-          <div ref={mapRef} style={{ height:isMobile?300:450, borderRadius:10, overflow:"hidden", background:"#1a1a1a" }}>
+        <div style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000", marginBottom:6 }}>Live driver locations</div>
+          <div style={{ fontSize:11, color:"#888", marginBottom:10 }}>{onlineCount} driver{onlineCount!==1?"s":""} online</div>
+          <div ref={mapRef} style={{ height:isMobile?300:450, borderRadius:10, overflow:"hidden", background:"#f5f5f5" }}>
             {onlineCount===0&&(
               <div style={{ height:"100%", display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:8 }}>
                 <div style={{ fontSize:32 }}>🗺️</div>
-                <div style={{ fontSize:12, color:"#555" }}>No drivers online</div>
+                <div style={{ fontSize:12, color:"#888" }}>No drivers online</div>
               </div>
             )}
           </div>
@@ -203,8 +203,8 @@ export default function AdminDrivers() {
       {/* DRIVERS LIST */}
       {tab!=="map"&&(
         <div>
-          {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
-          {!loading&&filtered.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No drivers found</div>}
+          {loading&&<div style={{ color:"#888", fontSize:13 }}>Loading...</div>}
+          {!loading&&filtered.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No drivers found</div>}
 
           {filtered.map(d=>{
             const status = getStatus(d.id)
@@ -213,21 +213,21 @@ export default function AdminDrivers() {
             const isSuspended = !d.is_active || status?.is_suspended
             const noShowCount = status?.no_show_count||0
             return (
-              <div key={d.id} style={{ background:"#111", border:`1px solid ${isSuspended?"#e24b4a20":d.documents_verified?"#378add20":"#e6821e20"}`, borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10 }}>
+              <div key={d.id} style={{ background:"#f8f8f8", border:`1px solid ${isSuspended?"#e24b4a20":d.documents_verified?"#378add20":"#e6821e20"}`, borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10 }}>
                 <div style={{ display:"flex", alignItems:"flex-start", gap:12 }}>
-                  <div style={{ width:48, height:48, borderRadius:12, background:isOnline?"#071a12":"#1a1a1a", border:`2px solid ${isOnline?"#1d9e7540":"#333"}`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:16, fontWeight:800, color:isOnline?"#1d9e75":"#555", flexShrink:0 }}>
+                  <div style={{ width:48, height:48, borderRadius:12, background:isOnline?"#071a12":"#f5f5f5", border:`2px solid ${isOnline?"#1d9e7540":"#e0e0e0"}`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:16, fontWeight:800, color:isOnline?"#1d9e75":"#555", flexShrink:0 }}>
                     {d.first_name?.[0]}{d.last_name?.[0]}
                   </div>
 
                   <div style={{ flex:1, minWidth:0 }}>
                     <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:6, flexWrap:"wrap" }}>
-                      <div style={{ fontSize:14, fontWeight:600, color:"#f0ede6" }}>{d.first_name} {d.last_name}</div>
-                      {d.documents_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#071a12", padding:"2px 7px", borderRadius:10, border:"1px solid #1d9e7540" }}>✓ Verified</span>}
-                      {!d.documents_verified&&d.is_active&&<span style={{ fontSize:10, color:"#e6821e", background:"#1a1208", padding:"2px 7px", borderRadius:10 }}>⏳ Pending</span>}
-                      {isSuspended&&<span style={{ fontSize:10, color:"#e24b4a", background:"#1a0808", padding:"2px 7px", borderRadius:10 }}>🚫 Suspended</span>}
+                      <div style={{ fontSize:14, fontWeight:600, color:"#000000" }}>{d.first_name} {d.last_name}</div>
+                      {d.documents_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#f0fdf4", padding:"2px 7px", borderRadius:10, border:"1px solid #1d9e7540" }}>✓ Verified</span>}
+                      {!d.documents_verified&&d.is_active&&<span style={{ fontSize:10, color:"#e6821e", background:"#fff8f0", padding:"2px 7px", borderRadius:10 }}>⏳ Pending</span>}
+                      {isSuspended&&<span style={{ fontSize:10, color:"#e24b4a", background:"#fff5f5", padding:"2px 7px", borderRadius:10 }}>🚫 Suspended</span>}
                       {isOnline&&!isSuspended&&<span style={{ fontSize:10, color:"#1d9e75" }}>🟢 Online{onJob?" · On job":""}</span>}
-                      {noShowCount>0&&<span style={{ fontSize:10, color:"#e6821e", background:"#1a1208", padding:"2px 7px", borderRadius:10 }}>⚠️ {noShowCount} no-show{noShowCount>1?"s":""}</span>}
-                      {d.driver_vehicle_type&&<span style={{ fontSize:10, color:"#8b5cf6", background:"#160a2e", padding:"2px 7px", borderRadius:10 }}>
+                      {noShowCount>0&&<span style={{ fontSize:10, color:"#e6821e", background:"#fff8f0", padding:"2px 7px", borderRadius:10 }}>⚠️ {noShowCount} no-show{noShowCount>1?"s":""}</span>}
+                      {d.driver_vehicle_type&&<span style={{ fontSize:10, color:"#8b5cf6", background:"#f5f3ff", padding:"2px 7px", borderRadius:10 }}>
                         {d.driver_vehicle_type==="motorcycle"?"🏍️ Boda Boda":d.driver_vehicle_type==="tuktuk"?"🛺 Tuktuk":d.driver_vehicle_type==="van"?"🚐 Van":"🚗 Car"}
                       </span>}
                     </div>
@@ -247,38 +247,38 @@ export default function AdminDrivers() {
                         { l:"City", v:d.city||"—" },
                       ].map(f=>(
                         <div key={f.l}>
-                          <div style={{ fontSize:9, color:"#444", textTransform:"uppercase" }}>{f.l}</div>
+                          <div style={{ fontSize:9, color:"#888", textTransform:"uppercase" }}>{f.l}</div>
                           <div style={{ fontSize:11, color:"#888" }}>{f.v}</div>
                         </div>
                       ))}
                     </div>
 
                     {(d.emergency_contact_name||d.emergency_contact_phone)&&(
-                      <div style={{ fontSize:11, color:"#555", marginBottom:8 }}>
+                      <div style={{ fontSize:11, color:"#888", marginBottom:8 }}>
                         🆘 Emergency: {d.emergency_contact_name} · {d.emergency_contact_phone}
                       </div>
                     )}
 
                     {rejectingId===d.id&&(
-                      <div style={{ marginTop:10, background:"#1a0808", border:"1px solid #e24b4a30", borderRadius:10, padding:"0.75rem" }}>
+                      <div style={{ marginTop:10, background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:10, padding:"0.75rem" }}>
                         <div style={{ fontSize:12, color:"#e24b4a", marginBottom:6 }}>Rejection reason (driver will be notified):</div>
                         <input value={rejectReason} onChange={e=>setRejectReason(e.target.value)}
                           placeholder="e.g. ID photo unclear, expired license..."
-                          style={{ width:"100%", background:"#111", border:"1px solid #333", borderRadius:7, padding:"8px 10px", color:"#f0ede6", fontSize:12, outline:"none", marginBottom:8 }}/>
+                          style={{ width:"100%", background:"#f8f8f8", border:"1px solid #333", borderRadius:7, padding:"8px 10px", color:"#000000", fontSize:12, outline:"none", marginBottom:8 }}/>
                         <div style={{ display:"flex", gap:6 }}>
                           <button onClick={()=>rejectDriver(d.id)}
                             style={{ background:"#e24b4a", border:"none", borderRadius:7, color:"#fff", fontSize:12, fontWeight:700, padding:"7px 16px", cursor:"pointer" }}>
                             Send rejection
                           </button>
                           <button onClick={()=>{ setRejectingId(null); setRejectReason("") }}
-                            style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#666", fontSize:12, padding:"7px 12px", cursor:"pointer" }}>
+                            style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#888", fontSize:12, padding:"7px 12px", cursor:"pointer" }}>
                             Cancel
                           </button>
                         </div>
                       </div>
                     )}
                     {viewingDocs===d.id&&(
-                      <div style={{ marginTop:10, background:"#0f0f0f", border:"1px solid #1e1e1e", borderRadius:10, padding:"0.75rem" }}>
+                      <div style={{ marginTop:10, background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"0.75rem" }}>
                         <div style={{ fontSize:12, color:"#888", marginBottom:8 }}>Uploaded documents:</div>
                         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(120px,1fr))", gap:8 }}>
                           {[
@@ -294,7 +294,7 @@ export default function AdminDrivers() {
                               <a href={d[doc.key]} target="_blank" rel="noreferrer">
                                 <img src={d[doc.key]} alt={doc.label} style={{ width:"100%", height:80, objectFit:"cover", borderRadius:7, border:"1px solid #333" }}/>
                               </a>
-                              <div style={{ fontSize:10, color:"#555", marginTop:3 }}>{doc.label}</div>
+                              <div style={{ fontSize:10, color:"#888", marginTop:3 }}>{doc.label}</div>
                             </div>
                           ))}
                         </div>
@@ -316,11 +316,11 @@ export default function AdminDrivers() {
                       {!d.documents_verified&&d.is_active&&(
                         <>
                           <button onClick={()=>verifyDriver(d.id,true)}
-                            style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer", fontWeight:600 }}>
+                            style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer", fontWeight:600 }}>
                             ✓ Verify
                           </button>
                           <button onClick={()=>setRejectingId(rejectingId===d.id?null:d.id)}
-                            style={{ background:"#1a0808", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+                            style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
                             ✗ Reject
                           </button>
                         </>
@@ -334,7 +334,7 @@ export default function AdminDrivers() {
                         { key:"insurance_url", label:"Insurance" },
                       ].filter(doc=>d[doc.key]).length>0&&(
                         <button onClick={()=>setViewingDocs(viewingDocs===d.id?null:d.id)}
-                          style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+                          style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
                           📋 View docs ({[
                             d.id_doc_front_url,d.id_doc_back_url,d.license_doc_url,
                             d.psv_badge_url,d.good_conduct_url,d.insurance_url
@@ -354,22 +354,22 @@ export default function AdminDrivers() {
                         </button>
                       ):(
                         <button onClick={()=>suspendDriver(d.id,false)}
-                          style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+                          style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
                           Reactivate
                         </button>
                       )}
                       <button onClick={()=>recordNoShow(d.id)}
-                        style={{ background:"#1a0808", border:"1px solid #e24b4a30", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+                        style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
                         🚫 No-show
                       </button>
                       {(noShowCount>0||status?.is_suspended)&&(
                         <button onClick={()=>clearPenalties(d.id)}
-                          style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+                          style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
                           Clear penalties
                         </button>
                       )}
                       <button onClick={()=>setSelected(selected===d.id?null:d.id)}
-                        style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+                        style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
                         {selected===d.id?"Hide":"View stats"}
                       </button>
                     </div>
@@ -406,31 +406,31 @@ function DriverStats({ driverId, isMobile }) {
     load()
   }, [driverId])
 
-  if (!stats) return <div style={{ fontSize:12, color:"#555", marginTop:10 }}>Loading stats...</div>
+  if (!stats) return <div style={{ fontSize:12, color:"#888", marginTop:10 }}>Loading stats...</div>
 
   return (
-    <div style={{ marginTop:12, paddingTop:12, borderTop:"1px solid #1e1e1e" }}>
+    <div style={{ marginTop:12, paddingTop:12, borderTop:"1px solid #eeeeee" }}>
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8, marginBottom:12 }}>
         {[
-          { label:"Total jobs", value:stats.total, color:"#f0ede6" },
+          { label:"Total jobs", value:stats.total, color:"#000000" },
           { label:"Completed", value:stats.completed, color:"#1d9e75" },
           { label:"Rating", value:stats.rating, color:"#e6821e" },
           { label:"Total earned", value:`KES ${Number(stats.earnings).toLocaleString()}`, color:"#8b5cf6" },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#0f0f0f", borderRadius:8, padding:"0.6rem", textAlign:"center" }}>
+          <div key={s.label} style={{ background:"#ffffff", borderRadius:8, padding:"0.6rem", textAlign:"center" }}>
             <div style={{ fontFamily:"Syne", fontSize:isMobile?12:14, fontWeight:800, color:s.color }}>{s.value}</div>
-            <div style={{ fontSize:9, color:"#444", marginTop:2 }}>{s.label}</div>
+            <div style={{ fontSize:9, color:"#888", marginTop:2 }}>{s.label}</div>
           </div>
         ))}
       </div>
 
       {penalties.length>0&&(
         <div>
-          <div style={{ fontSize:11, color:"#555", marginBottom:6 }}>Penalty history</div>
+          <div style={{ fontSize:11, color:"#888", marginBottom:6 }}>Penalty history</div>
           {penalties.slice(0,5).map(p=>(
-            <div key={p.id} style={{ display:"flex", justifyContent:"space-between", padding:"5px 0", borderBottom:"1px solid #1a1a1a", fontSize:11 }}>
+            <div key={p.id} style={{ display:"flex", justifyContent:"space-between", padding:"5px 0", borderBottom:"1px solid #f5f5f5", fontSize:11 }}>
               <span style={{ color:p.is_active?"#e24b4a":"#444" }}>{p.penalty_type?.replace(/_/g," ")}</span>
-              <span style={{ color:"#555" }}>{new Date(p.created_at).toLocaleDateString()}</span>
+              <span style={{ color:"#888" }}>{new Date(p.created_at).toLocaleDateString()}</span>
             </div>
           ))}
         </div>

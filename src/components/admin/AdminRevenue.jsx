@@ -42,20 +42,20 @@ export default function AdminRevenue() {
           { label:"Paid to providers", value:`KES ${providerPaid.toFixed(2)}` },
           { label:"Paid to drivers", value:`KES ${driverPaid.toFixed(2)}` },
         ].map(s => (
-          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"1rem", border:"1px solid #1e1e1e" }}>
-            <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
-            <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:s.color||"#f0ede6" }}>{s.value}</div>
+          <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
+            <div style={{ fontSize:11, color:"#888", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
+            <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:s.color||"#000000" }}>{s.value}</div>
           </div>
         ))}
       </div>
       <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:10 }}>Revenue by month</div>
       {Object.entries(byMonth).sort((a,b)=>b[0].localeCompare(a[0])).map(([month,amount]) => (
-        <div key={month} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem", marginBottom:8, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+        <div key={month} style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
           <div style={{ fontSize:13 }}>{new Date(month+"-01").toLocaleString("default",{month:"long",year:"numeric"})}</div>
           <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#e6821e" }}>${Number(amount).toFixed(2)}</div>
         </div>
       ))}
-      {!loading && Object.keys(byMonth).length===0 && <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No completed bookings yet</div>}
+      {!loading && Object.keys(byMonth).length===0 && <div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No completed bookings yet</div>}
     </div>
   )
 }

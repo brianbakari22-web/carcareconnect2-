@@ -187,13 +187,13 @@ export default function AdminMarketplace() {
       {/* Stats */}
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {[
-          { label:"Total listings", value:listings.length, color:"#f0ede6" },
+          { label:"Total listings", value:listings.length, color:"#000000" },
           { label:"Pending review", value:pendingListings.length, color:"#e6821e" },
           { label:"Active listings", value:activeListings.length, color:"#1d9e75" },
           { label:"Platform revenue", value:`KES ${totalRevenue.toLocaleString()}`, color:"#8b5cf6" },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:isMobile?"0.75rem":"1rem", border:"1px solid #1e1e1e" }}>
-            <div style={{ fontSize:10, color:"#555", textTransform:"uppercase", marginBottom:4 }}>{s.label}</div>
+          <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:isMobile?"0.75rem":"1rem", border:"1px solid #eeeeee" }}>
+            <div style={{ fontSize:10, color:"#888", textTransform:"uppercase", marginBottom:4 }}>{s.label}</div>
             <div style={{ fontFamily:"Syne", fontSize:isMobile?14:18, fontWeight:800, color:s.color }}>{s.value}</div>
           </div>
         ))}
@@ -201,7 +201,7 @@ export default function AdminMarketplace() {
 
       {/* Pending alert */}
       {pendingListings.length>0&&(
-        <div style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:10, padding:"0.9rem", marginBottom:"1.25rem" }}>
+        <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.9rem", marginBottom:"1.25rem" }}>
           <div style={{ fontSize:13, color:"#e6821e", fontWeight:600 }}>⏳ {pendingListings.length} listing{pendingListings.length>1?"s":""} waiting for review</div>
         </div>
       )}
@@ -210,7 +210,7 @@ export default function AdminMarketplace() {
       <div style={{ display:"flex", gap:6, marginBottom:"1.25rem", flexWrap:"wrap" }}>
         {TABS.map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#8b5cf6":"#111", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
+            style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#8b5cf6":"#f8f8f8", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
             {t.l}
           </button>
         ))}
@@ -219,39 +219,39 @@ export default function AdminMarketplace() {
       {/* Search */}
       {["pending","active","rejected"].includes(tab)&&(
         <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search listings..."
-          style={{ width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:13, outline:"none", marginBottom:"1rem", fontFamily:"'DM Sans',sans-serif" }}/>
+          style={{ width:"100%", background:"#f8f8f8", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none", marginBottom:"1rem", fontFamily:"'DM Sans',sans-serif" }}/>
       )}
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {loading&&<div style={{ color:"#888", fontSize:13 }}>Loading...</div>}
 
       {/* LISTINGS TABS */}
       {["pending","active","rejected"].includes(tab)&&(
         <div>
-          {filtered.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No listings</div>}
+          {filtered.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No listings</div>}
           {filtered.map(l=>{
             const seller = l.profiles
             return (
-              <div key={l.id} style={{ background:"#111", border:`1px solid ${SC[l.status]||"#1e1e1e"}20`, borderRadius:12, padding:"1rem", marginBottom:10 }}>
+              <div key={l.id} style={{ background:"#f8f8f8", border:`1px solid ${SC[l.status]||"#eeeeee"}20`, borderRadius:12, padding:"1rem", marginBottom:10 }}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
                   <div style={{ flex:1, minWidth:0 }}>
                     <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
                       <span style={{ fontSize:16 }}>{l.listing_type==="vehicle"?"🚗":l.listing_type==="part"?"🔧":"✨"}</span>
-                      <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6" }}>{l.title}</div>
+                      <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{l.title}</div>
                       <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:`${SC[l.status]||"#888"}20`, color:SC[l.status]||"#888" }}>{l.status}</span>
                       {l.is_featured&&<span style={{ fontSize:10, color:"#e6821e" }}>⭐ Featured</span>}
                     </div>
-                    <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>
+                    <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>
                       👤 {seller?.business_name||`${seller?.first_name} ${seller?.last_name}`} · {seller?.role}
                     </div>
-                    {l.listing_type==="vehicle"&&<div style={{ fontSize:11, color:"#555", marginBottom:2 }}>{[l.make,l.model,l.year].filter(Boolean).join(" ")}{l.mileage?` · ${Number(l.mileage).toLocaleString()}km`:""}</div>}
-                    {l.city&&<div style={{ fontSize:11, color:"#555", marginBottom:2 }}>📍 {l.city}</div>}
+                    {l.listing_type==="vehicle"&&<div style={{ fontSize:11, color:"#888", marginBottom:2 }}>{[l.make,l.model,l.year].filter(Boolean).join(" ")}{l.mileage?` · ${Number(l.mileage).toLocaleString()}km`:""}</div>}
+                    {l.city&&<div style={{ fontSize:11, color:"#888", marginBottom:2 }}>📍 {l.city}</div>}
                     {l.admin_notes&&<div style={{ fontSize:11, color:"#378add", marginTop:4 }}>Admin note: "{l.admin_notes}"</div>}
-                    <div style={{ fontSize:10, color:"#444", marginTop:4 }}>{new Date(l.created_at).toLocaleString()} · 👁 {l.views||0} views</div>
+                    <div style={{ fontSize:10, color:"#888", marginTop:4 }}>{new Date(l.created_at).toLocaleString()} · 👁 {l.views||0} views</div>
                   </div>
                   <div style={{ textAlign:"right", flexShrink:0 }}>
                     <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>KES {Number(l.price).toLocaleString()}</div>
-                    <div style={{ fontSize:10, color:"#555", marginTop:2 }}>{l.negotiable?"Negotiable":"Fixed price"}</div>
-                    <div style={{ fontSize:10, color:"#555" }}>Commission: {Math.round((l.commission_rate||0.08)*100)}%</div>
+                    <div style={{ fontSize:10, color:"#888", marginTop:2 }}>{l.negotiable?"Negotiable":"Fixed price"}</div>
+                    <div style={{ fontSize:10, color:"#888" }}>Commission: {Math.round((l.commission_rate||0.08)*100)}%</div>
                   </div>
                 </div>
 
@@ -259,7 +259,7 @@ export default function AdminMarketplace() {
                   {l.status==="pending"&&(
                     <>
                       <button onClick={()=>{ setSelected(selected===l.id?null:l.id); setAdminNotes("") }}
-                        style={{ background:"#160a2e", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                        style={{ background:"#f5f3ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                         Review
                       </button>
                     </>
@@ -278,28 +278,28 @@ export default function AdminMarketplace() {
                   )}
                   {l.status==="rejected"||l.status==="suspended"?(
                     <button onClick={()=>approveListing(l.id)}
-                      style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                      style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                       Reactivate
                     </button>
                   ):null}
                 </div>
 
                 {selected===l.id&&l.status==="pending"&&(
-                  <div style={{ marginTop:10, borderTop:"1px solid #1e1e1e", paddingTop:10 }}>
-                    <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#f0ede6", marginBottom:8 }}>Review listing</div>
+                  <div style={{ marginTop:10, borderTop:"1px solid #eeeeee", paddingTop:10 }}>
+                    <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000", marginBottom:8 }}>Review listing</div>
 
                     {/* Description preview */}
                     {l.description&&(
-                      <div style={{ background:"#0f0f0f", borderRadius:8, padding:"0.75rem", marginBottom:10, fontSize:12, color:"#888", lineHeight:1.6 }}>
+                      <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", marginBottom:10, fontSize:12, color:"#888", lineHeight:1.6 }}>
                         {l.description.replace(/\*\*/g,"").replace(/\*/g,"").replace(/#{1,6} /g,"").replace(/- /g,"• ")}
                       </div>
                     )}
 
                     <div style={{ marginBottom:10 }}>
-                      <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>Admin notes (required for rejection)</label>
+                      <label style={{ fontSize:11, color:"#888", display:"block", marginBottom:4 }}>Admin notes (required for rejection)</label>
                       <textarea value={adminNotes} onChange={e=>setAdminNotes(e.target.value)}
                         placeholder="Add notes..."
-                        style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:12, outline:"none", resize:"vertical", minHeight:60, fontFamily:"'DM Sans',sans-serif" }}/>
+                        style={{ width:"100%", background:"#ffffff", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none", resize:"vertical", minHeight:60, fontFamily:"'DM Sans',sans-serif" }}/>
                     </div>
 
                     <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
@@ -307,13 +307,13 @@ export default function AdminMarketplace() {
                       {/* Vehicle inspection workflow */}
                       {l.listing_type==="vehicle"&&!l.is_inspected&&l.inspection_status!=="requested"&&(
                         <button onClick={()=>requestInspection(l)} disabled={processing}
-                          style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:8, color:"#e6821e", fontSize:12, fontWeight:700, padding:"9px 18px", cursor:processing?"not-allowed":"pointer" }}>
+                          style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:8, color:"#e6821e", fontSize:12, fontWeight:700, padding:"9px 18px", cursor:processing?"not-allowed":"pointer" }}>
                           🔍 Request inspection
                         </button>
                       )}
 
                       {l.listing_type==="vehicle"&&l.inspection_status==="requested"&&!l.is_inspected&&(
-                        <div style={{ width:"100%", background:"#0c1f2e", border:"1px solid #378add40", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
+                        <div style={{ width:"100%", background:"#eff6ff", border:"1px solid #378add40", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
                           <div style={{ fontSize:11, color:"#378add", fontWeight:600, marginBottom:8 }}>🔍 Inspection in progress</div>
                           <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
                             <button onClick={()=>passInspection(l)} disabled={processing}
@@ -329,13 +329,13 @@ export default function AdminMarketplace() {
                       )}
 
                       {l.is_inspected&&(
-                        <div style={{ fontSize:11, color:"#1d9e75", padding:"7px 12px", background:"#071a12", borderRadius:8, border:"1px solid #1d9e7540" }}>
+                        <div style={{ fontSize:11, color:"#1d9e75", padding:"7px 12px", background:"#f0fdf4", borderRadius:8, border:"1px solid #1d9e7540" }}>
                           ✓ CCC Inspected
                         </div>
                       )}
 
                       <button onClick={()=>approveListing(l.id)} disabled={processing||(l.listing_type==="vehicle"&&!l.is_inspected)}
-                        style={{ background:processing||(l.listing_type==="vehicle"&&!l.is_inspected)?"#333":"#1d9e75", border:"none", borderRadius:8, color:processing||(l.listing_type==="vehicle"&&!l.is_inspected)?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 18px", cursor:processing||(l.listing_type==="vehicle"&&!l.is_inspected)?"not-allowed":"pointer" }}>
+                        style={{ background:processing||(l.listing_type==="vehicle"&&!l.is_inspected)?"#e0e0e0":"#1d9e75", border:"none", borderRadius:8, color:processing||(l.listing_type==="vehicle"&&!l.is_inspected)?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 18px", cursor:processing||(l.listing_type==="vehicle"&&!l.is_inspected)?"not-allowed":"pointer" }}>
                         {l.listing_type==="vehicle"&&!l.is_inspected?"🔒 Inspect first":"✓ Approve & publish"}
                       </button>
 
@@ -344,7 +344,7 @@ export default function AdminMarketplace() {
                         Reject
                       </button>
                       <button onClick={()=>setSelected(null)}
-                        style={{ background:"none", border:"1px solid #333", borderRadius:8, color:"#666", fontSize:12, padding:"9px 14px", cursor:"pointer" }}>
+                        style={{ background:"none", border:"1px solid #333", borderRadius:8, color:"#888", fontSize:12, padding:"9px 14px", cursor:"pointer" }}>
                         Cancel
                       </button>
                     </div>
@@ -359,28 +359,28 @@ export default function AdminMarketplace() {
       {/* OFFERS TAB */}
       {tab==="offers"&&(
         <div>
-          {offers.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No offers yet</div>}
+          {offers.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No offers yet</div>}
           {offers.map(o=>(
-            <div key={o.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem", marginBottom:8 }}>
+            <div key={o.id} style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                 <div>
-                  <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6", marginBottom:4 }}>{o.marketplace_listings?.title}</div>
-                  <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>
+                  <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:4 }}>{o.marketplace_listings?.title}</div>
+                  <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>
                     Asking: KES {Number(o.marketplace_listings?.price||0).toLocaleString()}
                   </div>
-                  <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>
+                  <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>
                     Buyer: {o.buyer?.first_name} {o.buyer?.last_name}
                   </div>
-                  <div style={{ fontSize:11, color:"#555", marginBottom:4 }}>
+                  <div style={{ fontSize:11, color:"#888", marginBottom:4 }}>
                     Seller: {o.seller?.first_name} {o.seller?.last_name}
                   </div>
                   {o.message&&<div style={{ fontSize:11, color:"#888", fontStyle:"italic" }}>"{o.message}"</div>}
-                  <div style={{ fontSize:10, color:"#444", marginTop:4 }}>{new Date(o.created_at).toLocaleString()}</div>
+                  <div style={{ fontSize:10, color:"#888", marginTop:4 }}>{new Date(o.created_at).toLocaleString()}</div>
                 </div>
                 <div style={{ textAlign:"right" }}>
                   <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(o.offered_price).toLocaleString()}</div>
                   {o.counter_price&&<div style={{ fontSize:11, color:"#8b5cf6", marginTop:2 }}>Counter: KES {Number(o.counter_price).toLocaleString()}</div>}
-                  <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:"#1a1a1a", color:"#888", marginTop:4, display:"inline-block" }}>{o.status}</span>
+                  <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:"#f5f5f5", color:"#888", marginTop:4, display:"inline-block" }}>{o.status}</span>
                 </div>
               </div>
             </div>
@@ -391,22 +391,22 @@ export default function AdminMarketplace() {
       {/* TRANSACTIONS TAB */}
       {tab==="transactions"&&(
         <div>
-          {transactions.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No transactions yet</div>}
+          {transactions.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No transactions yet</div>}
           {transactions.map(t=>(
-            <div key={t.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem", marginBottom:8 }}>
+            <div key={t.id} style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                 <div>
-                  <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6", marginBottom:4 }}>{t.marketplace_listings?.title}</div>
-                  <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>Buyer: {t.buyer?.first_name} {t.buyer?.last_name}</div>
-                  <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>Seller: {t.seller?.first_name} {t.seller?.last_name}</div>
+                  <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:4 }}>{t.marketplace_listings?.title}</div>
+                  <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>Buyer: {t.buyer?.first_name} {t.buyer?.last_name}</div>
+                  <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>Seller: {t.seller?.first_name} {t.seller?.last_name}</div>
                   <div style={{ fontSize:11, color:t.buyer_confirmed?"#1d9e75":"#e6821e" }}>{t.buyer_confirmed?"✓ Buyer confirmed":"⏳ Awaiting buyer confirmation"}</div>
-                  <div style={{ fontSize:10, color:"#444", marginTop:4 }}>{new Date(t.created_at).toLocaleString()}</div>
+                  <div style={{ fontSize:10, color:"#888", marginTop:4 }}>{new Date(t.created_at).toLocaleString()}</div>
                 </div>
                 <div style={{ textAlign:"right" }}>
                   <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>KES {Number(t.sale_price).toLocaleString()}</div>
                   <div style={{ fontSize:11, color:"#1d9e75", marginTop:2 }}>Platform: KES {Number(t.platform_commission).toLocaleString()}</div>
-                  <div style={{ fontSize:11, color:"#555" }}>Seller: KES {Number(t.seller_earnings).toLocaleString()}</div>
-                  <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:"#1a1a1a", color:"#888", marginTop:4, display:"inline-block" }}>{t.payment_status}</span>
+                  <div style={{ fontSize:11, color:"#888" }}>Seller: KES {Number(t.seller_earnings).toLocaleString()}</div>
+                  <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:"#f5f5f5", color:"#888", marginTop:4, display:"inline-block" }}>{t.payment_status}</span>
                 </div>
               </div>
             </div>
@@ -416,15 +416,15 @@ export default function AdminMarketplace() {
 
       {tab==="inspections"&&(
         <div>
-          {inspections.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No inspection requests</div>}
+          {inspections.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No inspection requests</div>}
           {inspections.map(insp=>(
-            <div key={insp.id} style={{ background:"#111", border:`1px solid ${insp.status==="pending"?"#e6821e20":"#1e1e1e"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
+            <div key={insp.id} style={{ background:"#f8f8f8", border:`1px solid ${insp.status==="pending"?"#e6821e20":"#eeeeee"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                 <div>
-                  <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6", marginBottom:4 }}>{insp.marketplace_listings?.title}</div>
-                  <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>Seller: {insp.profiles?.first_name} {insp.profiles?.last_name}</div>
-                  <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>Preferred date: {insp.scheduled_date}</div>
-                  <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:"#1a1208", color:"#e6821e" }}>{insp.status}</span>
+                  <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:4 }}>{insp.marketplace_listings?.title}</div>
+                  <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>Seller: {insp.profiles?.first_name} {insp.profiles?.last_name}</div>
+                  <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>Preferred date: {insp.scheduled_date}</div>
+                  <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:"#fff8f0", color:"#e6821e" }}>{insp.status}</span>
                 </div>
                 <div style={{ textAlign:"right" }}>
                   <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75" }}>KES {Number(insp.amount).toLocaleString()}</div>
@@ -435,7 +435,7 @@ export default function AdminMarketplace() {
                       await supabase.from("notifications").insert({ user_id:insp.seller_id, title:"Inspection assigned 🔍", message:`A mechanic has been assigned to inspect "${insp.marketplace_listings?.title}". Scheduled: ${insp.scheduled_date}`, type:"info" })
                       loadInspections()
                     }}
-                      style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:10, padding:"4px 10px", cursor:"pointer", marginTop:6 }}>
+                      style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:10, padding:"4px 10px", cursor:"pointer", marginTop:6 }}>
                       Assign mechanic
                     </button>
                   )}
@@ -449,7 +449,7 @@ export default function AdminMarketplace() {
                       await supabase.from("notifications").insert({ user_id:insp.seller_id, title:"Inspection complete ✅", message:`Your vehicle inspection is complete. Result: ${result?.toUpperCase()}. ${notes}`, type:result==="passed"?"success":"warning" })
                       loadInspections()
                     }}
-                      style={{ background:"#160a2e", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:10, padding:"4px 10px", cursor:"pointer", marginTop:6 }}>
+                      style={{ background:"#f5f3ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:10, padding:"4px 10px", cursor:"pointer", marginTop:6 }}>
                       Complete inspection
                     </button>
                   )}
@@ -463,18 +463,18 @@ export default function AdminMarketplace() {
       {/* DISPUTES TAB */}
       {tab==="disputes"&&(
         <div>
-          {disputes.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No disputes</div>}
+          {disputes.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No disputes</div>}
           {disputes.map(d=>(
-            <div key={d.id} style={{ background:"#111", border:`1px solid ${d.status==="open"?"#e24b4a20":"#1e1e1e"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
+            <div key={d.id} style={{ background:"#f8f8f8", border:`1px solid ${d.status==="open"?"#e24b4a20":"#eeeeee"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                 <div>
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
-                    <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6" }}>{d.reason}</div>
-                    <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:d.status==="open"?"#1a0808":"#111", color:d.status==="open"?"#e24b4a":"#555" }}>{d.status}</span>
+                    <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{d.reason}</div>
+                    <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:d.status==="open"?"#1a0808":"#f8f8f8", color:d.status==="open"?"#e24b4a":"#555" }}>{d.status}</span>
                   </div>
-                  <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>Raised by: {d.profiles?.first_name} {d.profiles?.last_name}</div>
+                  <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>Raised by: {d.profiles?.first_name} {d.profiles?.last_name}</div>
                   {d.description&&<div style={{ fontSize:11, color:"#888", fontStyle:"italic" }}>"{d.description}"</div>}
-                  <div style={{ fontSize:10, color:"#444", marginTop:4 }}>{new Date(d.created_at).toLocaleString()}</div>
+                  <div style={{ fontSize:10, color:"#888", marginTop:4 }}>{new Date(d.created_at).toLocaleString()}</div>
                 </div>
                 <div style={{ textAlign:"right" }}>
                   <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e" }}>KES {Number(d.marketplace_transactions?.sale_price||0).toLocaleString()}</div>

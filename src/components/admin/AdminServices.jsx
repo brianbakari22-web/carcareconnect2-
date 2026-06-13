@@ -44,19 +44,19 @@ export default function AdminServices() {
   return (
     <div>
       <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search services..."
-        style={{ width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"10px 12px", color:"#f0ede6", fontSize:13, outline:"none", marginBottom:"1rem", fontFamily:"'DM Sans',sans-serif" }} />
-      <div style={{ fontSize:12, color:"#555", marginBottom:10 }}>{filtered.length} service{filtered.length!==1?"s":""}</div>
-      {loading && <div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+        style={{ width:"100%", background:"#f8f8f8", border:"1px solid #222", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", marginBottom:"1rem", fontFamily:"'DM Sans',sans-serif" }} />
+      <div style={{ fontSize:12, color:"#888", marginBottom:10 }}>{filtered.length} service{filtered.length!==1?"s":""}</div>
+      {loading && <div style={{ color:"#888", fontSize:13 }}>Loading...</div>}
       {filtered.map(s => (
-        <div key={s.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
+        <div key={s.id} style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
           <div style={{ flex:1 }}>
             <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
-              <div style={{ fontSize:14, fontWeight:500, color:"#f0ede6" }}>{s.name}</div>
-              <span style={{ fontSize:10, padding:"2px 8px", borderRadius:20, background:s.is_active?"#071a12":"#1a1a1a", color:s.is_active?"#1d9e75":"#555" }}>
+              <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>{s.name}</div>
+              <span style={{ fontSize:10, padding:"2px 8px", borderRadius:20, background:s.is_active?"#071a12":"#f5f5f5", color:s.is_active?"#1d9e75":"#555" }}>
                 {s.is_active?"Active":"Hidden"}
               </span>
             </div>
-            <div style={{ fontSize:11, color:"#555" }}>
+            <div style={{ fontSize:11, color:"#888" }}>
               {s.category} · {s.duration}min · ${Number(s.price).toFixed(2)}
               <span style={{ marginLeft:8 }}>{s.profile_public?.business_name||`${s.profile_public?.first_name||""} ${s.profile_public?.last_name||""}`}</span>
             </div>
@@ -71,7 +71,7 @@ export default function AdminServices() {
           </div>
         </div>
       ))}
-      {!loading && filtered.length===0 && <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No services yet</div>}
+      {!loading && filtered.length===0 && <div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No services yet</div>}
     </div>
   )
 }

@@ -69,8 +69,8 @@ export default function AdminDisputes() {
           { label:"Mileage alerts", value:highMileage, color:"#8b5cf6" },
           { label:"Total reports", value:reports.length, color:"#378add" },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:isMobile?"0.75rem":"1rem", border:"1px solid #1e1e1e" }}>
-            <div style={{ fontSize:10, color:"#555", textTransform:"uppercase", marginBottom:4 }}>{s.label}</div>
+          <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:isMobile?"0.75rem":"1rem", border:"1px solid #eeeeee" }}>
+            <div style={{ fontSize:10, color:"#888", textTransform:"uppercase", marginBottom:4 }}>{s.label}</div>
             <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:s.color }}>{s.value}</div>
           </div>
         ))}
@@ -79,7 +79,7 @@ export default function AdminDisputes() {
       <div style={{ display:"flex", gap:6, marginBottom:"1.25rem", flexWrap:"wrap" }}>
         {TABS.map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#8b5cf6":"#111", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
+            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#8b5cf6":"#f8f8f8", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
             {t.l}
           </button>
         ))}
@@ -88,45 +88,45 @@ export default function AdminDisputes() {
       {/* DISPUTES */}
       {tab==="disputes"&&(
         <div>
-          {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
-          {!loading&&disputes.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No disputes yet</div>}
+          {loading&&<div style={{ color:"#888", fontSize:13 }}>Loading...</div>}
+          {!loading&&disputes.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No disputes yet</div>}
           {disputes.map(d=>(
-            <div key={d.id} style={{ background:"#111", border:`1px solid ${d.status==="open"?"#e24b4a30":d.status==="resolved"?"#1d9e7530":"#1e1e1e"}`, borderRadius:12, padding:"1rem", marginBottom:8 }}>
+            <div key={d.id} style={{ background:"#f8f8f8", border:`1px solid ${d.status==="open"?"#e24b4a30":d.status==="resolved"?"#1d9e7530":"#eeeeee"}`, borderRadius:12, padding:"1rem", marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
-                    <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6" }}>{d.dispute_type?.replace("_"," ").toUpperCase()} dispute</div>
+                    <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{d.dispute_type?.replace("_"," ").toUpperCase()} dispute</div>
                     <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:d.status==="open"?"#1a0808":d.status==="resolved"?"#071a12":"#1a1208", color:d.status==="open"?"#e24b4a":d.status==="resolved"?"#1d9e75":"#e6821e" }}>{d.status}</span>
                   </div>
                   <div style={{ fontSize:12, color:"#888", marginBottom:2 }}>📋 {d.bookings?.service_name} — #{d.bookings?.booking_number}</div>
-                  <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>👤 {d.profiles?.first_name} {d.profiles?.last_name}</div>
-                  <div style={{ fontSize:11, color:"#666", lineHeight:1.5 }}>"{d.description}"</div>
+                  <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>👤 {d.profiles?.first_name} {d.profiles?.last_name}</div>
+                  <div style={{ fontSize:11, color:"#888", lineHeight:1.5 }}>"{d.description}"</div>
                   {d.admin_notes&&<div style={{ fontSize:11, color:"#378add", marginTop:4 }}>Admin: "{d.admin_notes}"</div>}
-                  <div style={{ fontSize:10, color:"#444", marginTop:4 }}>{new Date(d.created_at).toLocaleString()}</div>
+                  <div style={{ fontSize:10, color:"#888", marginTop:4 }}>{new Date(d.created_at).toLocaleString()}</div>
                 </div>
                 {d.status==="open"&&(
                   <button onClick={()=>setSelected(selected===d.id?null:d.id)}
-                    style={{ background:"#160a2e", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"5px 10px", cursor:"pointer", flexShrink:0 }}>
+                    style={{ background:"#f5f3ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"5px 10px", cursor:"pointer", flexShrink:0 }}>
                     Review
                   </button>
                 )}
               </div>
 
               {selected===d.id&&(
-                <div style={{ borderTop:"1px solid #1e1e1e", paddingTop:10 }}>
+                <div style={{ borderTop:"1px solid #eeeeee", paddingTop:10 }}>
                   <div style={{ marginBottom:10 }}>
-                    <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>Admin notes</label>
+                    <label style={{ fontSize:11, color:"#888", display:"block", marginBottom:4 }}>Admin notes</label>
                     <textarea value={adminNotes} onChange={e=>setAdminNotes(e.target.value)}
                       placeholder="Add resolution notes..."
-                      style={{ width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:12, outline:"none", resize:"vertical", minHeight:60, fontFamily:"'DM Sans',sans-serif" }}/>
+                      style={{ width:"100%", background:"#ffffff", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none", resize:"vertical", minHeight:60, fontFamily:"'DM Sans',sans-serif" }}/>
                   </div>
                   <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
                     <button onClick={()=>resolveDispute(d.id,"under_review")} disabled={resolving}
-                      style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:12, padding:"7px 14px", cursor:"pointer" }}>
+                      style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:12, padding:"7px 14px", cursor:"pointer" }}>
                       Mark under review
                     </button>
                     <button onClick={()=>resolveDispute(d.id,"resolved")} disabled={resolving}
-                      style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:12, padding:"7px 14px", cursor:"pointer" }}>
+                      style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:12, padding:"7px 14px", cursor:"pointer" }}>
                       Resolve
                     </button>
                     <button onClick={()=>resolveDispute(d.id,"dismissed")} disabled={resolving}
@@ -144,24 +144,24 @@ export default function AdminDisputes() {
       {/* MILEAGE ALERTS */}
       {tab==="alerts"&&(
         <div>
-          {alerts.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No mileage alerts</div>}
+          {alerts.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No mileage alerts</div>}
           {alerts.map(a=>(
-            <div key={a.id} style={{ background:"#111", border:`1px solid ${a.difference>30?"#e6821e30":"#1e1e1e"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
+            <div key={a.id} style={{ background:"#f8f8f8", border:`1px solid ${a.difference>30?"#e6821e30":"#eeeeee"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                 <div>
-                  <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6", marginBottom:4 }}>{a.bookings?.service_name}</div>
-                  <div style={{ fontSize:11, color:"#555", marginBottom:4 }}>#{a.bookings?.booking_number}</div>
+                  <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:4 }}>{a.bookings?.service_name}</div>
+                  <div style={{ fontSize:11, color:"#888", marginBottom:4 }}>#{a.bookings?.booking_number}</div>
                   <div style={{ display:"flex", gap:16, flexWrap:"wrap" }}>
                     <div>
-                      <div style={{ fontSize:10, color:"#555" }}>Pickup</div>
-                      <div style={{ fontSize:13, color:"#f0ede6", fontWeight:600 }}>{a.pickup_odometer?.toLocaleString()} km</div>
+                      <div style={{ fontSize:10, color:"#888" }}>Pickup</div>
+                      <div style={{ fontSize:13, color:"#000000", fontWeight:600 }}>{a.pickup_odometer?.toLocaleString()} km</div>
                     </div>
                     <div>
-                      <div style={{ fontSize:10, color:"#555" }}>Dropoff</div>
-                      <div style={{ fontSize:13, color:"#f0ede6", fontWeight:600 }}>{a.dropoff_odometer?.toLocaleString()} km</div>
+                      <div style={{ fontSize:10, color:"#888" }}>Dropoff</div>
+                      <div style={{ fontSize:13, color:"#000000", fontWeight:600 }}>{a.dropoff_odometer?.toLocaleString()} km</div>
                     </div>
                     <div>
-                      <div style={{ fontSize:10, color:"#555" }}>Difference</div>
+                      <div style={{ fontSize:10, color:"#888" }}>Difference</div>
                       <div style={{ fontSize:13, fontWeight:800, color:a.difference>30?"#e24b4a":"#1d9e75" }}>{a.difference} km</div>
                     </div>
                   </div>
@@ -170,7 +170,7 @@ export default function AdminDisputes() {
                   {a.difference>30?"⚠️ Alert":"✓ Normal"}
                 </span>
               </div>
-              <div style={{ fontSize:10, color:"#444", marginTop:6 }}>{new Date(a.created_at).toLocaleString()}</div>
+              <div style={{ fontSize:10, color:"#888", marginTop:6 }}>{new Date(a.created_at).toLocaleString()}</div>
             </div>
           ))}
         </div>
@@ -179,9 +179,9 @@ export default function AdminDisputes() {
       {/* CONDITION REPORTS */}
       {tab==="reports"&&(
         <div>
-          {reports.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No condition reports yet</div>}
+          {reports.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No condition reports yet</div>}
           {reports.map(r=>(
-            <div key={r.id} style={{ background:"#111", border:`1px solid ${r.report_type==="pickup"?"#378add20":"#1d9e7520"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
+            <div key={r.id} style={{ background:"#f8f8f8", border:`1px solid ${r.report_type==="pickup"?"#378add20":"#1d9e7520"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                 <div>
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
@@ -189,14 +189,14 @@ export default function AdminDisputes() {
                     <div style={{ fontSize:13, fontWeight:600, color:r.report_type==="pickup"?"#378add":"#1d9e75" }}>
                       {r.report_type==="pickup"?"Pickup":"Dropoff"} report
                     </div>
-                    <span style={{ fontSize:10, color:"#555" }}>by {r.profiles?.first_name} {r.profiles?.last_name} ({r.profiles?.role})</span>
+                    <span style={{ fontSize:10, color:"#888" }}>by {r.profiles?.first_name} {r.profiles?.last_name} ({r.profiles?.role})</span>
                   </div>
-                  <div style={{ fontSize:11, color:"#555", marginBottom:4 }}>
+                  <div style={{ fontSize:11, color:"#888", marginBottom:4 }}>
                     Odometer: {r.odometer_reading?.toLocaleString()} km · Fuel: {FUEL_LABELS[r.fuel_level]||r.fuel_level}
                   </div>
                   <div style={{ display:"flex", flexWrap:"wrap", gap:4 }}>
                     {["has_scratches","has_dents","has_broken_lights","has_missing_parts","dirty_interior","dirty_exterior"].filter(k=>r[k]).map(k=>(
-                      <span key={k} style={{ fontSize:10, padding:"1px 7px", borderRadius:10, background:"#1a0808", color:"#e24b4a" }}>
+                      <span key={k} style={{ fontSize:10, padding:"1px 7px", borderRadius:10, background:"#fff5f5", color:"#e24b4a" }}>
                         {k.replace("has_","").replace("_"," ")}
                       </span>
                     ))}
@@ -204,9 +204,9 @@ export default function AdminDisputes() {
                       <span style={{ fontSize:10, color:"#1d9e75" }}>✓ No issues</span>
                     )}
                   </div>
-                  {r.condition_notes&&<div style={{ fontSize:11, color:"#555", marginTop:4, fontStyle:"italic" }}>"{r.condition_notes}"</div>}
+                  {r.condition_notes&&<div style={{ fontSize:11, color:"#888", marginTop:4, fontStyle:"italic" }}>"{r.condition_notes}"</div>}
                 </div>
-                <div style={{ fontSize:10, color:"#444", flexShrink:0 }}>{new Date(r.created_at).toLocaleString()}</div>
+                <div style={{ fontSize:10, color:"#888", flexShrink:0 }}>{new Date(r.created_at).toLocaleString()}</div>
               </div>
             </div>
           ))}

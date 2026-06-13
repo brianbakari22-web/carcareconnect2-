@@ -67,8 +67,8 @@ export default function AdminCommissions() {
 
   return (
     <div>
-      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#f0ede6", marginBottom:4 }}>Commission Rates</div>
-      <div style={{ fontSize:12, color:"#555", marginBottom:"1.5rem" }}>Manage platform and provider revenue splits for each business type</div>
+      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#000000", marginBottom:4 }}>Commission Rates</div>
+      <div style={{ fontSize:12, color:"#888", marginBottom:"1.5rem" }}>Manage platform and provider revenue splits for each business type</div>
 
       {/* Summary */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginBottom:"1.5rem" }}>
@@ -77,28 +77,28 @@ export default function AdminCommissions() {
           { label:"Avg platform cut", value:`${totalRevenue.toFixed(1)}%`, color:"#e6821e" },
           { label:"Avg provider keep", value:`${(100-totalRevenue).toFixed(1)}%`, color:"#1d9e75" },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"0.75rem", textAlign:"center" }}>
+          <div key={s.label} style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:10, padding:"0.75rem", textAlign:"center" }}>
             <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:s.color }}>{s.value}</div>
-            <div style={{ fontSize:10, color:"#555", marginTop:2 }}>{s.label}</div>
+            <div style={{ fontSize:10, color:"#888", marginTop:2 }}>{s.label}</div>
           </div>
         ))}
       </div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
+      {loading&&<div style={{ color:"#888", fontSize:13 }}>Loading...</div>}
 
       {rates.map(rate=>{
         const typeInfo = PROVIDER_TYPES.find(t=>t.key===rate.provider_type)||{ icon:"🔧", label:rate.provider_type }
         const isEditing = editing===rate.id
         return (
-          <div key={rate.id} style={{ background:"#111", border:`1px solid ${isEditing?"#8b5cf6":"#1e1e1e"}`, borderRadius:12, padding:"1rem", marginBottom:10, transition:"border-color 0.2s" }}>
+          <div key={rate.id} style={{ background:"#f8f8f8", border:`1px solid ${isEditing?"#8b5cf6":"#eeeeee"}`, borderRadius:12, padding:"1rem", marginBottom:10, transition:"border-color 0.2s" }}>
             <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:isEditing?12:0 }}>
               <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                <div style={{ width:40, height:40, borderRadius:10, background:"#0f0f0f", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>
+                <div style={{ width:40, height:40, borderRadius:10, background:"#ffffff", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>
                   {typeInfo.icon}
                 </div>
                 <div>
-                  <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#f0ede6" }}>{typeInfo.label}</div>
-                  <div style={{ fontSize:11, color:"#555" }}>{rate.description}</div>
+                  <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000" }}>{typeInfo.label}</div>
+                  <div style={{ fontSize:11, color:"#888" }}>{rate.description}</div>
                 </div>
               </div>
               <div style={{ display:"flex", alignItems:"center", gap:10 }}>
@@ -109,7 +109,7 @@ export default function AdminCommissions() {
                   </div>
                 )}
                 <button onClick={()=>isEditing?setEditing(null):startEdit(rate)}
-                  style={{ background:isEditing?"#333":"#111", border:`1px solid ${isEditing?"#555":"#333"}`, borderRadius:8, color:isEditing?"#888":"#e6821e", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+                  style={{ background:isEditing?"#e0e0e0":"#f8f8f8", border:`1px solid ${isEditing?"#555":"#e0e0e0"}`, borderRadius:8, color:isEditing?"#888":"#e6821e", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
                   {isEditing?"Cancel":"Edit"}
                 </button>
               </div>
@@ -119,31 +119,31 @@ export default function AdminCommissions() {
               <div>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:10 }}>
                   <div>
-                    <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Platform % (e.g. 10)</label>
+                    <label style={{ fontSize:11, color:"#888", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Platform % (e.g. 10)</label>
                     <input type="number" min="0" max="100" step="0.5" value={form.platform_rate}
                       onChange={e=>{ setForm(f=>({...f, platform_rate:e.target.value, provider_rate:(100-parseFloat(e.target.value||0)).toString()})) }}
-                      style={{ width:"100%", background:"#0f0f0f", border:"1px solid #333", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:13, outline:"none" }}/>
+                      style={{ width:"100%", background:"#ffffff", border:"1px solid #333", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none" }}/>
                   </div>
                   <div>
-                    <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Provider % (auto)</label>
+                    <label style={{ fontSize:11, color:"#888", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Provider % (auto)</label>
                     <input type="number" min="0" max="100" step="0.5" value={form.provider_rate}
                       onChange={e=>setForm(f=>({...f, provider_rate:e.target.value}))}
-                      style={{ width:"100%", background:"#0f0f0f", border:"1px solid #333", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:13, outline:"none" }}/>
+                      style={{ width:"100%", background:"#ffffff", border:"1px solid #333", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none" }}/>
                   </div>
                 </div>
                 <div style={{ marginBottom:10 }}>
-                  <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Description</label>
+                  <label style={{ fontSize:11, color:"#888", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Description</label>
                   <input value={form.description} onChange={e=>setForm(f=>({...f,description:e.target.value}))}
-                    style={{ width:"100%", background:"#0f0f0f", border:"1px solid #333", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:13, outline:"none" }}/>
+                    style={{ width:"100%", background:"#ffffff", border:"1px solid #333", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none" }}/>
                 </div>
-                <div style={{ background:"#0f0f0f", borderRadius:8, padding:"0.75rem", marginBottom:10, display:"flex", justifyContent:"space-between" }}>
-                  <span style={{ fontSize:12, color:"#555" }}>Total must equal 100%</span>
+                <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", marginBottom:10, display:"flex", justifyContent:"space-between" }}>
+                  <span style={{ fontSize:12, color:"#888" }}>Total must equal 100%</span>
                   <span style={{ fontSize:12, color:(parseFloat(form.platform_rate||0)+parseFloat(form.provider_rate||0))===100?"#1d9e75":"#e24b4a", fontWeight:600 }}>
                     {parseFloat(form.platform_rate||0)+parseFloat(form.provider_rate||0)}%
                   </span>
                 </div>
                 <button onClick={save} disabled={saving}
-                  style={{ background:saving?"#333":"#8b5cf6", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 24px", cursor:saving?"not-allowed":"pointer" }}>
+                  style={{ background:saving?"#e0e0e0":"#8b5cf6", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 24px", cursor:saving?"not-allowed":"pointer" }}>
                   {saving?"Saving...":"Save changes"}
                 </button>
               </div>

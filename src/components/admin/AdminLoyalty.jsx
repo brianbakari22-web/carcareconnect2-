@@ -52,7 +52,7 @@ export default function AdminLoyalty() {
     return { name:"Bronze", color:"#cd7f32" }
   }
 
-  const inp = { width:"100%", background:"#111", border:"1px solid #222", borderRadius:8, padding:"10px 12px", color:"#f0ede6", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:10 }
+  const inp = { width:"100%", background:"#f8f8f8", border:"1px solid #222", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:10 }
 
   return (
     <div>
@@ -62,36 +62,36 @@ export default function AdminLoyalty() {
           { label:"Total points issued", value:loyalty.reduce((s,l)=>s+(l.lifetime_points||0),0).toLocaleString(), color:"#e6821e" },
           { label:"Platinum members", value:loyalty.filter(l=>l.points>=10000).length, color:"#d4537e" },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"1rem", border:"1px solid #1e1e1e" }}>
-            <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
-            <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:s.color||"#f0ede6" }}>{s.value}</div>
+          <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
+            <div style={{ fontSize:11, color:"#888", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
+            <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:s.color||"#000000" }}>{s.value}</div>
           </div>
         ))}
       </div>
 
-      <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:10, color:"#f0ede6" }}>
+      <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:10, color:"#000000" }}>
         Loyalty leaderboard
       </div>
 
-      {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
-      {!loading&&loyalty.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No loyalty members yet</div>}
+      {loading&&<div style={{ color:"#888", fontSize:13 }}>Loading...</div>}
+      {!loading&&loyalty.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No loyalty members yet</div>}
 
       {loyalty.map((l,i)=>{
         const tier = getTier(l.points||0)
         const profile = l.profile_public
         const name = profile?.business_name||`${profile?.first_name||""} ${profile?.last_name||""}`.trim()||"User"
         return (
-          <div key={l.user_id} style={{ background:"#111", border:`1px solid ${adjusting===l.user_id?"#e6821e40":"#1e1e1e"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
+          <div key={l.user_id} style={{ background:"#f8f8f8", border:`1px solid ${adjusting===l.user_id?"#e6821e40":"#eeeeee"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
             <div style={{ display:"flex", alignItems:"center", gap:12 }}>
               <div style={{ width:32, height:32, borderRadius:"50%", background:`${tier.color}20`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:tier.color, flexShrink:0 }}>
                 {i+1}
               </div>
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:2 }}>
-                  <div style={{ fontSize:13, fontWeight:500, color:"#f0ede6", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{name}</div>
+                  <div style={{ fontSize:13, fontWeight:500, color:"#000000", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{name}</div>
                   <span style={{ fontSize:10, padding:"1px 6px", borderRadius:10, background:`${tier.color}20`, color:tier.color, flexShrink:0 }}>{tier.name}</span>
                 </div>
-                <div style={{ fontSize:11, color:"#555" }}>
+                <div style={{ fontSize:11, color:"#888" }}>
                   {(l.points||0).toLocaleString()} pts · lifetime {(l.lifetime_points||0).toLocaleString()}
                 </div>
               </div>
@@ -102,14 +102,14 @@ export default function AdminLoyalty() {
             </div>
 
             {adjusting===l.user_id&&(
-              <div style={{ marginTop:12, paddingTop:12, borderTop:"1px solid #1e1e1e" }}>
-                <div style={{ fontSize:12, color:"#555", marginBottom:10 }}>
+              <div style={{ marginTop:12, paddingTop:12, borderTop:"1px solid #eeeeee" }}>
+                <div style={{ fontSize:12, color:"#888", marginBottom:10 }}>
                   Current balance: <span style={{ color:"#e6821e", fontWeight:600 }}>{(l.points||0).toLocaleString()} points</span>
                 </div>
                 <form onSubmit={adjustPoints}>
-                  <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Points to add (use negative to deduct)</label>
+                  <label style={{ fontSize:11, color:"#888", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Points to add (use negative to deduct)</label>
                   <input style={inp} type="number" placeholder="e.g. 500 or -200" value={adjustForm.points} onChange={e=>setAdjustForm(f=>({...f,points:e.target.value}))} required/>
-                  <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Reason</label>
+                  <label style={{ fontSize:11, color:"#888", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Reason</label>
                   <input style={inp} placeholder="e.g. Promotional bonus, correction" value={adjustForm.reason} onChange={e=>setAdjustForm(f=>({...f,reason:e.target.value}))}/>
                   <div style={{ display:"flex", gap:8 }}>
                     <button type="submit" style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"9px 20px", cursor:"pointer" }}>Apply adjustment</button>

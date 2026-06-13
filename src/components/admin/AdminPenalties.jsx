@@ -258,7 +258,7 @@ export default function AdminPenalties() {
               Issue Violation & Apply Penalty
             </button>
             <button onClick={()=>{ setShowForm(false); setSearch(""); setSelectedUser(null) }}
-              style={{ background:"#f5f5f5", border:"none", borderRadius:10, color:"#555", fontSize:13, padding:"11px 18px", cursor:"pointer" }}>
+              style={{ background:"#f5f5f5", border:"none", borderRadius:10, color:"#888", fontSize:13, padding:"11px 18px", cursor:"pointer" }}>
               Cancel
             </button>
           </div>
@@ -337,7 +337,7 @@ export default function AdminPenalties() {
                       {v.profiles?.first_name} {v.profiles?.last_name}
                       <span style={{ marginLeft:8 }}><Badge label={v.profiles?.role||""} color={ROLE_COLORS[v.profiles?.role]||"#888"}/></span>
                     </div>
-                    <div style={{ fontSize:12, color:"#555", marginTop:2 }}>{v.description}</div>
+                    <div style={{ fontSize:12, color:"#888", marginTop:2 }}>{v.description}</div>
                     <div style={{ fontSize:11, color:"#aaa", marginTop:2 }}>{new Date(v.created_at).toLocaleString("en-KE")}</div>
                   </div>
                 </div>
@@ -364,7 +364,7 @@ export default function AdminPenalties() {
                       {p.profiles?.first_name} {p.profiles?.last_name}
                       <span style={{ marginLeft:8 }}><Badge label={p.profiles?.role||""} color={ROLE_COLORS[p.profiles?.role]||"#888"}/></span>
                     </div>
-                    <div style={{ fontSize:12, color:"#555", marginTop:2 }}>{p.reason}</div>
+                    <div style={{ fontSize:12, color:"#888", marginTop:2 }}>{p.reason}</div>
                     {p.suspension_expires_at&&(
                       <div style={{ fontSize:11, color:"#378add", marginTop:2 }}>
                         Expires: {new Date(p.suspension_expires_at).toLocaleString("en-KE")}

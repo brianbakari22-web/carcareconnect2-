@@ -111,15 +111,15 @@ export default function AdminEmployees() {
   const totalPayroll = active.reduce((sum,e)=>sum+Number(e.base_salary||0),0)
   const pendingPays = payments.filter(p=>p.payment_status==="pending")
 
-  const inp = { width:"100%", background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#f0ede6", fontSize:12, outline:"none", fontFamily:"DM Sans,sans-serif", marginBottom:10 }
-  const lbl = { fontSize:11, color:"#666", display:"block", marginBottom:4, textTransform:"uppercase", letterSpacing:"0.05em" }
+  const inp = { width:"100%", background:"#ffffff", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none", fontFamily:"DM Sans,sans-serif", marginBottom:10 }
+  const lbl = { fontSize:11, color:"#888", display:"block", marginBottom:4, textTransform:"uppercase", letterSpacing:"0.05em" }
 
   return (
     <div>
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1.25rem", flexWrap:"wrap", gap:10 }}>
         <div>
-          <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#f0ede6" }}>Employee Management</div>
-          <div style={{ fontSize:12, color:"#555" }}>Manage staff, salaries and payroll</div>
+          <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#000000" }}>Employee Management</div>
+          <div style={{ fontSize:12, color:"#888" }}>Manage staff, salaries and payroll</div>
         </div>
         <button onClick={()=>{ setShowForm(true); setEditing(null); setForm(EMPTY) }}
           style={{ background:"#8b5cf6", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 18px", cursor:"pointer" }}>
@@ -129,14 +129,14 @@ export default function AdminEmployees() {
 
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {[
-          { label:"Total staff", value:employees.length, color:"#f0ede6" },
+          { label:"Total staff", value:employees.length, color:"#000000" },
           { label:"Active", value:active.length, color:"#1d9e75" },
           { label:"Monthly payroll", value:"KES "+totalPayroll.toLocaleString(), color:"#e6821e" },
           { label:"Pending payments", value:pendingPays.length, color:"#8b5cf6" },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"0.75rem", border:"1px solid #1e1e1e", textAlign:"center" }}>
+          <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"0.75rem", border:"1px solid #eeeeee", textAlign:"center" }}>
             <div style={{ fontFamily:"Syne", fontSize:isMobile?14:18, fontWeight:800, color:s.color }}>{s.value}</div>
-            <div style={{ fontSize:10, color:"#555", marginTop:2 }}>{s.label}</div>
+            <div style={{ fontSize:10, color:"#888", marginTop:2 }}>{s.label}</div>
           </div>
         ))}
       </div>
@@ -144,15 +144,15 @@ export default function AdminEmployees() {
       <div style={{ display:"flex", gap:6, marginBottom:"1.25rem", flexWrap:"wrap" }}>
         {[{k:"employees",l:"Employees"},{k:"payroll",l:"Payroll"},{k:"payments",l:"Payment history"}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#8b5cf6":"#111", color:tab===t.k?"#fff":"#666", fontFamily:"DM Sans,sans-serif", fontWeight:tab===t.k?700:400 }}>
+            style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#8b5cf6":"#f8f8f8", color:tab===t.k?"#fff":"#666", fontFamily:"DM Sans,sans-serif", fontWeight:tab===t.k?700:400 }}>
             {t.l}
           </button>
         ))}
       </div>
 
       {showForm&&(
-        <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#f0ede6", marginBottom:"1rem" }}>{editing?"Edit employee":"Add new employee"}</div>
+        <div style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000", marginBottom:"1rem" }}>{editing?"Edit employee":"Add new employee"}</div>
           <form onSubmit={save}>
             <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
               <div><label style={lbl}>First name</label><input style={inp} value={form.first_name} onChange={e=>setForm(f=>({...f,first_name:e.target.value}))} required/></div>
@@ -202,10 +202,10 @@ export default function AdminEmployees() {
             <label style={lbl}>Notes</label>
             <textarea style={{ ...inp, resize:"vertical", minHeight:60 }} value={form.notes} onChange={e=>setForm(f=>({...f,notes:e.target.value}))}/>
             <div style={{ display:"flex", gap:8, marginTop:4 }}>
-              <button type="submit" disabled={saving} style={{ background:saving?"#333":"#8b5cf6", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 24px", cursor:saving?"not-allowed":"pointer" }}>
+              <button type="submit" disabled={saving} style={{ background:saving?"#e0e0e0":"#8b5cf6", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 24px", cursor:saving?"not-allowed":"pointer" }}>
                 {saving?"Saving...":editing?"Update":"Add employee"}
               </button>
-              <button type="button" onClick={()=>{ setShowForm(false); setEditing(null); setForm(EMPTY) }} style={{ background:"none", border:"1px solid #333", borderRadius:9, color:"#666", fontSize:13, padding:"10px 18px", cursor:"pointer" }}>Cancel</button>
+              <button type="button" onClick={()=>{ setShowForm(false); setEditing(null); setForm(EMPTY) }} style={{ background:"none", border:"1px solid #333", borderRadius:9, color:"#888", fontSize:13, padding:"10px 18px", cursor:"pointer" }}>Cancel</button>
             </div>
           </form>
         </div>
@@ -213,32 +213,32 @@ export default function AdminEmployees() {
 
       {tab==="employees"&&(
         <div>
-          {loading&&<div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
-          {!loading&&employees.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"3rem" }}>No employees yet</div>}
+          {loading&&<div style={{ color:"#888", fontSize:13 }}>Loading...</div>}
+          {!loading&&employees.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"3rem" }}>No employees yet</div>}
           {employees.map(e=>(
-            <div key={e.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1rem", marginBottom:10, opacity:e.is_active?1:0.6 }}>
+            <div key={e.id} style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem", marginBottom:10, opacity:e.is_active?1:0.6 }}>
               <div style={{ display:"flex", gap:10, alignItems:"flex-start" }}>
-                <div style={{ width:44, height:44, borderRadius:"50%", background:"#160a2e", border:"1px solid #8b5cf640", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#8b5cf6", flexShrink:0 }}>
+                <div style={{ width:44, height:44, borderRadius:"50%", background:"#f5f3ff", border:"1px solid #8b5cf640", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#8b5cf6", flexShrink:0 }}>
                   {e.first_name[0]}{e.last_name[0]}
                 </div>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", flexWrap:"wrap", gap:4 }}>
-                    <div style={{ fontSize:14, fontWeight:600, color:"#f0ede6" }}>{e.first_name} {e.last_name}</div>
-                    <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:e.is_active?"#071a12":"#1a1a1a", color:e.is_active?"#1d9e75":"#555" }}>{e.is_active?"Active":"Inactive"}</span>
+                    <div style={{ fontSize:14, fontWeight:600, color:"#000000" }}>{e.first_name} {e.last_name}</div>
+                    <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:e.is_active?"#071a12":"#f5f5f5", color:e.is_active?"#1d9e75":"#555" }}>{e.is_active?"Active":"Inactive"}</span>
                   </div>
                   <div style={{ fontSize:11, color:"#888", marginTop:2 }}>{e.role.replace(/_/g," ")} · {e.department}</div>
-                  <div style={{ fontSize:11, color:"#555", marginTop:2 }}>{e.email}{e.phone?" · "+e.phone:""}</div>
+                  <div style={{ fontSize:11, color:"#888", marginTop:2 }}>{e.email}{e.phone?" · "+e.phone:""}</div>
                   <div style={{ fontSize:11, color:"#e6821e", marginTop:4 }}>
                     {e.salary_type==="fixed"?"KES "+Number(e.base_salary).toLocaleString()+"/month":
                      e.salary_type==="commission"?e.commission_rate+"% commission on "+e.commission_base.replace(/_/g," "):
                      "KES "+Number(e.base_salary).toLocaleString()+" + "+e.commission_rate+"% commission"}
                   </div>
-                  {e.mpesa_number&&<div style={{ fontSize:10, color:"#555", marginTop:2 }}>M-Pesa: {e.mpesa_number}</div>}
+                  {e.mpesa_number&&<div style={{ fontSize:10, color:"#888", marginTop:2 }}>M-Pesa: {e.mpesa_number}</div>}
                 </div>
               </div>
               <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginTop:10 }}>
-                <button onClick={()=>{ setSelected(e); setTab("payroll") }} style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>💰 Process payment</button>
-                <button onClick={()=>{ setEditing(e.id); setForm({...e, base_salary:e.base_salary||"", commission_rate:e.commission_rate||""}); setShowForm(true) }} style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>Edit</button>
+                <button onClick={()=>{ setSelected(e); setTab("payroll") }} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>💰 Process payment</button>
+                <button onClick={()=>{ setEditing(e.id); setForm({...e, base_salary:e.base_salary||"", commission_rate:e.commission_rate||""}); setShowForm(true) }} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>Edit</button>
                 <button onClick={()=>toggleActive(e)} style={{ background:"none", border:"1px solid #e24b4a30", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>{e.is_active?"Deactivate":"Activate"}</button>
               </div>
             </div>
@@ -249,13 +249,13 @@ export default function AdminEmployees() {
       {tab==="payroll"&&(
         <div>
           {selected?(
-            <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:12, padding:"1.25rem", marginBottom:"1rem" }}>
+            <div style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1rem" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
-                <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#f0ede6" }}>Process payment — {selected.first_name} {selected.last_name}</div>
-                <button onClick={()=>setSelected(null)} style={{ background:"none", border:"none", color:"#555", cursor:"pointer", fontSize:18 }}>×</button>
+                <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000" }}>Process payment — {selected.first_name} {selected.last_name}</div>
+                <button onClick={()=>setSelected(null)} style={{ background:"none", border:"none", color:"#888", cursor:"pointer", fontSize:18 }}>×</button>
               </div>
-              <div style={{ background:"#0f0f0f", borderRadius:8, padding:"0.75rem", marginBottom:"1rem" }}>
-                <div style={{ fontSize:11, color:"#555", marginBottom:4 }}>Salary structure</div>
+              <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", marginBottom:"1rem" }}>
+                <div style={{ fontSize:11, color:"#888", marginBottom:4 }}>Salary structure</div>
                 <div style={{ fontSize:13, color:"#e6821e", fontWeight:600 }}>
                   {selected.salary_type==="fixed"?"Fixed: KES "+Number(selected.base_salary).toLocaleString()+"/month":
                    selected.salary_type==="commission"?selected.commission_rate+"% of "+selected.commission_base.replace(/_/g," "):
@@ -280,12 +280,12 @@ export default function AdminEmployees() {
                 <label style={lbl}>Notes</label>
                 <textarea style={{ ...inp, resize:"vertical", minHeight:50 }} value={payForm.notes} onChange={e=>setPayForm(f=>({...f,notes:e.target.value}))}/>
               </div>
-              <button onClick={()=>processPayment(selected)} disabled={paying} style={{ background:paying?"#333":"#1d9e75", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 24px", cursor:paying?"not-allowed":"pointer" }}>
+              <button onClick={()=>processPayment(selected)} disabled={paying} style={{ background:paying?"#e0e0e0":"#1d9e75", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 24px", cursor:paying?"not-allowed":"pointer" }}>
                 {paying?"Processing...":"Calculate & Process Payment"}
               </button>
             </div>
           ):(
-            <div style={{ color:"#555", fontSize:13, textAlign:"center", padding:"2rem" }}>
+            <div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>
               Select an employee from the Employees tab to process payment
             </div>
           )}
@@ -294,14 +294,14 @@ export default function AdminEmployees() {
 
       {tab==="payments"&&(
         <div>
-          {payments.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"3rem" }}>No payment records yet</div>}
+          {payments.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"3rem" }}>No payment records yet</div>}
           {payments.map(p=>(
-            <div key={p.id} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:10, padding:"1rem", marginBottom:8 }}>
+            <div key={p.id} style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
                 <div>
-                  <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6" }}>{p.employees?.first_name} {p.employees?.last_name}</div>
-                  <div style={{ fontSize:11, color:"#555" }}>{p.employees?.role?.replace(/_/g," ")} · {p.payment_period_start} to {p.payment_period_end}</div>
-                  <div style={{ fontSize:11, color:"#555", marginTop:2 }}>Via {p.payment_method}</div>
+                  <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{p.employees?.first_name} {p.employees?.last_name}</div>
+                  <div style={{ fontSize:11, color:"#888" }}>{p.employees?.role?.replace(/_/g," ")} · {p.payment_period_start} to {p.payment_period_end}</div>
+                  <div style={{ fontSize:11, color:"#888", marginTop:2 }}>Via {p.payment_method}</div>
                 </div>
                 <div style={{ textAlign:"right" }}>
                   <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(p.net_amount||0).toLocaleString()}</div>
@@ -316,17 +316,17 @@ export default function AdminEmployees() {
                   { l:"Deductions", v:"KES "+Number(p.deductions||0).toLocaleString() },
                 ].map(f=>(
                   <div key={f.l}>
-                    <div style={{ fontSize:9, color:"#444", textTransform:"uppercase" }}>{f.l}</div>
-                    <div style={{ fontSize:11, color:"#f0ede6" }}>{f.v}</div>
+                    <div style={{ fontSize:9, color:"#888", textTransform:"uppercase" }}>{f.l}</div>
+                    <div style={{ fontSize:11, color:"#000000" }}>{f.v}</div>
                   </div>
                 ))}
               </div>
               {p.payment_status==="pending"&&(
-                <button onClick={()=>markPaid(p.id)} style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+                <button onClick={()=>markPaid(p.id)} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
                   ✓ Mark as paid
                 </button>
               )}
-              {p.notes&&<div style={{ fontSize:11, color:"#555", marginTop:8, fontStyle:"italic" }}>{p.notes}</div>}
+              {p.notes&&<div style={{ fontSize:11, color:"#888", marginTop:8, fontStyle:"italic" }}>{p.notes}</div>}
             </div>
           ))}
         </div>

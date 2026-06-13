@@ -125,12 +125,12 @@ export default function Admin2FA() {
         <div style={{ fontSize:12, color:theme.textFaint, marginTop:4 }}>Add an extra layer of security to your admin account</div>
       </div>
 
-      <div style={{ background:theme.bgCard, border:`1px solid ${status?.is_enabled?"#1d9e7540":"#1e1e1e"}`, borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem", display:"flex", alignItems:"center", gap:12 }}>
-        <div style={{ width:44, height:44, borderRadius:10, background:status?.is_enabled?"#071a12":"#1a1a1a", display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, flexShrink:0 }}>
+      <div style={{ background:theme.bgCard, border:`1px solid ${status?.is_enabled?"#1d9e7540":"#eeeeee"}`, borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem", display:"flex", alignItems:"center", gap:12 }}>
+        <div style={{ width:44, height:44, borderRadius:10, background:status?.is_enabled?"#071a12":"#f5f5f5", display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, flexShrink:0 }}>
           {status?.is_enabled?"🔒":"🔓"}
         </div>
         <div style={{ flex:1 }}>
-          <div style={{ fontSize:14, fontWeight:600, color:status?.is_enabled?"#1d9e75":"#f0ede6" }}>
+          <div style={{ fontSize:14, fontWeight:600, color:status?.is_enabled?"#1d9e75":"#000000" }}>
             2FA is {status?.is_enabled?"enabled":"disabled"}
           </div>
           <div style={{ fontSize:11, color:theme.textFaint, marginTop:2 }}>
@@ -140,7 +140,7 @@ export default function Admin2FA() {
           </div>
         </div>
         {status?.is_enabled&&(
-          <span style={{ fontSize:10, padding:"3px 10px", borderRadius:20, background:"#071a12", color:"#1d9e75", border:"1px solid #1d9e7540" }}>Active</span>
+          <span style={{ fontSize:10, padding:"3px 10px", borderRadius:20, background:"#f0fdf4", color:"#1d9e75", border:"1px solid #1d9e7540" }}>Active</span>
         )}
       </div>
 
@@ -157,7 +157,7 @@ export default function Admin2FA() {
             { step:"4", text:"Enter the 6-digit code to verify and enable 2FA" },
           ].map(s=>(
             <div key={s.step} style={{ display:"flex", gap:12, marginBottom:10 }}>
-              <div style={{ width:28, height:28, borderRadius:"50%", background:"#1a1208", border:"1px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:700, color:"#e6821e", flexShrink:0 }}>{s.step}</div>
+              <div style={{ width:28, height:28, borderRadius:"50%", background:"#fff8f0", border:"1px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:700, color:"#e6821e", flexShrink:0 }}>{s.step}</div>
               <div style={{ fontSize:13, color:"#888", paddingTop:5, lineHeight:1.5 }}>{s.text}</div>
             </div>
           ))}
@@ -199,7 +199,7 @@ export default function Admin2FA() {
               />
               <div style={{ display:"flex", gap:8 }}>
                 <button type="submit" disabled={verifying||code.length!==6}
-                  style={{ flex:1, background:code.length===6?"#8b5cf6":"#333", border:"none", borderRadius:9, color:code.length===6?"#fff":"#666", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:code.length===6?"pointer":"not-allowed" }}>
+                  style={{ flex:1, background:code.length===6?"#8b5cf6":"#e0e0e0", border:"none", borderRadius:9, color:code.length===6?"#fff":"#666", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:code.length===6?"pointer":"not-allowed" }}>
                   {verifying?"Verifying...":"Enable 2FA"}
                 </button>
                 <button type="button" onClick={()=>setStep("setup")}
@@ -226,7 +226,7 @@ export default function Admin2FA() {
             ))}
           </div>
           <button onClick={()=>{ navigator.clipboard.writeText(backupCodes.join("\n")); toast.success("Backup codes copied!") }}
-            style={{ width:"100%", background:"#0c1f2e", border:"1px solid #378add40", borderRadius:9, color:"#378add", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px", cursor:"pointer", marginBottom:8 }}>
+            style={{ width:"100%", background:"#eff6ff", border:"1px solid #378add40", borderRadius:9, color:"#378add", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px", cursor:"pointer", marginBottom:8 }}>
             Copy backup codes
           </button>
           <button onClick={()=>{ setStep("enabled"); load() }}
@@ -272,7 +272,7 @@ export default function Admin2FA() {
                 onChange={e=>setDisableCode(e.target.value)}
               />
               <button type="submit" disabled={disabling||!disableCode}
-                style={{ width:"100%", background:disableCode?"#1a0808":"#1a1a1a", border:`1px solid ${disableCode?"#e24b4a40":"#333"}`, borderRadius:9, color:disableCode?"#e24b4a":"#555", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:disableCode?"pointer":"not-allowed" }}>
+                style={{ width:"100%", background:disableCode?"#1a0808":"#f5f5f5", border:`1px solid ${disableCode?"#e24b4a40":"#e0e0e0"}`, borderRadius:9, color:disableCode?"#e24b4a":"#555", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:disableCode?"pointer":"not-allowed" }}>
                 {disabling?"Disabling...":"Disable 2FA"}
               </button>
             </form>

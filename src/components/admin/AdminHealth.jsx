@@ -165,30 +165,30 @@ function DiagnosticPanel({ checkKey, onResolved }) {
         {expanded?"▲ Hide diagnosis":"▼ Show diagnosis & fix"}
       </button>
       {expanded&&(
-        <div style={{ marginTop:8, background:"#0f0f0f", borderRadius:8, padding:"0.9rem" }}>
+        <div style={{ marginTop:8, background:"#ffffff", borderRadius:8, padding:"0.9rem" }}>
           <div style={{ marginBottom:10 }}>
-            <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", marginBottom:6 }}>Possible causes:</div>
+            <div style={{ fontSize:11, color:"#888", textTransform:"uppercase", marginBottom:6 }}>Possible causes:</div>
             {diag.causes.map((c,i)=>(
               <div key={i} style={{ display:"flex", gap:8, marginBottom:4 }}>
-                <span style={{ color:"#555", flexShrink:0 }}>•</span>
+                <span style={{ color:"#888", flexShrink:0 }}>•</span>
                 <span style={{ fontSize:11, color:"#888" }}>{c}</span>
               </div>
             ))}
           </div>
           <div style={{ marginBottom:10 }}>
-            <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", marginBottom:4 }}>Recommended action:</div>
+            <div style={{ fontSize:11, color:"#888", textTransform:"uppercase", marginBottom:4 }}>Recommended action:</div>
             <div style={{ fontSize:12, color:"#e6821e" }}>→ {diag.resolution}</div>
           </div>
           <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
             {diag.autoFix&&(
               <button onClick={handleAutoFix} disabled={resolving}
-                style={{ background:resolving?"#333":"#1d9e75", border:"none", borderRadius:7, color:resolving?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"7px 14px", cursor:resolving?"not-allowed":"pointer" }}>
+                style={{ background:resolving?"#e0e0e0":"#1d9e75", border:"none", borderRadius:7, color:resolving?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"7px 14px", cursor:resolving?"not-allowed":"pointer" }}>
                 {resolving?"Processing...":"⚡ Auto-fix"}
               </button>
             )}
             {diag.link&&(
               <a href={diag.link} target={diag.link.startsWith("http")?"_blank":"_self"}
-                style={{ background:"#160a2e", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, fontWeight:600, padding:"7px 14px", textDecoration:"none" }}>
+                style={{ background:"#f5f3ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, fontWeight:600, padding:"7px 14px", textDecoration:"none" }}>
                 Go fix it →
               </a>
             )}
@@ -316,11 +316,11 @@ export default function AdminHealth() {
     <div>
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:"1.5rem", flexWrap:"wrap", gap:10 }}>
         <div>
-          <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#f0ede6" }}>System Health Monitor</div>
-          <div style={{ fontSize:12, color:"#555", marginTop:2 }}>{lastChecked?`Last checked: ${lastChecked.toLocaleTimeString()}`:"Running checks..."}</div>
+          <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#000000" }}>System Health Monitor</div>
+          <div style={{ fontSize:12, color:"#888", marginTop:2 }}>{lastChecked?`Last checked: ${lastChecked.toLocaleTimeString()}`:"Running checks..."}</div>
         </div>
         <button onClick={runChecks} disabled={running}
-          style={{ background:running?"#333":"#8b5cf6", border:"none", borderRadius:9, color:running?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:running?"not-allowed":"pointer" }}>
+          style={{ background:running?"#e0e0e0":"#8b5cf6", border:"none", borderRadius:9, color:running?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:running?"not-allowed":"pointer" }}>
           {running?"⏳ Checking...":"🔄 Run checks"}
         </button>
       </div>
@@ -339,7 +339,7 @@ export default function AdminHealth() {
           ].map(s=>(
             <div key={s.label} style={{ background:"rgba(0,0,0,0.3)", borderRadius:8, padding:"0.6rem" }}>
               <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:s.color }}>{s.value}</div>
-              <div style={{ fontSize:10, color:"#555" }}>{s.label}</div>
+              <div style={{ fontSize:10, color:"#888" }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -349,7 +349,7 @@ export default function AdminHealth() {
       <div style={{ display:"flex", gap:6, marginBottom:"1.25rem" }}>
         {[{k:"dashboard",l:"Dashboard"},{k:"logs",l:`History (${logs.length})`}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#8b5cf6":"#111", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
+            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#8b5cf6":"#f8f8f8", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
             {t.l}
           </button>
         ))}
@@ -359,7 +359,7 @@ export default function AdminHealth() {
       {tab==="dashboard"&&(
         <div>
           {loading&&(
-            <div style={{ textAlign:"center", padding:"3rem", color:"#555", fontSize:13 }}>
+            <div style={{ textAlign:"center", padding:"3rem", color:"#888", fontSize:13 }}>
               <div style={{ fontSize:32, marginBottom:10 }}>⏳</div>
               Running system checks...
             </div>
@@ -374,25 +374,25 @@ export default function AdminHealth() {
                 if (!result) return null
                 const color = result.status==="critical"?"#e24b4a":result.status==="warning"?"#e6821e":"#1d9e75"
                 return (
-                  <div key={check.key} style={{ background:"#111", border:`1px solid ${color}30`, borderRadius:10, padding:"0.9rem", marginBottom:8 }}>
+                  <div key={check.key} style={{ background:"#f8f8f8", border:`1px solid ${color}30`, borderRadius:10, padding:"0.9rem", marginBottom:8 }}>
                     <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                       <div style={{ flex:1, minWidth:0 }}>
                         <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
                           <span style={{ fontSize:16 }}>{check.icon}</span>
-                          <div style={{ fontSize:13, fontWeight:600, color:"#f0ede6" }}>{check.label}</div>
+                          <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{check.label}</div>
                           <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:`${color}20`, color }}>{result.status}</span>
-                          {result.count>0&&<span style={{ fontSize:10, color:"#555" }}>{result.count} affected</span>}
+                          {result.count>0&&<span style={{ fontSize:10, color:"#888" }}>{result.count} affected</span>}
                         </div>
-                        <div style={{ fontSize:12, color:"#666" }}>{result.message}</div>
+                        <div style={{ fontSize:12, color:"#888" }}>{result.message}</div>
                       </div>
                       <div style={{ width:10, height:10, borderRadius:"50%", background:color, boxShadow:`0 0 6px ${color}`, flexShrink:0, marginTop:4 }}/>
                     </div>
                     {result.details?.length>0&&(
                       <div style={{ marginTop:8, paddingTop:8, borderTop:`1px solid ${color}20` }}>
                         {result.details.map((d,i)=>(
-                          <div key={i} style={{ display:"flex", justifyContent:"space-between", fontSize:11, padding:"4px 0", borderBottom:"1px solid #1a1a1a" }}>
+                          <div key={i} style={{ display:"flex", justifyContent:"space-between", fontSize:11, padding:"4px 0", borderBottom:"1px solid #f5f5f5" }}>
                             <span style={{ color:"#888" }}>{d.label}</span>
-                            <span style={{ color:"#444" }}>{d.time?new Date(d.time).toLocaleString():""}</span>
+                            <span style={{ color:"#888" }}>{d.time?new Date(d.time).toLocaleString():""}</span>
                           </div>
                         ))}
                       </div>
@@ -409,21 +409,21 @@ export default function AdminHealth() {
       {/* LOGS */}
       {tab==="logs"&&(
         <div>
-          {logs.length===0&&<div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No health check history yet</div>}
+          {logs.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No health check history yet</div>}
           {logs.map(log=>{
             const color = log.status==="critical"?"#e24b4a":log.status==="warning"?"#e6821e":"#1d9e75"
             return (
-              <div key={log.id} style={{ background:"#111", border:`1px solid ${color}20`, borderRadius:10, padding:"0.9rem", marginBottom:8 }}>
+              <div key={log.id} style={{ background:"#f8f8f8", border:`1px solid ${color}20`, borderRadius:10, padding:"0.9rem", marginBottom:8 }}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                   <div>
                     <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
                       <div style={{ width:8, height:8, borderRadius:"50%", background:color }}/>
                       <div style={{ fontSize:12, fontWeight:600, color }}>{log.status?.toUpperCase()}</div>
-                      <div style={{ fontSize:11, color:"#555" }}>{log.affected_count} issue{log.affected_count!==1?"s":""}</div>
+                      <div style={{ fontSize:11, color:"#888" }}>{log.affected_count} issue{log.affected_count!==1?"s":""}</div>
                     </div>
                     <div style={{ fontSize:12, color:"#888" }}>{log.message}</div>
                   </div>
-                  <div style={{ fontSize:10, color:"#444", flexShrink:0 }}>{new Date(log.checked_at).toLocaleString()}</div>
+                  <div style={{ fontSize:10, color:"#888", flexShrink:0 }}>{new Date(log.checked_at).toLocaleString()}</div>
                 </div>
               </div>
             )

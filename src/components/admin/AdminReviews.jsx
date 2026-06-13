@@ -49,9 +49,9 @@ export default function AdminReviews() {
           { label:"Average rating", value:`${avgRating} ★`, color:"#e6821e" },
           { label:"Hidden reviews", value:reviews.filter(r=>r.is_hidden).length },
         ].map(s=>(
-          <div key={s.label} style={{ background:"#111", borderRadius:10, padding:"1rem", border:"1px solid #1e1e1e" }}>
-            <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
-            <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:s.color||"#f0ede6" }}>{s.value}</div>
+          <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
+            <div style={{ fontSize:11, color:"#888", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
+            <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:s.color||"#000000" }}>{s.value}</div>
           </div>
         ))}
       </div>
@@ -59,34 +59,34 @@ export default function AdminReviews() {
       <div style={{ display:"flex", gap:6, marginBottom:"1rem" }}>
         {[{k:"all",l:"All"},{k:"visible",l:"Visible"},{k:"hidden",l:"Hidden"}].map(t=>(
           <button key={t.k} onClick={()=>setFilter(t.k)}
-            style={{ padding:"6px 14px", borderRadius:6, border:"none", fontSize:12, cursor:"pointer", background:filter===t.k?"#e6821e":"#111", color:filter===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif" }}>
+            style={{ padding:"6px 14px", borderRadius:6, border:"none", fontSize:12, cursor:"pointer", background:filter===t.k?"#e6821e":"#f8f8f8", color:filter===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif" }}>
             {t.l}
           </button>
         ))}
       </div>
 
-      <div style={{ fontSize:12, color:"#555", marginBottom:10 }}>{filtered.length} review{filtered.length!==1?"s":""}</div>
+      <div style={{ fontSize:12, color:"#888", marginBottom:10 }}>{filtered.length} review{filtered.length!==1?"s":""}</div>
 
-      {loading && <div style={{ color:"#555", fontSize:13 }}>Loading...</div>}
-      {!loading && filtered.length === 0 && <div style={{ color:"#444", fontSize:13, textAlign:"center", padding:"2rem" }}>No reviews found</div>}
+      {loading && <div style={{ color:"#888", fontSize:13 }}>Loading...</div>}
+      {!loading && filtered.length === 0 && <div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No reviews found</div>}
 
       {filtered.map(r => (
-        <div key={r.id} style={{ background:"#111", border:`1px solid ${r.is_hidden?"#e24b4a20":"#1e1e1e"}`, borderRadius:10, padding:"1rem", marginBottom:8, opacity:r.is_hidden?0.6:1 }}>
+        <div key={r.id} style={{ background:"#f8f8f8", border:`1px solid ${r.is_hidden?"#e24b4a20":"#eeeeee"}`, borderRadius:10, padding:"1rem", marginBottom:8, opacity:r.is_hidden?0.6:1 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
             <div>
               <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:2 }}>
-                <div style={{ fontSize:13, fontWeight:500, color:"#f0ede6" }}>
+                <div style={{ fontSize:13, fontWeight:500, color:"#000000" }}>
                   {r["profile_public"]?.business_name || `${r["profile_public"]?.first_name||""} ${r["profile_public"]?.last_name||""}`}
                 </div>
-                {r.is_hidden && <span style={{ fontSize:10, color:"#e24b4a", background:"#1a0808", padding:"1px 6px", borderRadius:10 }}>Hidden</span>}
+                {r.is_hidden && <span style={{ fontSize:10, color:"#e24b4a", background:"#fff5f5", padding:"1px 6px", borderRadius:10 }}>Hidden</span>}
               </div>
-              <div style={{ fontSize:11, color:"#555" }}>
+              <div style={{ fontSize:11, color:"#888" }}>
                 By {r["profile_public"]?.first_name} {r["profile_public"]?.last_name} · {new Date(r.created_at).toLocaleDateString()}
               </div>
             </div>
             <div style={{ display:"flex", gap:1, flexShrink:0 }}>
               {[1,2,3,4,5].map(s=>(
-                <span key={s} style={{ color:s<=r.provider_rating?"#e6821e":"#333", fontSize:16 }}>★</span>
+                <span key={s} style={{ color:s<=r.provider_rating?"#e6821e":"#e0e0e0", fontSize:16 }}>★</span>
               ))}
             </div>
           </div>
@@ -96,15 +96,15 @@ export default function AdminReviews() {
           )}
 
           {r.provider_response && (
-            <div style={{ background:"#0f0f0f", border:"1px solid #222", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
-              <div style={{ fontSize:10, color:"#555", marginBottom:3 }}>Provider reply</div>
+            <div style={{ background:"#ffffff", border:"1px solid #222", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
+              <div style={{ fontSize:10, color:"#888", marginBottom:3 }}>Provider reply</div>
               <div style={{ fontSize:12, color:"#777" }}>{r.provider_response}</div>
             </div>
           )}
 
           {r.driver_rating > 0 && (
-            <div style={{ fontSize:11, color:"#555", marginBottom:8 }}>
-              Driver rating: {[1,2,3,4,5].map(s=><span key={s} style={{ color:s<=r.driver_rating?"#378add":"#333" }}>★</span>)}
+            <div style={{ fontSize:11, color:"#888", marginBottom:8 }}>
+              Driver rating: {[1,2,3,4,5].map(s=><span key={s} style={{ color:s<=r.driver_rating?"#378add":"#e0e0e0" }}>★</span>)}
               {r.driver_review && <span style={{ marginLeft:6, fontStyle:"italic" }}>"{r.driver_review}"</span>}
             </div>
           )}
