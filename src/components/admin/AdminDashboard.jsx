@@ -196,18 +196,18 @@ export default function AdminDashboard() {
               {time.toLocaleDateString("default",{weekday:"short",day:"numeric",month:"short"})}
             </div>
             <div style={{ display:"flex", alignItems:"center", gap:4, justifyContent:"flex-end", marginTop:4 }}>
-              <div style={{ width:5, height:5, borderRadius:"50%", background:onlineDrivers>0?"#1d9e75":"#555" }}/>
-              <span style={{ fontSize:10, color:onlineDrivers>0?"#1d9e75":"#555" }}>{onlineDrivers} driver{onlineDrivers!==1?"s":""} online</span>
+              <div style={{ width:5, height:5, borderRadius:"50%", background:onlineDrivers>0?"#1d9e75":"#888" }}/>
+              <span style={{ fontSize:10, color:onlineDrivers>0?"#1d9e75":"#888" }}>{onlineDrivers} driver{onlineDrivers!==1?"s":""} online</span>
             </div>
           </div>
         </div>
 
         {/* Stat strip */}
-        <div style={{ position:"relative", zIndex:1, display:"grid", gridTemplateColumns:"repeat(2,1fr)", borderTop:"1px solid #1e1e1e" }}>
+        <div style={{ position:"relative", zIndex:1, display:"grid", gridTemplateColumns:"repeat(2,1fr)", borderTop:"1px solid #eeeeee" }}>
           {[
             { label:"Platform revenue", value:`KES ${stats.revenue.toFixed(2)}`, color:"#e6821e" },
             { label:"Total bookings", value:stats.bookings, color:"#000000" },
-            { label:"Pending now", value:stats.pending, color:stats.pending>0?"#e6821e":"#f0ede6" },
+            { label:"Pending now", value:stats.pending, color:stats.pending>0?"#e6821e":"#ffffff" },
             { label:"Total users", value:stats.users, color:"#000000" },
           ].map((s,i)=>(
             <div key={s.label} style={{ padding:isMobile?"0.6rem 0.9rem":"0.9rem 1.25rem", borderRight:i%2===0?"1px solid rgba(255,255,255,0.2)":"none", borderBottom:i<2?"1px solid rgba(255,255,255,0.2)":"none" }}>
@@ -300,7 +300,7 @@ export default function AdminDashboard() {
         {loading&&<div style={{ color:"#888", fontSize:12 }}>Loading...</div>}
         {!loading&&activity.length===0&&<div style={{ color:"#aaa", fontSize:12 }}>No activity yet</div>}
         {activity.map((a,i)=>(
-          <div key={i} style={{ display:"flex", alignItems:"center", gap:10, padding:"7px 0", borderBottom:"1px solid #1a1a1a" }}>
+          <div key={i} style={{ display:"flex", alignItems:"center", gap:10, padding:"7px 0", borderBottom:"1px solid #f5f5f5" }}>
             <div style={{ width:28, height:28, borderRadius:7, background:"#f5f5f5", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, flexShrink:0 }}>{a.icon}</div>
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ fontSize:11, color:"#000000", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{a.text}</div>
