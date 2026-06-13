@@ -227,7 +227,7 @@ export default function AdminPaymentTracking() {
                 <div style={{ textAlign:"right" }}>
                   <div style={{ fontSize:12, color:"#e6821e", fontWeight:600 }}>Callout: KES 500</div>
                   <div style={{ fontSize:10, color:"#888" }}>Service: KES {Number(b.total_amount||0).toLocaleString()}</div>
-                  <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:b.go_callout_paid?"#071a12":"#1a0808", color:b.go_callout_paid?"#1d9e75":"#e24b4a", display:"inline-block", marginTop:4 }}>
+                  <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:b.go_callout_paid?"#f0fdf4":"#fff5f5", color:b.go_callout_paid?"#1d9e75":"#e24b4a", display:"inline-block", marginTop:4 }}>
                     Callout: {b.go_callout_paid?"Paid":"Unpaid"}
                   </span>
                 </div>

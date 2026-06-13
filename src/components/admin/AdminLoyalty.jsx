@@ -52,7 +52,7 @@ export default function AdminLoyalty() {
     return { name:"Bronze", color:"#cd7f32" }
   }
 
-  const inp = { width:"100%", background:"#f8f8f8", border:"1px solid #222", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:10 }
+  const inp = { width:"100%", background:"#f8f8f8", border:"1px solid #f0f0f0", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:10 }
 
   return (
     <div>
@@ -96,7 +96,7 @@ export default function AdminLoyalty() {
                 </div>
               </div>
               <button onClick={()=>setAdjusting(adjusting===l.user_id?null:l.user_id)}
-                style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#888", fontSize:11, padding:"5px 10px", cursor:"pointer", flexShrink:0 }}>
+                style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#888", fontSize:11, padding:"5px 10px", cursor:"pointer", flexShrink:0 }}>
                 {adjusting===l.user_id?"Close":"Adjust"}
               </button>
             </div>
@@ -113,7 +113,7 @@ export default function AdminLoyalty() {
                   <input style={inp} placeholder="e.g. Promotional bonus, correction" value={adjustForm.reason} onChange={e=>setAdjustForm(f=>({...f,reason:e.target.value}))}/>
                   <div style={{ display:"flex", gap:8 }}>
                     <button type="submit" style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"9px 20px", cursor:"pointer" }}>Apply adjustment</button>
-                    <button type="button" onClick={()=>setAdjusting(null)} style={{ background:"none", border:"1px solid #333", borderRadius:8, color:"#888", fontSize:13, padding:"9px 20px", cursor:"pointer" }}>Cancel</button>
+                    <button type="button" onClick={()=>setAdjusting(null)} style={{ background:"none", border:"1px solid #dddddd", borderRadius:8, color:"#888", fontSize:13, padding:"9px 20px", cursor:"pointer" }}>Cancel</button>
                   </div>
                 </form>
               </div>

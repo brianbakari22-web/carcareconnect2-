@@ -102,7 +102,7 @@ export default function AdminPayouts() {
           </button>
         ))}
         {filtered.length>0&&<>
-          <button onClick={selectAll} style={{ padding:"6px 14px", borderRadius:6, border:"1px solid #333", fontSize:12, cursor:"pointer", background:"none", color:"#888", fontFamily:"'DM Sans',sans-serif" }}>
+          <button onClick={selectAll} style={{ padding:"6px 14px", borderRadius:6, border:"1px solid #dddddd", fontSize:12, cursor:"pointer", background:"none", color:"#888", fontFamily:"'DM Sans',sans-serif" }}>
             {selected.length===filtered.length?"Deselect all":"Select all"}
           </button>
           {selected.length>0&&<>
@@ -127,7 +127,7 @@ export default function AdminPayouts() {
               <div>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:2 }}>
                   <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>${Number(p.amount).toFixed(2)}</div>
-                  <span style={{ fontSize:10, padding:"2px 7px", borderRadius:10, background:`${roleColor[p.profile_public?.role]||"#444"}20`, color:roleColor[p.profile_public?.role]||"#888" }}>
+                  <span style={{ fontSize:10, padding:"2px 7px", borderRadius:10, background:`${roleColor[p.profile_public?.role]||"#cccccc"}20`, color:roleColor[p.profile_public?.role]||"#888" }}>
                     {p.profile_public?.role}
                   </span>
                 </div>
@@ -148,7 +148,7 @@ export default function AdminPayouts() {
           {p.status==="pending"&&(
             <div>
               <input placeholder="Admin note (optional)" value={note[p.id]||""} onChange={e=>setNote(n=>({...n,[p.id]:e.target.value}))}
-                style={{ width:"100%", background:"#ffffff", border:"1px solid #222", borderRadius:7, padding:"8px 10px", color:"#000000", fontSize:12, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:8 }}/>
+                style={{ width:"100%", background:"#ffffff", border:"1px solid #f0f0f0", borderRadius:7, padding:"8px 10px", color:"#000000", fontSize:12, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:8 }}/>
               <div style={{ display:"flex", gap:8 }}>
                 <button onClick={()=>updatePayout(p.id,"approved")} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:12, padding:"6px 14px", cursor:"pointer" }}>Approve</button>
                 <button onClick={()=>updatePayout(p.id,"rejected")} style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:12, padding:"6px 14px", cursor:"pointer" }}>Reject</button>
@@ -158,7 +158,7 @@ export default function AdminPayouts() {
           {p.status==="approved"&&(
             <div style={{ display:"flex", gap:8, alignItems:"center" }}>
               <input placeholder="Payment reference (optional)" value={note[p.id]||""} onChange={e=>setNote(n=>({...n,[p.id]:e.target.value}))}
-                style={{ flex:1, background:"#ffffff", border:"1px solid #222", borderRadius:7, padding:"8px 10px", color:"#000000", fontSize:12, outline:"none", fontFamily:"'DM Sans',sans-serif" }}/>
+                style={{ flex:1, background:"#ffffff", border:"1px solid #f0f0f0", borderRadius:7, padding:"8px 10px", color:"#000000", fontSize:12, outline:"none", fontFamily:"'DM Sans',sans-serif" }}/>
               <button onClick={()=>updatePayout(p.id,"paid")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:12, padding:"6px 14px", cursor:"pointer", whiteSpace:"nowrap" }}>Mark paid</button>
             </div>
           )}

@@ -326,7 +326,7 @@ export default function AdminHealth() {
       </div>
 
       {/* Overall status */}
-      <div style={{ background:overallStatus==="critical"?"#1a0808":overallStatus==="warning"?"#1a1208":"#071a12", border:`2px solid ${overallColor}`, borderRadius:14, padding:"1.25rem", marginBottom:"1.5rem", textAlign:"center" }}>
+      <div style={{ background:overallStatus==="critical"?"#fff5f5":overallStatus==="warning"?"#fff8f0":"#f0fdf4", border:`2px solid ${overallColor}`, borderRadius:14, padding:"1.25rem", marginBottom:"1.5rem", textAlign:"center" }}>
         <div style={{ fontSize:40, marginBottom:8 }}>{overallStatus==="critical"?"🔴":overallStatus==="warning"?"🟡":"🟢"}</div>
         <div style={{ fontFamily:"Syne", fontSize:isMobile?18:22, fontWeight:800, color:overallColor, marginBottom:4 }}>
           {overallStatus==="critical"?"CRITICAL ISSUES FOUND":overallStatus==="warning"?"WARNINGS DETECTED":"ALL SYSTEMS HEALTHY"}

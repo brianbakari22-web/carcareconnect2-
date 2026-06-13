@@ -425,7 +425,7 @@ Be specific and actionable. Max 300 words. Use bullet points.`
 
   return (
     <div style={{ background:"#f8f8f8", border:"1px solid #8b5cf640", borderRadius:14, marginBottom:"1.5rem", overflow:"hidden" }}>
-      <div onClick={()=>setOpen(o=>!o)} style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"1rem 1.25rem", cursor:"pointer", background:"linear-gradient(135deg,#160a2e,#0a0a0a)" }}>
+      <div onClick={()=>setOpen(o=>!o)} style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"1rem 1.25rem", cursor:"pointer", background:"linear-gradient(135deg,#f5f3ff,#0a0a0a)" }}>
         <div style={{ display:"flex", alignItems:"center", gap:10 }}>
           <div style={{ width:36, height:36, borderRadius:"50%", background:"#8b5cf6", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}>✦</div>
           <div>
@@ -571,7 +571,7 @@ Be specific and actionable. Max 300 words. Use bullet points.`
                 <form onSubmit={sendChat} style={{ display:"flex", gap:8 }}>
                   <input value={chatInput} onChange={e=>setChatInput(e.target.value)}
                     placeholder="e.g. Cancel stuck bookings, show claim details..."
-                    style={{ flex:1, background:"#ffffff", border:"1px solid #222", borderRadius:8, padding:"8px 12px", color:"#000000", fontSize:12, outline:"none" }}/>
+                    style={{ flex:1, background:"#ffffff", border:"1px solid #f0f0f0", borderRadius:8, padding:"8px 12px", color:"#000000", fontSize:12, outline:"none" }}/>
                   <button type="submit" disabled={!chatInput.trim()||chatLoading}
                     style={{ background:chatInput.trim()&&!chatLoading?"#8b5cf6":"#f0f0f0", border:"none", borderRadius:8, color:chatInput.trim()&&!chatLoading?"#fff":"#555", fontSize:14, padding:"0 14px", cursor:"pointer" }}>
                     ➤

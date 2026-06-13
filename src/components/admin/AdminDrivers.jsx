@@ -181,7 +181,7 @@ export default function AdminDrivers() {
       {/* Search */}
       {tab!=="map"&&(
         <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search by name, ID or license..."
-          style={{ width:"100%", background:"#f8f8f8", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none", marginBottom:"1rem", fontFamily:"'DM Sans',sans-serif" }}/>
+          style={{ width:"100%", background:"#f8f8f8", border:"1px solid #f0f0f0", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none", marginBottom:"1rem", fontFamily:"'DM Sans',sans-serif" }}/>
       )}
 
       {/* MAP */}
@@ -215,7 +215,7 @@ export default function AdminDrivers() {
             return (
               <div key={d.id} style={{ background:"#f8f8f8", border:`1px solid ${isSuspended?"#e24b4a20":d.documents_verified?"#378add20":"#e6821e20"}`, borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10 }}>
                 <div style={{ display:"flex", alignItems:"flex-start", gap:12 }}>
-                  <div style={{ width:48, height:48, borderRadius:12, background:isOnline?"#071a12":"#f5f5f5", border:`2px solid ${isOnline?"#1d9e7540":"#e0e0e0"}`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:16, fontWeight:800, color:isOnline?"#1d9e75":"#555", flexShrink:0 }}>
+                  <div style={{ width:48, height:48, borderRadius:12, background:isOnline?"#f0fdf4":"#f5f5f5", border:`2px solid ${isOnline?"#1d9e7540":"#e0e0e0"}`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:16, fontWeight:800, color:isOnline?"#1d9e75":"#555", flexShrink:0 }}>
                     {d.first_name?.[0]}{d.last_name?.[0]}
                   </div>
 
@@ -264,14 +264,14 @@ export default function AdminDrivers() {
                         <div style={{ fontSize:12, color:"#e24b4a", marginBottom:6 }}>Rejection reason (driver will be notified):</div>
                         <input value={rejectReason} onChange={e=>setRejectReason(e.target.value)}
                           placeholder="e.g. ID photo unclear, expired license..."
-                          style={{ width:"100%", background:"#f8f8f8", border:"1px solid #333", borderRadius:7, padding:"8px 10px", color:"#000000", fontSize:12, outline:"none", marginBottom:8 }}/>
+                          style={{ width:"100%", background:"#f8f8f8", border:"1px solid #dddddd", borderRadius:7, padding:"8px 10px", color:"#000000", fontSize:12, outline:"none", marginBottom:8 }}/>
                         <div style={{ display:"flex", gap:6 }}>
                           <button onClick={()=>rejectDriver(d.id)}
                             style={{ background:"#e24b4a", border:"none", borderRadius:7, color:"#fff", fontSize:12, fontWeight:700, padding:"7px 16px", cursor:"pointer" }}>
                             Send rejection
                           </button>
                           <button onClick={()=>{ setRejectingId(null); setRejectReason("") }}
-                            style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#888", fontSize:12, padding:"7px 12px", cursor:"pointer" }}>
+                            style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#888", fontSize:12, padding:"7px 12px", cursor:"pointer" }}>
                             Cancel
                           </button>
                         </div>
@@ -292,7 +292,7 @@ export default function AdminDrivers() {
                           ].filter(doc=>d[doc.key]).map(doc=>(
                             <div key={doc.key} style={{ textAlign:"center" }}>
                               <a href={d[doc.key]} target="_blank" rel="noreferrer">
-                                <img src={d[doc.key]} alt={doc.label} style={{ width:"100%", height:80, objectFit:"cover", borderRadius:7, border:"1px solid #333" }}/>
+                                <img src={d[doc.key]} alt={doc.label} style={{ width:"100%", height:80, objectFit:"cover", borderRadius:7, border:"1px solid #dddddd" }}/>
                               </a>
                               <div style={{ fontSize:10, color:"#888", marginTop:3 }}>{doc.label}</div>
                             </div>
@@ -429,7 +429,7 @@ function DriverStats({ driverId, isMobile }) {
           <div style={{ fontSize:11, color:"#888", marginBottom:6 }}>Penalty history</div>
           {penalties.slice(0,5).map(p=>(
             <div key={p.id} style={{ display:"flex", justifyContent:"space-between", padding:"5px 0", borderBottom:"1px solid #f5f5f5", fontSize:11 }}>
-              <span style={{ color:p.is_active?"#e24b4a":"#444" }}>{p.penalty_type?.replace(/_/g," ")}</span>
+              <span style={{ color:p.is_active?"#e24b4a":"#cccccc" }}>{p.penalty_type?.replace(/_/g," ")}</span>
               <span style={{ color:"#888" }}>{new Date(p.created_at).toLocaleDateString()}</span>
             </div>
           ))}

@@ -96,7 +96,7 @@ export default function AdminDisputes() {
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
                     <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{d.dispute_type?.replace("_"," ").toUpperCase()} dispute</div>
-                    <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:d.status==="open"?"#1a0808":d.status==="resolved"?"#071a12":"#1a1208", color:d.status==="open"?"#e24b4a":d.status==="resolved"?"#1d9e75":"#e6821e" }}>{d.status}</span>
+                    <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:d.status==="open"?"#fff5f5":d.status==="resolved"?"#f0fdf4":"#fff8f0", color:d.status==="open"?"#e24b4a":d.status==="resolved"?"#1d9e75":"#e6821e" }}>{d.status}</span>
                   </div>
                   <div style={{ fontSize:12, color:"#888", marginBottom:2 }}>📋 {d.bookings?.service_name} — #{d.bookings?.booking_number}</div>
                   <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>👤 {d.profiles?.first_name} {d.profiles?.last_name}</div>
@@ -118,7 +118,7 @@ export default function AdminDisputes() {
                     <label style={{ fontSize:11, color:"#888", display:"block", marginBottom:4 }}>Admin notes</label>
                     <textarea value={adminNotes} onChange={e=>setAdminNotes(e.target.value)}
                       placeholder="Add resolution notes..."
-                      style={{ width:"100%", background:"#ffffff", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none", resize:"vertical", minHeight:60, fontFamily:"'DM Sans',sans-serif" }}/>
+                      style={{ width:"100%", background:"#ffffff", border:"1px solid #f0f0f0", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none", resize:"vertical", minHeight:60, fontFamily:"'DM Sans',sans-serif" }}/>
                   </div>
                   <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
                     <button onClick={()=>resolveDispute(d.id,"under_review")} disabled={resolving}
@@ -166,7 +166,7 @@ export default function AdminDisputes() {
                     </div>
                   </div>
                 </div>
-                <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:a.difference>30?"#1a0808":"#071a12", color:a.difference>30?"#e24b4a":"#1d9e75" }}>
+                <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:a.difference>30?"#fff5f5":"#f0fdf4", color:a.difference>30?"#e24b4a":"#1d9e75" }}>
                   {a.difference>30?"⚠️ Alert":"✓ Normal"}
                 </span>
               </div>

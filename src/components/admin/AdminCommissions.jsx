@@ -122,19 +122,19 @@ export default function AdminCommissions() {
                     <label style={{ fontSize:11, color:"#888", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Platform % (e.g. 10)</label>
                     <input type="number" min="0" max="100" step="0.5" value={form.platform_rate}
                       onChange={e=>{ setForm(f=>({...f, platform_rate:e.target.value, provider_rate:(100-parseFloat(e.target.value||0)).toString()})) }}
-                      style={{ width:"100%", background:"#ffffff", border:"1px solid #333", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none" }}/>
+                      style={{ width:"100%", background:"#ffffff", border:"1px solid #dddddd", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none" }}/>
                   </div>
                   <div>
                     <label style={{ fontSize:11, color:"#888", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Provider % (auto)</label>
                     <input type="number" min="0" max="100" step="0.5" value={form.provider_rate}
                       onChange={e=>setForm(f=>({...f, provider_rate:e.target.value}))}
-                      style={{ width:"100%", background:"#ffffff", border:"1px solid #333", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none" }}/>
+                      style={{ width:"100%", background:"#ffffff", border:"1px solid #dddddd", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none" }}/>
                   </div>
                 </div>
                 <div style={{ marginBottom:10 }}>
                   <label style={{ fontSize:11, color:"#888", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Description</label>
                   <input value={form.description} onChange={e=>setForm(f=>({...f,description:e.target.value}))}
-                    style={{ width:"100%", background:"#ffffff", border:"1px solid #333", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none" }}/>
+                    style={{ width:"100%", background:"#ffffff", border:"1px solid #dddddd", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none" }}/>
                 </div>
                 <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", marginBottom:10, display:"flex", justifyContent:"space-between" }}>
                   <span style={{ fontSize:12, color:"#888" }}>Total must equal 100%</span>

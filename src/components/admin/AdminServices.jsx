@@ -44,7 +44,7 @@ export default function AdminServices() {
   return (
     <div>
       <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search services..."
-        style={{ width:"100%", background:"#f8f8f8", border:"1px solid #222", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", marginBottom:"1rem", fontFamily:"'DM Sans',sans-serif" }} />
+        style={{ width:"100%", background:"#f8f8f8", border:"1px solid #f0f0f0", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", marginBottom:"1rem", fontFamily:"'DM Sans',sans-serif" }} />
       <div style={{ fontSize:12, color:"#888", marginBottom:10 }}>{filtered.length} service{filtered.length!==1?"s":""}</div>
       {loading && <div style={{ color:"#888", fontSize:13 }}>Loading...</div>}
       {filtered.map(s => (
@@ -52,7 +52,7 @@ export default function AdminServices() {
           <div style={{ flex:1 }}>
             <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
               <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>{s.name}</div>
-              <span style={{ fontSize:10, padding:"2px 8px", borderRadius:20, background:s.is_active?"#071a12":"#f5f5f5", color:s.is_active?"#1d9e75":"#555" }}>
+              <span style={{ fontSize:10, padding:"2px 8px", borderRadius:20, background:s.is_active?"#f0fdf4":"#f5f5f5", color:s.is_active?"#1d9e75":"#555" }}>
                 {s.is_active?"Active":"Hidden"}
               </span>
             </div>
@@ -62,7 +62,7 @@ export default function AdminServices() {
             </div>
           </div>
           <div style={{ display:"flex", gap:6 }}>
-            <button onClick={()=>toggleActive(s.id,s.is_active)} style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#888", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+            <button onClick={()=>toggleActive(s.id,s.is_active)} style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#888", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
               {s.is_active?"Hide":"Show"}
             </button>
             <button onClick={()=>deleteService(s.id)} style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>

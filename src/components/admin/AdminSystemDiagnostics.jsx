@@ -203,7 +203,7 @@ export default function AdminSystemDiagnostics() {
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
             <div style={{ fontSize:12, color:"#888" }}>{errorLogs.length} errors logged</div>
             <div style={{ display:"flex", gap:8 }}>
-              <button onClick={loadErrorLogs} style={{ background:"#f8f8f8", border:"1px solid #333", borderRadius:7, color:"#888", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>Refresh</button>
+              <button onClick={loadErrorLogs} style={{ background:"#f8f8f8", border:"1px solid #dddddd", borderRadius:7, color:"#888", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>Refresh</button>
               {errorLogs.length>0&&<button onClick={clearLogs} style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>Clear all</button>}
             </div>
           </div>

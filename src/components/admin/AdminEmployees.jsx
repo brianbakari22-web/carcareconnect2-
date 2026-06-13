@@ -111,7 +111,7 @@ export default function AdminEmployees() {
   const totalPayroll = active.reduce((sum,e)=>sum+Number(e.base_salary||0),0)
   const pendingPays = payments.filter(p=>p.payment_status==="pending")
 
-  const inp = { width:"100%", background:"#ffffff", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none", fontFamily:"DM Sans,sans-serif", marginBottom:10 }
+  const inp = { width:"100%", background:"#ffffff", border:"1px solid #f0f0f0", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none", fontFamily:"DM Sans,sans-serif", marginBottom:10 }
   const lbl = { fontSize:11, color:"#888", display:"block", marginBottom:4, textTransform:"uppercase", letterSpacing:"0.05em" }
 
   return (
@@ -205,7 +205,7 @@ export default function AdminEmployees() {
               <button type="submit" disabled={saving} style={{ background:saving?"#e0e0e0":"#8b5cf6", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 24px", cursor:saving?"not-allowed":"pointer" }}>
                 {saving?"Saving...":editing?"Update":"Add employee"}
               </button>
-              <button type="button" onClick={()=>{ setShowForm(false); setEditing(null); setForm(EMPTY) }} style={{ background:"none", border:"1px solid #333", borderRadius:9, color:"#888", fontSize:13, padding:"10px 18px", cursor:"pointer" }}>Cancel</button>
+              <button type="button" onClick={()=>{ setShowForm(false); setEditing(null); setForm(EMPTY) }} style={{ background:"none", border:"1px solid #dddddd", borderRadius:9, color:"#888", fontSize:13, padding:"10px 18px", cursor:"pointer" }}>Cancel</button>
             </div>
           </form>
         </div>
@@ -224,7 +224,7 @@ export default function AdminEmployees() {
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", flexWrap:"wrap", gap:4 }}>
                     <div style={{ fontSize:14, fontWeight:600, color:"#000000" }}>{e.first_name} {e.last_name}</div>
-                    <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:e.is_active?"#071a12":"#f5f5f5", color:e.is_active?"#1d9e75":"#555" }}>{e.is_active?"Active":"Inactive"}</span>
+                    <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:e.is_active?"#f0fdf4":"#f5f5f5", color:e.is_active?"#1d9e75":"#555" }}>{e.is_active?"Active":"Inactive"}</span>
                   </div>
                   <div style={{ fontSize:11, color:"#888", marginTop:2 }}>{e.role.replace(/_/g," ")} · {e.department}</div>
                   <div style={{ fontSize:11, color:"#888", marginTop:2 }}>{e.email}{e.phone?" · "+e.phone:""}</div>
@@ -305,7 +305,7 @@ export default function AdminEmployees() {
                 </div>
                 <div style={{ textAlign:"right" }}>
                   <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(p.net_amount||0).toLocaleString()}</div>
-                  <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:p.payment_status==="paid"?"#071a12":"#1a1208", color:p.payment_status==="paid"?"#1d9e75":"#e6821e" }}>{p.payment_status}</span>
+                  <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:p.payment_status==="paid"?"#f0fdf4":"#fff8f0", color:p.payment_status==="paid"?"#1d9e75":"#e6821e" }}>{p.payment_status}</span>
                 </div>
               </div>
               <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8, marginBottom:8 }}>

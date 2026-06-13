@@ -69,9 +69,9 @@ export default function AdminInventory() {
 
       <div style={{ display:"flex", gap:8, marginBottom:"1rem", flexWrap:"wrap" }}>
         <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search items..."
-          style={{ flex:1, minWidth:150, background:"#f8f8f8", border:"1px solid #222", borderRadius:8, padding:"8px 12px", color:"#000000", fontSize:12, outline:"none" }}/>
+          style={{ flex:1, minWidth:150, background:"#f8f8f8", border:"1px solid #f0f0f0", borderRadius:8, padding:"8px 12px", color:"#000000", fontSize:12, outline:"none" }}/>
         <select value={providerFilter} onChange={e=>setProviderFilter(e.target.value)}
-          style={{ background:"#f8f8f8", border:"1px solid #222", borderRadius:8, padding:"8px 12px", color:"#000000", fontSize:12, outline:"none" }}>
+          style={{ background:"#f8f8f8", border:"1px solid #f0f0f0", borderRadius:8, padding:"8px 12px", color:"#000000", fontSize:12, outline:"none" }}>
           <option value="all">All providers</option>
           {providers.map(p=><option key={p.id} value={p.id}>{p.business_name||p.first_name}</option>)}
         </select>

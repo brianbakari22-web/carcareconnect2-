@@ -98,7 +98,7 @@ export default function AdminUsers() {
 
       <div style={{ display:"flex", gap:8, marginBottom:"1rem", flexWrap:"wrap" }}>
         <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search name, email, city..."
-          style={{ flex:1, minWidth:180, background:"#f8f8f8", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }}/>
+          style={{ flex:1, minWidth:180, background:"#f8f8f8", border:"1px solid #f0f0f0", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }}/>
         {["all","customer","provider","driver","admin"].map(r=>(
           <button key={r} onClick={()=>setFilter(r)}
             style={{ padding:"8px 14px", borderRadius:7, border:"none", fontSize:12, cursor:"pointer", background:filter===r?"#e6821e":"#f8f8f8", color:filter===r?"#fff":"#666", fontFamily:"'DM Sans',sans-serif" }}>
@@ -134,7 +134,7 @@ export default function AdminUsers() {
                 View detail
               </button>
               <button onClick={()=>setSelected(selected===u.id?null:u.id)}
-                style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#888", fontSize:11, padding:"5px 10px", cursor:"pointer", flexShrink:0 }}>
+                style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#888", fontSize:11, padding:"5px 10px", cursor:"pointer", flexShrink:0 }}>
                 {selected===u.id?"Close":"Manage"}
               </button>
             </div>
@@ -147,7 +147,7 @@ export default function AdminUsers() {
                 {u.is_verified?"Remove verification":"✓ Verify"}
               </button>
               <button onClick={()=>toggleActive(u.id, u.is_active)}
-                style={{ background:u.is_active?"#1a0808":"#071a12", border:`1px solid ${u.is_active?"#e24b4a40":"#1d9e7540"}`, borderRadius:7, color:u.is_active?"#e24b4a":"#1d9e75", fontSize:12, padding:"6px 12px", cursor:"pointer" }}>
+                style={{ background:u.is_active?"#fff5f5":"#f0fdf4", border:`1px solid ${u.is_active?"#e24b4a40":"#1d9e7540"}`, borderRadius:7, color:u.is_active?"#e24b4a":"#1d9e75", fontSize:12, padding:"6px 12px", cursor:"pointer" }}>
                 {u.is_active?"Suspend":"Activate"}
               </button>
               <button onClick={()=>resetPassword(u.email)}

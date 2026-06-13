@@ -219,7 +219,7 @@ export default function AdminMarketplace() {
       {/* Search */}
       {["pending","active","rejected"].includes(tab)&&(
         <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search listings..."
-          style={{ width:"100%", background:"#f8f8f8", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none", marginBottom:"1rem", fontFamily:"'DM Sans',sans-serif" }}/>
+          style={{ width:"100%", background:"#f8f8f8", border:"1px solid #f0f0f0", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none", marginBottom:"1rem", fontFamily:"'DM Sans',sans-serif" }}/>
       )}
 
       {loading&&<div style={{ color:"#888", fontSize:13 }}>Loading...</div>}
@@ -267,7 +267,7 @@ export default function AdminMarketplace() {
                   {l.status==="active"&&(
                     <>
                       <button onClick={()=>featureListing(l.id,!l.is_featured)}
-                        style={{ background:l.is_featured?"#1a1208":"#1a1208", border:`1px solid ${l.is_featured?"#e24b4a40":"#e6821e40"}`, borderRadius:7, color:l.is_featured?"#e24b4a":"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                        style={{ background:l.is_featured?"#fff8f0":"#fff8f0", border:`1px solid ${l.is_featured?"#e24b4a40":"#e6821e40"}`, borderRadius:7, color:l.is_featured?"#e24b4a":"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                         {l.is_featured?"Unfeature":"⭐ Feature"}
                       </button>
                       <button onClick={()=>suspendListing(l.id)}
@@ -299,7 +299,7 @@ export default function AdminMarketplace() {
                       <label style={{ fontSize:11, color:"#888", display:"block", marginBottom:4 }}>Admin notes (required for rejection)</label>
                       <textarea value={adminNotes} onChange={e=>setAdminNotes(e.target.value)}
                         placeholder="Add notes..."
-                        style={{ width:"100%", background:"#ffffff", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none", resize:"vertical", minHeight:60, fontFamily:"'DM Sans',sans-serif" }}/>
+                        style={{ width:"100%", background:"#ffffff", border:"1px solid #f0f0f0", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none", resize:"vertical", minHeight:60, fontFamily:"'DM Sans',sans-serif" }}/>
                     </div>
 
                     <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
@@ -344,7 +344,7 @@ export default function AdminMarketplace() {
                         Reject
                       </button>
                       <button onClick={()=>setSelected(null)}
-                        style={{ background:"none", border:"1px solid #333", borderRadius:8, color:"#888", fontSize:12, padding:"9px 14px", cursor:"pointer" }}>
+                        style={{ background:"none", border:"1px solid #dddddd", borderRadius:8, color:"#888", fontSize:12, padding:"9px 14px", cursor:"pointer" }}>
                         Cancel
                       </button>
                     </div>
@@ -470,7 +470,7 @@ export default function AdminMarketplace() {
                 <div>
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
                     <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{d.reason}</div>
-                    <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:d.status==="open"?"#1a0808":"#f8f8f8", color:d.status==="open"?"#e24b4a":"#555" }}>{d.status}</span>
+                    <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:d.status==="open"?"#fff5f5":"#f8f8f8", color:d.status==="open"?"#e24b4a":"#555" }}>{d.status}</span>
                   </div>
                   <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>Raised by: {d.profiles?.first_name} {d.profiles?.last_name}</div>
                   {d.description&&<div style={{ fontSize:11, color:"#888", fontStyle:"italic" }}>"{d.description}"</div>}

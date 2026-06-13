@@ -47,7 +47,7 @@ export default function AdminPromos() {
     load()
   }
 
-  const inp = { width:"100%", background:"#ffffff", border:"1px solid #222", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", marginBottom:10, fontFamily:"'DM Sans',sans-serif" }
+  const inp = { width:"100%", background:"#ffffff", border:"1px solid #f0f0f0", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", marginBottom:10, fontFamily:"'DM Sans',sans-serif" }
   const lbl = { fontSize:11, color:"#888", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
 
   return (
@@ -58,7 +58,7 @@ export default function AdminPromos() {
           <div style={{ flex:1 }}>
             <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
               <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>{p.code}</div>
-              <span style={{ fontSize:10, padding:"2px 8px", borderRadius:20, background:p.is_active?"#071a12":"#f5f5f5", color:p.is_active?"#1d9e75":"#555" }}>
+              <span style={{ fontSize:10, padding:"2px 8px", borderRadius:20, background:p.is_active?"#f0fdf4":"#f5f5f5", color:p.is_active?"#1d9e75":"#555" }}>
                 {p.is_active?"Active":"Inactive"}
               </span>
             </div>
@@ -70,7 +70,7 @@ export default function AdminPromos() {
             </div>
           </div>
           <div style={{ display:"flex", gap:6 }}>
-            <button onClick={()=>togglePromo(p.id,p.is_active)} style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#888", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+            <button onClick={()=>togglePromo(p.id,p.is_active)} style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#888", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
               {p.is_active?"Disable":"Enable"}
             </button>
             <button onClick={()=>deletePromo(p.id)} style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>

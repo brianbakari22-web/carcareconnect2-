@@ -96,7 +96,7 @@ export default function AdminReviews() {
           )}
 
           {r.provider_response && (
-            <div style={{ background:"#ffffff", border:"1px solid #222", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
+            <div style={{ background:"#ffffff", border:"1px solid #f0f0f0", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
               <div style={{ fontSize:10, color:"#888", marginBottom:3 }}>Provider reply</div>
               <div style={{ fontSize:12, color:"#777" }}>{r.provider_response}</div>
             </div>

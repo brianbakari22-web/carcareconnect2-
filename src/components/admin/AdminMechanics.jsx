@@ -3,9 +3,9 @@ import { supabase } from "../../lib/supabase"
 import useIsMobile from "../../lib/useIsMobile"
 
 const CATEGORIES = {
-  shop_standard: { label:"Shop Standard", icon:"🏪", color:"#378add", bg:"#0c1f2e" },
-  shop_premium: { label:"Shop Premium", icon:"🏡", color:"#8b5cf6", bg:"#160a2e" },
-  go_service: { label:"GO Service", icon:"🚨", color:"#e24b4a", bg:"#1a0808" },
+  shop_standard: { label:"Shop Standard", icon:"🏪", color:"#378add", bg:"#eff6ff" },
+  shop_premium: { label:"Shop Premium", icon:"🏡", color:"#8b5cf6", bg:"#f5f3ff" },
+  go_service: { label:"GO Service", icon:"🚨", color:"#e24b4a", bg:"#fff5f5" },
 }
 
 const EICONS = { flat_tire:"🛞", dead_battery:"🔋", out_of_fuel:"⛽", car_wont_start:"🔑", overheating:"🌡️", towing:"🚚", other:"🆘" }
@@ -175,7 +175,7 @@ export default function AdminMechanics() {
         <div>
           <div style={{ display:"flex", gap:8, marginBottom:"1rem", flexWrap:"wrap" }}>
             <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search mechanics..."
-              style={{ flex:1, minWidth:180, background:"#f8f8f8", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none" }}/>
+              style={{ flex:1, minWidth:180, background:"#f8f8f8", border:"1px solid #f0f0f0", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none" }}/>
             {["all","available","on_job","inactive"].map(f=>(
               <button key={f} onClick={()=>setFilter(f)}
                 style={{ padding:"8px 14px", borderRadius:7, border:"none", fontSize:12, cursor:"pointer", background:filter===f?"#8b5cf6":"#f8f8f8", color:filter===f?"#fff":"#666", fontFamily:"'DM Sans',sans-serif" }}>
@@ -188,13 +188,13 @@ export default function AdminMechanics() {
           {filteredMechanics.map(m=>(
             <div key={m.id} style={{ background:"#f8f8f8", border:`1px solid ${m.is_active?m.is_available?"#1d9e7530":"#e6821e30":"#eeeeee"}`, borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8, opacity:m.is_active?1:0.6 }}>
               <div style={{ display:"flex", alignItems:"flex-start", gap:12 }}>
-                <div style={{ width:44, height:44, borderRadius:"50%", background:m.is_available&&m.is_active?"#071a12":"#f5f5f5", border:`1px solid ${m.is_available&&m.is_active?"#1d9e7540":"#e0e0e0"}`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:m.is_available&&m.is_active?"#1d9e75":"#555", flexShrink:0 }}>
+                <div style={{ width:44, height:44, borderRadius:"50%", background:m.is_available&&m.is_active?"#f0fdf4":"#f5f5f5", border:`1px solid ${m.is_available&&m.is_active?"#1d9e7540":"#e0e0e0"}`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:m.is_available&&m.is_active?"#1d9e75":"#555", flexShrink:0 }}>
                   {m.first_name[0]}{m.last_name[0]}
                 </div>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
                     <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{m.first_name} {m.last_name}</div>
-                    <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:m.is_available&&m.is_active?"#071a12":"#f5f5f5", color:m.is_available&&m.is_active?"#1d9e75":"#555" }}>
+                    <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:m.is_available&&m.is_active?"#f0fdf4":"#f5f5f5", color:m.is_available&&m.is_active?"#1d9e75":"#555" }}>
                       {m.is_active?(m.is_available?"Available":"On job"):"Inactive"}
                     </span>
                     {m.current_latitude&&<span style={{ fontSize:10, color:"#8b5cf6" }}>📍 Live</span>}

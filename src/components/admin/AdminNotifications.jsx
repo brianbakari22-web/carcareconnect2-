@@ -5,10 +5,10 @@ import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
 const TYPE_COLORS = {
-  success: { color:"#1d9e75", bg:"#071a12", border:"#1d9e7530" },
-  warning: { color:"#e6821e", bg:"#1a1208", border:"#e6821e30" },
-  error: { color:"#e24b4a", bg:"#1a0808", border:"#e24b4a30" },
-  info: { color:"#378add", bg:"#0c1f2e", border:"#378add30" },
+  success: { color:"#1d9e75", bg:"#f0fdf4", border:"#1d9e7530" },
+  warning: { color:"#e6821e", bg:"#fff8f0", border:"#e6821e30" },
+  error: { color:"#e24b4a", bg:"#fff5f5", border:"#e24b4a30" },
+  info: { color:"#378add", bg:"#eff6ff", border:"#378add30" },
 }
 
 const PRIORITY = {
@@ -106,7 +106,7 @@ export default function AdminNotifications() {
             </button>
           )}
           <button onClick={clearAll}
-            style={{ background:"none", border:"1px solid #333", borderRadius:8, color:"#888", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
+            style={{ background:"none", border:"1px solid #dddddd", borderRadius:8, color:"#888", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
             Clear all
           </button>
         </div>
@@ -212,7 +212,7 @@ function NotifCard({ n, onRead, onDelete }) {
             </button>
           )}
           <button onClick={()=>onDelete(n.id)}
-            style={{ background:"none", border:"1px solid #333", borderRadius:6, color:"#888", fontSize:10, padding:"3px 8px", cursor:"pointer" }}>
+            style={{ background:"none", border:"1px solid #dddddd", borderRadius:6, color:"#888", fontSize:10, padding:"3px 8px", cursor:"pointer" }}>
             ×
           </button>
         </div>

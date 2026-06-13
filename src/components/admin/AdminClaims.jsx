@@ -356,7 +356,7 @@ export default function AdminClaims() {
                     <label style={{ fontSize:11, color:"#888", display:"block", marginBottom:4 }}>Decision notes (required for rejection)</label>
                     <textarea value={adminNotes} onChange={e=>setAdminNotes(e.target.value)}
                       placeholder="Add notes about your decision..."
-                      style={{ width:"100%", background:"#ffffff", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none", resize:"vertical", minHeight:60, fontFamily:"'DM Sans',sans-serif" }}/>
+                      style={{ width:"100%", background:"#ffffff", border:"1px solid #f0f0f0", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none", resize:"vertical", minHeight:60, fontFamily:"'DM Sans',sans-serif" }}/>
                   </div>
 
                   
@@ -400,7 +400,7 @@ export default function AdminClaims() {
                       Reject claim
                     </button>
                     <button onClick={()=>setSelected(null)}
-                      style={{ background:"none", border:"1px solid #333", borderRadius:8, color:"#888", fontSize:12, padding:"9px 14px", cursor:"pointer" }}>
+                      style={{ background:"none", border:"1px solid #dddddd", borderRadius:8, color:"#888", fontSize:12, padding:"9px 14px", cursor:"pointer" }}>
                       Cancel
                     </button>
                   </div>
@@ -429,7 +429,7 @@ export default function AdminClaims() {
                 </div>
                 <div style={{ textAlign:"right" }}>
                   {p.amount_deducted>0&&<div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e24b4a" }}>-KES {Number(p.amount_deducted).toLocaleString()}</div>}
-                  <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:p.is_active?"#1a0808":"#f8f8f8", color:p.is_active?"#e24b4a":"#444" }}>
+                  <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:p.is_active?"#fff5f5":"#f8f8f8", color:p.is_active?"#e24b4a":"#cccccc" }}>
                     {p.is_active?"Active":"Resolved"}
                   </span>
                 </div>

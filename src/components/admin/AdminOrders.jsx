@@ -74,7 +74,7 @@ export default function AdminOrders() {
   const pendingOrders = orders.filter(o=>o.status==="pending").length
   const todayOrders = orders.filter(o=>new Date(o.created_at).toDateString()===new Date().toDateString()).length
 
-  const inp = { width:"100%", background:"#ffffff", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none", fontFamily:"DM Sans,sans-serif", marginBottom:8 }
+  const inp = { width:"100%", background:"#ffffff", border:"1px solid #f0f0f0", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none", fontFamily:"DM Sans,sans-serif", marginBottom:8 }
 
   return (
     <div>

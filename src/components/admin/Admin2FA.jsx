@@ -126,7 +126,7 @@ export default function Admin2FA() {
       </div>
 
       <div style={{ background:theme.bgCard, border:`1px solid ${status?.is_enabled?"#1d9e7540":"#eeeeee"}`, borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem", display:"flex", alignItems:"center", gap:12 }}>
-        <div style={{ width:44, height:44, borderRadius:10, background:status?.is_enabled?"#071a12":"#f5f5f5", display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, flexShrink:0 }}>
+        <div style={{ width:44, height:44, borderRadius:10, background:status?.is_enabled?"#f0fdf4":"#f5f5f5", display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, flexShrink:0 }}>
           {status?.is_enabled?"🔒":"🔓"}
         </div>
         <div style={{ flex:1 }}>
@@ -203,7 +203,7 @@ export default function Admin2FA() {
                   {verifying?"Verifying...":"Enable 2FA"}
                 </button>
                 <button type="button" onClick={()=>setStep("setup")}
-                  style={{ background:"none", border:"1px solid #333", borderRadius:9, color:"#888", fontSize:13, padding:"12px 18px", cursor:"pointer" }}>
+                  style={{ background:"none", border:"1px solid #dddddd", borderRadius:9, color:"#888", fontSize:13, padding:"12px 18px", cursor:"pointer" }}>
                   Back
                 </button>
               </div>
@@ -244,7 +244,7 @@ export default function Admin2FA() {
               You have {status?.backup_codes?.length||0} backup codes remaining.
             </div>
             <button onClick={()=>setShowBackup(s=>!s)}
-              style={{ background:theme.bgCard, border:"1px solid #333", borderRadius:8, color:"#888", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
+              style={{ background:theme.bgCard, border:"1px solid #dddddd", borderRadius:8, color:"#888", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
               {showBackup?"Hide":"View"} backup codes
             </button>
             {showBackup&&(
@@ -272,7 +272,7 @@ export default function Admin2FA() {
                 onChange={e=>setDisableCode(e.target.value)}
               />
               <button type="submit" disabled={disabling||!disableCode}
-                style={{ width:"100%", background:disableCode?"#1a0808":"#f5f5f5", border:`1px solid ${disableCode?"#e24b4a40":"#e0e0e0"}`, borderRadius:9, color:disableCode?"#e24b4a":"#555", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:disableCode?"pointer":"not-allowed" }}>
+                style={{ width:"100%", background:disableCode?"#fff5f5":"#f5f5f5", border:`1px solid ${disableCode?"#e24b4a40":"#e0e0e0"}`, borderRadius:9, color:disableCode?"#e24b4a":"#555", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:disableCode?"pointer":"not-allowed" }}>
                 {disabling?"Disabling...":"Disable 2FA"}
               </button>
             </form>

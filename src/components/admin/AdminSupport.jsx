@@ -171,7 +171,7 @@ export default function AdminSupport() {
           <input value={reply} onChange={e=>setReply(e.target.value)}
             onKeyDown={e=>{ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); sendReply(e) }}}
             placeholder="Type your reply to the customer..."
-            style={{ flex:1, background:"#f8f8f8", border:"1px solid #222", borderRadius:10, padding:"11px 14px", color:"#000000", fontSize:13, outline:"none", fontFamily:"DM Sans,sans-serif" }}/>
+            style={{ flex:1, background:"#f8f8f8", border:"1px solid #f0f0f0", borderRadius:10, padding:"11px 14px", color:"#000000", fontSize:13, outline:"none", fontFamily:"DM Sans,sans-serif" }}/>
           <button type="submit" disabled={sending||!reply.trim()}
             style={{ background:reply.trim()&&!sending?"#8b5cf6":"#f0f0f0", border:"none", borderRadius:10, color:reply.trim()&&!sending?"#fff":"#555", fontSize:18, padding:"0 16px", cursor:reply.trim()&&!sending?"pointer":"default" }}>
             ➤

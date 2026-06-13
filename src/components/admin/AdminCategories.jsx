@@ -79,7 +79,7 @@ export default function AdminCategories() {
     window.scrollTo({ top:document.body.scrollHeight, behavior:"smooth" })
   }
 
-  const inp = { width:"100%", background:"#ffffff", border:"1px solid #222", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:10 }
+  const inp = { width:"100%", background:"#ffffff", border:"1px solid #f0f0f0", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:10 }
   const lbl = { fontSize:11, color:"#888", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
 
   return (
@@ -114,7 +114,7 @@ export default function AdminCategories() {
             </div>
             <div style={{ display:"flex", gap:6, flexShrink:0 }}>
               <button onClick={()=>startEdit(c)}
-                style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#888", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#888", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                 Edit
               </button>
               {typeof c.is_active !== "undefined" && (
@@ -156,7 +156,7 @@ export default function AdminCategories() {
             </button>
             {editing&&(
               <button type="button" onClick={()=>{ setEditing(null); setForm({ name:"", icon:"🔧", description:"" }) }}
-                style={{ background:"none", border:"1px solid #333", borderRadius:8, color:"#888", fontSize:13, padding:"10px 20px", cursor:"pointer" }}>
+                style={{ background:"none", border:"1px solid #dddddd", borderRadius:8, color:"#888", fontSize:13, padding:"10px 20px", cursor:"pointer" }}>
                 Cancel
               </button>
             )}

@@ -64,7 +64,7 @@ export default function AdminProviders() {
       </div>
 
       <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search providers..."
-        style={{ width:"100%", background:"#f8f8f8", border:"1px solid #222", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:"1rem" }}/>
+        style={{ width:"100%", background:"#f8f8f8", border:"1px solid #f0f0f0", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:"1rem" }}/>
 
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
         {["all","garage","parts_dealer","accessories_shop","tyre_shop","auto_electrician","car_wash","panel_beater","auto_glass"].map(t=>(
@@ -95,7 +95,7 @@ export default function AdminProviders() {
               </div>
             </div>
             <button onClick={()=>setSelected(selected===p.id?null:p.id)}
-              style={{ background:"none", border:"1px solid #333", borderRadius:7, color:"#888", fontSize:11, padding:"5px 10px", cursor:"pointer", flexShrink:0 }}>
+              style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#888", fontSize:11, padding:"5px 10px", cursor:"pointer", flexShrink:0 }}>
               {selected===p.id?"Close":"Manage"}
             </button>
           </div>
@@ -104,7 +104,7 @@ export default function AdminProviders() {
               <button onClick={()=>toggleVerified(p.id,p.is_verified)} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:12, padding:"6px 12px", cursor:"pointer" }}>
                 {p.is_verified?"Remove verification":"✓ Verify provider"}
               </button>
-              <button onClick={()=>toggleActive(p.id,p.is_active)} style={{ background:p.is_active?"#1a0808":"#071a12", border:`1px solid ${p.is_active?"#e24b4a40":"#1d9e7540"}`, borderRadius:7, color:p.is_active?"#e24b4a":"#1d9e75", fontSize:12, padding:"6px 12px", cursor:"pointer" }}>
+              <button onClick={()=>toggleActive(p.id,p.is_active)} style={{ background:p.is_active?"#fff5f5":"#f0fdf4", border:`1px solid ${p.is_active?"#e24b4a40":"#1d9e7540"}`, borderRadius:7, color:p.is_active?"#e24b4a":"#1d9e75", fontSize:12, padding:"6px 12px", cursor:"pointer" }}>
                 {p.is_active?"Suspend":"Activate"}
               </button>
             </div>

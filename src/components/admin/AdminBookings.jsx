@@ -4,7 +4,7 @@ import { supabase } from "../../lib/supabase"
 import toast from "react-hot-toast"
 
 const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", completed:"#1d9e75", cancelled:"#e24b4a" }
-const SB = { pending:"#1a1208", confirmed:"#0c1f2e", "in-progress":"#160a2e", completed:"#071a12", cancelled:"#1a0808" }
+const SB = { pending:"#fff8f0", confirmed:"#eff6ff", "in-progress":"#f5f3ff", completed:"#f0fdf4", cancelled:"#fff5f5" }
 
 export default function AdminBookings() {
   const isMobile = useIsMobile()
@@ -38,7 +38,7 @@ export default function AdminBookings() {
     <div>
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
         {["all","pending","confirmed","in-progress","completed","cancelled"].map(s => (
-          <button key={s} onClick={()=>setFilter(s)} style={{ padding:"6px 14px", borderRadius:6, border:"none", fontSize:12, cursor:"pointer", background:filter===s?"#1a1208":"#f8f8f8", color:filter===s?"#e6821e":"#666", fontFamily:"'DM Sans',sans-serif" }}>
+          <button key={s} onClick={()=>setFilter(s)} style={{ padding:"6px 14px", borderRadius:6, border:"none", fontSize:12, cursor:"pointer", background:filter===s?"#fff8f0":"#f8f8f8", color:filter===s?"#e6821e":"#666", fontFamily:"'DM Sans',sans-serif" }}>
             {s==="all"?"All":s.charAt(0).toUpperCase()+s.slice(1)}
           </button>
         ))}
