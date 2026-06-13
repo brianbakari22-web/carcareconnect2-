@@ -233,10 +233,10 @@ export default function Layout({ children }) {
   const initials = `${profile?.first_name?.[0]||""}${profile?.last_name?.[0]||""}`.toUpperCase()
 
   const roleColors = {
-    customer: { active:"#e6821e", activeBg:"#1a1208" },
-    provider: { active:"#378add", activeBg:"#0c1f2e" },
-    driver:   { active:"#1d9e75", activeBg:"#071a12" },
-    admin:    { active:"#8b5cf6", activeBg:"#160a2e" },
+    customer: { active:"#e6821e", activeBg:"#fff8f0" },
+    provider: { active:"#378add", activeBg:"#eff6ff" },
+    driver:   { active:"#1d9e75", activeBg:"#f0fdf4" },
+    admin:    { active:"#8b5cf6", activeBg:"#f5f3ff" },
   }
   const activeColor = roleColors[role]?.active || theme.primary
   const activeBg = roleColors[role]?.activeBg || theme.primaryBg
@@ -313,7 +313,7 @@ export default function Layout({ children }) {
                 🌐 {language==="en"?"Kiswahili":"English"}
               </button>
               <button onClick={()=>{ signOut(); setMobileMenuOpen(false) }}
-                style={{ background:"#1a0808", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", cursor:"pointer", fontSize:13, fontWeight:700, width:"100%", textAlign:"center", fontFamily:"'DM Sans',sans-serif", padding:"10px 0" }}>
+                style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", cursor:"pointer", fontSize:13, fontWeight:700, width:"100%", textAlign:"center", fontFamily:"'DM Sans',sans-serif", padding:"10px 0" }}>
                 🚪 {t("signOut")}
               </button>
             </div>
@@ -423,7 +423,7 @@ export default function Layout({ children }) {
           </button>
 
           <button onClick={signOut}
-            style={{ background:"#1a0808", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", cursor:"pointer", fontSize:12, fontWeight:700, width:"100%", textAlign:"center", fontFamily:"'DM Sans',sans-serif", padding:"8px 0", transition:"all 0.12s" }}>
+            style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", cursor:"pointer", fontSize:12, fontWeight:700, width:"100%", textAlign:"center", fontFamily:"'DM Sans',sans-serif", padding:"8px 0", transition:"all 0.12s" }}>
             {collapsed?"🚪":`🚪 ${t("signOut")}`}
           </button>
         </div>

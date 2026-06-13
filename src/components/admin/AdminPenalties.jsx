@@ -189,7 +189,7 @@ export default function AdminPenalties() {
                     onMouseEnter={e=>e.currentTarget.style.background="#f8f8f8"}
                     onMouseLeave={e=>e.currentTarget.style.background="#fff"}>
                     <div>
-                      <div style={{ fontSize:13, fontWeight:600, color:"#000" }}>{u.first_name} {u.last_name}</div>
+                      <div style={{ fontSize:13, fontWeight:600, color:"#111111" }}>{u.first_name} {u.last_name}</div>
                       <div style={{ fontSize:11, color:"#888" }}>{u.violation_count||0} violations · {u.warning_count||0} warnings</div>
                     </div>
                     <Badge label={u.role} color={ROLE_COLORS[u.role]||"#888"}/>
@@ -207,7 +207,7 @@ export default function AdminPenalties() {
                   {selectedUser.first_name[0]}{selectedUser.last_name[0]}
                 </div>
                 <div>
-                  <div style={{ fontSize:13, fontWeight:600, color:"#000" }}>{selectedUser.first_name} {selectedUser.last_name}</div>
+                  <div style={{ fontSize:13, fontWeight:600, color:"#111111" }}>{selectedUser.first_name} {selectedUser.last_name}</div>
                   <div style={{ fontSize:11, color:"#888" }}>{selectedUser.role} · {selectedUser.violation_count||0} past violations</div>
                 </div>
               </div>
@@ -333,7 +333,7 @@ export default function AdminPenalties() {
                     {VIOLATION_TYPES.find(x=>x.key===v.violation_type)?.icon||"⚠️"}
                   </div>
                   <div>
-                    <div style={{ fontSize:13, fontWeight:600, color:"#000" }}>
+                    <div style={{ fontSize:13, fontWeight:600, color:"#111111" }}>
                       {v.profiles?.first_name} {v.profiles?.last_name}
                       <span style={{ marginLeft:8 }}><Badge label={v.profiles?.role||""} color={ROLE_COLORS[v.profiles?.role]||"#888"}/></span>
                     </div>
@@ -360,7 +360,7 @@ export default function AdminPenalties() {
                     {PENALTY_RULES[p.penalty_level]?.icon||"⚠️"}
                   </div>
                   <div>
-                    <div style={{ fontSize:13, fontWeight:600, color:"#000" }}>
+                    <div style={{ fontSize:13, fontWeight:600, color:"#111111" }}>
                       {p.profiles?.first_name} {p.profiles?.last_name}
                       <span style={{ marginLeft:8 }}><Badge label={p.profiles?.role||""} color={ROLE_COLORS[p.profiles?.role]||"#888"}/></span>
                     </div>
@@ -398,7 +398,7 @@ export default function AdminPenalties() {
                     {u.first_name?.[0]}{u.last_name?.[0]}
                   </div>
                   <div>
-                    <div style={{ fontSize:14, fontWeight:600, color:"#000" }}>{u.first_name} {u.last_name}</div>
+                    <div style={{ fontSize:14, fontWeight:600, color:"#111111" }}>{u.first_name} {u.last_name}</div>
                     <div style={{ display:"flex", gap:6, marginTop:4, flexWrap:"wrap" }}>
                       <Badge label={u.role} color={ROLE_COLORS[u.role]||"#888"}/>
                       <span style={{ fontSize:11, color:"#888" }}>⚠️ {u.violation_count||0} violations</span>
