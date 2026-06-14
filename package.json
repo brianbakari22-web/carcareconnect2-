@@ -9,8 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@capacitor/android": "^8.4.0",
+    "@capacitor/cli": "^8.4.0",
+    "@capacitor/core": "^8.4.0",
     "@supabase/supabase-js": "^2.45.0",
     "jspdf": "^4.2.1",
+    "onesignal-cordova-plugin": "^5.3.11",
     "otpauth": "^9.5.1",
     "qrcode": "^1.5.4",
     "react": "^18.3.1",
@@ -20,6 +24,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.1",
+    "sharp": "^0.34.5",
     "vite": "^5.4.0"
   }
 }

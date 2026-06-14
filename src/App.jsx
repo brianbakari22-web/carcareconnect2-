@@ -314,6 +314,18 @@ function AdminDashboardRouter() {
 }
 
 export default function App() {
+  useEffect(() => {
+    import("react-hot-toast").then(({ default: toast }) => {
+      toast("App loaded! Testing toasts work.", { duration: 8000 })
+    })
+  }, [])
+
+  useEffect(() => {
+    import("react-hot-toast").then(({ default: toast }) => {
+      toast("App loaded! Testing toasts work.", { duration: 8000 })
+    })
+  }, [])
+
   return (
     <ThemeProvider>
       <LanguageProvider>

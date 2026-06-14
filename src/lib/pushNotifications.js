@@ -1,52 +1,42 @@
-import { PushNotifications } from "@capacitor/push-notifications"
 import { Capacitor } from "@capacitor/core"
 import { supabase } from "./supabase"
 
+const ONESIGNAL_APP_ID = "8722cee5-c2e2-431c-a15d-2af78773b404"
+
 export async function initPushNotifications(userId) {
   if (!Capacitor.isNativePlatform()) return
+  if (!userId) return
 
   try {
-    let permStatus = await PushNotifications.checkPermissions()
+    const { OneSignal } = await import("onesignal-cordova-plugin")
 
-    if (permStatus.receive === "prompt") {
-      permStatus = await PushNotifications.requestPermissions()
+    OneSignal.initialize(ONESIGNAL_APP_ID)
+
+    // Request permission
+    OneSignal.Notifications.requestPermission(true)
+
+    // Set external user ID so we can target this user from Supabase/OneSignal API
+    OneSignal.login(userId)
+
+    // Save the OneSignal player/subscription ID for reference
+    const subscriptionId = OneSignal.User.pushSubscription.id
+    if (subscriptionId) {
+      await supabase.from("device_tokens").upsert({
+        user_id: userId,
+        token: subscriptionId,
+        platform: "onesignal",
+        updated_at: new Date().toISOString(),
+      }, { onConflict: "user_id,token" })
     }
 
-    if (permStatus.receive !== "granted") {
-      console.log("Push notification permission denied")
-      return
-    }
-
-    await PushNotifications.register()
-
-    PushNotifications.addListener("registration", async (token) => {
-      console.log("Push registration success, token: " + token.value)
-      if (userId) {
-        await supabase.from("device_tokens").upsert({
-          user_id: userId,
-          token: token.value,
-          platform: "android",
-          updated_at: new Date().toISOString(),
-        }, { onConflict: "user_id,token" })
-      }
-    })
-
-    PushNotifications.addListener("registrationError", (err) => {
-      console.error("Push registration error: ", err.error)
-    })
-
-    PushNotifications.addListener("pushNotificationReceived", (notification) => {
-      console.log("Push notification received: ", notification)
-    })
-
-    PushNotifications.addListener("pushNotificationActionPerformed", (notification) => {
-      console.log("Push notification action performed: ", notification)
-      const data = notification.notification.data
+    // Listen for notification clicks
+    OneSignal.Notifications.addEventListener("click", (event) => {
+      const data = event.notification.additionalData
       if (data?.url) {
         window.location.href = data.url
       }
     })
   } catch (err) {
-    console.error("Push notification init error:", err)
+    console.error("OneSignal init error:", err.message)
   }
 }
