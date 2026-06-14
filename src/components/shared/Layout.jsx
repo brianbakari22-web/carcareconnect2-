@@ -6,6 +6,7 @@ import { useNavigate, useLocation } from "react-router-dom"
 import ThemeSwitcher from "./ThemeSwitcher"
 import { supabase } from "../../lib/supabase"
 import AIAssistant from "./AIAssistant"
+import EmergencySOS from "./EmergencySOS"
 
 const NAV = {
   customer: [
@@ -326,6 +327,7 @@ export default function Layout({ children }) {
       </div>
 
       <AIAssistant />
+      <EmergencySOS />
       {showMore&&(
         <>
           <div onClick={()=>setShowMore(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",zIndex:98}}/>
@@ -438,6 +440,7 @@ export default function Layout({ children }) {
         </div>
         <div style={{ flex:1, padding:"1.5rem", overflowY:"auto", background:theme.bg }}>{children}</div>
         <AIAssistant />
+      <EmergencySOS />
       </div>
     </div>
   )

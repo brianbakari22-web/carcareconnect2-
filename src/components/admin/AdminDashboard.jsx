@@ -53,6 +53,7 @@ export default function AdminDashboard() {
   const isMobile = useIsMobile()
   const [stats, setStats] = useState({ users:0, providers:0, drivers:0, customers:0, bookings:0, revenue:0, pending:0, completed:0 })
   const [onlineDrivers, setOnlineDrivers] = useState(0)
+  const [sosAlerts, setSosAlerts] = useState([])
   const [activity, setActivity] = useState([])
   const [bookingTrend, setBookingTrend] = useState([])
   const [userGrowth, setUserGrowth] = useState([])
@@ -84,8 +85,10 @@ export default function AdminDashboard() {
     { data: recentOrders },
       { data: inventoryItems },
       { data: commissionRates },
+      { data: emergencyAlerts },
     ] = await Promise.all([
       supabase.from("profiles").select("role,created_at,is_active"),
+      supabase.from("emergency_alerts").select("*").eq("status","active").order("created_at",{ascending:false}),
       supabase.from("bookings").select("status,total_amount,created_at,booking_date,service_name,customer_id"),
       supabase.from("driver_status").select("is_online").eq("is_online", true),
       supabase.from("bookings").select("id,service_name,status,total_amount,created_at").order("created_at",{ascending:false}).limit(8),
@@ -99,6 +102,7 @@ export default function AdminDashboard() {
     const bks = bookings||[]
     const completed = bks.filter(b=>b.status==="completed")
 
+    setSosAlerts(emergencyAlerts||[])
     setStats({
       users: ps.length,
       customers: ps.filter(p=>p.role==="customer").length,
@@ -156,6 +160,36 @@ export default function AdminDashboard() {
 
   return (
     <div>
+      {sosAlerts.length>0&&(
+        <div style={{ background:"#fff5f5", border:"2px solid #e24b4a", borderRadius:12, padding:"1rem", marginBottom:"1.25rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e24b4a", marginBottom:8 }}>
+            🚨 {sosAlerts.length} Active Emergency Alert{sosAlerts.length>1?"s":""}
+          </div>
+          {sosAlerts.map(a=>(
+            <div key={a.id} style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", marginBottom:6, display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:8 }}>
+              <div>
+                <div style={{ fontSize:13, fontWeight:700, color:"#000" }}>{a.user_name} ({a.user_role})</div>
+                <div style={{ fontSize:11, color:"#888" }}>{new Date(a.created_at).toLocaleString()}</div>
+              </div>
+              <div style={{ display:"flex", gap:6 }}>
+                {a.latitude&&(
+                  <a href={`https://maps.google.com/?q=${a.latitude},${a.longitude}`} target="_blank" rel="noreferrer"
+                    style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"6px 10px", textDecoration:"none" }}>
+                    📍 View location
+                  </a>
+                )}
+                <button onClick={async()=>{
+                  await supabase.from("emergency_alerts").update({status:"resolved",resolved_at:new Date().toISOString()}).eq("id",a.id)
+                  load()
+                }}
+                  style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 10px", cursor:"pointer" }}>
+                  ✓ Resolve
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
       {/* QUICK ACTIONS */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))", gap:8, marginBottom:"1.25rem" }}>
         {[
