@@ -32,8 +32,43 @@ export default function AdminProviders() {
   }
 
   async function toggleVerified(id, is_verified) {
-    await supabase.from("profiles").update({ is_verified:!is_verified }).eq("id",id)
+    const newStatus = !is_verified
+    await supabase.from("profiles").update({ 
+      is_verified: newStatus,
+      verification_status: newStatus ? "approved" : "pending",
+      verified_at: newStatus ? new Date().toISOString() : null,
+    }).eq("id",id)
+    
+    await supabase.from("notifications").insert({
+      user_id: id,
+      title: newStatus ? "You\'re Verified! ✓" : "Verification Removed",
+      message: newStatus 
+        ? "Your provider account has been verified. You now appear in customer search results with a verified badge!" 
+        : "Your verification status has been changed. Please contact support if you have questions.",
+      type: newStatus ? "success" : "warning",
+    })
+    
     toast.success(is_verified?"Verification removed":"Provider verified ✓")
+    load()
+  }
+
+  async function rejectVerification(id) {
+    const reason = prompt("Reason for rejection (will be sent to provider):")
+    if (!reason) return
+    
+    await supabase.from("profiles").update({ 
+      verification_status: "rejected",
+      verification_notes: reason,
+    }).eq("id",id)
+    
+    await supabase.from("notifications").insert({
+      user_id: id,
+      title: "Verification Update Required",
+      message: "Your verification was not approved: " + reason + ". Please update your profile and documents, then contact support.",
+      type: "warning",
+    })
+    
+    toast.success("Provider notified of rejection")
     load()
   }
 
@@ -85,6 +120,8 @@ export default function AdminProviders() {
               <div style={{ display:"flex", alignItems:"center", gap:6, flexWrap:"wrap", marginBottom:2 }}>
                 <div style={{ fontSize:13, fontWeight:600, color:p.is_active?"#000000":"#555" }}>{p.business_name||`${p.first_name} ${p.last_name}`}</div>
                 {p.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#f0fdf4", padding:"1px 6px", borderRadius:10 }}>✓ Verified</span>}
+                {!p.is_verified&&p.verification_status==="rejected"&&<span style={{ fontSize:10, color:"#e24b4a", background:"#fff5f5", padding:"1px 6px", borderRadius:10 }}>Rejected</span>}
+                {!p.is_verified&&p.verification_status==="pending"&&<span style={{ fontSize:10, color:"#e6821e", background:"#fff8f0", padding:"1px 6px", borderRadius:10 }}>Pending review</span>}
                 {!p.is_active&&<span style={{ fontSize:10, color:"#e24b4a", background:"#fff5f5", padding:"1px 6px", borderRadius:10 }}>Suspended</span>}
                 {p.provider_type&&<span style={{ fontSize:10, color:"#8b5cf6", background:"#f5f3ff", padding:"1px 6px", borderRadius:10 }}>{p.provider_type.replace(/_/g," ")}</span>}
               </div>
@@ -104,6 +141,11 @@ export default function AdminProviders() {
               <button onClick={()=>toggleVerified(p.id,p.is_verified)} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:12, padding:"6px 12px", cursor:"pointer" }}>
                 {p.is_verified?"Remove verification":"✓ Verify provider"}
               </button>
+              {!p.is_verified&&(
+                <button onClick={()=>rejectVerification(p.id)} style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:12, padding:"6px 12px", cursor:"pointer" }}>
+                  ✗ Reject verification
+                </button>
+              )}
               <button onClick={()=>toggleActive(p.id,p.is_active)} style={{ background:p.is_active?"#fff5f5":"#f0fdf4", border:`1px solid ${p.is_active?"#e24b4a40":"#1d9e7540"}`, borderRadius:7, color:p.is_active?"#e24b4a":"#1d9e75", fontSize:12, padding:"6px 12px", cursor:"pointer" }}>
                 {p.is_active?"Suspend":"Activate"}
               </button>

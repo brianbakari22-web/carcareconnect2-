@@ -125,6 +125,21 @@ export default function ProviderProfile() {
 
   return (
     <div style={{ maxWidth:isMobile?"100%":520 }}>
+      {profile?.verification_status==="pending"&&!profile?.is_verified&&(
+        <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.75rem 1rem", marginBottom:"1rem", fontSize:12, color:"#e6821e" }}>
+          ⏳ Your account is pending verification. Complete your profile and our team will review it soon.
+        </div>
+      )}
+      {profile?.verification_status==="rejected"&&(
+        <div style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:10, padding:"0.75rem 1rem", marginBottom:"1rem", fontSize:12, color:"#e24b4a" }}>
+          ✗ Verification not approved: {profile?.verification_notes||"Please contact support."}
+        </div>
+      )}
+      {profile?.is_verified&&(
+        <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:10, padding:"0.75rem 1rem", marginBottom:"1rem", fontSize:12, color:"#1d9e75" }}>
+          ✓ Your account is verified and visible to customers!
+        </div>
+      )}
       <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:"1.5rem" }}>
         <div style={{ width:60, height:60, borderRadius:14, background:"#eff6ff", border:"2px solid #378add40", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#378add" }}>
           {initials}
