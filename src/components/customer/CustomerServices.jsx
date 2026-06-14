@@ -17,6 +17,7 @@ export default function CustomerServices() {
   const { user, profile } = useAuth()
   const { t } = useLanguage()
   const [services, setServices] = useState([])
+  const [bundles, setBundles] = useState([])
   const [providers, setProviders] = useState([])
   const [loading, setLoading] = useState(true)
   const [activeCategory, setActiveCategory] = useState("all")
@@ -38,14 +39,16 @@ export default function CustomerServices() {
   useEffect(() => { if (user) load() }, [user])
 
   async function load() {
-    const [{ data: svcs }, { data: provs }, { data: vehs }] = await Promise.all([
+    const [{ data: svcs }, { data: provs }, { data: vehs }, { data: bds }] = await Promise.all([
       supabase.from("services").select("*").eq("is_active", true).order("created_at", { ascending:false }),
       supabase.from("profiles").select("id,first_name,last_name,business_name,city,latitude,longitude,is_verified").eq("role","provider"),
       supabase.from("vehicles").select("*").eq("user_id", user.id),
+      supabase.from("service_bundles").select("*").eq("is_active", true).order("created_at", { ascending:false }),
     ])
     setServices(svcs||[])
     setProviders(provs||[])
     setVehicles(vehs||[])
+    setBundles(bds||[])
     setLoading(false)
   }
 
@@ -93,6 +96,65 @@ export default function CustomerServices() {
       toast.error("Could not validate promo code")
     } finally {
       setPromoLoading(false)
+    }
+  }
+  async function bookBundle(e) {
+    e.preventDefault()
+    if (!booking || !booking.is_bundle) return
+    setBookingLoading(true)
+    try {
+      const platformRate = Number(booking.platform_commission_rate) || 0.10
+      const providerRate = 1 - platformRate
+      const baseAmount = Number(booking.price)
+      const platformAmount = baseAmount * platformRate
+      const providerAmount = baseAmount * providerRate
+      const voucherDiscount = voucherData?Number(voucherData.value):0
+      const promoDiscount = promoData?Number(promoData.discount):0
+      const finalAmount = Math.max(0, baseAmount - voucherDiscount - promoDiscount)
+
+      const { data, error } = await supabase.from("bookings").insert({
+        customer_id: user.id,
+        provider_id: booking.provider_id,
+        bundle_id: booking.bundle_id,
+        service_name: booking.name,
+        service_category: "bundle",
+        booking_date: bookForm.date,
+        booking_time: bookForm.time,
+        total_amount: baseAmount,
+        platform_commission: platformAmount,
+        provider_earnings: providerAmount,
+        platform_commission_rate: platformRate,
+        provider_commission_rate: providerRate,
+        payment_method: bookForm.payment_method,
+        payment_status: "pending",
+        status: "pending",
+        notes: bookForm.notes,
+        vehicle_id: selectedVehicle||null,
+      }).select("id")
+
+      if (error) throw error
+
+      if (promoData?.promo_id) {
+        await supabase.rpc("increment_promo_usage", { p_promo_id: promoData.promo_id })
+      }
+
+      if (bookForm.payment_method !== "cash" && data?.[0]?.id) {
+        setPendingBooking({ id: data[0].id, amount: finalAmount })
+        setShowPayment(true)
+        setBooking(null)
+      } else {
+        toast.success("Bundle booked! 🎉")
+        setBooking(null)
+      }
+      setBookForm({ date:"", time:"", notes:"", payment_method:"mpesa", is_concierge:false, problem_description:"", parts_needed:false, parts_description:"" })
+      setVoucherData(null)
+      setVoucherCode("")
+      setPromoData(null)
+      setPromoCode("")
+    } catch(err) {
+      toast.error(err.message)
+    } finally {
+      setBookingLoading(false)
     }
   }
   async function bookService(e) {
@@ -197,6 +259,155 @@ export default function CustomerServices() {
           </button>
         ))}
       </div>
+
+      {bundles.length>0&&(
+        <div style={{ marginBottom:"1.5rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, marginBottom:8, color:"#e6821e" }}>📦 Bundle Deals</div>
+          {bundles.map(b=>{
+            const savings = Number(b.original_price) - Number(b.bundle_price)
+            const savingsPct = Math.round((savings / Number(b.original_price)) * 100)
+            const provider = providers.find(p=>p.id===b.provider_id)
+            return (
+              <div key={b.id} style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10 }}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10 }}>
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6, flexWrap:"wrap" }}>
+                      <span style={{ fontSize:18 }}>📦</span>
+                      <div style={{ fontFamily:"Syne", fontSize:isMobile?14:15, fontWeight:800, color:"#000000" }}>{b.name}</div>
+                      <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:"#f0fdf4", color:"#1d9e75" }}>Save {savingsPct}%</span>
+                    </div>
+                    {b.description&&<div style={{ fontSize:12, color:"#666", marginBottom:6, lineHeight:1.5 }}>{b.description}</div>}
+                    <div style={{ display:"flex", gap:12, flexWrap:"wrap", alignItems:"center" }}>
+                      <span style={{ fontSize:12, color:"#888", textDecoration:"line-through" }}>KES {Number(b.original_price).toLocaleString()}</span>
+                      <span style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(b.bundle_price).toLocaleString()}</span>
+                      {provider&&<span style={{ fontSize:11, color:"#777777" }}>🏪 {provider.business_name||`${provider.first_name} ${provider.last_name}`}{provider.city?` · ${provider.city}`:""}</span>}
+                    </div>
+                  </div>
+                  <button onClick={()=>{ setBooking({ id:b.id, name:b.name, price:b.bundle_price, provider_id:b.provider_id, category:"shop_standard", is_bundle:true, bundle_id:b.id, platform_commission_rate:b.platform_commission_rate }); setBookForm({ date:"", time:"", notes:"", payment_method:"mpesa", is_concierge:false }) }}
+                    style={{ background:"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 16px", cursor:"pointer", flexShrink:0 }}>
+                    Book bundle
+                  </button>
+                </div>
+                {booking?.id===b.id&&booking?.is_bundle&&(
+                  <div style={{ marginTop:"1rem", paddingTop:"1rem", borderTop:"1px solid #e6821e40" }}>
+                    <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:"0.75rem", color:"#000000" }}>Book — {b.name}</div>
+                    <form onSubmit={bookBundle}>
+                      <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10, marginBottom:10 }}>
+                        <div>
+                          <label style={lbl}>Date</label>
+                          <input type="date" value={bookForm.date} onChange={e=>setBookForm(f=>({...f,date:e.target.value}))} required min={new Date().toISOString().split("T")[0]} style={inp}/>
+                        </div>
+                        <div>
+                          <label style={lbl}>Time</label>
+                          <select value={bookForm.time} onChange={e=>setBookForm(f=>({...f,time:e.target.value}))} required style={inp}>
+                            <option value="">Select time</option>
+                            {["07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00"].map(t=><option key={t} value={t}>{t}</option>)}
+                          </select>
+                        </div>
+                      </div>
+
+                      {vehicles.length>0&&(
+                        <div style={{ marginBottom:10 }}>
+                          <label style={lbl}>Select vehicle (optional)</label>
+                          <select value={selectedVehicle} onChange={e=>setSelectedVehicle(e.target.value)} style={inp}>
+                            <option value="">Select a vehicle</option>
+                            {vehicles.map(v=><option key={v.id} value={v.id}>{v.make} {v.model} {v.year} — {v.license_plate}</option>)}
+                          </select>
+                        </div>
+                      )}
+
+                      <div style={{ marginBottom:10 }}>
+                        <label style={lbl}>Payment method</label>
+                        <select value={bookForm.payment_method} onChange={e=>setBookForm(f=>({...f,payment_method:e.target.value}))} style={inp}>
+                          <option value="mpesa">M-Pesa</option>
+                          <option value="card">Card</option>
+                          <option value="cash">Cash</option>
+                        </select>
+                      </div>
+
+                      <div style={{ marginBottom:14 }}>
+                        <label style={lbl}>Additional notes</label>
+                        <textarea value={bookForm.notes} onChange={e=>setBookForm(f=>({...f,notes:e.target.value}))} placeholder="Any special instructions..." style={{ ...inp, resize:"vertical", minHeight:60 }}/>
+                      </div>
+
+                      <div style={{ marginBottom:14 }}>
+                        <label style={lbl}>Voucher code (optional)</label>
+                        <div style={{ display:"flex", gap:6 }}>
+                          <input value={voucherCode} onChange={e=>setVoucherCode(e.target.value.toUpperCase())}
+                            placeholder="CCC-XXXX-XXXX-XXXX"
+                            style={{ ...inp, flex:1, marginBottom:0 }}/>
+                          <button type="button" onClick={validateVoucher} disabled={voucherLoading||!voucherCode.trim()}
+                            style={{ background:"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontSize:12, padding:"0 14px", cursor:"pointer", flexShrink:0 }}>
+                            {voucherLoading?"...":"Apply"}
+                          </button>
+                        </div>
+                        {voucherData&&(
+                          <div style={{ marginTop:6, background:"#f0fff8", border:"1px solid #bbf7d0", borderRadius:8, padding:"0.5rem 0.75rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                            <div style={{ fontSize:11, color:"#1d9e75" }}>✅ Voucher applied — KES {Number(voucherData.value).toLocaleString()} off</div>
+                            <button type="button" onClick={()=>{ setVoucherData(null); setVoucherCode("") }} style={{ background:"none", border:"none", color:"#e24b4a", cursor:"pointer", fontSize:12 }}>×</button>
+                          </div>
+                        )}
+                      </div>
+
+                      <div style={{ marginBottom:14 }}>
+                        <label style={lbl}>Promo code (optional)</label>
+                        <div style={{ display:"flex", gap:6 }}>
+                          <input value={promoCode} onChange={e=>setPromoCode(e.target.value.toUpperCase())}
+                            placeholder="SAVE10"
+                            style={{ ...inp, flex:1, marginBottom:0 }}/>
+                          <button type="button" onClick={()=>validatePromo(Number(b.bundle_price))} disabled={promoLoading||!promoCode.trim()}
+                            style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:12, padding:"0 14px", cursor:"pointer", flexShrink:0 }}>
+                            {promoLoading?"...":"Apply"}
+                          </button>
+                        </div>
+                        {promoData&&(
+                          <div style={{ marginTop:6, background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:8, padding:"0.5rem 0.75rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                            <div style={{ fontSize:11, color:"#e6821e" }}>✅ Promo {promoData.code} applied — KES {Number(promoData.discount).toLocaleString()} off</div>
+                            <button type="button" onClick={()=>{ setPromoData(null); setPromoCode("") }} style={{ background:"none", border:"none", color:"#e24b4a", cursor:"pointer", fontSize:12 }}>×</button>
+                          </div>
+                        )}
+                      </div>
+
+                      <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", marginBottom:14 }}>
+                        <div style={{ fontSize:11, color:"#777777", marginBottom:4 }}>Booking summary</div>
+                        <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#555555", marginBottom:2 }}>
+                          <span>{b.name}</span><span>KES {Number(b.bundle_price).toLocaleString()}</span>
+                        </div>
+                        <div style={{ height:1, background:"#f0f0f0", margin:"6px 0" }}/>
+                        {voucherData&&(
+                          <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#1d9e75", marginBottom:2 }}>
+                            <span>Voucher discount</span><span>- KES {Number(voucherData.value).toLocaleString()}</span>
+                          </div>
+                        )}
+                        {promoData&&(
+                          <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#e6821e", marginBottom:2 }}>
+                            <span>Promo discount</span><span>- KES {Number(promoData.discount).toLocaleString()}</span>
+                          </div>
+                        )}
+                        <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, color:"#e6821e", fontWeight:700 }}>
+                          <span>Total</span>
+                          <span>KES {Math.max(0,Number(b.bundle_price)-(voucherData?Number(voucherData.value):0)-(promoData?Number(promoData.discount):0)).toFixed(0)}</span>
+                        </div>
+                      </div>
+
+                      <div style={{ display:"flex", gap:8 }}>
+                        <button type="submit" disabled={bookingLoading}
+                          style={{ background:bookingLoading?"#ccc":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:bookingLoading?"not-allowed":"pointer" }}>
+                          {bookingLoading?"Booking...":"Confirm booking"}
+                        </button>
+                        <button type="button" onClick={()=>setBooking(null)}
+                          style={{ background:"none", border:"1px solid #dddddd", borderRadius:9, color:"#666", fontSize:13, padding:"11px 16px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
+                          Cancel
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      )}
 
       {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading services...</div>}
       {!loading&&filtered.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>No services found</div>}
