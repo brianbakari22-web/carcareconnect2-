@@ -176,11 +176,10 @@ export default function DriverProfile() {
       const url = await uploadDoc(docForm.file, docForm.type, docForm.expiry_date)
       await supabase.from("driver_documents").insert({
         driver_id: user.id,
-        document_type: docForm.type,
+        type: docForm.type,
         document_url: url,
         expiry_date: docForm.expiry_date||null,
-        notes: docForm.notes||"",
-        status: "pending",
+        is_verified: false,
       })
 
       // Also update profile URL columns
@@ -438,11 +437,21 @@ export default function DriverProfile() {
               <div key={doc.id} style={{ background:"#f5f5f5", border:"1px solid #eeeeee", borderRadius:10, padding:"0.9rem", marginBottom:8, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                 <div style={{ flex:1 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
-                    <span style={{ fontSize:18 }}>{doc.document_type==="license"?"🪪":doc.document_type==="insurance"?"🛡️":doc.document_type==="id_front"||doc.document_type==="id_back"?"🪪":doc.document_type==="psv_badge"?"🏅":doc.document_type==="good_conduct"?"📋":"📄"}</span>
-                    <div style={{ fontWeight:600, fontSize:13, color:"#000", textTransform:"capitalize" }}>{doc.document_type.replace(/_/g," ")}</div>
-                    <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:doc.status==="approved"?"#f0fdf4":doc.status==="rejected"?"#fff5f5":"#fff8f0", color:doc.status==="approved"?"#1d9e75":doc.status==="rejected"?"#e24b4a":"#e6821e", border:"1px solid "+(doc.status==="approved"?"#bbf7d0":doc.status==="rejected"?"#fecaca":"#fed7aa") }}>{doc.status||"pending"}</span>
+                    <span style={{ fontSize:18 }}>{doc.type==="license"?"🪪":doc.type==="insurance"?"🛡️":doc.type==="id_front"||doc.type==="id_back"?"🪪":doc.type==="psv_badge"?"🏅":doc.type==="good_conduct"?"📋":"📄"}</span>
+                    <div style={{ fontWeight:600, fontSize:13, color:"#000", textTransform:"capitalize" }}>{doc.type.replace(/_/g," ")}</div>
+                    <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:doc.is_verified?"#f0fdf4":"#fff8f0", color:doc.is_verified?"#1d9e75":"#e6821e", border:"1px solid "+(doc.is_verified?"#bbf7d0":"#fed7aa") }}>{doc.is_verified?"verified":"pending"}</span>
                   </div>
-                  {doc.expiry_date&&<div style={{ fontSize:11, color:"#888" }}>Expires: {new Date(doc.expiry_date).toLocaleDateString()}</div>}
+                  {doc.expiry_date&&(() => {
+                    const daysLeft = Math.ceil((new Date(doc.expiry_date) - new Date()) / (1000*60*60*24))
+                    const isExpiring = daysLeft <= 30 && daysLeft >= 0
+                    const isExpired = daysLeft < 0
+                    return (
+                      <div style={{ fontSize:11, color:isExpired?"#e24b4a":isExpiring?"#e6821e":"#888", fontWeight:isExpiring||isExpired?700:400 }}>
+                        {isExpired ? "⚠️ Expired " : isExpiring ? "⚠️ Expires soon: " : "Expires: "}
+                        {new Date(doc.expiry_date).toLocaleDateString()}
+                      </div>
+                    )
+                  })()}
                   {doc.document_url&&<a href={doc.document_url} target="_blank" rel="noreferrer" style={{ fontSize:11, color:"#e6821e", textDecoration:"none" }}>View document →</a>}
                 </div>
                 <button onClick={()=>deleteDoc(doc.id)} style={{ background:"none", border:"none", color:"#e24b4a", cursor:"pointer", fontSize:12, padding:"4px 8px" }}>Remove</button>
