@@ -29,6 +29,9 @@ export default function CustomerServices() {
   const [voucherCode, setVoucherCode] = useState("")
   const [voucherData, setVoucherData] = useState(null)
   const [voucherLoading, setVoucherLoading] = useState(false)
+  const [promoCode, setPromoCode] = useState("")
+  const [promoData, setPromoData] = useState(null)
+  const [promoLoading, setPromoLoading] = useState(false)
   const [vehicles, setVehicles] = useState([])
   const [selectedVehicle, setSelectedVehicle] = useState("")
 
@@ -71,6 +74,27 @@ export default function CustomerServices() {
     }
   }
 
+  async function validatePromo(amount) {
+    if (!promoCode.trim()) return
+    setPromoLoading(true)
+    try {
+      const { data, error } = await supabase.rpc("validate_promo_code", {
+        p_code: promoCode.trim().toUpperCase(),
+        p_amount: amount,
+      })
+      if (error || !data?.valid) {
+        toast.error(data?.error || "Invalid promo code")
+        setPromoData(null)
+      } else {
+        setPromoData({ ...data, code: promoCode.trim().toUpperCase() })
+        toast.success(`Promo applied — KES ${Number(data.discount).toLocaleString()} off!`)
+      }
+    } catch(err) {
+      toast.error("Could not validate promo code")
+    } finally {
+      setPromoLoading(false)
+    }
+  }
   async function bookService(e) {
     e.preventDefault()
     if (!booking) return
@@ -83,7 +107,10 @@ export default function CustomerServices() {
       const platformAmount = Number(booking.price) * platformRate
       const providerAmount = Number(booking.price) * providerRate
 
-      const finalAmount = Math.max(0, Number(booking.price)*(bookForm.is_concierge?1.15:1) - (voucherData?Number(voucherData.value):0))
+      const baseAmount = Number(booking.price)*(bookForm.is_concierge?1.15:1)
+      const voucherDiscount = voucherData?Number(voucherData.value):0
+      const promoDiscount = promoData?Number(promoData.discount):0
+      const finalAmount = Math.max(0, baseAmount - voucherDiscount - promoDiscount)
         const { data, error } = await supabase.from("bookings").insert({
         customer_id: user.id,
         provider_id: booking.provider_id,
@@ -108,6 +135,11 @@ export default function CustomerServices() {
       }).select("id")
 
       if (error) throw error
+
+      if (promoData?.promo_id) {
+        await supabase.rpc("increment_promo_usage", { p_promo_id: promoData.promo_id })
+      }
+
       if (bookForm.payment_method !== "cash" && data?.[0]?.id) {
         setPendingBooking({ id: data[0].id, amount: finalAmount })
         setShowPayment(true)
@@ -295,6 +327,24 @@ export default function CustomerServices() {
                       </div>
                     )}
                   </div>
+                  <div style={{ marginBottom:14 }}>
+                    <label style={lbl}>Promo code (optional)</label>
+                    <div style={{ display:"flex", gap:6 }}>
+                      <input value={promoCode} onChange={e=>setPromoCode(e.target.value.toUpperCase())}
+                        placeholder="SAVE10"
+                        style={{ ...inp, flex:1, marginBottom:0 }}/>
+                      <button type="button" onClick={()=>validatePromo(Number(s.price)*(bookForm.is_concierge?1.15:1))} disabled={promoLoading||!promoCode.trim()}
+                        style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:12, padding:"0 14px", cursor:"pointer", flexShrink:0 }}>
+                        {promoLoading?"...":"Apply"}
+                      </button>
+                    </div>
+                    {promoData&&(
+                      <div style={{ marginTop:6, background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:8, padding:"0.5rem 0.75rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                        <div style={{ fontSize:11, color:"#e6821e" }}>✅ Promo {promoData.code} applied — KES {Number(promoData.discount).toLocaleString()} off</div>
+                        <button type="button" onClick={()=>{ setPromoData(null); setPromoCode("") }} style={{ background:"none", border:"none", color:"#e24b4a", cursor:"pointer", fontSize:12 }}>├ù</button>
+                      </div>
+                    )}
+                  </div>
 
                   <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", marginBottom:14 }}>
                     <div style={{ fontSize:11, color:"#777777", marginBottom:4 }}>Booking summary</div>
@@ -312,9 +362,14 @@ export default function CustomerServices() {
                         <span>Voucher discount</span><span>- KES {Number(voucherData.value).toLocaleString()}</span>
                       </div>
                     )}
+                    {promoData&&(
+                      <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#e6821e", marginBottom:2 }}>
+                        <span>Promo discount</span><span>- KES {Number(promoData.discount).toLocaleString()}</span>
+                      </div>
+                    )}
                     <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, color:"#e6821e", fontWeight:700 }}>
                       <span>Total</span>
-                      <span>KES {Math.max(0,(Number(s.price)*(bookForm.is_concierge?1.15:1))-(voucherData?Number(voucherData.value):0)).toFixed(0)}</span>
+                      <span>KES {Math.max(0,(Number(s.price)*(bookForm.is_concierge?1.15:1))-(voucherData?Number(voucherData.value):0)-(promoData?Number(promoData.discount):0)).toFixed(0)}</span>
                     </div>
                   </div>
 
