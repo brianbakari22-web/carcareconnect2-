@@ -1,0 +1,7 @@
+
+android/app/build/
+android/capacitor-cordova-android-plugins/build/
+android/build/
+*.cjs
+playstore-icon*.png
+
