@@ -121,7 +121,7 @@ export default function AdminServices() {
                     </span>
                   </div>
                   <div style={{ fontSize:11, color:"#888" }}>
-                    KES {Number(b.bundle_price).toLocaleString()} (was {Number(b.original_price).toLocaleString()}) · {b.service_ids?.length||0} services
+                    KES {Number(b.bundle_price).toLocaleString()} (was {Number(b.original_price).toLocaleString()}) · {b.service_ids?.length||0} services · {b.platform_commission_rate?(b.platform_commission_rate*100).toFixed(1)+"% commission":""}
                     <span style={{ marginLeft:8 }}>{b.profile_public?.business_name||`${b.profile_public?.first_name||""} ${b.profile_public?.last_name||""}`}</span>
                   </div>
                 </div>

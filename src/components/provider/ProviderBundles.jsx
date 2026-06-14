@@ -42,6 +42,18 @@ export default function ProviderBundles() {
     }, 0)
   }
 
+  function weightedCommissionRate() {
+    const total = originalTotal()
+    if (total === 0) return 0.10
+    const weightedSum = form.service_ids.reduce((sum, id) => {
+      const s = services.find(sv=>sv.id===id)
+      if (!s) return sum
+      const rate = Number(s.platform_commission_rate || 0.10)
+      return sum + (Number(s.price) * rate)
+    }, 0)
+    return weightedSum / total
+  }
+
   async function save(e) {
     e.preventDefault()
     if (!form.name || form.service_ids.length < 2 || !form.bundle_price) {
@@ -60,6 +72,7 @@ export default function ProviderBundles() {
         service_ids: form.service_ids,
         bundle_price: Number(form.bundle_price),
         original_price: origTotal,
+        platform_commission_rate: weightedCommissionRate(),
         is_active: true,
       })
       if (error) throw error
@@ -173,6 +186,11 @@ export default function ProviderBundles() {
               <span style={{ fontSize:16, fontWeight:800, color:"#1d9e75" }}>KES {Number(b.bundle_price).toLocaleString()}</span>
               <span style={{ fontSize:11, color:"#1d9e75", background:"#f0fdf4", padding:"2px 8px", borderRadius:10 }}>Save {savingsPct}%</span>
             </div>
+            {b.platform_commission_rate&&(
+              <div style={{ fontSize:10, color:"#888", marginBottom:8 }}>
+                Platform commission: {(b.platform_commission_rate*100).toFixed(1)}% (KES {(Number(b.bundle_price)*Number(b.platform_commission_rate)).toFixed(0)}) · You earn: KES {(Number(b.bundle_price)*(1-Number(b.platform_commission_rate))).toFixed(0)}
+              </div>
+            )}
             <div style={{ display:"flex", gap:8 }}>
               <button onClick={()=>toggleActive(b.id,b.is_active)} style={{ background:b.is_active?"#fff5f5":"#f0fdf4", border:`1px solid ${b.is_active?"#e24b4a40":"#1d9e7540"}`, borderRadius:7, color:b.is_active?"#e24b4a":"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
                 {b.is_active?"Deactivate":"Activate"}
