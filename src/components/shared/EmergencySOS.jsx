@@ -53,7 +53,7 @@ export default function EmergencySOS() {
   return (
     <>
       <button onClick={()=>setOpen(true)}
-        style={{ position:"fixed", bottom:90, right:16, width:50, height:50, borderRadius:"50%", background:"#e24b4a", border:"none", color:"#fff", fontSize:20, cursor:"pointer", boxShadow:"0 4px 12px rgba(226,75,74,0.4)", zIndex:90, display:"flex", alignItems:"center", justifyContent:"center" }}>
+        style={{ position:"fixed", top:70, right:16, width:46, height:46, borderRadius:"50%", background:"#e24b4a", border:"none", color:"#fff", fontSize:20, cursor:"pointer", boxShadow:"0 4px 12px rgba(226,75,74,0.4)", zIndex:90, display:"flex", alignItems:"center", justifyContent:"center" }}>
         🆘
       </button>
 
