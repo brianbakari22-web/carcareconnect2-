@@ -1,5 +1,6 @@
 ﻿import { createContext, useContext, useEffect, useState } from "react"
 import { supabase } from "../lib/supabase"
+import { initPushNotifications } from "../lib/pushNotifications"
 
 const AuthContext = createContext({})
 export const useAuth = () => useContext(AuthContext)
@@ -101,6 +102,7 @@ export function AuthProvider({ children }) {
       if (data) {
         setProfile(data)
         setLoading(false)
+        initPushNotifications(userId)
       } else if (retries < 10) {
         setTimeout(() => fetchProfile(userId, retries+1), 500)
       } else {
