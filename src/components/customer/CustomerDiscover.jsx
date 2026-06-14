@@ -16,6 +16,7 @@ export default function CustomerDiscover() {
   const { t, language } = useLanguage()
   const navigate = useNavigate()
   const [providers, setProviders] = useState([])
+  const [bundles, setBundles] = useState([])
   const [drivers, setDrivers] = useState([])
   const [services, setServices] = useState([])
   const [businessHours, setBusinessHours] = useState({})
@@ -54,7 +55,7 @@ export default function CustomerDiscover() {
   }, [user])
 
   async function load() {
-    await Promise.all([loadProviders(), loadDrivers(), loadServices(), loadBusinessHours(), loadClosures()])
+    await Promise.all([loadProviders(), loadDrivers(), loadServices(), loadBundles(), loadBusinessHours(), loadClosures()])
     setLoading(false)
   }
 
@@ -73,6 +74,12 @@ export default function CustomerDiscover() {
       .select("*, profile_public(id,first_name,last_name,business_name)")
       .eq("is_active",true).order("created_at",{ascending:false})
     setServices(data||[])
+  }
+  async function loadBundles() {
+    const { data } = await supabase.from("service_bundles")
+      .select("*, profile_public:profiles!service_bundles_provider_id_fkey(id,first_name,last_name,business_name)")
+      .eq("is_active",true).order("created_at",{ascending:false})
+    setBundles(data||[])
   }
 
   async function loadBusinessHours() {
@@ -353,7 +360,7 @@ export default function CustomerDiscover() {
                 onMouseLeave={e=>e.currentTarget.style.borderColor="#1e1e1e"}
                 onClick={()=>setSelectedProvider(p)}>
                 <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:10 }}>
-                  <div style={{ width:48, height:48, borderRadius:12, background:"#1a1208", border:"1px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#e6821e", flexShrink:0 }}>
+                  <div style={{ width:48, height:48, borderRadius:12, background:"#fff8f0", border:"1px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#e6821e", flexShrink:0 }}>
                     {getDisplayName(p)[0]?.toUpperCase()}
                   </div>
                   <div style={{ flex:1, minWidth:0 }}>
@@ -401,7 +408,7 @@ export default function CustomerDiscover() {
           </button>
           <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1rem" }}>
             <div style={{ display:"flex", alignItems:"center", gap:14 }}>
-              <div style={{ width:60, height:60, borderRadius:14, background:"#1a1208", border:"2px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:24, fontWeight:800, color:"#e6821e", flexShrink:0 }}>
+              <div style={{ width:60, height:60, borderRadius:14, background:"#fff8f0", border:"2px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:24, fontWeight:800, color:"#e6821e", flexShrink:0 }}>
                 {getDisplayName(selectedProvider)[0]?.toUpperCase()}
               </div>
               <div style={{ flex:1 }}>
@@ -493,6 +500,34 @@ export default function CustomerDiscover() {
       )}
 
       {tab==="services"&&(
+        <div>
+          {bundles.length>0&&(
+            <div style={{ marginBottom:"1.5rem" }}>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, marginBottom:8, color:"#e6821e" }}>📦 Bundle Deals</div>
+              <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(220px,1fr))", gap:10 }}>
+                {bundles.map(b=>{
+                  const savings = Number(b.original_price) - Number(b.bundle_price)
+                  const savingsPct = Math.round((savings / Number(b.original_price)) * 100)
+                  return (
+                    <div key={b.id} onClick={()=>{ setTab("providers"); setSelectedProvider(b.profile_public) }} style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"1rem", cursor:"pointer" }}>
+                      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"start", marginBottom:4 }}>
+                        <div style={{ fontSize:14, fontWeight:700, color:"#000" }}>{b.name}</div>
+                        <span style={{ fontSize:10, color:"#1d9e75", background:"#f0fdf4", padding:"2px 8px", borderRadius:10, flexShrink:0 }}>Save {savingsPct}%</span>
+                      </div>
+                      {b.description&&<div style={{ fontSize:11, color:"#666", marginBottom:8 }}>{b.description}</div>}
+                      <div style={{ display:"flex", gap:8, alignItems:"center", marginBottom:6 }}>
+                        <span style={{ fontSize:12, color:"#888", textDecoration:"line-through" }}>KES {Number(b.original_price).toLocaleString()}</span>
+                        <span style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(b.bundle_price).toLocaleString()}</span>
+                      </div>
+                      <div style={{ fontSize:11, color:"#777777" }}>
+                        {b.profile_public?.business_name||`${b.profile_public?.first_name||""} ${b.profile_public?.last_name||""}`.trim()}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(180px,1fr))", gap:10 }}>
           {filteredServices.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem", gridColumn:"1/-1" }}>{t("noServicesFound")}</div>}
           {filteredServices.map(s=>(
@@ -509,6 +544,7 @@ export default function CustomerDiscover() {
               </div>
             </div>
           ))}
+        </div>
         </div>
       )}
 

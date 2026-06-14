@@ -188,6 +188,9 @@ export default function Layout({ children }) {
     { path:"/dashboard", key:"overview", icon:"🏠" },
     { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
     { path:"/dashboard/services", key:"myServices", icon:"🔧" },
+    ...( ["garage","garage_premium","panel_beater","auto_electrician","mobile_mechanic"].includes(providerType) ? [
+      { path:"/dashboard/bundles", label:"Service Bundles", icon:"📦" },
+    ] : []),
     ...( ["parts_dealer","accessories_shop","tyre_shop","auto_glass"].includes(providerType) ? [
       { path:"/dashboard/inventory", label:"Inventory", icon:"📦" },
       { path:"/dashboard/orders", label:"Orders", icon:"🛒" },

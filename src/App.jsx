@@ -61,6 +61,7 @@ import ProviderChat from "./components/provider/ProviderChat"
 import ProviderDashboard from "./components/provider/ProviderDashboard"
 import ProviderBookings from "./components/provider/ProviderBookings"
 import ProviderServices from "./components/provider/ProviderServices"
+import ProviderBundles from "./components/provider/ProviderBundles"
 import ProviderEarnings from "./components/provider/ProviderEarnings"
 import ProviderAnalytics from "./components/provider/ProviderAnalytics"
 import ProviderReviews from "./components/provider/ProviderReviews"
@@ -221,6 +222,7 @@ function DashboardRouter() {
           <Route index element={<ProviderDashboard />} />
           <Route path="bookings" element={<ProviderBookings />} />
           <Route path="services" element={<ProviderServices />} />
+          <Route path="bundles" element={<ProviderBundles />} />
           <Route path="earnings" element={<ProviderEarnings />} />
           <Route path="analytics" element={<ProviderAnalytics />} />
           <Route path="reviews" element={<ProviderReviews />} />
