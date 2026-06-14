@@ -43,7 +43,18 @@ export default function CustomerReviews() {
         driver_review:reviewing.is_concierge&&form.driver_review?form.driver_review:null,
       })
       if (error) throw error
-      toast.success(t("success"))
+
+      // Award 50 bonus points for leaving a review
+      const { data: profile } = await supabase.from("profiles").select("loyalty_points").eq("id", user.id).single()
+      await supabase.from("profiles").update({ loyalty_points: (profile?.loyalty_points||0) + 50 }).eq("id", user.id)
+      await supabase.from("notifications").insert({
+        user_id: user.id,
+        title: "Review Bonus!",
+        message: "Thanks for your review! You earned 50 bonus points.",
+        type: "success",
+      })
+
+      toast.success(t("success") + " +50 points!")
       setReviewing(null)
       setForm({ provider_rating:0, provider_review:"", driver_rating:0, driver_review:"" })
       load()
