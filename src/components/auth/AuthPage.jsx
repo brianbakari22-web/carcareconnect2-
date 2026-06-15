@@ -86,11 +86,22 @@ export default function AuthPage() {
   }, [])
 
   async function signInWithGoogle() {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: `${window.location.origin}/dashboard` }
-    })
-    if (error) toast.error(error.message)
+    const { Capacitor } = await import("@capacitor/core")
+    if (Capacitor.isNativePlatform()) {
+      const { Browser } = await import("@capacitor/browser")
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: "care.carcareconnect.app://auth-callback", skipBrowserRedirect: true }
+      })
+      if (error) return toast.error(error.message)
+      if (data?.url) await Browser.open({ url: data.url })
+    } else {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: `${window.location.origin}/dashboard` }
+      })
+      if (error) toast.error(error.message)
+    }
   }
   async function handleAuth(e) {
     e.preventDefault()
