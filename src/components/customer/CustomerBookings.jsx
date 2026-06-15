@@ -1,6 +1,7 @@
 ﻿import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
+import { openExternal } from "../../lib/openExternal"
 import { useNavigate } from "react-router-dom"
 import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -196,8 +197,8 @@ export default function CustomerBookings() {
                   {invoiceLoading===b.id?"...":"⬇ Invoice"}
                 </button>
                 <button onClick={()=>{
-                  const msg = encodeURIComponent(`Just got my ${b.service_name} done via Car Care Connect! 🚗✨ Book your service too: https://carcareconnect.care`)
-                  window.open(`https://wa.me/?text=${msg}`, "_blank")
+                  const msg = encodeURIComponent(`Just got my ${b.service_name} done via Car Care Connect! Book your service too: https://carcareconnect.care`)
+                  openExternal(`https://wa.me/?text=${msg}`)
                 }}
                   style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                   📤 Share

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { supabase } from "../../lib/supabase"
+import { openExternal } from "../../lib/openExternal"
 
 export default function PublicProviderStorefront() {
   const { id } = useParams()
@@ -34,7 +35,7 @@ export default function PublicProviderStorefront() {
   function shareWhatsApp() {
     const url = window.location.href
     const text = `Check out ${provider?.business_name||`${provider?.first_name} ${provider?.last_name}`} on Car Care Connect! ${url}`
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank")
+    openExternal(`https://wa.me/?text=${encodeURIComponent(text)}`)
   }
 
   if (loading) {

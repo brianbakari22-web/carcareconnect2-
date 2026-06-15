@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
+import { openExternal } from "../../lib/openExternal"
 
 const REFERRAL_POINTS = 500
 const REFERRED_POINTS = 200
@@ -51,7 +52,7 @@ export default function CustomerReferral() {
 
   function shareWhatsApp() {
     const msg = encodeURIComponent(`Join Car Care Connect and get your car serviced easily! Use my referral link to sign up and earn ${REFERRED_POINTS} bonus points: ${getReferralLink()}`)
-    window.open(`https://wa.me/?text=${msg}`, "_blank")
+    openExternal(`https://wa.me/?text=${msg}`)
   }
 
   function shareEmail() {
