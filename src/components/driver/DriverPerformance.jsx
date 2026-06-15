@@ -15,7 +15,7 @@ export default function DriverPerformance() {
   async function load() {
     const [{ data: bks }, { data: revs }, { data: status }] = await Promise.all([
       supabase.from("bookings").select("status,total_amount,created_at,service_name").eq("driver_id", user.id),
-      supabase.from("reviews").select("driver_rating,driver_comment,created_at").eq("driver_id", user.id).order("created_at",{ascending:false}),
+      supabase.from("reviews").select("driver_rating,driver_review,created_at").eq("driver_id", user.id).order("created_at",{ascending:false}),
       supabase.from("driver_status").select("*").eq("driver_id", user.id).single(),
     ])
     const all = bks||[]

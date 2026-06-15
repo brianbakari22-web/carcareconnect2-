@@ -2,14 +2,18 @@ import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
+import toast from "react-hot-toast"
 
 export default function DriverEarnings() {
-  const { user } = useAuth()
+  const { user, profile, updateProfile } = useAuth()
   const isMobile = useIsMobile()
   const [bookings, setBookings] = useState([])
   const [loading, setLoading] = useState(true)
   const [period, setPeriod] = useState("week")
   const [expanded, setExpanded] = useState(null)
+  const [goalInput, setGoalInput] = useState("")
+  const [editingGoal, setEditingGoal] = useState(false)
+  const [savingGoal, setSavingGoal] = useState(false)
 
   useEffect(() => { if (user) load() }, [user])
 
@@ -49,6 +53,28 @@ export default function DriverEarnings() {
   const avgPerJob = totalJobs ? (totalEarnings/totalJobs).toFixed(0) : 0
   const unpaidCount = filtered.filter(b=>b.payment_status!=="paid").length
 
+  // Monthly goal tracking (independent of period filter)
+  const now = new Date()
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
+  const monthEarnings = bookings.filter(b=>new Date(b.booking_date)>=monthStart).reduce((s,b)=>s+Number(b.driver_earnings||0), 0)
+  const monthlyGoal = Number(profile?.monthly_earnings_goal || 0)
+  const goalProgress = monthlyGoal>0 ? Math.min(100, Math.round((monthEarnings/monthlyGoal)*100)) : 0
+
+  async function saveGoal() {
+    const val = Number(goalInput)
+    if (!val || val<=0) return toast.error("Enter a valid goal amount")
+    setSavingGoal(true)
+    try {
+      await updateProfile({ monthly_earnings_goal: val })
+      toast.success("Goal updated!")
+      setEditingGoal(false)
+    } catch(err) {
+      toast.error(err.message)
+    } finally {
+      setSavingGoal(false)
+    }
+  }
+
   return (
     <div>
       <div style={{ fontFamily:"Syne", fontSize:isMobile?16:18, fontWeight:800, color:"#000000", marginBottom:"1.25rem" }}>Earnings & History</div>
@@ -57,7 +83,7 @@ export default function DriverEarnings() {
       <div style={{ display:"flex", gap:6, marginBottom:"1.25rem" }}>
         {["today","week","month","all"].map(p=>(
           <button key={p} onClick={()=>setPeriod(p)}
-            style={{ padding:"7px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:period===p?"#1d9e75":"#111", color:period===p?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:period===p?700:400 }}>
+            style={{ padding:"7px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:period===p?"#1d9e75":"#f0f0f0", color:period===p?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:period===p?700:400 }}>
             {p==="today"?"Today":p==="week"?"This week":p==="month"?"This month":"All time"}
           </button>
         ))}
@@ -85,6 +111,40 @@ export default function DriverEarnings() {
         </div>
       </div>
 
+      {/* Monthly goal tracker */}
+      <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000" }}>🎯 Monthly earnings goal</div>
+          {!editingGoal&&<button onClick={()=>{ setEditingGoal(true); setGoalInput(monthlyGoal?String(monthlyGoal):"") }} style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#666", fontSize:11, padding:"4px 10px", cursor:"pointer" }}>{monthlyGoal>0?"Edit":"Set goal"}</button>}
+        </div>
+        {editingGoal?(
+          <div style={{ display:"flex", gap:8 }}>
+            <input type="number" min="0" value={goalInput} onChange={e=>setGoalInput(e.target.value)} placeholder="e.g. 20000"
+              style={{ flex:1, background:"#f8f8f8", border:"1px solid #f0f0f0", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none" }}/>
+            <button onClick={saveGoal} disabled={savingGoal} style={{ background:"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"0 16px", cursor:"pointer" }}>
+              {savingGoal?"...":"Save"}
+            </button>
+            <button onClick={()=>setEditingGoal(false)} style={{ background:"none", border:"1px solid #dddddd", borderRadius:8, color:"#666", fontSize:12, padding:"0 14px", cursor:"pointer" }}>
+              Cancel
+            </button>
+          </div>
+        ):monthlyGoal>0?(
+          <div>
+            <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#555555", marginBottom:6 }}>
+              <span>KES {monthEarnings.toFixed(0)} earned this month</span>
+              <span style={{ fontWeight:700, color:goalProgress>=100?"#1d9e75":"#e6821e" }}>{goalProgress}%</span>
+            </div>
+            <div style={{ height:8, background:"#f0f0f0", borderRadius:4, overflow:"hidden" }}>
+              <div style={{ height:"100%", background:goalProgress>=100?"#1d9e75":"#e6821e", borderRadius:4, width:(goalProgress+"%"), transition:"width 0.5s" }}/>
+            </div>
+            <div style={{ fontSize:11, color:"#888888", marginTop:6 }}>
+              {goalProgress>=100?"🎉 Goal reached! Great work.":"KES "+(monthlyGoal-monthEarnings).toFixed(0)+" to go — Goal: KES "+monthlyGoal.toLocaleString()}
+            </div>
+          </div>
+        ):(
+          <div style={{ fontSize:12, color:"#888888" }}>Set a monthly earnings goal to track your progress.</div>
+        )}
+      </div>
       {/* How earnings work */}
       <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"0.9rem", marginBottom:"1.5rem" }}>
         <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#000000", marginBottom:8 }}>How your earnings work</div>
