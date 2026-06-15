@@ -35,6 +35,8 @@ export default function CustomerServices() {
   const [promoLoading, setPromoLoading] = useState(false)
   const [vehicles, setVehicles] = useState([])
   const [selectedVehicle, setSelectedVehicle] = useState("")
+  const [bulkMode, setBulkMode] = useState(false)
+  const [bulkVehicles, setBulkVehicles] = useState([])
 
   useEffect(() => { if (user) load() }, [user])
 
@@ -173,7 +175,7 @@ export default function CustomerServices() {
       const voucherDiscount = voucherData?Number(voucherData.value):0
       const promoDiscount = promoData?Number(promoData.discount):0
       const finalAmount = Math.max(0, baseAmount - voucherDiscount - promoDiscount)
-        const { data, error } = await supabase.from("bookings").insert({
+      const bookingPayload = {
         customer_id: user.id,
         provider_id: booking.provider_id,
         service_id: booking.id,
@@ -193,25 +195,41 @@ export default function CustomerServices() {
         problem_description: bookForm.problem_description,
         parts_needed: bookForm.parts_needed||false,
         parts_description: bookForm.parts_description||"",
-        is_concierge: bookingLoading.is_concierge||false,
-        vehicle_id: selectedVehicle||null,
-      }).select("id")
-
-      if (error) throw error
-
-      if (promoData?.promo_id) {
-        await supabase.rpc("increment_promo_usage", { p_promo_id: promoData.promo_id })
+        is_concierge: bookForm.is_concierge||false,
       }
 
-      if (bookForm.payment_method !== "cash" && data?.[0]?.id) {
-        setPendingBooking({ id: data[0].id, amount: finalAmount })
-        setShowPayment(true)
+      if (bulkMode && bulkVehicles.length>0) {
+        const rows = bulkVehicles.map(vid => ({ ...bookingPayload, vehicle_id: vid }))
+        const { data: bulkData, error: bulkError } = await supabase.from("bookings").insert(rows).select("id")
+        if (bulkError) throw bulkError
+
+        if (promoData?.promo_id) {
+          await supabase.rpc("increment_promo_usage", { p_promo_id: promoData.promo_id })
+        }
+
+        toast.success(`${bulkVehicles.length} bookings created for your vehicles!`)
         setBooking(null)
+        setBulkMode(false)
+        setBulkVehicles([])
       } else {
-        toast.success("Booking submitted! ≡ƒÄë")
-        setBooking(null)
+        const { data, error } = await supabase.from("bookings").insert({ ...bookingPayload, vehicle_id: selectedVehicle||null }).select("id")
+        if (error) throw error
+
+        if (promoData?.promo_id) {
+          await supabase.rpc("increment_promo_usage", { p_promo_id: promoData.promo_id })
+        }
+
+        if (bookForm.payment_method !== "cash" && data?.[0]?.id) {
+          setPendingBooking({ id: data[0].id, amount: finalAmount })
+          setShowPayment(true)
+          setBooking(null)
+        } else {
+          toast.success("Booking submitted!")
+          setBooking(null)
+        }
       }
       setBookForm({ date:"", time:"", notes:"", payment_method:"mpesa", is_concierge:false, problem_description:"", parts_needed:false, parts_description:"" })
+    } catch(err) {
       toast.error(err.message)
     } finally {
       setBookingLoading(false)
@@ -475,10 +493,35 @@ export default function CustomerServices() {
                   {vehicles.length>0&&(
                     <div style={{ marginBottom:10 }}>
                       <label style={lbl}>Select vehicle (optional)</label>
-                      <select value={selectedVehicle} onChange={e=>setSelectedVehicle(e.target.value)} style={inp}>
-                        <option value="">Select a vehicle</option>
-                        {vehicles.map(v=><option key={v.id} value={v.id}>{v.make} {v.model} {v.year} — {v.license_plate}</option>)}
-                      </select>
+                      {vehicles.length>1&&(
+                        <label style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8, cursor:"pointer" }}>
+                          <input type="checkbox" checked={bulkMode} onChange={e=>{ setBulkMode(e.target.checked); setBulkVehicles([]); setSelectedVehicle("") }} style={{ accentColor:"#e6821e" }}/>
+                          <span style={{ fontSize:12, color:"#666" }}>Book this service for multiple vehicles</span>
+                        </label>
+                      )}
+                      {!bulkMode&&(
+                        <select value={selectedVehicle} onChange={e=>setSelectedVehicle(e.target.value)} style={inp}>
+                          <option value="">Select a vehicle</option>
+                          {vehicles.map(v=><option key={v.id} value={v.id}>{v.make} {v.model} {v.year} — {v.license_plate}</option>)}
+                        </select>
+                      )}
+                      {bulkMode&&(
+                        <div style={{ marginBottom:10 }}>
+                          {vehicles.map(v=>(
+                            <label key={v.id} style={{ display:"flex", alignItems:"center", gap:8, padding:"6px 0", cursor:"pointer", fontSize:13 }}>
+                              <input type="checkbox" checked={bulkVehicles.includes(v.id)} onChange={()=>{
+                                setBulkVehicles(prev => prev.includes(v.id) ? prev.filter(id=>id!==v.id) : [...prev, v.id])
+                              }} style={{ accentColor:"#e6821e" }}/>
+                              <span>{v.make} {v.model} {v.year} — {v.license_plate}</span>
+                            </label>
+                          ))}
+                          {bulkVehicles.length>0&&(
+                            <div style={{ marginTop:6, fontSize:11, color:"#1d9e75" }}>
+                              {bulkVehicles.length} vehicle{bulkVehicles.length!==1?"s":""} selected — {bulkVehicles.length} separate booking{bulkVehicles.length!==1?"s":""} will be created
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   )}
 
