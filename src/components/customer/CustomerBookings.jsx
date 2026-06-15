@@ -9,7 +9,7 @@ import { downloadInvoice } from "../../lib/invoice"
 import ChatWindow from "../shared/ChatWindow"
 
 const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", completed:"#1d9e75", cancelled:"#e24b4a" }
-const SB = { pending:"#1a1208", confirmed:"#0c1f2e", "in-progress":"#160a2e", completed:"#071a12", cancelled:"#1a0808" }
+const SB = { pending:"#fff8f0", confirmed:"#eff6ff", "in-progress":"#faf5ff", completed:"#f0fdf4", cancelled:"#fff5f5" }
 
 export default function CustomerBookings() {
   const { user } = useAuth()
@@ -173,7 +173,7 @@ export default function CustomerBookings() {
               {b.booking_number&&<div style={{ fontSize:10, color:"#888888", marginTop:2 }}>#{b.booking_number}</div>}
             </div>
             <div style={{ textAlign:"right", flexShrink:0 }}>
-              <span style={{ fontSize:10, fontWeight:500, padding:"2px 8px", borderRadius:20, background:SB[b.status]||"#111", color:SC[b.status]||"#888", border:`1px solid ${SC[b.status]||"#888"}40`, display:"inline-block" }}>{b.status}</span>
+              <span style={{ fontSize:10, fontWeight:500, padding:"2px 8px", borderRadius:20, background:SB[b.status]||"#f5f5f5", color:SC[b.status]||"#888", border:`1px solid ${SC[b.status]||"#888"}40`, display:"inline-block" }}>{b.status}</span>
               <div style={{ fontFamily:"Syne", fontSize:isMobile?13:14, fontWeight:700, color:"#e6821e", marginTop:4 }}>KES {Number(b.total_amount).toLocaleString()}</div>
             </div>
           </div>
@@ -194,6 +194,13 @@ export default function CustomerBookings() {
                 <button onClick={()=>downloadBookingInvoice(b)} disabled={invoiceLoading===b.id}
                   style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                   {invoiceLoading===b.id?"...":"⬇ Invoice"}
+                </button>
+                <button onClick={()=>{
+                  const msg = encodeURIComponent(`Just got my ${b.service_name} done via Car Care Connect! 🚗✨ Book your service too: https://carcareconnect.care`)
+                  window.open(`https://wa.me/?text=${msg}`, "_blank")
+                }}
+                  style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  📤 Share
                 </button>
                 <button onClick={()=>{ setRebooking(b.id); setRebookForm({ date:"", time:"" }) }}
                 style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
