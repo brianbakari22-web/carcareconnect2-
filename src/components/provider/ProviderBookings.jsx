@@ -281,7 +281,7 @@ export default function ProviderBookings() {
                   <div style={{ marginBottom:10 }}>
                     {mechanics.map(m=>(
                       <div key={m.id} onClick={()=>setSelectedMechanic(m.id)}
-                        style={{ display:"flex", alignItems:"center", gap:10, padding:"8px", borderRadius:8, cursor:"pointer", background:selectedMechanic===m.id?"#1e0a3e":"transparent", border:`1px solid ${selectedMechanic===m.id?"#8b5cf6":"transparent"}`, marginBottom:4 }}>
+                        style={{ display:"flex", alignItems:"center", gap:10, padding:"8px", borderRadius:8, cursor:"pointer", background:selectedMechanic===m.id?"#faf5ff":"transparent", border:`1px solid ${selectedMechanic===m.id?"#8b5cf6":"transparent"}`, marginBottom:4 }}>
                         <div style={{ width:32, height:32, borderRadius:"50%", background:"#f0fdf4", border:"1px solid #1d9e7540", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:12, fontWeight:800, color:"#1d9e75", flexShrink:0 }}>
                           {m.first_name[0]}{m.last_name[0]}
                         </div>
