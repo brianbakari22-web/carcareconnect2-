@@ -112,12 +112,31 @@ export default function CustomerGoService() {
       }
     }
   }
+  function distanceKm(lat1, lon1, lat2, lon2) {
+    const R = 6371
+    const dLat = (lat2-lat1) * Math.PI/180
+    const dLon = (lon2-lon1) * Math.PI/180
+    const a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2)
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+  }
   async function loadGoServices() {
     const { data } = await supabase.from("services")
-      .select("*, profiles(business_name,first_name,last_name,city)")
+      .select("*, profiles(business_name,first_name,last_name,city,latitude,longitude,go_service_radius_km)")
       .eq("category", "go_service")
       .eq("is_active", true)
-    setGoServices(data||[])
+    let services = data||[]
+    if (location.lat && location.lng) {
+      services = services.map(s => {
+        const p = s.profiles
+        const dist = (p?.latitude && p?.longitude) ? distanceKm(location.lat, location.lng, p.latitude, p.longitude) : null
+        return { ...s, _distance: dist }
+      }).filter(s => {
+        if (s._distance === null) return true
+        const radius = s.profiles?.go_service_radius_km || 15
+        return s._distance <= radius
+      }).sort((a,b) => (a._distance ?? 999) - (b._distance ?? 999))
+    }
+    setGoServices(services)
   }
 
   async function detectLocation() {
@@ -473,7 +492,7 @@ export default function CustomerGoService() {
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
               <div>
                 <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:2 }}>{s.name}</div>
-                <div style={{ fontSize:11, color:"#777777" }}>🏪 {s.profiles?.business_name||`${s.profiles?.first_name} ${s.profiles?.last_name}`}</div>
+                <div style={{ fontSize:11, color:"#777777" }}>🏪 {s.profiles?.business_name||`${s.profiles?.first_name} ${s.profiles?.last_name}`}{s._distance!=null&&` · ${s._distance.toFixed(1)}km away`}</div>
                 {s.description&&<div style={{ fontSize:11, color:"#888888", marginTop:2 }}>{s.description}</div>}
               </div>
               <div style={{ textAlign:"right" }}>

@@ -22,7 +22,7 @@ export default function ProviderProfile() {
   const { profile, updateProfile, user } = useAuth()
   const { t } = useLanguage()
   const isMobile = useIsMobile()
-  const [form, setForm] = useState({ first_name:"", last_name:"", business_name:"", city:"" })
+  const [form, setForm] = useState({ first_name:"", last_name:"", business_name:"", city:"", go_service_radius_km:"15" })
   const [sensitive, setSensitive] = useState({ phone:"", email:"" })
   const [location, setLocation] = useState({ latitude:null, longitude:null, address:"" })
   const [saving, setSaving] = useState(false)
@@ -33,7 +33,7 @@ export default function ProviderProfile() {
 
   useEffect(() => {
     if (profile) {
-      setForm({ first_name:profile?.first_name||"", last_name:profile?.last_name||"", business_name:profile?.business_name||"", city:profile?.city||"" })
+      setForm({ first_name:profile?.first_name||"", last_name:profile?.last_name||"", business_name:profile?.business_name||"", city:profile?.city||"", go_service_radius_km:profile?.go_service_radius_km?String(profile.go_service_radius_km):"15" })
       setLocation({ latitude:profile?.latitude||null, longitude:profile?.longitude||null, address:"" })
     }
     if (user) loadSensitive()
@@ -47,7 +47,7 @@ export default function ProviderProfile() {
   async function saveProfile(e) {
     e.preventDefault()
     setSaving(true)
-    try { await updateProfile(form); toast.success(t("saveChanges")) }
+    try { await updateProfile({...form, go_service_radius_km: form.go_service_radius_km?Number(form.go_service_radius_km):15}); toast.success(t("saveChanges")) }
     catch(err) { toast.error(err.message) }
     finally { setSaving(false) }
   }
@@ -188,11 +188,25 @@ export default function ProviderProfile() {
             </div>
             <label style={lbl}>{t("city")}</label>
             <input style={inp} placeholder="e.g. Nairobi" value={form.city} onChange={e=>setForm(f=>({...f,city:e.target.value}))}/>
+            {["garage","garage_premium","auto_electrician","mobile_mechanic"].includes(profile?.provider_type)&&(
+              <div style={{ marginBottom:12 }}>
+                <label style={lbl}>🚨 GO Service radius (km)</label>
+                <div style={{ fontSize:11, color:"#888", marginBottom:6 }}>Maximum distance you're willing to travel for emergency roadside assistance</div>
+                <input type="number" min="1" max="100" style={inp} placeholder="15" value={form.go_service_radius_km} onChange={e=>setForm(f=>({...f,go_service_radius_km:e.target.value}))}/>
+              </div>
+            )}
+            {["garage","garage_premium","auto_electrician","mobile_mechanic"].includes(profile?.provider_type)&&(
+              <div style={{ marginBottom:12 }}>
+                <label style={lbl}>🚨 GO Service radius (km)</label>
+                <div style={{ fontSize:11, color:"#888", marginBottom:6 }}>Maximum distance you're willing to travel for emergency roadside assistance</div>
+                <input type="number" min="1" max="100" style={inp} placeholder="15" value={form.go_service_radius_km} onChange={e=>setForm(f=>({...f,go_service_radius_km:e.target.value}))}/>
+              </div>
+            )}
             <label style={lbl}>Business type</label>
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:12 }}>
               {PROVIDER_TYPES.map(pt=>(
                 <div key={pt.key} onClick={()=>setForm(f=>({...f,provider_type:pt.key}))}
-                  style={{ background:form.provider_type===pt.key?"#0c1f2e":"#0f0f0f", border:"1px solid "+(form.provider_type===pt.key?"#378add":"#222"), borderRadius:8, padding:"8px 10px", cursor:"pointer" }}>
+                  style={{ background:form.provider_type===pt.key?"#eff6ff":"#f8f8f8", border:"1px solid "+(form.provider_type===pt.key?"#378add":"#dddddd"), borderRadius:8, padding:"8px 10px", cursor:"pointer" }}>
                   <div style={{ fontSize:16, marginBottom:2 }}>{pt.icon}</div>
                   <div style={{ fontSize:11, fontWeight:600, color:form.provider_type===pt.key?"#378add":"#888" }}>{pt.label}</div>
                 </div>
