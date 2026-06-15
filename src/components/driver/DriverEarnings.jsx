@@ -14,17 +14,55 @@ export default function DriverEarnings() {
   const [goalInput, setGoalInput] = useState("")
   const [editingGoal, setEditingGoal] = useState(false)
   const [savingGoal, setSavingGoal] = useState(false)
+  const [expenses, setExpenses] = useState([])
+  const [expenseForm, setExpenseForm] = useState({ amount:"", expense_date:new Date().toISOString().split("T")[0], odometer:"", notes:"" })
+  const [savingExpense, setSavingExpense] = useState(false)
+  const [showExpenseForm, setShowExpenseForm] = useState(false)
 
   useEffect(() => { if (user) load() }, [user])
 
   async function load() {
-    const { data } = await supabase.from("bookings")
-      .select("*, vehicles(make,model,license_plate)")
-      .eq("driver_id", user.id)
-      .eq("status", "completed")
-      .order("created_at", { ascending:false })
+    const [{ data }, { data: exps }] = await Promise.all([
+      supabase.from("bookings")
+        .select("*, vehicles(make,model,license_plate)")
+        .eq("driver_id", user.id)
+        .eq("status", "completed")
+        .order("created_at", { ascending:false }),
+      supabase.from("driver_expenses").select("*").eq("driver_id", user.id).order("expense_date",{ascending:false})
+    ])
     setBookings(data||[])
+    setExpenses(exps||[])
     setLoading(false)
+  }
+  async function saveExpense(e) {
+    e.preventDefault()
+    if (!expenseForm.amount || Number(expenseForm.amount)<=0) return toast.error("Enter a valid amount")
+    setSavingExpense(true)
+    try {
+      const { error } = await supabase.from("driver_expenses").insert({
+        driver_id: user.id,
+        expense_type: "fuel",
+        amount: Number(expenseForm.amount),
+        expense_date: expenseForm.expense_date,
+        odometer: expenseForm.odometer?Number(expenseForm.odometer):null,
+        notes: expenseForm.notes,
+      })
+      if (error) throw error
+      toast.success("Fuel expense logged!")
+      setExpenseForm({ amount:"", expense_date:new Date().toISOString().split("T")[0], odometer:"", notes:"" })
+      setShowExpenseForm(false)
+      load()
+    } catch(err) {
+      toast.error(err.message)
+    } finally {
+      setSavingExpense(false)
+    }
+  }
+  async function deleteExpense(id) {
+    if (!confirm("Delete this expense?")) return
+    await supabase.from("driver_expenses").delete().eq("id",id)
+    toast.success("Expense deleted")
+    load()
   }
 
   function filterByPeriod(bks) {
@@ -58,6 +96,9 @@ export default function DriverEarnings() {
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
   const monthEarnings = bookings.filter(b=>new Date(b.booking_date)>=monthStart).reduce((s,b)=>s+Number(b.driver_earnings||0), 0)
   const monthlyGoal = Number(profile?.monthly_earnings_goal || 0)
+  const monthFuelExpenses = expenses.filter(e=>new Date(e.expense_date)>=monthStart).reduce((s,e)=>s+Number(e.amount||0), 0)
+  const netMonthEarnings = monthEarnings - monthFuelExpenses
+  const totalFuelExpenses = expenses.reduce((s,e)=>s+Number(e.amount||0), 0)
   const goalProgress = monthlyGoal>0 ? Math.min(100, Math.round((monthEarnings/monthlyGoal)*100)) : 0
 
   async function saveGoal() {
@@ -144,6 +185,72 @@ export default function DriverEarnings() {
         ):(
           <div style={{ fontSize:12, color:"#888888" }}>Set a monthly earnings goal to track your progress.</div>
         )}
+      </div>
+      {/* Fuel expense tracker */}
+      <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000" }}>⛽ Fuel expenses</div>
+          <button onClick={()=>setShowExpenseForm(!showExpenseForm)} style={{ background:showExpenseForm?"none":"#e6821e", border:showExpenseForm?"1px solid #dddddd":"none", borderRadius:7, color:showExpenseForm?"#666":"#fff", fontSize:11, fontWeight:700, padding:"5px 12px", cursor:"pointer" }}>
+            {showExpenseForm?"Cancel":"+ Log expense"}
+          </button>
+        </div>
+
+        {showExpenseForm&&(
+          <form onSubmit={saveExpense} style={{ background:"#f8f8f8", borderRadius:8, padding:"0.9rem", marginBottom:"1rem" }}>
+            <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4,1fr)", gap:8, marginBottom:8 }}>
+              <div>
+                <label style={{ fontSize:10, color:"#666", display:"block", marginBottom:4 }}>Amount (KES)</label>
+                <input type="number" min="0" value={expenseForm.amount} onChange={e=>setExpenseForm(f=>({...f,amount:e.target.value}))} placeholder="500" required
+                  style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:7, padding:"8px 10px", color:"#000000", fontSize:12, outline:"none" }}/>
+              </div>
+              <div>
+                <label style={{ fontSize:10, color:"#666", display:"block", marginBottom:4 }}>Date</label>
+                <input type="date" value={expenseForm.expense_date} onChange={e=>setExpenseForm(f=>({...f,expense_date:e.target.value}))}
+                  style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:7, padding:"8px 10px", color:"#000000", fontSize:12, outline:"none" }}/>
+              </div>
+              <div>
+                <label style={{ fontSize:10, color:"#666", display:"block", marginBottom:4 }}>Odometer (km, optional)</label>
+                <input type="number" min="0" value={expenseForm.odometer} onChange={e=>setExpenseForm(f=>({...f,odometer:e.target.value}))} placeholder="45000"
+                  style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:7, padding:"8px 10px", color:"#000000", fontSize:12, outline:"none" }}/>
+              </div>
+              <div>
+                <label style={{ fontSize:10, color:"#666", display:"block", marginBottom:4 }}>Notes (optional)</label>
+                <input value={expenseForm.notes} onChange={e=>setExpenseForm(f=>({...f,notes:e.target.value}))} placeholder="e.g. Shell station"
+                  style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:7, padding:"8px 10px", color:"#000000", fontSize:12, outline:"none" }}/>
+              </div>
+            </div>
+            <button type="submit" disabled={savingExpense} style={{ background:savingExpense?"#ccc":"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"8px 18px", cursor:savingExpense?"not-allowed":"pointer" }}>
+              {savingExpense?"Saving...":"Log fuel expense"}
+            </button>
+          </form>
+        )}
+
+        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(3,1fr)", gap:10, marginBottom:expenses.length>0?"1rem":0 }}>
+          <div style={{ background:"#fff5f5", borderRadius:8, padding:"0.75rem", textAlign:"center" }}>
+            <div style={{ fontFamily:"Syne", fontSize:isMobile?13:16, fontWeight:800, color:"#e24b4a" }}>KES {monthFuelExpenses.toFixed(0)}</div>
+            <div style={{ fontSize:9, color:"#888888", marginTop:2 }}>Fuel this month</div>
+          </div>
+          <div style={{ background:"#f0fdf4", borderRadius:8, padding:"0.75rem", textAlign:"center" }}>
+            <div style={{ fontFamily:"Syne", fontSize:isMobile?13:16, fontWeight:800, color:netMonthEarnings>=0?"#1d9e75":"#e24b4a" }}>KES {netMonthEarnings.toFixed(0)}</div>
+            <div style={{ fontSize:9, color:"#888888", marginTop:2 }}>Net this month (after fuel)</div>
+          </div>
+          <div style={{ background:"#f8f8f8", borderRadius:8, padding:"0.75rem", textAlign:"center" }}>
+            <div style={{ fontFamily:"Syne", fontSize:isMobile?13:16, fontWeight:800, color:"#888" }}>KES {totalFuelExpenses.toFixed(0)}</div>
+            <div style={{ fontSize:9, color:"#888888", marginTop:2 }}>Total fuel logged</div>
+          </div>
+        </div>
+
+        {expenses.slice(0,5).map(exp=>(
+          <div key={exp.id} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"8px 0", borderBottom:"1px solid #f0f0f0", fontSize:12 }}>
+            <div>
+              <span style={{ color:"#000000", fontWeight:600 }}>KES {Number(exp.amount).toFixed(0)}</span>
+              <span style={{ color:"#888888", marginLeft:8 }}>{exp.expense_date}</span>
+              {exp.odometer&&<span style={{ color:"#888888", marginLeft:8 }}>· {Number(exp.odometer).toLocaleString()} km</span>}
+              {exp.notes&&<span style={{ color:"#888888", marginLeft:8 }}>· {exp.notes}</span>}
+            </div>
+            <button onClick={()=>deleteExpense(exp.id)} style={{ background:"none", border:"none", color:"#e24b4a", fontSize:11, cursor:"pointer" }}>Delete</button>
+          </div>
+        ))}
       </div>
       {/* How earnings work */}
       <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"0.9rem", marginBottom:"1.5rem" }}>
