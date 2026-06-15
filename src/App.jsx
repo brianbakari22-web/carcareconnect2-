@@ -18,6 +18,7 @@ import { ThemeProvider } from "./contexts/ThemeContext"
 
 import AuthPage from "./components/auth/AuthPage"
 import LandingPage from "./components/landing/LandingPage"
+import PublicProviderStorefront from "./components/customer/PublicProviderStorefront"
 
 import PrivacyPolicy from "./components/legal/PrivacyPolicy"
 import TermsOfService from "./components/legal/TermsOfService"
@@ -332,6 +333,7 @@ export default function App() {
               <Route path="/admin-dashboard/*" element={<AdminProtectedRoute><AdminDashboardRouter /></AdminProtectedRoute>} />
               <Route path="/dashboard/*" element={<ProtectedRoute><DashboardRouter /></ProtectedRoute>} />
               <Route path="/not-found" element={<NotFound />} />
+              <Route path="/provider/:id" element={<PublicProviderStorefront />} />
               <Route path="/" element={<LandingPage />} />
               <Route path="*" element={<Navigate to="/auth" replace />} />
             </Routes>

@@ -140,6 +140,18 @@ export default function ProviderProfile() {
           ✓ Your account is verified and visible to customers!
         </div>
       )}
+      <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.75rem 1rem", marginBottom:"1rem" }}>
+        <div style={{ fontSize:12, fontWeight:700, color:"#e6821e", marginBottom:4 }}>📤 Your public storefront</div>
+        <div style={{ fontSize:11, color:"#666", marginBottom:8 }}>Share this link so customers can view your services and book directly.</div>
+        <div style={{ display:"flex", gap:6, alignItems:"center" }}>
+          <input readOnly value={`https://carcareconnect.care/provider/${user.id}`} onClick={e=>e.target.select()}
+            style={{ flex:1, background:"#ffffff", border:"1px solid #e6821e40", borderRadius:7, padding:"6px 10px", fontSize:11, color:"#555", outline:"none" }}/>
+          <button onClick={()=>{ navigator.clipboard.writeText(`https://carcareconnect.care/provider/${user.id}`); toast.success("Link copied!") }} 
+            style={{ background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"7px 14px", cursor:"pointer", flexShrink:0 }}>
+            Copy
+          </button>
+        </div>
+      </div>
       <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:"1.5rem" }}>
         <div style={{ width:60, height:60, borderRadius:14, background:"#eff6ff", border:"2px solid #378add40", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#378add" }}>
           {initials}
