@@ -7,15 +7,21 @@ export default function ProviderAnalytics() {
   const isMobile = useIsMobile()
   const { user } = useAuth()
   const [bookings, setBookings] = useState([])
+  const [reviews, setReviews] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => { if (user) load() }, [user])
 
   async function load() {
-    const { data } = await supabase.from("bookings")
-      .select("*").eq("provider_id", user.id)
-      .order("created_at", { ascending:false })
+    const [{ data }, { data: revs }] = await Promise.all([
+      supabase.from("bookings")
+        .select("*").eq("provider_id", user.id)
+        .order("created_at", { ascending:false }),
+      supabase.from("reviews")
+        .select("provider_rating, provider_response, created_at").eq("provider_id", user.id).eq("is_hidden", false)
+    ])
     setBookings(data||[])
+    setReviews(revs||[])
     setLoading(false)
   }
 
@@ -42,6 +48,11 @@ export default function ProviderAnalytics() {
   const total = Object.keys(customerBookings).length
   const retentionRate = total>0 ? Math.round((returning/total)*100) : 0
 
+  // Rating & responsiveness
+  const avgRating = reviews.length>0 ? (reviews.reduce((sum,r)=>sum+(r.provider_rating||0),0)/reviews.length).toFixed(1) : null
+  const respondedReviews = reviews.filter(r=>r.provider_response && r.provider_response.trim()!=="").length
+  const responseRate = reviews.length>0 ? Math.round((respondedReviews/reviews.length)*100) : 0
+
   // Monthly revenue
   const byMonth = completed.reduce((acc,b) => {
     const month = b.booking_date?.slice(0,7)
@@ -56,15 +67,17 @@ export default function ProviderAnalytics() {
 
   return (
     <div>
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginBottom:"1.5rem" }}>
+      <div style={{ display:"grid", gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(5,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {[
           { label:"Completion rate", value:`${completionRate}%`, color:completionRate>=80?"#1d9e75":completionRate>=50?"#e6821e":"#e24b4a" },
+          { label:"Avg rating", value:avgRating?`⭐ ${avgRating}`:"—", color:avgRating>=4?"#1d9e75":avgRating>=3?"#e6821e":avgRating?"#e24b4a":undefined },
+          { label:"Review response rate", value:`${responseRate}%`, color:responseRate>=70?"#1d9e75":responseRate>=30?"#e6821e":"#e24b4a" },
           { label:"Returning customers", value:`${retentionRate}%`, color:"#378add" },
           { label:"Cancelled bookings", value:cancelled.length, color:cancelled.length>0?"#e24b4a":undefined },
         ].map(s=>(
           <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
             <div style={{ fontSize:11, color:"#777777", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
-            <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:s.color||"#f0ede6" }}>{s.value}</div>
+            <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:s.color||"#000000" }}>{s.value}</div>
           </div>
         ))}
       </div>
@@ -120,7 +133,7 @@ export default function ProviderAnalytics() {
         ].map(s=>(
           <div key={s.label} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"8px 0", borderBottom:"1px solid #eeeeee" }}>
             <div style={{ fontSize:13, color:"#555555" }}>{s.label}</div>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:s.color||"#f0ede6" }}>{s.value}</div>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:s.color||"#000000" }}>{s.value}</div>
           </div>
         ))}
       </div>
