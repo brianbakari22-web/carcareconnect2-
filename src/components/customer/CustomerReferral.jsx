@@ -14,17 +14,21 @@ export default function CustomerReferral() {
   const [stats, setStats] = useState({ total:0, completed:0, pending:0, pointsEarned:0 })
   const [loading, setLoading] = useState(true)
   const [copied, setCopied] = useState(false)
+  const [leaderboard, setLeaderboard] = useState([])
 
   useEffect(() => { if (user) load() }, [user])
 
   async function load() {
-    const { data } = await supabase.from("referrals")
-      .select("*, profiles!referrals_referred_id_fkey(first_name,last_name,created_at)")
-      .eq("referrer_id", user.id)
-      .order("created_at", { ascending:false })
-
+    const [{ data }, { data: lb }] = await Promise.all([
+      supabase.from("referrals")
+        .select("*, profiles!referrals_referred_id_fkey(first_name,last_name,created_at)")
+        .eq("referrer_id", user.id)
+        .order("created_at", { ascending:false }),
+      supabase.rpc("get_referral_leaderboard", { limit_count: 10 })
+    ])
     const refs = data||[]
     setReferrals(refs)
+    setLeaderboard(lb||[])
     setStats({
       total: refs.length,
       completed: refs.filter(r=>r.status==="completed"||r.status==="rewarded").length,
@@ -69,7 +73,7 @@ export default function CustomerReferral() {
         </div>
       </div>
 
-      <div style={{ background:"linear-gradient(135deg, #1a1208 0%, #111 100%)", border:"1px solid #e6821e30", borderRadius:16, padding:"1.5rem", marginBottom:"1.5rem" }}>
+      <div style={{ background:"linear-gradient(135deg, #fff8f0 0%, #ffffff 100%)", border:"1px solid #e6821e30", borderRadius:16, padding:"1.5rem", marginBottom:"1.5rem" }}>
         <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000000", marginBottom:4 }}>Your referral code</div>
         <div style={{ fontSize:12, color:"#555555", marginBottom:"1.25rem" }}>
           Share this code or link with friends. You earn <span style={{ color:"#e6821e", fontWeight:600 }}>{REFERRAL_POINTS} points</span> when they sign up and make their first booking. They get <span style={{ color:"#1d9e75", fontWeight:600 }}>{REFERRED_POINTS} bonus points</span> too!
@@ -83,7 +87,7 @@ export default function CustomerReferral() {
             </div>
           </div>
           <button onClick={copyLink}
-            style={{ background:copied?"#071a12":"#e6821e", border:`1px solid ${copied?"#1d9e7540":"transparent"}`, borderRadius:9, color:copied?"#1d9e75":"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"10px 18px", cursor:"pointer", flexShrink:0, transition:"all 0.2s" }}>
+            style={{ background:copied?"#f0fdf4":"#e6821e", border:`1px solid ${copied?"#1d9e7540":"transparent"}`, borderRadius:9, color:copied?"#1d9e75":"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"10px 18px", cursor:"pointer", flexShrink:0, transition:"all 0.2s" }}>
             {copied?"✓ Copied!":"Copy code"}
           </button>
         </div>
@@ -95,11 +99,11 @@ export default function CustomerReferral() {
 
         <div style={{ display:"flex", gap:8 }}>
           <button onClick={shareWhatsApp}
-            style={{ flex:1, background:"#071a12", border:"1px solid #1d9e7540", borderRadius:9, color:"#1d9e75", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px", cursor:"pointer" }}>
+            style={{ flex:1, background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:9, color:"#1d9e75", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px", cursor:"pointer" }}>
             Share on WhatsApp
           </button>
           <button onClick={shareEmail}
-            style={{ flex:1, background:"#0c1f2e", border:"1px solid #378add40", borderRadius:9, color:"#378add", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px", cursor:"pointer" }}>
+            style={{ flex:1, background:"#eff6ff", border:"1px solid #378add40", borderRadius:9, color:"#378add", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px", cursor:"pointer" }}>
             Share via Email
           </button>
           <button onClick={copyLink}
@@ -118,7 +122,7 @@ export default function CustomerReferral() {
         ].map(s=>(
           <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
             <div style={{ fontSize:11, color:"#777777", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
-            <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:s.color||"#f0ede6" }}>{s.value}</div>
+            <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:s.color||"#000000" }}>{s.value}</div>
           </div>
         ))}
       </div>
@@ -132,7 +136,7 @@ export default function CustomerReferral() {
           { step:"4", title:"Both earn points", desc:`You get ${REFERRAL_POINTS} pts · They get ${REFERRED_POINTS} pts`, icon:"🎉" },
         ].map((s,i)=>(
           <div key={s.step} style={{ display:"flex", gap:12, marginBottom:i<3?12:0 }}>
-            <div style={{ width:40, height:40, borderRadius:10, background:"#1a1208", border:"1px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, flexShrink:0 }}>
+            <div style={{ width:40, height:40, borderRadius:10, background:"#fff8f0", border:"1px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, flexShrink:0 }}>
               {s.icon}
             </div>
             <div style={{ flex:1 }}>
@@ -142,6 +146,24 @@ export default function CustomerReferral() {
           </div>
         ))}
       </div>
+
+      {leaderboard.length>0&&(
+        <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>🏆 Referral Leaderboard</div>
+          {leaderboard.map((row,i)=>(
+            <div key={row.user_id} style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 0", borderBottom: i<leaderboard.length-1?"1px solid #eeeeee":"none", background:row.user_id===user.id?"#fff8f0":"transparent" }}>
+              <div style={{ width:24, textAlign:"center", fontFamily:"Syne", fontSize:13, fontWeight:800, color:i===0?"#e6821e":i===1?"#888":i===2?"#a0703a":"#bbb" }}>
+                {i===0?"🥇":i===1?"🥈":i===2?"🥉":i+1}
+              </div>
+              <div style={{ flex:1, fontSize:13, color:"#000000" }}>
+                {row.first_name} {row.last_name?.[0]||""}.{row.user_id===user.id?" (You)":""}
+              </div>
+              <div style={{ fontSize:11, color:"#777777" }}>{row.total_referrals} referral{row.total_referrals!==1?"s":""}</div>
+              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e", minWidth:60, textAlign:"right" }}>{row.total_points.toLocaleString()} pts</div>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:10, color:"#000000" }}>
         Your referrals ({referrals.length})
@@ -154,7 +176,7 @@ export default function CustomerReferral() {
       )}
       {referrals.map(r=>(
         <div key={r.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
-          <div style={{ width:40, height:40, borderRadius:"50%", background:"#1a1208", border:"1px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e", flexShrink:0 }}>
+          <div style={{ width:40, height:40, borderRadius:"50%", background:"#fff8f0", border:"1px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e", flexShrink:0 }}>
             {r.profiles?.first_name?.[0]||"?"}
           </div>
           <div style={{ flex:1, minWidth:0 }}>
