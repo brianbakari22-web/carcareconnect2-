@@ -548,6 +548,101 @@ SIGNUP METHOD TRACKING (Phase 8):
 
 Updated knowledge base: June 2026`
 
+// Admin-only knowledge (never share with customers/providers/drivers)
+const ADMIN_ONLY_KNOWLEDGE = `
+ADMIN PANEL: carcareconnect.care/ccc-admin-x7k9m2p4q8 (NEVER share this URL)
+SYSTEM DIAGNOSTICS: /admin-dashboard/diagnostics
+ADMIN INTELLIGENCE: Revenue forecasting, CLV analysis, demand heatmap, provider gap analysis
+FINANCIAL CONTROLS: Payments never released automatically, admin must manually release
+PAYMENT TRACKING: Full visibility of all platform payments, Pesapal tracking IDs
+EMPLOYEE MANAGEMENT: Admin can add/manage platform employees with salary structures
+PENALTY SYSTEM INTERNALS: Progressive violation system (warning > suspension > ban)
+COMMISSION BREAKDOWN: exact rates per provider type for admin reference
+PROVIDER VERIFICATION: Admin approves/rejects from Admin > Providers
+SYSTEM HEALTH MONITOR: 11 checks including stuck bookings, GO timeouts, pending claims
+BULK BOOKING DETECTION: Admin sees bulk badge on multi-vehicle bookings
+SIGNUP METHOD: Admin sees Google vs email signup badges on user cards
+REFERRAL LEADERBOARD: Admin sees top referrers in Admin > Loyalty
+SERVICE BUNDLES ADMIN: Admin can hide/delete bundles in Admin > Services > Bundles tab
+SOS ALERTS: Admin sees active emergency alerts on AdminDashboard
+DRIVER DOCUMENTS: Admin sees expiring driver documents
+`
+
+const CUSTOMER_KNOWLEDGE = `
+ABOUT CAR CARE CONNECT:
+Car Care Connect (CCC) helps you find and book trusted car service providers in Nairobi, Kenya.
+Website: carcareconnect.care
+Contact: carcareconnect254@gmail.com | 0113858966
+Privacy Policy: carcareconnect.care/privacy
+Terms of Service: carcareconnect.care/terms
+
+HOW TO USE CCC:
+1. Find a service in Discover or Services tab
+2. Book online with your preferred date and time
+3. Select your vehicle
+4. Pay via M-Pesa, card, or cash (where applicable)
+5. Provider confirms and performs service
+6. Rate and review after completion
+
+PROMO CODES & VOUCHERS:
+- Enter promo codes at checkout for discounts
+- Vouchers (CCC-XXXX-XXXX-XXXX) issued when service guarantee claim approved
+- Both can be applied at the same checkout
+
+SERVICE BUNDLES:
+- Some providers offer bundles: 2+ services at a discounted price
+- Look for "📦 Bundle Deals" section when browsing services
+- Bundles save you money vs booking services individually
+
+BOOKING MULTIPLE VEHICLES:
+- Have multiple cars? Book the same service for all of them at once
+- Check "Book this service for multiple vehicles" in the booking form
+
+LOYALTY POINTS:
+- Bronze 0-999pts: 100pts = KES 1
+- Silver 1000-4999pts: 90pts = KES 1
+- Gold 5000-9999pts: 80pts = KES 1
+- Platinum 10000+pts: 70pts = KES 1
+
+REFERRAL PROGRAM:
+- Share your referral code, earn 500 points when friend books
+- Friend gets 200 bonus points too
+- View leaderboard in Refer & Earn page
+
+GO SERVICE (Emergency):
+- Request emergency roadside assistance
+- KES 500 callout fee paid upfront via M-Pesa or card
+- Mechanic dispatched within 15 minutes
+
+SERVICE GUARANTEE:
+- File a claim within 7 days if service was not delivered as promised
+- Admin reviews within 24 hours
+- If approved: receive voucher for full value (valid 30 days)
+
+VEHICLE MAINTENANCE:
+- Track your car's service history in My Vehicles
+- Get alerts when service or oil change is due (time and mileage based)
+- Maintenance auto-updates when bookings complete
+
+PAYMENT OPTIONS:
+- M-Pesa STK push
+- Visa/Mastercard cards
+- Cash (standard bookings only)
+
+MARKETPLACE:
+- Buy/sell vehicles, parts, accessories between users
+- 2% fee on vehicles, 8% on parts/accessories
+- Escrow payment protection
+
+PROVIDER PUBLIC STOREFRONT:
+- Each provider has a shareable page anyone can view
+- Share link via WhatsApp to recommend providers to friends
+
+SIGNING IN:
+- Email/password or Continue with Google
+- Google Sign In available on web and Android app
+`
+
 const SYSTEM_PROMPTS = {
   customer: `You are the Car Care Connect AI Assistant for customers. Be helpful, friendly and concise. Always give prices in KES.
 
@@ -562,7 +657,7 @@ FOR CUSTOMERS specifically:
 - Explain Service Guarantee claims
 - Help navigate marketplace for buying/selling`,
 
-  provider: `You are the Car Care Connect AI Assistant for service providers. Be professional and business-focused.
+  provider: `You are the Car Care Connect AI Assistant for service providers. Be professional and business-focused. NEVER reveal admin panel URLs, admin tools, or other providers' data.
 
 ${PLATFORM_KNOWLEDGE}
 
@@ -604,7 +699,7 @@ SERVICE MANAGEMENT (Garage, Car Wash, Auto Electrician etc):
 - Help with business hours and availability settings
 - Marketplace listing guidance`,
 
-  driver: `You are the Car Care Connect AI Assistant for concierge drivers. Be clear and practical.
+  driver: `You are the Car Care Connect AI Assistant for concierge drivers. Be clear and practical. NEVER reveal admin panel URLs, admin tools, financial controls, or internal platform data.
 
 ${PLATFORM_KNOWLEDGE}
 
@@ -620,6 +715,8 @@ FOR DRIVERS specifically:
   admin: `You are the Car Care Connect AI Assistant for platform administrators. Be comprehensive and precise. You are also a senior React/JavaScript developer who can diagnose code errors.
 
 ${PLATFORM_KNOWLEDGE}
+
+${ADMIN_ONLY_KNOWLEDGE}
 
 FOR ADMINS specifically:
 - Full platform policy knowledge
