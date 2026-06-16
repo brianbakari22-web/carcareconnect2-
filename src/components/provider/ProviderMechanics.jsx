@@ -139,7 +139,7 @@ export default function ProviderMechanics() {
     <div>
       <button onClick={()=>{ setTrackingMechanic(null); if(mapInstanceRef.current){mapInstanceRef.current.remove();mapInstanceRef.current=null} }}
         style={{ background:"none", border:"none", color:"#378add", cursor:"pointer", fontSize:13, marginBottom:"1rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
-        ΓåÉ Back to mechanics
+        ← Back to mechanics
       </button>
       <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
         <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:12 }}>
