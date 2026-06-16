@@ -34,6 +34,18 @@ export default function AdminBookings() {
 
   const filtered = filter==="all" ? bookings : bookings.filter(b=>b.status===filter)
 
+  // Detect bulk bookings - same customer, service, date, time created within 60 seconds
+  const bulkGroups = {}
+  bookings.forEach(b => {
+    const key = `${b.customer_id}_${b.service_id}_${b.booking_date}_${b.booking_time}`
+    if (!bulkGroups[key]) bulkGroups[key] = []
+    bulkGroups[key].push(b.id)
+  })
+  const isBulk = (b) => {
+    const key = `${b.customer_id}_${b.service_id}_${b.booking_date}_${b.booking_time}`
+    return bulkGroups[key]?.length > 1
+  }
+
   return (
     <div>
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
@@ -49,8 +61,11 @@ export default function AdminBookings() {
         <div key={b.id} style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
             <div>
-              <div style={{ fontSize:14, fontWeight:500 }}>{b.service_name}</div>
-              <div style={{ fontSize:10, color:"#888", marginTop:2 }}>#{b.booking_number}</div>
+              <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                <div style={{ fontSize:14, fontWeight:500 }}>{b.service_name}</div>
+                {isBulk(b)&&<span style={{ fontSize:10, background:"#eff6ff", color:"#378add", padding:"1px 6px", borderRadius:10, border:"1px solid #378add40" }}>📦 Bulk</span>}
+              </div>
+              <div style={{ fontSize:10, color:"#888", marginTop:2 }}>#{b.booking_number}{b.bundle_id&&" · 📦 Bundle"}{b.service_category==="bundle"&&" · Bundle booking"}</div>
             </div>
             <span style={{ fontSize:10, padding:"3px 9px", borderRadius:20, background:SB[b.status]||"#f8f8f8", color:SC[b.status]||"#888", border:`1px solid ${SC[b.status]||"#888"}40` }}>{b.status}</span>
           </div>

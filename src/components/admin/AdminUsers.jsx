@@ -123,6 +123,7 @@ export default function AdminUsers() {
                 <span style={{ fontSize:10, padding:"1px 7px", borderRadius:10, background:`${RC[u.role]}20`, color:RC[u.role] }}>{u.role}</span>
                 {u.is_verified&&<span style={{ fontSize:10, color:"#1d9e75" }}>✓</span>}
                 {!u.is_active&&<span style={{ fontSize:10, color:"#e24b4a", background:"#fff5f5", padding:"1px 7px", borderRadius:10 }}>Suspended</span>}
+                {u.signup_method&&u.signup_method!=="email"&&<span style={{ fontSize:10, color:"#378add", background:"#eff6ff", padding:"1px 7px", borderRadius:10 }}>G Google</span>}
               </div>
               <div style={{ fontSize:11, color:"#888", marginTop:2 }}>
                 {u.city&&`${u.city} · `}Joined {new Date(u.created_at).toLocaleDateString()}

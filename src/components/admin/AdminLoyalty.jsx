@@ -6,6 +6,7 @@ import toast from "react-hot-toast"
 export default function AdminLoyalty() {
   const isMobile = useIsMobile()
   const [loyalty, setLoyalty] = useState([])
+  const [leaderboard, setLeaderboard] = useState([])
   const [loading, setLoading] = useState(true)
   const [adjusting, setAdjusting] = useState(null)
   const [adjustForm, setAdjustForm] = useState({ points:"", reason:"" })
@@ -17,6 +18,8 @@ export default function AdminLoyalty() {
       .select("*, profile_public(first_name,last_name,business_name,role)")
       .order("points",{ascending:false})
     setLoyalty(lp||[])
+    const { data: lb } = await supabase.rpc("get_referral_leaderboard", { limit_count: 10 })
+    setLeaderboard(lb||[])
     setLoading(false)
   }
 
@@ -121,6 +124,20 @@ export default function AdminLoyalty() {
           </div>
         )
       })}
+    <div style={{ marginTop:"1.5rem" }}>
+      <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:10, color:"#000000" }}>🏆 Referral Leaderboard (Top 10)</div>
+      {leaderboard.length===0&&<div style={{ color:"#888", fontSize:13 }}>No completed referrals yet</div>}
+      {leaderboard.map((row,i)=>(
+        <div key={row.user_id} style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:10, padding:"0.75rem 1rem", marginBottom:6, display:"flex", alignItems:"center", gap:10 }}>
+          <div style={{ width:28, textAlign:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:i===0?"#e6821e":i===1?"#888":i===2?"#a0703a":"#bbb" }}>
+            {i===0?"🥇":i===1?"🥈":i===2?"🥉":i+1}
+          </div>
+          <div style={{ flex:1, fontSize:13, color:"#000000" }}>{row.first_name} {row.last_name}</div>
+          <div style={{ fontSize:11, color:"#777" }}>{row.total_referrals} referral{row.total_referrals!==1?"s":""}</div>
+          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e" }}>{row.total_points.toLocaleString()} pts</div>
+        </div>
+      ))}
+    </div>
     </div>
   )
 }
