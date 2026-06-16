@@ -35,7 +35,7 @@ export default function CustomerLoyalty() {
   const tierBase = { Bronze:0, Silver:1000, Gold:5000, Platinum:10000 }[tier]
   const progress = tier==="Platinum"?100:Math.min(100,((points-tierBase)/(tierNext-tierBase))*100)
 
-  // Redemption rate per tier: Bronze 100pts=$1, Silver 90pts=$1, Gold 80pts=$1, Platinum 70pts=$1
+  // Redemption rate per tier: Bronze 100pts=KES 1, Silver 90pts=KES 1, Gold 80pts=KES 1, Platinum 70pts=KES 1
   const redemptionRate = { Bronze:100, Silver:90, Gold:80, Platinum:70 }[tier]
   const maxRedeemPoints = points
   const maxRedeemValue = (points / redemptionRate).toFixed(2)
