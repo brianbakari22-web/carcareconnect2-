@@ -220,13 +220,13 @@ export function downloadPDF(data, filename) {
     doc.setFontSize(10)
     doc.setTextColor(100,100,100)
     const totalPaid = data.payments.reduce((s,p)=>s+Number(p.amount||0),0)
-    doc.text(`Total: ${data.payments.length} payments · Total paid: $${totalPaid.toFixed(2)}`, 14, y)
+    doc.text(`Total: ${data.payments.length} payments · Total paid: KES ${totalPaid.toFixed(2)}`, 14, y)
     y += 8
     tableHeader(["Method", "Amount", "Status", "Date"], [50, 35, 35, 50])
     data.payments.slice(0, 20).forEach((p, i) => {
       tableRow([
         p.payment_method||"",
-        `$${Number(p.amount||0).toFixed(2)}`,
+        `KES ${Number(p.amount||0).toFixed(2)}`,
         p.status||"",
         p.created_at ? new Date(p.created_at).toLocaleDateString() : ""
       ], [50, 35, 35, 50], i%2===0)

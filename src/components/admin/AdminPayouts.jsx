@@ -126,7 +126,7 @@ export default function AdminPayouts() {
               <input type="checkbox" checked={selected.includes(p.id)} onChange={()=>toggleSelect(p.id)} style={{ marginTop:3, cursor:"pointer" }}/>
               <div>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:2 }}>
-                  <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>${Number(p.amount).toFixed(2)}</div>
+                  <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>KES ${Number(p.amount).toFixed(2)}</div>
                   <span style={{ fontSize:10, padding:"2px 7px", borderRadius:10, background:`${roleColor[p.profile_public?.role]||"#cccccc"}20`, color:roleColor[p.profile_public?.role]||"#888" }}>
                     {p.profile_public?.role}
                   </span>

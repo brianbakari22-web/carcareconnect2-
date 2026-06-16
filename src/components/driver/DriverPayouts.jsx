@@ -183,7 +183,7 @@ export default function DriverPayouts() {
               {payouts.map(p=>(
                 <div key={p.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
                   <div style={{ flex:1 }}>
-                    <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>${Number(p.amount).toLocaleString()}</div>
+                    <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>KES ${Number(p.amount).toLocaleString()}</div>
                     <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>KES {Number(p.amount).toLocaleString()}</div>
                     <div style={{ fontSize:10, color:"#888888", marginTop:2 }}>{new Date(p.created_at).toLocaleDateString()}</div>
                     {p.admin_note&&<div style={{ fontSize:11, color:"#666", marginTop:4, fontStyle:"italic" }}>"{p.admin_note}"</div>}

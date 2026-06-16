@@ -175,7 +175,7 @@ export default function CustomerLoyalty() {
           </div>
           <div style={{ textAlign:"right" }}>
             <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75" }}>+{Math.floor(Number(b.total_amount)*10).toLocaleString()} pts</div>
-            <div style={{ fontSize:10, color:"#777777" }}>${Number(b.total_amount).toFixed(2)} spent</div>
+            <div style={{ fontSize:10, color:"#777777" }}>KES ${Number(b.total_amount).toFixed(2)} spent</div>
           </div>
         </div>
       ))}
