@@ -6,6 +6,7 @@ import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 import InspectionRequest from "./InspectionRequest"
 import PhotoUpload from "./PhotoUpload"
+import VideoUpload from "./VideoUpload"
 import FeaturedListing from "./FeaturedListing"
 
 export default function MyListings() {
@@ -18,6 +19,7 @@ export default function MyListings() {
   const [tab, setTab] = useState("listings")
   const [expanded, setExpanded] = useState(null)
   const [photoListing, setPhotoListing] = useState(null)
+  const [videoListing, setVideoListing] = useState(null)
   const [featureListing, setFeatureListing] = useState(null)
   const [inspectListing, setInspectListing] = useState(null)
   const [listingPhotos, setListingPhotos] = useState([])
@@ -240,12 +242,34 @@ export default function MyListings() {
                   <PhotoUpload listingId={l.id} onSuccess={()=>openPhotos(l)} existingPhotos={listingPhotos}/>
                 </div>
               )}
+              {videoListing===l.id&&(
+                <div style={{ padding:"1rem", background:"#f0f7ff", borderTop:"1px solid #378add20" }}>
+                  <VideoUpload listingId={l.id} onUploaded={()=>{ setVideoListing(null); load() }}/>
+                </div>
+              )}
+              {l.video_url&&videoListing!==l.id&&(
+                <div style={{ padding:"1rem", borderTop:"1px solid #eeeeee" }}>
+                  <div style={{ fontSize:11, fontWeight:700, color:"#555", marginBottom:6 }}>
+                    🎥 Your video
+                    <span style={{ marginLeft:6, fontSize:10, padding:"1px 6px", borderRadius:8,
+                      background:l.video_status==="approved"?"#f0fdf4":l.video_status==="rejected"?"#fff5f5":"#fff8f0",
+                      color:l.video_status==="approved"?"#1d9e75":l.video_status==="rejected"?"#e24b4a":"#e6821e" }}>
+                      {l.video_status==="approved"?"✓ Approved":l.video_status==="rejected"?"✗ Rejected — "+l.video_rejection_reason:"⏳ Pending admin review"}
+                    </span>
+                  </div>
+                  <video src={l.video_url} controls style={{ width:"100%", borderRadius:8, maxHeight:200 }}/>
+                </div>
+              )}}
 
               <div style={{ borderTop:"1px solid #eeeeee", padding:"0.5rem 0.75rem", display:"flex", gap:6, flexWrap:"wrap" }}>
                 <button onClick={()=>navigate("/dashboard/marketplace")} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>View</button>
                 <button onClick={()=>openPhotos(l)} style={{ background:"#ffffff", border:"1px solid #dddddd", borderRadius:7, color:"#555555", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>Photos {l.marketplace_photos?.length>0?"("+l.marketplace_photos.length+")":""}</button>
                 {l.listing_type==="vehicle"&&<button onClick={()=>setFeatureListing(featureListing===l.id?null:l.id)} style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>Feature</button>}
                 <button onClick={()=>setInspectListing(inspectListing===l.id?null:l.id)} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>Inspect</button>
+                <button onClick={()=>setVideoListing(videoListing===l.id?null:l.id)}
+                  style={{ background:"#f0f7ff", border:"1px solid #378add30", borderRadius:7, color:"#378add", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>
+                  🎥 {l.video_url?"Replace Video":"Add Video"}
+                </button>
                 {l.status!=="sold"&&<button onClick={()=>deleteListing(l.id)} style={{ background:"none", border:"1px solid #e24b4a30", borderRadius:7, color:"#e24b4a", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>Delete</button>}
               </div>
             </div>

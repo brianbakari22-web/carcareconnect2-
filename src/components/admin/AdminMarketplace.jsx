@@ -266,6 +266,12 @@ export default function AdminMarketplace() {
             const seller = l.profiles
             return (
               <div key={l.id} style={{ background:"#f8f8f8", border:`1px solid ${SC[l.status]||"#eeeeee"}20`, borderRadius:12, padding:"1rem", marginBottom:10 }}>
+                {/* Photo thumbnail */}
+                {l.primary_photo&&(
+                  <div style={{ width:"100%", height:160, borderRadius:8, overflow:"hidden", marginBottom:10 }}>
+                    <img src={l.primary_photo} alt={l.title} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
+                  </div>
+                )}
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
                   <div style={{ flex:1, minWidth:0 }}>
                     <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
@@ -367,6 +373,19 @@ export default function AdminMarketplace() {
                         style={{ width:"100%", background:"#ffffff", border:"1px solid #f0f0f0", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none", resize:"vertical", minHeight:60, fontFamily:"'DM Sans',sans-serif" }}/>
                     </div>
 
+                    {/* Photo gallery */}
+                    {l.marketplace_photos?.length>0&&(
+                      <div style={{ marginBottom:12 }}>
+                        <div style={{ fontSize:12, fontWeight:700, color:"#555", marginBottom:8 }}>📸 Photos ({l.marketplace_photos.length})</div>
+                        <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                          {l.marketplace_photos.sort((a,b)=>a.display_order-b.display_order).map((p,i)=>(
+                            <a key={i} href={p.photo_url} target="_blank" rel="noopener noreferrer">
+                              <img src={p.photo_url} alt="" style={{ width:70, height:70, objectFit:"cover", borderRadius:6, border:"1px solid #eeeeee" }}/>
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     {l.video_url&&(
                       <div style={{ marginTop:12, background:"#f8f8f8", borderRadius:10, padding:"1rem" }}>
                         <div style={{ fontSize:12, fontWeight:700, color:"#555", marginBottom:8 }}>
