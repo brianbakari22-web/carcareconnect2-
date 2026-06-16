@@ -432,7 +432,121 @@ BUSINESS REGISTRATION:
 - Location: Nairobi, Kenya
 - Contact: carcareconnect254@gmail.com | 0113858966
 - BRS registration in progress
-- Trademark application pending for Class 35, 37, 39`
+- Trademark application pending for Class 35, 37, 39
+
+PROVIDER VERIFICATION SYSTEM (Phase 2):
+- All new providers start with verification_status = "pending"
+- Admin reviews and approves/rejects providers from Admin > Providers
+- Verified providers show a green checkmark badge on their profile and storefront
+- Rejected providers see rejection reason and can reapply after fixing issues
+- Pending providers see a yellow banner: "Your account is pending verification"
+- Provider public storefront URL: carcareconnect.care/provider/[provider-id]
+- Providers can copy and share their storefront link from Profile page
+
+DRIVER DOCUMENT EXPIRY ALERTS (Phase 2):
+- Driver documents (license, ID, PSV badge, insurance, etc.) have expiry_date tracking
+- System runs daily check at 9am for documents expiring within 30 days
+- Driver receives notification when documents are expiring soon
+- Expired documents shown with red warning badge in driver profile
+- Admin sees drivers with expiring documents in Admin > Drivers
+
+EMERGENCY SOS BUTTON (Phase 2):
+- Red floating SOS button visible on all dashboards (top right)
+- Opens emergency modal with: Call Police (999), Call NTSA (0800 723 573), Alert CCC Admin
+- "Alert CCC Admin" uses geolocation to send location to all admins
+- Admin sees active SOS alerts as red banner on AdminDashboard
+- Admin can resolve alerts from the dashboard
+- Alerts stored in emergency_alerts table with location coordinates
+
+PROMO CODES (Phase 3):
+- Admin creates promo codes in Admin > Promos
+- Customers enter promo code at checkout alongside voucher code
+- Discount types: percentage or fixed amount
+- Promo codes have: usage limit, minimum purchase amount, expiry date
+- Promo discount shown in booking summary before confirmation
+- Used count tracked automatically on successful booking
+
+SERVICE BUNDLES (Phase 3):
+- Providers (garage, mobile_mechanic, panel_beater, auto_electrician) can create service bundles
+- Bundle = 2+ services combined at a discounted price
+- Provider creates bundles at Dashboard > Service Bundles
+- Bundle price must be less than the sum of individual service prices
+- Commission: weighted average of included services' commission rates
+- Customers see bundles under "📦 Bundle Deals" section in CustomerServices page
+- Bundles also visible in CustomerDiscover > Services tab
+- Admin manages bundles in Admin > Services > Bundles tab (can hide/delete)
+- Clicking a bundle in CustomerServices shows a full booking form (date, time, vehicle, payment, voucher, promo)
+
+BULK/MULTI-VEHICLE BOOKING (Phase 3):
+- Customers with 2+ vehicles can book the same service for multiple vehicles at once
+- "Book this service for multiple vehicles" checkbox appears in booking form when customer has 2+ vehicles
+- When enabled: shows checkboxes for each vehicle instead of single dropdown
+- On submit: creates one separate booking per selected vehicle
+- Confirmation shows: "X bookings created for your vehicles!"
+- Admin sees "📦 Bulk" badge on bulk bookings in AdminBookings
+
+VEHICLE MAINTENANCE SCHEDULE (Phase 4):
+- Customers track vehicle maintenance in My Vehicles page
+- Fields tracked: current mileage, last full service date, last oil change date
+- Maintenance alerts show on vehicle cards:
+  - ⚠️ Service overdue (6+ months since last service)
+  - ⏰ Service due soon (approaching 6 months)
+  - ⚠️ Oil change overdue (3+ months)
+  - ⏰ Oil change due soon
+  - Kilometer-based alerts: service every 10,000km, oil change every 5,000km
+- Auto-updates: when a booking is marked completed with a vehicle attached, last_service_date updates automatically
+- Oil change bookings (service name contains "oil" or "filter") also update last_oil_change_date
+- Daily 9am cron job sends maintenance reminder notifications to customers with overdue vehicles
+
+GOOGLE SIGN IN (Phase 7):
+- "Continue with Google" button on the login/signup page
+- Works on web browsers and Android app (via Capacitor Browser plugin)
+- Google users are created with signup_method = "google" in their profile
+- Admin can see Google signup badge (blue "G Google" badge) on user cards in Admin > Users
+- New Google users automatically get their name and avatar from Google account
+
+REFERRAL LEADERBOARD (Phase 7):
+- Customers see top 10 referrers ranked by points in Refer & Earn page
+- 🥇🥈🥉 medals for top 3
+- Current user's row highlighted in orange if they appear in top 10
+- Admin sees same leaderboard in Admin > Loyalty page
+- Powered by get_referral_leaderboard() SQL function
+
+SOCIAL SHARING (Phase 7):
+- "📤 Share" button appears on completed bookings in CustomerBookings
+- Clicking opens WhatsApp with pre-written message: "Just got my [service] done via Car Care Connect! Book your service too: https://carcareconnect.care"
+- Works correctly on Android (opens system browser, not WebView)
+- WhatsApp sharing also available in Refer & Earn and Provider Public Storefront
+
+PROVIDER PUBLIC STOREFRONT (Phase 5):
+- Every provider has a public shareable page at: carcareconnect.care/provider/[provider-id]
+- No login required to view the storefront
+- Shows: business name, verified badge, rating, city, bundle deals, services list, reviews
+- "📤 Share on WhatsApp" button for customers to share provider link
+- "Book a Service →" button redirects to login if not signed in
+- Provider copies their storefront link from Profile page > "📤 Your public storefront" box
+
+MECHANIC ASSIGNMENT (Phase 5):
+- Providers with mechanics can assign a specific mechanic to a booking
+- "👨‍🔧 Assign mechanic" button appears on confirmed bookings
+- Once assigned: mechanic marked as unavailable, customer notified
+- When booking completed: mechanic freed up automatically
+- Mechanic shown on invoice and vehicle condition reports
+
+ADMIN INTELLIGENCE (Phase 8):
+Admin > Revenue page now has 4 tabs:
+1. Revenue: total revenue, platform commission, paid to providers/drivers, monthly breakdown with bar chart
+2. Revenue Forecast: predicts next month's revenue based on 3-month growth trend with ↑/↓ indicator
+3. Customer LTV: top 20 customers ranked by predicted lifetime value (avg order × projected bookings)
+4. Demand Heatmap: bookings by day of week, top services by demand, bookings by hour
+5. Provider Gaps: cities with high demand but low provider count — shows 🔴 Critical / 🟡 Needed / 🟢 OK status and missing provider types
+
+SIGNUP METHOD TRACKING (Phase 8):
+- profiles table has signup_method column (email or google)
+- Admin > Users shows "G Google" blue badge on Google-registered users
+- Helps admin understand acquisition channels
+
+Updated knowledge base: June 2026`
 
 const SYSTEM_PROMPTS = {
   customer: `You are the Car Care Connect AI Assistant for customers. Be helpful, friendly and concise. Always give prices in KES.
