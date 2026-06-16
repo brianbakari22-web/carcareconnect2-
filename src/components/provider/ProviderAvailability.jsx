@@ -16,6 +16,8 @@ export default function ProviderAvailability() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [form, setForm] = useState({ max_bookings:5, is_blocked:false, block_reason:"" })
+  const [dateRange, setDateRange] = useState({ from:"", to:"", reason:"" })
+  const [showRangeBlock, setShowRangeBlock] = useState(false)
   const [defaultMaxBookings, setDefaultMaxBookings] = useState(5)
   const [tab, setTab] = useState("calendar")
 
@@ -106,6 +108,49 @@ export default function ProviderAvailability() {
       load()
     } catch(err) { toast.error(err.message) }
     finally { setSaving(false) }
+  }
+
+  async function blockDateRange() {
+    if (!dateRange.from || !dateRange.to) return toast.error("Please select start and end dates")
+    if (dateRange.from > dateRange.to) return toast.error("Start date must be before end date")
+    setSaving(true)
+    try {
+      const dates = []
+      const start = new Date(dateRange.from+"T00:00:00")
+      const end = new Date(dateRange.to+"T00:00:00")
+      const today = new Date(); today.setHours(0,0,0,0)
+      for (let d = new Date(start); d <= end; d.setDate(d.getDate()+1)) {
+        if (d < today) continue
+        dates.push(d.toISOString().split("T")[0])
+      }
+      for (const date of dates) {
+        await supabase.from("provider_availability").upsert({
+          provider_id: user.id,
+          date,
+          is_blocked: true,
+          block_reason: dateRange.reason || "Date range block",
+          max_bookings: 0
+        }, { onConflict: "provider_id,date" })
+      }
+      toast.success(dates.length + " days blocked")
+      setDateRange({ from:"", to:"", reason:"" })
+      setShowRangeBlock(false)
+      await load()
+    } catch(e) { toast.error("Error blocking dates") }
+    finally { setSaving(false) }
+  }
+
+  async function quickToggleBlock(dateStr) {
+    const avail = availability[dateStr]
+    const isCurrentlyBlocked = avail?.is_blocked
+    await supabase.from("provider_availability").upsert({
+      provider_id: user.id,
+      date: dateStr,
+      is_blocked: !isCurrentlyBlocked,
+      block_reason: isCurrentlyBlocked ? null : "Blocked",
+      max_bookings: isCurrentlyBlocked ? 5 : 0
+    }, { onConflict: "provider_id,date" })
+    await load()
   }
 
   async function bulkBlock(type) {
@@ -222,6 +267,13 @@ export default function ProviderAvailability() {
                       {count>0&&status.type!=="past"&&(
                         <div style={{ width:6, height:6, borderRadius:"50%", background:isSelected?"#fff":"#378add", margin:"3px auto 0" }}/>
                       )}
+                      {status.type!=="past"&&(
+                        <div onClick={e=>{ e.stopPropagation(); quickToggleBlock(getDateStr(day)) }}
+                          style={{ fontSize:8, marginTop:2, color:status.type==="blocked"?"#e24b4a":"#aaa", cursor:"pointer" }}
+                          title={status.type==="blocked"?"Unblock day":"Quick block"}>
+                          {status.type==="blocked"?"✓ tap to unblock":"🚫"}
+                        </div>
+                      )}
                     </div>
                   )
                 })}
@@ -255,7 +307,41 @@ export default function ProviderAvailability() {
                 style={{ background:"#ffffff", border:"1px solid #dddddd", borderRadius:8, color:"#777777", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
                 Clear month
               </button>
+              <button onClick={()=>setShowRangeBlock(r=>!r)} disabled={saving}
+                style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:8, color:"#e6821e", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
+                📅 Block date range
+              </button>
             </div>
+            {showRangeBlock&&(
+              <div style={{ marginTop:12, background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:10, padding:"1rem" }}>
+                <div style={{ fontWeight:700, fontSize:13, marginBottom:10, color:"#e6821e" }}>📅 Block a date range</div>
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:8 }}>
+                  <div>
+                    <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>From</label>
+                    <input type="date" value={dateRange.from} onChange={e=>setDateRange(r=>({...r,from:e.target.value}))}
+                      style={{ width:"100%", border:"1px solid #ddd", borderRadius:6, padding:"6px 8px", fontSize:12 }}/>
+                  </div>
+                  <div>
+                    <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>To</label>
+                    <input type="date" value={dateRange.to} onChange={e=>setDateRange(r=>({...r,to:e.target.value}))}
+                      style={{ width:"100%", border:"1px solid #ddd", borderRadius:6, padding:"6px 8px", fontSize:12 }}/>
+                  </div>
+                </div>
+                <input value={dateRange.reason} onChange={e=>setDateRange(r=>({...r,reason:e.target.value}))}
+                  placeholder="Reason (e.g. Holiday, Vacation...)"
+                  style={{ width:"100%", border:"1px solid #ddd", borderRadius:6, padding:"6px 8px", fontSize:12, marginBottom:8, boxSizing:"border-box" }}/>
+                <div style={{ display:"flex", gap:8 }}>
+                  <button onClick={blockDateRange} disabled={saving}
+                    style={{ flex:1, background:"#e24b4a", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"8px", cursor:"pointer" }}>
+                    🚫 Block these dates
+                  </button>
+                  <button onClick={()=>setShowRangeBlock(false)}
+                    style={{ background:"none", border:"1px solid #ddd", borderRadius:8, color:"#888", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           {selected&&(
