@@ -60,7 +60,7 @@ export default function StaffManagement() {
               <span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:s.is_active?"#f0fdf4":"#f5f5f5",color:s.is_active?"#1d9e75":"#888"}}>{s.is_active?"Active":"Off duty"}</span>
             </div>
             <div style={{fontSize:11,color:"#666"}}>{ROLES[s.role]} · {SHIFTS[s.shift]}</div>
-            <div style={{fontSize:11,color:"#888"}}>≡ƒô₧ {s.phone}</div>
+            <div style={{fontSize:11,color:"#888"}}>📞 {s.phone}</div>
           </div>
           <div style={{display:"flex",gap:6}}>
             <button onClick={()=>toggle(s.id,s.is_active)} style={{background:"none",border:`1px solid ${s.is_active?"#e24b4a40":"#1d9e7540"}`,borderRadius:7,color:s.is_active?"#e24b4a":"#1d9e75",fontSize:11,padding:"5px 10px",cursor:"pointer"}}>{s.is_active?"Off duty":"On duty"}</button>

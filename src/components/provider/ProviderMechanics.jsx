@@ -149,7 +149,7 @@ export default function ProviderMechanics() {
           <div>
             <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000000" }}>{trackingMechanic.first_name} {trackingMechanic.last_name}</div>
             <div style={{ fontSize:12, color:"#777777" }}>🔧 {trackingMechanic.specialization}</div>
-            {trackingMechanic.phone&&<div style={{ fontSize:12, color:"#777777" }}>≡ƒô₧ {trackingMechanic.phone}</div>}
+            {trackingMechanic.phone&&<div style={{ fontSize:12, color:"#777777" }}>📞 {trackingMechanic.phone}</div>}
           </div>
           <div style={{ marginLeft:"auto" }}>
             <div style={{ display:"flex", alignItems:"center", gap:6 }}>
@@ -280,7 +280,7 @@ export default function ProviderMechanics() {
                 {m.current_latitude&&<span style={{ fontSize:10, color:"#1d9e75" }}>📍 Live</span>}
               </div>
               <div style={{ fontSize:11, color:"#777777", marginBottom:2 }}>🔧 {m.specialization}</div>
-              {m.phone&&<div style={{ fontSize:11, color:"#777777", marginBottom:2 }}>≡ƒô₧ {m.phone}</div>}
+              {m.phone&&<div style={{ fontSize:11, color:"#777777", marginBottom:2 }}>📞 {m.phone}</div>}
               {m.last_location_update&&<div style={{ fontSize:10, color:"#888888" }}>Last seen: {new Date(m.last_location_update).toLocaleTimeString()}</div>}
             </div>
             <div style={{ display:"flex", gap:6, flexShrink:0, flexWrap:"wrap", justifyContent:"flex-end", marginTop:isMobile?8:0 }}>
