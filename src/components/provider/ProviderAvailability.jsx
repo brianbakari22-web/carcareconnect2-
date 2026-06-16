@@ -375,7 +375,7 @@ export default function ProviderAvailability() {
                     <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Max bookings this day</label>
                     <div style={{ display:"flex", alignItems:"center", gap:10 }}>
                       <button type="button" onClick={()=>setForm(f=>({...f,max_bookings:Math.max(1,f.max_bookings-1)}))}
-                        style={{ width:36, height:36, borderRadius:8, background:"#f5f5f5", border:"1px solid #dddddd", color:"#000000", fontSize:18, cursor:"pointer" }}>ΓêÆ</button>
+                        style={{ width:36, height:36, borderRadius:8, background:"#f5f5f5", border:"1px solid #dddddd", color:"#000000", fontSize:18, cursor:"pointer" }}>−</button>
                       <div style={{ fontFamily:"Syne", fontSize:24, fontWeight:800, color:"#378add", width:40, textAlign:"center" }}>{form.max_bookings}</div>
                       <button type="button" onClick={()=>setForm(f=>({...f,max_bookings:Math.min(20,f.max_bookings+1)}))}
                         style={{ width:36, height:36, borderRadius:8, background:"#f5f5f5", border:"1px solid #dddddd", color:"#000000", fontSize:18, cursor:"pointer" }}>+</button>
@@ -411,7 +411,7 @@ export default function ProviderAvailability() {
             <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:8 }}>Default max bookings per day</label>
             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
               <button onClick={()=>setDefaultMaxBookings(m=>Math.max(1,m-1))}
-                style={{ width:40, height:40, borderRadius:8, background:"#f5f5f5", border:"1px solid #dddddd", color:"#000000", fontSize:20, cursor:"pointer" }}>ΓêÆ</button>
+                style={{ width:40, height:40, borderRadius:8, background:"#f5f5f5", border:"1px solid #dddddd", color:"#000000", fontSize:20, cursor:"pointer" }}>−</button>
               <div style={{ fontFamily:"Syne", fontSize:28, fontWeight:800, color:"#378add", width:50, textAlign:"center" }}>{defaultMaxBookings}</div>
               <button onClick={()=>setDefaultMaxBookings(m=>Math.min(20,m+1))}
                 style={{ width:40, height:40, borderRadius:8, background:"#f5f5f5", border:"1px solid #dddddd", color:"#000000", fontSize:20, cursor:"pointer" }}>+</button>
