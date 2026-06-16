@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 import PhotoUpload from "./PhotoUpload"
+import VideoUpload from "./VideoUpload"
 
 const PART_CATEGORIES = ["Engine","Brakes","Suspension","Electrical","Body & Panel","Tyres & Wheels","Exhaust","Cooling","Transmission","Interior","Exterior","Accessories","Other"]
 const MAKES = ["Toyota","Nissan","Honda","Mitsubishi","Subaru","Mazda","BMW","Mercedes","Volkswagen","Ford","Chevrolet","Isuzu","Suzuki","Hyundai","Kia","Peugeot","Renault","Other"]
@@ -84,6 +85,7 @@ export default function CreateListing() {
       </div>
       <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.25rem" }}>
         <PhotoUpload listingId={listingId} existingPhotos={[]} onUploaded={()=>{}}/>
+        <VideoUpload listingId={listingId} onUploaded={()=>{}}/>
       </div>
       <div style={{ display:"flex", gap:8 }}>
         <button onClick={()=>navigate("/dashboard/marketplace")}

@@ -31,7 +31,7 @@ export default function Marketplace() {
   async function load() {
     setLoading(true)
     let query = supabase.from("marketplace_listings")
-      .select("*, profiles(first_name,last_name,role,business_name), marketplace_photos(photo_url,is_primary)")
+      .select("*, profiles(first_name,last_name,role,business_name), marketplace_photos(photo_url,is_primary), video_url")
       .eq("status","active")
       .order("is_featured",{ascending:false})
       .order("created_at",{ascending:false})
@@ -291,6 +291,12 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
                   <img src={p.photo_url} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
                 </div>
               ))}
+            </div>
+          )}
+          {selected.video_url&&(
+            <div style={{ marginTop:10 }}>
+              <div style={{ fontSize:12, fontWeight:700, color:"#555", marginBottom:6 }}>🎥 Video</div>
+              <video src={selected.video_url} controls style={{ width:"100%", borderRadius:8, maxHeight:250 }}/>
             </div>
           )}
         </div>
