@@ -54,6 +54,7 @@ export default function ProviderMechanics() {
 
   useEffect(() => {
     if (!trackingMechanic || !mapRef.current) return
+    // Always show map, default to Nairobi if no mechanic location
     if (mapInstanceRef.current) { mapInstanceRef.current.remove(); mapInstanceRef.current = null }
     const lat = trackingMechanic.current_latitude || -1.2921
     const lng = trackingMechanic.current_longitude || 36.8219
@@ -178,8 +179,12 @@ export default function ProviderMechanics() {
           </div>
         )}
 
+        {!trackingMechanic.current_latitude&&(
+          <div style={{ background:"#f0fdf4", borderRadius:8, padding:"1rem", textAlign:"center", marginBottom:8, fontSize:12, color:"#888" }}>
+            📍 No location shared yet — map will update when mechanic shares location
+          </div>
+        )}
         <div ref={mapRef} style={{ height:300, borderRadius:10, overflow:"hidden", background:"#f5f5f5" }}>
-          {!trackingMechanic.current_latitude&&(
             <div style={{ height:"100%", display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:8 }}>
               <div style={{ fontSize:28 }}>📍</div>
               <div style={{ fontSize:12, color:"#777777" }}>No location shared yet</div>
