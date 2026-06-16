@@ -114,7 +114,7 @@ export default function ProviderPartsManager({ booking, onUpdate }) {
       )}
 
       <button onClick={saveParts} disabled={saving||parts.length===0}
-        style={{ background:saving||parts.length===0?"#333":"#378add", border:"none", borderRadius:8, color:saving||parts.length===0?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 18px", cursor:saving||parts.length===0?"not-allowed":"pointer" }}>
+        style={{ background:saving||parts.length===0?"#555555":"#378add", border:"none", borderRadius:8, color:saving||parts.length===0?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 18px", cursor:saving||parts.length===0?"not-allowed":"pointer" }}>
         {saving?"Saving...":"Save parts & notify customer"}
       </button>
     </div>

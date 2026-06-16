@@ -75,7 +75,7 @@ export default function PhotoUpload({ listingId, existingPhotos=[], onUploaded }
         onDragOver={e=>{ e.preventDefault(); setDragOver(true) }}
         onDragLeave={()=>setDragOver(false)}
         onDrop={e=>{ e.preventDefault(); setDragOver(false); uploadFiles(e.dataTransfer.files) }}
-        style={{ border:`2px dashed ${dragOver?"#e6821e":"#333"}`, borderRadius:12, padding:"1.5rem", textAlign:"center", marginBottom:12, background:dragOver?"#1a1208":"transparent", transition:"all 0.2s" }}>
+        style={{ border:`2px dashed ${dragOver?"#e6821e":"#555555"}`, borderRadius:12, padding:"1.5rem", textAlign:"center", marginBottom:12, background:dragOver?"#fff8f0":"transparent", transition:"all 0.2s" }}>
         <div style={{ fontSize:32, marginBottom:8 }}>📸</div>
         <div style={{ fontSize:13, color:"#666", marginBottom:8 }}>
           {uploading?"Uploading...":"Drag photos here or click to select"}
@@ -84,7 +84,7 @@ export default function PhotoUpload({ listingId, existingPhotos=[], onUploaded }
         <input type="file" accept="image/*" multiple id="photo-upload" style={{ display:"none" }}
           onChange={e=>uploadFiles(e.target.files)}/>
         <label htmlFor="photo-upload"
-          style={{ background:uploading?"#333":"#e6821e", border:"none", borderRadius:8, color:uploading?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 20px", cursor:uploading?"not-allowed":"pointer", display:"inline-block" }}>
+          style={{ background:uploading?"#555555":"#e6821e", border:"none", borderRadius:8, color:uploading?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 20px", cursor:uploading?"not-allowed":"pointer", display:"inline-block" }}>
           {uploading?"Uploading...":"Select photos"}
         </label>
       </div>

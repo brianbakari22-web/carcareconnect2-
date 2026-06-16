@@ -110,7 +110,7 @@ export default function EscrowManager() {
           { k:"selling", l:`Selling (${transactions.selling?.length||0})` },
         ].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#111", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
+            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#555555", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
             {t.l}
           </button>
         ))}
@@ -127,7 +127,7 @@ export default function EscrowManager() {
       {txList.map(tx=>{
         const days = daysLeft(tx.dispute_deadline)
         return (
-          <div key={tx.id} style={{ background:"#ffffff", border:`1px solid ${PS[tx.payment_status]||"#1e1e1e"}20`, borderRadius:12, padding:"1rem", marginBottom:10 }}>
+          <div key={tx.id} style={{ background:"#ffffff", border:`1px solid ${PS[tx.payment_status]||"#eeeeee"}20`, borderRadius:12, padding:"1rem", marginBottom:10 }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:4 }}>
@@ -149,7 +149,7 @@ export default function EscrowManager() {
 
             {/* Escrow status */}
             {tx.payment_status==="paid"&&!tx.buyer_confirmed&&!tx.dispute_raised&&(
-              <div style={{ background:"#0c1f2e", border:"1px solid #378add30", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
+              <div style={{ background:"#eff6ff", border:"1px solid #378add30", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
                 <div style={{ fontSize:11, color:"#378add", marginBottom:4 }}>
                   🔒 Funds in escrow{days!==null?` · ${days} days left to confirm or dispute`:""}
                 </div>
@@ -174,7 +174,7 @@ export default function EscrowManager() {
             )}
 
             {tx.payment_status==="released"&&(
-              <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:8, padding:"0.75rem" }}>
+              <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:8, padding:"0.75rem" }}>
                 <div style={{ fontSize:11, color:"#1d9e75" }}>
                   ✅ {tab==="buying"?"Transaction complete":"Payment released to your account"}
                 </div>
@@ -183,7 +183,7 @@ export default function EscrowManager() {
 
             {/* Dispute form */}
             {disputing===tx.id&&(
-              <div style={{ marginTop:8, background:"#1a0808", border:"1px solid #e24b4a30", borderRadius:8, padding:"0.9rem" }}>
+              <div style={{ marginTop:8, background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:8, padding:"0.9rem" }}>
                 <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e24b4a", marginBottom:8 }}>Raise a dispute</div>
                 <select value={disputeReason} onChange={e=>setDisputeReason(e.target.value)}
                   style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:7, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none", marginBottom:8, fontFamily:"'DM Sans',sans-serif" }}>

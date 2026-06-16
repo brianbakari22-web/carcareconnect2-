@@ -151,7 +151,7 @@ export default function CustomerLoyalty() {
               </div>
             </div>
             <button type="submit" disabled={redeeming||!redeemAmount||parseInt(redeemAmount)<redemptionRate}
-              style={{ width:"100%", marginTop:12, background: redeemAmount&&parseInt(redeemAmount)>=redemptionRate?"#e6821e":"#333", border:"none", borderRadius:9, color: redeemAmount&&parseInt(redeemAmount)>=redemptionRate?"#fff":"#666", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px", cursor: redeemAmount&&parseInt(redeemAmount)>=redemptionRate?"pointer":"not-allowed" }}>
+              style={{ width:"100%", marginTop:12, background: redeemAmount&&parseInt(redeemAmount)>=redemptionRate?"#e6821e":"#555555", border:"none", borderRadius:9, color: redeemAmount&&parseInt(redeemAmount)>=redemptionRate?"#fff":"#666", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px", cursor: redeemAmount&&parseInt(redeemAmount)>=redemptionRate?"pointer":"not-allowed" }}>
               {redeeming ? "Redeeming..." : `Redeem ${redeemAmount||0} points for KES ${Math.floor(parseInt(redeemAmount||0)/redemptionRate).toLocaleString()}`}
             </button>
           </form>
@@ -159,7 +159,7 @@ export default function CustomerLoyalty() {
       )}
 
       {points < redemptionRate && points > 0 && (
-        <div style={{ background:"#1a1208", border:"1px solid #e6821e20", borderRadius:10, padding:"1rem", marginBottom:"1.5rem", fontSize:13, color:"#555555" }}>
+        <div style={{ background:"#fff8f0", border:"1px solid #e6821e20", borderRadius:10, padding:"1rem", marginBottom:"1.5rem", fontSize:13, color:"#555555" }}>
           You need {redemptionRate - points} more points to start redeeming. Keep booking to earn more!
         </div>
       )}
@@ -168,7 +168,7 @@ export default function CustomerLoyalty() {
       {bookings.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"1.5rem" }}>No completed bookings yet</div>}
       {bookings.map((b,i)=>(
         <div key={i} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"0.9rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
-          <div style={{ width:36, height:36, background:"#071a12", borderRadius:8, display:"flex", alignItems:"center", justifyContent:"center", fontSize:16 }}>🔧</div>
+          <div style={{ width:36, height:36, background:"#f0fdf4", borderRadius:8, display:"flex", alignItems:"center", justifyContent:"center", fontSize:16 }}>🔧</div>
           <div style={{ flex:1 }}>
             <div style={{ fontSize:13, fontWeight:500, color:"#000000" }}>{b.service_name}</div>
             <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>{b.booking_date}</div>

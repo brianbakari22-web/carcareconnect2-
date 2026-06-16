@@ -87,7 +87,7 @@ export default function ProviderBusinessHours() {
       <div style={{ display:"flex", gap:6, marginBottom:"1.5rem" }}>
         {[{k:"hours",l:"Business hours"},{k:"closures",l:`Closures (${closures.length})`}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#378add":"#111", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
+            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#378add":"#555555", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
             {t.l}
           </button>
         ))}
@@ -100,7 +100,7 @@ export default function ProviderBusinessHours() {
             {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
             {hours.map((day, i) => (
               <div key={day.day_of_week} style={{ display:"flex", alignItems:"center", gap:12, padding:"10px 0", borderBottom:"1px solid #eeeeee" }}>
-                <div style={{ width:90, fontSize:13, color:day.is_open?"#f0ede6":"#555", fontWeight:day.is_open?500:400 }}>{day.day_name}</div>
+                <div style={{ width:90, fontSize:13, color:day.is_open?"#000000":"#555", fontWeight:day.is_open?500:400 }}>{day.day_name}</div>
                 <label style={{ display:"flex", alignItems:"center", gap:6, cursor:"pointer" }}>
                   <input type="checkbox" checked={day.is_open} onChange={e=>updateDay(i,"is_open",e.target.checked)}/>
                   <span style={{ fontSize:12, color:day.is_open?"#1d9e75":"#555" }}>{day.is_open?"Open":"Closed"}</span>
@@ -116,7 +116,7 @@ export default function ProviderBusinessHours() {
             ))}
           </div>
           <button type="submit" disabled={saving}
-            style={{ background:saving?"#333":"#378add", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
+            style={{ background:saving?"#555555":"#378add", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
             {saving?"Saving...":"Save hours"}
           </button>
         </form>

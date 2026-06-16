@@ -245,7 +245,7 @@ export default function ProviderMechanics() {
             <textarea style={{ ...inp, resize:"vertical", minHeight:60 }} placeholder="Any additional notes..." value={form.notes} onChange={e=>setForm(f=>({...f,notes:e.target.value}))}/>
             <div style={{ display:"flex", gap:8 }}>
               <button type="submit" disabled={saving}
-                style={{ background:saving?"#333":"#378add", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 24px", cursor:saving?"not-allowed":"pointer" }}>
+                style={{ background:saving?"#555555":"#378add", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 24px", cursor:saving?"not-allowed":"pointer" }}>
                 {saving?"Saving...":editing?"Update":"Add mechanic"}
               </button>
               <button type="button" onClick={()=>{ setShowForm(false); setEditing(null); setForm(EMPTY) }}
@@ -266,15 +266,15 @@ export default function ProviderMechanics() {
       )}
 
       {mechanics.map(m=>(
-        <div key={m.id} style={{ background:"#ffffff", border:`1px solid ${m.is_active?m.is_available?"#1d9e7530":"#e6821e30":"#1e1e1e"}`, borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8, opacity:m.is_active?1:0.5 }}>
+        <div key={m.id} style={{ background:"#ffffff", border:`1px solid ${m.is_active?m.is_available?"#1d9e7530":"#e6821e30":"#eeeeee"}`, borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8, opacity:m.is_active?1:0.5 }}>
           <div style={{ display:"flex", alignItems:"flex-start", gap:10, flexWrap:isMobile?"wrap":"nowrap" }}>
-            <div style={{ width:44, height:44, borderRadius:"50%", background:m.is_available&&m.is_active?"#071a12":"#1a1a1a", border:`1px solid ${m.is_available&&m.is_active?"#1d9e7540":"#333"}`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:m.is_available&&m.is_active?"#1d9e75":"#555", flexShrink:0 }}>
+            <div style={{ width:44, height:44, borderRadius:"50%", background:m.is_available&&m.is_active?"#f0fdf4":"#ffffff", border:`1px solid ${m.is_available&&m.is_active?"#1d9e7540":"#555555"}`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:m.is_available&&m.is_active?"#1d9e75":"#555", flexShrink:0 }}>
               {m.first_name[0]}{m.last_name[0]}
             </div>
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
                 <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{m.first_name} {m.last_name}</div>
-                <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:m.is_available&&m.is_active?"#071a12":"#1a1a1a", color:m.is_available&&m.is_active?"#1d9e75":"#555" }}>
+                <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:m.is_available&&m.is_active?"#f0fdf4":"#ffffff", color:m.is_available&&m.is_active?"#1d9e75":"#555" }}>
                   {m.is_active?(m.is_available?"Available":"On job"):"Inactive"}
                 </span>
                 {m.current_latitude&&<span style={{ fontSize:10, color:"#1d9e75" }}>📍 Live</span>}
@@ -294,7 +294,7 @@ export default function ProviderMechanics() {
               </button>
               {m.is_active&&(
                 <button onClick={()=>toggleAvailable(m.id, m.is_available)}
-                  style={{ background:m.is_available?"#1a1208":"#071a12", border:`1px solid ${m.is_available?"#e6821e40":"#1d9e7540"}`, borderRadius:7, color:m.is_available?"#e6821e":"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  style={{ background:m.is_available?"#fff8f0":"#f0fdf4", border:`1px solid ${m.is_available?"#e6821e40":"#1d9e7540"}`, borderRadius:7, color:m.is_available?"#e6821e":"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                   {m.is_available?"Set on job":"Set available"}
                 </button>
               )}

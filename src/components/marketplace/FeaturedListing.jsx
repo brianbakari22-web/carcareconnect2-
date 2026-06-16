@@ -59,7 +59,7 @@ export default function FeaturedListing({ listing, onSuccess }) {
   }
 
   if (isFeatured) return (
-    <div style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:12, padding:"1rem" }}>
+    <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:12, padding:"1rem" }}>
       <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e", marginBottom:4 }}>⭐ Currently featured</div>
       <div style={{ fontSize:11, color:"#777777" }}>{daysLeft} day{daysLeft!==1?"s":""} remaining</div>
     </div>
@@ -86,7 +86,7 @@ export default function FeaturedListing({ listing, onSuccess }) {
         <div style={{ display:"flex", gap:8 }}>
           {[1,2,4].map(w=>(
             <button key={w} onClick={()=>setWeeks(w)}
-              style={{ flex:1, background:weeks===w?"#e6821e":"#0f0f0f", border:`1px solid ${weeks===w?"#e6821e":"#333"}`, borderRadius:8, color:weeks===w?"#fff":"#666", fontSize:12, padding:"8px 0", cursor:"pointer" }}>
+              style={{ flex:1, background:weeks===w?"#e6821e":"#ffffff", border:`1px solid ${weeks===w?"#e6821e":"#555555"}`, borderRadius:8, color:weeks===w?"#fff":"#666", fontSize:12, padding:"8px 0", cursor:"pointer" }}>
               <div style={{ fontFamily:"Syne", fontWeight:700 }}>{w}wk</div>
               <div style={{ fontSize:10 }}>KES {w*200}</div>
             </button>
@@ -95,7 +95,7 @@ export default function FeaturedListing({ listing, onSuccess }) {
       </div>
 
       <button onClick={payToFeature} disabled={paying}
-        style={{ width:"100%", background:paying?"#333":"#e6821e", border:"none", borderRadius:9, color:paying?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:paying?"not-allowed":"pointer" }}>
+        style={{ width:"100%", background:paying?"#555555":"#e6821e", border:"none", borderRadius:9, color:paying?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:paying?"not-allowed":"pointer" }}>
         {paying?"Processing...":"Pay KES "+amount+" — Feature listing"}
       </button>
     </div>

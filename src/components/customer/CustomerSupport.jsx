@@ -142,7 +142,7 @@ export default function CustomerSupport() {
         <div style={{ display:"flex", gap:6 }}>
           {selected.status==="resolved"&&(
             <button onClick={()=>reopenTicket(selected.id)}
-              style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+              style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
               🔄 Reopen
             </button>
           )}
@@ -161,7 +161,7 @@ export default function CustomerSupport() {
           const isStaff = m.is_staff
           return (
             <div key={m.id} style={{ display:"flex", justifyContent:isMine?"flex-end":"flex-start" }}>
-              <div style={{ maxWidth:"75%", padding:"10px 14px", borderRadius:isMine?"14px 14px 4px 14px":"14px 14px 14px 4px", background:isMine?"#e6821e":isStaff?"#160a2e":"#1a1a1a", color:"#fff", fontSize:13, lineHeight:1.5 }}>
+              <div style={{ maxWidth:"75%", padding:"10px 14px", borderRadius:isMine?"14px 14px 4px 14px":"14px 14px 14px 4px", background:isMine?"#e6821e":isStaff?"#faf5ff":"#ffffff", color:"#fff", fontSize:13, lineHeight:1.5 }}>
                 {isStaff&&!isMine&&<div style={{ fontSize:10, color:"#8b5cf6", marginBottom:4, fontWeight:600 }}>Support Team</div>}
                 <div style={{ wordBreak:"break-word" }}>{m.message}</div>
                 <div style={{ fontSize:9, opacity:0.6, marginTop:4, textAlign:isMine?"right":"left" }}>
@@ -180,7 +180,7 @@ export default function CustomerSupport() {
             placeholder={language==="sw"?"Andika ujumbe...":"Type a reply..."}
             style={{ flex:1, background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:10, padding:"11px 14px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }}/>
           <button type="submit" disabled={sending||!newMessage.trim()}
-            style={{ background:newMessage.trim()?"#e6821e":"#222", border:"none", borderRadius:10, color:newMessage.trim()?"#fff":"#555", fontSize:18, padding:"0 16px", cursor:newMessage.trim()?"pointer":"default" }}>
+            style={{ background:newMessage.trim()?"#e6821e":"#f5f5f5", border:"none", borderRadius:10, color:newMessage.trim()?"#fff":"#555", fontSize:18, padding:"0 16px", cursor:newMessage.trim()?"pointer":"default" }}>
             ➤
           </button>
         </form>
@@ -200,7 +200,7 @@ export default function CustomerSupport() {
           </div>
         </div>
         <button onClick={()=>setTab(tab==="new"?"tickets":"new")}
-          style={{ background:tab==="new"?"#111":"#e6821e", border:`1px solid ${tab==="new"?"#333":"transparent"}`, borderRadius:8, color:tab==="new"?"#888":"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>
+          style={{ background:tab==="new"?"#555555":"#e6821e", border:`1px solid ${tab==="new"?"#555555":"transparent"}`, borderRadius:8, color:tab==="new"?"#888":"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>
           {tab==="new"?(language==="sw"?"Maombi":"My tickets"):(language==="sw"?"Ombi jipya":"New ticket")}
         </button>
       </div>
@@ -241,7 +241,7 @@ export default function CustomerSupport() {
               style={{ ...inp, resize:"vertical" }} required/>
 
             <button type="submit" disabled={submitting}
-              style={{ background:submitting?"#333":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px 24px", cursor:submitting?"not-allowed":"pointer" }}>
+              style={{ background:submitting?"#555555":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px 24px", cursor:submitting?"not-allowed":"pointer" }}>
               {submitting?(language==="sw"?"Inatuma...":"Submitting..."):(language==="sw"?"Tuma ombi":"Submit ticket")}
             </button>
           </form>
@@ -264,9 +264,9 @@ export default function CustomerSupport() {
           )}
           {tickets.map(ticket=>(
             <div key={ticket.id} onClick={()=>{ setSelected(ticket); loadMessages(ticket.id) }}
-              style={{ background:"#ffffff", border:`1px solid ${ticket.status==="open"?"#e6821e20":"#1e1e1e"}`, borderRadius:10, padding:"1rem", marginBottom:8, cursor:"pointer", transition:"border-color 0.12s" }}
+              style={{ background:"#ffffff", border:`1px solid ${ticket.status==="open"?"#e6821e20":"#eeeeee"}`, borderRadius:10, padding:"1rem", marginBottom:8, cursor:"pointer", transition:"border-color 0.12s" }}
               onMouseEnter={e=>e.currentTarget.style.borderColor="#e6821e40"}
-              onMouseLeave={e=>e.currentTarget.style.borderColor=ticket.status==="open"?"#e6821e20":"#1e1e1e"}>
+              onMouseLeave={e=>e.currentTarget.style.borderColor=ticket.status==="open"?"#e6821e20":"#eeeeee"}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:6 }}>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:2 }}>{ticket.subject}</div>

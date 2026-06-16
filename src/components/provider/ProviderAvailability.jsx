@@ -67,12 +67,12 @@ export default function ProviderAvailability() {
     const date = new Date(dateStr+"T00:00:00")
     const isPast = date < today
 
-    if (isPast) return { type:"past", label:"", color:"#2a2a2a", textColor:"#444" }
-    if (avail?.is_blocked) return { type:"blocked", label:"Blocked", color:"#1a0808", textColor:"#e24b4a" }
+    if (isPast) return { type:"past", label:"", color:"#eeeeee", textColor:"#444" }
+    if (avail?.is_blocked) return { type:"blocked", label:"Blocked", color:"#fff5f5", textColor:"#e24b4a" }
     const max = avail?.max_bookings ?? defaultMaxBookings
-    if (count >= max) return { type:"full", label:"Full", color:"#1a1208", textColor:"#e6821e" }
-    if (count > 0) return { type:"partial", label:`${count}/${max}`, color:"#071a12", textColor:"#1d9e75" }
-    return { type:"open", label:"Open", color:"#111", textColor:"#555" }
+    if (count >= max) return { type:"full", label:"Full", color:"#fff8f0", textColor:"#e6821e" }
+    if (count > 0) return { type:"partial", label:`${count}/${max}`, color:"#f0fdf4", textColor:"#1d9e75" }
+    return { type:"open", label:"Open", color:"#555555", textColor:"#555" }
   }
 
   function selectDay(day) {
@@ -170,7 +170,7 @@ export default function ProviderAvailability() {
         ].map(s=>(
           <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
             <div style={{ fontSize:11, color:"#777777", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
-            <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:s.color||"#f0ede6" }}>{s.value}</div>
+            <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:s.color||"#000000" }}>{s.value}</div>
           </div>
         ))}
       </div>
@@ -178,7 +178,7 @@ export default function ProviderAvailability() {
       <div style={{ display:"flex", gap:6, marginBottom:"1.25rem" }}>
         {[{k:"calendar",l:"Calendar"},{k:"settings",l:"Settings"}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#378add":"#111", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
+            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#378add":"#555555", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
             {t.l}
           </button>
         ))}
@@ -212,7 +212,7 @@ export default function ProviderAvailability() {
                   const count = bookingCounts[dateStr] || 0
                   return (
                     <div key={day} onClick={()=>selectDay(day)}
-                      style={{ background:isSelected?"#378add":status.color, borderRadius:8, padding:"8px 4px", textAlign:"center", cursor:status.type==="past"?"default":"pointer", border:isToday?`2px solid #378add`:`1px solid ${isSelected?"#378add":"#222"}`, transition:"all 0.12s" }}>
+                      style={{ background:isSelected?"#378add":status.color, borderRadius:8, padding:"8px 4px", textAlign:"center", cursor:status.type==="past"?"default":"pointer", border:isToday?`2px solid #378add`:`1px solid ${isSelected?"#378add":"#f5f5f5"}`, transition:"all 0.12s" }}>
                       <div style={{ fontSize:13, fontWeight:600, color:isSelected?"#fff":status.textColor, marginBottom:2 }}>{day}</div>
                       {status.type!=="past"&&(
                         <div style={{ fontSize:8, color:isSelected?"rgba(255,255,255,0.8)":status.textColor, lineHeight:1 }}>
@@ -229,10 +229,10 @@ export default function ProviderAvailability() {
 
               <div style={{ display:"flex", gap:12, marginTop:"1rem", flexWrap:"wrap" }}>
                 {[
-                  { color:"#071a12", text:"#1d9e75", label:"Has bookings" },
-                  { color:"#1a1208", text:"#e6821e", label:"Full" },
-                  { color:"#1a0808", text:"#e24b4a", label:"Blocked" },
-                  { color:"#111", text:"#555", label:"Open" },
+                  { color:"#f0fdf4", text:"#1d9e75", label:"Has bookings" },
+                  { color:"#fff8f0", text:"#e6821e", label:"Full" },
+                  { color:"#fff5f5", text:"#e24b4a", label:"Blocked" },
+                  { color:"#555555", text:"#555", label:"Open" },
                 ].map(l=>(
                   <div key={l.label} style={{ display:"flex", alignItems:"center", gap:4 }}>
                     <div style={{ width:12, height:12, borderRadius:3, background:l.color, border:`1px solid ${l.text}40` }}/>
@@ -302,7 +302,7 @@ export default function ProviderAvailability() {
 
                 <div style={{ display:"flex", gap:8 }}>
                   <button type="submit" disabled={saving}
-                    style={{ flex:1, background:saving?"#333":"#378add", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px", cursor:saving?"not-allowed":"pointer" }}>
+                    style={{ flex:1, background:saving?"#555555":"#378add", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px", cursor:saving?"not-allowed":"pointer" }}>
                     {saving?"Saving...":"Save"}
                   </button>
                   <button type="button" onClick={()=>setSelected(null)}

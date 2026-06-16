@@ -146,7 +146,7 @@ export default function CustomerTracking() {
       <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"/>
       <style>{`
         @keyframes ping { 0%{transform:scale(1);opacity:0.6} 100%{transform:scale(2.5);opacity:0} }
-        .leaflet-container { background:#1a1a1a !important; }
+        .leaflet-container { background:#ffffff !important; }
       `}</style>
 
       <button onClick={()=>{ setSelected(null); setDriver(null); setMechanic(null); if(mapInstanceRef.current){mapInstanceRef.current.remove();mapInstanceRef.current=null} }}
@@ -158,13 +158,13 @@ export default function CustomerTracking() {
         <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#000000", marginBottom:4 }}>{selected.service_name}</div>
         <div style={{ display:"flex", gap:10, flexWrap:"wrap", marginBottom:10 }}>
           <span style={{ fontSize:11, padding:"2px 8px", borderRadius:10, background:`${SC[selected.status]||"#888"}20`, color:SC[selected.status]||"#888" }}>{selected.status}</span>
-          {selected.concierge_status&&<span style={{ fontSize:11, padding:"2px 8px", borderRadius:10, background:"#160a2e", color:"#8b5cf6" }}>{selected.concierge_status?.replace("_"," ")}</span>}
+          {selected.concierge_status&&<span style={{ fontSize:11, padding:"2px 8px", borderRadius:10, background:"#faf5ff", color:"#8b5cf6" }}>{selected.concierge_status?.replace("_"," ")}</span>}
           <span style={{ fontSize:11, color:"#777777" }}>#{selected.booking_number}</span>
         </div>
 
         {/* Concierge progress */}
         {(driver?.current_lat||mechanic?.current_latitude)&&(
-          <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:8, padding:"0.75rem", marginBottom:10, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+          <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:8, padding:"0.75rem", marginBottom:10, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
             <div style={{ display:"flex", alignItems:"center", gap:8 }}>
               <div style={{ width:8, height:8, borderRadius:"50%", background:"#1d9e75", boxShadow:"0 0 6px #1d9e75", animation:"ping 1.5s ease-out infinite" }}/>
               <span style={{ fontSize:12, color:"#1d9e75", fontWeight:600 }}>Live tracking active</span>
@@ -180,7 +180,7 @@ export default function CustomerTracking() {
                 const currentIdx = CONCIERGE_STEPS.findIndex(s=>s.key===selected.concierge_status)
                 const isDone = i <= currentIdx
                 return (
-                  <div key={step.key} style={{ fontSize:9, padding:"2px 6px", borderRadius:6, background:isDone?`${step.color}20`:"#1a1a1a", color:isDone?step.color:"#333", border:`1px solid ${isDone?step.color+"30":"#222"}` }}>
+                  <div key={step.key} style={{ fontSize:9, padding:"2px 6px", borderRadius:6, background:isDone?`${step.color}20`:"#ffffff", color:isDone?step.color:"#555555", border:`1px solid ${isDone?step.color+"30":"#f5f5f5"}` }}>
                     {step.label}
                   </div>
                 )
@@ -194,7 +194,7 @@ export default function CustomerTracking() {
           <div style={{ background:"#ffffff", borderRadius:10, padding:"0.9rem", marginBottom:10 }}>
             <div style={{ fontSize:11, color:"#777777", marginBottom:6 }}>Your driver</div>
             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-              <div style={{ width:40, height:40, borderRadius:"50%", background:"#0c1f2e", border:"2px solid #378add40", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#378add", flexShrink:0 }}>
+              <div style={{ width:40, height:40, borderRadius:"50%", background:"#eff6ff", border:"2px solid #378add40", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#378add", flexShrink:0 }}>
                 {driver.first_name?.[0]}{driver.last_name?.[0]}
               </div>
               <div>
@@ -218,7 +218,7 @@ export default function CustomerTracking() {
           <div style={{ background:"#ffffff", borderRadius:10, padding:"0.9rem", marginBottom:10 }}>
             <div style={{ fontSize:11, color:"#777777", marginBottom:6 }}>Your mechanic</div>
             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-              <div style={{ width:40, height:40, borderRadius:"50%", background:"#071a12", border:"2px solid #1d9e7540", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#1d9e75", flexShrink:0 }}>
+              <div style={{ width:40, height:40, borderRadius:"50%", background:"#f0fdf4", border:"2px solid #1d9e7540", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#1d9e75", flexShrink:0 }}>
                 {mechanic.first_name?.[0]}{mechanic.last_name?.[0]}
               </div>
               <div>
@@ -273,17 +273,17 @@ export default function CustomerTracking() {
 
       {activeBookings.map(b=>(
         <div key={b.id} onClick={()=>{ setSelected(b); setDriver(null); setMechanic(null) }}
-          style={{ background:"#ffffff", border:`1px solid ${SC[b.status]||"#1e1e1e"}30`, borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10, cursor:"pointer" }}
+          style={{ background:"#ffffff", border:`1px solid ${SC[b.status]||"#eeeeee"}30`, borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10, cursor:"pointer" }}
           onMouseEnter={e=>e.currentTarget.style.background="#161616"}
-          onMouseLeave={e=>e.currentTarget.style.background="#111"}>
+          onMouseLeave={e=>e.currentTarget.style.background="#555555"}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
             <div>
               <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000", marginBottom:4 }}>{b.service_name}</div>
               <div style={{ fontSize:11, color:"#777777", marginBottom:4 }}>#{b.booking_number} · {b.booking_date}</div>
               <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
                 <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:`${SC[b.status]||"#888"}20`, color:SC[b.status]||"#888" }}>{b.status}</span>
-                {b.is_concierge&&<span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:"#0c1f2e", color:"#378add" }}>Concierge</span>}
-                {b.is_emergency&&<span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:"#1a0808", color:"#e24b4a" }}>🚨 Emergency</span>}
+                {b.is_concierge&&<span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:"#eff6ff", color:"#378add" }}>Concierge</span>}
+                {b.is_emergency&&<span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:"#fff5f5", color:"#e24b4a" }}>🚨 Emergency</span>}
               </div>
             </div>
             <div style={{ textAlign:"right" }}>

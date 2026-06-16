@@ -113,7 +113,7 @@ export default function DriverActiveDelivery() {
         const hasDropoff = reports.dropoff
         const vehicle = job.vehicles
         return (
-          <div key={job.id} style={{ background:"#ffffff", border:`1px solid ${SC[job.status]||"#1e1e1e"}30`, borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10 }}>
+          <div key={job.id} style={{ background:"#ffffff", border:`1px solid ${SC[job.status]||"#eeeeee"}30`, borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10 }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ fontSize:isMobile?14:15, fontWeight:600, color:"#000000", marginBottom:4 }}>{job.service_name}</div>
@@ -133,11 +133,11 @@ export default function DriverActiveDelivery() {
 
             {/* Condition report status */}
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:10 }}>
-              <div style={{ background:hasPickup?"#071a12":"#0f0f0f", border:`1px solid ${hasPickup?"#1d9e7540":"#222"}`, borderRadius:8, padding:"0.6rem", textAlign:"center" }}>
+              <div style={{ background:hasPickup?"#f0fdf4":"#ffffff", border:`1px solid ${hasPickup?"#1d9e7540":"#f5f5f5"}`, borderRadius:8, padding:"0.6rem", textAlign:"center" }}>
                 <div style={{ fontSize:10, color:hasPickup?"#1d9e75":"#555" }}>Pickup report</div>
                 <div style={{ fontSize:12, fontWeight:600, color:hasPickup?"#1d9e75":"#444" }}>{hasPickup?"✓ Done":"Pending"}</div>
               </div>
-              <div style={{ background:hasDropoff?"#071a12":"#0f0f0f", border:`1px solid ${hasDropoff?"#1d9e7540":"#222"}`, borderRadius:8, padding:"0.6rem", textAlign:"center" }}>
+              <div style={{ background:hasDropoff?"#f0fdf4":"#ffffff", border:`1px solid ${hasDropoff?"#1d9e7540":"#f5f5f5"}`, borderRadius:8, padding:"0.6rem", textAlign:"center" }}>
                 <div style={{ fontSize:10, color:hasDropoff?"#1d9e75":"#555" }}>Dropoff report</div>
                 <div style={{ fontSize:12, fontWeight:600, color:hasDropoff?"#1d9e75":"#444" }}>{hasDropoff?"✓ Done":"Pending"}</div>
               </div>
@@ -146,53 +146,53 @@ export default function DriverActiveDelivery() {
             <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
               {!hasPickup&&(
                 <button onClick={()=>{ setShowReport(job.id); setReportType("pickup") }}
-                  style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
+                  style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
                   📋 Pickup report
                 </button>
               )}
               {hasPickup&&!hasDropoff&&(
                 <button onClick={()=>{ setShowReport(job.id); setReportType("dropoff") }}
-                  style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
+                  style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
                   📋 Dropoff report
                 </button>
               )}
               <button onClick={()=>shareLocation(job.id)}
-                style={{ background:"#160a2e", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
+                style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
                 📍 Share location
               </button>
               {job.status==="driver-assigned"&&(
                 <button onClick={()=>updateStatus(job.id,"arrived-for-pickup")}
-                  style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
+                  style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
                   Arrived for pickup
                 </button>
               )}
               {job.status==="arrived-for-pickup"&&hasPickup&&(
                 <button onClick={()=>updateStatus(job.id,"in-progress")}
-                  style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
+                  style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
                   Start delivery
                 </button>
               )}
               {job.status==="in-progress"&&(
                 <button onClick={()=>updateStatus(job.id,"arrived-at-dropoff")}
-                  style={{ background:"#160a2e", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
+                  style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
                   Arrived at dropoff
                 </button>
               )}
               {job.status==="arrived-at-dropoff"&&hasDropoff&&(
                 <button onClick={()=>updateStatus(job.id,"completed")}
-                  style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
+                  style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
                   ✓ Complete delivery
                 </button>
               )}
             </div>
 
             {!hasPickup&&job.status!=="pending"&&(
-              <div style={{ marginTop:8, padding:"6px 10px", background:"#1a1208", borderRadius:7, fontSize:11, color:"#e6821e" }}>
+              <div style={{ marginTop:8, padding:"6px 10px", background:"#fff8f0", borderRadius:7, fontSize:11, color:"#e6821e" }}>
                 ⚠️ Please complete pickup condition report before starting delivery
               </div>
             )}
             {hasPickup&&!hasDropoff&&job.status==="arrived-at-dropoff"&&(
-              <div style={{ marginTop:8, padding:"6px 10px", background:"#0c1f2e", borderRadius:7, fontSize:11, color:"#378add" }}>
+              <div style={{ marginTop:8, padding:"6px 10px", background:"#eff6ff", borderRadius:7, fontSize:11, color:"#378add" }}>
                 📋 Please complete dropoff condition report to finish delivery
               </div>
             )}

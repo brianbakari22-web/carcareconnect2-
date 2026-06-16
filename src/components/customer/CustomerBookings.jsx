@@ -222,7 +222,7 @@ export default function CustomerBookings() {
           </div>
 
           {b.is_concierge&&b.driver_id&&(
-            <div style={{ marginTop:10, background:"#0c1f2e", border:"1px solid #378add30", borderRadius:10, padding:"0.9rem" }}>
+            <div style={{ marginTop:10, background:"#eff6ff", border:"1px solid #378add30", borderRadius:10, padding:"0.9rem" }}>
               <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#378add", marginBottom:8 }}>🚗 Concierge delivery</div>
               {/* Driver info */}
               {b.driver_id&&(
@@ -252,7 +252,7 @@ export default function CustomerBookings() {
                   const currentIdx = steps.indexOf(b.concierge_status)
                   const isDone = i<=currentIdx
                   return (
-                    <div key={step.k} style={{ fontSize:9, padding:"2px 7px", borderRadius:6, background:isDone?"#071a12":"#1a1a1a", color:isDone?"#1d9e75":"#333", border:`1px solid ${isDone?"#1d9e7530":"#222"}` }}>
+                    <div key={step.k} style={{ fontSize:9, padding:"2px 7px", borderRadius:6, background:isDone?"#f0fdf4":"#ffffff", color:isDone?"#1d9e75":"#555555", border:`1px solid ${isDone?"#1d9e7530":"#f5f5f5"}` }}>
                       {isDone?"✓ ":""}{step.l}
                     </div>
                   )
@@ -268,7 +268,7 @@ export default function CustomerBookings() {
           )}
 
           {b.parts_details?.length>0&&!b.parts_approved&&(
-            <div style={{ marginTop:10, background:"#0c1f2e", border:"1px solid #378add40", borderRadius:10, padding:"0.9rem" }}>
+            <div style={{ marginTop:10, background:"#eff6ff", border:"1px solid #378add40", borderRadius:10, padding:"0.9rem" }}>
               <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#378add", marginBottom:8 }}>🔧 Parts added by provider</div>
               {b.parts_details.map((p,i)=>(
                 <div key={i} style={{ display:"flex", justifyContent:"space-between", fontSize:12, padding:"4px 0", borderBottom:"1px solid #eeeeee" }}>
@@ -295,7 +295,7 @@ export default function CustomerBookings() {
           {expanded===b.id&&(
             <div style={{ marginBottom:10 }}>
               <button onClick={()=>setChatBooking(chatBooking===b.id?null:b.id)}
-                style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer", width:"100%" }}>
+                style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer", width:"100%" }}>
                 💬 {chatBooking===b.id?"Close chat":"Message provider"}
               </button>
               {chatBooking===b.id&&(

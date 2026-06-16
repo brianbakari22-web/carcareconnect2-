@@ -4,7 +4,7 @@ import { supabase } from "../lib/supabase"
 const ThemeContext = createContext({})
 
 export const THEMES = {
-  dark: { name:"Dark", icon:"🌙", bg:"#0a0a0a", bgSecondary:"#0f0f0f", bgCard:"#111", bgCardHover:"#161616", border:"#1e1e1e", borderLight:"#2a2a2a", text:"#f0ede6", textMuted:"#888", textFaint:"#555", textVeryFaint:"#444", primary:"#e6821e", primaryBg:"#1a1208", primaryBorder:"#e6821e40" },
+  dark: { name:"Dark", icon:"🌙", bg:"#ffffff", bgSecondary:"#ffffff", bgCard:"#555555", bgCardHover:"#161616", border:"#eeeeee", borderLight:"#eeeeee", text:"#000000", textMuted:"#888", textFaint:"#555", textVeryFaint:"#444", primary:"#e6821e", primaryBg:"#fff8f0", primaryBorder:"#e6821e40" },
   light: { name:"Light", icon:"☀️", bg:"#ffffff", bgSecondary:"#f8f8f8", bgCard:"#ffffff", bgCardHover:"#f5f5f5", border:"#eeeeee", borderLight:"#f0f0f0", text:"#000000", textMuted:"#666666", textFaint:"#999999", textVeryFaint:"#cccccc", primary:"#e6821e", primaryBg:"#fff8f0", primaryBorder:"#e6821e30" },
   ocean: { name:"Ocean", icon:"🌊", bg:"#0a1628", bgSecondary:"#0d1e35", bgCard:"#112240", bgCardHover:"#1a3050", border:"#1e3a5f", borderLight:"#2a4a70", text:"#e2e8f0", textMuted:"#94a3b8", textFaint:"#64748b", textVeryFaint:"#475569", primary:"#0ea5e9", primaryBg:"#0c2340", primaryBorder:"#0ea5e940" },
   forest: { name:"Forest", icon:"🌿", bg:"#0a1a0f", bgSecondary:"#0d2014", bgCard:"#112918", bgCardHover:"#1a3a22", border:"#1e4028", borderLight:"#2a5035", text:"#e2f0e8", textMuted:"#86b896", textFaint:"#5a8a6a", textVeryFaint:"#4a7a5a", primary:"#10b981", primaryBg:"#0a2818", primaryBorder:"#10b98140" },

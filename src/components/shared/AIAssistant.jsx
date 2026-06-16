@@ -674,7 +674,7 @@ export default function AIAssistant() {
           <div style={{ flex:1, overflowY:"auto", padding:"0.9rem", display:"flex", flexDirection:"column", gap:8 }}>
             {messages.map((m,i)=>(
               <div key={i} style={{ display:"flex", justifyContent:m.role==="user"?"flex-end":"flex-start" }}>
-                <div style={{ maxWidth:"85%", padding:"10px 12px", borderRadius:m.role==="user"?"14px 14px 4px 14px":"14px 14px 14px 4px", background:m.role==="user"?color:"#f0f0f0", color:"#111111", fontSize:12, lineHeight:1.6, whiteSpace:"pre-wrap" }}>
+                <div style={{ maxWidth:"85%", padding:"10px 12px", borderRadius:m.role==="user"?"14px 14px 4px 14px":"14px 14px 14px 4px", background:m.role==="user"?color:"#f0f0f0", color:"#ffffff", fontSize:12, lineHeight:1.6, whiteSpace:"pre-wrap" }}>
                   {m.content}
                 </div>
               </div>
@@ -701,7 +701,7 @@ export default function AIAssistant() {
           <form onSubmit={send} style={{ padding:"0.75rem", borderTop:"1px solid #eeeeee", display:"flex", gap:8, background:"#ffffff", flexShrink:0 }}>
             <input ref={inputRef} value={input} onChange={e=>setInput(e.target.value)}
               placeholder="Ask me anything..."
-              style={{ flex:1, background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:10, padding:"9px 12px", color:"#111111", fontSize:12, outline:"none" }}/>
+              style={{ flex:1, background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:10, padding:"9px 12px", color:"#ffffff", fontSize:12, outline:"none" }}/>
             <button type="submit" disabled={!input.trim()||loading}
               style={{ background:input.trim()&&!loading?color:"#e5e5e5", border:"none", borderRadius:10, color:input.trim()&&!loading?"#fff":"#999", fontSize:16, padding:"0 14px", cursor:input.trim()&&!loading?"pointer":"default" }}>
               🤔

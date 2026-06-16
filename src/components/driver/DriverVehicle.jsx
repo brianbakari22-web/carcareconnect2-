@@ -83,7 +83,7 @@ export default function DriverVehicle() {
             <div><label style={lbl}>Year</label><input style={inp} type="number" min="1990" max="2026" placeholder="2020" value={form.vehicle_year} onChange={e=>setForm(f=>({...f,vehicle_year:e.target.value}))}/></div>
           </div>
           <button type="submit" disabled={saving}
-            style={{ background:saving?"#333":"#e6821e", border:"none", borderRadius:8, color:saving?"#666":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:saving?"not-allowed":"pointer" }}>
+            style={{ background:saving?"#555555":"#e6821e", border:"none", borderRadius:8, color:saving?"#666":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:saving?"not-allowed":"pointer" }}>
             {saving?"Saving...":"Save vehicle info"}
           </button>
         </form>
@@ -93,7 +93,7 @@ export default function DriverVehicle() {
         <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>Documents</div>
         {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
         {docs.map(d=>(
-          <div key={d.id} style={{ display:"flex", alignItems:"center", gap:12, padding:"0.75rem", background:"#ffffff", borderRadius:8, marginBottom:8, border:`1px solid ${isExpired(d.expiry_date)?"#e24b4a40":isExpiringSoon(d.expiry_date)?"#e6821e40":"#222"}` }}>
+          <div key={d.id} style={{ display:"flex", alignItems:"center", gap:12, padding:"0.75rem", background:"#ffffff", borderRadius:8, marginBottom:8, border:`1px solid ${isExpired(d.expiry_date)?"#e24b4a40":isExpiringSoon(d.expiry_date)?"#e6821e40":"#f5f5f5"}` }}>
             <div style={{ width:36, height:36, background:`${docTypeColor[d.type]}20`, borderRadius:8, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>
               {d.type==="license"?"🪪":d.type==="insurance"?"🛡️":d.type==="registration"?"📄":"📎"}
             </div>

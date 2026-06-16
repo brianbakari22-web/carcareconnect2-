@@ -57,7 +57,7 @@ export default function PesapalPayment({ amount, bookingId, customerEmail, custo
         You will be redirected to Pesapal to complete payment via M-Pesa, card, or bank transfer.
       </div>
       <button onClick={initiatePayment} disabled={loading}
-        style={{ width:"100%", background:loading?"#333":"#e6821e", border:"none", borderRadius:10, color:loading?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:loading?"not-allowed":"pointer", marginBottom:8 }}>
+        style={{ width:"100%", background:loading?"#555555":"#e6821e", border:"none", borderRadius:10, color:loading?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:loading?"not-allowed":"pointer", marginBottom:8 }}>
         {loading?"Connecting to Pesapal...":"Pay KES "+(Number(amount)*1.025).toFixed(0)+" →"}
       </button>
       <button onClick={onCancel}

@@ -41,7 +41,7 @@ export default function PhotoManager({ photos=[], onUpdate, bucket="provider-pho
       {photos.length>0&&(
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(90px,1fr))", gap:8, marginBottom:10 }}>
           {photos.map((url,i)=>(
-            <div key={url} style={{ position:"relative", aspectRatio:"1", borderRadius:8, overflow:"hidden", border:`2px solid ${i===0?"#e6821e":"#222"}` }}>
+            <div key={url} style={{ position:"relative", aspectRatio:"1", borderRadius:8, overflow:"hidden", border:`2px solid ${i===0?"#e6821e":"#f5f5f5"}` }}>
               <img src={url} alt={`Photo ${i+1}`} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
               {i===0&&<div style={{ position:"absolute", top:4, left:4, background:"#e6821e", borderRadius:4, fontSize:8, color:"#fff", padding:"2px 5px", fontWeight:700 }}>PRIMARY</div>}
               <div style={{ position:"absolute", bottom:0, left:0, right:0, display:"flex", gap:2, padding:4, background:"rgba(0,0,0,0.7)" }}>
@@ -69,7 +69,7 @@ export default function PhotoManager({ photos=[], onUpdate, bucket="provider-pho
             }}/>
           <div style={{ fontSize:20, marginBottom:4 }}>📷</div>
           <div style={{ fontSize:11, color:"#777777" }}>{uploading?"Uploading...":"Tap to add photos"}</div>
-          <div style={{ fontSize:10, color:"#333", marginTop:2 }}>{photos.length}/{maxPhotos} photos</div>
+          <div style={{ fontSize:10, color:"#555555", marginTop:2 }}>{photos.length}/{maxPhotos} photos</div>
         </label>
       )}
     </div>

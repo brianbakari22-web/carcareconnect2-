@@ -108,7 +108,7 @@ export default function CustomerVehicleReports() {
         const pickup = bReports.pickup
         const dropoff = bReports.dropoff
         return (
-          <div key={b.id} style={{ background:"#ffffff", border:`1px solid ${alert&&!dispute?"#e6821e40":"#1e1e1e"}`, borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10 }}>
+          <div key={b.id} style={{ background:"#ffffff", border:`1px solid ${alert&&!dispute?"#e6821e40":"#eeeeee"}`, borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10 }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
               <div>
                 <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:2 }}>{b.service_name}</div>
@@ -122,7 +122,7 @@ export default function CustomerVehicleReports() {
             </div>
 
             {alert&&(
-              <div style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
+              <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
                 <div style={{ fontSize:12, color:"#e6821e", fontWeight:600, marginBottom:2 }}>⚠️ Mileage alert</div>
                 <div style={{ fontSize:11, color:"#555555" }}>
                   Vehicle driven {alert.difference}km during service (pickup: {alert.pickup_odometer}km → dropoff: {alert.dropoff_odometer}km)
@@ -159,7 +159,7 @@ export default function CustomerVehicleReports() {
                           <div style={{ fontSize:11, color:"#777777", marginBottom:4 }}>Condition:</div>
                           <div style={{ display:"flex", flexWrap:"wrap", gap:4, marginBottom:4 }}>
                             {["has_scratches","has_dents","has_broken_lights","has_missing_parts","dirty_interior","dirty_exterior"].filter(k=>report[k]).map(k=>(
-                              <span key={k} style={{ fontSize:10, padding:"2px 7px", borderRadius:10, background:"#1a0808", color:"#e24b4a" }}>
+                              <span key={k} style={{ fontSize:10, padding:"2px 7px", borderRadius:10, background:"#fff5f5", color:"#e24b4a" }}>
                                 {k.replace("has_","").replace("_"," ")}
                               </span>
                             ))}
@@ -180,7 +180,7 @@ export default function CustomerVehicleReports() {
             )}
 
             {showDispute===b.id&&(
-              <div style={{ marginTop:10, background:"#1a1208", border:"1px solid #e6821e30", borderRadius:10, padding:"1rem" }}>
+              <div style={{ marginTop:10, background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:10, padding:"1rem" }}>
                 <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e", marginBottom:"1rem" }}>Raise a dispute</div>
                 <form onSubmit={submitDispute}>
                   <div style={{ marginBottom:12 }}>
@@ -200,7 +200,7 @@ export default function CustomerVehicleReports() {
                   </div>
                   <div style={{ display:"flex", gap:8 }}>
                     <button type="submit" disabled={submitting}
-                      style={{ background:submitting?"#333":"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 18px", cursor:submitting?"not-allowed":"pointer" }}>
+                      style={{ background:submitting?"#555555":"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 18px", cursor:submitting?"not-allowed":"pointer" }}>
                       {submitting?"Submitting...":"Submit dispute"}
                     </button>
                     <button type="button" onClick={()=>setShowDispute(null)}

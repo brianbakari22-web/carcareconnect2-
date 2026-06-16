@@ -337,7 +337,7 @@ export default function CustomerDiscover() {
           { key:"drivers", label:`${t("drivers")} (${filteredDrivers.filter(d=>d.is_online).length} ${t("online").toLowerCase()})` },
         ].map(tab2=>(
           <button key={tab2.key} onClick={()=>{ setTab(tab2.key); setSearch(""); setSelectedProvider(null) }}
-            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", fontFamily:"'DM Sans',sans-serif", background:tab===tab2.key?"#e6821e":"#111", color:tab===tab2.key?"#fff":"#666", fontWeight:tab===tab2.key?700:400 }}>
+            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", fontFamily:"'DM Sans',sans-serif", background:tab===tab2.key?"#e6821e":"#555555", color:tab===tab2.key?"#fff":"#666", fontWeight:tab===tab2.key?700:400 }}>
             {tab2.label}
           </button>
         ))}
@@ -357,7 +357,7 @@ export default function CustomerDiscover() {
               <div key={p.id}
                 style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", cursor:"pointer", transition:"border-color 0.12s" }}
                 onMouseEnter={e=>e.currentTarget.style.borderColor="#e6821e40"}
-                onMouseLeave={e=>e.currentTarget.style.borderColor="#1e1e1e"}
+                onMouseLeave={e=>e.currentTarget.style.borderColor="#eeeeee"}
                 onClick={()=>setSelectedProvider(p)}>
                 <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:10 }}>
                   <div style={{ width:48, height:48, borderRadius:12, background:"#fff8f0", border:"1px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#e6821e", flexShrink:0 }}>
@@ -366,8 +366,8 @@ export default function CustomerDiscover() {
                   <div style={{ flex:1, minWidth:0 }}>
                     <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:2, flexWrap:"wrap" }}>
                       <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#000000" }}>{getDisplayName(p)}</div>
-                      {p.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#071a12", padding:"1px 6px", borderRadius:10 }}>Γ£ô {t("verified")}</span>}
-                      {p.provider_type&&p.provider_type!=="garage"&&<span style={{ fontSize:10, color:"#8b5cf6", background:"#160a2e", padding:"1px 6px", borderRadius:10 }}>{p.provider_type.replace(/_/g," ")}</span>}
+                      {p.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#f0fdf4", padding:"1px 6px", borderRadius:10 }}>Γ£ô {t("verified")}</span>}
+                      {p.provider_type&&p.provider_type!=="garage"&&<span style={{ fontSize:10, color:"#8b5cf6", background:"#faf5ff", padding:"1px 6px", borderRadius:10 }}>{p.provider_type.replace(/_/g," ")}</span>}
                     </div>
                     <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
                       {p.business_name&&<div style={{ fontSize:11, color:"#666" }}>{t("owner")}: {p.first_name} {p.last_name}</div>}
@@ -420,7 +420,7 @@ export default function CustomerDiscover() {
                 )}
                 <div style={{ display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
                   {selectedProvider.city&&<span style={{ fontSize:12, color:"#777777" }}>📍 {selectedProvider.city}</span>}
-                  {selectedProvider.is_verified&&<span style={{ fontSize:11, color:"#1d9e75", background:"#071a12", padding:"2px 8px", borderRadius:10 }}>Γ£ô {t("verified")}</span>}
+                  {selectedProvider.is_verified&&<span style={{ fontSize:11, color:"#1d9e75", background:"#f0fdf4", padding:"2px 8px", borderRadius:10 }}>Γ£ô {t("verified")}</span>}
                   {getDistance(selectedProvider)!==null&&<span style={{ fontSize:11, color:"#378add" }}>📍 {getDistance(selectedProvider).toFixed(1)} {t("kmAway")}</span>}
                 </div>
                 {getProviderStatus(selectedProvider.id)&&(
@@ -446,7 +446,7 @@ export default function CustomerDiscover() {
                     <div style={{ fontSize:12, color:isToday?"#e6821e":"#888", fontWeight:isToday?600:400 }}>
                       {h.day}{isToday?` (${t("today")})` :""}
                     </div>
-                    <div style={{ fontSize:12, color:h.is_open?"#f0ede6":"#555" }}>
+                    <div style={{ fontSize:12, color:h.is_open?"#000000":"#555" }}>
                       {h.is_open?`${h.open_time} — ${h.close_time}`:t("closed")}
                     </div>
                   </div>
@@ -456,7 +456,7 @@ export default function CustomerDiscover() {
           )}
 
           {closures[selectedProvider.id]?.length>0&&(
-            <div style={{ background:"#1a0808", border:"1px solid #e24b4a20", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
+            <div style={{ background:"#fff5f5", border:"1px solid #e24b4a20", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
               <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8, color:"#e24b4a" }}>{t("upcomingClosures")}</div>
               {closures[selectedProvider.id].map(c=>(
                 <div key={c.id} style={{ fontSize:12, color:"#555555", marginBottom:4 }}>
@@ -600,18 +600,18 @@ export default function CustomerDiscover() {
           </div>
           {filteredDrivers.length===0&&!loading&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>{t("noDriversFound")}</div>}
           {filteredDrivers.map(d=>(
-            <div key={d.id} style={{ background:"#ffffff", border:`1px solid ${d.is_online?"#1d9e7520":"#1e1e1e"}`, borderRadius:12, padding:"1rem", display:"flex", alignItems:"center", gap:12 }}>
-              <div style={{ width:44, height:44, borderRadius:"50%", background:d.is_online?"#071a12":"#1a1a1a", border:`1px solid ${d.is_online?"#1d9e7540":"#333"}`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:15, fontWeight:800, color:d.is_online?"#1d9e75":"#555", flexShrink:0 }}>
+            <div key={d.id} style={{ background:"#ffffff", border:`1px solid ${d.is_online?"#1d9e7520":"#eeeeee"}`, borderRadius:12, padding:"1rem", display:"flex", alignItems:"center", gap:12 }}>
+              <div style={{ width:44, height:44, borderRadius:"50%", background:d.is_online?"#f0fdf4":"#ffffff", border:`1px solid ${d.is_online?"#1d9e7540":"#555555"}`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:15, fontWeight:800, color:d.is_online?"#1d9e75":"#555", flexShrink:0 }}>
                 {d.first_name?.[0]}{d.last_name?.[0]}
               </div>
               <div style={{ flex:1 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:2 }}>
                   <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>{d.first_name} {d.last_name}</div>
-                  {d.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#071a12", padding:"1px 6px", borderRadius:10 }}>Γ£ô</span>}
+                  {d.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#f0fdf4", padding:"1px 6px", borderRadius:10 }}>Γ£ô</span>}
                 </div>
                 <div style={{ fontSize:11, color:"#777777" }}>{language==="sw"?"Dereva wa kuchukua":"Concierge driver"} · {d.city||"Nairobi"}</div>
               </div>
-              <span style={{ fontSize:11, fontWeight:600, padding:"4px 10px", borderRadius:20, background:d.is_online?"#071a12":"#1a1a1a", color:d.is_online?"#1d9e75":"#555", border:`1px solid ${d.is_online?"#1d9e7530":"#33333330"}`, flexShrink:0 }}>
+              <span style={{ fontSize:11, fontWeight:600, padding:"4px 10px", borderRadius:20, background:d.is_online?"#f0fdf4":"#ffffff", color:d.is_online?"#1d9e75":"#555", border:`1px solid ${d.is_online?"#1d9e7530":"#33333330"}`, flexShrink:0 }}>
                 {d.is_online?t("online"):t("offline")}
               </span>
             </div>

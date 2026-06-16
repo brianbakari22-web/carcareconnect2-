@@ -117,7 +117,7 @@ export default function ProviderOrders() {
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
         {["pending","confirmed","processing","ready","delivered","cancelled","all"].map(f=>(
           <button key={f} onClick={()=>setFilter(f)}
-            style={{ padding:"5px 12px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:filter===f?(STATUS_COLORS[f]||"#8b5cf6"):"#111", color:filter===f?"#fff":"#666" }}>
+            style={{ padding:"5px 12px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:filter===f?(STATUS_COLORS[f]||"#8b5cf6"):"#555555", color:filter===f?"#fff":"#666" }}>
             {f} ({f==="all"?orders.length:orders.filter(o=>o.status===f).length})
           </button>
         ))}
@@ -127,7 +127,7 @@ export default function ProviderOrders() {
       {!loading&&filtered.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>No orders found</div>}
 
       {filtered.map(o=>(
-        <div key={o.id} style={{ background:"#ffffff", border:"1px solid "+(STATUS_COLORS[o.status]||"#1e1e1e")+"30", borderRadius:12, padding:"1rem", marginBottom:10 }}>
+        <div key={o.id} style={{ background:"#ffffff", border:"1px solid "+(STATUS_COLORS[o.status]||"#eeeeee")+"30", borderRadius:12, padding:"1rem", marginBottom:10 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
             <div>
               <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:2 }}>#{o.order_number}</div>

@@ -76,21 +76,21 @@ export default function CustomerFavorites() {
           return (
             <div key={f.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
               <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:12 }}>
-                <div style={{ width:52, height:52, borderRadius:12, background:"#1a1208", border:"1px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#e6821e", flexShrink:0 }}>
+                <div style={{ width:52, height:52, borderRadius:12, background:"#fff8f0", border:"1px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#e6821e", flexShrink:0 }}>
                   {displayName[0]?.toUpperCase()}
                 </div>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:2, flexWrap:"wrap" }}>
                     <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#000000" }}>{displayName}</div>
-                    {p?.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#071a12", padding:"1px 6px", borderRadius:10 }}>✓ Verified</span>}
-                    <span style={{ fontSize:10, padding:"1px 6px", borderRadius:10, background:p?.is_online?"#071a12":"#1a1a1a", color:p?.is_online?"#1d9e75":"#555" }}>
+                    {p?.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#f0fdf4", padding:"1px 6px", borderRadius:10 }}>✓ Verified</span>}
+                    <span style={{ fontSize:10, padding:"1px 6px", borderRadius:10, background:p?.is_online?"#f0fdf4":"#ffffff", color:p?.is_online?"#1d9e75":"#555" }}>
                       {p?.is_online?"● Online":"○ Offline"}
                     </span>
                   </div>
                   {p?.city&&<div style={{ fontSize:11, color:"#777777" }}>📍 {p.city}</div>}
                 </div>
                 <button onClick={()=>removeFavorite(f.provider_id)}
-                  style={{ background:"#1a0808", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", fontSize:11, padding:"6px 10px", cursor:"pointer", flexShrink:0 }}>
+                  style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", fontSize:11, padding:"6px 10px", cursor:"pointer", flexShrink:0 }}>
                   ♥ Remove
                 </button>
               </div>

@@ -104,7 +104,7 @@ export default function DriverNotifications() {
             <div style={{ fontSize:12, color:"#666", marginTop:3, lineHeight:1.5 }}>{n.message}</div>
             <div style={{ fontSize:10, color:"#888888", marginTop:5 }}>{new Date(n.created_at).toLocaleString()}</div>
           </div>
-          <button onClick={e=>{ e.stopPropagation(); deleteNotif(n.id) }} style={{ background:"none", border:"none", color:"#333", cursor:"pointer", fontSize:16, lineHeight:1, flexShrink:0 }}>×</button>
+          <button onClick={e=>{ e.stopPropagation(); deleteNotif(n.id) }} style={{ background:"none", border:"none", color:"#555555", cursor:"pointer", fontSize:16, lineHeight:1, flexShrink:0 }}>×</button>
         </div>
       ))}
     </div>

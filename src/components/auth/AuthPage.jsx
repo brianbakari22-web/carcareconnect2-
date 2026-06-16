@@ -212,7 +212,7 @@ export default function AuthPage() {
               {loading ? "Sending..." : "Send reset link"}
             </button>
             <button type="button" onClick={()=>setMode("signin")}
-              style={{ width:"100%", background:"none", border:"1px solid #ddd", borderRadius:10, color:"#333", fontSize:13, padding:"12px", cursor:"pointer" }}>
+              style={{ width:"100%", background:"none", border:"1px solid #ddd", borderRadius:10, color:"#555555", fontSize:13, padding:"12px", cursor:"pointer" }}>
               Back to sign in
             </button>
           </form>
@@ -228,7 +228,7 @@ export default function AuthPage() {
 
       <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", padding:isMobile?"1rem":"2rem" }}>
         <div style={{ width:"100%", maxWidth:420 }}>
-          <button onClick={()=>setStep("role")} style={{ background:"none", border:"none", color:"#333", cursor:"pointer", fontSize:13, marginBottom:"1.5rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
+          <button onClick={()=>setStep("role")} style={{ background:"none", border:"none", color:"#555555", cursor:"pointer", fontSize:13, marginBottom:"1.5rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
             ← Back
           </button>
 
@@ -347,7 +347,7 @@ export default function AuthPage() {
             )}
 
             <button type="submit" disabled={loading||(mode==="signup"&&!agreed)}
-              style={{ width:"100%", background:loading||(mode==="signup"&&!agreed)?"#333":"#e6821e", border:"none", borderRadius:9, color:loading||(mode==="signup"&&!agreed)?"#666":"#fff", fontFamily:"Syne,sans-serif", fontSize:16, fontWeight:700, padding:"15px", cursor:loading||(mode==="signup"&&!agreed)?"not-allowed":"pointer", transition:"all 0.15s" }}>
+              style={{ width:"100%", background:loading||(mode==="signup"&&!agreed)?"#555555":"#e6821e", border:"none", borderRadius:9, color:loading||(mode==="signup"&&!agreed)?"#666":"#fff", fontFamily:"Syne,sans-serif", fontSize:16, fontWeight:700, padding:"15px", cursor:loading||(mode==="signup"&&!agreed)?"not-allowed":"pointer", transition:"all 0.15s" }}>
               {loading ? "Please wait..." : mode==="signin" ? "Sign in →" : "Create account →"}
             </button>
           </form>
@@ -359,7 +359,7 @@ export default function AuthPage() {
           </div>
 
           <button type="button" onClick={signInWithGoogle}
-            style={{ width:"100%", display:"flex", alignItems:"center", justifyContent:"center", gap:10, background:"#ffffff", border:"1px solid #dddddd", borderRadius:9, color:"#333", fontFamily:"'DM Sans',sans-serif", fontSize:14, fontWeight:600, padding:"13px", cursor:"pointer" }}>
+            style={{ width:"100%", display:"flex", alignItems:"center", justifyContent:"center", gap:10, background:"#ffffff", border:"1px solid #dddddd", borderRadius:9, color:"#555555", fontFamily:"'DM Sans',sans-serif", fontSize:14, fontWeight:600, padding:"13px", cursor:"pointer" }}>
             <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg>
             Continue with Google
           </button>
@@ -374,7 +374,7 @@ export default function AuthPage() {
         </div>
       </div>
 
-      <div style={{ width:isMobile?"100%":420, background:"#1a1a1a", borderLeft:"1px solid #1e1e1e", display:"flex", flexDirection:"column", justifyContent:"space-between", padding:"3rem 2.5rem" }}>
+      <div style={{ width:isMobile?"100%":420, background:"#ffffff", borderLeft:"1px solid #eeeeee", display:"flex", flexDirection:"column", justifyContent:"space-between", padding:"3rem 2.5rem" }}>
         <div>
           <div style={{ fontFamily:"Syne", fontSize:28, fontWeight:800, color:"#ffffff", marginBottom:8, lineHeight:1.2 }}>
             Car<span style={{ color:"#e6821e" }}>Care</span> Connect
@@ -392,7 +392,7 @@ export default function AuthPage() {
             </div>
           ))}
         </div>
-        <div style={{ paddingTop:"2rem", borderTop:"1px solid #1a1a1a" }}>
+        <div style={{ paddingTop:"2rem", borderTop:"1px solid #ffffff" }}>
           <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:12, marginBottom:"1.5rem" }}>
             {STATS.map(s=>(
               <div key={s.label}>
@@ -415,7 +415,7 @@ export default function AuthPage() {
     <div style={{ minHeight:"100vh", background:"#f8f8f8", fontFamily:"DM Sans,sans-serif" }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');`}</style>
       <div style={{ background:"#fff", padding:"1rem 1.25rem", borderBottom:"1px solid #eee", display:"flex", alignItems:"center", gap:12, position:"sticky", top:0, zIndex:10 }}>
-        <button onClick={()=>setStep("landing")} style={{ background:"none", border:"none", color:"#333", cursor:"pointer", fontSize:13, padding:0 }}>
+        <button onClick={()=>setStep("landing")} style={{ background:"none", border:"none", color:"#555555", cursor:"pointer", fontSize:13, padding:0 }}>
           ← Back
         </button>
         <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800 }}>Car<span style={{ color:"#e6821e" }}>Care</span> Connect</div>

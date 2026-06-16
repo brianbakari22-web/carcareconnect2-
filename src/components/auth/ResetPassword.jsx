@@ -50,7 +50,7 @@ export default function ResetPassword() {
         </div>
 
         {done ? (
-          <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:10, padding:"1.25rem", textAlign:"center" }}>
+          <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:10, padding:"1.25rem", textAlign:"center" }}>
             <div style={{ fontSize:13, color:"#1d9e75", fontWeight:600 }}>Password updated successfully</div>
           </div>
         ) : (
@@ -60,7 +60,7 @@ export default function ResetPassword() {
             <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>Confirm password</label>
             <input type="password" value={confirm} onChange={e=>setConfirm(e.target.value)} placeholder="Repeat password" required style={inp}/>
             <button type="submit" disabled={loading}
-              style={{ width:"100%", background:loading?"#333":"#e6821e", border:"none", borderRadius:10, color:loading?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:loading?"not-allowed":"pointer", marginBottom:12 }}>
+              style={{ width:"100%", background:loading?"#555555":"#e6821e", border:"none", borderRadius:10, color:loading?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:loading?"not-allowed":"pointer", marginBottom:12 }}>
               {loading ? "Updating..." : "Update password"}
             </button>
             <button type="button" onClick={()=>navigate("/auth")}

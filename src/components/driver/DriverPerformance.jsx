@@ -107,7 +107,7 @@ export default function DriverPerformance() {
             <div style={{ fontSize:13, color:"#000000", marginBottom:2 }}>{job.service_name||"Delivery job"}</div>
             <div style={{ fontSize:11, color:"#777777" }}>{new Date(job.created_at).toLocaleDateString()}</div>
           </div>
-          <span style={{ fontSize:11, padding:"3px 10px", borderRadius:20, background:job.status==="completed"?"#071a12":job.status==="cancelled"?"#1a0808":"#1a1208", color:job.status==="completed"?"#1d9e75":job.status==="cancelled"?"#e24b4a":"#e6821e" }}>
+          <span style={{ fontSize:11, padding:"3px 10px", borderRadius:20, background:job.status==="completed"?"#f0fdf4":job.status==="cancelled"?"#fff5f5":"#fff8f0", color:job.status==="completed"?"#1d9e75":job.status==="cancelled"?"#e24b4a":"#e6821e" }}>
             {job.status}
           </span>
         </div>

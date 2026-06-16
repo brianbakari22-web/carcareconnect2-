@@ -88,21 +88,21 @@ export default function DriverAvailableJobs() {
     <div>
       {/* Status banner */}
       {!isOnline&&(
-        <div style={{ background:"#1a0808", border:"1px solid #e24b4a30", borderRadius:10, padding:"0.9rem", marginBottom:"1.25rem" }}>
+        <div style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:10, padding:"0.9rem", marginBottom:"1.25rem" }}>
           <div style={{ fontSize:13, color:"#e24b4a", fontWeight:600, marginBottom:2 }}>🔴 You are offline</div>
           <div style={{ fontSize:11, color:"#666" }}>Go to Overview and toggle online to accept jobs.</div>
         </div>
       )}
 
       {!isVerified&&(
-        <div style={{ background:"#1a1208", border:"1px solid #e6821e30", borderRadius:10, padding:"0.9rem", marginBottom:"1.25rem" }}>
+        <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:10, padding:"0.9rem", marginBottom:"1.25rem" }}>
           <div style={{ fontSize:13, color:"#e6821e", fontWeight:600, marginBottom:2 }}>⚠️ Documents not verified</div>
           <div style={{ fontSize:11, color:"#666" }}>Complete your credentials in Profile and wait for admin verification.</div>
         </div>
       )}
 
       {isOnline&&isVerified&&(
-        <div style={{ background:"#071a12", border:"1px solid #1d9e7530", borderRadius:10, padding:"0.9rem", marginBottom:"1.25rem" }}>
+        <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7530", borderRadius:10, padding:"0.9rem", marginBottom:"1.25rem" }}>
           <div style={{ display:"flex", alignItems:"center", gap:6 }}>
             <div style={{ width:7, height:7, borderRadius:"50%", background:"#1d9e75", boxShadow:"0 0 6px #1d9e75" }}/>
             <div style={{ fontSize:13, color:"#1d9e75", fontWeight:600 }}>Online — {jobs.length} job{jobs.length!==1?"s":""} available</div>
@@ -118,7 +118,7 @@ export default function DriverAvailableJobs() {
         <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
           <div style={{ fontSize:32, marginBottom:10 }}>🚗</div>
           <div style={{ marginBottom:6 }}>No available jobs right now</div>
-          <div style={{ fontSize:11, color:"#333" }}>New concierge requests will appear here automatically</div>
+          <div style={{ fontSize:11, color:"#555555" }}>New concierge requests will appear here automatically</div>
         </div>
       )}
 
@@ -192,8 +192,8 @@ export default function DriverAvailableJobs() {
               disabled={accepting===job.id||!isOnline||!isVerified}
               style={{
                 width:"100%",
-                background:accepting===job.id||!isOnline||!isVerified?"#1a1a1a":"#1d9e75",
-                border:`1px solid ${accepting===job.id||!isOnline||!isVerified?"#333":"#1d9e75"}`,
+                background:accepting===job.id||!isOnline||!isVerified?"#ffffff":"#1d9e75",
+                border:`1px solid ${accepting===job.id||!isOnline||!isVerified?"#555555":"#1d9e75"}`,
                 borderRadius:10, color:accepting===job.id||!isOnline||!isVerified?"#444":"#fff",
                 fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700,
                 padding:"13px", cursor:accepting===job.id||!isOnline||!isVerified?"not-allowed":"pointer",

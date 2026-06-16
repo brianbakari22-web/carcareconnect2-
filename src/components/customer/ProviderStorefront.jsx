@@ -98,7 +98,7 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
             )}
           </div>
         ) : (
-          <div style={{ height:120, background:`linear-gradient(135deg,#1a1208,#111)`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:48 }}>
+          <div style={{ height:120, background:`linear-gradient(135deg,#fff8f0,#111)`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:48 }}>
             {PROVIDER_TYPE_ICONS[provider.provider_type]||"🔧"}
           </div>
         )}
@@ -111,7 +111,7 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
                 {provider.business_name||`${provider.first_name} ${provider.last_name}`}
               </div>
               <div style={{ display:"flex", gap:8, flexWrap:"wrap", alignItems:"center" }}>
-                <span style={{ fontSize:12, color:"#e6821e", background:"#1a1208", padding:"2px 8px", borderRadius:8 }}>
+                <span style={{ fontSize:12, color:"#e6821e", background:"#fff8f0", padding:"2px 8px", borderRadius:8 }}>
                   {PROVIDER_TYPE_ICONS[provider.provider_type]} {provider.provider_type?.replace(/_/g," ")}
                 </span>
                 {provider.is_verified&&<span style={{ fontSize:11, color:"#1d9e75" }}>✓ Verified</span>}
@@ -153,7 +153,7 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
               { k:"reviews", l:`Reviews (${reviews.length})` },
             ].map(t=>(
               <button key={t.k} onClick={()=>setTab(t.k)}
-                style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#111", color:tab===t.k?"#fff":"#666", fontWeight:tab===t.k?700:400 }}>
+                style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#555555", color:tab===t.k?"#fff":"#666", fontWeight:tab===t.k?700:400 }}>
                 {t.l}
               </button>
             ))}

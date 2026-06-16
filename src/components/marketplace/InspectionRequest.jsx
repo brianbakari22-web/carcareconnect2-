@@ -58,7 +58,7 @@ export default function InspectionRequest({ listing, onSuccess }) {
   }
 
   if (existing && existing.status !== "pending_payment") return (
-    <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:10, padding:"1rem" }}>
+    <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:10, padding:"1rem" }}>
       <div style={{ fontSize:13, color:"#1d9e75", fontWeight:600, marginBottom:4 }}>✓ Inspection requested</div>
       <div style={{ fontSize:11, color:"#777777" }}>Status: {existing.status}</div>
       {existing.scheduled_date&&<div style={{ fontSize:11, color:"#777777" }}>Scheduled: {existing.scheduled_date}</div>}
@@ -94,7 +94,7 @@ export default function InspectionRequest({ listing, onSuccess }) {
       </div>
 
       <button onClick={requestInspection} disabled={paying||!scheduled}
-        style={{ width:"100%", background:paying||!scheduled?"#333":"#e6821e", border:"none", borderRadius:10, color:paying||!scheduled?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:paying||!scheduled?"not-allowed":"pointer" }}>
+        style={{ width:"100%", background:paying||!scheduled?"#555555":"#e6821e", border:"none", borderRadius:10, color:paying||!scheduled?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:paying||!scheduled?"not-allowed":"pointer" }}>
         {paying?"Connecting to Pesapal...":"Pay KES 513 & Request Inspection →"}
       </button>
     </div>

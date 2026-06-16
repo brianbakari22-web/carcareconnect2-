@@ -231,7 +231,7 @@ export default function TermsOfService() {
       </div>
 
       <footer style={{ borderTop:"1px solid #eeeeee", padding:"1.5rem 2rem", textAlign:"center" }}>
-        <div style={{ fontSize:11, color:"#333" }}>© 2026 Car Care Connect · All rights reserved</div>
+        <div style={{ fontSize:11, color:"#555555" }}>© 2026 Car Care Connect · All rights reserved</div>
       </footer>
     </div>
   )

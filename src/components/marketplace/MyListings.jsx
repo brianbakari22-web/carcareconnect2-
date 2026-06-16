@@ -147,7 +147,7 @@ export default function MyListings() {
       </div>
 
       {pendingOffers.length>0&&(
-        <div style={{ background:"#160a2e", border:"1px solid #8b5cf640", borderRadius:10, padding:"0.75rem", marginBottom:"1rem" }}>
+        <div style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:10, padding:"0.75rem", marginBottom:"1rem" }}>
           <div style={{ fontSize:12, color:"#8b5cf6", fontWeight:600 }}>💰 {pendingOffers.length} offer{pendingOffers.length>1?"s":""} waiting</div>
         </div>
       )}
@@ -155,7 +155,7 @@ export default function MyListings() {
       <div style={{ display:"flex", gap:6, marginBottom:"1rem" }}>
         {[{k:"listings",l:"Listings ("+listings.length+")"},{k:"offers",l:"Offers ("+offers.length+")"}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#111", color:tab===t.k?"#fff":"#666", fontFamily:"DM Sans,sans-serif", fontWeight:tab===t.k?700:400 }}>
+            style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#555555", color:tab===t.k?"#fff":"#666", fontFamily:"DM Sans,sans-serif", fontWeight:tab===t.k?700:400 }}>
             {t.l}
           </button>
         ))}
@@ -178,7 +178,7 @@ export default function MyListings() {
             </div>
           )}
           {listings.map(l=>(
-            <div key={l.id} style={{ background:"#ffffff", border:"1px solid "+(SC[l.status]||"#1e1e1e")+"30", borderRadius:12, marginBottom:10, overflow:"hidden" }}>
+            <div key={l.id} style={{ background:"#ffffff", border:"1px solid "+(SC[l.status]||"#eeeeee")+"30", borderRadius:12, marginBottom:10, overflow:"hidden" }}>
               <div style={{ display:"flex", gap:0 }}>
                 <div style={{ width:90, minHeight:90, background:"#f5f5f5", flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
                   {l.primary_photo
@@ -202,7 +202,7 @@ export default function MyListings() {
               </div>
 
               {l.status==="pending"&&l.listing_type==="vehicle"&&l.inspection_status!=="passed"&&(
-                <div style={{ borderTop:"1px solid #eeeeee", padding:"0.75rem", background:"#1a1208" }}>
+                <div style={{ borderTop:"1px solid #eeeeee", padding:"0.75rem", background:"#fff8f0" }}>
                   <div style={{ fontSize:11, color:"#e6821e", marginBottom:6 }}>⏳ CCC inspection required before approval</div>
                   <button onClick={()=>setShowInspection(showInspection===l.id?null:l.id)}
                     style={{ background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontSize:11, padding:"6px 14px", cursor:"pointer", fontWeight:600, width:"100%" }}>
@@ -235,10 +235,10 @@ export default function MyListings() {
               )}
 
               <div style={{ borderTop:"1px solid #eeeeee", padding:"0.5rem 0.75rem", display:"flex", gap:6, flexWrap:"wrap" }}>
-                <button onClick={()=>navigate("/dashboard/marketplace")} style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>View</button>
+                <button onClick={()=>navigate("/dashboard/marketplace")} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>View</button>
                 <button onClick={()=>openPhotos(l)} style={{ background:"#ffffff", border:"1px solid #dddddd", borderRadius:7, color:"#555555", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>Photos {l.marketplace_photos?.length>0?"("+l.marketplace_photos.length+")":""}</button>
-                {l.listing_type==="vehicle"&&<button onClick={()=>setFeatureListing(featureListing===l.id?null:l.id)} style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>Feature</button>}
-                <button onClick={()=>setInspectListing(inspectListing===l.id?null:l.id)} style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>Inspect</button>
+                {l.listing_type==="vehicle"&&<button onClick={()=>setFeatureListing(featureListing===l.id?null:l.id)} style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>Feature</button>}
+                <button onClick={()=>setInspectListing(inspectListing===l.id?null:l.id)} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>Inspect</button>
                 {l.status!=="sold"&&<button onClick={()=>deleteListing(l.id)} style={{ background:"none", border:"1px solid #e24b4a30", borderRadius:7, color:"#e24b4a", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>Delete</button>}
               </div>
             </div>
@@ -257,7 +257,7 @@ export default function MyListings() {
           {offers.map(o=>{
             const OC = { pending:"#8b5cf6", accepted:"#1d9e75", rejected:"#e24b4a", countered:"#e6821e", withdrawn:"#555" }
             return (
-              <div key={o.id} style={{ background:"#ffffff", border:"1px solid "+(OC[o.status]||"#1e1e1e")+"30", borderRadius:12, padding:"1rem", marginBottom:10 }}>
+              <div key={o.id} style={{ background:"#ffffff", border:"1px solid "+(OC[o.status]||"#eeeeee")+"30", borderRadius:12, padding:"1rem", marginBottom:10 }}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
                   <div style={{ flex:1, minWidth:0 }}>
                     <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:4 }}>{o.marketplace_listings?.title}</div>
@@ -280,7 +280,7 @@ export default function MyListings() {
                         Accept
                       </button>
                       <button onClick={()=>setExpanded(expanded===o.id?null:o.id)}
-                        style={{ background:"#160a2e", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
+                        style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
                         Counter
                       </button>
                       <button onClick={()=>rejectOffer(o.id,o.buyer_id,o.marketplace_listings?.title)} disabled={processing===o.id}

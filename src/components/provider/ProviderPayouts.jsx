@@ -90,7 +90,7 @@ export default function ProviderPayouts() {
         ].map(s=>(
           <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
             <div style={{ fontSize:11, color:"#777777", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
-            <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:s.color||"#f0ede6" }}>{s.value}</div>
+            <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:s.color||"#000000" }}>{s.value}</div>
           </div>
         ))}
       </div>
@@ -98,7 +98,7 @@ export default function ProviderPayouts() {
       <div style={{ display:"flex", gap:6, marginBottom:"1.5rem" }}>
         {[{k:"payouts",l:"Payouts"},{k:"bank",l:"Bank details"}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#378add":"#111", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
+            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#378add":"#555555", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
             {t.l} {t.k==="bank"&&!bankSaved&&<span style={{ color:"#e24b4a" }}>⚠️</span>}
           </button>
         ))}
@@ -119,7 +119,7 @@ export default function ProviderPayouts() {
             <label style={lbl}>Account number</label>
             <input style={inp} placeholder="Your bank account number" value={bankInfo.bank_account_number} onChange={e=>setBankInfo(b=>({...b,bank_account_number:e.target.value}))} required/>
             <button type="submit" disabled={savingBank}
-              style={{ background:savingBank?"#333":"#378add", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:savingBank?"not-allowed":"pointer" }}>
+              style={{ background:savingBank?"#555555":"#378add", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:savingBank?"not-allowed":"pointer" }}>
               {savingBank?"Saving...":"Save bank details"}
             </button>
           </form>
@@ -164,7 +164,7 @@ export default function ProviderPayouts() {
                   </div>
                 )}
                 <button type="submit" disabled={submitting||!bankSaved}
-                  style={{ background:submitting||!bankSaved?"#333":"#378add", border:"none", borderRadius:9, color:submitting||!bankSaved?"#666":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:submitting||!bankSaved?"not-allowed":"pointer" }}>
+                  style={{ background:submitting||!bankSaved?"#555555":"#378add", border:"none", borderRadius:9, color:submitting||!bankSaved?"#666":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:submitting||!bankSaved?"not-allowed":"pointer" }}>
                   {submitting?"Submitting...":"Request payout"}
                 </button>
               </form>

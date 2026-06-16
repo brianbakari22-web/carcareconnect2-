@@ -210,7 +210,7 @@ export default function ProviderServices() {
         <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
           {["all",...CATEGORIES.map(c=>c.key)].map(k=>(
             <button key={k} onClick={()=>setActiveCategory(k)}
-              style={{ padding:"6px 12px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:activeCategory===k?"#e6821e":"#111", color:activeCategory===k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif" }}>
+              style={{ padding:"6px 12px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:activeCategory===k?"#e6821e":"#555555", color:activeCategory===k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif" }}>
               {k==="all"?"All":CATEGORIES.find(c=>c.key===k)?.label}
             </button>
           ))}
@@ -234,7 +234,7 @@ export default function ProviderServices() {
             <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:8 }}>
               {CATEGORIES.map(c=>(
                 <button key={c.key} type="button" onClick={()=>setForm(f=>({...f,category:c.key}))}
-                  style={{ background:form.category===c.key?c.bg:"#0f0f0f", border:`1px solid ${form.category===c.key?c.color:"#222"}`, borderRadius:9, padding:"0.75rem", cursor:"pointer", textAlign:"left" }}>
+                  style={{ background:form.category===c.key?c.bg:"#ffffff", border:`1px solid ${form.category===c.key?c.color:"#f5f5f5"}`, borderRadius:9, padding:"0.75rem", cursor:"pointer", textAlign:"left" }}>
                   <div style={{ fontSize:16, marginBottom:4 }}>{c.icon}</div>
                   <div style={{ fontSize:12, fontWeight:600, color:form.category===c.key?c.color:"#666", marginBottom:2 }}>{c.label}</div>
                   <div style={{ fontSize:10, color:"#888888" }}>{c.commission}</div>
@@ -261,7 +261,7 @@ export default function ProviderServices() {
               </div>
               <div style={{ display:"flex", flexDirection:"column", justifyContent:"flex-end" }}>
                 {form.category&&(
-                  <div style={{ background:CATEGORIES.find(c=>c.key===form.category)?.bg||"#111", border:`1px solid ${CATEGORIES.find(c=>c.key===form.category)?.border||"#222"}`, borderRadius:8, padding:"0.6rem 0.75rem" }}>
+                  <div style={{ background:CATEGORIES.find(c=>c.key===form.category)?.bg||"#555555", border:`1px solid ${CATEGORIES.find(c=>c.key===form.category)?.border||"#f5f5f5"}`, borderRadius:8, padding:"0.6rem 0.75rem" }}>
                     <div style={{ fontSize:10, color:"#777777", marginBottom:2 }}>Commission preview</div>
                     <div style={{ fontSize:12, color:CATEGORIES.find(c=>c.key===form.category)?.color||"#888", fontWeight:600 }}>
                       {CATEGORIES.find(c=>c.key===form.category)?.commission}
@@ -279,7 +279,7 @@ export default function ProviderServices() {
             </div>
             <div style={{ display:"flex", gap:8 }}>
               <button type="submit" disabled={saving}
-                style={{ background:saving?"#333":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 24px", cursor:saving?"not-allowed":"pointer" }}>
+                style={{ background:saving?"#555555":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 24px", cursor:saving?"not-allowed":"pointer" }}>
                 {saving?"Saving...":editing?"Update service":"Add service"}
               </button>
               <button type="button" onClick={()=>{ setShowForm(false); setEditing(null); setForm(EMPTY) }}
@@ -303,7 +303,7 @@ export default function ProviderServices() {
       {filtered.map(s=>{
         const cat = CATEGORIES.find(c=>c.key===s.category)||CATEGORIES[0]
         return (
-          <div key={s.id} style={{ background:"#ffffff", border:`1px solid ${s.is_active?cat.border:"#1e1e1e"}`, borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8, opacity:s.is_active?1:0.6 }}>
+          <div key={s.id} style={{ background:"#ffffff", border:`1px solid ${s.is_active?cat.border:"#eeeeee"}`, borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8, opacity:s.is_active?1:0.6 }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10 }}>
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
@@ -325,7 +325,7 @@ export default function ProviderServices() {
                   Edit
                 </button>
                 <button onClick={()=>toggleActive(s.id, s.is_active)}
-                  style={{ background:s.is_active?"#1a0808":"#071a12", border:`1px solid ${s.is_active?"#e24b4a40":"#1d9e7540"}`, borderRadius:7, color:s.is_active?"#e24b4a":"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  style={{ background:s.is_active?"#fff5f5":"#f0fdf4", border:`1px solid ${s.is_active?"#e24b4a40":"#1d9e7540"}`, borderRadius:7, color:s.is_active?"#e24b4a":"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                   {s.is_active?"Deactivate":"Activate"}
                 </button>
                 <button onClick={()=>{ if(confirm("Deactivate this service? Pending bookings will be cancelled and customers notified.")) deleteService(s.id) }}

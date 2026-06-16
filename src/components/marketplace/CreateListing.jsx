@@ -107,7 +107,7 @@ export default function CreateListing() {
       <div style={{ fontFamily:"Syne", fontSize:isMobile?18:22, fontWeight:800, color:"#000000", marginBottom:4 }}>List an item</div>
       <div style={{ fontSize:12, color:"#777777", marginBottom:"1.5rem" }}>Reviewed within 24 hours before going live</div>
 
-      <div style={{ background:"#1a0808", border:"1px solid #e24b4a30", borderRadius:10, padding:"0.9rem", marginBottom:"1.5rem" }}>
+      <div style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:10, padding:"0.9rem", marginBottom:"1.5rem" }}>
         <div style={{ fontSize:12, color:"#e24b4a", fontWeight:600, marginBottom:4 }}>⚠️ Important rules</div>
         {["Do NOT include phone number, WhatsApp or email in listing","All buyer communication must stay within Car Care Connect","Violation results in listing removal and account suspension","Platform commission applies on successful sale"].map((r,i)=>(
           <div key={i} style={{ display:"flex", gap:8, marginBottom:4 }}><span style={{ color:"#e24b4a" }}>•</span><span style={{ fontSize:11, color:"#555555" }}>{r}</span></div>
@@ -120,7 +120,7 @@ export default function CreateListing() {
           <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:8 }}>
             {[{k:"vehicle",l:"🚗 Vehicle",d:"Cars, trucks"},{k:"part",l:"🔧 Car part",d:"Engine, brakes"},{k:"accessory",l:"✨ Accessory",d:"Mats, covers"}].map(t=>(
               <button key={t.k} type="button" onClick={()=>f("listing_type",t.k)}
-                style={{ background:form.listing_type===t.k?"#1a1208":"#0f0f0f", border:`1px solid ${form.listing_type===t.k?"#e6821e":"#222"}`, borderRadius:10, padding:"0.75rem", cursor:"pointer", textAlign:"left" }}>
+                style={{ background:form.listing_type===t.k?"#fff8f0":"#ffffff", border:`1px solid ${form.listing_type===t.k?"#e6821e":"#f5f5f5"}`, borderRadius:10, padding:"0.75rem", cursor:"pointer", textAlign:"left" }}>
                 <div style={{ fontSize:16, marginBottom:4 }}>{t.l.split(" ")[0]}</div>
                 <div style={{ fontSize:11, fontWeight:600, color:form.listing_type===t.k?"#e6821e":"#666" }}>{t.l.split(" ").slice(1).join(" ")}</div>
                 <div style={{ fontSize:9, color:"#888888", marginTop:2 }}>{t.d}</div>
@@ -208,7 +208,7 @@ export default function CreateListing() {
               {MAKES.filter(m=>m!=="Other").map(m=>(
                 <button key={m} type="button"
                   onClick={()=>f("compatible_makes",form.compatible_makes.includes(m)?form.compatible_makes.filter(x=>x!==m):[...form.compatible_makes,m])}
-                  style={{ padding:"4px 10px", borderRadius:6, border:"none", fontSize:11, cursor:"pointer", background:form.compatible_makes.includes(m)?"#e6821e":"#111", color:form.compatible_makes.includes(m)?"#fff":"#666" }}>
+                  style={{ padding:"4px 10px", borderRadius:6, border:"none", fontSize:11, cursor:"pointer", background:form.compatible_makes.includes(m)?"#e6821e":"#555555", color:form.compatible_makes.includes(m)?"#fff":"#666" }}>
                   {m}
                 </button>
               ))}
@@ -234,7 +234,7 @@ export default function CreateListing() {
         </label>
 
         <button type="submit" disabled={saving||!agreed}
-          style={{ width:"100%", background:saving||!agreed?"#333":"#e6821e", border:"none", borderRadius:10, color:saving||!agreed?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:saving||!agreed?"not-allowed":"pointer" }}>
+          style={{ width:"100%", background:saving||!agreed?"#555555":"#e6821e", border:"none", borderRadius:10, color:saving||!agreed?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:saving||!agreed?"not-allowed":"pointer" }}>
           {saving?"Submitting...":"Submit listing for review →"}
         </button>
         <div style={{ fontSize:11, color:"#888888", textAlign:"center", marginTop:8 }}>Listings reviewed within 24 hours</div>

@@ -57,7 +57,7 @@ export default function ProviderEarnings() {
       <div style={{ display:"flex", gap:6, marginBottom:"1.25rem", flexWrap:"wrap" }}>
         {[{k:t("today"),l:t("today")},{k:"week",l:language==="sw"?"Wiki hii":"This week"},{k:"month",l:language==="sw"?"Mwezi huu":"This month"},{k:"all",l:language==="sw"?"Wakati wote":"All time"}].map(t=>(
           <button key={t.k} onClick={()=>setPeriod(t.k)}
-            style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:period===t.k?"#e6821e":"#111", color:period===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:period===t.k?700:400 }}>
+            style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:period===t.k?"#e6821e":"#555555", color:period===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:period===t.k?700:400 }}>
             {t.l}
           </button>
         ))}
@@ -71,7 +71,7 @@ export default function ProviderEarnings() {
         ].map(s=>(
           <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
             <div style={{ fontSize:11, color:"#777777", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
-            <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:s.color||"#f0ede6" }}>{s.value}</div>
+            <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:s.color||"#000000" }}>{s.value}</div>
             <div style={{ fontSize:11, color:"#777777", marginTop:4 }}>{filtered.length} completed booking{filtered.length!==1?"s":""}</div>
           </div>
         ))}

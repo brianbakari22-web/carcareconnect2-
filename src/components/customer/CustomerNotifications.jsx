@@ -97,7 +97,7 @@ export default function CustomerNotifications() {
     }
   }}
           style={{ background:n.is_read?"#f8f8f8":"#ffffff", border:`1px solid ${n.is_read?"#eeeeee":typeColor[n.type]||"#e6821e"}50`, borderRadius:10, padding:"1rem", marginBottom:8, cursor:n.is_read?"default":"pointer", display:"flex", alignItems:"flex-start", gap:12 }}>
-          <div style={{ width:38, height:38, borderRadius:9, background:typeBg[n.type]||"#1a1208", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>
+          <div style={{ width:38, height:38, borderRadius:9, background:typeBg[n.type]||"#fff8f0", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>
             {typeIcon[n.type]||"🔔"}
           </div>
           <div style={{ flex:1, minWidth:0 }}>
@@ -108,7 +108,7 @@ export default function CustomerNotifications() {
             <div style={{ fontSize:12, color:"#666", marginTop:3, lineHeight:1.5 }}>{n.message}</div>
             <div style={{ fontSize:10, color:"#888888", marginTop:5 }}>{new Date(n.created_at).toLocaleString()}</div>
           </div>
-          <button onClick={e=>{ e.stopPropagation(); deleteNotif(n.id) }} style={{ background:"none", border:"none", color:"#333", cursor:"pointer", fontSize:16, lineHeight:1, flexShrink:0 }}>×</button>
+          <button onClick={e=>{ e.stopPropagation(); deleteNotif(n.id) }} style={{ background:"none", border:"none", color:"#555555", cursor:"pointer", fontSize:16, lineHeight:1, flexShrink:0 }}>×</button>
         </div>
       ))}
     </div>

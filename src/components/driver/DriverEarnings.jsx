@@ -311,7 +311,7 @@ export default function DriverEarnings() {
                     { l:"Transport allowance", v:`KES ${allowance.toLocaleString()}`, c:"#e6821e" },
                   ].map(f=>(
                     <div key={f.l} style={{ background:"#ffffff", borderRadius:7, padding:"0.6rem", textAlign:"center" }}>
-                      <div style={{ fontSize:12, fontWeight:700, color:f.c||"#f0ede6" }}>{f.v}</div>
+                      <div style={{ fontSize:12, fontWeight:700, color:f.c||"#000000" }}>{f.v}</div>
                       <div style={{ fontSize:9, color:"#888888", marginTop:2 }}>{f.l}</div>
                     </div>
                   ))}

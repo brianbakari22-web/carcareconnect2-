@@ -45,7 +45,7 @@ export default function DriverReviews() {
             <div style={{ fontFamily:"Syne", fontSize:40, fontWeight:800, color:"#378add", lineHeight:1 }}>{avgRating}</div>
             <div style={{ display:"flex", justifyContent:"center", gap:2, margin:"6px 0" }}>
               {[1,2,3,4,5].map(s=>(
-                <span key={s} style={{ color:s<=Math.round(avgRating)?"#378add":"#333", fontSize:16 }}>★</span>
+                <span key={s} style={{ color:s<=Math.round(avgRating)?"#378add":"#555555", fontSize:16 }}>★</span>
               ))}
             </div>
             <div style={{ fontSize:11, color:"#777777" }}>{reviews.length} rating{reviews.length!==1?"s":""}</div>
@@ -76,7 +76,7 @@ export default function DriverReviews() {
         <div key={r.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-              <div style={{ width:36, height:36, borderRadius:"50%", background:"#0c1f2e", border:"1px solid #378add30", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:700, color:"#378add" }}>
+              <div style={{ width:36, height:36, borderRadius:"50%", background:"#eff6ff", border:"1px solid #378add30", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:700, color:"#378add" }}>
                 {r.profile_public?.first_name?.[0]}{r.profile_public?.last_name?.[0]}
               </div>
               <div>
@@ -86,7 +86,7 @@ export default function DriverReviews() {
             </div>
             <div style={{ display:"flex", gap:1, flexShrink:0 }}>
               {[1,2,3,4,5].map(s=>(
-                <span key={s} style={{ color:s<=r.driver_rating?"#378add":"#333", fontSize:16 }}>★</span>
+                <span key={s} style={{ color:s<=r.driver_rating?"#378add":"#555555", fontSize:16 }}>★</span>
               ))}
             </div>
           </div>

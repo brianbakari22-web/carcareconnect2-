@@ -325,7 +325,7 @@ export default function CustomerPartsMarketplace() {
                   </div>
                 </div>
                 <button onClick={()=>addToCart(item)} disabled={item.stock_quantity===0}
-                  style={{ width:"100%", background:item.stock_quantity===0?"#333":"#e6821e", border:"none", borderRadius:8, color:item.stock_quantity===0?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px", cursor:item.stock_quantity===0?"not-allowed":"pointer" }}>
+                  style={{ width:"100%", background:item.stock_quantity===0?"#555555":"#e6821e", border:"none", borderRadius:8, color:item.stock_quantity===0?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px", cursor:item.stock_quantity===0?"not-allowed":"pointer" }}>
                   {item.stock_quantity===0?"Out of stock":"+ Add to cart"}
                 </button>
                 </div>

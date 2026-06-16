@@ -63,16 +63,16 @@ const LogoBg = memo(function LogoBg({ isMobile }) {
         <circle cx="230" cy="200" r="82" fill="none" stroke="#e6821e" strokeWidth="0.5" opacity="0.4"/>
         <rect x="170" y="195" width="120" height="36" rx="8" fill="#e6821e"/>
         <path d="M188 195 Q196 172 214 168 L246 168 Q264 172 272 195 Z" fill="#e6821e"/>
-        <path d="M193 195 Q199 178 213 175 L235 175 Q249 178 255 195 Z" fill="#0a0a0a" opacity="0.5"/>
-        <line x1="230" y1="175" x2="230" y2="195" stroke="#0a0a0a" strokeWidth="1" opacity="0.4"/>
-        <circle cx="196" cy="231" r="14" fill="#1a1a1a" stroke="#e6821e" strokeWidth="2"/>
+        <path d="M193 195 Q199 178 213 175 L235 175 Q249 178 255 195 Z" fill="#ffffff" opacity="0.5"/>
+        <line x1="230" y1="175" x2="230" y2="195" stroke="#ffffff" strokeWidth="1" opacity="0.4"/>
+        <circle cx="196" cy="231" r="14" fill="#ffffff" stroke="#e6821e" strokeWidth="2"/>
         <circle cx="196" cy="231" r="6" fill="#e6821e"/>
-        <circle cx="264" cy="231" r="14" fill="#1a1a1a" stroke="#e6821e" strokeWidth="2"/>
+        <circle cx="264" cy="231" r="14" fill="#ffffff" stroke="#e6821e" strokeWidth="2"/>
         <circle cx="264" cy="231" r="6" fill="#e6821e"/>
         <rect x="285" y="204" width="8" height="6" rx="2" fill="#fff" opacity="0.8"/>
         <rect x="167" y="204" width="6" height="6" rx="2" fill="#ff4444" opacity="0.8"/>
-        <text x="350" y="175" fontFamily="Arial Black, Arial, sans-serif" fontSize="42" fontWeight="900" fill="#f0ede6" letterSpacing="-1">Car<tspan fill="#e6821e">Care</tspan></text>
-        <text x="350" y="225" fontFamily="Arial Black, Arial, sans-serif" fontSize="42" fontWeight="900" fill="#f0ede6" letterSpacing="-1">Connect</text>
+        <text x="350" y="175" fontFamily="Arial Black, Arial, sans-serif" fontSize="42" fontWeight="900" fill="#000000" letterSpacing="-1">Car<tspan fill="#e6821e">Care</tspan></text>
+        <text x="350" y="225" fontFamily="Arial Black, Arial, sans-serif" fontSize="42" fontWeight="900" fill="#000000" letterSpacing="-1">Connect</text>
         <text x="350" y="258" fontFamily="Arial, sans-serif" fontSize="12" fill="#888" letterSpacing="2">DRIVE CONFIDENTLY · SERVICE SIMPLY</text>
         <line x1="350" y1="272" x2="620" y2="272" stroke="#e6821e" strokeWidth="0.5" opacity="0.4"/>
         <text x="350" y="294" fontFamily="Arial, sans-serif" fontSize="11" fill="#555" letterSpacing="1">Nairobi's trusted auto care network</text>
@@ -135,8 +135,8 @@ const LoginSheet = memo(function LoginSheet({ isMobile, onClose }) {
   }
 
   const inp = (extra={}) => ({
-    width:"100%", background:"#111", border:"1px solid #2a2a2a", borderRadius:10,
-    padding:"13px 16px", color:"#f0ede6", fontSize:13, outline:"none",
+    width:"100%", background:"#555555", border:"1px solid #eeeeee", borderRadius:10,
+    padding:"13px 16px", color:"#000000", fontSize:13, outline:"none",
     fontFamily:"'DM Sans',sans-serif", ...extra
   })
 
@@ -147,24 +147,24 @@ const LoginSheet = memo(function LoginSheet({ isMobile, onClose }) {
       <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.75)" }} onClick={onClose}/>
       <div style={{
         position:"relative", zIndex:1,
-        background:"#0f0f0f",
+        background:"#ffffff",
         borderRadius: isMobile?"20px 20px 0 0":"16px",
         padding:"2rem",
         width: isMobile?"100%":"420px",
-        border:"1px solid #2a2a2a",
-        borderBottom: isMobile?"none":"1px solid #2a2a2a",
+        border:"1px solid #eeeeee",
+        borderBottom: isMobile?"none":"1px solid #eeeeee",
       }}>
-        {isMobile&&<div style={{ width:40, height:4, background:"#333", borderRadius:2, margin:"0 auto 1.5rem" }}/>}
+        {isMobile&&<div style={{ width:40, height:4, background:"#555555", borderRadius:2, margin:"0 auto 1.5rem" }}/>}
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"1.5rem" }}>
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-            <div style={{ width:40, height:40, background:"#160a2e", borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, border:"1px solid #8b5cf630" }}>🔐</div>
+            <div style={{ width:40, height:40, background:"#faf5ff", borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, border:"1px solid #8b5cf630" }}>🔐</div>
             <div>
-              <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#f0ede6" }}>Admin Access</div>
+              <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000000" }}>Admin Access</div>
               <div style={{ fontSize:11, color:"#555" }}>Restricted area</div>
             </div>
           </div>
           {!isMobile&&(
-            <button onClick={onClose} style={{ background:"#1a1a1a", border:"none", borderRadius:"50%", width:32, height:32, color:"#666", cursor:"pointer", fontSize:18, display:"flex", alignItems:"center", justifyContent:"center" }}>×</button>
+            <button onClick={onClose} style={{ background:"#ffffff", border:"none", borderRadius:"50%", width:32, height:32, color:"#666", cursor:"pointer", fontSize:18, display:"flex", alignItems:"center", justifyContent:"center" }}>×</button>
           )}
         </div>
         <div style={{ height:1, background:"linear-gradient(90deg,#8b5cf640,transparent)", marginBottom:"1.5rem" }}/>
@@ -184,7 +184,7 @@ const LoginSheet = memo(function LoginSheet({ isMobile, onClose }) {
             </div>
           </div>
           <button type="submit" disabled={loading}
-            style={{ width:"100%", background:loading?"#333":"#8b5cf6", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:loading?"not-allowed":"pointer", marginBottom:16 }}>
+            style={{ width:"100%", background:loading?"#555555":"#8b5cf6", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:loading?"not-allowed":"pointer", marginBottom:16 }}>
             {loading?(
               <span style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8 }}>
                 <span style={{ width:14, height:14, border:"2px solid #fff", borderTopColor:"transparent", borderRadius:"50%", display:"inline-block", animation:"spin 0.8s linear infinite" }}/>
@@ -221,7 +221,7 @@ export default function AdminAuthPage() {
   ]
 
   return (
-    <div style={{ minHeight:"100vh", background:"#0a0a0a", position:"relative", overflow:"hidden", fontFamily:"'DM Sans',sans-serif" }}>
+    <div style={{ minHeight:"100vh", background:"#ffffff", position:"relative", overflow:"hidden", fontFamily:"'DM Sans',sans-serif" }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap'); @keyframes spin{to{transform:rotate(360deg)}}`}</style>
 
       {bg}
@@ -229,7 +229,7 @@ export default function AdminAuthPage() {
       <div style={{ position:"relative", zIndex:2, minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"flex-end", paddingBottom:"3rem", padding:"2rem" }}>
 
         <div style={{ position:"absolute", top:"1.5rem", left:"1.5rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:isMobile?15:20, fontWeight:800, color:"#f0ede6" }}>
+          <div style={{ fontFamily:"Syne", fontSize:isMobile?15:20, fontWeight:800, color:"#000000" }}>
             Car<span style={{ color:"#e6821e" }}>Care</span> Connect
           </div>
           <div style={{ fontSize:10, color:"#555", marginTop:2 }}>Admin Control Center</div>
@@ -259,7 +259,7 @@ export default function AdminAuthPage() {
             🔐 Admin Sign In
           </button>
 
-          <div style={{ marginTop:12, fontSize:10, color:"#333" }}>
+          <div style={{ marginTop:12, fontSize:10, color:"#555555" }}>
             Authorized personnel only · Access is logged
           </div>
         </div>

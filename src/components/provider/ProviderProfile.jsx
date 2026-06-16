@@ -170,7 +170,7 @@ export default function ProviderProfile() {
       <div style={{ display:"flex", gap:6, marginBottom:"1.5rem", flexWrap:"wrap" }}>
         {TABS.map(tb=>(
           <button key={tb.k} onClick={()=>{ setTab(tb.k); if(tb.k==="data"&&!exportData) loadExportData() }}
-            style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===tb.k?"#378add":"#111", color:tab===tb.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===tb.k?700:400 }}>
+            style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===tb.k?"#378add":"#555555", color:tab===tb.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===tb.k?700:400 }}>
             {tb.l}
           </button>
         ))}
@@ -213,7 +213,7 @@ export default function ProviderProfile() {
               ))}
             </div>
             <button type="submit" disabled={saving}
-              style={{ background:saving?"#333":"#378add", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
+              style={{ background:saving?"#555555":"#378add", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
               {saving?t("saving"):t("saveChanges")}
             </button>
           </div>
@@ -229,7 +229,7 @@ export default function ProviderProfile() {
             <label style={lbl}>{t("phone")}</label>
             <input style={inp} placeholder="+254 700 000 000" value={sensitive.phone} onChange={e=>setSensitive(s=>({...s,phone:e.target.value}))}/>
             <button type="submit" disabled={saving}
-              style={{ background:saving?"#333":"#378add", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
+              style={{ background:saving?"#555555":"#378add", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
               {saving?t("saving"):t("saveChanges")}
             </button>
           </div>
@@ -242,7 +242,7 @@ export default function ProviderProfile() {
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#000000" }}>Shop location</div>
             <div style={{ fontSize:12, color:"#777777", marginBottom:"1rem" }}>Help customers find you and enable distance-based search</div>
             <button type="button" onClick={detectLocation} disabled={locating}
-              style={{ background:locating?"#333":"#071a12", border:"1px solid #1d9e7540", borderRadius:9, color:"#1d9e75", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:locating?"not-allowed":"pointer", marginBottom:16, width:"100%" }}>
+              style={{ background:locating?"#555555":"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:9, color:"#1d9e75", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:locating?"not-allowed":"pointer", marginBottom:16, width:"100%" }}>
               {locating?"Detecting...":"📍 Use my current location"}
             </button>
             {location.address&&<div style={{ fontSize:11, color:"#777777", marginBottom:12, padding:"0.6rem", background:"#ffffff", borderRadius:7 }}>{location.address}</div>}
@@ -258,7 +258,7 @@ export default function ProviderProfile() {
               </div>
             </div>
             <button type="submit" disabled={saving}
-              style={{ background:saving?"#333":"#378add", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
+              style={{ background:saving?"#555555":"#378add", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
               {saving?"Saving...":"Save location"}
             </button>
           </div>

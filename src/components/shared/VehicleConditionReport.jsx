@@ -126,7 +126,7 @@ export default function VehicleConditionReport({ bookingId, reportType, onComple
           <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:6 }}>
             {FUEL_LEVELS.map(f=>(
               <button key={f.key} type="button" onClick={()=>setForm(fm=>({...fm,fuel_level:f.key}))}
-                style={{ background:form.fuel_level===f.key?"#0c1f2e":"#0f0f0f", border:`1px solid ${form.fuel_level===f.key?"#378add":"#222"}`, borderRadius:8, padding:"8px 4px", cursor:"pointer", textAlign:"center" }}>
+                style={{ background:form.fuel_level===f.key?"#eff6ff":"#ffffff", border:`1px solid ${form.fuel_level===f.key?"#378add":"#f5f5f5"}`, borderRadius:8, padding:"8px 4px", cursor:"pointer", textAlign:"center" }}>
                 <div style={{ fontSize:10, color:form.fuel_level===f.key?"#378add":"#555", fontWeight:form.fuel_level===f.key?700:400 }}>{f.label}</div>
               </button>
             ))}
@@ -138,7 +138,7 @@ export default function VehicleConditionReport({ bookingId, reportType, onComple
           <label style={lbl}>Vehicle condition</label>
           <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(3,1fr)", gap:8 }}>
             {CHECKLIST.map(c=>(
-              <label key={c.key} style={{ display:"flex", alignItems:"center", gap:8, padding:"8px", background:"#ffffff", borderRadius:8, cursor:"pointer", border:`1px solid ${form[c.key]?"#e24b4a30":"#1a1a1a"}` }}>
+              <label key={c.key} style={{ display:"flex", alignItems:"center", gap:8, padding:"8px", background:"#ffffff", borderRadius:8, cursor:"pointer", border:`1px solid ${form[c.key]?"#e24b4a30":"#ffffff"}` }}>
                 <input type="checkbox" checked={form[c.key]} onChange={e=>setForm(f=>({...f,[c.key]:e.target.checked}))}
                   style={{ accentColor:"#e24b4a", width:14, height:14, flexShrink:0 }}/>
                 <span style={{ fontSize:11, color:form[c.key]?"#e24b4a":"#666" }}>{c.label}</span>
@@ -156,7 +156,7 @@ export default function VehicleConditionReport({ bookingId, reportType, onComple
         </div>
 
         <button type="submit" disabled={saving}
-          style={{ width:"100%", background:saving?"#333":reportType==="pickup"?"#378add":"#1d9e75", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:saving?"not-allowed":"pointer" }}>
+          style={{ width:"100%", background:saving?"#555555":reportType==="pickup"?"#378add":"#1d9e75", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:saving?"not-allowed":"pointer" }}>
           {saving?"Saving report...":reportType==="pickup"?"Save pickup report ✓":"Save dropoff report ✓"}
         </button>
       </form>

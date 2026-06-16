@@ -69,7 +69,7 @@ export default function CustomerReviews() {
         <div style={{ display:"flex", gap:6 }}>
           {[1,2,3,4,5].map(star=>(
             <button key={star} type="button" onClick={()=>onChange(star)}
-              style={{ background:"none", border:"none", cursor:"pointer", fontSize:28, color:star<=value?"#e6821e":"#333", padding:"2px" }}>★</button>
+              style={{ background:"none", border:"none", cursor:"pointer", fontSize:28, color:star<=value?"#e6821e":"#555555", padding:"2px" }}>★</button>
           ))}
         </div>
         {value>0&&<div style={{ fontSize:11, color:"#e6821e", marginTop:4 }}>{["","Poor","Fair","Good","Very good","Excellent"][value]}</div>}
@@ -89,7 +89,7 @@ export default function CustomerReviews() {
           { k:"submitted", l:`${submittedLabel} (${myReviews.length})` },
         ].map(t2=>(
           <button key={t2.k} onClick={()=>setTab(t2.k)}
-            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t2.k?"#e6821e":"#111", color:tab===t2.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t2.k?700:400 }}>
+            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t2.k?"#e6821e":"#555555", color:tab===t2.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t2.k?700:400 }}>
             {t2.l}
           </button>
         ))}
@@ -102,7 +102,7 @@ export default function CustomerReviews() {
           {pendingReview.length===0&&!loading&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>{t("noDataYet")}</div>}
           {pendingReview.map(b=>(
             <div key={b.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
-              <div style={{ width:42, height:42, background:"#1a1208", borderRadius:9, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, flexShrink:0 }}>🔧</div>
+              <div style={{ width:42, height:42, background:"#fff8f0", borderRadius:9, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, flexShrink:0 }}>🔧</div>
               <div style={{ flex:1 }}>
                 <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>{b.service_name}</div>
                 <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>{b.booking_date} · KES {Number(b.total_amount).toLocaleString()}</div>
@@ -137,7 +137,7 @@ export default function CustomerReviews() {
                 </>
               )}
               <button type="submit" disabled={submitting||form.provider_rating===0}
-                style={{ width:"100%", background:form.provider_rating>0?"#e6821e":"#333", border:"none", borderRadius:9, color:form.provider_rating>0?"#fff":"#666", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:form.provider_rating>0?"pointer":"not-allowed" }}>
+                style={{ width:"100%", background:form.provider_rating>0?"#e6821e":"#555555", border:"none", borderRadius:9, color:form.provider_rating>0?"#fff":"#666", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:form.provider_rating>0?"pointer":"not-allowed" }}>
                 {submitting?t("loading"):t("submit")}
               </button>
             </form>
@@ -158,7 +158,7 @@ export default function CustomerReviews() {
                   <div style={{ fontSize:10, color:"#888888", marginTop:2 }}>{new Date(r.created_at).toLocaleDateString()}</div>
                 </div>
                 <div style={{ display:"flex", gap:1 }}>
-                  {[1,2,3,4,5].map(s=><span key={s} style={{ color:s<=r.provider_rating?"#e6821e":"#333", fontSize:16 }}>★</span>)}
+                  {[1,2,3,4,5].map(s=><span key={s} style={{ color:s<=r.provider_rating?"#e6821e":"#555555", fontSize:16 }}>★</span>)}
                 </div>
               </div>
               {r.provider_review&&<div style={{ fontSize:12, color:"#555555", lineHeight:1.5, marginBottom:8 }}>"{r.provider_review}"</div>}

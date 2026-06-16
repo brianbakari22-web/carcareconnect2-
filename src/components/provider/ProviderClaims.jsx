@@ -85,7 +85,7 @@ export default function ProviderClaims() {
           { k:"penalties", l:`Penalties (${penalties.length})` },
         ].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#378add":"#111", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
+            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#378add":"#555555", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
             {t.l}
           </button>
         ))}
@@ -103,7 +103,7 @@ export default function ProviderClaims() {
             </div>
           )}
           {claims.map(c=>(
-            <div key={c.id} style={{ background:"#ffffff", border:`1px solid ${SC[c.status]||"#1e1e1e"}30`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
+            <div key={c.id} style={{ background:"#ffffff", border:`1px solid ${SC[c.status]||"#eeeeee"}30`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
@@ -168,7 +168,7 @@ export default function ProviderClaims() {
         <div>
           {penalties.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>No penalties recorded</div>}
           {penalties.map(p=>(
-            <div key={p.id} style={{ background:"#ffffff", border:`1px solid ${p.is_active?"#e24b4a20":"#1e1e1e"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
+            <div key={p.id} style={{ background:"#ffffff", border:`1px solid ${p.is_active?"#e24b4a20":"#eeeeee"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                 <div>
                   <div style={{ fontSize:12, fontWeight:600, color:p.is_active?"#e24b4a":"#555", marginBottom:2 }}>{p.penalty_type?.replace(/_/g," ").toUpperCase()}</div>

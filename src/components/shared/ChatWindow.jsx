@@ -155,7 +155,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
     <div style={{ display:"flex", flexDirection:"column", height:"100%", minHeight:320, background:"#ffffff", borderRadius:12, border:"1px solid #e5e5e5", overflow:"hidden" }}>
       <div style={{ padding:"1rem", borderBottom:"1px solid #eeeeee", display:"flex", alignItems:"center", justifyContent:"space-between", background:"#ffffff", flexShrink:0 }}>
         <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-          <div style={{ width:36, height:36, borderRadius:"50%", background:"#1a1208", border:"1px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>
+          <div style={{ width:36, height:36, borderRadius:"50%", background:"#fff8f0", border:"1px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>
             {otherUserName?.[0]?.toUpperCase()||"?"}
           </div>
           <div>
@@ -182,9 +182,9 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
           return (
             <div key={m.id} style={{ display:"flex", justifyContent:isMine?"flex-end":"flex-start", alignItems:"flex-end", gap:4 }}>
               {isMine&&!m._pending&&(
-                <button onClick={()=>deleteMessage(m.id)} style={{ background:"#1a0808", border:"1px solid #e24b4a40", borderRadius:6, color:"#e24b4a", cursor:"pointer", fontSize:11, padding:"3px 7px", lineHeight:1, flexShrink:0 }} title="Delete">🗑</button>
+                <button onClick={()=>deleteMessage(m.id)} style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:6, color:"#e24b4a", cursor:"pointer", fontSize:11, padding:"3px 7px", lineHeight:1, flexShrink:0 }} title="Delete">🗑</button>
               )}
-              <div style={{ maxWidth:"75%", padding:"10px 14px", borderRadius:isMine?"14px 14px 4px 14px":"14px 14px 14px 4px", background:isMine?"#e6821e":"#1a1a1a", color:isMine?"#fff":"#f0ede6", fontSize:13, lineHeight:1.5, opacity:m._pending?0.7:1, transition:"opacity 0.2s" }}>
+              <div style={{ maxWidth:"75%", padding:"10px 14px", borderRadius:isMine?"14px 14px 4px 14px":"14px 14px 14px 4px", background:isMine?"#e6821e":"#ffffff", color:isMine?"#fff":"#000000", fontSize:13, lineHeight:1.5, opacity:m._pending?0.7:1, transition:"opacity 0.2s" }}>
                 <div style={{ wordBreak:"break-word" }}>{m.message}</div>
                 <div style={{ fontSize:9, opacity:0.6, marginTop:4, textAlign:isMine?"right":"left", display:"flex", alignItems:"center", justifyContent:isMine?"flex-end":"flex-start", gap:4 }}>
                   {new Date(m.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}
@@ -207,7 +207,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
           placeholder={t("typeMessage")} rows={1}
           style={{ flex:1, background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:10, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", resize:"none", lineHeight:1.4, maxHeight:100 }}/>
         <button type="submit" disabled={!text.trim()||sending}
-          style={{ background:text.trim()&&!sending?"#e6821e":"#222", border:"none", borderRadius:10, color:text.trim()&&!sending?"#fff":"#555", fontSize:18, padding:"0 16px", cursor:text.trim()&&!sending?"pointer":"default", flexShrink:0, transition:"all 0.12s" }}>
+          style={{ background:text.trim()&&!sending?"#e6821e":"#f5f5f5", border:"none", borderRadius:10, color:text.trim()&&!sending?"#fff":"#555", fontSize:18, padding:"0 16px", cursor:text.trim()&&!sending?"pointer":"default", flexShrink:0, transition:"all 0.12s" }}>
           ➤
         </button>
       </form>

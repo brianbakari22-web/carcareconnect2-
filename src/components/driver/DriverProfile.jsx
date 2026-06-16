@@ -245,7 +245,7 @@ export default function DriverProfile() {
       {/* Profile header */}
       <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.25rem" }}>
         <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:"1.25rem" }}>
-          <div style={{ width:60, height:60, borderRadius:14, background:"#071a12", border:"2px solid #1d9e7540", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#1d9e75", flexShrink:0 }}>
+          <div style={{ width:60, height:60, borderRadius:14, background:"#f0fdf4", border:"2px solid #1d9e7540", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#1d9e75", flexShrink:0 }}>
             {initials||"🚗"}
           </div>
           <div>
@@ -258,9 +258,9 @@ export default function DriverProfile() {
             </div>
             <div style={{ display:"flex", alignItems:"center", gap:6, marginTop:4 }}>
               {profile?.documents_verified ? (
-                <span style={{ fontSize:10, color:"#1d9e75", background:"#071a12", padding:"2px 8px", borderRadius:10, border:"1px solid #1d9e7540" }}>✓ Verified driver</span>
+                <span style={{ fontSize:10, color:"#1d9e75", background:"#f0fdf4", padding:"2px 8px", borderRadius:10, border:"1px solid #1d9e7540" }}>✓ Verified driver</span>
               ) : (
-                <span style={{ fontSize:10, color:"#e6821e", background:"#1a1208", padding:"2px 8px", borderRadius:10, border:"1px solid #e6821e40" }}>⏳ Pending verification</span>
+                <span style={{ fontSize:10, color:"#e6821e", background:"#fff8f0", padding:"2px 8px", borderRadius:10, border:"1px solid #e6821e40" }}>⏳ Pending verification</span>
               )}
             </div>
           </div>
@@ -286,7 +286,7 @@ export default function DriverProfile() {
       <div style={{ display:"flex", gap:6, marginBottom:"1.25rem", flexWrap:"wrap" }}>
         {TABS.map(tb=>(
           <button key={tb.k} onClick={()=>setTab(tb.k)}
-            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===tb.k?"#1d9e75":"#111", color:tab===tb.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===tb.k?700:400 }}>
+            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===tb.k?"#1d9e75":"#555555", color:tab===tb.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===tb.k?700:400 }}>
             {tb.l}
           </button>
         ))}
@@ -304,7 +304,7 @@ export default function DriverProfile() {
             <label style={lbl}>City</label>
             <input style={inp} placeholder="e.g. Nairobi" value={personalForm.city} onChange={e=>setPersonalForm(f=>({...f,city:e.target.value}))}/>
             <button type="submit" disabled={saving}
-              style={{ background:saving?"#333":"#1d9e75", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
+              style={{ background:saving?"#555555":"#1d9e75", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
               {saving?"Saving...":"Save changes"}
             </button>
           </div>
@@ -319,7 +319,7 @@ export default function DriverProfile() {
             <div style={{ fontSize:11, color:"#777777", marginBottom:"1rem" }}>Your credentials will be reviewed by admin before you can go online.</div>
 
             {!profile?.documents_verified&&(
-              <div style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:8, padding:"0.75rem", marginBottom:"1rem" }}>
+              <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:8, padding:"0.75rem", marginBottom:"1rem" }}>
                 <div style={{ fontSize:12, color:"#e6821e" }}>⏳ Pending verification — fill in all fields and submit for admin review</div>
               </div>
             )}
@@ -420,7 +420,7 @@ export default function DriverProfile() {
             </div>
 
             <button type="submit" disabled={saving}
-              style={{ background:saving?"#333":"#1d9e75", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
+              style={{ background:saving?"#555555":"#1d9e75", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
               {saving?"Saving...":"Save credentials"}
             </button>
           </div>
@@ -509,7 +509,7 @@ export default function DriverProfile() {
             <label style={lbl}>Phone number</label>
             <input style={inp} placeholder="+254 700 000 000" value={sensitive.phone} onChange={e=>setSensitive(s=>({...s,phone:e.target.value}))}/>
             <button type="submit" disabled={saving}
-              style={{ background:saving?"#333":"#1d9e75", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
+              style={{ background:saving?"#555555":"#1d9e75", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
               {saving?"Saving...":"Save contact"}
             </button>
           </div>

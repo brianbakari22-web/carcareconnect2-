@@ -197,7 +197,7 @@ export default function ProviderInventory() {
               {uploadingPhoto&&<div style={{ fontSize:11, color:"#777777" }}>Uploading photo...</div>}
             </div>
             <div style={{ display:"flex", gap:8, marginTop:4 }}>
-              <button type="submit" disabled={saving} style={{ background:saving?"#333":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 24px", cursor:saving?"not-allowed":"pointer" }}>
+              <button type="submit" disabled={saving} style={{ background:saving?"#555555":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 24px", cursor:saving?"not-allowed":"pointer" }}>
                 {saving?"Saving...":editing?"Update item":"Add item"}
               </button>
               <button type="button" onClick={()=>{ setShowForm(false); setEditing(null); setForm(EMPTY) }} style={{ background:"none", border:"1px solid #dddddd", borderRadius:9, color:"#666", fontSize:13, padding:"10px 18px", cursor:"pointer" }}>Cancel</button>
@@ -213,7 +213,7 @@ export default function ProviderInventory() {
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
         {[{k:"all",l:"All"}, ...CATEGORIES].map(c=>(
           <button key={c.key||c.k} onClick={()=>setCatFilter(c.key||c.k)}
-            style={{ padding:"5px 10px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:catFilter===(c.key||c.k)?"#e6821e":"#111", color:catFilter===(c.key||c.k)?"#fff":"#666" }}>
+            style={{ padding:"5px 10px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:catFilter===(c.key||c.k)?"#e6821e":"#555555", color:catFilter===(c.key||c.k)?"#fff":"#666" }}>
             {c.icon||""} {c.label||c.l}
           </button>
         ))}
@@ -229,7 +229,7 @@ export default function ProviderInventory() {
               <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
                 <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{item.name}</div>
                 {item.brand&&<span style={{ fontSize:10, color:"#555555", background:"#f5f5f5", padding:"1px 6px", borderRadius:6 }}>{item.brand}</span>}
-                <span style={{ fontSize:10, color:item.is_active?"#1d9e75":"#555", background:item.is_active?"#071a12":"#1a1a1a", padding:"1px 6px", borderRadius:6 }}>{item.is_active?"Active":"Hidden"}</span>
+                <span style={{ fontSize:10, color:item.is_active?"#1d9e75":"#555", background:item.is_active?"#f0fdf4":"#ffffff", padding:"1px 6px", borderRadius:6 }}>{item.is_active?"Active":"Hidden"}</span>
                 {item.stock_quantity<=5&&item.is_active&&<span style={{ fontSize:10, color:"#e24b4a", background:"#fff5f5", padding:"1px 6px", borderRadius:6 }}>ΓÜá∩╕Å Low stock</span>}
               </div>
               <div style={{ fontSize:11, color:"#777777", marginBottom:4 }}>

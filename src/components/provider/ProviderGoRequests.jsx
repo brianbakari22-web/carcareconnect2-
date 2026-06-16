@@ -279,7 +279,7 @@ export default function ProviderGoRequests() {
                 </button>
                 {assigning===r.id&&(
                   <button onClick={()=>acceptRequest(r)} disabled={mechanics.length>0&&!selectedMechanic}
-                    style={{ background:mechanics.length>0&&!selectedMechanic?"#333":"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 18px", cursor:"pointer" }}>
+                    style={{ background:mechanics.length>0&&!selectedMechanic?"#555555":"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 18px", cursor:"pointer" }}>
                     Confirm dispatch
                   </button>
                 )}
@@ -312,7 +312,7 @@ export default function ProviderGoRequests() {
               <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
                 <span>{EMERGENCY_ICONS[r.bookings?.emergency_type]||"≡ƒåÿ"}</span>
                 <span style={{ fontSize:13, color:"#000000" }}>{r.bookings?.emergency_type?.replace(/_/g," ")}</span>
-                <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:r.status==="accepted"?"#071a12":r.status==="declined"?"#1a0808":"#1a1a1a", color:r.status==="accepted"?"#1d9e75":r.status==="declined"?"#e24b4a":"#888" }}>{r.status}</span>
+                <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:r.status==="accepted"?"#f0fdf4":r.status==="declined"?"#fff5f5":"#ffffff", color:r.status==="accepted"?"#1d9e75":r.status==="declined"?"#e24b4a":"#888" }}>{r.status}</span>
               </div>
               <div style={{ fontSize:11, color:"#777777" }}>📍 {r.bookings?.emergency_location_address}</div>
               <div style={{ fontSize:10, color:"#888888", marginTop:2 }}>{new Date(r.sent_at).toLocaleString()}</div>

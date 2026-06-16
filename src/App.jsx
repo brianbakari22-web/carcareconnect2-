@@ -123,7 +123,7 @@ const ADMIN_SECRET = "ccc-admin-x7k9m2p4q8"
 
 function Loader({ text }) {
   return (
-    <div style={{ minHeight:"100vh", background:"#0a0a0a", display:"flex", alignItems:"center", justifyContent:"center" }}>
+    <div style={{ minHeight:"100vh", background:"#ffffff", display:"flex", alignItems:"center", justifyContent:"center" }}>
       <div style={{ color:"#e6821e", fontFamily:"Syne,sans-serif", fontSize:16 }}>{text}</div>
     </div>
   )
@@ -131,9 +131,9 @@ function Loader({ text }) {
 
 function NotFound() {
   return (
-    <div style={{ minHeight:"100vh", background:"#0a0a0a", display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:12, fontFamily:"'DM Sans',sans-serif" }}>
-      <div style={{ fontSize:64, color:"#f0ede6" }}>404</div>
-      <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#f0ede6" }}>Page not found</div>
+    <div style={{ minHeight:"100vh", background:"#ffffff", display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:12, fontFamily:"'DM Sans',sans-serif" }}>
+      <div style={{ fontSize:64, color:"#000000" }}>404</div>
+      <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#000000" }}>Page not found</div>
       <div style={{ fontSize:13, color:"#555" }}>The page you are looking for does not exist.</div>
       <a href="/auth" style={{ color:"#e6821e", fontSize:13, marginTop:8 }}>Go home</a>
     </div>
@@ -349,7 +349,7 @@ export default function App() {
       <LanguageProvider>
         <AuthProvider>
           <BrowserRouter>
-            <Toaster position="top-right" toastOptions={{ style:{ background:"#1a1a1a", color:"#f0ede6", border:"1px solid #2a2a2a", borderRadius:8, fontSize:13 } }} />
+            <Toaster position="top-right" toastOptions={{ style:{ background:"#ffffff", color:"#000000", border:"1px solid #eeeeee", borderRadius:8, fontSize:13 } }} />
             <Routes>
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/reset-password" element={<ResetPassword />} />

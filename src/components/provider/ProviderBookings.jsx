@@ -9,7 +9,7 @@ import VehicleConditionReport from "../shared/VehicleConditionReport"
 import ProviderPartsManager from "./ProviderPartsManager"
 
 const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", completed:"#1d9e75", cancelled:"#e24b4a" }
-const SB = { pending:"#1a1208", confirmed:"#0c1f2e", "in-progress":"#160a2e", completed:"#071a12", cancelled:"#1a0808" }
+const SB = { pending:"#fff8f0", confirmed:"#eff6ff", "in-progress":"#faf5ff", completed:"#f0fdf4", cancelled:"#fff5f5" }
 const CATEGORIES = {
   shop_standard: { label:"Shop Standard", icon:"🏪", color:"#378add" },
   shop_premium: { label:"Shop Premium", icon:"🏡", color:"#8b5cf6" },
@@ -166,7 +166,7 @@ export default function ProviderBookings() {
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
         {["all","pending","confirmed","in-progress","completed","cancelled"].map(s=>(
           <button key={s} onClick={()=>setFilter(s)}
-            style={{ padding:isMobile?"5px 10px":"6px 14px", borderRadius:6, border:"none", fontSize:isMobile?11:12, cursor:"pointer", background:filter===s?"#378add":"#111", color:filter===s?"#fff":"#666", fontFamily:"'DM Sans',sans-serif" }}>
+            style={{ padding:isMobile?"5px 10px":"6px 14px", borderRadius:6, border:"none", fontSize:isMobile?11:12, cursor:"pointer", background:filter===s?"#378add":"#555555", color:filter===s?"#fff":"#666", fontFamily:"'DM Sans',sans-serif" }}>
             {s==="all"?"All":s.charAt(0).toUpperCase()+s.slice(1)}
           </button>
         ))}
@@ -179,7 +179,7 @@ export default function ProviderBookings() {
         const cat = CATEGORIES[b.service_category]||CATEGORIES.shop_standard
         const reports = existingReports[b.id]||{}
         return (
-          <div key={b.id} style={{ background:"#ffffff", border:`1px solid ${SB[b.status]||"#1e1e1e"}`, borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8 }}>
+          <div key={b.id} style={{ background:"#ffffff", border:`1px solid ${SB[b.status]||"#eeeeee"}`, borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8 }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
               <div style={{ flex:1, minWidth:0, marginRight:8 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:4, flexWrap:"wrap" }}>
@@ -198,7 +198,7 @@ export default function ProviderBookings() {
                 )}
               </div>
               <div style={{ textAlign:"right", flexShrink:0 }}>
-                <span style={{ fontSize:10, fontWeight:500, padding:"2px 8px", borderRadius:20, background:SB[b.status]||"#111", color:SC[b.status]||"#888", border:`1px solid ${SC[b.status]||"#888"}40`, display:"inline-block" }}>{b.status}</span>
+                <span style={{ fontSize:10, fontWeight:500, padding:"2px 8px", borderRadius:20, background:SB[b.status]||"#555555", color:SC[b.status]||"#888", border:`1px solid ${SC[b.status]||"#888"}40`, display:"inline-block" }}>{b.status}</span>
                 <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e", marginTop:4 }}>
                   KES {Number(b.updated_total||b.total_amount).toLocaleString()}
                 </div>
@@ -296,7 +296,7 @@ export default function ProviderBookings() {
                 )}
                 <div style={{ display:"flex", gap:8 }}>
                   <button onClick={()=>assignMechanic(b.id)} disabled={mechanics.length>0&&!selectedMechanic}
-                    style={{ background:mechanics.length>0&&!selectedMechanic?"#333":"#8b5cf6", border:"none", borderRadius:8, color:mechanics.length>0&&!selectedMechanic?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:mechanics.length>0&&!selectedMechanic?"not-allowed":"pointer" }}>
+                    style={{ background:mechanics.length>0&&!selectedMechanic?"#555555":"#8b5cf6", border:"none", borderRadius:8, color:mechanics.length>0&&!selectedMechanic?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:mechanics.length>0&&!selectedMechanic?"not-allowed":"pointer" }}>
                     Assign & notify customer
                   </button>
                   <button onClick={()=>{ setAssigningMechanic(null); setSelectedMechanic("") }}
@@ -326,7 +326,7 @@ export default function ProviderBookings() {
                   ].map(f=>(
                     <div key={f.l}>
                       <div style={{ fontSize:10, color:"#777777", textTransform:"uppercase", marginBottom:2 }}>{f.l}</div>
-                      <div style={{ fontSize:12, color:f.c||"#f0ede6" }}>{f.v||"—"}</div>
+                      <div style={{ fontSize:12, color:f.c||"#000000" }}>{f.v||"—"}</div>
                     </div>
                   ))}
                 </div>

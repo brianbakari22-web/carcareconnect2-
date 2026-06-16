@@ -32,7 +32,7 @@ export default function DriverClaims() {
   }
 
   const STATUS_COLOR = { pending:"#e6821e", under_review:"#378add", approved:"#1d9e75", rejected:"#e24b4a" }
-  const STATUS_BG = { pending:"#1a1208", under_review:"#0c1f2e", approved:"#071a12", rejected:"#1a0808" }
+  const STATUS_BG = { pending:"#fff8f0", under_review:"#eff6ff", approved:"#f0fdf4", rejected:"#fff5f5" }
 
   return (
     <div style={{ maxWidth:700, margin:"0 auto" }}>
@@ -85,7 +85,7 @@ export default function DriverClaims() {
                 #{c.bookings?.booking_number} · {c.bookings?.booking_date ? new Date(c.bookings.booking_date).toLocaleDateString() : ""}
               </div>
             </div>
-            <span style={{ fontSize:11, padding:"3px 10px", borderRadius:20, background:STATUS_BG[c.status]||"#111", color:STATUS_COLOR[c.status]||"#888", fontWeight:600 }}>
+            <span style={{ fontSize:11, padding:"3px 10px", borderRadius:20, background:STATUS_BG[c.status]||"#555555", color:STATUS_COLOR[c.status]||"#888", fontWeight:600 }}>
               {c.status?.replace("_"," ")}
             </span>
           </div>
@@ -93,7 +93,7 @@ export default function DriverClaims() {
           <div style={{ fontSize:12, color:"#e6821e", marginBottom:4 }}>Reason: {c.reason}</div>
           <div style={{ fontSize:12, color:"#555555", marginBottom:4, lineHeight:1.5 }}>{c.description}</div>
           {c.admin_notes&&(
-            <div style={{ background:"#0c1f2e", border:"1px solid #378add30", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
+            <div style={{ background:"#eff6ff", border:"1px solid #378add30", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
               <div style={{ fontSize:11, color:"#378add", fontWeight:600, marginBottom:2 }}>Admin decision:</div>
               <div style={{ fontSize:12, color:"#555555" }}>{c.admin_notes}</div>
             </div>
@@ -104,7 +104,7 @@ export default function DriverClaims() {
           {(c.status==="pending"||c.status==="under_review")&&(
             <div style={{ marginTop:8 }}>
               <button onClick={()=>setChatClaim(chatClaim===c.id?null:c.id)}
-                style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+                style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
                 💬 {chatClaim===c.id?"Close":"Respond to admin"}
               </button>
               {chatClaim===c.id&&(

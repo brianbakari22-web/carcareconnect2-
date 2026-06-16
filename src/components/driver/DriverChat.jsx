@@ -124,7 +124,7 @@ export default function DriverChat() {
           <div style={{ display:"flex", gap:6, marginBottom:4 }}>
             {[{k:"all",l:"All"},{k:"bookings",l:"Jobs"},{k:"marketplace",l:"Marketplace"}].map(t=>(
               <button key={t.k} onClick={()=>setTab(t.k)}
-                style={{ padding:"5px 12px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:tab===t.k?"#1d9e75":"#111", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif" }}>
+                style={{ padding:"5px 12px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:tab===t.k?"#1d9e75":"#555555", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif" }}>
                 {t.l}
               </button>
             ))}
@@ -140,10 +140,10 @@ export default function DriverChat() {
 
           {filtered.map(c=>(
             <div key={c.id} onClick={()=>setSelected(c)}
-              style={{ background:selected?.id===c.id?"#071a12":"#111", border:`1px solid ${selected?.id===c.id?"#1d9e75":"#1e1e1e"}`, borderRadius:10, padding:"0.75rem", cursor:"pointer" }}>
+              style={{ background:selected?.id===c.id?"#f0fdf4":"#555555", border:`1px solid ${selected?.id===c.id?"#1d9e75":"#eeeeee"}`, borderRadius:10, padding:"0.75rem", cursor:"pointer" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:4 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-                  <div style={{ width:34, height:34, borderRadius:"50%", background:c.type==="marketplace"?"#1a1208":"#071a12", border:`1px solid ${c.type==="marketplace"?"#e6821e40":"#1d9e7540"}`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:12, fontWeight:800, color:c.type==="marketplace"?"#e6821e":"#1d9e75", flexShrink:0 }}>
+                  <div style={{ width:34, height:34, borderRadius:"50%", background:c.type==="marketplace"?"#fff8f0":"#f0fdf4", border:`1px solid ${c.type==="marketplace"?"#e6821e40":"#1d9e7540"}`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:12, fontWeight:800, color:c.type==="marketplace"?"#e6821e":"#1d9e75", flexShrink:0 }}>
                     {c.name?.[0]?.toUpperCase()||"?"}
                   </div>
                   <div style={{ minWidth:0 }}>
@@ -160,7 +160,7 @@ export default function DriverChat() {
               </div>
               {c.lastMessage&&<div style={{ fontSize:11, color:"#777777", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.lastMessage}</div>}
               <div style={{ display:"flex", gap:6, marginTop:4, flexWrap:"wrap" }}>
-                <span style={{ fontSize:9, padding:"1px 6px", borderRadius:6, background:c.type==="marketplace"?"#1a1208":"#071a12", color:c.type==="marketplace"?"#e6821e":"#1d9e75" }}>
+                <span style={{ fontSize:9, padding:"1px 6px", borderRadius:6, background:c.type==="marketplace"?"#fff8f0":"#f0fdf4", color:c.type==="marketplace"?"#e6821e":"#1d9e75" }}>
                   {c.type==="marketplace"?"🛒 Marketplace":"🚗 Job"}
                 </span>
                 {c.status&&<span style={{ fontSize:9, color:"#888888" }}>{c.status}</span>}

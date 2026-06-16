@@ -67,7 +67,7 @@ export default function Marketplace() {
   })
 
   function getSellerBadge(seller) {
-    if (!seller) return { label:"Seller", color:"#777777", bg:"#1a1a1a" }
+    if (!seller) return { label:"Seller", color:"#777777", bg:"#ffffff" }
     if (seller.role==="provider") return { label:"🏪 Verified Seller", color:"#378add", bg:"#eff6ff" }
     return { label:"👤 Private Seller", color:"#555555", bg:"#f5f5f5" }
   }
@@ -199,7 +199,7 @@ export default function Marketplace() {
                   {l.transmission&&<span style={{ fontSize:9, padding:"1px 6px", borderRadius:6, background:"#f5f5f5", color:"#666" }}>{l.transmission}</span>}
                   {l.fuel_type&&<span style={{ fontSize:9, padding:"1px 6px", borderRadius:6, background:"#f5f5f5", color:"#666" }}>{l.fuel_type}</span>}
                 </div>
-                <div style={{ fontSize:9, color:"#333", marginTop:6 }}>👁 {l.views||0} views</div>
+                <div style={{ fontSize:9, color:"#555555", marginTop:6 }}>👁 {l.views||0} views</div>
               </div>
             </div>
           )
@@ -367,7 +367,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
 
               {/* Status banner */}
               {!listing.is_inspected&&(
-                <div style={{ background:"#1a1208", border:"1px solid #e6821e40", borderRadius:10, padding:"0.9rem" }}>
+                <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.9rem" }}>
                   <div style={{ fontSize:12, color:"#e6821e", fontWeight:600, marginBottom:4 }}>⏳ Pending CCC Inspection</div>
                   <div style={{ fontSize:11, color:"#555555", lineHeight:1.6 }}>
                     This listing is awaiting Car Care Connect vehicle inspection before offers and messages are enabled. This ensures all vehicles on our platform are verified and trustworthy.
@@ -376,7 +376,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
               )}
 
               {listing.is_inspected&&(
-                <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:10, padding:"0.75rem", display:"flex", alignItems:"center", gap:8 }}>
+                <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:10, padding:"0.75rem", display:"flex", alignItems:"center", gap:8 }}>
                   <span style={{ fontSize:14 }}>✓</span>
                   <div>
                     <div style={{ fontSize:12, color:"#1d9e75", fontWeight:600 }}>CCC Verified Vehicle</div>
@@ -388,7 +388,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
               {/* Offer button - only if inspected */}
               {listing.is_inspected&&(
                 existingOffer?(
-                  <div style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:10, padding:"0.9rem" }}>
+                  <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:10, padding:"0.9rem" }}>
                     <div style={{ fontSize:12, color:"#1d9e75", fontWeight:600 }}>✓ Offer submitted</div>
                     <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>KES {Number(existingOffer.offered_price).toLocaleString()} · {existingOffer.status}</div>
                     {existingOffer.counter_price&&<div style={{ fontSize:11, color:"#e6821e", marginTop:4 }}>Counter: KES {Number(existingOffer.counter_price).toLocaleString()}</div>}
@@ -404,7 +404,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
               {/* Message button - only if inspected */}
               {listing.is_inspected&&(
                 <button onClick={()=>setShowChat(s=>!s)}
-                style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:10, color:"#378add", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:600, padding:"12px", cursor:"pointer" }}>
+                style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:10, color:"#378add", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:600, padding:"12px", cursor:"pointer" }}>
                   💬 {showChat?"Close chat":"Message seller"}
                 </button>
               )}
@@ -445,12 +445,12 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
               <textarea value={offerMessage} onChange={e=>setOfferMessage(e.target.value)}
                 placeholder="Introduce yourself..."
                 style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"11px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", resize:"vertical", minHeight:70, marginBottom:12 }}/>
-              <div style={{ background:"#1a1208", border:"1px solid #e6821e30", borderRadius:8, padding:"0.75rem", marginBottom:16 }}>
+              <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:8, padding:"0.75rem", marginBottom:16 }}>
                 <div style={{ fontSize:11, color:"#e6821e" }}>⚠️ Do not share personal contact details. All communication must stay on Car Care Connect.</div>
               </div>
               <div style={{ display:"flex", gap:8 }}>
                 <button type="submit" disabled={submitting}
-                  style={{ flex:1, background:submitting?"#333":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:submitting?"not-allowed":"pointer" }}>
+                  style={{ flex:1, background:submitting?"#555555":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:submitting?"not-allowed":"pointer" }}>
                   {submitting?"Submitting...":"Submit offer"}
                 </button>
                 <button type="button" onClick={()=>setShowOffer(false)}

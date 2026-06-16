@@ -89,7 +89,7 @@ export default function CustomerProfile() {
   return (
     <div style={{ maxWidth:isMobile?"100%":520 }}>
       <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:"1.5rem" }}>
-        <div style={{ width:60, height:60, borderRadius:14, background:"#1a1208", border:"2px solid #e6821e40", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#e6821e" }}>
+        <div style={{ width:60, height:60, borderRadius:14, background:"#fff8f0", border:"2px solid #e6821e40", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#e6821e" }}>
           {initials}
         </div>
         <div>
@@ -106,7 +106,7 @@ export default function CustomerProfile() {
           {k:"data",l:"My Data"},
         ].map(tab2=>(
           <button key={tab2.k} onClick={()=>{ setTab(tab2.k); if(tab2.k==="data"&&!exportData) loadExportData() }}
-            style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===tab2.k?"#e6821e":"#111", color:tab===tab2.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===tab2.k?700:400 }}>
+            style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===tab2.k?"#e6821e":"#555555", color:tab===tab2.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===tab2.k?700:400 }}>
             {tab2.l}
           </button>
         ))}
@@ -138,7 +138,7 @@ export default function CustomerProfile() {
             <label style={lbl}>{t("city")}</label>
             <input style={inp} placeholder="e.g. Nairobi" value={form.city} onChange={e=>setForm(f=>({...f,city:e.target.value}))}/>
             <button type="submit" disabled={saving}
-              style={{ background:saving?"#333":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
+              style={{ background:saving?"#555555":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
               {saving?t("saving"):t("saveChanges")}
             </button>
           </div>
@@ -154,7 +154,7 @@ export default function CustomerProfile() {
             <label style={lbl}>{t("phone")}</label>
             <input style={inp} placeholder="+254 700 000 000" value={sensitive.phone} onChange={e=>setSensitive(s=>({...s,phone:e.target.value}))}/>
             <button type="submit" disabled={saving}
-              style={{ background:saving?"#333":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
+              style={{ background:saving?"#555555":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
               {saving?t("saving"):t("saveChanges")}
             </button>
           </div>
@@ -207,15 +207,15 @@ export default function CustomerProfile() {
 
                 <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
                   <button onClick={()=>downloadPDF(exportData, `carcareconnect-data-${new Date().toISOString().split("T")[0]}.pdf`)}
-                    style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:8, color:"#1d9e75", fontSize:12, fontWeight:600, padding:"9px 16px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
+                    style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:8, color:"#1d9e75", fontSize:12, fontWeight:600, padding:"9px 16px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
                     ⬇ Download PDF report
                   </button>
                   <button onClick={()=>downloadCSV(exportData.bookings, `bookings-${new Date().toISOString().split("T")[0]}.csv`)}
-                    style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:8, color:"#378add", fontSize:12, fontWeight:600, padding:"9px 16px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
+                    style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:8, color:"#378add", fontSize:12, fontWeight:600, padding:"9px 16px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
                     ⬇ Bookings CSV
                   </button>
                   <button onClick={()=>downloadCSV(exportData.payments, `payments-${new Date().toISOString().split("T")[0]}.csv`)}
-                    style={{ background:"#0c1f2e", border:"1px solid #378add40", borderRadius:8, color:"#378add", fontSize:12, fontWeight:600, padding:"9px 16px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
+                    style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:8, color:"#378add", fontSize:12, fontWeight:600, padding:"9px 16px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
                     ⬇ Payments CSV
                   </button>
                 </div>
@@ -230,7 +230,7 @@ export default function CustomerProfile() {
             )}
           </div>
 
-          <div style={{ background:"#1a0808", border:"1px solid #e24b4a20", borderRadius:12, padding:"1.25rem" }}>
+          <div style={{ background:"#fff5f5", border:"1px solid #e24b4a20", borderRadius:12, padding:"1.25rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#e24b4a" }}>Delete account</div>
             <div style={{ fontSize:12, color:"#666", marginBottom:"1rem", lineHeight:1.6 }}>
               Permanently delete your account and all associated data. This action cannot be undone.

@@ -452,7 +452,7 @@ export default function CustomerGoService() {
             <button key={e.key} onClick={()=>setEmergencyType(e.key)}
               style={{ background:emergencyType===e.key?"#fff5f5":"#f5f5f5", border:`1px solid ${emergencyType===e.key?"#e24b4a":"#e5e5e5"}`, borderRadius:10, padding:"0.75rem", cursor:"pointer", textAlign:"center" }}>
               <div style={{ fontSize:24, marginBottom:4 }}>{e.icon}</div>
-              <div style={{ fontSize:11, color:emergencyType===e.key?"#e24b4a":"#333", fontWeight:emergencyType===e.key?600:400 }}>{e.label}</div>
+              <div style={{ fontSize:11, color:emergencyType===e.key?"#e24b4a":"#555555", fontWeight:emergencyType===e.key?600:400 }}>{e.label}</div>
             </button>
           ))}
         </div>
@@ -527,7 +527,7 @@ export default function CustomerGoService() {
 
       {/* Submit */}
       <button onClick={initiateCalloutPayment} disabled={submitting||!emergencyType||!location.lat||!selectedService}
-        style={{ width:"100%", background:submitting||!emergencyType||!location.lat||!selectedService?"#333":"#e24b4a", border:"none", borderRadius:12, color:submitting||!emergencyType||!location.lat||!selectedService?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:15, fontWeight:700, padding:"15px", cursor:submitting||!emergencyType||!location.lat||!selectedService?"not-allowed":"pointer" }}>
+        style={{ width:"100%", background:submitting||!emergencyType||!location.lat||!selectedService?"#555555":"#e24b4a", border:"none", borderRadius:12, color:submitting||!emergencyType||!location.lat||!selectedService?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:15, fontWeight:700, padding:"15px", cursor:submitting||!emergencyType||!location.lat||!selectedService?"not-allowed":"pointer" }}>
         {submitting?"Sending request...":"🚨 Request Emergency Help"}
       </button>
       <div style={{ fontSize:11, color:"#888888", textAlign:"center", marginTop:8 }}>
@@ -547,7 +547,7 @@ export default function CustomerGoService() {
               <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, color:"#e6821e", fontWeight:700 }}><span>Callout fee (pay now)</span><span>KES 500</span></div>
               <div style={{ fontSize:10, color:"#777777", marginTop:4 }}>Service fee paid after completion</div>
             </div>
-            <button onClick={payCalloutFee} disabled={payingCallout} style={{ width:"100%", background:payingCallout?"#333":"#e24b4a", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:payingCallout?"not-allowed":"pointer", marginBottom:8 }}>
+            <button onClick={payCalloutFee} disabled={payingCallout} style={{ width:"100%", background:payingCallout?"#555555":"#e24b4a", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:payingCallout?"not-allowed":"pointer", marginBottom:8 }}>
               {payingCallout?"Connecting to Pesapal...":"Pay KES 500 and Request Help"}
             </button>
             <button onClick={()=>setShowDepositPayment(false)} style={{ width:"100%", background:"none", border:"1px solid #dddddd", borderRadius:10, color:"#666", fontSize:13, padding:"11px", cursor:"pointer" }}>
@@ -581,7 +581,7 @@ export default function CustomerGoService() {
               <div style={{ fontSize:10, color:"#777777", marginTop:4 }}>Service fee paid after completion</div>
             </div>
             <button onClick={payCalloutFee} disabled={payingCallout}
-              style={{ width:"100%", background:payingCallout?"#333":"#e24b4a", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:payingCallout?"not-allowed":"pointer", marginBottom:8 }}>
+              style={{ width:"100%", background:payingCallout?"#555555":"#e24b4a", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:payingCallout?"not-allowed":"pointer", marginBottom:8 }}>
               {payingCallout?"Connecting to Pesapal...":"Pay KES 500 & Request Help →"}
             </button>
             <button onClick={()=>setShowDepositPayment(false)}

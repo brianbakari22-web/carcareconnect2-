@@ -108,7 +108,7 @@ export default function DriverDeliveries() {
       <div style={{ display:"flex", gap:6, marginBottom:"1rem" }}>
         {[{k:"available",l:"Available jobs"},{k:"active",l:"My deliveries"},{k:"completed",l:"Completed"}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#1d9e75":"#111", color:tab===t.k?"#fff":"#666", fontWeight:tab===t.k?700:400 }}>
+            style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#1d9e75":"#555555", color:tab===t.k?"#fff":"#666", fontWeight:tab===t.k?700:400 }}>
             {t.l}
           </button>
         ))}
@@ -162,12 +162,12 @@ export default function DriverDeliveries() {
               </div>
               <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
                 {o.delivery_status==="driver_assigned"&&(
-                  <button onClick={()=>updateDeliveryStatus(o.id,"picked_up",o.customer_id)} style={{ background:"#160a2e", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"6px 14px", cursor:"pointer", fontWeight:600 }}>
+                  <button onClick={()=>updateDeliveryStatus(o.id,"picked_up",o.customer_id)} style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"6px 14px", cursor:"pointer", fontWeight:600 }}>
                     📦 Confirm pickup
                   </button>
                 )}
                 {o.delivery_status==="picked_up"&&(
-                  <button onClick={()=>updateDeliveryStatus(o.id,"delivered",o.customer_id)} style={{ background:"#071a12", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 14px", cursor:"pointer", fontWeight:600 }}>
+                  <button onClick={()=>updateDeliveryStatus(o.id,"delivered",o.customer_id)} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 14px", cursor:"pointer", fontWeight:600 }}>
                     ✅ Confirm delivery
                   </button>
                 )}
