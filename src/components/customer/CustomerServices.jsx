@@ -341,6 +341,7 @@ export default function CustomerServices() {
                         <select value={bookForm.payment_method} onChange={e=>setBookForm(f=>({...f,payment_method:e.target.value}))} style={inp}>
                           <option value="mpesa">M-Pesa</option>
                           <option value="card">Card</option>
+                          <option value="cash">Cash (pay at service)</option>
                           </select>
                       </div>
 
@@ -530,7 +531,7 @@ export default function CustomerServices() {
                     <select value={bookForm.payment_method} onChange={e=>setBookForm(f=>({...f,payment_method:e.target.value}))} style={inp}>
                       <option value="mpesa">M-Pesa</option>
                       <option value="card">Card</option>
-                      
+                      {s.category!=="go_service"&&<option value="cash">Cash (pay at service)</option>}
                     </select>
                   </div>
 
