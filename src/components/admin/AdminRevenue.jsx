@@ -7,6 +7,8 @@ export default function AdminRevenue() {
   const [bookings, setBookings] = useState([])
   const [clvData, setClvData] = useState([])
   const [tab, setTab] = useState("revenue")
+  const [heatmap, setHeatmap] = useState({ byDay:{}, byService:{}, byHour:{} })
+  const [gaps, setGaps] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -40,6 +42,49 @@ export default function AdminRevenue() {
       predicted_clv: (v.total / v.count) * Math.min(v.count * 1.5, 20)
     })).sort((a,b)=>b.predicted_clv-a.predicted_clv).slice(0,20)
     setClvData(clv)
+    // Compute demand heatmap
+    const byDay = {}; const byService = {}; const byHour = {}
+    const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
+    ;(allBookings||[]).forEach(b => {
+      if (b.booking_date) {
+        const day = days[new Date(b.booking_date).getDay()]
+        byDay[day] = (byDay[day]||0) + 1
+      }
+      if (b.booking_date && b.status) {
+        const svc = b.service_name||(b.service_category)||"Other"
+      }
+    })
+    ;(data||[]).forEach(b => {
+      const svc = b.service_name||"Other"
+      byService[svc] = (byService[svc]||0) + 1
+      if (b.booking_time) {
+        const hr = b.booking_time.slice(0,2)+":00"
+        byHour[hr] = (byHour[hr]||0) + 1
+      }
+    })
+    setHeatmap({ byDay, byService, byHour })
+    // Provider gap analysis
+    const { data: providers } = await supabase.from("profiles").select("provider_type, city").eq("role","provider").eq("is_active",true)
+    const providersByCity = {}
+    ;(providers||[]).forEach(p => {
+      if (!p.city) return
+      if (!providersByCity[p.city]) providersByCity[p.city] = {}
+      providersByCity[p.city][p.provider_type] = (providersByCity[p.city][p.provider_type]||0) + 1
+    })
+    // Find cities with high booking demand but few providers
+    const cityDemand = {}
+    ;(data||[]).forEach(b => {
+      const city = b.city||"Unknown"
+      cityDemand[city] = (cityDemand[city]||0) + 1
+    })
+    const gapAnalysis = Object.entries(cityDemand).map(([city, demand]) => ({
+      city,
+      demand,
+      providerCount: Object.values(providersByCity[city]||{}).reduce((s,v)=>s+v,0),
+      ratio: demand / Math.max(Object.values(providersByCity[city]||{}).reduce((s,v)=>s+v,0), 1),
+      missingTypes: ["garage","car_wash","mobile_mechanic"].filter(t => !(providersByCity[city]||{})[t])
+    })).filter(g=>g.demand>0).sort((a,b)=>b.ratio-a.ratio).slice(0,10)
+    setGaps(gapAnalysis)
     setLoading(false)
   }
 
@@ -87,6 +132,8 @@ export default function AdminRevenue() {
       <div style={{display:"flex",gap:8,marginBottom:"1.5rem"}}>
         <button onClick={()=>setTab("revenue")} style={{padding:"6px 16px",borderRadius:8,border:"none",fontSize:12,fontWeight:700,cursor:"pointer",background:tab==="revenue"?"#e6821e":"#f8f8f8",color:tab==="revenue"?"#fff":"#666"}}>Revenue</button>
         <button onClick={()=>setTab("clv")} style={{padding:"6px 16px",borderRadius:8,border:"none",fontSize:12,fontWeight:700,cursor:"pointer",background:tab==="clv"?"#8b5cf6":"#f8f8f8",color:tab==="clv"?"#fff":"#666"}}>Customer LTV</button>
+        <button onClick={()=>setTab("heatmap")} style={{padding:"6px 16px",borderRadius:8,border:"none",fontSize:12,fontWeight:700,cursor:"pointer",background:tab==="heatmap"?"#378add":"#f8f8f8",color:tab==="heatmap"?"#fff":"#666"}}>Demand Heatmap</button>
+        <button onClick={()=>setTab("gaps")} style={{padding:"6px 16px",borderRadius:8,border:"none",fontSize:12,fontWeight:700,cursor:"pointer",background:tab==="gaps"?"#1d9e75":"#f8f8f8",color:tab==="gaps"?"#fff":"#666"}}>Provider Gaps</button>
       </div>
 
       {tab==="revenue"&&(
@@ -162,6 +209,77 @@ export default function AdminRevenue() {
                     <div style={{fontSize:12,fontWeight:600,marginTop:2}}>{f.v}</div>
                   </div>
                 ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {tab==="heatmap"&&(
+        <div>
+          <div style={{fontFamily:"Syne",fontSize:14,fontWeight:700,marginBottom:10}}>Bookings by Day of Week</div>
+          {Object.entries(heatmap.byDay).sort((a,b)=>["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].indexOf(a[0])-["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].indexOf(b[0])).map(([day,count])=>{
+            const max = Math.max(...Object.values(heatmap.byDay),1)
+            return (
+              <div key={day} style={{display:"flex",alignItems:"center",gap:10,marginBottom:6}}>
+                <div style={{width:32,fontSize:11,color:"#888"}}>{day}</div>
+                <div style={{flex:1,height:20,background:"#eeeeee",borderRadius:4,overflow:"hidden"}}>
+                  <div style={{height:"100%",background:"#378add",borderRadius:4,width:`${(count/max)*100}%`,transition:"width 0.5s"}}/>
+                </div>
+                <div style={{width:24,fontSize:11,fontWeight:700,color:"#378add"}}>{count}</div>
+              </div>
+            )
+          })}
+          <div style={{fontFamily:"Syne",fontSize:14,fontWeight:700,margin:"1.5rem 0 10px"}}>Top Services by Demand</div>
+          {Object.entries(heatmap.byService).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([svc,count])=>{
+            const max = Math.max(...Object.values(heatmap.byService),1)
+            return (
+              <div key={svc} style={{display:"flex",alignItems:"center",gap:10,marginBottom:6}}>
+                <div style={{flex:1,fontSize:12,color:"#000",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{svc}</div>
+                <div style={{width:120,height:16,background:"#eeeeee",borderRadius:4,overflow:"hidden"}}>
+                  <div style={{height:"100%",background:"#e6821e",borderRadius:4,width:`${(count/max)*100}%`}}/>
+                </div>
+                <div style={{width:24,fontSize:11,fontWeight:700,color:"#e6821e"}}>{count}</div>
+              </div>
+            )
+          })}
+          <div style={{fontFamily:"Syne",fontSize:14,fontWeight:700,margin:"1.5rem 0 10px"}}>Bookings by Hour</div>
+          {Object.entries(heatmap.byHour).sort((a,b)=>a[0].localeCompare(b[0])).map(([hr,count])=>{
+            const max = Math.max(...Object.values(heatmap.byHour),1)
+            return (
+              <div key={hr} style={{display:"flex",alignItems:"center",gap:10,marginBottom:4}}>
+                <div style={{width:40,fontSize:11,color:"#888"}}>{hr}</div>
+                <div style={{flex:1,height:14,background:"#eeeeee",borderRadius:4,overflow:"hidden"}}>
+                  <div style={{height:"100%",background:"#1d9e75",borderRadius:4,width:`${(count/max)*100}%`}}/>
+                </div>
+                <div style={{width:24,fontSize:11,fontWeight:700,color:"#1d9e75"}}>{count}</div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+      {tab==="gaps"&&(
+        <div>
+          <div style={{fontSize:12,color:"#888",marginBottom:"1rem"}}>Areas with high booking demand but low provider coverage. These locations need more providers.</div>
+          {gaps.length===0&&<div style={{color:"#888",fontSize:13,textAlign:"center",padding:"2rem"}}>Not enough data yet</div>}
+          {gaps.map((g,i)=>(
+            <div key={g.city} style={{background:"#f8f8f8",border:`1px solid ${g.ratio>3?"#e24b4a30":g.ratio>1.5?"#e6821e30":"#eeeeee"}`,borderRadius:10,padding:"1rem",marginBottom:8}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"start",marginBottom:6}}>
+                <div>
+                  <div style={{fontSize:14,fontWeight:700,color:"#000"}}>{g.city}</div>
+                  <div style={{fontSize:11,color:"#888",marginTop:2}}>{g.demand} bookings · {g.providerCount} provider{g.providerCount!==1?"s":""}</div>
+                </div>
+                <span style={{fontSize:11,padding:"2px 8px",borderRadius:10,background:g.ratio>3?"#fff5f5":g.ratio>1.5?"#fff8f0":"#f0fdf4",color:g.ratio>3?"#e24b4a":g.ratio>1.5?"#e6821e":"#1d9e75"}}>
+                  {g.ratio>3?"🔴 Critical":g.ratio>1.5?"🟡 Needed":"🟢 OK"}
+                </span>
+              </div>
+              {g.missingTypes.length>0&&(
+                <div style={{fontSize:11,color:"#555",marginTop:4}}>
+                  Missing: {g.missingTypes.map(t=>t.replace(/_/g," ")).join(", ")}
+                </div>
+              )}
+              <div style={{marginTop:8,height:4,background:"#eeeeee",borderRadius:2,overflow:"hidden"}}>
+                <div style={{height:"100%",background:g.ratio>3?"#e24b4a":g.ratio>1.5?"#e6821e":"#1d9e75",borderRadius:2,width:`${Math.min(g.ratio*20,100)}%`}}/>
               </div>
             </div>
           ))}
