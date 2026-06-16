@@ -1,6 +1,7 @@
 ﻿import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { getCurrentPosition } from "../../lib/geolocation"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import { useNavigate } from "react-router-dom"
@@ -140,18 +141,13 @@ export default function CustomerDiscover() {
   }
 
   function detectLocation() {
-    if (!navigator.geolocation) return toast.error(t("error"))
     setLocating(true)
-    navigator.geolocation.getCurrentPosition(
-      pos => {
-        setUserLocation({ lat:pos.coords.latitude, lng:pos.coords.longitude })
+    getCurrentPosition().then(pos => {
+        setUserLocation({ lat:pos.latitude, lng:pos.longitude })
         setSortBy("distance")
         setLocating(false)
         toast.success(language==="sw"?"Mahali pamegunduliwa":"Location detected")
-      },
-      () => { toast.error(t("error")); setLocating(false) }
-    )
-  }
+      }).catch(err => { toast.error(err.message||t("error")); setLocating(false) })}
 
   function getDistance(p) {
     if (!userLocation||!p.latitude||!p.longitude) return null

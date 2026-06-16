@@ -1,5 +1,6 @@
 ﻿import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { getCurrentPosition } from "../../lib/geolocation"
 import PhotoManager from "../shared/PhotoManager"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
@@ -74,10 +75,9 @@ export default function ProviderProfile() {
 
   async function detectLocation() {
     setLocating(true)
-    navigator.geolocation.getCurrentPosition(
-      async pos => {
-        const lat = pos.coords.latitude
-        const lng = pos.coords.longitude
+    getCurrentPosition().then(async pos => {
+        const lat = pos.latitude
+        const lng = pos.longitude
         setLocation(l=>({...l, latitude:lat, longitude:lng}))
         try {
           const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
@@ -87,9 +87,7 @@ export default function ProviderProfile() {
           if (city) setForm(f=>({...f, city}))
         } catch {}
         setLocating(false)
-      },
-      err => { toast.error("Could not get location"); setLocating(false) }
-    )
+      }).catch(err => console.warn('Location error:', err.message))
   }
 
   async function changePassword(e) {

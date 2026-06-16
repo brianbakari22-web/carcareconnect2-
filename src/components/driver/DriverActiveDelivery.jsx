@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { getCurrentPosition } from "../../lib/geolocation"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -55,7 +56,7 @@ export default function DriverActiveDelivery() {
   }
 
   async function shareLocation(bookingId) {
-    navigator.geolocation.getCurrentPosition(async pos => {
+    getCurrentPosition().then(async pos => { pos = { coords: { latitude: pos.latitude, longitude: pos.longitude } };
       const { data: booking } = await supabase.from("bookings").select("assigned_mechanic_id").eq("id",bookingId).single()
       if (booking?.assigned_mechanic_id) {
         await supabase.from("mechanic_location_history").insert({

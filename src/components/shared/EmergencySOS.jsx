@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
+import { getCurrentPosition } from "../../lib/geolocation"
 import toast from "react-hot-toast"
 
 export default function EmergencySOS() {
@@ -12,14 +13,12 @@ export default function EmergencySOS() {
     setSending(true)
     try {
       let lat = null, lng = null
-      if (navigator.geolocation) {
-        await new Promise((resolve) => {
-          navigator.geolocation.getCurrentPosition(
-            (pos) => { lat = pos.coords.latitude; lng = pos.coords.longitude; resolve() },
-            () => resolve(),
-            { timeout: 5000 }
-          )
-        })
+      try {
+        const pos = await getCurrentPosition()
+        lat = pos.latitude
+        lng = pos.longitude
+      } catch(locErr) {
+        console.warn("Location unavailable:", locErr.message)
       }
 
       await supabase.from("emergency_alerts").insert({

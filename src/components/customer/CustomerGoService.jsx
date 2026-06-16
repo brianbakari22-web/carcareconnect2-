@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { supabase } from "../../lib/supabase"
+import { getCurrentPosition } from "../../lib/geolocation"
 import PhotoManager from "../shared/PhotoManager"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -141,20 +142,21 @@ export default function CustomerGoService() {
 
   async function detectLocation() {
     setLocating(true)
-    navigator.geolocation.getCurrentPosition(
-      async pos => {
-        const lat = pos.coords.latitude
-        const lng = pos.coords.longitude
-        setLocation(l=>({...l, lat, lng}))
-        try {
-          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
-          const data = await res.json()
-          setLocation({ lat, lng, address:data.display_name||`${lat.toFixed(4)}, ${lng.toFixed(4)}` })
-        } catch { setLocation(l=>({...l, address:`${lat.toFixed(4)}, ${lng.toFixed(4)}`})) }
-        setLocating(false)
-      },
-      () => { toast.error("Could not get location — please enter manually"); setLocating(false) }
-    )
+    try {
+      const pos = await getCurrentPosition()
+      const lat = pos.latitude
+      const lng = pos.longitude
+      setLocation(l=>({...l, lat, lng}))
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
+        const data = await res.json()
+        setLocation({ lat, lng, address:data.display_name||`${lat.toFixed(4)}, ${lng.toFixed(4)}` })
+      } catch { setLocation(l=>({...l, address:`${lat.toFixed(4)}, ${lng.toFixed(4)}`})) }
+    } catch(err) {
+      toast.error(err.message || "Could not get location — please enter manually")
+    } finally {
+      setLocating(false)
+    }
   }
 
   async function checkRateLimit() {

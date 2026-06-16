@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
+import { getCurrentPosition } from "../../lib/geolocation"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 
@@ -103,9 +104,9 @@ export default function CustomerTracking() {
       }
 
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(pos => {
+        getCurrentPosition().then(async pos => {
           const customerIcon = L.divIcon({ className:"", html:`<div style="background:#e6821e;width:38px;height:38px;border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 8px rgba(0,0,0,0.3);">👤</div>`, iconSize:[38,38], iconAnchor:[19,19] })
-          L.marker([pos.coords.latitude, pos.coords.longitude], { icon:customerIcon }).addTo(map).bindPopup("Your location")
+          L.marker([pos.latitude, pos.longitude], { icon:customerIcon }).addTo(map).bindPopup("Your location")
         })
       }
       mapInstanceRef.current = map

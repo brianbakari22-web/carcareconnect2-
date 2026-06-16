@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { supabase } from "../../lib/supabase"
+import { getCurrentPosition } from "../../lib/geolocation"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
@@ -74,9 +75,9 @@ export default function DriverOverview() {
   function startLocationSharing() {
     if (locationIntervalRef.current) clearInterval(locationIntervalRef.current)
     locationIntervalRef.current = setInterval(() => {
-      navigator.geolocation.getCurrentPosition(async pos => {
-        await supabase.from("driver_status").update({ current_latitude:pos.coords.latitude, current_longitude:pos.coords.longitude, last_seen:new Date().toISOString() }).eq("driver_id", user.id)
-      })
+      getCurrentPosition().then(async pos => {
+        await supabase.from("driver_status").update({ current_latitude:pos.latitude, current_longitude:pos.longitude, last_seen:new Date().toISOString() }).eq("driver_id", user.id)
+      }).catch(err => console.warn("Location update failed:", err.message))
     }, 30000)
   }
 

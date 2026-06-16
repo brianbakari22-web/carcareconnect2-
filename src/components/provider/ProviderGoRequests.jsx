@@ -239,6 +239,13 @@ export default function ProviderGoRequests() {
                     </div>
                   </div>
                   <div style={{ fontSize:12, color:"#555555", marginBottom:2 }}>📍 {r.bookings?.emergency_location_address}</div>
+                  {r.bookings?.emergency_location_lat&&r.bookings?.emergency_location_lng&&(
+                    <a href={`https://www.google.com/maps/dir/?api=1&destination=${r.bookings.emergency_location_lat},${r.bookings.emergency_location_lng}`}
+                      target="_blank" rel="noopener noreferrer"
+                      style={{ display:"inline-flex", alignItems:"center", gap:6, marginTop:4, marginBottom:4, background:"#4285f4", color:"#fff", borderRadius:8, padding:"6px 12px", fontSize:11, fontWeight:700, textDecoration:"none" }}>
+                      🗺️ Navigate to customer
+                    </a>
+                  )}
                   {r.bookings?.notes&&<div style={{ fontSize:11, color:"#666" }}>📝 {r.bookings.notes}</div>}
                   <div style={{ fontSize:11, color:"#e6821e", marginTop:4 }}>
                     💰 KES {Number(r.bookings?.total_amount||0).toLocaleString()} · Your earnings: KES {(Number(r.bookings?.total_amount||0)*0.85).toFixed(0)}
@@ -315,6 +322,13 @@ export default function ProviderGoRequests() {
                 <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:r.status==="accepted"?"#f0fdf4":r.status==="declined"?"#fff5f5":"#ffffff", color:r.status==="accepted"?"#1d9e75":r.status==="declined"?"#e24b4a":"#888" }}>{r.status}</span>
               </div>
               <div style={{ fontSize:11, color:"#777777" }}>📍 {r.bookings?.emergency_location_address}</div>
+              {r.bookings?.emergency_location_lat&&r.bookings?.emergency_location_lng&&(
+                <a href={`https://www.google.com/maps/dir/?api=1&destination=${r.bookings.emergency_location_lat},${r.bookings.emergency_location_lng}`}
+                  target="_blank" rel="noopener noreferrer"
+                  style={{ display:"inline-flex", alignItems:"center", gap:6, marginTop:4, marginBottom:4, background:"#4285f4", color:"#fff", borderRadius:8, padding:"5px 10px", fontSize:11, fontWeight:700, textDecoration:"none" }}>
+                  🗺️ Navigate to customer
+                </a>
+              )}
               <div style={{ fontSize:10, color:"#888888", marginTop:2 }}>{new Date(r.sent_at).toLocaleString()}</div>
             </div>
             <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e" }}>
