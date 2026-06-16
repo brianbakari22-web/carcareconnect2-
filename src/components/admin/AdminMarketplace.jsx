@@ -107,6 +107,18 @@ export default function AdminMarketplace() {
     finally { setProcessing(false) }
   }
 
+  async function approveVideo(id) {
+    await supabase.from("marketplace_listings").update({ video_status:"approved" }).eq("id", id)
+    setListings(ls => ls.map(l => l.id===id ? {...l, video_status:"approved"} : l))
+    toast.success("Video approved and visible to public")
+  }
+
+  async function rejectVideo(id, reason) {
+    await supabase.from("marketplace_listings").update({ video_status:"rejected", video_rejection_reason:reason||"Does not meet guidelines" }).eq("id", id)
+    setListings(ls => ls.map(l => l.id===id ? {...l, video_status:"rejected"} : l))
+    toast.success("Video rejected")
+  }
+
   async function approveListing(id) {
     const listing = listings.find(l=>l.id===id)
     if (listing?.listing_type==="vehicle" && !listing?.is_inspected) {
@@ -301,6 +313,34 @@ export default function AdminMarketplace() {
                         placeholder="Add notes..."
                         style={{ width:"100%", background:"#ffffff", border:"1px solid #f0f0f0", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none", resize:"vertical", minHeight:60, fontFamily:"'DM Sans',sans-serif" }}/>
                     </div>
+
+                    {l.video_url&&(
+                      <div style={{ marginTop:12, background:"#f8f8f8", borderRadius:10, padding:"1rem" }}>
+                        <div style={{ fontSize:12, fontWeight:700, color:"#555", marginBottom:8 }}>
+                          🎥 Video Review
+                          <span style={{ marginLeft:8, fontSize:10, padding:"2px 8px", borderRadius:10,
+                            background:l.video_status==="approved"?"#f0fdf4":l.video_status==="rejected"?"#fff5f5":"#fff8f0",
+                            color:l.video_status==="approved"?"#1d9e75":l.video_status==="rejected"?"#e24b4a":"#e6821e" }}>
+                            {l.video_status==="approved"?"✓ Approved":l.video_status==="rejected"?"✗ Rejected":"⏳ Pending Review"}
+                          </span>
+                        </div>
+                        <video src={l.video_url} controls style={{ width:"100%", borderRadius:8, maxHeight:200, marginBottom:8 }}/>
+                        <div style={{ display:"flex", gap:8 }}>
+                          {l.video_status!=="approved"&&(
+                            <button onClick={()=>approveVideo(l.id)}
+                              style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, fontWeight:700, padding:"6px 14px", cursor:"pointer" }}>
+                              ✓ Approve Video
+                            </button>
+                          )}
+                          {l.video_status!=="rejected"&&(
+                            <button onClick={()=>{ const r=window.prompt("Reason for rejection?","Does not meet content guidelines"); if(r!==null) rejectVideo(l.id,r) }}
+                              style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, fontWeight:700, padding:"6px 14px", cursor:"pointer" }}>
+                              ✗ Reject Video
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    )}
 
                     <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
 

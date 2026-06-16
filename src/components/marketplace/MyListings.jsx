@@ -195,6 +195,13 @@ export default function MyListings() {
                     <span style={{ fontSize:10, padding:"1px 6px", borderRadius:8, background:(SC[l.status]||"#888")+"20", color:SC[l.status]||"#888" }}>{l.status}</span>
                     {l.is_featured&&<span style={{ fontSize:10, color:"#e6821e" }}>⭐</span>}
                     {l.is_inspected&&<span style={{ fontSize:10, color:"#1d9e75" }}>✓</span>}
+                    {l.video_url&&(
+                      <span style={{ fontSize:10, padding:"1px 6px", borderRadius:8,
+                        background:l.video_status==="approved"?"#f0fdf4":l.video_status==="rejected"?"#fff5f5":"#fff8f0",
+                        color:l.video_status==="approved"?"#1d9e75":l.video_status==="rejected"?"#e24b4a":"#e6821e" }}>
+                        🎥 {l.video_status==="approved"?"Video ✓":l.video_status==="rejected"?"Video ✗":"Video pending"}
+                      </span>
+                    )}
                   </div>
                   {l.listing_type==="vehicle"&&<div style={{ fontSize:10, color:"#777777", marginBottom:2 }}>{[l.make,l.model,l.year].filter(Boolean).join(" · ")}</div>}
                   <div style={{ fontSize:10, color:"#777777" }}>📍 {l.city||"—"} · 👁 {l.views||0} · {new Date(l.created_at).toLocaleDateString()}</div>
