@@ -578,7 +578,7 @@ export default function CustomerServices() {
                     {voucherData&&(
                       <div style={{ marginTop:6, background:"#f0fff8", border:"1px solid #bbf7d0", borderRadius:8, padding:"0.5rem 0.75rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                         <div style={{ fontSize:11, color:"#1d9e75" }}>✅ Voucher applied — KES {Number(voucherData.value).toLocaleString()} off</div>
-                        <button type="button" onClick={()=>{ setVoucherData(null); setVoucherCode("") }} style={{ background:"none", border:"none", color:"#e24b4a", cursor:"pointer", fontSize:12 }}>├ù</button>
+                        <button type="button" onClick={()=>{ setVoucherData(null); setVoucherCode("") }} style={{ background:"none", border:"none", color:"#e24b4a", cursor:"pointer", fontSize:12 }}>×</button>
                       </div>
                     )}
                   </div>
@@ -596,7 +596,7 @@ export default function CustomerServices() {
                     {promoData&&(
                       <div style={{ marginTop:6, background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:8, padding:"0.5rem 0.75rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                         <div style={{ fontSize:11, color:"#e6821e" }}>✅ Promo {promoData.code} applied — KES {Number(promoData.discount).toLocaleString()} off</div>
-                        <button type="button" onClick={()=>{ setPromoData(null); setPromoCode("") }} style={{ background:"none", border:"none", color:"#e24b4a", cursor:"pointer", fontSize:12 }}>├ù</button>
+                        <button type="button" onClick={()=>{ setPromoData(null); setPromoCode("") }} style={{ background:"none", border:"none", color:"#e24b4a", cursor:"pointer", fontSize:12 }}>×</button>
                       </div>
                     )}
                   </div>

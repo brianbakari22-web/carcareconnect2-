@@ -39,7 +39,7 @@ export default function WashPackages() {
       </div>
       {packages.length===0&&!showForm&&(
         <div style={{background:"#fff8f0",border:"1px solid #fed7aa",borderRadius:12,padding:"1.25rem",marginBottom:"1.5rem"}}>
-          <div style={{fontFamily:"Syne",fontSize:13,fontWeight:700,color:"#e6821e",marginBottom:8}}>≡ƒÆí Suggested packages</div>
+          <div style={{fontFamily:"Syne",fontSize:13,fontWeight:700,color:"#e6821e",marginBottom:8}}>🧴 Suggested packages</div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
             {DEFAULTS.map(p=>(
               <div key={p.name} onClick={()=>{setForm({name:p.name,price:p.price,duration:p.duration,description:p.description});setShowForm(true)}} style={{background:"#fff",border:"1px solid #e5e5e5",borderRadius:10,padding:"0.75rem",cursor:"pointer"}}>

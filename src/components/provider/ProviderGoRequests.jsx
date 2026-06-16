@@ -216,7 +216,7 @@ export default function ProviderGoRequests() {
   const pending = requests.filter(r=>r.status==="pending")
   const recent = requests.filter(r=>r.status!=="pending")
 
-  const EMERGENCY_ICONS = { flat_tire:"🛞", dead_battery:"🔋", out_of_fuel:"⛽", car_wont_start:"🔑", overheating:"🌡️", towing:"🚚", other:"≡ƒåÿ" }
+  const EMERGENCY_ICONS = { flat_tire:"🛞", dead_battery:"🔋", out_of_fuel:"⛽", car_wont_start:"🔑", overheating:"🌡️", towing:"🚚", other:"🚗" }
 
   return (
     <div>
@@ -233,13 +233,13 @@ export default function ProviderGoRequests() {
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
                 <div>
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
-                    <span style={{ fontSize:20 }}>{EMERGENCY_ICONS[r.bookings?.emergency_type]||"≡ƒåÿ"}</span>
+                    <span style={{ fontSize:20 }}>{EMERGENCY_ICONS[r.bookings?.emergency_type]||"🚗"}</span>
                     <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#e24b4a" }}>
                       {r.bookings?.emergency_type?.replace(/_/g," ").toUpperCase()}
                     </div>
                   </div>
                   <div style={{ fontSize:12, color:"#555555", marginBottom:2 }}>📍 {r.bookings?.emergency_location_address}</div>
-                  {r.bookings?.notes&&<div style={{ fontSize:11, color:"#666" }}>≡ƒô¥ {r.bookings.notes}</div>}
+                  {r.bookings?.notes&&<div style={{ fontSize:11, color:"#666" }}>📝 {r.bookings.notes}</div>}
                   <div style={{ fontSize:11, color:"#e6821e", marginTop:4 }}>
                     💰 KES {Number(r.bookings?.total_amount||0).toLocaleString()} · Your earnings: KES {(Number(r.bookings?.total_amount||0)*0.85).toFixed(0)}
                   </div>
@@ -310,7 +310,7 @@ export default function ProviderGoRequests() {
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
             <div>
               <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
-                <span>{EMERGENCY_ICONS[r.bookings?.emergency_type]||"≡ƒåÿ"}</span>
+                <span>{EMERGENCY_ICONS[r.bookings?.emergency_type]||"🚗"}</span>
                 <span style={{ fontSize:13, color:"#000000" }}>{r.bookings?.emergency_type?.replace(/_/g," ")}</span>
                 <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:r.status==="accepted"?"#f0fdf4":r.status==="declined"?"#fff5f5":"#ffffff", color:r.status==="accepted"?"#1d9e75":r.status==="declined"?"#e24b4a":"#888" }}>{r.status}</span>
               </div>

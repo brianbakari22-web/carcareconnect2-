@@ -374,12 +374,12 @@ export default function CustomerDiscover() {
                       {p.city&&<span style={{ fontSize:11, color:"#777777" }}>📍 {p.city}</span>}
                       {dist!==null&&<span style={{ fontSize:11, color:"#378add" }}>· {dist.toFixed(1)} {t("kmAway")}</span>}
                     </div>
-                    {status&&<div style={{ fontSize:11, color:status.color, marginTop:3, fontWeight:500 }}>ΓùÅ {status.label}</div>}
+                    {status&&<div style={{ fontSize:11, color:status.color, marginTop:3, fontWeight:500 }}>✅ {status.label}</div>}
                   </div>
                   <div style={{ display:"flex", alignItems:"center", gap:8, flexShrink:0 }}>
                     <button onClick={e=>toggleFavorite(e,p.id)}
                       style={{ background:"none", border:"none", fontSize:20, cursor:"pointer", color:isFav?"#e24b4a":"#444", padding:"2px", lineHeight:1 }}>
-                      {isFav?"ΓÖÑ":"⭐"}
+                      {isFav?"⭐":"⭐"}
                     </button>
                     <div style={{ fontSize:12, color:"#e6821e", fontWeight:500 }}>{t("viewProfile")} →</div>
                   </div>
@@ -425,13 +425,13 @@ export default function CustomerDiscover() {
                 </div>
                 {getProviderStatus(selectedProvider.id)&&(
                   <div style={{ fontSize:12, color:getProviderStatus(selectedProvider.id).color, marginTop:4, fontWeight:500 }}>
-                    ΓùÅ {getProviderStatus(selectedProvider.id).label}
+                    ✅ {getProviderStatus(selectedProvider.id).label}
                   </div>
                 )}
               </div>
               <button onClick={e=>toggleFavorite(e,selectedProvider.id)}
                 style={{ background:"none", border:"none", fontSize:26, cursor:"pointer", color:favorites.includes(selectedProvider.id)?"#e24b4a":"#444", padding:"4px", flexShrink:0 }}>
-                {favorites.includes(selectedProvider.id)?"ΓÖÑ":"⭐"}
+                {favorites.includes(selectedProvider.id)?"⭐":"⭐"}
               </button>
             </div>
           </div>
@@ -460,7 +460,7 @@ export default function CustomerDiscover() {
               <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8, color:"#e24b4a" }}>{t("upcomingClosures")}</div>
               {closures[selectedProvider.id].map(c=>(
                 <div key={c.id} style={{ fontSize:12, color:"#555555", marginBottom:4 }}>
-                  ≡ƒÜ½ {new Date(c.closure_date+"T00:00:00").toLocaleDateString("default",{weekday:"long",month:"long",day:"numeric"})}
+                  ≡🕐 {new Date(c.closure_date+"T00:00:00").toLocaleDateString("default",{weekday:"long",month:"long",day:"numeric"})}
                   {c.reason&&` — ${c.reason}`}
                 </div>
               ))}
@@ -595,8 +595,8 @@ export default function CustomerDiscover() {
       {tab==="drivers"&&(
         <div style={{ display:"grid", gap:10 }}>
           <div style={{ display:"flex", gap:8, marginBottom:4 }}>
-            <span style={{ fontSize:12, color:"#1d9e75" }}>ΓùÅ {drivers.filter(d=>d.is_online).length} {t("online").toLowerCase()}</span>
-            <span style={{ fontSize:12, color:"#777777" }}>ΓùÅ {drivers.filter(d=>!d.is_online).length} {t("offline").toLowerCase()}</span>
+            <span style={{ fontSize:12, color:"#1d9e75" }}>✅ {drivers.filter(d=>d.is_online).length} {t("online").toLowerCase()}</span>
+            <span style={{ fontSize:12, color:"#777777" }}>✅ {drivers.filter(d=>!d.is_online).length} {t("offline").toLowerCase()}</span>
           </div>
           {filteredDrivers.length===0&&!loading&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>{t("noDriversFound")}</div>}
           {filteredDrivers.map(d=>(

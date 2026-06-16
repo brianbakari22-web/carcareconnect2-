@@ -12,7 +12,7 @@ const CATEGORIES = [
   { key:"oils", label:"Oils & Fluids", icon:"🛢️", desc:"Engine oil, brake fluid, coolant" },
   { key:"electrical", label:"Electrical", icon:"⚡", desc:"Batteries, bulbs, wiring" },
   { key:"body", label:"Body Parts", icon:"🚗", desc:"Bumpers, doors, mirrors, glass" },
-  { key:"other", label:"Other", icon:"≡ƒôª", desc:"Other automotive items" },
+  { key:"other", label:"Other", icon:"📦", desc:"Other automotive items" },
 ]
 
 const EMPTY = {
@@ -112,7 +112,7 @@ export default function ProviderInventory() {
 
   async function updateStock(id, qty) {
     await supabase.from("inventory").update({ stock_quantity:qty, updated_at:new Date().toISOString() }).eq("id", id)
-    if (qty<=3&&qty>0) toast("ΓÜá∩╕Å Low stock warning — only "+qty+" left!", { icon:"ΓÜá∩╕Å", duration:5000 })
+    if (qty<=3&&qty>0) toast("⚠️ Low stock warning — only "+qty+" left!", { icon:"⚠️", duration:5000 })
     if (qty===0) toast.error("Γ¥î Item out of stock — customers cannot order this item")
     load()
   }
@@ -230,7 +230,7 @@ export default function ProviderInventory() {
                 <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{item.name}</div>
                 {item.brand&&<span style={{ fontSize:10, color:"#555555", background:"#f5f5f5", padding:"1px 6px", borderRadius:6 }}>{item.brand}</span>}
                 <span style={{ fontSize:10, color:item.is_active?"#1d9e75":"#555", background:item.is_active?"#f0fdf4":"#ffffff", padding:"1px 6px", borderRadius:6 }}>{item.is_active?"Active":"Hidden"}</span>
-                {item.stock_quantity<=5&&item.is_active&&<span style={{ fontSize:10, color:"#e24b4a", background:"#fff5f5", padding:"1px 6px", borderRadius:6 }}>ΓÜá∩╕Å Low stock</span>}
+                {item.stock_quantity<=5&&item.is_active&&<span style={{ fontSize:10, color:"#e24b4a", background:"#fff5f5", padding:"1px 6px", borderRadius:6 }}>⚠️ Low stock</span>}
               </div>
               <div style={{ fontSize:11, color:"#777777", marginBottom:4 }}>
                 {CATEGORIES.find(c=>c.key===item.category)?.icon} {item.category} {item.subcategory?`· ${item.subcategory}`:""}

@@ -14,7 +14,7 @@ const GARAGE_CATEGORIES = [
 const WASH_CATEGORIES = [
   { key:"basic_wash", label:"Basic Wash", icon:"🚿", desc:"Exterior rinse and dry", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
   { key:"standard_wash", label:"Standard Wash", icon:"✨", desc:"Exterior + interior clean", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
-  { key:"premium_detail", label:"Premium Detail", icon:"≡ƒÆÄ", desc:"Full detailing service", color:"#1d9e75", bg:"#f0fdf4", border:"#bbf7d0" },
+  { key:"premium_detail", label:"Premium Detail", icon:"✨", desc:"Full detailing service", color:"#1d9e75", bg:"#f0fdf4", border:"#bbf7d0" },
 ]
 const PANEL_CATEGORIES = [
   { key:"shop_standard", label:"In Shop", icon:"🏪", desc:"Customer brings car to shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
@@ -167,7 +167,7 @@ export default function ProviderServices() {
 
   if (isInventoryProvider) return (
     <div style={{ textAlign:"center", padding:"3rem 1rem" }}>
-      <div style={{ fontSize:48, marginBottom:16 }}>≡ƒôª</div>
+      <div style={{ fontSize:48, marginBottom:16 }}>📦</div>
       <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000000", marginBottom:8 }}>
         {providerType==="parts_dealer"?"Parts Dealer":providerType==="tyre_shop"?"Tyre Shop":"Accessories Shop"}
       </div>
@@ -177,7 +177,7 @@ export default function ProviderServices() {
       </div>
       <div style={{ display:"flex", gap:10, justifyContent:"center", flexWrap:"wrap" }}>
         <a href="/dashboard/inventory" style={{ background:"#8b5cf6", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", textDecoration:"none" }}>
-          ≡ƒôª Go to Inventory
+          📦 Go to Inventory
         </a>
         <a href="/dashboard/orders" style={{ background:"#ffffff", border:"1px solid #dddddd", borderRadius:10, color:"#555555", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", textDecoration:"none" }}>
           🛒 View Orders

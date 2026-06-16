@@ -123,7 +123,7 @@ export default function ProviderClaims() {
                 <div style={{ marginTop:8 }}>
                   <button onClick={()=>setChatClaim(chatClaim===c.id?null:c.id)}
                     style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
-                    ≡ƒÆ¼ {chatClaim===c.id?"Close":"Respond to admin"}
+                    💬 {chatClaim===c.id?"Close":"Respond to admin"}
                   </button>
                   {chatClaim===c.id&&(
                     <div style={{ height:280, marginTop:8 }}>

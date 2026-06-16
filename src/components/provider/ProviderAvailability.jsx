@@ -338,9 +338,9 @@ export default function ProviderAvailability() {
           <div style={{ background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:10, padding:"1rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8, color:"#000000" }}>How it works</div>
             {[
-              { icon:"≡ƒƒó", text:"Open — day has available slots" },
-              { icon:"≡ƒƒí", text:"Partial — some bookings made" },
-              { icon:"≡ƒö┤", text:"Full — max bookings reached" },
+              { icon:"🟢", text:"Open — day has available slots" },
+              { icon:"🟡", text:"Partial — some bookings made" },
+              { icon:"🔴", text:"Full — max bookings reached" },
               { icon:"Γ¢ö", text:"Blocked — no bookings allowed" },
             ].map(i=>(
               <div key={i.text} style={{ display:"flex", gap:8, marginBottom:6, fontSize:12, color:"#555555" }}>

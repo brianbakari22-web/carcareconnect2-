@@ -44,12 +44,12 @@ export default function ProviderOrders() {
         confirmed: "Your order has been confirmed! We are preparing your items.",
         processing: "Your order is being processed and packed.",
         ready: order.fulfillment_type==="delivery"?"Your order is ready — driver will pick up soon!":"Your order is ready for pickup!",
-        delivered: "Your order has been delivered. Thank you! ≡ƒÄë",
+        delivered: "Your order has been delivered. Thank you! 🎉",
         cancelled: "Your order has been cancelled. Contact support for refund."
       }
       await supabase.from("notifications").insert({
         user_id: order.customer_id,
-        title: "Order update ≡ƒôª",
+        title: "Order update 📦",
         message: messages[status]||"Order status updated to "+status,
         type: status==="cancelled"?"error":"success"
       })
@@ -110,7 +110,7 @@ export default function ProviderOrders() {
 
       {pending>0&&(
         <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.75rem", marginBottom:"1rem" }}>
-          <div style={{ fontSize:13, color:"#e6821e", fontWeight:600 }}>ΓÜá∩╕Å {pending} order{pending>1?"s":""} waiting for confirmation</div>
+          <div style={{ fontSize:13, color:"#e6821e", fontWeight:600 }}>⚠️ {pending} order{pending>1?"s":""} waiting for confirmation</div>
         </div>
       )}
 
@@ -131,7 +131,7 @@ export default function ProviderOrders() {
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
             <div>
               <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:2 }}>#{o.order_number}</div>
-              <div style={{ fontSize:11, color:"#777777" }}>≡ƒæñ {o.profiles?.first_name} {o.profiles?.last_name}</div>
+              <div style={{ fontSize:11, color:"#777777" }}>👤 {o.profiles?.first_name} {o.profiles?.last_name}</div>
               <div style={{ fontSize:11, color:"#777777" }}>{o.fulfillment_type==="delivery"?"🚚 Delivery to "+o.delivery_address:"🏪 Customer pickup"}</div>
               {o.delivery_zone&&<div style={{ fontSize:11, color:"#378add" }}>📍 Zone: {o.delivery_zone}</div>}
               <div style={{ fontSize:10, color:"#888888" }}>{new Date(o.created_at).toLocaleString()}</div>
@@ -146,7 +146,7 @@ export default function ProviderOrders() {
           <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", marginBottom:10 }}>
             {o.order_items?.map(oi=>(
               <div key={oi.id} style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#555555", padding:"3px 0" }}>
-                <span>{oi.name} ├ù {oi.quantity} {oi.inventory?.unit||""}</span>
+                <span>{oi.name} × {oi.quantity} {oi.inventory?.unit||""}</span>
                 <span>KES {Number(oi.unit_price*oi.quantity).toLocaleString()}</span>
               </div>
             ))}
@@ -165,7 +165,7 @@ export default function ProviderOrders() {
               </>
             )}
             {o.status==="confirmed"&&(
-              <button onClick={()=>updateStatus(o.id,"processing")} style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>≡ƒôª Start packing</button>
+              <button onClick={()=>updateStatus(o.id,"processing")} style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>📦 Start packing</button>
             )}
             {o.status==="processing"&&(
               <button onClick={()=>updateStatus(o.id,"ready")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>✅ Mark ready</button>

@@ -36,7 +36,7 @@ export default function ProviderBookings() {
     if (!user) return
     load()
     const sub = supabase.channel("provider-bookings-live")
-      .on("postgres_changes", { event:"*", schema:"public", table:"bookings", filter:`provider_id=eq.${user.id}` }, () => { load(); toast("Booking updated", { icon:"≡ƒôï" }) })
+      .on("postgres_changes", { event:"*", schema:"public", table:"bookings", filter:`provider_id=eq.${user.id}` }, () => { load(); toast("Booking updated", { icon:"📋" }) })
       .subscribe()
     return () => supabase.removeChannel(sub)
   }, [user])
@@ -233,13 +233,13 @@ export default function ProviderBookings() {
                 {!reports.pickup&&(
                   <button onClick={()=>{ setShowReport(b.id); setReportType("pickup") }}
                     style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                    ≡ƒôï Pickup report
+                    📋 Pickup report
                   </button>
                 )}
                 {reports.pickup&&!reports.dropoff&&(
                   <button onClick={()=>{ setShowReport(b.id); setReportType("dropoff") }}
                     style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                    ≡ƒôï Dropoff report
+                    📋 Dropoff report
                   </button>
                 )}
               </>}
@@ -335,7 +335,7 @@ export default function ProviderBookings() {
                     <div style={{ fontSize:11, color:"#378add", marginBottom:4 }}>Parts breakdown:</div>
                     {b.parts_details.map((p,i)=>(
                       <div key={i} style={{ display:"flex", justifyContent:"space-between", fontSize:11, color:"#666", padding:"3px 0" }}>
-                        <span>{p.name} ├ù {p.quantity}</span>
+                        <span>{p.name} × {p.quantity}</span>
                         <span>KES {p.total?.toLocaleString()}</span>
                       </div>
                     ))}
