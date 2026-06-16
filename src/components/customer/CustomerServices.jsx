@@ -23,7 +23,7 @@ export default function CustomerServices() {
   const [activeCategory, setActiveCategory] = useState("all")
   const [search, setSearch] = useState("")
   const [booking, setBooking] = useState(null)
-  const [bookForm, setBookForm] = useState({ date:"", time:"", notes:"", payment_method:"mpesa", is_concierge:false, problem_description:"", parts_needed:false, parts_description:"" })
+  const [bookForm, setBookForm] = useState({ date:"", time:"", notes:"", payment_method:"mpesa", is_concierge:false, concierge_location:"", problem_description:"", parts_needed:false, parts_description:"" })
   const [bookingLoading, setBookingLoading] = useState(false)
   const [pendingBooking, setPendingBooking] = useState(null)
   const [showPayment, setShowPayment] = useState(false)
@@ -196,6 +196,7 @@ export default function CustomerServices() {
         parts_needed: bookForm.parts_needed||false,
         parts_description: bookForm.parts_description||"",
         is_concierge: bookForm.is_concierge||false,
+        concierge_pickup_location: bookForm.concierge_location||null,
       }
 
       if (bulkMode && bulkVehicles.length>0) {
@@ -557,12 +558,33 @@ export default function CustomerServices() {
                     <textarea value={bookForm.notes} onChange={e=>setBookForm(f=>({...f,notes:e.target.value}))} placeholder={s.category==="shop_premium"?"Your home/office address...":s.category==="go_service"?"Your exact location and emergency details...":"Any special instructions..."} style={{ ...inp, resize:"vertical", minHeight:60 }}/>
                   </div>
 
-                  {s.category!=="go_service"&&(
+                  {s.category!=="go_service"&&(<>
                     <label style={{ display:"flex", alignItems:"center", gap:8, marginBottom:14, cursor:"pointer" }}>
                       <input type="checkbox" checked={bookForm.is_concierge} onChange={e=>setBookForm(f=>({...f,is_concierge:e.target.checked}))} style={{ accentColor:"#e6821e" }}/>
                       <span style={{ fontSize:12, color:"#666" }}>Add concierge driver (pick up & drop off my car) — extra 15%</span>
                     </label>
-                  )}
+                    {bookForm.is_concierge&&(
+                      <div style={{ marginBottom:8 }}>
+                        <label style={lbl}>Pickup location (your home/office address) <span style={{ color:"#e24b4a" }}>*</span></label>
+                        <div style={{ display:"flex", gap:6 }}>
+                          <input value={bookForm.concierge_location} onChange={e=>setBookForm(f=>({...f,concierge_location:e.target.value}))}
+                            placeholder="Enter your home or office address..."
+                            style={{ ...inp, flex:1, marginBottom:0 }} required/>
+                          <button type="button" onClick={async()=>{
+                            try {
+                              const { getCurrentPosition } = await import("../../lib/geolocation")
+                              const pos = await getCurrentPosition()
+                              const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.latitude}&lon=${pos.longitude}&format=json`)
+                              const data = await res.json()
+                              setBookForm(f=>({...f, concierge_location:data.display_name||"Location detected"}))
+                            } catch(err) { toast.error("Could not detect location") }
+                          }} style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:11, padding:"0 12px", cursor:"pointer", flexShrink:0 }}>
+                            📍 Detect
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </>)}
 
                   <div style={{ marginBottom:14 }}>
                     <label style={lbl}>Voucher code (optional)</label>
