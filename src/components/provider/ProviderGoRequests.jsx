@@ -266,7 +266,7 @@ export default function ProviderGoRequests() {
                         <div style={{ fontSize:12, color:"#000000" }}>{m.first_name} {m.last_name}</div>
                         <div style={{ fontSize:10, color:"#777777" }}>{m.specialization}</div>
                       </div>
-                      {selectedMechanic===m.id&&<div style={{ marginLeft:"auto", color:"#8b5cf6", fontSize:14 }}>Γ£ô</div>}
+                      {selectedMechanic===m.id&&<div style={{ marginLeft:"auto", color:"#8b5cf6", fontSize:14 }}>✓</div>}
                     </div>
                   ))}
                 </div>

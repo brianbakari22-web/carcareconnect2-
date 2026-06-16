@@ -448,7 +448,7 @@ export default function CustomerServices() {
                   <span style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(s.price)>=1?Number(s.price).toLocaleString():Number(s.price*100).toLocaleString()}</span>
                   <span style={{ fontSize:11, color:"#777777" }}>⏱ {s.duration_minutes||60} min</span>
                   {provider&&<span style={{ fontSize:11, color:"#777777" }}>🏪 {provider.business_name||`${provider.first_name} ${provider.last_name}`}{provider.city?` · ${provider.city}`:""}</span>}
-                  {provider?.is_verified&&<span style={{ fontSize:10, color:"#1d9e75" }}>Γ£ô Verified</span>}
+                  {provider?.is_verified&&<span style={{ fontSize:10, color:"#1d9e75" }}>✓ Verified</span>}
                 </div>
               </div>
               <button onClick={()=>{ setBooking(s); setBookForm({ date:"", time:"", notes:"", payment_method:"mpesa", is_concierge:false }) }}

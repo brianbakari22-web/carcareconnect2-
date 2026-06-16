@@ -193,7 +193,7 @@ export default function ProviderBookings() {
                 {b.assigned_mechanic_id&&<div style={{ fontSize:11, color:"#1d9e75", marginTop:2 }}>👨‍🔧 Mechanic assigned</div>}
                 {b.parts_details?.length>0&&(
                   <div style={{ fontSize:11, color:b.parts_approved?"#1d9e75":"#e6821e", marginTop:2 }}>
-                    🔧 Parts: {b.parts_details.length} item{b.parts_details.length!==1?"s":""} · {b.parts_approved?"Γ£ô Approved":"Awaiting approval"}
+                    🔧 Parts: {b.parts_details.length} item{b.parts_details.length!==1?"s":""} · {b.parts_approved?"✓ Approved":"Awaiting approval"}
                   </div>
                 )}
               </div>
@@ -225,7 +225,7 @@ export default function ProviderBookings() {
               {b.status==="in-progress"&&(
                 <button onClick={()=>completeAndFreeMechanic(b.id, b.assigned_mechanic_id)}
                   style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                  Γ£ô Complete
+                  ✓ Complete
                 </button>
               )}
 
@@ -289,7 +289,7 @@ export default function ProviderBookings() {
                           <div style={{ fontSize:12, color:"#000000" }}>{m.first_name} {m.last_name}</div>
                           <div style={{ fontSize:10, color:"#777777" }}>{m.specialization}</div>
                         </div>
-                        {selectedMechanic===m.id&&<div style={{ marginLeft:"auto", fontSize:14, color:"#8b5cf6" }}>Γ£ô</div>}
+                        {selectedMechanic===m.id&&<div style={{ marginLeft:"auto", fontSize:14, color:"#8b5cf6" }}>✓</div>}
                       </div>
                     ))}
                   </div>

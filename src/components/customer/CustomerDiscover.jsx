@@ -366,7 +366,7 @@ export default function CustomerDiscover() {
                   <div style={{ flex:1, minWidth:0 }}>
                     <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:2, flexWrap:"wrap" }}>
                       <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#000000" }}>{getDisplayName(p)}</div>
-                      {p.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#f0fdf4", padding:"1px 6px", borderRadius:10 }}>Γ£ô {t("verified")}</span>}
+                      {p.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#f0fdf4", padding:"1px 6px", borderRadius:10 }}>✓ {t("verified")}</span>}
                       {p.provider_type&&p.provider_type!=="garage"&&<span style={{ fontSize:10, color:"#8b5cf6", background:"#faf5ff", padding:"1px 6px", borderRadius:10 }}>{p.provider_type.replace(/_/g," ")}</span>}
                     </div>
                     <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
@@ -420,7 +420,7 @@ export default function CustomerDiscover() {
                 )}
                 <div style={{ display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
                   {selectedProvider.city&&<span style={{ fontSize:12, color:"#777777" }}>📍 {selectedProvider.city}</span>}
-                  {selectedProvider.is_verified&&<span style={{ fontSize:11, color:"#1d9e75", background:"#f0fdf4", padding:"2px 8px", borderRadius:10 }}>Γ£ô {t("verified")}</span>}
+                  {selectedProvider.is_verified&&<span style={{ fontSize:11, color:"#1d9e75", background:"#f0fdf4", padding:"2px 8px", borderRadius:10 }}>✓ {t("verified")}</span>}
                   {getDistance(selectedProvider)!==null&&<span style={{ fontSize:11, color:"#378add" }}>📍 {getDistance(selectedProvider).toFixed(1)} {t("kmAway")}</span>}
                 </div>
                 {getProviderStatus(selectedProvider.id)&&(
@@ -481,7 +481,7 @@ export default function CustomerDiscover() {
                 {s.description&&<div style={{ fontSize:11, color:"#666", marginBottom:8, lineHeight:1.5 }}>{s.description.slice(0,80)}{s.description.length>80?"...":""}</div>}
                 {Array.isArray(s.inclusions)&&s.inclusions.length>0&&(
                   <div style={{ marginBottom:8 }}>
-                    {s.inclusions.slice(0,3).map((inc,i)=><div key={i} style={{ fontSize:10, color:"#777777", marginBottom:2 }}>Γ£ô {inc}</div>)}
+                    {s.inclusions.slice(0,3).map((inc,i)=><div key={i} style={{ fontSize:10, color:"#777777", marginBottom:2 }}>✓ {inc}</div>)}
                   </div>
                 )}
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
@@ -584,7 +584,7 @@ export default function CustomerDiscover() {
                 </div>
                 <div style={{ fontSize:11, color:"#777777", marginTop:4 }}>
                   🏪 {item.profiles?.business_name||item.profiles?.first_name}
-                  {item.profiles?.is_verified&&<span style={{ color:"#1d9e75", marginLeft:4 }}>Γ£ô</span>}
+                  {item.profiles?.is_verified&&<span style={{ color:"#1d9e75", marginLeft:4 }}>✓</span>}
                 </div>
               </div>
             ))}
@@ -607,7 +607,7 @@ export default function CustomerDiscover() {
               <div style={{ flex:1 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:2 }}>
                   <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>{d.first_name} {d.last_name}</div>
-                  {d.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#f0fdf4", padding:"1px 6px", borderRadius:10 }}>Γ£ô</span>}
+                  {d.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#f0fdf4", padding:"1px 6px", borderRadius:10 }}>✓</span>}
                 </div>
                 <div style={{ fontSize:11, color:"#777777" }}>{language==="sw"?"Dereva wa kuchukua":"Concierge driver"} · {d.city||"Nairobi"}</div>
               </div>

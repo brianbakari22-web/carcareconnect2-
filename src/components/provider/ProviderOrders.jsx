@@ -160,7 +160,7 @@ export default function ProviderOrders() {
           <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
             {o.status==="pending"&&(
               <>
-                <button onClick={()=>updateStatus(o.id,"confirmed")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer", fontWeight:600 }}>Γ£ô Confirm order</button>
+                <button onClick={()=>updateStatus(o.id,"confirmed")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer", fontWeight:600 }}>✓ Confirm order</button>
                 <button onClick={()=>updateStatus(o.id,"cancelled")} style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"6px 10px", cursor:"pointer" }}>Cancel</button>
               </>
             )}
@@ -174,7 +174,7 @@ export default function ProviderOrders() {
               <button onClick={()=>assignDriver(o.id)} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>🚚 Assign driver</button>
             )}
             {o.status==="ready"&&o.fulfillment_type==="pickup"&&(
-              <button onClick={()=>updateStatus(o.id,"delivered")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>Γ£ô Customer picked up</button>
+              <button onClick={()=>updateStatus(o.id,"delivered")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>✓ Customer picked up</button>
             )}
           </div>
         </div>

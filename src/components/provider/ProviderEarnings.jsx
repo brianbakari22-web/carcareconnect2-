@@ -83,7 +83,7 @@ export default function ProviderEarnings() {
           <div style={{ display:"flex", gap:8, alignItems:"flex-end", height:120 }}>
             {months.reverse().map(([month, data])=>(
               <div key={month} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", gap:4 }}>
-                <div style={{ fontSize:10, color:"#e6821e", fontWeight:600 }}>KES ${data.earned.toFixed(0)}</div>
+                <div style={{ fontSize:10, color:"#e6821e", fontWeight:600 }}>KES {data.earned.toFixed(0)}</div>
                 <div style={{ width:"100%", background:"#e6821e", borderRadius:"4px 4px 0 0", height:`${Math.max(4,(data.earned/maxEarned)*80)}px`, transition:"height 0.5s" }}/>
                 <div style={{ fontSize:9, color:"#777777", textAlign:"center" }}>
                   {new Date(month+"-01").toLocaleString("default",{month:"short"})}
@@ -105,8 +105,8 @@ export default function ProviderEarnings() {
           </div>
           <div style={{ textAlign:"right" }}>
               <button onClick={()=>generateInvoice(b, profile, "provider")} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:6, color:"#378add", fontSize:10, padding:"4px 8px", cursor:"pointer", marginBottom:4, display:"block" }}>Invoice</button>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#e6821e" }}>+KES ${Number(b.provider_earnings||0).toFixed(2)}</div>
-            <div style={{ fontSize:10, color:"#777777" }}>of KES ${Number(b.total_amount).toFixed(2)}</div>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#e6821e" }}>+KES {Number(b.provider_earnings||0).toFixed(2)}</div>
+            <div style={{ fontSize:10, color:"#777777" }}>of KES {Number(b.total_amount).toFixed(2)}</div>
           </div>
         </div>
       ))}

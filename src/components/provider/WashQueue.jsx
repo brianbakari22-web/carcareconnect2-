@@ -43,7 +43,7 @@ export default function WashQueue() {
             <span style={{fontSize:11,padding:"3px 10px",borderRadius:20,background:`${STATUS_COLORS[b.status]}20`,color:STATUS_COLORS[b.status],fontWeight:600}}>{b.status}</span>
           </div>
           <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:10}}>
-            {b.status==="pending"&&<button onClick={()=>updateStatus(b.id,"confirmed")} style={{background:"#378add",border:"none",borderRadius:8,color:"#fff",fontSize:12,fontWeight:600,padding:"7px 14px",cursor:"pointer"}}>Γ£ô Confirm</button>}
+            {b.status==="pending"&&<button onClick={()=>updateStatus(b.id,"confirmed")} style={{background:"#378add",border:"none",borderRadius:8,color:"#fff",fontSize:12,fontWeight:600,padding:"7px 14px",cursor:"pointer"}}>✓ Confirm</button>}
             {b.status==="confirmed"&&<button onClick={()=>updateStatus(b.id,"in-progress")} style={{background:"#8b5cf6",border:"none",borderRadius:8,color:"#fff",fontSize:12,fontWeight:600,padding:"7px 14px",cursor:"pointer"}}>🚿 Start Wash</button>}
             {b.status==="in-progress"&&<button onClick={()=>updateStatus(b.id,"completed")} style={{background:"#1d9e75",border:"none",borderRadius:8,color:"#fff",fontSize:12,fontWeight:600,padding:"7px 14px",cursor:"pointer"}}>✅ Complete</button>}
             <button onClick={()=>updateStatus(b.id,"cancelled")} style={{background:"none",border:"1px solid #e24b4a40",borderRadius:8,color:"#e24b4a",fontSize:12,padding:"7px 14px",cursor:"pointer"}}>Cancel</button>
