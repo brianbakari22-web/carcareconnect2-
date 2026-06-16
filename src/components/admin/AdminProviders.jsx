@@ -31,6 +31,16 @@ export default function AdminProviders() {
     setLoading(false)
   }
 
+  async function markCommissionPaid(providerId, amount) {
+    await supabase.from("profiles").update({
+      cash_commission_balance: 0,
+      last_commission_paid_at: new Date().toISOString(),
+      is_active: true
+    }).eq("id", providerId)
+    toast.success("KES " + amount.toLocaleString() + " commission marked as paid")
+    load()
+  }
+
   async function toggleVerified(id, is_verified) {
     const newStatus = !is_verified
     await supabase.from("profiles").update({ 
@@ -131,10 +141,26 @@ export default function AdminProviders() {
                 {services[p.id]?.active||0} services · KES ${Number(earnings[p.id]||0).toLocaleString()} earned
               </div>
             </div>
-            <button onClick={()=>setSelected(selected===p.id?null:p.id)}
-              style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#888", fontSize:11, padding:"5px 10px", cursor:"pointer", flexShrink:0 }}>
-              {selected===p.id?"Close":"Manage"}
-            </button>
+            <div style={{ display:"flex", flexDirection:"column", gap:6, alignItems:"flex-end", flexShrink:0 }}>
+              {p.cash_commission_balance>0&&(
+                <div style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:8, padding:"4px 8px", textAlign:"center" }}>
+                  <div style={{ fontSize:10, color:"#e24b4a", fontWeight:700 }}>💰 Cash Commission Due</div>
+                  <div style={{ fontSize:12, fontWeight:800, color:"#e24b4a" }}>KES {Number(p.cash_commission_balance).toLocaleString()}</div>
+                  {p.cash_commission_due_date&&<div style={{ fontSize:9, color:"#888" }}>Due: {new Date(p.cash_commission_due_date).toLocaleDateString()}</div>}
+                  <button onClick={()=>{ if(window.confirm("Mark KES "+Number(p.cash_commission_balance).toLocaleString()+" as paid by "+((p.business_name||p.first_name))+"?")) markCommissionPaid(p.id, p.cash_commission_balance) }}
+                    style={{ marginTop:4, background:"#1d9e75", border:"none", borderRadius:6, color:"#fff", fontSize:10, fontWeight:700, padding:"3px 8px", cursor:"pointer", width:"100%" }}>
+                    ✓ Mark Paid
+                  </button>
+                </div>
+              )}
+              {p.cash_commission_strikes>0&&(
+                <div style={{ fontSize:10, color:"#e24b4a" }}>⚠️ {p.cash_commission_strikes} strike{p.cash_commission_strikes>1?"s":""}</div>
+              )}
+              <button onClick={()=>setSelected(selected===p.id?null:p.id)}
+                style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#888", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                {selected===p.id?"Close":"Manage"}
+              </button>
+            </div>
           </div>
           {selected===p.id&&(
             <div style={{ marginTop:10, paddingTop:10, borderTop:"1px solid #eeeeee", display:"flex", gap:8, flexWrap:"wrap" }}>

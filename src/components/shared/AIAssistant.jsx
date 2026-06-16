@@ -183,7 +183,7 @@ PAYMENTS:
 - 7-day dispute window on marketplace transactions
 - Booking payments: customer pays at booking, provider confirmed after payment
 - Marketplace payments: escrow held until buyer confirms delivery
-- Cash payments not accepted — M-Pesa or card required for all bookings
+- Cash payment option available for standard bookings only (not GO Service)
 - GO Service requires online payment (M-Pesa or card)
 - Vouchers can be applied at checkout to reduce total amount
 
@@ -627,7 +627,9 @@ VEHICLE MAINTENANCE:
 PAYMENT OPTIONS:
 - M-Pesa STK push
 - Visa/Mastercard cards
-- Cash payments are NOT accepted — all bookings require online payment
+- M-Pesa STK push
+- Visa/Mastercard cards
+- Cash (pay at service) — available for standard bookings, not GO Service
 
 MARKETPLACE:
 - Buy/sell vehicles, parts, accessories between users

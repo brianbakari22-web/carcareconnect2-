@@ -227,7 +227,7 @@ export default function CustomerPartsMarketplace() {
           delivery_fee: deliveryFee,
           customer_name: customerDetails.name,
           customer_phone: customerDetails.phone,
-          payment_method: "mpesa",
+          payment_method: "cash",
           status: "pending",
         }).select("id").single()
         if (error) throw error

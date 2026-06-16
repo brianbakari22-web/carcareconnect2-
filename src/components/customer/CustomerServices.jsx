@@ -140,7 +140,7 @@ export default function CustomerServices() {
         await supabase.rpc("increment_promo_usage", { p_promo_id: promoData.promo_id })
       }
 
-      if (data?.[0]?.id) {
+      if (bookForm.payment_method !== "cash" && data?.[0]?.id) {
         setPendingBooking({ id: data[0].id, amount: finalAmount })
         setShowPayment(true)
         setBooking(null)
@@ -220,7 +220,7 @@ export default function CustomerServices() {
           await supabase.rpc("increment_promo_usage", { p_promo_id: promoData.promo_id })
         }
 
-        if (data?.[0]?.id) {
+        if (bookForm.payment_method !== "cash" && data?.[0]?.id) {
           setPendingBooking({ id: data[0].id, amount: finalAmount })
           setShowPayment(true)
           setBooking(null)
