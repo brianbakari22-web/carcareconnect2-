@@ -6,6 +6,8 @@ import toast from "react-hot-toast"
 export default function AdminMarketplace() {
   const isMobile = useIsMobile()
   const [listings, setListings] = useState([])
+  const [selectedComments, setSelectedComments] = useState([])
+  const [showComments, setShowComments] = useState(null)
   const [offers, setOffers] = useState([])
   const [transactions, setTransactions] = useState([])
   const [disputes, setDisputes] = useState([])
@@ -105,6 +107,26 @@ export default function AdminMarketplace() {
       load()
     } catch(e) { toast.error(e.message) }
     finally { setProcessing(false) }
+  }
+
+  async function loadListingComments(listingId) {
+    const { data } = await supabase.from("marketplace_comments")
+      .select("*, profiles(first_name, last_name)")
+      .eq("listing_id", listingId)
+      .eq("is_deleted", false)
+      .order("created_at", { ascending: false })
+    return data||[]
+  }
+
+  async function deleteComment(commentId) {
+    await supabase.from("marketplace_comments")
+      .update({ is_deleted: true })
+      .eq("id", commentId)
+    toast.success("Comment removed")
+    // Refresh selected listing comments
+    if (selectedComments.length > 0) {
+      setSelectedComments(prev => prev.filter(c => c.id !== commentId))
+    }
   }
 
   async function approveVideo(id) {
@@ -306,6 +328,37 @@ export default function AdminMarketplace() {
                         {l.description.replace(/\*\*/g,"").replace(/\*/g,"").replace(/#{1,6} /g,"").replace(/- /g,"• ")}
                       </div>
                     )}
+
+                    {/* Comments Moderation */}
+                    <div style={{ marginTop:12, background:"#f8f8f8", borderRadius:10, padding:"1rem" }}>
+                      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
+                        <div style={{ fontSize:12, fontWeight:700, color:"#555" }}>💬 Comments ({l.comments_count||0})</div>
+                        <button onClick={async()=>{
+                          if (showComments===l.id) { setShowComments(null); setSelectedComments([]) }
+                          else { const data = await loadListingComments(l.id); setSelectedComments(data); setShowComments(l.id) }
+                        }} style={{ background:"#378add", border:"none", borderRadius:6, color:"#fff", fontSize:10, fontWeight:700, padding:"4px 10px", cursor:"pointer" }}>
+                          {showComments===l.id?"Hide":"View Comments"}
+                        </button>
+                      </div>
+                      {showComments===l.id&&(
+                        <div>
+                          {selectedComments.length===0&&<div style={{ fontSize:11, color:"#888", textAlign:"center", padding:8 }}>No comments yet</div>}
+                          {selectedComments.map(cm=>(
+                            <div key={cm.id} style={{ display:"flex", gap:8, alignItems:"flex-start", marginBottom:8, background:"#ffffff", borderRadius:8, padding:"8px 10px" }}>
+                              <div style={{ flex:1 }}>
+                                <div style={{ fontSize:11, fontWeight:700, color:"#000" }}>{cm.profiles?.first_name} {cm.profiles?.last_name}</div>
+                                <div style={{ fontSize:11, color:"#444", marginTop:2 }}>{cm.comment}</div>
+                                <div style={{ fontSize:9, color:"#888", marginTop:2 }}>{new Date(cm.created_at).toLocaleString()}</div>
+                              </div>
+                              <button onClick={()=>deleteComment(cm.id)}
+                                style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:6, color:"#e24b4a", fontSize:10, fontWeight:700, padding:"3px 8px", cursor:"pointer", flexShrink:0 }}>
+                                🗑️ Remove
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
 
                     <div style={{ marginBottom:10 }}>
                       <label style={{ fontSize:11, color:"#888", display:"block", marginBottom:4 }}>Admin notes (required for rejection)</label>

@@ -25,8 +25,15 @@ export default function Marketplace() {
   const [photos, setPhotos] = useState([])
   const [activePhoto, setActivePhoto] = useState(0)
   const [offers, setOffers] = useState([])
+  const [comments, setComments] = useState([])
+  const [newComment, setNewComment] = useState("")
+  const [userLikes, setUserLikes] = useState(new Set())
+  const [submittingComment, setSubmittingComment] = useState(false)
+  const [replyingTo, setReplyingTo] = useState(null)
+  const [replyText, setReplyText] = useState("")
+  const [loadingComments, setLoadingComments] = useState(false)
 
-  useEffect(() => { load() }, [tab])
+  useEffect(() => { load(); loadUserLikes() }, [tab])
 
   async function load() {
     setLoading(true)
@@ -43,9 +50,113 @@ export default function Marketplace() {
     setLoading(false)
   }
 
+  async function loadComments(listingId) {
+    setLoadingComments(true)
+    const { data } = await supabase.from("marketplace_comments")
+      .select("*, profiles(first_name, last_name, role), replies:marketplace_comments!parent_comment_id(*, profiles(first_name, last_name, role))")
+      .eq("listing_id", listingId)
+      .eq("is_approved", true)
+      .eq("is_deleted", false)
+      .is("parent_comment_id", null)
+      .order("created_at", { ascending: true })
+    setComments(data||[])
+    setLoadingComments(false)
+  }
+
+  async function loadUserLikes() {
+    if (!user) return
+    const { data } = await supabase.from("marketplace_likes")
+      .select("listing_id").eq("user_id", user.id)
+    setUserLikes(new Set((data||[]).map(l=>l.listing_id)))
+  }
+
+  async function toggleLike(listingId) {
+    if (!user) return toast.error("Please sign in to like listings")
+    const isLiked = userLikes.has(listingId)
+    if (isLiked) {
+      await supabase.from("marketplace_likes").delete()
+        .eq("user_id", user.id).eq("listing_id", listingId)
+      setUserLikes(prev => { const n = new Set(prev); n.delete(listingId); return n })
+      setListings(ls => ls.map(l => l.id===listingId ? {...l, likes_count:(l.likes_count||1)-1} : l))
+      if (selected?.id===listingId) setSelected(s => ({...s, likes_count:(s.likes_count||1)-1}))
+    } else {
+      await supabase.from("marketplace_likes").insert({ user_id: user.id, listing_id: listingId })
+      setUserLikes(prev => new Set([...prev, listingId]))
+      setListings(ls => ls.map(l => l.id===listingId ? {...l, likes_count:(l.likes_count||0)+1} : l))
+      if (selected?.id===listingId) setSelected(s => ({...s, likes_count:(s.likes_count||0)+1}))
+    }
+  }
+
+  async function submitComment(listingId) {
+    if (!user) return toast.error("Please sign in to comment")
+    if (!newComment.trim()) return toast.error("Please write a comment")
+    if (newComment.trim().length > 500) return toast.error("Comment too long (max 500 chars)")
+    setSubmittingComment(true)
+    try {
+      const { data, error } = await supabase.from("marketplace_comments").insert({
+        user_id: user.id,
+        listing_id: listingId,
+        comment: newComment.trim()
+      }).select("*, profiles(first_name, last_name, role)").single()
+      if (error) throw error
+      setComments(prev => [...prev, data])
+      setNewComment("")
+      setListings(ls => ls.map(l => l.id===listingId ? {...l, comments_count:(l.comments_count||0)+1} : l))
+      if (selected?.id===listingId) setSelected(s => ({...s, comments_count:(s.comments_count||0)+1}))
+      toast.success("Comment posted!")
+    } catch(e) { toast.error("Failed to post comment") }
+    finally { setSubmittingComment(false) }
+  }
+
+  async function submitReply(listingId, parentCommentId, isSeller) {
+    if (!user) return toast.error("Please sign in to reply")
+    if (!replyText.trim()) return toast.error("Please write a reply")
+    setSubmittingComment(true)
+    try {
+      const { data, error } = await supabase.from("marketplace_comments").insert({
+        user_id: user.id,
+        listing_id: listingId,
+        comment: replyText.trim(),
+        parent_comment_id: parentCommentId,
+        is_seller_reply: isSeller
+      }).select("*, profiles(first_name, last_name, role)").single()
+      if (error) throw error
+      setComments(prev => prev.map(cm => 
+        cm.id === parentCommentId 
+          ? {...cm, replies: [...(cm.replies||[]), data]} 
+          : cm
+      ))
+      setReplyText("")
+      setReplyingTo(null)
+      toast.success("Reply posted!")
+    } catch(e) { toast.error("Failed to post reply") }
+    finally { setSubmittingComment(false) }
+  }
+
+  async function deleteComment(commentId, listingId) {
+    await supabase.from("marketplace_comments").delete().eq("id", commentId)
+    setComments(prev => prev.filter(c => c.id !== commentId))
+    setListings(ls => ls.map(l => l.id===listingId ? {...l, comments_count:Math.max(0,(l.comments_count||1)-1)} : l))
+  }
+
+  async function shareViaWhatsApp(listing) {
+    const url = `https://carcareconnect.care/marketplace`
+    const text = `Check out this listing on Car Care Connect: ${listing.title} - KES ${Number(listing.price).toLocaleString()} ${url}`
+    const waUrl = `https://wa.me/?text=${encodeURIComponent(text)}`
+    const { openExternal } = await import("../../lib/openExternal")
+    openExternal(waUrl)
+    // Update share count
+    await supabase.from("marketplace_listings").update({ shares_count:(listing.shares_count||0)+1 }).eq("id", listing.id)
+    setListings(ls => ls.map(l => l.id===listing.id ? {...l, shares_count:(l.shares_count||0)+1} : l))
+    if (selected?.id===listing.id) setSelected(s => ({...s, shares_count:(s.shares_count||0)+1}))
+  }
+
   async function openListing(listing) {
     setSelected(listing)
     setActivePhoto(0)
+    setComments([])
+    setNewComment("")
+    loadComments(listing.id)
     await supabase.from("marketplace_listings").update({ views:(listing.views||0)+1 }).eq("id",listing.id)
     const { data: pics } = await supabase.from("marketplace_photos").select("*").eq("listing_id",listing.id).order("display_order")
     setPhotos(pics||[])
@@ -189,6 +300,11 @@ export default function Marketplace() {
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
                   <div style={{ fontFamily:"Syne", fontSize:isMobile?13:15, fontWeight:800, color:"#e6821e" }}>KES {Number(l.price).toLocaleString()}</div>
                   {l.negotiable&&<span style={{ fontSize:9, color:"#1d9e75" }}>Negotiable</span>}
+                  <div style={{ display:"flex", gap:8, marginTop:4 }}>
+                    {(l.likes_count>0)&&<span style={{ fontSize:9, color:"#e24b4a" }}>❤️ {l.likes_count}</span>}
+                    {(l.comments_count>0)&&<span style={{ fontSize:9, color:"#888" }}>💬 {l.comments_count}</span>}
+                    {(l.shares_count>0)&&<span style={{ fontSize:9, color:"#1d9e75" }}>📤 {l.shares_count}</span>}
+                  </div>
                 </div>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
                   <span style={{ fontSize:9, padding:"2px 6px", borderRadius:6, background:badge.bg, color:badge.color }}>{badge.label}</span>
@@ -240,6 +356,86 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
             otherUserName={sellerInfo?.business_name||sellerInfo?.first_name||"Seller"}
             onClose={()=>setShowChat(false)}
           />
+
+            {/* Comments Section */}
+            <div style={{ marginTop:16, background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem" }}>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#000", marginBottom:12 }}>💬 Comments ({selected?.comments_count||0})</div>
+              <div style={{ display:"flex", gap:8, marginBottom:16 }}>
+                <textarea id="comment-input" value={newComment} onChange={e=>setNewComment(e.target.value)}
+                  placeholder="Write a comment... (contact sharing not allowed)" rows={2}
+                  style={{ flex:1, background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:8, padding:"10px 12px", fontSize:12, color:"#000", outline:"none", resize:"none", fontFamily:"DM Sans,sans-serif" }}/>
+                <button onClick={()=>submitComment(selected.id)} disabled={submittingComment||!newComment.trim()}
+                  style={{ background:submittingComment||!newComment.trim()?"#eeeeee":"#e6821e", border:"none", borderRadius:8, color:submittingComment||!newComment.trim()?"#999":"#fff", fontSize:12, fontWeight:700, padding:"0 14px", cursor:submittingComment||!newComment.trim()?"not-allowed":"pointer", flexShrink:0 }}>
+                  {submittingComment?"...":"Post"}
+                </button>
+              </div>
+              {loadingComments&&<div style={{ color:"#888", fontSize:12, textAlign:"center" }}>Loading...</div>}
+              {!loadingComments&&comments.length===0&&<div style={{ color:"#888", fontSize:12, textAlign:"center", padding:"1rem" }}>No comments yet. Be the first!</div>}
+              {/* Video context label */}
+              {selected?.video_url&&selected?.video_status==="approved"&&(
+                <div style={{ fontSize:11, color:"#888", marginBottom:12, display:"flex", alignItems:"center", gap:6 }}>
+                  <span>🎥</span> Comments below refer to this listing and its video
+                </div>
+              )}
+
+              {comments.map(cm=>(
+                <div key={cm.id} style={{ marginBottom:14 }}>
+                  {/* Main comment */}
+                  <div style={{ display:"flex", gap:10, alignItems:"flex-start" }}>
+                    <div style={{ width:32, height:32, borderRadius:"50%", background:"#fff8f0", border:"1px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:12, fontWeight:800, color:"#e6821e", flexShrink:0 }}>
+                      {(cm.profiles?.first_name||"?")[0].toUpperCase()}
+                    </div>
+                    <div style={{ flex:1 }}>
+                      <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:2 }}>
+                        <span style={{ fontSize:12, fontWeight:700, color:"#000" }}>{cm.profiles?.first_name} {cm.profiles?.last_name}</span>
+                        <span style={{ fontSize:10, color:"#888" }}>{new Date(cm.created_at).toLocaleDateString()}</span>
+                        {user?.id===cm.user_id&&(
+                          <button onClick={()=>deleteComment(cm.id, selected.id)} style={{ marginLeft:"auto", background:"none", border:"none", color:"#e24b4a", fontSize:10, cursor:"pointer", padding:0 }}>Delete</button>
+                        )}
+                      </div>
+                      <div style={{ fontSize:12, color:"#333", lineHeight:1.5, background:"#f8f8f8", borderRadius:"4px 12px 12px 12px", padding:"8px 12px" }}>{cm.comment}</div>
+                      {/* Reply button - visible to seller and all users */}
+                      <button onClick={()=>{ setReplyingTo(replyingTo===cm.id?null:cm.id); setReplyText("") }}
+                        style={{ background:"none", border:"none", color:"#378add", fontSize:10, cursor:"pointer", padding:"4px 0", fontWeight:600 }}>
+                        {replyingTo===cm.id?"Cancel":"↩ Reply"}
+                        {user?.id===selected?.seller_id&&" (as seller)"}
+                      </button>
+                      {/* Reply input */}
+                      {replyingTo===cm.id&&(
+                        <div style={{ display:"flex", gap:6, marginTop:6 }}>
+                          <textarea value={replyText} onChange={e=>setReplyText(e.target.value)}
+                            placeholder={user?.id===selected?.seller_id?"Reply as seller...":"Write a reply..."}
+                            rows={2} style={{ flex:1, background:"#f0f7ff", border:"1px solid #378add30", borderRadius:8, padding:"8px 10px", fontSize:11, color:"#000", outline:"none", resize:"none" }}/>
+                          <button onClick={()=>submitReply(selected.id, cm.id, user?.id===selected?.seller_id)} disabled={submittingComment||!replyText.trim()}
+                            style={{ background:submittingComment||!replyText.trim()?"#eeeeee":"#378add", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"0 12px", cursor:"pointer", flexShrink:0 }}>
+                            {submittingComment?"...":"Reply"}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  {/* Replies */}
+                  {(cm.replies||[]).filter(r=>!r.is_deleted).map(reply=>(
+                    <div key={reply.id} style={{ display:"flex", gap:8, alignItems:"flex-start", marginTop:8, marginLeft:42 }}>
+                      <div style={{ width:26, height:26, borderRadius:"50%", background:reply.is_seller_reply?"#eff6ff":"#f8f8f8", border:`1px solid ${reply.is_seller_reply?"#378add30":"#eeeeee"}`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:10, fontWeight:800, color:reply.is_seller_reply?"#378add":"#888", flexShrink:0 }}>
+                        {(reply.profiles?.first_name||"?")[0].toUpperCase()}
+                      </div>
+                      <div style={{ flex:1 }}>
+                        <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:2 }}>
+                          <span style={{ fontSize:11, fontWeight:700, color:"#000" }}>{reply.profiles?.first_name} {reply.profiles?.last_name}</span>
+                          {reply.is_seller_reply&&<span style={{ fontSize:9, background:"#eff6ff", color:"#378add", padding:"1px 6px", borderRadius:8, fontWeight:700 }}>Seller</span>}
+                          <span style={{ fontSize:9, color:"#888" }}>{new Date(reply.created_at).toLocaleDateString()}</span>
+                          {user?.id===reply.user_id&&(
+                            <button onClick={()=>deleteComment(reply.id, selected.id)} style={{ marginLeft:"auto", background:"none", border:"none", color:"#e24b4a", fontSize:9, cursor:"pointer", padding:0 }}>Delete</button>
+                          )}
+                        </div>
+                        <div style={{ fontSize:11, color:"#333", lineHeight:1.5, background:reply.is_seller_reply?"#eff6ff":"#f8f8f8", borderRadius:"4px 12px 12px 12px", padding:"6px 10px" }}>{reply.comment}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
         </div>
       </div>
     </div>
@@ -371,6 +567,25 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
                 💬 Message seller
               </button>
 
+              {/* Social actions */}
+              <div style={{ display:"flex", gap:8, marginTop:4 }}>
+                <button onClick={()=>toggleLike(selected.id)}
+                  style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:6, background:userLikes.has(selected.id)?"#fff0f3":"#f8f8f8", border:`1px solid ${userLikes.has(selected.id)?"#e24b4a40":"#eeeeee"}`, borderRadius:10, padding:"10px", cursor:"pointer", transition:"all 0.15s" }}>
+                  <span style={{ fontSize:18 }}>{userLikes.has(selected.id)?"❤️":"🤍"}</span>
+                  <span style={{ fontSize:12, fontWeight:700, color:userLikes.has(selected.id)?"#e24b4a":"#666" }}>{selected.likes_count||0}</span>
+                </button>
+                <button onClick={()=>document.getElementById("comment-input").focus()}
+                  style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:6, background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:10, padding:"10px", cursor:"pointer" }}>
+                  <span style={{ fontSize:18 }}>💬</span>
+                  <span style={{ fontSize:12, fontWeight:700, color:"#666" }}>{selected.comments_count||0}</span>
+                </button>
+                <button onClick={()=>shareViaWhatsApp(selected)}
+                  style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:6, background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:10, padding:"10px", cursor:"pointer" }}>
+                  <span style={{ fontSize:18 }}>📤</span>
+                  <span style={{ fontSize:12, fontWeight:700, color:"#1d9e75" }}>{selected.shares_count||0}</span>
+                </button>
+              </div>
+
               {/* Status banner */}
               {!listing.is_inspected&&(
                 <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.9rem" }}>
@@ -411,7 +626,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
               {listing.is_inspected&&(
                 <button onClick={()=>setShowChat(s=>!s)}
                 style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:10, color:"#378add", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:600, padding:"12px", cursor:"pointer" }}>
-                  💬 {showChat?"Close chat":"Message seller"}
+                  💬 {showChat?"Close chat":"Open chat"}
                 </button>
               )}
             {showChat&&(
