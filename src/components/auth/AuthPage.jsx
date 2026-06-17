@@ -141,9 +141,7 @@ export default function AuthPage() {
         } else {
           window.location.href = "/dashboard"
         }
-        return // navigation handled above
-
-
+        return;
         checkProfile()
       } else {
         await signUp({

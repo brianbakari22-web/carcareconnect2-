@@ -259,7 +259,7 @@ export default function MyListings() {
                   </div>
                   <video src={l.video_url} controls style={{ width:"100%", borderRadius:8, maxHeight:200 }}/>
                 </div>
-              )}}
+              )}
 
               <div style={{ borderTop:"1px solid #eeeeee", padding:"0.5rem 0.75rem", display:"flex", gap:6, flexWrap:"wrap" }}>
                 <button onClick={()=>navigate("/dashboard/marketplace")} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>View</button>

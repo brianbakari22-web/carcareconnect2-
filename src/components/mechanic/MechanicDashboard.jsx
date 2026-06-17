@@ -439,14 +439,16 @@ export default function MechanicDashboard() {
       )}
 
       {/* Tabs */}
-      <div style={{ display:"flex", background:"#ffffff", borderBottom:"1px solid #eeeeee", position:"sticky", top: activeJob ? 220 : 160, zIndex:99 }}>
-        {TABS.map(t=>(
-          <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ flex:1, background:"none", border:"none", borderBottom:tab===t.k?"2px solid #1d9e75":"2px solid transparent", color:tab===t.k?"#1d9e75":"#888", fontSize:t.k==="sos"?11:12, fontWeight:700, padding:"10px 4px", cursor:"pointer", fontFamily:"DM Sans,sans-serif" }}>
-            <div>{t.icon}</div>
-            <div style={{ fontSize:10, marginTop:2 }}>{t.l}</div>
-          </button>
-        ))}
+      <div style={{ background:"#ffffff", borderBottom:"1px solid #eeeeee", position:"sticky", top: activeJob ? 220 : 160, zIndex:99, overflowX:"auto", WebkitOverflowScrolling:"touch" }}>
+        <div style={{ display:"flex", minWidth:"max-content", padding:"0 4px" }}>
+          {TABS.map(t=>(
+            <button key={t.k} onClick={()=>setTab(t.k)}
+              style={{ background:"none", border:"none", borderBottom:tab===t.k?"2px solid #1d9e75":"2px solid transparent", color:tab===t.k?"#1d9e75":"#888", fontWeight:700, padding:"8px 12px", cursor:"pointer", fontFamily:"DM Sans,sans-serif", whiteSpace:"nowrap", minWidth:56 }}>
+              <div style={{ fontSize:16 }}>{t.icon}</div>
+              <div style={{ fontSize:9, marginTop:2 }}>{t.l}</div>
+            </button>
+          ))}
+        </div>
       </div>
 
       <div style={{ padding:"1rem" }}>
@@ -924,7 +926,7 @@ export default function MechanicDashboard() {
         </div>
       )}
 
-      <AIAssistant role="mechanic" color="#1d9e75"/>
+      <AIAssistant role="mechanic" color="#1d9e75" bottomOffset={70}/>
     </div>
   )
 }
