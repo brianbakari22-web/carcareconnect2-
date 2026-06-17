@@ -37,6 +37,8 @@ export default function MechanicDashboard() {
   const [timerRef, setTimerRef] = useState(null)
   const [earnings, setEarnings] = useState({ today:0, week:0, month:0, total_jobs:0 })
   const [expandedJob, setExpandedJob] = useState(null)
+  const [photos, setPhotos] = useState([])
+  const [viewPhoto, setViewPhoto] = useState(null)
   const [docs, setDocs] = useState([])
   const [uploadingDoc, setUploadingDoc] = useState(null)
   const [chatJob, setChatJob] = useState(null)
@@ -50,6 +52,7 @@ export default function MechanicDashboard() {
     loadEarnings()
     loadPerfStats()
     loadDocs()
+    loadPhotos()
     const sub = supabase.channel("mechanic-jobs-" + mechanic.mechanic_id)
       .on("postgres_changes", { event:"*", schema:"public", table:"bookings",
         filter:"assigned_mechanic_id=eq." + mechanic.mechanic_id }, () => load())
@@ -78,6 +81,21 @@ export default function MechanicDashboard() {
       .order("updated_at", { ascending: false })
       .limit(30)
     setHistory(data||[])
+  }
+
+  async function loadPhotos() {
+    const { data } = await supabase.from("bookings")
+      .select("id, service_name, services(name), booking_date, pickup_photo_url, dropoff_photo_url, profiles!bookings_customer_id_fkey(first_name,last_name)")
+      .eq("assigned_mechanic_id", mechanic.mechanic_id)
+      .or("pickup_photo_url.not.is.null,dropoff_photo_url.not.is.null")
+      .order("created_at", { ascending: false })
+      .limit(50)
+    const allPhotos = []
+    ;(data||[]).forEach(b => {
+      if (b.pickup_photo_url) allPhotos.push({ url:b.pickup_photo_url, type:"Before", job:b })
+      if (b.dropoff_photo_url) allPhotos.push({ url:b.dropoff_photo_url, type:"After", job:b })
+    })
+    setPhotos(allPhotos)
   }
 
   async function loadDocs() {
@@ -319,6 +337,9 @@ export default function MechanicDashboard() {
     { k:"earnings", l:"Earnings", icon:"💰" },
     { k:"stats", l:"Stats", icon:"⭐" },
     { k:"history", l:"History", icon:"📋" },
+    { k:"photos", l:"Photos", icon:"📸" },
+    { k:"manual", l:"Manual", icon:"📖" },
+    { k:"parts", l:"Parts", icon:"🔩" },
     { k:"docs", l:"Docs", icon:"📄" },
     { k:"sos", l:"SOS", icon:"🆘" },
   ]
@@ -630,6 +651,150 @@ export default function MechanicDashboard() {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* PHOTOS TAB */}
+        {tab==="photos"&&(
+          <div>
+            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000", marginBottom:4 }}>📸 Job Photos</div>
+            <div style={{ fontSize:12, color:"#888", marginBottom:"1rem" }}>{photos.length} photo{photos.length!==1?"s":""} from your jobs</div>
+            {photos.length===0&&(
+              <div style={{ textAlign:"center", padding:"3rem 1rem", background:"#fff", borderRadius:12, border:"1px solid #eee" }}>
+                <div style={{ fontSize:40, marginBottom:8 }}>📷</div>
+                <div style={{ fontSize:13, color:"#888" }}>No photos yet. Upload before/after photos on your jobs.</div>
+              </div>
+            )}
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
+              {photos.map((p,i)=>(
+                <div key={i} onClick={()=>setViewPhoto(p)}
+                  style={{ borderRadius:10, overflow:"hidden", cursor:"pointer", position:"relative", aspectRatio:"1", background:"#f5f5f5" }}>
+                  <img src={p.url} alt={p.type} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
+                  <div style={{ position:"absolute", bottom:0, left:0, right:0, background:"linear-gradient(transparent,rgba(0,0,0,0.7))", padding:"8px 6px 4px" }}>
+                    <div style={{ fontSize:10, color:"#fff", fontWeight:700 }}>{p.type}</div>
+                    <div style={{ fontSize:9, color:"rgba(255,255,255,0.8)" }}>{p.job.services?.name||p.job.service_name}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* Photo lightbox */}
+            {viewPhoto&&(
+              <div onClick={()=>setViewPhoto(null)} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.9)", zIndex:1000, display:"flex", alignItems:"center", justifyContent:"center", padding:"1rem" }}>
+                <div style={{ maxWidth:"100%", maxHeight:"80vh", position:"relative" }}>
+                  <img src={viewPhoto.url} alt="Job photo" style={{ maxWidth:"100%", maxHeight:"80vh", borderRadius:12, objectFit:"contain" }}/>
+                  <div style={{ textAlign:"center", marginTop:12 }}>
+                    <div style={{ fontSize:14, fontWeight:700, color:"#fff" }}>{viewPhoto.type} photo</div>
+                    <div style={{ fontSize:12, color:"rgba(255,255,255,0.7)" }}>{viewPhoto.job.services?.name} · {viewPhoto.job.booking_date}</div>
+                    <div style={{ fontSize:11, color:"rgba(255,255,255,0.6)" }}>{viewPhoto.job.profiles?.first_name} {viewPhoto.job.profiles?.last_name}</div>
+                  </div>
+                  <button onClick={()=>setViewPhoto(null)}
+                    style={{ position:"absolute", top:-12, right:-12, background:"#fff", border:"none", borderRadius:"50%", width:28, height:28, fontSize:14, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                    x
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* SERVICE MANUAL TAB */}
+        {tab==="manual"&&(
+          <div>
+            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000", marginBottom:4 }}>📖 Service Manual</div>
+            <div style={{ fontSize:12, color:"#888", marginBottom:"1rem" }}>Quick reference guides for common repairs</div>
+            {[
+              { title:"Oil Change", icon:"🛢️", steps:["Warm up engine for 2 mins","Drain old oil from drain plug","Replace oil filter","Add new oil (check spec)","Run engine, check for leaks","Reset oil life indicator"] },
+              { title:"Brake Pad Replacement", icon:"🔴", steps:["Loosen wheel nuts, jack up car","Remove wheel and caliper","Slide out old brake pads","Compress caliper piston","Install new pads","Reassemble and pump brakes"] },
+              { title:"Tyre Change", icon:"🛞", steps:["Apply parking brake","Loosen nuts before jacking","Jack under correct lift point","Remove flat tyre","Mount spare and hand-tighten nuts","Lower car and torque nuts to spec"] },
+              { title:"Battery Replacement", icon:"🔋", steps:["Turn off engine","Disconnect negative (-) first","Disconnect positive (+)","Remove hold-down clamp","Install new battery","Connect positive (+) first, then negative"] },
+              { title:"Air Filter Replacement", icon:"💨", steps:["Locate air filter housing","Unclip housing cover","Remove old filter","Check housing for debris","Insert new filter","Secure cover clips"] },
+              { title:"Spark Plug Replacement", icon:"⚡", steps:["Allow engine to cool","Remove ignition coil/wire","Use spark plug socket to remove","Check gap on new plug","Hand-thread new plug","Torque to spec, reattach coil"] },
+            ].map((item,i)=>(
+              <div key={i} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, marginBottom:10, overflow:"hidden" }}>
+                <div onClick={()=>setExpandedJob(expandedJob===("manual"+i)?null:"manual"+i)}
+                  style={{ padding:"0.875rem 1rem", display:"flex", justifyContent:"space-between", alignItems:"center", cursor:"pointer" }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                    <span style={{ fontSize:22 }}>{item.icon}</span>
+                    <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000" }}>{item.title}</div>
+                  </div>
+                  <div style={{ fontSize:12, color:"#888" }}>{expandedJob==="manual"+i?"▲":"▼"}</div>
+                </div>
+                {expandedJob==="manual"+i&&(
+                  <div style={{ borderTop:"1px solid #f5f5f5", padding:"0.75rem 1rem" }}>
+                    {item.steps.map((step,j)=>(
+                      <div key={j} style={{ display:"flex", gap:10, marginBottom:8, alignItems:"flex-start" }}>
+                        <div style={{ width:22, height:22, borderRadius:"50%", background:"#1d9e75", color:"#fff", fontSize:11, fontWeight:800, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, marginTop:1 }}>{j+1}</div>
+                        <div style={{ fontSize:12, color:"#333", lineHeight:1.5 }}>{step}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* PARTS PRICE LIST TAB */}
+        {tab==="parts"&&(
+          <div>
+            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000", marginBottom:4 }}>🔩 Parts Price Guide</div>
+            <div style={{ fontSize:12, color:"#888", marginBottom:"1rem" }}>Nairobi market prices (approximate, KES)</div>
+            {[
+              { category:"Engine", icon:"⚙️", parts:[
+                { name:"Engine Oil (4L)", min:800, max:2500 },
+                { name:"Oil Filter", min:300, max:800 },
+                { name:"Air Filter", min:400, max:1200 },
+                { name:"Spark Plugs (set of 4)", min:800, max:3000 },
+                { name:"Timing Belt", min:1500, max:5000 },
+              ]},
+              { category:"Brakes", icon:"🔴", parts:[
+                { name:"Brake Pads (front pair)", min:1200, max:4000 },
+                { name:"Brake Discs (each)", min:2000, max:6000 },
+                { name:"Brake Fluid (500ml)", min:400, max:800 },
+                { name:"Brake Caliper", min:3000, max:8000 },
+              ]},
+              { category:"Suspension", icon:"🚗", parts:[
+                { name:"Shock Absorber (each)", min:2500, max:8000 },
+                { name:"Ball Joint", min:1500, max:4000 },
+                { name:"Tie Rod End", min:1200, max:3500 },
+                { name:"Bush Kit", min:800, max:2500 },
+              ]},
+              { category:"Electrical", icon:"⚡", parts:[
+                { name:"Car Battery (40-60Ah)", min:6000, max:12000 },
+                { name:"Alternator", min:5000, max:15000 },
+                { name:"Starter Motor", min:4000, max:12000 },
+                { name:"Fuse Box", min:1500, max:5000 },
+              ]},
+              { category:"Tyres", icon:"🛞", parts:[
+                { name:"Budget Tyre (175/65R14)", min:3500, max:5000 },
+                { name:"Mid-range Tyre (185/65R15)", min:5000, max:8000 },
+                { name:"Premium Tyre (205/55R16)", min:8000, max:15000 },
+              ]},
+            ].map((cat,i)=>(
+              <div key={i} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, marginBottom:10, overflow:"hidden" }}>
+                <div onClick={()=>setExpandedJob(expandedJob===("parts"+i)?null:"parts"+i)}
+                  style={{ padding:"0.875rem 1rem", display:"flex", justifyContent:"space-between", alignItems:"center", cursor:"pointer" }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                    <span style={{ fontSize:22 }}>{cat.icon}</span>
+                    <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000" }}>{cat.category}</div>
+                  </div>
+                  <div style={{ fontSize:12, color:"#888" }}>{expandedJob==="parts"+i?"▲":"▼"}</div>
+                </div>
+                {expandedJob==="parts"+i&&(
+                  <div style={{ borderTop:"1px solid #f5f5f5", padding:"0.5rem 0" }}>
+                    {cat.parts.map((p,j)=>(
+                      <div key={j} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"8px 1rem", borderBottom:j<cat.parts.length-1?"1px solid #f8f8f8":"none" }}>
+                        <div style={{ fontSize:12, color:"#333" }}>{p.name}</div>
+                        <div style={{ fontSize:12, fontWeight:700, color:"#1d9e75" }}>KES {p.min.toLocaleString()} - {p.max.toLocaleString()}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+            <div style={{ background:"#f8f8f8", borderRadius:10, padding:"0.75rem", fontSize:11, color:"#555", lineHeight:1.7 }}>
+              ⚠️ Prices are approximate Nairobi market rates. Always confirm with your supplier before quoting a customer.
+            </div>
           </div>
         )}
 
