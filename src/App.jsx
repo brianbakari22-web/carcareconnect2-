@@ -274,8 +274,6 @@ function DashboardRouter() {
           <Route path="marketplace/transactions" element={<EscrowManager />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </>}
-            <Route path="/mechanic-login" element={<MechanicLogin/>}/>
-      <Route path="/mechanic-dashboard" element={<MechanicDashboard/>}/>
       </Routes>
     </Layout>
   )
@@ -358,6 +356,8 @@ export default function App() {
             <Toaster position="top-right" toastOptions={{ style:{ background:"#ffffff", color:"#000000", border:"1px solid #eeeeee", borderRadius:8, fontSize:13 } }} />
             <Routes>
               <Route path="/auth" element={<AuthPage />} />
+              <Route path="/mechanic-login" element={<MechanicLogin/>}/>
+              <Route path="/mechanic-dashboard" element={<MechanicDashboard/>}/>
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/payment/callback" element={<PaymentCallback />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
