@@ -1,372 +1,307 @@
-﻿import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
-import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
 const SPECIALIZATIONS = [
   "General Mechanic","Engine Specialist","Electrical Systems","Brake Specialist",
   "Transmission Specialist","Tire & Wheel Specialist","Body & Paint",
   "AC & Cooling Systems","Suspension & Steering","Diagnostics Specialist",
-  "Emergency Roadside","Mobile Mechanic",
+  "Emergency Roadside","Mobile Mechanic","Diagnostics & Tuning","Fuel Systems"
 ]
-
-const EMPTY = { first_name:"", last_name:"", phone:"", specialization:"General Mechanic", notes:"" }
 
 export default function ProviderMechanics() {
   const { user } = useAuth()
-  const isMobile = useIsMobile()
   const [mechanics, setMechanics] = useState([])
   const [loading, setLoading] = useState(true)
-  const [showForm, setShowForm] = useState(false)
-  const [editing, setEditing] = useState(null)
-  const [form, setForm] = useState(EMPTY)
-  const [saving, setSaving] = useState(false)
-  const [trackingMechanic, setTrackingMechanic] = useState(null)
-  const [settingPin, setSettingPin] = useState(null)
-  const [newPin, setNewPin] = useState("")
-  const mapRef = useRef(null)
-  const mapInstanceRef = useRef(null)
-  const markerRef = useRef(null)
+  const [showAdd, setShowAdd] = useState(false)
+  const [expanded, setExpanded] = useState(null)
+  const [pinPanel, setPinPanel] = useState(null)
+  const [docsPanel, setDocsPanel] = useState(null)
+  const [mechanicDocs, setMechanicDocs] = useState({})
+  const [pin, setPin] = useState("")
+  const [settingPin, setSettingPin] = useState(false)
+  const [form, setForm] = useState({ first_name:"", last_name:"", phone:"", email:"", specialization:"General Mechanic", hourly_rate:"" })
+  const [submitting, setSubmitting] = useState(false)
 
-  useEffect(() => {
-    if (!user) return
-    load()
-    const sub = supabase.channel("mechanics-live")
-      .on("postgres_changes", { event:"*", schema:"public", table:"mechanics", filter:`provider_id=eq.${user.id}` }, () => load())
-      .subscribe()
-    return () => supabase.removeChannel(sub)
-  }, [user])
-
-  useEffect(() => {
-    if (!trackingMechanic) return
-    const sub = supabase.channel(`mechanic-location-${trackingMechanic.id}`)
-      .on("postgres_changes", { event:"INSERT", schema:"public", table:"mechanic_location_history", filter:`mechanic_id=eq.${trackingMechanic.id}` },
-        payload => {
-          const { latitude, longitude } = payload.new
-          setTrackingMechanic(m => ({ ...m, current_latitude:latitude, current_longitude:longitude }))
-          if (markerRef.current && mapInstanceRef.current) {
-            markerRef.current.setLatLng([latitude, longitude])
-            mapInstanceRef.current.panTo([latitude, longitude])
-          }
-        })
-      .subscribe()
-    return () => supabase.removeChannel(sub)
-  }, [trackingMechanic?.id])
-
-  useEffect(() => {
-    if (!trackingMechanic || !mapRef.current) return
-    // Always show map, default to Nairobi if no mechanic location
-    if (mapInstanceRef.current) { mapInstanceRef.current.remove(); mapInstanceRef.current = null }
-    const lat = trackingMechanic.current_latitude || -1.2921
-    const lng = trackingMechanic.current_longitude || 36.8219
-    setTimeout(() => {
-      if (!mapRef.current) return
-      const L = window.L
-      if (!L) return
-      const map = L.map(mapRef.current).setView([lat, lng], 14)
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map)
-      const icon = L.divIcon({ className:"", html:`<div style="background:#1d9e75;width:32px;height:32px;border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:16px;">👨‍🔧</div>`, iconSize:[32,32], iconAnchor:[16,16] })
-      markerRef.current = L.marker([lat, lng], { icon }).addTo(map).bindPopup(`${trackingMechanic.first_name} ${trackingMechanic.last_name}`)
-      mapInstanceRef.current = map
-    }, 100)
-    return () => { if (mapInstanceRef.current) { mapInstanceRef.current.remove(); mapInstanceRef.current = null } }
-  }, [trackingMechanic?.id])
+  useEffect(() => { if (user) load() }, [user])
 
   async function load() {
-    const { data } = await supabase.from("mechanics").select("*").eq("provider_id", user.id).order("created_at", { ascending:false })
+    setLoading(true)
+    const { data } = await supabase.from("mechanics")
+      .select("*, profiles!mechanics_provider_id_fkey(business_name)")
+      .eq("provider_id", user.id)
+      .order("created_at", { ascending: false })
     setMechanics(data||[])
     setLoading(false)
   }
 
-  async function save(e) {
-    e.preventDefault()
-    if (!form.first_name||!form.last_name) return toast.error("Name required")
-    setSaving(true)
-    try {
-      if (editing) {
-        const { error } = await supabase.from("mechanics").update({
-          first_name:form.first_name, last_name:form.last_name, phone:form.phone,
-          specialization:form.specialization, notes:form.notes,
-        }).eq("id", editing).eq("provider_id", user.id)
-        if (error) throw error
-        toast.success("Mechanic updated")
-      } else {
-        const { error } = await supabase.from("mechanics").insert({
-          provider_id:user.id, first_name:form.first_name, last_name:form.last_name,
-          phone:form.phone, specialization:form.specialization, notes:form.notes,
-          is_available:true, is_active:true,
-        })
-        if (error) throw error
-        toast.success("Mechanic added")
-      }
-      setForm(EMPTY); setShowForm(false); setEditing(null); load()
-    } catch(err) { toast.error(err.message) }
-    finally { setSaving(false) }
+  async function loadDocs(mechanicId) {
+    const { data } = await supabase.from("driver_documents")
+      .select("*").eq("driver_id", mechanicId)
+    setMechanicDocs(prev => ({...prev, [mechanicId]: data||[]}))
+    setDocsPanel(docsPanel===mechanicId?null:mechanicId)
   }
 
-  async function setPinForMechanic(mechanicId) {
-    if (!newPin || newPin.length < 4) return alert("PIN must be at least 4 digits")
-    if (!/^\d+$/.test(newPin)) return alert("PIN must be numbers only")
+  async function addMechanic() {
+    if (!form.first_name.trim()||!form.phone.trim()) return toast.error("Name and phone required")
+    setSubmitting(true)
     try {
-      await supabase.rpc("set_mechanic_pin", { p_mechanic_id: mechanicId, p_pin: newPin })
-      alert("PIN set successfully! Mechanic can now login at: carcareconnect.care/mechanic-login")
-      setSettingPin(null)
-      setNewPin("")
+      // Create auth user for mechanic
+      const { data: authData, error: authError } = await supabase.auth.admin?.createUser({
+        phone: form.phone, email: form.email||undefined, email_confirm: true
+      }).catch(()=>({data:null,error:{message:"Using profile method"}}))
+
+      // Create profile
+      const { data: profile, error: profileError } = await supabase.from("profiles").insert({
+        first_name: form.first_name,
+        last_name: form.last_name,
+        phone: form.phone,
+        email: form.email||null,
+        role: "mechanic",
+        business_name: form.first_name + " " + form.last_name
+      }).select().single()
+
+      if (profileError) throw profileError
+
+      // Create mechanic record
+      const { error: mechError } = await supabase.from("mechanics").insert({
+        provider_id: user.id,
+        first_name: form.first_name,
+        last_name: form.last_name,
+        phone: form.phone,
+        email: form.email||null,
+        specialization: form.specialization,
+        hourly_rate: Number(form.hourly_rate)||0,
+        is_active: true,
+        is_available: true,
+      })
+      if (mechError) throw mechError
+
+      toast.success("Mechanic added! Set their PIN so they can login.")
+      setForm({ first_name:"", last_name:"", phone:"", email:"", specialization:"General Mechanic", hourly_rate:"" })
+      setShowAdd(false)
       load()
-    } catch(e) { alert("Error setting PIN: " + e.message) }
+    } catch(err) { toast.error(err.message) }
+    finally { setSubmitting(false) }
   }
 
-  async function toggleAvailable(id, is_available) {
-    await supabase.from("mechanics").update({ is_available:!is_available }).eq("id",id).eq("provider_id",user.id)
-    toast.success(is_available?"Marked as unavailable":"Marked as available")
+  async function toggleActive(m) {
+    await supabase.from("mechanics").update({ is_active: !m.is_active }).eq("id", m.id)
+    toast.success(m.is_active?"Mechanic deactivated":"Mechanic activated")
     load()
   }
 
-  async function toggleActive(id, is_active) {
-    await supabase.from("mechanics").update({ is_active:!is_active }).eq("id",id).eq("provider_id",user.id)
-    toast.success(is_active?"Mechanic deactivated":"Mechanic activated")
+  async function toggleAvailable(m) {
+    await supabase.from("mechanics").update({ is_available: !m.is_available }).eq("id", m.id)
     load()
   }
 
-  async function deleteMechanic(id, name) {
-    if (!confirm(`Remove ${name} from your team?`)) return
-    await supabase.from("mechanics").delete().eq("id",id).eq("provider_id",user.id)
-    toast.success("Mechanic removed"); load()
+  async function setMechanicPin(mechanicId) {
+    if (!pin||pin.length<4) return toast.error("PIN must be at least 4 digits")
+    setSettingPin(true)
+    try {
+      const { error } = await supabase.rpc("set_mechanic_pin", { mechanic_id: mechanicId, new_pin: pin })
+      if (error) throw error
+      toast.success("PIN set! Mechanic can now login at carcareconnect.care/mechanic-login")
+      setPinPanel(null)
+      setPin("")
+      load()
+    } catch(err) { toast.error(err.message) }
+    finally { setSettingPin(false) }
   }
 
-  function startEdit(m) {
-    setEditing(m.id)
-    setForm({ first_name:m.first_name, last_name:m.last_name, phone:m.phone||"", specialization:m.specialization||"General Mechanic", notes:m.notes||"" })
-    setShowForm(true)
-  }
+  const DOC_TYPES = [
+    { type:"national_id_front", label:"National ID (Front)" },
+    { type:"national_id_back", label:"National ID (Back)" },
+    { type:"driving_license", label:"Driver License" },
+    { type:"good_conduct", label:"Good Conduct" },
+    { type:"medical_certificate", label:"Medical Certificate" },
+  ]
 
-  function openTracking(m) {
-    setTrackingMechanic(m)
-  }
-
-  const available = mechanics.filter(m=>m.is_available&&m.is_active).length
-  const onJob = mechanics.filter(m=>!m.is_available&&m.is_active).length
-  const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"11px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:12 }
-  const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
-
-  if (trackingMechanic) return (
-    <div>
-      <button onClick={()=>{ setTrackingMechanic(null); if(mapInstanceRef.current){mapInstanceRef.current.remove();mapInstanceRef.current=null} }}
-        style={{ background:"none", border:"none", color:"#378add", cursor:"pointer", fontSize:13, marginBottom:"1rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
-        ← Back to mechanics
-      </button>
-      <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
-        <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:12 }}>
-          <div style={{ width:48, height:48, borderRadius:"50%", background:"#f0fdf4", border:"2px solid #1d9e7540", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#1d9e75", flexShrink:0 }}>
-            {trackingMechanic.first_name[0]}{trackingMechanic.last_name[0]}
-          </div>
-          <div>
-            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000000" }}>{trackingMechanic.first_name} {trackingMechanic.last_name}</div>
-            <div style={{ fontSize:12, color:"#777777" }}>🔧 {trackingMechanic.specialization}</div>
-            {trackingMechanic.phone&&<div style={{ fontSize:12, color:"#777777" }}>📞 {trackingMechanic.phone}</div>}
-          </div>
-          <div style={{ marginLeft:"auto" }}>
-            <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-              <div style={{ width:8, height:8, borderRadius:"50%", background:trackingMechanic.current_latitude?"#1d9e75":"#555", boxShadow:trackingMechanic.current_latitude?"0 0 6px #1d9e75":"none" }}/>
-              <span style={{ fontSize:11, color:trackingMechanic.current_latitude?"#1d9e75":"#555" }}>
-                {trackingMechanic.current_latitude?"Live location":"No location yet"}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {trackingMechanic.current_latitude?(
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:12 }}>
-            <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem" }}>
-              <div style={{ fontSize:10, color:"#777777", marginBottom:2 }}>Latitude</div>
-              <div style={{ fontSize:13, color:"#1d9e75", fontFamily:"monospace" }}>{trackingMechanic.current_latitude?.toFixed(6)}</div>
-            </div>
-            <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem" }}>
-              <div style={{ fontSize:10, color:"#777777", marginBottom:2 }}>Longitude</div>
-              <div style={{ fontSize:13, color:"#1d9e75", fontFamily:"monospace" }}>{trackingMechanic.current_longitude?.toFixed(6)}</div>
-            </div>
-          </div>
-        ):(
-          <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", marginBottom:12, fontSize:12, color:"#888888", textAlign:"center" }}>
-            Waiting for mechanic to share location...
-          </div>
-        )}
-
-        {!trackingMechanic.current_latitude&&(
-          <div style={{ background:"#f0fdf4", borderRadius:8, padding:"1rem", textAlign:"center", marginBottom:8, fontSize:12, color:"#888" }}>
-            📍 No location shared yet — map will update when mechanic shares location
-          </div>
-        )}
-        <div ref={mapRef} style={{ height:300, borderRadius:10, overflow:"hidden", background:"#f5f5f5" }}>
-            <div style={{ height:"100%", display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:8 }}>
-              <div style={{ fontSize:28 }}>📍</div>
-              <div style={{ fontSize:12, color:"#777777" }}>No location shared yet</div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem" }}>
-        <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:"0.75rem", color:"#000000" }}>Location history</div>
-        <LocationHistory mechanicId={trackingMechanic.id} />
-      </div>
+  if (loading) return (
+    <div style={{ textAlign:"center", padding:"3rem", color:"#888", fontFamily:"DM Sans,sans-serif" }}>
+      Loading mechanics...
     </div>
   )
 
   return (
-    <div>
-      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-      <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"/>
+    <div style={{ fontFamily:"DM Sans,sans-serif", maxWidth:600, margin:"0 auto", padding:"1rem" }}>
 
-      <div style={{ display:"grid", gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)", gap:10, marginBottom:"1.5rem" }}>
-        {[
-          { label:"Total mechanics", value:mechanics.length, color:"#000000" },
-          { label:"Available now", value:available, color:"#1d9e75" },
-          { label:"On job", value:onJob, color:"#e6821e" },
-          { label:"Inactive", value:mechanics.filter(m=>!m.is_active).length, color:"#777777" },
-        ].map(s=>(
-          <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
-            <div style={{ fontSize:10, color:"#777777", textTransform:"uppercase", marginBottom:4 }}>{s.label}</div>
-            <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:s.color }}>{s.value}</div>
-          </div>
-        ))}
-      </div>
-
+      {/* Header */}
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
-        <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000000" }}>Your mechanics team</div>
-        <button onClick={()=>{ setShowForm(true); setEditing(null); setForm(EMPTY) }}
-          style={{ background:"#378add", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"9px 18px", cursor:"pointer" }}>
-          + Add mechanic
+        <div>
+          <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000" }}>👨‍🔧 Mechanics</div>
+          <div style={{ fontSize:12, color:"#888" }}>{mechanics.length} mechanic{mechanics.length!==1?"s":""} in your garage</div>
+        </div>
+        <button onClick={()=>setShowAdd(!showAdd)}
+          style={{ background:"#1d9e75", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>
+          {showAdd?"Cancel":"+ Add Mechanic"}
         </button>
       </div>
 
-      {showForm&&(
-        <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>
-            {editing?"Edit mechanic":"Add new mechanic"}
+      {/* Add mechanic form */}
+      {showAdd&&(
+        <div style={{ background:"#ffffff", border:"1px solid #1d9e7520", borderRadius:14, padding:"1.25rem", marginBottom:"1rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#1d9e75", marginBottom:"1rem" }}>New Mechanic</div>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:10 }}>
+            <div>
+              <div style={{ fontSize:11, color:"#555", marginBottom:4, fontWeight:600 }}>First name *</div>
+              <input value={form.first_name} onChange={e=>setForm(f=>({...f,first_name:e.target.value}))}
+                placeholder="John" style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:8, padding:"9px 12px", fontSize:13, color:"#000", outline:"none", boxSizing:"border-box" }}/>
+            </div>
+            <div>
+              <div style={{ fontSize:11, color:"#555", marginBottom:4, fontWeight:600 }}>Last name</div>
+              <input value={form.last_name} onChange={e=>setForm(f=>({...f,last_name:e.target.value}))}
+                placeholder="Doe" style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:8, padding:"9px 12px", fontSize:13, color:"#000", outline:"none", boxSizing:"border-box" }}/>
+            </div>
           </div>
-          <form onSubmit={save}>
-            <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
-              <div><label style={lbl}>First name</label><input style={inp} placeholder="John" value={form.first_name} onChange={e=>setForm(f=>({...f,first_name:e.target.value}))} required/></div>
-              <div><label style={lbl}>Last name</label><input style={inp} placeholder="Doe" value={form.last_name} onChange={e=>setForm(f=>({...f,last_name:e.target.value}))} required/></div>
-            </div>
-            <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
-              <div><label style={lbl}>Phone number</label><input style={inp} placeholder="+254 700 000 000" value={form.phone} onChange={e=>setForm(f=>({...f,phone:e.target.value}))}/></div>
-              <div>
-                <label style={lbl}>Specialization</label>
-                <select style={inp} value={form.specialization} onChange={e=>setForm(f=>({...f,specialization:e.target.value}))}>
-                  {SPECIALIZATIONS.map(s=><option key={s} value={s}>{s}</option>)}
-                </select>
-              </div>
-            </div>
-            <label style={lbl}>Notes (optional)</label>
-            <textarea style={{ ...inp, resize:"vertical", minHeight:60 }} placeholder="Any additional notes..." value={form.notes} onChange={e=>setForm(f=>({...f,notes:e.target.value}))}/>
-            <div style={{ display:"flex", gap:8 }}>
-              <button type="submit" disabled={saving}
-                style={{ background:saving?"#555555":"#378add", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 24px", cursor:saving?"not-allowed":"pointer" }}>
-                {saving?"Saving...":editing?"Update":"Add mechanic"}
-              </button>
-              <button type="button" onClick={()=>{ setShowForm(false); setEditing(null); setForm(EMPTY) }}
-                style={{ background:"none", border:"1px solid #dddddd", borderRadius:9, color:"#666", fontSize:13, padding:"10px 18px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
-                Cancel
-              </button>
-            </div>
-          </form>
+          <div style={{ marginBottom:10 }}>
+            <div style={{ fontSize:11, color:"#555", marginBottom:4, fontWeight:600 }}>Phone number *</div>
+            <input value={form.phone} onChange={e=>setForm(f=>({...f,phone:e.target.value}))}
+              placeholder="0712 345 678" style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:8, padding:"9px 12px", fontSize:13, color:"#000", outline:"none", boxSizing:"border-box" }}/>
+          </div>
+          <div style={{ marginBottom:10 }}>
+            <div style={{ fontSize:11, color:"#555", marginBottom:4, fontWeight:600 }}>Specialization</div>
+            <select value={form.specialization} onChange={e=>setForm(f=>({...f,specialization:e.target.value}))}
+              style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:8, padding:"9px 12px", fontSize:13, color:"#000", outline:"none", boxSizing:"border-box" }}>
+              {SPECIALIZATIONS.map(s=><option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+          <div style={{ marginBottom:"1rem" }}>
+            <div style={{ fontSize:11, color:"#555", marginBottom:4, fontWeight:600 }}>Hourly rate (KES)</div>
+            <input type="number" value={form.hourly_rate} onChange={e=>setForm(f=>({...f,hourly_rate:e.target.value}))}
+              placeholder="500" style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:8, padding:"9px 12px", fontSize:13, color:"#000", outline:"none", boxSizing:"border-box" }}/>
+          </div>
+          <button onClick={addMechanic} disabled={submitting}
+            style={{ width:"100%", background:submitting?"#888":"#1d9e75", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px", cursor:"pointer" }}>
+            {submitting?"Adding...":"Add Mechanic →"}
+          </button>
         </div>
       )}
 
-      {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
-      {!loading&&mechanics.length===0&&(
-        <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
-          <div style={{ fontSize:32, marginBottom:10 }}>👨‍🔧</div>
-          No mechanics added yet.
+      {/* Mechanics list */}
+      {mechanics.length===0&&!showAdd&&(
+        <div style={{ textAlign:"center", padding:"3rem 1rem", background:"#ffffff", borderRadius:14, border:"1px solid #eeeeee" }}>
+          <div style={{ fontSize:48, marginBottom:12 }}>👨‍🔧</div>
+          <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:700, color:"#000", marginBottom:4 }}>No mechanics yet</div>
+          <div style={{ fontSize:13, color:"#888" }}>Add mechanics to assign them to jobs</div>
         </div>
       )}
 
       {mechanics.map(m=>(
-        <div key={m.id} style={{ background:"#ffffff", border:`1px solid ${m.is_active?m.is_available?"#1d9e7530":"#e6821e30":"#eeeeee"}`, borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8, opacity:m.is_active?1:0.5 }}>
-          <div style={{ display:"flex", alignItems:"flex-start", gap:10, flexWrap:isMobile?"wrap":"nowrap" }}>
-            <div style={{ width:44, height:44, borderRadius:"50%", background:m.is_available&&m.is_active?"#f0fdf4":"#ffffff", border:`1px solid ${m.is_available&&m.is_active?"#1d9e7540":"#555555"}`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:m.is_available&&m.is_active?"#1d9e75":"#555", flexShrink:0 }}>
-              {m.first_name[0]}{m.last_name[0]}
+        <div key={m.id} style={{ background:"#ffffff", border:"1px solid " + (m.is_active?m.is_available?"#1d9e7520":"#e6821e20":"#eeeeee"), borderRadius:14, marginBottom:10, overflow:"hidden" }}>
+
+          {/* Mechanic header - always visible */}
+          <div style={{ padding:"1rem", display:"flex", gap:12, alignItems:"flex-start" }}
+            onClick={()=>setExpanded(expanded===m.id?null:m.id)}>
+            {/* Avatar */}
+            <div style={{ width:44, height:44, borderRadius:"50%", background:m.is_active&&m.is_available?"#f0fdf4":"#f5f5f5", border:"2px solid " + (m.is_active&&m.is_available?"#1d9e75":"#ddd"), display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, flexShrink:0 }}>
+              👨‍🔧
             </div>
+            {/* Info */}
             <div style={{ flex:1, minWidth:0 }}>
-              <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
-                <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{m.first_name} {m.last_name}</div>
-                <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:m.is_available&&m.is_active?"#f0fdf4":"#ffffff", color:m.is_available&&m.is_active?"#1d9e75":"#555" }}>
-                  {m.is_active?(m.is_available?"Available":"On job"):"Inactive"}
+              <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#000", marginBottom:2 }}>{m.first_name} {m.last_name}</div>
+              <div style={{ fontSize:11, color:"#555", marginBottom:4 }}>{m.specialization}</div>
+              <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, fontWeight:700,
+                  background:m.is_active?m.is_available?"#f0fdf4":"#fff8f0":"#f5f5f5",
+                  color:m.is_active?m.is_available?"#1d9e75":"#e6821e":"#888" }}>
+                  {m.is_active?m.is_available?"🟢 Available":"🟡 Busy":"⚫ Inactive"}
                 </span>
-                {m.current_latitude&&<span style={{ fontSize:10, color:"#1d9e75" }}>📍 Live</span>}
+                {m.mechanic_code&&<span style={{ fontSize:10, color:"#888", padding:"2px 8px", background:"#f5f5f5", borderRadius:10 }}>{m.mechanic_code}</span>}
+                {m.rating&&<span style={{ fontSize:10, color:"#e6821e", fontWeight:700 }}>⭐ {m.rating}</span>}
               </div>
-              <div style={{ fontSize:11, color:"#777777", marginBottom:2 }}>🔧 {m.specialization}</div>
-              {m.phone&&<div style={{ fontSize:11, color:"#777777", marginBottom:2 }}>📞 {m.phone}</div>}
-              {m.last_location_update&&<div style={{ fontSize:10, color:"#888888" }}>Last seen: {new Date(m.last_location_update).toLocaleTimeString()}</div>}
             </div>
-            <div style={{ display:"flex", gap:6, flexShrink:0, flexWrap:"wrap", justifyContent:"flex-end", marginTop:isMobile?8:0 }}>
-              <button onClick={()=>openTracking(m)}
-                style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                📍 Track
-              </button>
-              <button onClick={()=>startEdit(m)}
-                style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                Edit
-              </button>
-              {m.is_active&&(
-                <button onClick={()=>toggleAvailable(m.id, m.is_available)}
-                  style={{ background:m.is_available?"#fff8f0":"#f0fdf4", border:`1px solid ${m.is_available?"#e6821e40":"#1d9e7540"}`, borderRadius:7, color:m.is_available?"#e6821e":"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                  {m.is_available?"Set on job":"Set available"}
+            <div style={{ fontSize:14, color:"#888", flexShrink:0 }}>{expanded===m.id?"▲":"▼"}</div>
+          </div>
+
+          {/* Expanded panel */}
+          {expanded===m.id&&(
+            <div style={{ borderTop:"1px solid #f5f5f5", padding:"0.75rem 1rem" }}>
+
+              {/* Contact info */}
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:12 }}>
+                {m.phone&&<div style={{ background:"#f8f8f8", borderRadius:8, padding:"8px 10px" }}>
+                  <div style={{ fontSize:10, color:"#888", marginBottom:2 }}>Phone</div>
+                  <div style={{ fontSize:12, fontWeight:600, color:"#000" }}>{m.phone}</div>
+                </div>}
+                {m.hourly_rate>0&&<div style={{ background:"#f8f8f8", borderRadius:8, padding:"8px 10px" }}>
+                  <div style={{ fontSize:10, color:"#888", marginBottom:2 }}>Rate</div>
+                  <div style={{ fontSize:12, fontWeight:600, color:"#000" }}>KES {m.hourly_rate}/hr</div>
+                </div>}
+              </div>
+
+              {/* Action buttons */}
+              <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:12 }}>
+                <button onClick={()=>toggleAvailable(m)}
+                  style={{ background:m.is_available?"#fff8f0":"#f0fdf4", border:"1px solid " + (m.is_available?"#e6821e40":"#1d9e7540"), borderRadius:8, color:m.is_available?"#e6821e":"#1d9e75", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>
+                  {m.is_available?"Set Unavailable":"Set Available"}
                 </button>
-              )}
-              <button onClick={()=>{ setSettingPin(settingPin===m.id?null:m.id); setNewPin("") }}
-                style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                🔑 {m.mechanic_code?"Reset PIN":"Set PIN"}
-              </button>
-              <button onClick={()=>toggleActive(m.id, m.is_active)}
-                style={{ background:"none", border:`1px solid ${m.is_active?"#e24b4a20":"#1d9e7520"}`, borderRadius:7, color:m.is_active?"#e24b4a":"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                {m.is_active?"Deactivate":"Activate"}
-              </button>
-              <button onClick={()=>deleteMechanic(m.id, `${m.first_name} ${m.last_name}`)}
-                style={{ background:"none", border:"1px solid #e24b4a20", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                Remove
-              </button>
-            </div>
-              {settingPin===m.id&&(
-                <div style={{ marginTop:8, background:"#eff6ff", border:"1px solid #378add30", borderRadius:8, padding:"0.75rem" }}>
-                  <div style={{ fontSize:11, fontWeight:700, color:"#378add", marginBottom:6 }}>🔑 Set Mechanic PIN</div>
-                  <div style={{ fontSize:10, color:"#555", marginBottom:8 }}>Mechanic will use their phone number + this PIN to login at carcareconnect.care/mechanic-login</div>
-                  {m.mechanic_code&&<div style={{ fontSize:10, color:"#1d9e75", marginBottom:6 }}>Current code: {m.mechanic_code}</div>}
-                  <div style={{ display:"flex", gap:6 }}>
-                    <input type="password" value={newPin} onChange={e=>setNewPin(e.target.value.replace(/\D/g,"").slice(0,6))}
+                <button onClick={()=>toggleActive(m)}
+                  style={{ background:m.is_active?"#fff5f5":"#f0fdf4", border:"1px solid " + (m.is_active?"#e24b4a40":"#1d9e7540"), borderRadius:8, color:m.is_active?"#e24b4a":"#1d9e75", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>
+                  {m.is_active?"Deactivate":"Activate"}
+                </button>
+                <button onClick={()=>{ setPinPanel(pinPanel===m.id?null:m.id); setPin("") }}
+                  style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:8, color:"#378add", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>
+                  🔑 {m.mechanic_code?"Reset PIN":"Set PIN"}
+                </button>
+                <button onClick={()=>loadDocs(m.id)}
+                  style={{ background:"#f5f3ff", border:"1px solid #8b5cf640", borderRadius:8, color:"#8b5cf6", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>
+                  📄 {docsPanel===m.id?"Hide Docs":"View Docs"}
+                </button>
+              </div>
+
+              {/* PIN setup panel */}
+              {pinPanel===m.id&&(
+                <div style={{ background:"#eff6ff", borderRadius:10, padding:"0.75rem", marginBottom:10 }}>
+                  <div style={{ fontSize:12, fontWeight:700, color:"#378add", marginBottom:8 }}>🔑 {m.mechanic_code?"Reset":"Set"} PIN for {m.first_name}</div>
+                  <div style={{ display:"flex", gap:8 }}>
+                    <input type="password" value={pin} onChange={e=>setPin(e.target.value.replace(/D/g,"").slice(0,6))}
                       placeholder="Enter 4-6 digit PIN" maxLength={6}
-                      style={{ flex:1, background:"#ffffff", border:"1px solid #dddddd", borderRadius:7, padding:"8px 10px", fontSize:14, letterSpacing:4, color:"#000", outline:"none" }}/>
-                    <button onClick={()=>setPinForMechanic(m.id)}
-                      style={{ background:"#378add", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"0 14px", cursor:"pointer" }}>Save</button>
-                    <button onClick={()=>{ setSettingPin(null); setNewPin("") }}
-                      style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#888", fontSize:11, padding:"0 10px", cursor:"pointer" }}>Cancel</button>
+                      style={{ flex:1, background:"#fff", border:"1px solid #378add40", borderRadius:8, padding:"8px 12px", fontSize:14, letterSpacing:4, color:"#000", outline:"none" }}/>
+                    <button onClick={()=>setMechanicPin(m.id)} disabled={settingPin||pin.length<4}
+                      style={{ background:pin.length>=4?"#378add":"#ccc", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>
+                      {settingPin?"...":"Save"}
+                    </button>
+                  </div>
+                  <div style={{ fontSize:10, color:"#666", marginTop:6 }}>
+                    Login URL: carcareconnect.care/mechanic-login
                   </div>
                 </div>
               )}
-          </div>
+
+              {/* Documents panel */}
+              {docsPanel===m.id&&(
+                <div style={{ background:"#faf5ff", borderRadius:10, padding:"0.75rem" }}>
+                  <div style={{ fontSize:12, fontWeight:700, color:"#8b5cf6", marginBottom:8 }}>📄 {m.first_name}'s Documents</div>
+                  {(!mechanicDocs[m.id]||mechanicDocs[m.id].length===0)&&(
+                    <div style={{ fontSize:11, color:"#888", padding:"0.5rem 0" }}>No documents uploaded yet. Mechanic needs to upload from their portal.</div>
+                  )}
+                  {(mechanicDocs[m.id]||[]).map(doc=>(
+                    <div key={doc.id} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", background:"#fff", borderRadius:8, padding:"8px 10px", marginBottom:6 }}>
+                      <div>
+                        <div style={{ fontSize:11, fontWeight:600, color:"#000" }}>{doc.document_type.replace(/_/g," ")}</div>
+                        <span style={{ fontSize:10, fontWeight:700, color:doc.status==="approved"?"#1d9e75":doc.status==="rejected"?"#e24b4a":"#e6821e" }}>
+                          {doc.status==="approved"?"✓ Verified":doc.status==="rejected"?"✗ Rejected":"⏳ Pending"}
+                        </span>
+                      </div>
+                      <a href={doc.document_url} target="_blank" rel="noopener noreferrer"
+                        style={{ fontSize:11, color:"#378add", textDecoration:"none", fontWeight:600 }}>View →</a>
+                    </div>
+                  ))}
+                  {mechanicDocs[m.id]?.length===0&&(
+                    <div style={{ fontSize:10, color:"#888", marginTop:4 }}>
+                      Tell {m.first_name} to upload documents from the mechanic portal under the 📄 Docs tab.
+                    </div>
+                  )}
+                </div>
+              )}
+
+            </div>
+          )}
         </div>
       ))}
     </div>
   )
 }
-
-function LocationHistory({ mechanicId }) {
-  const [history, setHistory] = useState([])
-  useEffect(() => {
-    supabase.from("mechanic_location_history").select("*").eq("mechanic_id", mechanicId).order("recorded_at", { ascending:false }).limit(10).then(({ data }) => setHistory(data||[]))
-  }, [mechanicId])
-  if (!history.length) return <div style={{ fontSize:12, color:"#888888" }}>No location history</div>
-  return history.map((h,i)=>(
-    <div key={h.id} style={{ display:"flex", justifyContent:"space-between", padding:"6px 0", borderBottom:"1px solid #eeeeee", fontSize:11 }}>
-      <span style={{ color:"#777777", fontFamily:"monospace" }}>{h.latitude.toFixed(5)}, {h.longitude.toFixed(5)}</span>
-      <span style={{ color:"#888888" }}>{new Date(h.recorded_at).toLocaleTimeString()}</span>
-    </div>
-  ))
-}
-
-
-
-

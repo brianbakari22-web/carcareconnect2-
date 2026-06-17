@@ -37,6 +37,8 @@ export default function MechanicDashboard() {
   const [timerRef, setTimerRef] = useState(null)
   const [earnings, setEarnings] = useState({ today:0, week:0, month:0, total_jobs:0 })
   const [expandedJob, setExpandedJob] = useState(null)
+  const [docs, setDocs] = useState([])
+  const [uploadingDoc, setUploadingDoc] = useState(null)
   const [chatJob, setChatJob] = useState(null)
   const [showGarageChat, setShowGarageChat] = useState(false)
   const [perfStats, setPerfStats] = useState({ avg_rating:0, total_ratings:0, avg_response_mins:0, completion_rate:0 })
@@ -47,6 +49,7 @@ export default function MechanicDashboard() {
     loadHistory()
     loadEarnings()
     loadPerfStats()
+    loadDocs()
     const sub = supabase.channel("mechanic-jobs-" + mechanic.mechanic_id)
       .on("postgres_changes", { event:"*", schema:"public", table:"bookings",
         filter:"assigned_mechanic_id=eq." + mechanic.mechanic_id }, () => load())
@@ -75,6 +78,44 @@ export default function MechanicDashboard() {
       .order("updated_at", { ascending: false })
       .limit(30)
     setHistory(data||[])
+  }
+
+  async function loadDocs() {
+    const { data } = await supabase.from("driver_documents")
+      .select("*")
+      .eq("driver_id", mechanic.mechanic_id)
+    setDocs(data||[])
+  }
+
+  async function uploadDoc(docType, label) {
+    const input = document.createElement("input")
+    input.type = "file"
+    input.accept = "image/*,.pdf"
+    input.onchange = async(e) => {
+      const file = e.target.files[0]
+      if (!file) return
+      if (file.size > 5*1024*1024) return toast.error("File must be under 5MB")
+      setUploadingDoc(docType)
+      try {
+        const ext = file.name.split(".").pop()
+        const path = "mechanic-docs/" + mechanic.mechanic_id + "/" + docType + "-" + Date.now() + "." + ext
+        const { error } = await supabase.storage.from("marketplace").upload(path, file, { upsert:true })
+        if (error) throw error
+        const { data } = supabase.storage.from("marketplace").getPublicUrl(path)
+        // Upsert document record
+        await supabase.from("driver_documents").upsert({
+          driver_id: mechanic.mechanic_id,
+          document_type: docType,
+          document_url: data.publicUrl,
+          status: "pending",
+          uploaded_at: new Date().toISOString()
+        }, { onConflict: "driver_id,document_type" })
+        toast.success(label + " uploaded! Pending verification.")
+        loadDocs()
+      } catch(err) { toast.error("Upload failed: " + err.message) }
+      finally { setUploadingDoc(null) }
+    }
+    input.click()
   }
 
   async function loadPerfStats() {
@@ -278,6 +319,7 @@ export default function MechanicDashboard() {
     { k:"earnings", l:"Earnings", icon:"💰" },
     { k:"stats", l:"Stats", icon:"⭐" },
     { k:"history", l:"History", icon:"📋" },
+    { k:"docs", l:"Docs", icon:"📄" },
     { k:"sos", l:"SOS", icon:"🆘" },
   ]
 
@@ -588,6 +630,54 @@ export default function MechanicDashboard() {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* DOCS TAB */}
+        {tab==="docs"&&(
+          <div>
+            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000", marginBottom:4 }}>📄 My Documents</div>
+            <div style={{ fontSize:12, color:"#888", marginBottom:"1rem" }}>Upload your documents for verification. All documents are reviewed by admin.</div>
+            {[
+              { type:"national_id_front", label:"National ID (Front)", icon:"🪪" },
+              { type:"national_id_back", label:"National ID (Back)", icon:"🪪" },
+              { type:"driving_license", label:"Driver License", icon:"🚗" },
+              { type:"good_conduct", label:"Certificate of Good Conduct", icon:"📋" },
+              { type:"medical_certificate", label:"Medical Certificate", icon:"🏥" },
+            ].map(doc => {
+              const existing = docs.find(d=>d.document_type===doc.type)
+              return (
+                <div key={doc.type} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem", marginBottom:10 }}>
+                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                      <div style={{ fontSize:24 }}>{doc.icon}</div>
+                      <div>
+                        <div style={{ fontSize:13, fontWeight:700, color:"#000" }}>{doc.label}</div>
+                        <div style={{ fontSize:10, marginTop:2 }}>
+                          {existing ? (
+                            <span style={{ color:existing.status==="approved"?"#1d9e75":existing.status==="rejected"?"#e24b4a":"#e6821e", fontWeight:700 }}>
+                              {existing.status==="approved"?"✓ Verified":existing.status==="rejected"?"✗ Rejected":"⏳ Pending review"}
+                            </span>
+                          ) : (
+                            <span style={{ color:"#888" }}>Not uploaded</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <button onClick={()=>uploadDoc(doc.type, doc.label)} disabled={uploadingDoc===doc.type}
+                      style={{ background:existing?"#f8f8f8":"#1d9e75", border:existing?"1px solid #dddddd":"none", borderRadius:8, color:existing?"#555":"#fff", fontSize:11, fontWeight:700, padding:"7px 14px", cursor:"pointer" }}>
+                      {uploadingDoc===doc.type?"⏳":existing?"🔄 Replace":"📤 Upload"}
+                    </button>
+                  </div>
+                  {existing?.document_url&&(
+                    <a href={existing.document_url} target="_blank" rel="noopener noreferrer"
+                      style={{ display:"block", marginTop:8, fontSize:11, color:"#378add", textDecoration:"none" }}>
+                      👁️ View uploaded document
+                    </a>
+                  )}
+                </div>
+              )
+            })}
           </div>
         )}
 

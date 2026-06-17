@@ -52,6 +52,19 @@ export default function AdminMechanics() {
     setMechanics(data||[])
   }
 
+  async function loadMechanicDocs(mechanicId) {
+    const { data } = await supabase.from("driver_documents")
+      .select("*").eq("driver_id", mechanicId)
+    setMechanicDocs(prev => ({...prev, [mechanicId]: data||[]}))
+    setShowDocs(showDocs===mechanicId?null:mechanicId)
+  }
+
+  async function verifyDoc(docId, mechanicId, status) {
+    await supabase.from("driver_documents").update({ status, verified_at: new Date().toISOString() }).eq("id", docId)
+    toast.success("Document " + status)
+    loadMechanicDocs(mechanicId)
+  }
+
   async function adminResetPin(mechanicId, mechanicName) {
     const newPin = window.prompt("Set new PIN for " + mechanicName + " (4-6 digits):")
     if (!newPin) return
@@ -228,12 +241,51 @@ export default function AdminMechanics() {
                       style={{ fontSize:10, background:"#eff6ff", border:"1px solid #378add30", borderRadius:6, color:"#378add", padding:"2px 8px", cursor:"pointer", fontWeight:700 }}>
                       🔑 {m.mechanic_code?"Reset PIN":"Set PIN"}
                     </button>
+                    <button onClick={()=>loadMechanicDocs(m.id)}
+                      style={{ fontSize:10, background:"#f0fdf4", border:"1px solid #1d9e7530", borderRadius:6, color:"#1d9e75", padding:"2px 8px", cursor:"pointer", fontWeight:700 }}>
+                      📄 {showDocs===m.id?"Hide":"View Docs"}
+                    </button>
                   </div>
                 </div>
                 {m.current_latitude&&(
                   <div style={{ textAlign:"right", flexShrink:0 }}>
                     <div style={{ fontSize:10, color:"#888", marginBottom:2 }}>Location</div>
                     <div style={{ fontSize:10, color:"#8b5cf6", fontFamily:"monospace" }}>{m.current_latitude?.toFixed(4)}, {m.current_longitude?.toFixed(4)}</div>
+                  </div>
+                )}
+                {/* Document verification */}
+                {showDocs===m.id&&(
+                  <div style={{ marginTop:8, background:"#f8f8f8", borderRadius:10, padding:"0.75rem" }}>
+                    <div style={{ fontSize:12, fontWeight:700, color:"#555", marginBottom:8 }}>📄 Documents</div>
+                    {(!mechanicDocs[m.id]||mechanicDocs[m.id].length===0)&&(
+                      <div style={{ fontSize:11, color:"#888" }}>No documents uploaded yet</div>
+                    )}
+                    {(mechanicDocs[m.id]||[]).map(doc=>(
+                      <div key={doc.id} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6, background:"#fff", borderRadius:7, padding:"6px 10px" }}>
+                        <div>
+                          <div style={{ fontSize:11, fontWeight:600, color:"#000" }}>{doc.document_type.replace(/_/g," ")}</div>
+                          <span style={{ fontSize:10, color:doc.status==="approved"?"#1d9e75":doc.status==="rejected"?"#e24b4a":"#e6821e", fontWeight:700 }}>
+                            {doc.status}
+                          </span>
+                        </div>
+                        <div style={{ display:"flex", gap:4, alignItems:"center" }}>
+                          <a href={doc.document_url} target="_blank" rel="noopener noreferrer"
+                            style={{ fontSize:10, color:"#378add", textDecoration:"none" }}>View</a>
+                          {doc.status!=="approved"&&(
+                            <button onClick={()=>verifyDoc(doc.id, m.id, "approved")}
+                              style={{ background:"#f0fdf4", border:"1px solid #1d9e7530", borderRadius:5, color:"#1d9e75", fontSize:9, fontWeight:700, padding:"2px 6px", cursor:"pointer" }}>
+                              ✓
+                            </button>
+                          )}
+                          {doc.status!=="rejected"&&(
+                            <button onClick={()=>verifyDoc(doc.id, m.id, "rejected")}
+                              style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:5, color:"#e24b4a", fontSize:9, fontWeight:700, padding:"2px 6px", cursor:"pointer" }}>
+                              ✗
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
