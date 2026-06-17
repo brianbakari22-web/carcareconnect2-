@@ -839,14 +839,16 @@ const GREETINGS = {
   customer: "Hi! I am your Car Care Connect AI assistant. I can help with car problems, booking services, loyalty points, marketplace, and anything about our platform. What can I help you with?",
   provider: "Hello! I am your CCC business assistant. I can help with commissions, service management, GO Service, payouts, and platform policies. How can I assist?",
   driver: "Hey! I am your CCC driver assistant. I can help with earnings, document verification, delivery procedures, and platform rules. What do you need?",
-  admin: "Hello Admin! I have complete knowledge of the Car Care Connect platform including all policies, features, and procedures. How can I help?"
+  admin: "Hello Admin! I have complete knowledge of the Car Care Connect platform including all policies, features, and procedures. How can I help?",
+  mechanic: "Hey! I am your CCC Mechanic AI assistant. I can help with repair procedures, job management, parts info, and anything about the mechanic portal. What do you need?"
 }
 
 const QUICK = {
   customer: ["My car wont start", "How do I book a service?", "How does Service Guarantee work?", "How do I earn loyalty points?"],
   provider: ["How does commission work?", "Service Guarantee policy?", "How do I get paid?", "How do GO requests work?"],
   driver: ["What documents do I need?", "How are earnings calculated?", "What is a no-show penalty?", "How do I complete a delivery?"],
-  admin: ["Commission structure?", "Service Guarantee policy?", "Driver verification process?", "Scan for code errors"]
+  admin: ["Commission structure?", "Service Guarantee policy?", "Driver verification process?", "Scan for code errors"],
+  mechanic: ["How do I start a job?", "Common oil change steps?", "What parts for brake job?", "How do I request parts?"]
 }
 
 export default function AIAssistant({ bottomOffset = 88, forcedRole = null }) {
