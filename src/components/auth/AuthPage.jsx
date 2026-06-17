@@ -504,25 +504,15 @@ export default function AuthPage() {
         <img src="/logo.svg" alt="Car Care Connect" style={{ height:110, marginBottom:"1.75rem" }}/>
         <h1 style={{ fontSize:"clamp(28px,6vw,52px)", fontWeight:800, lineHeight:1.1, letterSpacing:-1, color:"#000", marginBottom:"1rem" }}>One app.<br/><span style={{ color:"#e6821e" }}>Every car need.</span></h1>
         <p style={{ fontSize:15, color:"#555", maxWidth:440, margin:"0 auto 2.5rem", lineHeight:1.7 }}>Nairobi most trusted automotive platform. Book mechanics, order parts, wash your car and more.</p>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))", gap:14, width:"100%", maxWidth:680, marginBottom:"2rem" }}>
-          {[
-            { key:"customer", icon:"🚗", label:"Customer", desc:"Book services, track drivers, earn rewards", color:"#e6821e" },
-            { key:"provider", icon:"🔧", label:"Service Provider", desc:"List your shop, manage bookings, grow revenue", color:"#378add" },
-            { key:"driver", icon:"🚚", label:"Driver", desc:"Deliver vehicles and parts, earn per trip", color:"#1d9e75" },
-          ].map(r=>(
-            <div key={r.key} onClick={()=>{ if(r.isSpecial){window.location.href=r.specialUrl}else{setSelectedRole(r.key); setStep("auth"); setMode("signup")} }}
-              style={{ background:"#f5f5f5", borderRadius:20, padding:"2rem", cursor:"pointer", textAlign:"left", border:"2px solid transparent", transition:"all 0.2s" }}
-              onMouseEnter={e=>{ e.currentTarget.style.borderColor=r.color; e.currentTarget.style.background="#fff"; e.currentTarget.style.transform="translateY(-4px)" }}
-              onMouseLeave={e=>{ e.currentTarget.style.borderColor="transparent"; e.currentTarget.style.background="#f5f5f5"; e.currentTarget.style.transform="translateY(0)" }}>
-              <div style={{ fontSize:42, marginBottom:14 }}>{r.icon}</div>
-              <div style={{ fontWeight:700, fontSize:17, color:"#000", marginBottom:6 }}>{r.label}</div>
-              <div style={{ fontSize:15, color:"#555555", lineHeight:1.6, marginBottom:12 }}>{r.desc}</div>
-              <div style={{ fontSize:12, fontWeight:600, color:r.color }}>Get started →</div>
-            </div>
-          ))}
-        </div>
-        <div style={{ fontSize:15, color:"#555555" }}>Already have an account?{" "}
-          <button onClick={()=>{ setStep("role"); setMode("signin") }} style={{ background:"none", border:"none", color:"#e6821e", fontWeight:600, cursor:"pointer", fontSize:13 }}>Sign in</button>
+        <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:16, width:"100%", maxWidth:400, marginBottom:"2rem" }}>
+          <button onClick={()=>setStep("role")}
+            style={{ width:"100%", background:"#e6821e", border:"none", borderRadius:14, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:17, fontWeight:800, padding:"18px", cursor:"pointer" }}>
+            🚀 Get Started Free
+          </button>
+          <button onClick={()=>{ setStep("role"); setMode("signin") }}
+            style={{ width:"100%", background:"none", border:"2px solid #e6821e", borderRadius:14, color:"#e6821e", fontFamily:"Syne,sans-serif", fontSize:15, fontWeight:700, padding:"14px", cursor:"pointer" }}>
+            Already have an account? Sign in
+          </button>
         </div>
       </div>
       <div style={{ background:"#000000", padding:"1.25rem", textAlign:"center" }}>
