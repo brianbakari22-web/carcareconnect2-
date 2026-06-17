@@ -54,6 +54,19 @@ const ROLES = [
     border: "#1d9e7540",
     features: ["📍 GPS navigation", "💵 Competitive earnings", "📈 Earnings dashboard", "✅ Flexible hours"]
   },
+  {
+    key: "mechanic",
+    label: "Mechanic",
+    icon: "👨‍🔧",
+    desc: "View assigned jobs, navigate to customers, share location",
+    color: "#1d9e75",
+    bg: "#f0fdf4",
+    border: "#1d9e7540",
+    features: ["🔧 View assigned jobs", "🗺️ Navigate to customer", "📍 Share live location", "📸 Upload job photos"],
+    isSpecial: true,
+    specialUrl: "/mechanic-login",
+    specialLabel: "Go to Mechanic Login"
+  },
 ]
 
 const STATS = [
@@ -429,7 +442,7 @@ export default function AuthPage() {
         {ROLES.map(r=>(
           <div key={r.key}
             style={{ background:"#fff", borderRadius:20, border:`2px solid ${selectedRole===r.key?r.color:"#f0f0f0"}`, overflow:"hidden", boxShadow:"0 2px 12px rgba(0,0,0,0.06)", transition:"all 0.2s", cursor:"pointer" }}
-            onClick={()=>setSelectedRole(r.key)}>
+            onClick={()=>{ if(r.isSpecial){window.location.href=r.specialUrl}else{setSelectedRole(r.key)} }}>
             <div style={{ padding:"1.25rem 1.25rem 1rem", background:selectedRole===r.key?r.bg:"#fff" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:10 }}>
@@ -455,7 +468,7 @@ export default function AuthPage() {
               </div>
             </div>
             <button
-              onClick={e=>{ e.stopPropagation(); setSelectedRole(r.key); setStep("auth") }}
+              onClick={e=>{ e.stopPropagation(); if(r.isSpecial){window.location.href=r.specialUrl}else{setSelectedRole(r.key); setStep("auth")} }}
               style={{ width:"100%", background:selectedRole===r.key?r.color:"#f0f0f0", border:"none", color:selectedRole===r.key?"#fff":"#555", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:8, transition:"all 0.2s" }}>
               Continue as {r.label} →
             </button>
@@ -497,7 +510,7 @@ export default function AuthPage() {
             { key:"provider", icon:"🔧", label:"Service Provider", desc:"List your shop, manage bookings, grow revenue", color:"#378add" },
             { key:"driver", icon:"🚚", label:"Driver", desc:"Deliver vehicles and parts, earn per trip", color:"#1d9e75" },
           ].map(r=>(
-            <div key={r.key} onClick={()=>{ setSelectedRole(r.key); setStep("auth"); setMode("signup") }}
+            <div key={r.key} onClick={()=>{ if(r.isSpecial){window.location.href=r.specialUrl}else{setSelectedRole(r.key); setStep("auth"); setMode("signup")} }}
               style={{ background:"#f5f5f5", borderRadius:20, padding:"2rem", cursor:"pointer", textAlign:"left", border:"2px solid transparent", transition:"all 0.2s" }}
               onMouseEnter={e=>{ e.currentTarget.style.borderColor=r.color; e.currentTarget.style.background="#fff"; e.currentTarget.style.transform="translateY(-4px)" }}
               onMouseLeave={e=>{ e.currentTarget.style.borderColor="transparent"; e.currentTarget.style.background="#f5f5f5"; e.currentTarget.style.transform="translateY(0)" }}>
