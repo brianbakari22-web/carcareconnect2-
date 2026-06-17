@@ -21,7 +21,7 @@ export default function TermsOfService() {
         <div style={{ marginBottom:"2.5rem" }}>
           <div style={{ fontSize:12, color:"#e6821e", fontWeight:600, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>Legal</div>
           <div style={{ fontFamily:"Syne", fontSize:"clamp(28px,4vw,40px)", fontWeight:800, color:"#000000", marginBottom:8 }}>Terms of Service</div>
-          <div style={{ fontSize:13, color:"#777777" }}>Last updated: June 1, 2026 · Effective: June 1, 2026</div>
+          <div style={{ fontSize:13, color:"#777777" }}>Last updated: June 18, 2026 · Effective: June 18, 2026</div>
         </div>
 
         <div style={{ background:"#ffffff", border:"1px solid #e6821e30", borderRadius:12, padding:"1.25rem", marginBottom:"2rem" }}>
@@ -202,6 +202,73 @@ export default function TermsOfService() {
             title: "19. Contact Information",
             items: [],
             contact: true
+          },
+          {
+            title: "20. Mechanic Portal and Sub-Accounts",
+            items: [
+              "Service providers may register mechanics as sub-accounts on the Car Care Connect platform. Each mechanic is assigned a unique mechanic code and accesses the platform at carcareconnect.care/mechanic-login using their phone number and a PIN set by their garage owner.",
+              "Mechanics are employees or contractors of the service provider, not independent contractors of Car Care Connect.",
+              "Service providers are fully responsible for the conduct, compliance, and performance of all mechanics they register on the platform.",
+              "Mechanics must upload valid identification documents (National ID, Driver's License, Certificate of Good Conduct, and Medical Certificate) through the mechanic portal. Documents are subject to verification by Car Care Connect administrators.",
+              "Unverified mechanics may not be dispatched for GO Service emergency requests.",
+              "Service providers must immediately deactivate mechanic accounts upon termination of employment or contract.",
+              "Mechanics must maintain live GPS location sharing with customers during all active GO Service and Shop Premium jobs.",
+            ]
+          },
+          {
+            title: "21. Marketplace Escrow and Buyer Protection",
+            items: [
+              "All marketplace transactions are processed through an escrow system. Funds are held by Car Care Connect until the buyer confirms receipt of the item.",
+              "Buyers have 48 hours after reported delivery to raise a dispute. After 48 hours without dispute, funds are automatically released to the seller.",
+              "Sellers may not receive payment until the buyer confirms receipt or the dispute period expires.",
+              "Car Care Connect acts as a neutral escrow agent and is not party to the transaction between buyer and seller.",
+              "In the event of a dispute, Car Care Connect will review evidence from both parties and make a final determination within 5 business days.",
+              "Fraudulent listings, misrepresentation of items, or refusal to deliver after payment may result in immediate account suspension and forfeiture of escrowed funds.",
+            ]
+          },
+          {
+            title: "22. GPS Location Data and Privacy",
+            items: [
+              "Car Care Connect collects GPS location data from drivers and mechanics during active service sessions to enable live tracking for customers.",
+              "Customer location data shared during bookings is used solely to facilitate service delivery and is accessible only to the assigned provider, mechanic, or driver.",
+              "Driver and mechanic location history is retained for 90 days for dispute resolution purposes and then permanently deleted.",
+              "Location data is never sold to third parties or used for advertising purposes.",
+              "Customers may optionally share their GPS location when making a booking to assist providers with navigation. This is voluntary and not required to complete a booking.",
+              "By using Car Care Connect, drivers and mechanics consent to GPS location sharing during active service sessions as a condition of platform participation.",
+            ]
+          },
+          {
+            title: "23. Cash Commission and Provider Obligations",
+            items: [
+              "For cash payment bookings, Car Care Connect tracks the platform commission owed by the service provider.",
+              "Cash commissions must be paid to Car Care Connect within 30 days of the completed booking.",
+              "Providers with overdue cash commission balances will receive automated warnings. After 3 unpaid commission cycles (strikes), the provider account will be automatically suspended.",
+              "Suspended providers may reinstate their account by paying all outstanding commission balances plus a KES 500 reinstatement fee.",
+              "Car Care Connect reserves the right to offset outstanding cash commissions against future online payment payouts.",
+              "Providers must maintain accurate records of all cash transactions and make these available to Car Care Connect upon request.",
+            ]
+          },
+          {
+            title: "24. Emergency Alerts and Safety Features",
+            items: [
+              "Car Care Connect provides emergency alert features for drivers (PANIC button) and mechanics (SOS button) accessible during active service sessions.",
+              "Activating the PANIC or SOS button sends an immediate alert to Car Care Connect administrators including the user's GPS coordinates.",
+              "These features are to be used only in genuine emergencies such as accidents, medical emergencies, or safety threats.",
+              "Car Care Connect will make reasonable efforts to respond to emergency alerts but is not a substitute for emergency services. In life-threatening situations, contact Police (999), Ambulance (0800 722 203), or other emergency services immediately.",
+              "Misuse of emergency alert features may result in account suspension.",
+              "Car Care Connect is not liable for outcomes arising from emergency situations but will cooperate fully with law enforcement and emergency services.",
+            ]
+          },
+          {
+            title: "25. Marketplace Social Features",
+            items: [
+              "Users may like, comment on, and share marketplace listings. These features are provided to facilitate genuine buyer-seller interaction.",
+              "Comments must be respectful, honest, and relevant to the listing. Spam, harassment, hate speech, and false information are strictly prohibited.",
+              "Car Care Connect administrators reserve the right to remove any comment or content that violates these terms without notice.",
+              "Repeated violations of community standards may result in account suspension or permanent ban from marketplace features.",
+              "Sellers may respond to comments on their listings. Seller responses are clearly marked to distinguish them from buyer comments.",
+              "Sharing listings via external platforms (WhatsApp, social media) is encouraged and permitted.",
+            ]
           },
         ].map(section=>(
           <div key={section.title} style={{ marginBottom:"2.5rem" }}>
