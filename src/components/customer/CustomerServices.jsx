@@ -25,6 +25,8 @@ export default function CustomerServices() {
   const [booking, setBooking] = useState(null)
   const [bookForm, setBookForm] = useState({ date:"", time:"", notes:"", payment_method:"mpesa", is_concierge:false, concierge_location:"", problem_description:"", parts_needed:false, parts_description:"" })
   const [bookingLoading, setBookingLoading] = useState(false)
+  const [customerLocation, setCustomerLocation] = useState({ lat:null, lng:null, address:"" })
+  const [detectingLocation, setDetectingLocation] = useState(false)
   const [pendingBooking, setPendingBooking] = useState(null)
   const [showPayment, setShowPayment] = useState(false)
   const [voucherCode, setVoucherCode] = useState("")
@@ -159,6 +161,20 @@ export default function CustomerServices() {
       setBookingLoading(false)
     }
   }
+  async function detectCustomerLocation() {
+    setDetectingLocation(true)
+    try {
+      const { getCurrentPosition } = await import("../../lib/geolocation")
+      const pos = await getCurrentPosition()
+      const res = await fetch("https://nominatim.openstreetmap.org/reverse?lat=" + pos.latitude + "&lon=" + pos.longitude + "&format=json")
+      const geo = await res.json()
+      const address = geo.display_name || (pos.latitude.toFixed(4) + ", " + pos.longitude.toFixed(4))
+      setCustomerLocation({ lat:pos.latitude, lng:pos.longitude, address })
+      toast.success("Location detected!")
+    } catch(e) { toast.error("Could not detect location") }
+    finally { setDetectingLocation(false) }
+  }
+
   async function bookService(e) {
     e.preventDefault()
     if (!booking) return
@@ -197,6 +213,9 @@ export default function CustomerServices() {
         parts_description: bookForm.parts_description||"",
         is_concierge: bookForm.is_concierge||false,
         concierge_pickup_location: bookForm.concierge_location||null,
+        customer_location_lat: customerLocation.lat||null,
+        customer_location_lng: customerLocation.lng||null,
+        customer_location_address: customerLocation.address||null,
       }
 
       if (bulkMode && bulkVehicles.length>0) {
@@ -650,7 +669,26 @@ export default function CustomerServices() {
                     </div>
                   </div>
 
-                  <div style={{ display:"flex", gap:8 }}>
+                                        {/* Share my location - Fix #20 */}
+                      {!bookForm.is_concierge&&(
+                        <div style={{ marginBottom:12, background:"#f8f8f8", borderRadius:10, padding:"0.75rem" }}>
+                          <div style={{ fontSize:12, fontWeight:700, color:"#555", marginBottom:6 }}>📍 Your location (optional)</div>
+                          {customerLocation.lat?(
+                            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                              <div style={{ fontSize:11, color:"#1d9e75", flex:1, marginRight:8 }}>✓ {customerLocation.address?.substring(0,60)}...</div>
+                              <button type="button" onClick={()=>setCustomerLocation({lat:null,lng:null,address:""})}
+                                style={{ background:"none", border:"none", color:"#e24b4a", fontSize:11, cursor:"pointer" }}>Clear</button>
+                            </div>
+                          ):(
+                            <button type="button" onClick={detectCustomerLocation} disabled={detectingLocation}
+                              style={{ width:"100%", background:detectingLocation?"#888":"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"8px", cursor:"pointer" }}>
+                              {detectingLocation?"Detecting...":"📍 Share my location with provider"}
+                            </button>
+                          )}
+                        </div>
+                      )}
+
+                      <div style={{ display:"flex", gap:8 }}>
                     <button type="submit" disabled={bookingLoading}
                       style={{ background:bookingLoading?"#ccc":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:bookingLoading?"not-allowed":"pointer" }}>
                       {bookingLoading?"Booking...":"Confirm booking"}

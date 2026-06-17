@@ -8,15 +8,18 @@ export default function AdminDrivers() {
   const [drivers, setDrivers] = useState([])
   const [driverStatuses, setDriverStatuses] = useState([])
   const [loading, setLoading] = useState(true)
+  const [showMap, setShowMap] = useState(false)
+  const [onlineDrivers, setOnlineDrivers] = useState([])
+  const mapRef = useRef(null)
+  const mapInstanceRef = useRef(null)
+  const markersRef = useRef({})
   const [tab, setTab] = useState("all")
   const [selected, setSelected] = useState(null)
   const [search, setSearch] = useState("")
   const [rejectingId, setRejectingId] = useState(null)
   const [rejectReason, setRejectReason] = useState("")
   const [viewingDocs, setViewingDocs] = useState(null)
-  const mapRef = useRef(null)
-  const mapInstanceRef = useRef(null)
-
+    
   useEffect(() => {
     load()
     const sub = supabase.channel("admin-drivers-live")
@@ -35,6 +38,56 @@ export default function AdminDrivers() {
     await Promise.all([loadDrivers(), loadStatuses()])
     setLoading(false)
   }
+
+  async function loadOnlineDrivers() {
+    const { data } = await supabase.from("driver_status")
+      .select("*, profiles!driver_status_driver_id_fkey(first_name,last_name)")
+      .eq("is_online", true)
+      .not("current_latitude", "is", null)
+    setOnlineDrivers(data||[])
+  }
+
+  useEffect(() => {
+    if (!showMap) return
+    loadOnlineDrivers()
+    const interval = setInterval(loadOnlineDrivers, 15000)
+    return () => clearInterval(interval)
+  }, [showMap])
+
+  useEffect(() => {
+    if (!showMap || !mapRef.current) return
+    function initMap() {
+      if (mapInstanceRef.current) {
+        Object.keys(markersRef.current).forEach(k => { try{markersRef.current[k].remove()}catch(e){} })
+        markersRef.current = {}
+        onlineDrivers.forEach(d => {
+          if (!d.current_latitude) return
+          const m = window.L.marker([d.current_latitude, d.current_longitude])
+            .bindPopup("🚗 " + (d.profiles?.first_name||"") + " " + (d.profiles?.last_name||"")).addTo(mapInstanceRef.current)
+          markersRef.current[d.driver_id] = m
+        })
+        return
+      }
+      const map = window.L.map(mapRef.current, { zoomControl:true, attributionControl:false }).setView([-1.2921, 36.8219], 12)
+      window.L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png").addTo(map)
+      mapInstanceRef.current = map
+      onlineDrivers.forEach(d => {
+        if (!d.current_latitude) return
+        const m = window.L.marker([d.current_latitude, d.current_longitude])
+          .bindPopup("🚗 " + (d.profiles?.first_name||"") + " " + (d.profiles?.last_name||"")).addTo(map)
+        markersRef.current[d.driver_id] = m
+      })
+    }
+    if (!window.L) {
+      if (!document.getElementById("leaflet-css")) {
+        const link = document.createElement("link"); link.id="leaflet-css"; link.rel="stylesheet"
+        link.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"; document.head.appendChild(link)
+      }
+      const script = document.createElement("script")
+      script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      script.onload = initMap; document.head.appendChild(script)
+    } else { initMap() }
+  }, [showMap, onlineDrivers])
 
   async function loadDrivers() {
     const { data } = await supabase.from("profiles").select("*").eq("role","driver").order("created_at",{ascending:false})
@@ -410,6 +463,19 @@ function DriverStats({ driverId, isMobile }) {
 
   return (
     <div style={{ marginTop:12, paddingTop:12, borderTop:"1px solid #eeeeee" }}>
+      {/* Live Driver Map Toggle */}
+      <div style={{ marginBottom:"1rem" }}>
+        <button onClick={()=>setShowMap(!showMap)}
+          style={{ background:showMap?"#378add":"#f0f0f0", border:"none", borderRadius:8, color:showMap?"#fff":"#555", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>
+          {showMap?"🗺️ Hide Map":"🗺️ Live Driver Map (" + onlineDrivers.length + " online)"}
+        </button>
+      </div>
+      {showMap&&(
+        <div style={{ marginBottom:"1rem" }}>
+          <div ref={mapRef} style={{ width:"100%", height:350, borderRadius:12, overflow:"hidden", border:"1px solid #eeeeee", background:"#f5f5f5" }}/>
+          <div style={{ fontSize:11, color:"#888", marginTop:6 }}>Auto-refreshes every 15s · {onlineDrivers.length} driver{onlineDrivers.length!==1?"s":""} currently online</div>
+        </div>
+      )}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8, marginBottom:12 }}>
         {[
           { label:"Total jobs", value:stats.total, color:"#000000" },

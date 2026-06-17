@@ -83,7 +83,19 @@ export default function ProviderBookings() {
   }
 
   async function updateStatus(id, status) {
-    const { error } = await supabase.from("bookings").update({ status }).eq("id",id).eq("provider_id",user.id)
+    const updateData = { status }
+    if (status === "completed") {
+      const booking = bookings.find(b=>b.id===id)
+      if (booking?.is_concierge && booking?.pickup_lat && booking?.dropoff_lat) {
+        const R = 6371
+        const dLat = (booking.dropoff_lat - booking.pickup_lat) * Math.PI/180
+        const dLng = (booking.dropoff_lng - booking.pickup_lng) * Math.PI/180
+        const a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(booking.pickup_lat*Math.PI/180)*Math.cos(booking.dropoff_lat*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2)
+        const dist = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+        updateData.actual_mileage = Math.round(dist*10)/10
+      }
+    }
+    const { error } = await supabase.from("bookings").update(updateData).eq("id",id).eq("provider_id",user.id)
     if (error) return toast.error(error.message)
     toast.success(`Booking ${status}`)
     load()

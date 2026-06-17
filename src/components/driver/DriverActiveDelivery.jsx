@@ -13,14 +13,77 @@ export default function DriverActiveDelivery() {
   const isMobile = useIsMobile()
   const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(true)
+  const [tracking, setTracking] = useState(false)
+  const [trackingInterval, setTrackingInterval] = useState(null)
+  const [panicLoading, setPanicLoading] = useState(false)
   const [expanded, setExpanded] = useState(null)
   const [showReport, setShowReport] = useState(null)
   const [reportType, setReportType] = useState("pickup")
   const [existingReports, setExistingReports] = useState({})
 
+  async function startTracking(jobId) {
+    setTracking(true)
+    const interval = setInterval(async() => {
+      try {
+        const pos = await getCurrentPosition()
+        // Update driver current location
+        await supabase.from("driver_status").upsert({
+          driver_id: user.id,
+          current_latitude: pos.latitude,
+          current_longitude: pos.longitude,
+          is_online: true,
+          updated_at: new Date().toISOString()
+        }, { onConflict: "driver_id" })
+        // Insert into location history for customer tracking
+        await supabase.from("driver_location_history").insert({
+          driver_id: user.id,
+          booking_id: jobId,
+          lat: pos.latitude,
+          lng: pos.longitude,
+        })
+      } catch(e) { console.warn("GPS error:", e.message) }
+    }, 10000)
+    setTrackingInterval(interval)
+  }
+
+  function stopTracking() {
+    if (trackingInterval) { clearInterval(trackingInterval); setTrackingInterval(null) }
+    setTracking(false)
+    supabase.from("driver_status").update({ is_online: false }).eq("driver_id", user.id)
+  }
+
+  async function sendPanic(job) {
+    setPanicLoading(true)
+    try {
+      const pos = await getCurrentPosition().catch(()=>null)
+      await supabase.from("emergency_alerts").insert({
+        user_id: user.id,
+        user_name: "Driver",
+        user_role: "driver",
+        latitude: pos?.latitude||null,
+        longitude: pos?.longitude||null,
+        status: "active",
+        message: "DRIVER PANIC: Active delivery booking #" + job.id.slice(0,8)
+      })
+      toast.success("🚨 Panic alert sent to admin!")
+    } catch(e) { toast.error("Failed to send panic alert") }
+    finally { setPanicLoading(false) }
+  }
+
   useEffect(() => {
     if (!user) return
     load()
+    return () => stopTracking()
+  }, [user])
+
+  useEffect(() => {
+    const activeJob = jobs.find(j=>j.delivery_status==="picked_up"||j.delivery_status==="in_transit")
+    if (activeJob && !tracking) startTracking(activeJob.id)
+    else if (!activeJob && tracking) stopTracking()
+  }, [jobs])
+
+  useEffect(() => {
+    if (!user) return
     const sub = supabase.channel("driver-active")
       .on("postgres_changes", { event:"*", schema:"public", table:"bookings", filter:`driver_id=eq.${user.id}` }, () => load())
       .subscribe()
@@ -99,6 +162,14 @@ export default function DriverActiveDelivery() {
       <div style={{ fontSize:12, color:"#777777", marginBottom:"1.25rem" }}>
         {jobs.length} active job{jobs.length!==1?"s":""}
       </div>
+
+      {/* GPS Tracking Banner */}
+      {tracking&&(
+        <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7530", borderRadius:10, padding:"8px 12px", marginBottom:"1rem", display:"flex", alignItems:"center", gap:8 }}>
+          <span style={{ width:8, height:8, borderRadius:"50%", background:"#1d9e75", display:"inline-block", boxShadow:"0 0 6px #1d9e75" }}/>
+          <span style={{ fontSize:12, color:"#1d9e75", fontWeight:600 }}>Live location sharing — customer can track you</span>
+        </div>
+      )}
 
       {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&jobs.length===0&&(
@@ -200,6 +271,17 @@ export default function DriverActiveDelivery() {
           </div>
         )
       })}
+
+      {/* Panic button for active jobs */}
+      {jobs.filter(j=>j.delivery_status==="picked_up"||j.delivery_status==="in_transit").map(job=>(
+        <div key={job.id+"panic"} style={{ marginBottom:10 }}>
+          <button onClick={()=>sendPanic(job)} disabled={panicLoading}
+            style={{ width:"100%", background:panicLoading?"#888":"#e24b4a", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:800, padding:"12px", cursor:panicLoading?"not-allowed":"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:8 }}>
+            <span style={{ fontSize:18 }}>🚨</span>
+            {panicLoading?"Sending alert...":"PANIC — Send Emergency Alert"}
+          </button>
+        </div>
+      ))}
     </div>
   )
 }
