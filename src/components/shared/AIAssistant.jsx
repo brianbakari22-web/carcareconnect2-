@@ -578,6 +578,22 @@ REFERRAL LEADERBOARD: Admin sees top referrers in Admin > Loyalty
 SERVICE BUNDLES ADMIN: Admin can hide/delete bundles in Admin > Services > Bundles tab
 SOS ALERTS: Admin sees active emergency alerts on AdminDashboard
 DRIVER DOCUMENTS: Admin sees expiring driver documents
+
+ADMIN POLICIES & ENFORCEMENT (June 2026):
+- Cash commission strikes: 3 strikes = automatic provider suspension (daily cron at 6am)
+- Mechanic portal: Mechanics must have verified documents before GO Service jobs
+- Video approval: Marketplace videos need separate approval from listing approval
+- Comment moderation: Admin can remove inappropriate comments from marketplace listings
+- Emergency alerts: Driver PANIC and Mechanic SOS alerts visible in admin dashboard with GPS
+- Live driver map: Real-time view of all online drivers in Admin > Drivers
+- Mileage disputes: Actual GPS mileage saved on concierge bookings for billing disputes
+- Provider suspension: Automatic for overdue cash commission, manual for policy violations
+- Reinstatement: Provider must pay outstanding balance before reinstatement
+- Mechanic accounts: Garage owner manages mechanic PINs, admin can reset PINs
+- Document verification: Admin verifies mechanic docs (ID, license, good conduct, medical)
+- Platform security: Admin AI has full knowledge, customer AI is restricted
+- Admin panel URL: carcareconnect.care/ccc-admin-x7k9m2p4q8 (NEVER share publicly)
+
 `
 
 const CUSTOMER_KNOWLEDGE = `
@@ -655,6 +671,19 @@ PROVIDER PUBLIC STOREFRONT:
 SIGNING IN:
 - Email/password or Continue with Google
 - Google Sign In available on web and Android app
+
+PLATFORM POLICIES (June 2026):
+- Service Guarantee: If service quality is poor, report within 24hrs for review
+- Buyer Protection: Marketplace purchases held in escrow until you confirm receipt
+- Cash payments: Accepted for all services, provider collects on site
+- Cancellation: Cancel 24hrs before booking to avoid penalty
+- Mechanic verification: All mechanics must have verified documents (ID, license, good conduct)
+- Data privacy: Your location is only shared with your assigned provider/driver/mechanic
+- Refunds: Processed within 3-5 business days after dispute resolution
+- Loyalty points: Never expire, redeemable for discounts on bookings
+- Referral program: Earn bonus points when referred friend completes first booking
+- Rating system: Rate both provider AND mechanic separately after service
+
 `
 
 const SYSTEM_PROMPTS = {
