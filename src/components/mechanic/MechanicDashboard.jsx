@@ -14,10 +14,14 @@ export default function MechanicDashboard() {
   const [sharing, setSharing] = useState(false)
   const [available, setAvailable] = useState(mechanic?.is_available ?? true)
   const [locationInterval, setLocationInterval] = useState(null)
+  const [history, setHistory] = useState([])
+  const [uploadingPhoto, setUploadingPhoto] = useState(null)
+  const [sosLoading, setSosLoading] = useState(false)
 
   useEffect(() => {
     if (mechanic) {
       load()
+      loadHistory()
       const sub = supabase.channel("mechanic-jobs-" + mechanic.mechanic_id)
         .on("postgres_changes", { event:"*", schema:"public", table:"bookings",
           filter:"assigned_mechanic_id=eq." + mechanic.mechanic_id }, () => load())
@@ -25,6 +29,58 @@ export default function MechanicDashboard() {
       return () => { supabase.removeChannel(sub); stopSharing() }
     }
   }, [mechanic])
+
+  async function loadHistory() {
+    const { data } = await supabase.from("bookings")
+      .select("*, services(name), profiles!bookings_customer_id_fkey(first_name,last_name)")
+      .eq("assigned_mechanic_id", mechanic.mechanic_id)
+      .in("status", ["completed","cancelled"])
+      .order("updated_at", { ascending: false })
+      .limit(20)
+    setHistory(data||[])
+  }
+
+  async function uploadJobPhoto(jobId, type) {
+    const input = document.createElement("input")
+    input.type = "file"
+    input.accept = "image/*"
+    input.onchange = async(e) => {
+      const file = e.target.files[0]
+      if (!file) return
+      setUploadingPhoto(jobId + type)
+      try {
+        const ext = file.name.split(".").pop()
+        const path = "job-photos/" + mechanic.mechanic_id + "/" + jobId + "-" + type + "-" + Date.now() + "." + ext
+        const { error } = await supabase.storage.from("marketplace").upload(path, file, { upsert:true })
+        if (error) throw error
+        const { data } = supabase.storage.from("marketplace").getPublicUrl(path)
+        await supabase.from("bookings").update({ 
+          [type === "before" ? "pickup_photo_url" : "dropoff_photo_url"]: data.publicUrl 
+        }).eq("id", jobId)
+        toast.success(type + " photo uploaded!")
+      } catch(err) { toast.error("Upload failed: " + err.message) }
+      finally { setUploadingPhoto(null) }
+    }
+    input.click()
+  }
+
+  async function sendSOS() {
+    setSosLoading(true)
+    try {
+      const pos = await getCurrentPosition().catch(() => null)
+      await supabase.from("emergency_alerts").insert({
+        user_id: null,
+        user_name: mechanic.mechanic_name,
+        user_role: "mechanic",
+        latitude: pos?.latitude || null,
+        longitude: pos?.longitude || null,
+        status: "active",
+        message: "MECHANIC SOS: " + mechanic.mechanic_name + " from " + mechanic.business_name
+      })
+      toast.success("SOS alert sent to admin!")
+    } catch(err) { toast.error("SOS failed: " + err.message) }
+    finally { setSosLoading(false) }
+  }
 
   async function load() {
     setLoading(true)
@@ -66,11 +122,21 @@ export default function MechanicDashboard() {
     const interval = setInterval(async() => {
       try {
         const pos = await getCurrentPosition()
+        // Update mechanic current location
         await supabase.from("mechanics").update({
           current_latitude: pos.latitude,
           current_longitude: pos.longitude,
           last_seen: new Date().toISOString()
         }).eq("id", mechanic.mechanic_id)
+        // Insert into location history for real-time customer tracking
+        if (activeJob) {
+          await supabase.from("mechanic_location_history").insert({
+            mechanic_id: mechanic.mechanic_id,
+            booking_id: activeJob.id,
+            latitude: pos.latitude,
+            longitude: pos.longitude,
+          })
+        }
       } catch(e) { console.warn("Location error:", e.message) }
     }, 15000)
     setLocationInterval(interval)
@@ -149,13 +215,62 @@ export default function MechanicDashboard() {
 
       {/* Tabs */}
       <div style={{ display:"flex", gap:0, background:"#ffffff", borderBottom:"1px solid #eeeeee" }}>
-        {[{k:"jobs",l:"My Jobs"},{k:"history",l:"History"}].map(t=>(
+        {[{k:"jobs",l:"My Jobs"},{k:"history",l:"History"},{k:"sos",l:"🆘 SOS"}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
             style={{ flex:1, background:"none", border:"none", borderBottom:tab===t.k?"2px solid #1d9e75":"2px solid transparent", color:tab===t.k?"#1d9e75":"#888", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer" }}>
             {t.l}
           </button>
         ))}
       </div>
+
+      {/* SOS Tab */}
+      {tab==="sos"&&(
+        <div style={{ padding:"1rem" }}>
+          <div style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:12, padding:"1.5rem", textAlign:"center", marginBottom:"1rem" }}>
+            <div style={{ fontSize:40, marginBottom:12 }}>🆘</div>
+            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#e24b4a", marginBottom:8 }}>Emergency SOS</div>
+            <div style={{ fontSize:12, color:"#555", marginBottom:16, lineHeight:1.6 }}>
+              Use this if you are in danger or need immediate assistance. Admin will be notified with your location.
+            </div>
+            <button onClick={sendSOS} disabled={sosLoading}
+              style={{ background:sosLoading?"#555":"#e24b4a", border:"none", borderRadius:12, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:16, fontWeight:800, padding:"16px 32px", cursor:sosLoading?"not-allowed":"pointer", width:"100%" }}>
+              {sosLoading?"Sending SOS...":"🆘 SEND SOS ALERT"}
+            </button>
+          </div>
+          <div style={{ background:"#f8f8f8", borderRadius:10, padding:"1rem", fontSize:12, color:"#555", lineHeight:1.8 }}>
+            <div style={{ fontWeight:700, marginBottom:6 }}>Emergency contacts:</div>
+            <div>Police: <a href="tel:999" style={{ color:"#e24b4a" }}>999</a></div>
+            <div>NTSA: <a href="tel:0800723573" style={{ color:"#e24b4a" }}>0800 723 573</a></div>
+            <div>CCC Admin: <a href="tel:0113858966" style={{ color:"#1d9e75" }}>0113 858 966</a></div>
+          </div>
+        </div>
+      )}
+
+      {/* History Tab */}
+      {tab==="history"&&(
+        <div style={{ padding:"1rem" }}>
+          {history.length===0&&(
+            <div style={{ textAlign:"center", padding:"3rem 1rem", color:"#888" }}>
+              <div style={{ fontSize:40, marginBottom:12 }}>📋</div>
+              <div style={{ fontSize:14, fontWeight:600 }}>No completed jobs yet</div>
+            </div>
+          )}
+          {history.map(job=>(
+            <div key={job.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem", marginBottom:10 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:6 }}>
+                <div>
+                  <div style={{ fontSize:13, fontWeight:700, color:"#000" }}>{job.services?.name||job.service_name}</div>
+                  <div style={{ fontSize:11, color:"#555" }}>{job.profiles?.first_name} {job.profiles?.last_name}</div>
+                  <div style={{ fontSize:10, color:"#888", marginTop:2 }}>{job.booking_date}</div>
+                </div>
+                <span style={{ fontSize:10, padding:"3px 8px", borderRadius:10, background:job.status==="completed"?"#f0fdf4":"#fff5f5", color:job.status==="completed"?"#1d9e75":"#e24b4a", fontWeight:700 }}>
+                  {job.status}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Jobs list */}
       <div style={{ padding:"1rem" }}>
@@ -195,6 +310,14 @@ export default function MechanicDashboard() {
                   <button onClick={()=>callCustomer(job)}
                     style={{ background:"#1d9e75", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>
                     📞 Call
+                  </button>
+                  <button onClick={()=>uploadJobPhoto(job.id,"before")} disabled={uploadingPhoto===job.id+"before"}
+                    style={{ background:"#555", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>
+                    {uploadingPhoto===job.id+"before"?"Uploading...":"📷 Before"}
+                  </button>
+                  <button onClick={()=>uploadJobPhoto(job.id,"after")} disabled={uploadingPhoto===job.id+"after"}
+                    style={{ background:"#555", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>
+                    {uploadingPhoto===job.id+"after"?"Uploading...":"📷 After"}
                   </button>
                   <button onClick={()=>updateJobStatus(job.id,"completed")}
                     style={{ background:"#1d9e75", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>

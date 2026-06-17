@@ -48,7 +48,7 @@ export default function AdminMechanics() {
   }
 
   async function loadMechanics() {
-    const { data } = await supabase.from("mechanics").select("*").order("created_at", { ascending:false })
+    const { data } = await supabase.from("mechanics").select("*, profiles!mechanics_provider_id_fkey(business_name,first_name,last_name,city)").order("created_at", { ascending:false })
     setMechanics(data||[])
   }
 

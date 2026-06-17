@@ -22,6 +22,8 @@ export default function CustomerGoService() {
   const [step, setStep] = useState("select")
   const [emergencyType, setEmergencyType] = useState("")
   const [location, setLocation] = useState({ lat:null, lng:null, address:"" })
+  const [assignedMechanic, setAssignedMechanic] = useState(null)
+  const [mechanicETA, setMechanicETA] = useState(null)
   const [details, setDetails] = useState("")
   const [vehicle, setVehicle] = useState("")
   const [vehicles, setVehicles] = useState([])
@@ -138,6 +140,31 @@ export default function CustomerGoService() {
       }).sort((a,b) => (a._distance ?? 999) - (b._distance ?? 999))
     }
     setGoServices(services)
+  }
+
+  async function fetchMechanicAndETA(bookingId) {
+    try {
+      const { data: booking } = await supabase.from("bookings")
+        .select("assigned_mechanic_id")
+        .eq("id", bookingId).single()
+      if (!booking?.assigned_mechanic_id) return
+      const { data: mech } = await supabase.from("mechanics")
+        .select("*, profiles!mechanics_provider_id_fkey(business_name)")
+        .eq("id", booking.assigned_mechanic_id).single()
+      if (mech) {
+        setAssignedMechanic(mech)
+        // Calculate ETA if mechanic has location
+        if (mech.current_latitude && mech.current_longitude && location.lat && location.lng) {
+          const R = 6371
+          const dLat = (mech.current_latitude - location.lat) * Math.PI/180
+          const dLng = (mech.current_longitude - location.lng) * Math.PI/180
+          const a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(location.lat*Math.PI/180)*Math.cos(mech.current_latitude*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2)
+          const dist = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+          const etaMins = Math.round(dist / 30 * 60) // avg 30km/h in Nairobi traffic
+          setMechanicETA(etaMins)
+        }
+      }
+    } catch(e) { console.warn("ETA error:", e.message) }
   }
 
   async function detectLocation() {
@@ -379,6 +406,33 @@ export default function CustomerGoService() {
         <div style={{ fontSize:13, color:"#555555", marginBottom:"1.5rem" }}>
           A mechanic has been dispatched to your location
         </div>
+        {assignedMechanic&&(
+          <div style={{ background:"#ffffff", borderRadius:10, padding:"1rem", textAlign:"left", marginBottom:"1rem" }}>
+            <div style={{ fontSize:11, color:"#777777", marginBottom:6 }}>Your mechanic</div>
+            <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+              <div style={{ width:40, height:40, borderRadius:"50%", background:"#f0fdf4", border:"2px solid #1d9e75", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>👨‍🔧</div>
+              <div>
+                <div style={{ fontSize:14, fontWeight:700, color:"#000" }}>{assignedMechanic.first_name} {assignedMechanic.last_name}</div>
+                <div style={{ fontSize:11, color:"#555" }}>{assignedMechanic.specialization}</div>
+                <div style={{ fontSize:11, color:"#888" }}>{assignedMechanic.profiles?.business_name}</div>
+              </div>
+            </div>
+            {mechanicETA&&(
+              <div style={{ marginTop:10, background:"#f0fdf4", borderRadius:8, padding:"8px 12px", display:"flex", alignItems:"center", gap:8 }}>
+                <span style={{ fontSize:20 }}>⏱️</span>
+                <div>
+                  <div style={{ fontSize:13, fontWeight:700, color:"#1d9e75" }}>ETA: ~{mechanicETA} minutes</div>
+                  <div style={{ fontSize:10, color:"#555" }}>Based on current mechanic location</div>
+                </div>
+              </div>
+            )}
+            {assignedMechanic.phone&&(
+              <a href={"tel:"+assignedMechanic.phone} style={{ display:"block", marginTop:8, background:"#1d9e75", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"8px 12px", textAlign:"center", textDecoration:"none" }}>
+                📞 Call mechanic: {assignedMechanic.phone}
+              </a>
+            )}
+          </div>
+        )}
         <div style={{ background:"#ffffff", borderRadius:10, padding:"1rem", textAlign:"left", marginBottom:"1rem" }}>
           <div style={{ fontSize:11, color:"#777777", marginBottom:6 }}>Booking reference</div>
           <div style={{ fontSize:13, color:"#000000", fontFamily:"monospace" }}>#{booking?.booking_number}</div>

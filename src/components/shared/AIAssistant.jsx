@@ -546,6 +546,18 @@ SIGNUP METHOD TRACKING (Phase 8):
 - Admin > Users shows "G Google" blue badge on Google-registered users
 - Helps admin understand acquisition channels
 
+MECHANIC PORTAL (New - June 2026):
+- Mechanics employed by garages can now log into their own portal
+- Login URL: carcareconnect.care/mechanic-login
+- Login method: Phone number + PIN (set by garage owner)
+- Mechanics see ONLY their assigned jobs from their garage
+- Features: view jobs, start/complete jobs, navigate to customer, call customer, share GPS location, upload before/after photos, SOS button
+- Garage owners set mechanic PINs in Provider Dashboard > Mechanics > Set PIN button
+- Admin can also reset PINs in Admin > Mechanics
+- Mechanic code format: MEC-XXXXX
+- Mechanics cannot see garage earnings, other mechanics, or other garages
+- Garage owner can deactivate mechanic account instantly
+
 Updated knowledge base: June 2026`
 
 // Admin-only knowledge (never share with customers/providers/drivers)
