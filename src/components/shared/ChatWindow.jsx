@@ -5,7 +5,7 @@ import { useLanguage } from "../../contexts/LanguageContext"
 
 export default function ChatWindow({ bookingId, listingId, claimId, otherUserId, otherUserName, overrideUserId, onClose, title }) {
   const { user } = useAuth()
-  const effectiveUserId = overrideUserId || user?.id
+  const effectiveUserId = overrideUserId != null ? overrideUserId : user?.id
   const { t } = useLanguage()
   const [messages, setMessages] = useState([])
   const [text, setText] = useState("")

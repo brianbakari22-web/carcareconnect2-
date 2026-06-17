@@ -1,7 +1,7 @@
 ﻿import { useState, useRef, useEffect } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 
-const ROLE_COLORS = { customer:"#e6821e", provider:"#378add", driver:"#1d9e75", admin:"#8b5cf6" }
+const ROLE_COLORS = { customer:"#e6821e", provider:"#378add", driver:"#1d9e75", admin:"#8b5cf6", mechanic:"#1d9e75" }
 
 const PLATFORM_KNOWLEDGE = `
 CAR CARE CONNECT PLATFORM - COMPLETE KNOWLEDGE BASE (Updated June 2026)
