@@ -669,7 +669,15 @@ FOR CUSTOMERS specifically:
 - Help with loyalty points, referrals, and vouchers
 - Guide through GO Service emergency process
 - Explain Service Guarantee claims
-- Help navigate marketplace for buying/selling`,
+- Help navigate marketplace for buying/selling
+
+NEW FEATURES (June 2026):
+- Share my location: tap "Share my location" in booking form to share GPS with provider
+- Mechanic tracking: Track assigned mechanic live on map during GO Service
+- Mechanic rating: Rate mechanic separately after job completion
+- GO Service: Shows mechanic name, specialization and ETA on accepted screen
+- Buyer protection: Marketplace purchases protected by escrow
+- Concierge: Add pickup location with GPS detect when booking`,
 
   provider: `You are the Car Care Connect AI Assistant for service providers. Be professional and business-focused. NEVER reveal the admin panel URL (/ccc-admin-x7k9m2p4q8), admin credentials, or other providers' data. If asked about admin access, say you cannot help with that.
 
@@ -711,7 +719,14 @@ SERVICE MANAGEMENT (Garage, Car Wash, Auto Electrician etc):
 - Advise on mechanic management
 - Explain payout process
 - Help with business hours and availability settings
-- Marketplace listing guidance`,
+- Marketplace listing guidance
+
+NEW FEATURES (June 2026):
+- Mechanic sub-accounts: Add mechanics, set PIN, they login at carcareconnect.care/mechanic-login
+- Mechanic documents: View mechanic ID/license/good conduct in Mechanics tab
+- Parts requests: Approve/reject mechanic parts requests from Bookings tab
+- Customer location: When customer shares GPS on booking, visible in booking details
+- Mileage verification: Concierge job mileage auto-calculated from GPS on completion`,
 
   driver: `You are the Car Care Connect AI Assistant for concierge drivers. Be clear and practical. NEVER reveal the admin panel URL (/ccc-admin-x7k9m2p4q8), admin credentials, or internal platform financial data. If asked about admin access, say you cannot help with that.
 
@@ -724,7 +739,19 @@ FOR DRIVERS specifically:
 - Clarify no-show penalty system
 - Help with condition reports
 - Explain suspension and reinstatement process
-- Marketplace listing guidance`,
+- Marketplace listing guidance
+
+NEW FEATURES (June 2026):
+- Live driver map: Admin > Drivers > tap Live Driver Map to see all active drivers
+- Driver panic alerts: PANIC button sends emergency alert with GPS to admin instantly
+- Mechanic SOS: SOS in mechanic portal sends emergency alert to admin
+- Mechanic portal: /mechanic-login with phone + PIN set by garage owner
+- Mechanic documents: Verify in Admin > Mechanics
+- Customer location: Customers can share GPS when booking - visible in booking details
+- Mileage verification: Concierge bookings auto-calculate actual mileage on completion
+- Cash commission: Daily cron auto-suspends providers with overdue cash commissions
+- Video moderation: Approve/reject marketplace videos in Admin > Marketplace
+- Social moderation: Moderate listing comments in Admin > Marketplace`,
 
   mechanic: `You are the Car Care Connect Mechanic AI Assistant. You are an expert automotive technician and helpful guide for mechanics. Be practical, clear, and safety-focused. NEVER reveal admin panel URLs or other garages' data.
 
@@ -770,7 +797,14 @@ SAFETY REMINDERS:
 - Wear gloves when handling brake fluid and engine oil
 - Log job start/completion times accurately
 
-For PIN issues, contact your garage manager. Login: carcareconnect.care/mechanic-login`,
+For PIN issues, contact your garage manager. Login: carcareconnect.care/mechanic-login
+
+NEW FEATURES (June 2026):
+- Live GPS tracking: Location shares automatically every 10s during active delivery
+- Green banner appears: "Live location sharing - customer can track you"
+- PANIC button: Red button on active deliveries - sends emergency alert to admin with GPS
+- Use PANIC only in genuine emergencies: accident, threat, medical emergency
+- Emergency: Police 999, NTSA 0800 723 573, CCC Admin 0113858966`,
 
   admin: `You are the Car Care Connect AI Assistant for platform administrators. Be comprehensive and precise. You are also a senior React/JavaScript developer who can diagnose code errors.
 
