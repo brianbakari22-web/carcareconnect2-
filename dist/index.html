@@ -49,6 +49,90 @@
       }
     </script>
     <div id="root">
+      <div id="app-splash" style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(160deg,#0f0f0f 0%,#1a1a1a 50%,#0d0d0d 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;font-family:'DM Sans',sans-serif;">
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
+        @keyframes splash-logo-in { 0%{opacity:0;transform:scale(0.7) translateY(20px)} 100%{opacity:1;transform:scale(1) translateY(0)} }
+        @keyframes splash-text-in { 0%{opacity:0;transform:translateY(16px)} 100%{opacity:1;transform:translateY(0)} }
+        @keyframes splash-dot { 0%,80%,100%{transform:scale(0.6);opacity:0.3} 40%{transform:scale(1);opacity:1} }
+        @keyframes splash-glow { 0%,100%{box-shadow:0 0 30px rgba(230,130,30,0.2)} 50%{box-shadow:0 0 60px rgba(230,130,30,0.5)} }
+        @keyframes splash-ring { 0%{transform:scale(0.8);opacity:0} 50%{opacity:0.15} 100%{transform:scale(1.8);opacity:0} }
+      </style>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0;">
+        <!-- Animated ring behind logo -->
+        <div style="position:relative;width:120px;height:120px;display:flex;align-items:center;justify-content:center;margin-bottom:28px;">
+          <div style="position:absolute;width:120px;height:120px;border-radius:50%;border:2px solid #e6821e;animation:splash-ring 2s ease-out infinite;"></div>
+          <div style="position:absolute;width:120px;height:120px;border-radius:50%;border:2px solid #e6821e;animation:splash-ring 2s ease-out infinite 0.5s;"></div>
+          <!-- Logo container with glow -->
+          <div style="width:88px;height:88px;border-radius:24px;background:linear-gradient(135deg,#e6821e,#d4691a);display:flex;align-items:center;justify-content:center;animation:splash-logo-in 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards, splash-glow 2s ease-in-out infinite;box-shadow:0 8px 32px rgba(230,130,30,0.4);">
+            <img src="/logo.svg" alt="CCC" style="width:56px;height:56px;filter:brightness(0) invert(1);" />
+          </div>
+        </div>
+        <!-- Brand name -->
+        <div style="animation:splash-text-in 0.5s ease forwards 0.3s;opacity:0;text-align:center;margin-bottom:6px;">
+          <div style="font-family:Syne,sans-serif;font-size:26px;font-weight:800;color:#ffffff;letter-spacing:-0.5px;">Car<span style="color:#e6821e;">Care</span> Connect</div>
+        </div>
+        <!-- Tagline -->
+        <div style="animation:splash-text-in 0.5s ease forwards 0.5s;opacity:0;text-align:center;margin-bottom:40px;">
+          <div style="font-size:12px;color:#888;letter-spacing:0.05em;text-transform:uppercase;">Your Car, Our Care, Simplified</div>
+        </div>
+        <!-- Loading dots -->
+        <div style="animation:splash-text-in 0.5s ease forwards 0.7s;opacity:0;display:flex;gap:8px;align-items:center;">
+          <div style="width:8px;height:8px;border-radius:50%;background:#e6821e;animation:splash-dot 1.4s ease-in-out infinite 0s;"></div>
+          <div style="width:8px;height:8px;border-radius:50%;background:#e6821e;animation:splash-dot 1.4s ease-in-out infinite 0.2s;"></div>
+          <div style="width:8px;height:8px;border-radius:50%;background:#e6821e;animation:splash-dot 1.4s ease-in-out infinite 0.4s;"></div>
+        </div>
+        <!-- Nairobi tag -->
+        <div style="animation:splash-text-in 0.5s ease forwards 0.9s;opacity:0;margin-top:20px;">
+          <div style="font-size:11px;color:#444;letter-spacing:0.1em;">📍 NAIROBI, KENYA</div>
+        </div>
+      </div>
+    </div>type html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <link rel="apple-touch-icon" href="/logo.svg" />
+    <title>Car Care Connect — Your Car, Our Care, Simplified</title>
+    <meta name="description" content="Nairobi premier automotive service platform. Book car services, emergency roadside assistance, concierge vehicle delivery, and buy/sell vehicles. Available 24/7." />
+    <meta name="keywords" content="car service Nairobi, mechanic Nairobi, car repair Kenya, roadside assistance Nairobi" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://carcareconnect.care/" />
+    <meta property="og:title" content="Car Care Connect — Your Car, Our Care, Simplified" />
+    <meta property="og:description" content="Nairobi premier automotive service platform. Book car services, emergency roadside assistance, and more." />
+    <meta property="og:image" content="https://carcareconnect.care/logo.svg" />
+    <meta property="og:site_name" content="Car Care Connect" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:image" content="https://carcareconnect.care/logo.svg" />
+    <meta name="theme-color" content="#e6821e" />
+    <style>html,body,#root{background:#ffffff!important;}</style>
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Car Care Connect" />
+    <meta name="geo.region" content="KE-30" />
+    <meta name="geo.placename" content="Nairobi, Kenya" />
+    <style>html,body,#root{background:#ffffff;}</style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+  <body>
+    <script>
+      try {
+        var raw = localStorage.getItem("sb-gcnefnqtjxtqbhynyoxe-auth-token")
+        var session = raw ? JSON.parse(raw) : null
+        var userId = session && session.user ? session.user.id : null
+        var key = userId ? "ccc_theme_" + userId : "ccc_theme_guest"
+        var saved = localStorage.getItem(key)
+        if (!saved || saved === "dark") { localStorage.setItem(key, "light") }
+        document.documentElement.style.background = "#ffffff"
+        document.body.style.background = "#ffffff"
+      } catch(e) {
+        document.documentElement.style.background = "#ffffff"
+        document.body.style.background = "#ffffff"
+      }
+    </script>
+    <div id="root">
       <div id="app-splash" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#ffffff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;font-family:'DM Sans',sans-serif;">
         <div style="display:flex;flex-direction:column;align-items:center;gap:24px;">
           <img src="/logo.svg" alt="Car Care Connect" style="width:100px;height:100px;animation:splash-pulse 1.5s ease-in-out infinite;" />
