@@ -1,6 +1,9 @@
 ﻿import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import React, { useState, useEffect } from "react"
 import { supabase } from "./lib/supabase"
+import MechanicLogin from "./components/mechanic/MechanicLogin"
+import MechanicDashboard from "./components/mechanic/MechanicDashboard"
+import { MechanicAuthProvider } from "./contexts/MechanicAuthContext"
 
 // Global error handler to catch profile undefined
 if (typeof window !== "undefined") {
@@ -271,6 +274,8 @@ function DashboardRouter() {
           <Route path="marketplace/transactions" element={<EscrowManager />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </>}
+            <Route path="/mechanic-login" element={<MechanicLogin/>}/>
+      <Route path="/mechanic-dashboard" element={<MechanicDashboard/>}/>
       </Routes>
     </Layout>
   )
@@ -348,7 +353,8 @@ export default function App() {
     <ThemeProvider>
       <LanguageProvider>
         <AuthProvider>
-          <BrowserRouter>
+          <MechanicAuthProvider>
+      <BrowserRouter>
             <Toaster position="top-right" toastOptions={{ style:{ background:"#ffffff", color:"#000000", border:"1px solid #eeeeee", borderRadius:8, fontSize:13 } }} />
             <Routes>
               <Route path="/auth" element={<AuthPage />} />
@@ -365,6 +371,7 @@ export default function App() {
               <Route path="*" element={<Navigate to="/auth" replace />} />
             </Routes>
           </BrowserRouter>
+      </MechanicAuthProvider>
         </AuthProvider>
       </LanguageProvider>
     </ThemeProvider>

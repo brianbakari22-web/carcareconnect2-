@@ -52,6 +52,17 @@ export default function AdminMechanics() {
     setMechanics(data||[])
   }
 
+  async function adminResetPin(mechanicId, mechanicName) {
+    const newPin = window.prompt("Set new PIN for " + mechanicName + " (4-6 digits):")
+    if (!newPin) return
+    if (!/^\d{4,6}$/.test(newPin)) return alert("PIN must be 4-6 digits")
+    try {
+      await supabase.rpc("set_mechanic_pin", { p_mechanic_id: mechanicId, p_pin: newPin })
+      alert("PIN set! " + mechanicName + " can login at carcareconnect.care/mechanic-login with their phone + " + newPin)
+      load()
+    } catch(e) { alert("Error: " + e.message) }
+  }
+
   async function loadProviders() {
     const { data } = await supabase.from("profiles").select("id,first_name,last_name,business_name,city").eq("role","provider")
     setProviders(data||[])
@@ -203,6 +214,21 @@ export default function AdminMechanics() {
                   {m.phone&&<div style={{ fontSize:11, color:"#888", marginBottom:2 }}>📞 {m.phone}</div>}
                   <div style={{ fontSize:11, color:"#378add" }}>🏪 {getProvider(m.provider_id)}</div>
                   {m.last_location_update&&<div style={{ fontSize:10, color:"#888", marginTop:2 }}>Last seen: {new Date(m.last_location_update).toLocaleString()}</div>}
+                  <div style={{ display:"flex", gap:6, marginTop:6, flexWrap:"wrap" }}>
+                    {m.mechanic_code?(
+                      <span style={{ fontSize:10, background:"#f0fdf4", color:"#1d9e75", padding:"2px 8px", borderRadius:8, fontWeight:700 }}>
+                        ✓ Portal: {m.mechanic_code}
+                      </span>
+                    ):(
+                      <span style={{ fontSize:10, background:"#fff8f0", color:"#e6821e", padding:"2px 8px", borderRadius:8 }}>
+                        No PIN set
+                      </span>
+                    )}
+                    <button onClick={()=>adminResetPin(m.id, m.first_name + " " + m.last_name)}
+                      style={{ fontSize:10, background:"#eff6ff", border:"1px solid #378add30", borderRadius:6, color:"#378add", padding:"2px 8px", cursor:"pointer", fontWeight:700 }}>
+                      🔑 {m.mechanic_code?"Reset PIN":"Set PIN"}
+                    </button>
+                  </div>
                 </div>
                 {m.current_latitude&&(
                   <div style={{ textAlign:"right", flexShrink:0 }}>

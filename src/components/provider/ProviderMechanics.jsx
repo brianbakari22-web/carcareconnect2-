@@ -23,6 +23,8 @@ export default function ProviderMechanics() {
   const [form, setForm] = useState(EMPTY)
   const [saving, setSaving] = useState(false)
   const [trackingMechanic, setTrackingMechanic] = useState(null)
+  const [settingPin, setSettingPin] = useState(null)
+  const [newPin, setNewPin] = useState("")
   const mapRef = useRef(null)
   const mapInstanceRef = useRef(null)
   const markerRef = useRef(null)
@@ -101,6 +103,18 @@ export default function ProviderMechanics() {
       setForm(EMPTY); setShowForm(false); setEditing(null); load()
     } catch(err) { toast.error(err.message) }
     finally { setSaving(false) }
+  }
+
+  async function setPinForMechanic(mechanicId) {
+    if (!newPin || newPin.length < 4) return alert("PIN must be at least 4 digits")
+    if (!/^\d+$/.test(newPin)) return alert("PIN must be numbers only")
+    try {
+      await supabase.rpc("set_mechanic_pin", { p_mechanic_id: mechanicId, p_pin: newPin })
+      alert("PIN set successfully! Mechanic can now login at: carcareconnect.care/mechanic-login")
+      setSettingPin(null)
+      setNewPin("")
+      load()
+    } catch(e) { alert("Error setting PIN: " + e.message) }
   }
 
   async function toggleAvailable(id, is_available) {
@@ -303,6 +317,10 @@ export default function ProviderMechanics() {
                   {m.is_available?"Set on job":"Set available"}
                 </button>
               )}
+              <button onClick={()=>{ setSettingPin(settingPin===m.id?null:m.id); setNewPin("") }}
+                style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                🔑 {m.mechanic_code?"Reset PIN":"Set PIN"}
+              </button>
               <button onClick={()=>toggleActive(m.id, m.is_active)}
                 style={{ background:"none", border:`1px solid ${m.is_active?"#e24b4a20":"#1d9e7520"}`, borderRadius:7, color:m.is_active?"#e24b4a":"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                 {m.is_active?"Deactivate":"Activate"}
@@ -312,6 +330,22 @@ export default function ProviderMechanics() {
                 Remove
               </button>
             </div>
+              {settingPin===m.id&&(
+                <div style={{ marginTop:8, background:"#eff6ff", border:"1px solid #378add30", borderRadius:8, padding:"0.75rem" }}>
+                  <div style={{ fontSize:11, fontWeight:700, color:"#378add", marginBottom:6 }}>🔑 Set Mechanic PIN</div>
+                  <div style={{ fontSize:10, color:"#555", marginBottom:8 }}>Mechanic will use their phone number + this PIN to login at carcareconnect.care/mechanic-login</div>
+                  {m.mechanic_code&&<div style={{ fontSize:10, color:"#1d9e75", marginBottom:6 }}>Current code: {m.mechanic_code}</div>}
+                  <div style={{ display:"flex", gap:6 }}>
+                    <input type="password" value={newPin} onChange={e=>setNewPin(e.target.value.replace(/\D/g,"").slice(0,6))}
+                      placeholder="Enter 4-6 digit PIN" maxLength={6}
+                      style={{ flex:1, background:"#ffffff", border:"1px solid #dddddd", borderRadius:7, padding:"8px 10px", fontSize:14, letterSpacing:4, color:"#000", outline:"none" }}/>
+                    <button onClick={()=>setPinForMechanic(m.id)}
+                      style={{ background:"#378add", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"0 14px", cursor:"pointer" }}>Save</button>
+                    <button onClick={()=>{ setSettingPin(null); setNewPin("") }}
+                      style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#888", fontSize:11, padding:"0 10px", cursor:"pointer" }}>Cancel</button>
+                  </div>
+                </div>
+              )}
           </div>
         </div>
       ))}
