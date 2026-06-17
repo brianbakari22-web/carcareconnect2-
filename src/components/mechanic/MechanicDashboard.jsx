@@ -5,6 +5,7 @@ import { getCurrentPosition } from "../../lib/geolocation"
 import { openExternal } from "../../lib/openExternal"
 import toast from "react-hot-toast"
 import AIAssistant from "../shared/AIAssistant"
+import ChatWindow from "../shared/ChatWindow"
 
 const STATUS_COLOR = {
   pending: "#e6821e",
@@ -36,12 +37,16 @@ export default function MechanicDashboard() {
   const [timerRef, setTimerRef] = useState(null)
   const [earnings, setEarnings] = useState({ today:0, week:0, month:0, total_jobs:0 })
   const [expandedJob, setExpandedJob] = useState(null)
+  const [chatJob, setChatJob] = useState(null)
+  const [showGarageChat, setShowGarageChat] = useState(false)
+  const [perfStats, setPerfStats] = useState({ avg_rating:0, total_ratings:0, avg_response_mins:0, completion_rate:0 })
 
   useEffect(() => {
     if (!mechanic) return
     load()
     loadHistory()
     loadEarnings()
+    loadPerfStats()
     const sub = supabase.channel("mechanic-jobs-" + mechanic.mechanic_id)
       .on("postgres_changes", { event:"*", schema:"public", table:"bookings",
         filter:"assigned_mechanic_id=eq." + mechanic.mechanic_id }, () => load())
@@ -70,6 +75,24 @@ export default function MechanicDashboard() {
       .order("updated_at", { ascending: false })
       .limit(30)
     setHistory(data||[])
+  }
+
+  async function loadPerfStats() {
+    try {
+      const { data } = await supabase.from("bookings")
+        .select("mechanic_rating, mechanic_started_at, created_at, status")
+        .eq("assigned_mechanic_id", mechanic.mechanic_id)
+      if (!data) return
+      const rated = data.filter(b=>b.mechanic_rating>0)
+      const completed = data.filter(b=>b.status==="completed")
+      const avgRating = rated.length ? rated.reduce((s,b)=>s+b.mechanic_rating,0)/rated.length : 0
+      const completionRate = data.length ? (completed.length/data.length)*100 : 0
+      setPerfStats({
+        avg_rating: Math.round(avgRating*10)/10,
+        total_ratings: rated.length,
+        completion_rate: Math.round(completionRate),
+      })
+    } catch(e) { console.warn("Perf stats error:", e.message) }
   }
 
   async function loadEarnings() {
@@ -253,6 +276,7 @@ export default function MechanicDashboard() {
   const TABS = [
     { k:"jobs", l:"Jobs", icon:"🔧" },
     { k:"earnings", l:"Earnings", icon:"💰" },
+    { k:"stats", l:"Stats", icon:"⭐" },
     { k:"history", l:"History", icon:"📋" },
     { k:"sos", l:"SOS", icon:"🆘" },
   ]
@@ -281,6 +305,10 @@ export default function MechanicDashboard() {
             <button onClick={toggleAvailability}
               style={{ background:available?"rgba(255,255,255,0.2)":"rgba(0,0,0,0.3)", border:"1px solid rgba(255,255,255,0.3)", borderRadius:20, color:"#fff", fontSize:11, fontWeight:700, padding:"4px 12px", cursor:"pointer" }}>
               {available?"🟢 Available":"🔴 Unavailable"}
+            </button>
+            <button onClick={()=>setShowGarageChat(!showGarageChat)}
+              style={{ background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.3)", borderRadius:8, color:"#fff", fontSize:10, fontWeight:700, padding:"3px 10px", cursor:"pointer" }}>
+              💬 Garage
             </button>
             <button onClick={()=>{ logoutMechanic(); window.location.href="/" }}
               style={{ background:"none", border:"1px solid rgba(255,255,255,0.2)", borderRadius:8, color:"rgba(255,255,255,0.7)", fontSize:10, padding:"3px 10px", cursor:"pointer" }}>
@@ -429,6 +457,10 @@ export default function MechanicDashboard() {
                             style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:8, color:"#e6821e", fontSize:11, fontWeight:700, padding:"7px 12px", cursor:"pointer" }}>
                             🔩 Parts
                           </button>
+                          <button onClick={()=>setChatJob(chatJob===job.id?null:job.id)}
+                            style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:8, color:"#8b5cf6", fontSize:11, fontWeight:700, padding:"7px 12px", cursor:"pointer" }}>
+                            💬 {chatJob===job.id?"Close chat":"Chat"}
+                          </button>
                           <button onClick={()=>updateJobStatus(job.id,"completed")}
                             style={{ background:"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:800, padding:"7px 14px", cursor:"pointer" }}>
                             ✓ Complete
@@ -469,6 +501,21 @@ export default function MechanicDashboard() {
                             style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#888", fontSize:11, padding:"8px 12px", cursor:"pointer" }}>
                             Cancel
                           </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Chat with customer */}
+                    {chatJob===job.id&&(
+                      <div style={{ marginBottom:12 }}>
+                        <div style={{ fontSize:11, color:"#8b5cf6", fontWeight:700, marginBottom:6 }}>💬 Chat with Customer</div>
+                        <div style={{ height:300, borderRadius:10, overflow:"hidden", border:"1px solid #8b5cf620" }}>
+                          <ChatWindow
+                            bookingId={job.id}
+                            otherUserId={job.customer_id}
+                            otherUserName={(job.profiles?.first_name||"") + " " + (job.profiles?.last_name||"")}
+                            onClose={()=>setChatJob(null)}
+                          />
                         </div>
                       </div>
                     )}
@@ -575,6 +622,52 @@ export default function MechanicDashboard() {
         )}
 
       </div>
+
+        {/* Stats Tab */}
+        {tab==="stats"&&(
+          <div>
+            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000", marginBottom:"1rem" }}>⭐ Performance</div>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:"1rem" }}>
+              {[
+                { label:"Avg Rating", value:perfStats.avg_rating>0?perfStats.avg_rating.toFixed(1)+" ⭐":"No ratings", color:"#e6821e", bg:"#fff8f0" },
+                { label:"Total Ratings", value:perfStats.total_ratings, color:"#378add", bg:"#eff6ff" },
+                { label:"Completion Rate", value:perfStats.completion_rate+"%", color:"#1d9e75", bg:"#f0fdf4" },
+                { label:"Total Jobs", value:earnings.total_jobs, color:"#8b5cf6", bg:"#faf5ff" },
+              ].map(s=>(
+                <div key={s.label} style={{ background:s.bg, border:"1px solid "+s.color+"20", borderRadius:12, padding:"1rem", textAlign:"center" }}>
+                  <div style={{ fontSize:10, color:"#888", marginBottom:4, textTransform:"uppercase", letterSpacing:"0.05em" }}>{s.label}</div>
+                  <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:s.color }}>{s.value}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ background:"#f8f8f8", borderRadius:10, padding:"1rem", fontSize:12, color:"#555", lineHeight:1.7 }}>
+              <div style={{ fontWeight:700, color:"#000", marginBottom:4 }}>💡 How ratings work</div>
+              Customers rate you after each completed job. Your rating is visible to garage managers and helps determine future job assignments.
+            </div>
+          </div>
+        )}
+
+      
+
+    
+
+    {/* Garage chat overlay */}
+      {showGarageChat&&(
+        <div style={{ position:"fixed", bottom:80, right:16, left:16, height:400, background:"#fff", borderRadius:16, boxShadow:"0 8px 40px rgba(0,0,0,0.2)", zIndex:200, overflow:"hidden", display:"flex", flexDirection:"column" }}>
+          <div style={{ background:"#1d9e75", padding:"0.75rem 1rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+            <div style={{ fontSize:13, fontWeight:700, color:"#fff" }}>💬 Chat with Garage Manager</div>
+            <button onClick={()=>setShowGarageChat(false)} style={{ background:"none", border:"none", color:"#fff", fontSize:18, cursor:"pointer" }}>&#215;</button>
+          </div>
+          <div style={{ flex:1, overflow:"hidden" }}>
+            <ChatWindow
+              bookingId={null}
+              otherUserId={mechanic?.provider_id}
+              otherUserName={mechanic?.business_name||"Garage Manager"}
+              onClose={()=>setShowGarageChat(false)}
+            />
+          </div>
+        </div>
+      )}
 
       <AIAssistant role="mechanic" color="#1d9e75"/>
     </div>
