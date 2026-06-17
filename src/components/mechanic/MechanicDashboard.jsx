@@ -303,7 +303,7 @@ export default function MechanicDashboard() {
       try {
         const ext = file.name.split(".").pop()
         const path = "job-photos/" + mechanic.mechanic_id + "/" + jobId + "-" + type + "-" + Date.now() + "." + ext
-        const { error } = await supabase.storage.from("marketplace").upload(path, file, { upsert:true })
+        const { error } = await supabase.storage.from("provider-photos").upload(path, file, { upsert:true, contentType: file.type })
         if (error) throw error
         const { data } = supabase.storage.from("provider-photos").getPublicUrl(path)
         await supabase.from("bookings").update({
