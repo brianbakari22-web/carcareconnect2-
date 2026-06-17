@@ -849,7 +849,7 @@ const QUICK = {
   admin: ["Commission structure?", "Service Guarantee policy?", "Driver verification process?", "Scan for code errors"]
 }
 
-export default function AIAssistant({ bottomOffset = 88 }) {
+export default function AIAssistant({ bottomOffset = 88, forcedRole = null }) {
   const { profile } = useAuth()
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState([])
@@ -859,7 +859,7 @@ export default function AIAssistant({ bottomOffset = 88 }) {
   const bottomRef = useRef(null)
   const inputRef = useRef(null)
 
-  const role = profile?.role || "customer"
+  const role = forcedRole || profile?.role || "customer"
   const color = ROLE_COLORS[role] || "#e6821e"
 
   useEffect(() => {

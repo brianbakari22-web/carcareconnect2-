@@ -117,7 +117,8 @@ export default function MechanicDashboard() {
       try {
         const ext = file.name.split(".").pop()
         const path = "mechanic-docs/" + mechanic.mechanic_id + "/" + docType + "-" + Date.now() + "." + ext
-        const { error } = await supabase.storage.from("marketplace").upload(path, file, { upsert:true })
+        // Try upload with public bucket
+        const { error } = await supabase.storage.from("provider-photos").upload(path, file, { upsert:true, contentType: file.type })
         if (error) throw error
         const { data } = supabase.storage.from("marketplace").getPublicUrl(path)
         // Upsert document record
@@ -304,7 +305,7 @@ export default function MechanicDashboard() {
         const path = "job-photos/" + mechanic.mechanic_id + "/" + jobId + "-" + type + "-" + Date.now() + "." + ext
         const { error } = await supabase.storage.from("marketplace").upload(path, file, { upsert:true })
         if (error) throw error
-        const { data } = supabase.storage.from("marketplace").getPublicUrl(path)
+        const { data } = supabase.storage.from("provider-photos").getPublicUrl(path)
         await supabase.from("bookings").update({
           [type === "before" ? "pickup_photo_url" : "dropoff_photo_url"]: data.publicUrl
         }).eq("id", jobId)
@@ -578,6 +579,7 @@ export default function MechanicDashboard() {
                           <ChatWindow
                             bookingId={job.id}
                             otherUserId={job.customer_id}
+                            overrideUserId={mechanic.mechanic_id}
                             otherUserName={(job.profiles?.first_name||"") + " " + (job.profiles?.last_name||"")}
                             onClose={()=>setChatJob(null)}
                           />
@@ -919,6 +921,7 @@ export default function MechanicDashboard() {
             <ChatWindow
               bookingId={null}
               otherUserId={mechanic?.provider_id}
+              overrideUserId={mechanic?.mechanic_id}
               otherUserName={mechanic?.business_name||"Garage Manager"}
               onClose={()=>setShowGarageChat(false)}
             />
@@ -926,7 +929,7 @@ export default function MechanicDashboard() {
         </div>
       )}
 
-      <AIAssistant role="mechanic" color="#1d9e75" bottomOffset={70}/>
+      <AIAssistant forcedRole="mechanic" bottomOffset={140}/>
     </div>
   )
 }

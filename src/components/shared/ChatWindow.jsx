@@ -3,8 +3,9 @@ import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 
-export default function ChatWindow({ bookingId, listingId, claimId, otherUserId, otherUserName, onClose, title }) {
+export default function ChatWindow({ bookingId, listingId, claimId, otherUserId, otherUserName, overrideUserId, onClose, title }) {
   const { user } = useAuth()
+  const effectiveUserId = overrideUserId || user?.id
   const { t } = useLanguage()
   const [messages, setMessages] = useState([])
   const [text, setText] = useState("")
@@ -38,10 +39,10 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
           if (exists) return prev.map(m => m._tempId===payload.new.id ? {...payload.new} : m)
           return [...prev, payload.new]
         })
-        if (payload.new.sender_id !== user.id) markRead()
+        if (payload.new.sender_id !== effectiveUserId) markRead()
       })
       .on("broadcast", { event:"typing" }, payload => {
-        if (payload.payload?.userId !== user.id) {
+        if (payload.payload?.userId !== effectiveUserId) {
           setOtherTyping(true)
           clearTimeout(typingRef.current)
           typingRef.current = setTimeout(() => setOtherTyping(false), 2000)
@@ -70,7 +71,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
   }
 
   async function markRead() {
-    let query = supabase.from("chat_messages").update({ is_read:true }).eq("receiver_id", user.id).eq("is_read", false)
+    let query = supabase.from("chat_messages").update({ is_read:true }).eq("receiver_id", effectiveUserId).eq("is_read", false)
     if (bookingId) query = query.eq("booking_id", bookingId)
     else if (listingId) query = query.eq("listing_id", listingId)
     else if (claimId) query = query.eq("claim_id", claimId)
@@ -79,7 +80,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
 
   async function broadcastTyping() {
     if (!channelRef.current) return
-    channelRef.current.send({ type:"broadcast", event:"typing", payload:{ userId:user.id } }).catch(()=>{})
+    channelRef.current.send({ type:"broadcast", event:"typing", payload:{ userId:effectiveUserId } }).catch(()=>{})
   }
 
   async function send(e) {
@@ -95,7 +96,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
       booking_id: bookingId||null,
       listing_id: listingId||null,
       claim_id: claimId||null,
-      sender_id: user.id,
+      sender_id: effectiveUserId,
       receiver_id: otherUserId,
       message: messageText,
       is_read: false,
@@ -108,7 +109,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
       booking_id: bookingId||null,
       listing_id: listingId||null,
       claim_id: claimId||null,
-      sender_id: user.id,
+      sender_id: effectiveUserId,
       receiver_id: otherUserId,
       message: messageText,
     })
@@ -136,13 +137,13 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
   }
 
   async function deleteMessage(id) {
-    await supabase.from("chat_messages").delete().eq("id", id).eq("sender_id", user.id)
+    await supabase.from("chat_messages").delete().eq("id", id).eq("sender_id", effectiveUserId)
     setMessages(prev => prev.filter(m => m.id!==id))
   }
 
   async function deleteMessage(id) {
     if (!confirm("Delete this message?")) return
-    await supabase.from("chat_messages").delete().eq("id", id).eq("sender_id", user.id)
+    await supabase.from("chat_messages").delete().eq("id", id).eq("sender_id", effectiveUserId)
     setMessages(prev => prev.filter(m => m.id!==id))
   }
 
@@ -178,7 +179,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
           </div>
         )}
         {messages.map(m=>{
-          const isMine = m.sender_id===user.id
+          const isMine = m.sender_id===effectiveUserId
           return (
             <div key={m.id} style={{ display:"flex", justifyContent:isMine?"flex-end":"flex-start", alignItems:"flex-end", gap:4 }}>
               {isMine&&!m._pending&&(
