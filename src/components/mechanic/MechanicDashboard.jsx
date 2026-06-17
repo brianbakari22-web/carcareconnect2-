@@ -4,6 +4,7 @@ import { supabase } from "../../lib/supabase"
 import { getCurrentPosition } from "../../lib/geolocation"
 import { openExternal } from "../../lib/openExternal"
 import toast from "react-hot-toast"
+import AIAssistant from "../shared/AIAssistant"
 
 export default function MechanicDashboard() {
   const { mechanic, logoutMechanic } = useMechanicAuth()
@@ -17,11 +18,20 @@ export default function MechanicDashboard() {
   const [history, setHistory] = useState([])
   const [uploadingPhoto, setUploadingPhoto] = useState(null)
   const [sosLoading, setSosLoading] = useState(false)
+  const [jobNotes, setJobNotes] = useState({})
+  const [savingNotes, setSavingNotes] = useState(null)
+  const [partsRequest, setPartsRequest] = useState(null)
+  const [partForm, setPartForm] = useState({ part_name:"", quantity:1, urgency:"normal", notes:"" })
+  const [jobTimers, setJobTimers] = useState({})
+  const [timerInterval, setTimerInterval] = useState(null)
+  const [chatJob, setChatJob] = useState(null)
+  const [earnings, setEarnings] = useState({ today:0, week:0, month:0, total_jobs:0 })
 
   useEffect(() => {
     if (mechanic) {
       load()
       loadHistory()
+      loadEarnings()
       const sub = supabase.channel("mechanic-jobs-" + mechanic.mechanic_id)
         .on("postgres_changes", { event:"*", schema:"public", table:"bookings",
           filter:"assigned_mechanic_id=eq." + mechanic.mechanic_id }, () => load())
@@ -82,6 +92,81 @@ export default function MechanicDashboard() {
     finally { setSosLoading(false) }
   }
 
+  async function saveJobNotes(jobId) {
+    setSavingNotes(jobId)
+    try {
+      await supabase.from("bookings").update({ mechanic_notes: jobNotes[jobId] }).eq("id", jobId)
+      toast.success("Notes saved!")
+    } catch(e) { toast.error("Failed to save notes") }
+    finally { setSavingNotes(null) }
+  }
+
+  async function submitPartsRequest(job) {
+    if (!partForm.part_name.trim()) return toast.error("Enter part name")
+    try {
+      await supabase.from("mechanic_parts_requests").insert({
+        booking_id: job.id,
+        mechanic_id: mechanic.mechanic_id,
+        provider_id: mechanic.provider_id,
+        part_name: partForm.part_name,
+        quantity: partForm.quantity,
+        urgency: partForm.urgency,
+        notes: partForm.notes
+      })
+      // Notify garage owner
+      await supabase.from("notifications").insert({
+        user_id: mechanic.provider_id,
+        title: "Parts request from mechanic",
+        message: mechanic.mechanic_name + " needs " + partForm.quantity + "x " + partForm.part_name + " for booking #" + job.id.slice(0,8) + " (Urgency: " + partForm.urgency + ")",
+        type: "info"
+      })
+      toast.success("Parts request sent to garage!")
+      setPartsRequest(null)
+      setPartForm({ part_name:"", quantity:1, urgency:"normal", notes:"" })
+    } catch(e) { toast.error("Failed: " + e.message) }
+  }
+
+  async function loadEarnings() {
+    const now = new Date()
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString()
+    const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()-7).toISOString()
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+    const { data } = await supabase.from("bookings")
+      .select("provider_earnings, created_at, status")
+      .eq("assigned_mechanic_id", mechanic.mechanic_id)
+      .eq("status", "completed")
+    if (data) {
+      const all = data
+      const today = all.filter(b => b.created_at >= todayStart)
+      const week = all.filter(b => b.created_at >= weekStart)
+      const month = all.filter(b => b.created_at >= monthStart)
+      // Mechanic gets 15% of provider earnings if commission-based
+      setEarnings({
+        today: today.reduce((s,b) => s + Number(b.provider_earnings||0)*0.15, 0),
+        week: week.reduce((s,b) => s + Number(b.provider_earnings||0)*0.15, 0),
+        month: month.reduce((s,b) => s + Number(b.provider_earnings||0)*0.15, 0),
+        total_jobs: all.length
+      })
+    }
+  }
+
+  function startJobTimer(jobId, startedAt) {
+    const interval = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - new Date(startedAt).getTime()) / 1000)
+      setJobTimers(prev => ({ ...prev, [jobId]: elapsed }))
+    }, 1000)
+    setTimerInterval(interval)
+  }
+
+  function formatTimer(seconds) {
+    if (!seconds) return "00:00"
+    const h = Math.floor(seconds/3600)
+    const m = Math.floor((seconds%3600)/60)
+    const s = seconds%60
+    if (h > 0) return h + "h " + String(m).padStart(2,"0") + "m"
+    return String(m).padStart(2,"0") + ":" + String(s).padStart(2,"0")
+  }
+
   async function load() {
     setLoading(true)
     const { data } = await supabase.from("bookings")
@@ -101,12 +186,18 @@ export default function MechanicDashboard() {
     toast.success("Job status updated to " + status)
     load()
     if (status === "in_progress") {
+      const startedAt = new Date().toISOString()
+      await supabase.from("bookings").update({ mechanic_started_at: startedAt }).eq("id", jobId)
       setActiveJob(jobs.find(j=>j.id===jobId))
       startSharing()
+      startJobTimer(jobId, startedAt)
     }
     if (status === "completed") {
+      await supabase.from("bookings").update({ mechanic_completed_at: new Date().toISOString() }).eq("id", jobId)
       setActiveJob(null)
       stopSharing()
+      if (timerInterval) { clearInterval(timerInterval); setTimerInterval(null) }
+      loadEarnings()
     }
   }
 
@@ -215,13 +306,37 @@ export default function MechanicDashboard() {
 
       {/* Tabs */}
       <div style={{ display:"flex", gap:0, background:"#ffffff", borderBottom:"1px solid #eeeeee" }}>
-        {[{k:"jobs",l:"My Jobs"},{k:"history",l:"History"},{k:"sos",l:"🆘 SOS"}].map(t=>(
+        {[{k:"jobs",l:"My Jobs"},{k:"earnings",l:"💰 Earnings"},{k:"history",l:"History"},{k:"sos",l:"🆘 SOS"}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
             style={{ flex:1, background:"none", border:"none", borderBottom:tab===t.k?"2px solid #1d9e75":"2px solid transparent", color:tab===t.k?"#1d9e75":"#888", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer" }}>
             {t.l}
           </button>
         ))}
       </div>
+
+      {/* Earnings Tab */}
+      {tab==="earnings"&&(
+        <div style={{ padding:"1rem" }}>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:"1rem" }}>
+            {[
+              { label:"Today", value:earnings.today, color:"#1d9e75" },
+              { label:"This week", value:earnings.week, color:"#378add" },
+              { label:"This month", value:earnings.month, color:"#8b5cf6" },
+              { label:"Total jobs", value:earnings.total_jobs, color:"#e6821e", isCount:true },
+            ].map(stat=>(
+              <div key={stat.label} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem", textAlign:"center" }}>
+                <div style={{ fontSize:11, color:"#888", marginBottom:4 }}>{stat.label}</div>
+                <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:stat.color }}>
+                  {stat.isCount ? stat.value : "KES " + Math.round(stat.value).toLocaleString()}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:10, padding:"1rem", fontSize:12, color:"#555" }}>
+            💡 Earnings shown are estimated (15% of completed job value). Actual payout depends on your agreement with your garage manager.
+          </div>
+        </div>
+      )}
 
       {/* SOS Tab */}
       {tab==="sos"&&(
@@ -245,6 +360,64 @@ export default function MechanicDashboard() {
           </div>
         </div>
       )}
+
+      {/* Jobs list extras - notes, timer, parts */}
+      {tab==="jobs"&&jobs.map(job=>(
+        <div key={job.id+"extras"} style={{ marginTop:-2, padding:"0 1rem 1rem" }}>
+          {/* Job timer */}
+          {job.status==="in_progress"&&jobTimers[job.id]&&(
+            <div style={{ background:"#f5f3ff", borderRadius:8, padding:"8px 12px", display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
+              <span>⏱️</span>
+              <span style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#8b5cf6" }}>{formatTimer(jobTimers[job.id])}</span>
+              <span style={{ fontSize:11, color:"#888" }}>on this job</span>
+            </div>
+          )}
+          {/* Job notes */}
+          <textarea value={jobNotes[job.id]||job.mechanic_notes||""}
+            onChange={e=>setJobNotes(prev=>({...prev,[job.id]:e.target.value}))}
+            placeholder="Add notes about this job..." rows={2}
+            style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:8, padding:"8px 10px", fontSize:11, color:"#000", outline:"none", resize:"none", boxSizing:"border-box" }}/>
+          <button onClick={()=>saveJobNotes(job.id)} disabled={savingNotes===job.id}
+            style={{ marginTop:4, background:savingNotes===job.id?"#555":"#378add", border:"none", borderRadius:6, color:"#fff", fontSize:10, fontWeight:700, padding:"4px 12px", cursor:"pointer" }}>
+            {savingNotes===job.id?"Saving...":"💾 Save notes"}
+          </button>
+          {/* Parts request */}
+          {partsRequest===job.id&&(
+            <div style={{ marginTop:8, background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:8, padding:"0.75rem" }}>
+              <div style={{ fontSize:12, fontWeight:700, color:"#e6821e", marginBottom:8 }}>🔩 Request Parts</div>
+              <input value={partForm.part_name} onChange={e=>setPartForm(f=>({...f,part_name:e.target.value}))}
+                placeholder="Part name (e.g. Oil filter, Brake pad)"
+                style={{ width:"100%", background:"#fff", border:"1px solid #eeeeee", borderRadius:6, padding:"7px 10px", fontSize:12, color:"#000", outline:"none", marginBottom:6, boxSizing:"border-box" }}/>
+              <div style={{ display:"flex", gap:6, marginBottom:6 }}>
+                <div style={{ flex:1 }}>
+                  <div style={{ fontSize:10, color:"#888", marginBottom:2 }}>Qty</div>
+                  <input type="number" min="1" value={partForm.quantity} onChange={e=>setPartForm(f=>({...f,quantity:Number(e.target.value)}))}
+                    style={{ width:"100%", background:"#fff", border:"1px solid #eeeeee", borderRadius:6, padding:"7px 10px", fontSize:12, color:"#000", outline:"none", boxSizing:"border-box" }}/>
+                </div>
+                <div style={{ flex:1 }}>
+                  <div style={{ fontSize:10, color:"#888", marginBottom:2 }}>Urgency</div>
+                  <select value={partForm.urgency} onChange={e=>setPartForm(f=>({...f,urgency:e.target.value}))}
+                    style={{ width:"100%", background:"#fff", border:"1px solid #eeeeee", borderRadius:6, padding:"7px 10px", fontSize:12, color:"#000", outline:"none", boxSizing:"border-box" }}>
+                    <option value="normal">Normal</option>
+                    <option value="urgent">Urgent</option>
+                    <option value="critical">Critical</option>
+                  </select>
+                </div>
+              </div>
+              <div style={{ display:"flex", gap:6 }}>
+                <button onClick={()=>submitPartsRequest(job)}
+                  style={{ flex:1, background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"8px", cursor:"pointer" }}>
+                  📤 Send Request
+                </button>
+                <button onClick={()=>setPartsRequest(null)}
+                  style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#888", fontSize:11, padding:"8px 12px", cursor:"pointer" }}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
 
       {/* History Tab */}
       {tab==="history"&&(
@@ -323,12 +496,18 @@ export default function MechanicDashboard() {
                     style={{ background:"#1d9e75", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>
                     ✓ Complete
                   </button>
+                  <button onClick={()=>setPartsRequest(partsRequest===job.id?null:job.id)}
+                    style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>
+                    🔩 Parts
+                  </button>
                 </>
               )}
             </div>
           </div>
         ))}
       </div>
+      {/* AI Assistant */}
+      <AIAssistant role="mechanic" color="#1d9e75"/>
     </div>
   )
 }

@@ -24,6 +24,7 @@ export default function ProviderBookings() {
   const [mechanics, setMechanics] = useState([])
   const [filter, setFilter] = useState("all")
   const [loading, setLoading] = useState(true)
+  const [partsRequests, setPartsRequests] = useState([])
   const [expanded, setExpanded] = useState(null)
   const [assigningMechanic, setAssigningMechanic] = useState(null)
   const [showReport, setShowReport] = useState(null)
@@ -35,11 +36,27 @@ export default function ProviderBookings() {
   useEffect(() => {
     if (!user) return
     load()
+    loadPartsRequests()
     const sub = supabase.channel("provider-bookings-live")
       .on("postgres_changes", { event:"*", schema:"public", table:"bookings", filter:`provider_id=eq.${user.id}` }, () => { load(); toast("Booking updated", { icon:"📋" }) })
       .subscribe()
     return () => supabase.removeChannel(sub)
   }, [user])
+
+  async function loadPartsRequests() {
+    const { data } = await supabase.from("mechanic_parts_requests")
+      .select("*, mechanics(first_name,last_name,specialization), bookings(id,service_name,booking_date)")
+      .eq("provider_id", user.id)
+      .eq("status", "pending")
+      .order("created_at", { ascending: false })
+    setPartsRequests(data||[])
+  }
+
+  async function updatePartsStatus(id, status) {
+    await supabase.from("mechanic_parts_requests").update({ status }).eq("id", id)
+    loadPartsRequests()
+    toast.success("Parts request " + status)
+  }
 
   async function load() {
     const [{ data: bks }, { data: mechs }] = await Promise.all([
@@ -171,6 +188,41 @@ export default function ProviderBookings() {
           </button>
         ))}
       </div>
+
+      {/* Parts requests banner */}
+      {partsRequests.length>0&&(
+        <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.75rem", marginBottom:"1rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e", marginBottom:8 }}>🔩 Mechanic Parts Requests ({partsRequests.length})</div>
+          {partsRequests.map(pr=>(
+            <div key={pr.id} style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", marginBottom:6, border:"1px solid #eeeeee" }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:4 }}>
+                <div>
+                  <div style={{ fontSize:13, fontWeight:700, color:"#000" }}>{pr.quantity}x {pr.part_name}</div>
+                  <div style={{ fontSize:11, color:"#555" }}>From: {pr.mechanics?.first_name} {pr.mechanics?.last_name}</div>
+                  <div style={{ fontSize:11, color:"#888" }}>Booking: #{pr.booking_id?.slice(0,8)}</div>
+                  {pr.notes&&<div style={{ fontSize:11, color:"#666", marginTop:2 }}>Note: {pr.notes}</div>}
+                </div>
+                <span style={{ fontSize:10, padding:"2px 8px", borderRadius:8, fontWeight:700,
+                  background:pr.urgency==="critical"?"#fff5f5":pr.urgency==="urgent"?"#fff8f0":"#f8f8f8",
+                  color:pr.urgency==="critical"?"#e24b4a":pr.urgency==="urgent"?"#e6821e":"#888" }}>
+                  {pr.urgency}
+                </span>
+              </div>
+              <div style={{ display:"flex", gap:6 }}>
+                <button onClick={()=>updatePartsStatus(pr.id,"approved")}
+                  style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:6, color:"#1d9e75", fontSize:10, fontWeight:700, padding:"4px 10px", cursor:"pointer" }}>
+                  ✓ Approve
+                </button>
+                <button onClick={()=>updatePartsStatus(pr.id,"rejected")}
+                  style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:6, color:"#e24b4a", fontSize:10, fontWeight:700, padding:"4px 10px", cursor:"pointer" }}>
+                  ✗ Reject
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
 
       {loading&&<div style={{ color:"#777777", fontSize:13 }}>{t("loading")}</div>}
       {!loading&&filtered.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>No bookings found</div>}

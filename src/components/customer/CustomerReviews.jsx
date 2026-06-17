@@ -12,7 +12,7 @@ export default function CustomerReviews() {
   const [tab, setTab] = useState("pending")
   const [loading, setLoading] = useState(true)
   const [reviewing, setReviewing] = useState(null)
-  const [form, setForm] = useState({ provider_rating:0, provider_review:"", driver_rating:0, driver_review:"" })
+  const [form, setForm] = useState({ provider_rating:0, provider_review:"", driver_rating:0, driver_review:"", mechanic_rating:0, mechanic_review:"" })
   const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => { if (user) load() }, [user])
@@ -38,6 +38,7 @@ export default function CustomerReviews() {
       const { error } = await supabase.from("reviews").insert({
         booking_id:reviewing.id, customer_id:user.id, provider_id:reviewing.provider_id,
         driver_id:reviewing.driver_id||null, provider_rating:form.provider_rating,
+        mechanic_rating:reviewing.assigned_mechanic_id?form.mechanic_rating||null:null,
         provider_review:form.provider_review||null,
         driver_rating:reviewing.is_concierge&&form.driver_rating>0?form.driver_rating:null,
         driver_review:reviewing.is_concierge&&form.driver_review?form.driver_review:null,
@@ -59,7 +60,26 @@ export default function CustomerReviews() {
       setForm({ provider_rating:0, provider_review:"", driver_rating:0, driver_review:"" })
       load()
     } catch(err) { toast.error(err.message) }
-    finally { setSubmitting(false) }
+    finally { // Save mechanic rating to booking
+      if (reviewing.assigned_mechanic_id && form.mechanic_rating > 0) {
+        await supabase.from("bookings").update({
+          mechanic_rating: form.mechanic_rating,
+          mechanic_rating_comment: form.mechanic_review
+        }).eq("id", reviewing.id)
+        // Update mechanic average rating
+        const { data: mechRatings } = await supabase.from("bookings")
+          .select("mechanic_rating")
+          .eq("assigned_mechanic_id", reviewing.assigned_mechanic_id)
+          .not("mechanic_rating", "is", null)
+        if (mechRatings?.length) {
+          const avg = mechRatings.reduce((s,r)=>s+r.mechanic_rating,0)/mechRatings.length
+          await supabase.from("mechanics").update({ 
+            rating: Math.round(avg*10)/10,
+            total_reviews: mechRatings.length
+          }).eq("id", reviewing.assigned_mechanic_id)
+        }
+      }
+      setSubmitting(false) }
   }
 
   function StarRating({ value, onChange, label }) {
@@ -134,6 +154,18 @@ export default function CustomerReviews() {
                 <>
                   <div style={{ height:1, background:"#f0f0f0", margin:"1rem 0" }}/>
                   <StarRating value={form.driver_rating} onChange={v=>setForm(f=>({...f,driver_rating:v}))} label={t("language")==="sw"?"Kadiria dereva (hiari)":"Rate the driver (optional)"}/>
+                </>
+              )}
+              {/* Mechanic rating - shown if mechanic was assigned */}
+              {reviewing.assigned_mechanic_id&&(
+                <>
+                  <hr style={{ border:"none", borderTop:"1px solid #f0f0f0", margin:"1rem 0" }}/>
+                  <StarRating value={form.mechanic_rating} onChange={v=>setForm(f=>({...f,mechanic_rating:v}))} label="Rate the mechanic (optional)"/>
+                  {form.mechanic_rating>0&&(
+                    <textarea value={form.mechanic_review} onChange={e=>setForm(f=>({...f,mechanic_review:e.target.value}))}
+                      placeholder="Comment about the mechanic's work..."
+                      rows={2} style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:8, padding:"10px 12px", fontSize:12, color:"#000", outline:"none", resize:"none", marginTop:8, boxSizing:"border-box" }}/>
+                  )}
                 </>
               )}
               <button type="submit" disabled={submitting||form.provider_rating===0}
