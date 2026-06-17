@@ -128,6 +128,13 @@ export default function MyOffers() {
           {o.status==="accepted"&&o.marketplace_listings?.status!=="sold"&&(
             <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:8, padding:"0.75rem" }}>
               <div style={{ fontSize:12, color:"#1d9e75", fontWeight:600, marginBottom:6 }}>✓ Offer accepted — proceed to payment</div>
+              {/* Buyer protection notice */}
+              <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:8, padding:"10px 12px", marginBottom:8 }}>
+                <div style={{ fontSize:11, fontWeight:700, color:"#1d9e75", marginBottom:4 }}>🛡️ Buyer Protection</div>
+                <div style={{ fontSize:10, color:"#555", lineHeight:1.5 }}>
+                  Your payment is held securely in escrow by CCC. Funds are only released to the seller after you confirm receipt of the item in good condition. You have 7 days to raise a dispute.
+                </div>
+              </div>
               <button onClick={()=>setPayingOffer(payingOffer===o.id?null:o.id)}
                 style={{ background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>
                 💳 Pay now

@@ -154,6 +154,18 @@ export default function EscrowManager() {
                   🔒 Funds in escrow{days!==null?` · ${days} days left to confirm or dispute`:""}
                 </div>
                 {tab==="buying"&&(
+                  <div>
+                    {!tx.buyer_confirmed&&(
+                      <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:8, padding:"10px 12px", marginBottom:10 }}>
+                        <div style={{ fontSize:11, fontWeight:700, color:"#e6821e", marginBottom:4 }}>📍 Arrange Handover</div>
+                        <div style={{ fontSize:10, color:"#555", lineHeight:1.6 }}>
+                          1. Contact seller via CCC chat to arrange meeting<br/>
+                          2. Meet in a safe public location (petrol station, mall, police station)<br/>
+                          3. Inspect item carefully before confirming receipt<br/>
+                          4. Only confirm receipt once satisfied — this releases payment to seller
+                        </div>
+                      </div>
+                    )}
                   <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
                     <button onClick={()=>confirmReceipt(tx.id)}
                       style={{ background:"#1d9e75", border:"none", borderRadius:7, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"6px 14px", cursor:"pointer" }}>
@@ -165,6 +177,7 @@ export default function EscrowManager() {
                         ⚠️ Raise dispute
                       </button>
                     )}
+                  </div>
                   </div>
                 )}
                 {tab==="selling"&&(
