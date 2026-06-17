@@ -469,7 +469,7 @@ export default function AuthPage() {
             </div>
             <button
               onClick={e=>{ e.stopPropagation(); if(r.isSpecial){window.location.href=r.specialUrl}else{setSelectedRole(r.key); setStep("auth")} }}
-              style={{ width:"100%", background:selectedRole===r.key?r.color:"#f0f0f0", border:"none", color:selectedRole===r.key?"#fff":"#555", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:8, transition:"all 0.2s" }}>
+              style={{ width:"100%", background:selectedRole===r.key||r.isSpecial?r.color:"#f0f0f0", border:"none", color:selectedRole===r.key||r.isSpecial?"#fff":"#555", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:8, transition:"all 0.2s" }}>
               Continue as {r.label} →
             </button>
           </div>
