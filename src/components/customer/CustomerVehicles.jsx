@@ -9,6 +9,7 @@ export default function CustomerVehicles() {
   const { user } = useAuth()
   const [vehicles, setVehicles] = useState([])
   const [form, setForm] = useState({make:"",model:"",year:"",color:"",license_plate:"",photo_url:"",current_mileage:"",last_service_date:"",last_oil_change_date:""})
+  const [uploadingPhoto, setUploadingPhoto] = useState(false)
   const [editing, setEditing] = useState(null)
   const [loading, setLoading] = useState(true)
 
@@ -120,17 +121,29 @@ export default function CustomerVehicles() {
           <label style={lbl}>Vehicle photo (optional)</label>
           <div style={{ marginBottom:10 }}>
             {form.photo_url&&<img src={form.photo_url} alt="Vehicle" style={{ width:"100%", maxHeight:150, objectFit:"cover", borderRadius:8, marginBottom:8 }}/>}
-            <input type="file" accept="image/*" onChange={async(e)=>{
-              const file = e.target.files[0]
-              if (!file) return
-              const ext = file.name.split(".").pop()
-              const path = `${user.id}/vehicle-${Date.now()}.${ext}`
-              const { error } = await supabase.storage.from("provider-photos").upload(path, file, { upsert:true })
-              if (error) return toast.error(error.message)
-              const { data } = supabase.storage.from("provider-photos").getPublicUrl(path)
-              setForm(f=>({...f, photo_url:data.publicUrl}))
-              toast.success("Photo ready!")
-            }} style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"8px", color:"#555555", fontSize:12, marginBottom:8 }}/>
+            <label style={{ display:"block", width:"100%", background:uploadingPhoto?"#f5f5f5":"#ffffff", border:"2px dashed #e5e5e5", borderRadius:8, padding:"12px", color:"#555555", fontSize:12, marginBottom:8, cursor:"pointer", textAlign:"center" }}>
+              {uploadingPhoto ? "⏳ Uploading..." : form.photo_url ? "📷 Tap to change photo" : "📷 Tap to upload vehicle photo"}
+              <input type="file" accept="image/*" style={{ display:"none" }} onChange={async(e)=>{
+                const file = e.target.files[0]
+                if (!file) return
+                if (file.size > 5*1024*1024) return toast.error("Photo must be under 5MB")
+                if (!file.type.startsWith("image/")) return toast.error("Please select an image file")
+                setUploadingPhoto(true)
+                try {
+                  const ext = file.name.split(".").pop()
+                  const path = `vehicles/${user.id}/vehicle-${Date.now()}.${ext}`
+                  const { error } = await supabase.storage.from("marketplace").upload(path, file, { upsert:true })
+                  if (error) throw error
+                  const { data } = supabase.storage.from("marketplace").getPublicUrl(path)
+                  setForm(f=>({...f, photo_url:data.publicUrl}))
+                  toast.success("Photo uploaded!")
+                } catch(err) {
+                  toast.error("Upload failed: " + err.message)
+                } finally {
+                  setUploadingPhoto(false)
+                }
+              }}/>
+            </label>
           </div>
           <div style={{display:"flex",gap:8}}>
             <button type="submit" style={{background:"#e6821e",border:"none",borderRadius:8,color:"#fff",fontFamily:"Syne,sans-serif",fontSize:13,fontWeight:700,padding:"10px 20px",cursor:"pointer"}}>{editing?"Update vehicle":"Add vehicle"}</button>
