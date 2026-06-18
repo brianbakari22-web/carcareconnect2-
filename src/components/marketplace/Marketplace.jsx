@@ -498,7 +498,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
               ))}
             </div>
           )}
-          {selected.video_url&&selected.video_status==="approved"&&(
+          {selected?.video_url&&selected?.video_status==="approved"&&(
             <div style={{ marginTop:10 }}>
               <div style={{ fontSize:12, fontWeight:700, color:"#555", marginBottom:6 }}>🎥 Video</div>
               <video src={selected.video_url} controls style={{ width:"100%", borderRadius:8, maxHeight:250 }}/>
