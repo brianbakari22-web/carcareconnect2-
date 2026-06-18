@@ -398,7 +398,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
                 <textarea id="comment-input" value={newComment} onChange={e=>setNewComment(e.target.value)}
                   placeholder="Write a comment... (contact sharing not allowed)" rows={2}
                   style={{ flex:1, background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:8, padding:"10px 12px", fontSize:12, color:"#000", outline:"none", resize:"none", fontFamily:"DM Sans,sans-serif" }}/>
-                <button onClick={()=>submitComment(selected.id)} disabled={submittingComment||!newComment.trim()}
+                <button onClick={()=>submitComment(listing.id)} disabled={submittingComment||!newComment.trim()}
                   style={{ background:submittingComment||!newComment.trim()?"#eeeeee":"#e6821e", border:"none", borderRadius:8, color:submittingComment||!newComment.trim()?"#999":"#fff", fontSize:12, fontWeight:700, padding:"0 14px", cursor:submittingComment||!newComment.trim()?"not-allowed":"pointer", flexShrink:0 }}>
                   {submittingComment?"...":"Post"}
                 </button>
@@ -432,15 +432,15 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
                       <button onClick={()=>{ setReplyingTo(replyingTo===cm.id?null:cm.id); setReplyText("") }}
                         style={{ background:"none", border:"none", color:"#378add", fontSize:10, cursor:"pointer", padding:"4px 0", fontWeight:600 }}>
                         {replyingTo===cm.id?"Cancel":"↩ Reply"}
-                        {user?.id===selected?.seller_id&&" (as seller)"}
+                        {user?.id===listing?.seller_id&&" (as seller)"}
                       </button>
                       {/* Reply input */}
                       {replyingTo===cm.id&&(
                         <div style={{ display:"flex", gap:6, marginTop:6 }}>
                           <textarea value={replyText} onChange={e=>setReplyText(e.target.value)}
-                            placeholder={user?.id===selected?.seller_id?"Reply as seller...":"Write a reply..."}
+                            placeholder={user?.id===listing?.seller_id?"Reply as seller...":"Write a reply..."}
                             rows={2} style={{ flex:1, background:"#f0f7ff", border:"1px solid #378add30", borderRadius:8, padding:"8px 10px", fontSize:11, color:"#000", outline:"none", resize:"none" }}/>
-                          <button onClick={()=>submitReply(selected.id, cm.id, user?.id===selected?.seller_id)} disabled={submittingComment||!replyText.trim()}
+                          <button onClick={()=>submitReply(listing.id, cm.id, user?.id===listing?.seller_id)} disabled={submittingComment||!replyText.trim()}
                             style={{ background:submittingComment||!replyText.trim()?"#eeeeee":"#378add", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"0 12px", cursor:"pointer", flexShrink:0 }}>
                             {submittingComment?"...":"Reply"}
                           </button>
@@ -523,7 +523,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
               ))}
             </div>
           )}
-          {selected?.video_url&&selected?.video_status==="approved"&&(
+          {listing.video_url&&listing.video_status==="approved"&&(
             <div style={{ marginTop:10 }}>
               <div style={{ fontSize:12, fontWeight:700, color:"#555", marginBottom:6 }}>🎥 Video</div>
               <video src={listing.video_url} controls style={{ width:"100%", borderRadius:8, maxHeight:250 }}/>
@@ -604,16 +604,16 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
               {/* Social actions */}
               <div style={{ display:"flex", gap:8, marginTop:4 }}>
                 <button onClick={()=>toggleLike(listing.id)}
-                  style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:6, background:userLikes.has(selected.id)?"#fff0f3":"#f8f8f8", border:`1px solid ${userLikes.has(listing.id)?"#e24b4a40":"#eeeeee"}`, borderRadius:10, padding:"10px", cursor:"pointer", transition:"all 0.15s" }}>
-                  <span style={{ fontSize:18 }}>{userLikes.has(listing.id)?"❤️":"🤍"}</span>
-                  <span style={{ fontSize:12, fontWeight:700, color:userLikes.has(selected?.id)?"#e24b4a":"#666" }}>{selected.likes_count||0}</span>
+                  style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:6, background:userLikes?.has(listing.id)?"#fff0f3":"#f8f8f8", border:`1px solid ${userLikes?.has(listing.id)?"#e24b4a40":"#eeeeee"}`, borderRadius:10, padding:"10px", cursor:"pointer", transition:"all 0.15s" }}>
+                  <span style={{ fontSize:18 }}>{userLikes?.has(listing.id)?"❤️":"🤍"}</span>
+                  <span style={{ fontSize:12, fontWeight:700, color:userLikes?.has(listing.id)?"#e24b4a":"#666" }}>{listing.likes_count||0}</span>
                 </button>
                 <button onClick={()=>document.getElementById("comment-input").focus()}
                   style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:6, background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:10, padding:"10px", cursor:"pointer" }}>
                   <span style={{ fontSize:18 }}>💬</span>
-                  <span style={{ fontSize:12, fontWeight:700, color:"#666" }}>{selected?.comments_count||0}</span>
+                  <span style={{ fontSize:12, fontWeight:700, color:"#666" }}>{listing.comments_count||0}</span>
                 </button>
-                <button onClick={()=>shareViaWhatsApp(selected)}
+                <button onClick={()=>shareViaWhatsApp(listing)}
                   style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:6, background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:10, padding:"10px", cursor:"pointer" }}>
                   <span style={{ fontSize:18 }}>📤</span>
                   <span style={{ fontSize:12, fontWeight:700, color:"#1d9e75" }}>{listing.shares_count||0}</span>
