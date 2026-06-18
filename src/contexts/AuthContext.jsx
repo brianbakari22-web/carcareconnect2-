@@ -101,6 +101,8 @@ export function AuthProvider({ children }) {
       if (error) throw error
       if (data) {
         setProfile(data)
+      // Initialize push notifications after profile loaded
+      initPushNotifications(userId).catch(e => console.log("Push init:", e.message))
         setLoading(false)
         initPushNotifications(userId)
       } else if (retries < 10) {
