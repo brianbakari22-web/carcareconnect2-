@@ -330,12 +330,6 @@ export default function App() {
       } catch(e) { console.log("Splash already hidden") }
     }, 500)
   }, [])
-
-  useEffect(() => {
-    if (user?.id) {
-      initPushNotifications(user.id)
-    }
-  }, [user?.id])
   React.useEffect(() => {
     (async () => {
       try {
