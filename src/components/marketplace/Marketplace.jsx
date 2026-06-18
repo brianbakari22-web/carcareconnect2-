@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import ChatWindow from "../shared/ChatWindow"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
@@ -13,6 +13,7 @@ const CONDITIONS = ["New","Used","Refurbished","For parts"]
 export default function Marketplace() {
   const { user } = useAuth()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const isMobile = useIsMobile()
   const [listings, setListings] = useState([])
   const [loading, setLoading] = useState(true)
@@ -34,6 +35,14 @@ export default function Marketplace() {
   const [loadingComments, setLoadingComments] = useState(false)
 
   useEffect(() => { load(); loadUserLikes() }, [tab])
+
+  useEffect(() => {
+    const listingId = searchParams.get("listing")
+    if (listingId && listings.length > 0) {
+      const found = listings.find(l => l.id === listingId)
+      if (found) setSelected(found)
+    }
+  }, [searchParams, listings])
 
   async function load() {
     setLoading(true)

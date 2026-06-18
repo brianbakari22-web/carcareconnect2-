@@ -262,7 +262,7 @@ export default function MyListings() {
               )}
 
               <div style={{ borderTop:"1px solid #eeeeee", padding:"0.5rem 0.75rem", display:"flex", gap:6, flexWrap:"wrap" }}>
-                <button onClick={()=>navigate("/dashboard/marketplace")} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>View</button>
+                <button onClick={()=>navigate("/dashboard/marketplace?listing=" + l.id)} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>View</button>
                 <button onClick={()=>openPhotos(l)} style={{ background:"#ffffff", border:"1px solid #dddddd", borderRadius:7, color:"#555555", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>Photos {l.marketplace_photos?.length>0?"("+l.marketplace_photos.length+")":""}</button>
                 {l.listing_type==="vehicle"&&<button onClick={()=>setFeatureListing(featureListing===l.id?null:l.id)} style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>Feature</button>}
                 <button onClick={()=>setInspectListing(inspectListing===l.id?null:l.id)} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>Inspect</button>
