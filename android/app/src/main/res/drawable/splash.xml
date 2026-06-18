@@ -4,20 +4,26 @@
     <item>
         <color android:color="#ffffff"/>
     </item>
-    <!-- Subtle orange tint circle behind icon -->
+    <!-- Orange gradient circle -->
     <item android:gravity="center">
         <shape android:shape="oval">
-            <solid android:color="#FFF3E0"/>
+            <gradient
+                android:type="radial"
+                android:gradientRadius="110dp"
+                android:startColor="#f5923a"
+                android:endColor="#c96a10"
+                android:centerX="0.5"
+                android:centerY="0.4"/>
             <size android:width="220dp" android:height="220dp"/>
         </shape>
     </item>
-    <!-- App icon centered at larger size -->
+    <!-- App icon on top -->
     <item
-        android:width="160dp"
-        android:height="160dp"
+        android:width="130dp"
+        android:height="130dp"
         android:gravity="center">
         <bitmap
-            android:src="@mipmap/ic_launcher"
+            android:src="@mipmap/ic_launcher_foreground"
             android:gravity="center"
             android:tileMode="disabled"/>
     </item>
