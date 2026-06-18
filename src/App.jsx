@@ -1,5 +1,6 @@
 ﻿import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { SplashScreen } from "@capacitor/splash-screen"
+import { initPushNotifications } from "./lib/pushNotifications"
 import React, { useState, useEffect } from "react"
 import { supabase } from "./lib/supabase"
 import MechanicLogin from "./components/mechanic/MechanicLogin"
@@ -329,6 +330,12 @@ export default function App() {
       } catch(e) { console.log("Splash already hidden") }
     }, 500)
   }, [])
+
+  useEffect(() => {
+    if (user?.id) {
+      initPushNotifications(user.id)
+    }
+  }, [user?.id])
   React.useEffect(() => {
     (async () => {
       try {

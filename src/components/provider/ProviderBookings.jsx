@@ -107,6 +107,34 @@ export default function ProviderBookings() {
       await supabase.from("bookings").update({ assigned_mechanic_id: selectedMechanic||null, status:"in-progress" }).eq("id", bookingId).eq("provider_id", user.id)
       if (selectedMechanic) {
         await supabase.from("mechanics").update({ is_available:false, current_booking_id:bookingId }).eq("id", selectedMechanic)
+        
+        // Get mechanic user_id for notification
+        const { data: mech } = await supabase.from("mechanics")
+          .select("first_name, last_name, provider_id")
+          .eq("id", selectedMechanic).single()
+        
+        // Get booking details
+        const booking = bookings.find(b=>b.id===bookingId)
+        
+        // Notify customer
+        if (booking?.customer_id) {
+          await supabase.from("notifications").insert({
+            user_id: booking.customer_id,
+            title: "Mechanic Assigned 👨‍🔧",
+            message: "A mechanic has been assigned to your booking. They will be with you shortly.",
+            type: "info"
+          })
+        }
+        
+        // Notify mechanic via provider notifications (mechanic checks provider app)
+        if (mech?.provider_id) {
+          await supabase.from("notifications").insert({
+            user_id: mech.provider_id,
+            title: "Job Assigned to Mechanic",
+            message: (mech.first_name + " " + mech.last_name) + " has been assigned to booking #" + bookingId.slice(0,8),
+            type: "info"
+          })
+        }
       }
       toast.success("Mechanic assigned — customer notified! 👨‍🔧")
       setAssigningMechanic(null)
