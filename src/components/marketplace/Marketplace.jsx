@@ -215,6 +215,21 @@ export default function Marketplace() {
       isMobile={isMobile}
       onBack={()=>{ setSelected(null); load() }}
       onOffer={()=>openListing(selected)}
+      comments={comments}
+      newComment={newComment}
+      setNewComment={setNewComment}
+      userLikes={userLikes}
+      toggleLike={toggleLike}
+      submitComment={submitComment}
+      submitReply={submitReply}
+      deleteComment={deleteComment}
+      shareViaWhatsApp={shareViaWhatsApp}
+      replyingTo={replyingTo}
+      setReplyingTo={setReplyingTo}
+      replyText={replyText}
+      setReplyText={setReplyText}
+      submittingComment={submittingComment}
+      loadingComments={loadingComments}
     />
   )
 
@@ -343,7 +358,7 @@ export default function Marketplace() {
   )
 }
 
-function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInfo, offers, user, isMobile, onBack, onOffer }) {
+function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInfo, offers, user, isMobile, onBack, onOffer, comments, newComment, setNewComment, userLikes, toggleLike, submitComment, submitReply, deleteComment, shareViaWhatsApp, replyingTo, setReplyingTo, replyText, setReplyText, submittingComment, loadingComments }) {
   const [showOffer, setShowOffer] = useState(false)
   const [showChat, setShowChat] = useState(false)
   const [offerPrice, setOfferPrice] = useState("")
@@ -377,7 +392,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
 
             {/* Comments Section */}
             <div style={{ marginTop:16, background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem" }}>
-              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#000", marginBottom:12 }}>💬 Comments ({listing?.comments_count||0})</div>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#000", marginBottom:12 }}>💬 Comments ({listing.comments_count||0})</div>
               <div style={{ display:"flex", gap:8, marginBottom:16 }}>
                 <textarea id="comment-input" value={newComment} onChange={e=>setNewComment(e.target.value)}
                   placeholder="Write a comment... (contact sharing not allowed)" rows={2}
@@ -390,7 +405,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
               {loadingComments&&<div style={{ color:"#888", fontSize:12, textAlign:"center" }}>Loading...</div>}
               {!loadingComments&&comments.length===0&&<div style={{ color:"#888", fontSize:12, textAlign:"center", padding:"1rem" }}>No comments yet. Be the first!</div>}
               {/* Video context label */}
-              {listing?.video_url&&listing?.video_status==="approved"&&(
+              {listing.video_url&&listing.video_status==="approved"&&(
                 <div style={{ fontSize:11, color:"#888", marginBottom:12, display:"flex", alignItems:"center", gap:6 }}>
                   <span>🎥</span> Comments below refer to this listing and its video
                 </div>
@@ -408,7 +423,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
                         <span style={{ fontSize:12, fontWeight:700, color:"#000" }}>{cm.profiles?.first_name} {cm.profiles?.last_name}</span>
                         <span style={{ fontSize:10, color:"#888" }}>{new Date(cm.created_at).toLocaleDateString()}</span>
                         {user?.id===cm.user_id&&(
-                          <button onClick={()=>deleteComment(cm.id, listing?.id)} style={{ marginLeft:"auto", background:"none", border:"none", color:"#e24b4a", fontSize:10, cursor:"pointer", padding:0 }}>Delete</button>
+                          <button onClick={()=>deleteComment(cm.id, listing.id)} style={{ marginLeft:"auto", background:"none", border:"none", color:"#e24b4a", fontSize:10, cursor:"pointer", padding:0 }}>Delete</button>
                         )}
                       </div>
                       <div style={{ fontSize:12, color:"#333", lineHeight:1.5, background:"#f8f8f8", borderRadius:"4px 12px 12px 12px", padding:"8px 12px" }}>{cm.comment}</div>
@@ -444,7 +459,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
                           {reply.is_seller_reply&&<span style={{ fontSize:9, background:"#eff6ff", color:"#378add", padding:"1px 6px", borderRadius:8, fontWeight:700 }}>Seller</span>}
                           <span style={{ fontSize:9, color:"#888" }}>{new Date(reply.created_at).toLocaleDateString()}</span>
                           {user?.id===reply.user_id&&(
-                            <button onClick={()=>deleteComment(reply.id, listing?.id)} style={{ marginLeft:"auto", background:"none", border:"none", color:"#e24b4a", fontSize:9, cursor:"pointer", padding:0 }}>Delete</button>
+                            <button onClick={()=>deleteComment(reply.id, listing.id)} style={{ marginLeft:"auto", background:"none", border:"none", color:"#e24b4a", fontSize:9, cursor:"pointer", padding:0 }}>Delete</button>
                           )}
                         </div>
                         <div style={{ fontSize:11, color:"#333", lineHeight:1.5, background:reply.is_seller_reply?"#eff6ff":"#f8f8f8", borderRadius:"4px 12px 12px 12px", padding:"6px 10px" }}>{reply.comment}</div>
@@ -510,7 +525,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
           {selected?.video_url&&selected?.video_status==="approved"&&(
             <div style={{ marginTop:10 }}>
               <div style={{ fontSize:12, fontWeight:700, color:"#555", marginBottom:6 }}>🎥 Video</div>
-              <video src={listing?.video_url} controls style={{ width:"100%", borderRadius:8, maxHeight:250 }}/>
+              <video src={listing.video_url} controls style={{ width:"100%", borderRadius:8, maxHeight:250 }}/>
             </div>
           )}
         </div>
@@ -587,9 +602,9 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
 
               {/* Social actions */}
               <div style={{ display:"flex", gap:8, marginTop:4 }}>
-                <button onClick={()=>toggleLike(listing?.id)}
-                  style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:6, background:userLikes.has(selected.id)?"#fff0f3":"#f8f8f8", border:`1px solid ${userLikes.has(listing?.id)?"#e24b4a40":"#eeeeee"}`, borderRadius:10, padding:"10px", cursor:"pointer", transition:"all 0.15s" }}>
-                  <span style={{ fontSize:18 }}>{userLikes.has(listing?.id)?"❤️":"🤍"}</span>
+                <button onClick={()=>toggleLike(listing.id)}
+                  style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:6, background:userLikes.has(selected.id)?"#fff0f3":"#f8f8f8", border:`1px solid ${userLikes.has(listing.id)?"#e24b4a40":"#eeeeee"}`, borderRadius:10, padding:"10px", cursor:"pointer", transition:"all 0.15s" }}>
+                  <span style={{ fontSize:18 }}>{userLikes.has(listing.id)?"❤️":"🤍"}</span>
                   <span style={{ fontSize:12, fontWeight:700, color:userLikes.has(selected?.id)?"#e24b4a":"#666" }}>{selected.likes_count||0}</span>
                 </button>
                 <button onClick={()=>document.getElementById("comment-input").focus()}
@@ -600,7 +615,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
                 <button onClick={()=>shareViaWhatsApp(selected)}
                   style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:6, background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:10, padding:"10px", cursor:"pointer" }}>
                   <span style={{ fontSize:18 }}>📤</span>
-                  <span style={{ fontSize:12, fontWeight:700, color:"#1d9e75" }}>{listing?.shares_count||0}</span>
+                  <span style={{ fontSize:12, fontWeight:700, color:"#1d9e75" }}>{listing.shares_count||0}</span>
                 </button>
               </div>
 
