@@ -1,1 +1,81 @@
-<svg width="800" height="300" viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg"><circle cx="200" cy="150" r="90" fill="#e6821e"/><rect x="140" y="145" width="120" height="42" rx="8" fill="#fff"/><path d="M158 145 L172 118 L228 118 L242 145 Z" fill="#fff"/><path d="M174 143 L182 123 L218 123 L226 143 Z" fill="#e6821e"/><circle cx="165" cy="188" r="14" fill="#1a1208"/><circle cx="165" cy="188" r="7" fill="#e6821e"/><circle cx="235" cy="188" r="14" fill="#1a1208"/><circle cx="235" cy="188" r="7" fill="#e6821e"/><rect x="255" y="155" width="12" height="8" rx="2" fill="#fff9e6"/><rect x="133" y="155" width="10" height="8" rx="2" fill="#1d9e75"/><circle cx="200" cy="82" r="10" fill="#1d9e75"/><text x="200" y="87" text-anchor="middle" font-size="12" fill="#fff" font-weight="800">✦</text><text x="320" y="125" font-family="Arial Black" font-size="42" font-weight="800" fill="#e6821e">Car<tspan fill="#f0ede6">Care</tspan></text><text x="320" y="175" font-family="Arial Black" font-size="42" font-weight="800" fill="#1d9e75">Connect</text><text x="322" y="205" font-family="Arial" font-size="13" letter-spacing="3" fill="#888">YOUR CAR OUR CARE SIMPLIFIED</text><rect x="320" y="215" width="280" height="3" rx="1.5" fill="#e6821e"/><rect x="320" y="215" width="140" height="3" rx="1.5" fill="#1d9e75"/></svg>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#f5923a"/>
+      <stop offset="100%" stop-color="#c96a10"/>
+    </radialGradient>
+    <linearGradient id="carGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f0f0f0"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#00000030"/>
+    </filter>
+  </defs>
+
+  <!-- Main circle background -->
+  <circle cx="256" cy="256" r="230" fill="url(#bgGrad)" filter="url(#shadow)"/>
+  
+  <!-- Inner ring subtle -->
+  <circle cx="256" cy="256" r="215" fill="none" stroke="#ffffff" stroke-width="3" opacity="0.15"/>
+
+  <!-- Car body -->
+  <rect x="120" y="265" width="272" height="72" rx="14" fill="url(#carGrad)"/>
+  
+  <!-- Car cabin/roof -->
+  <path d="M168 265 L196 195 L316 195 L344 265 Z" fill="url(#carGrad)"/>
+  
+  <!-- Windshield -->
+  <path d="M192 258 L212 208 L300 208 L320 258 Z" fill="#e6821e" opacity="0.75"/>
+  
+  <!-- Side windows -->
+  <path d="M168 255 L190 210 L210 210 L194 255 Z" fill="#e6821e" opacity="0.5"/>
+  <path d="M318 255 L302 210 L316 210 L344 255 Z" fill="#e6821e" opacity="0.5"/>
+
+  <!-- Headlight left -->
+  <rect x="122" y="272" width="26" height="16" rx="5" fill="#FFF9C4"/>
+  <rect x="122" y="272" width="26" height="16" rx="5" fill="#FFD54F" opacity="0.6"/>
+  
+  <!-- Tail light right -->
+  <rect x="364" y="272" width="26" height="16" rx="5" fill="#1d9e75"/>
+
+  <!-- Door divider -->
+  <line x1="256" y1="268" x2="256" y2="330" stroke="#cccccc" stroke-width="2.5"/>
+  
+  <!-- Door handles -->
+  <rect x="215" y="292" width="28" height="8" rx="4" fill="#e6821e" opacity="0.7"/>
+  <rect x="269" y="292" width="28" height="8" rx="4" fill="#e6821e" opacity="0.7"/>
+
+  <!-- Left wheel -->
+  <circle cx="182" cy="338" r="34" fill="#1a1208"/>
+  <circle cx="182" cy="338" r="24" fill="#2a2a2a"/>
+  <circle cx="182" cy="338" r="13" fill="#e6821e"/>
+  <circle cx="182" cy="338" r="5" fill="#ffffff"/>
+  <!-- Wheel spokes -->
+  <line x1="182" y1="315" x2="182" y2="325" stroke="#e6821e" stroke-width="2.5"/>
+  <line x1="182" y1="351" x2="182" y2="361" stroke="#e6821e" stroke-width="2.5"/>
+  <line x1="159" y1="338" x2="169" y2="338" stroke="#e6821e" stroke-width="2.5"/>
+  <line x1="195" y1="338" x2="205" y2="338" stroke="#e6821e" stroke-width="2.5"/>
+
+  <!-- Right wheel -->
+  <circle cx="330" cy="338" r="34" fill="#1a1208"/>
+  <circle cx="330" cy="338" r="24" fill="#2a2a2a"/>
+  <circle cx="330" cy="338" r="13" fill="#e6821e"/>
+  <circle cx="330" cy="338" r="5" fill="#ffffff"/>
+  <!-- Wheel spokes -->
+  <line x1="330" y1="315" x2="330" y2="325" stroke="#e6821e" stroke-width="2.5"/>
+  <line x1="330" y1="351" x2="330" y2="361" stroke="#e6821e" stroke-width="2.5"/>
+  <line x1="307" y1="338" x2="317" y2="338" stroke="#e6821e" stroke-width="2.5"/>
+  <line x1="343" y1="338" x2="353" y2="338" stroke="#e6821e" stroke-width="2.5"/>
+
+  <!-- Road/ground line -->
+  <rect x="100" y="370" width="312" height="5" rx="2.5" fill="#ffffff" opacity="0.3"/>
+
+  <!-- Green verified badge top -->
+  <circle cx="256" cy="140" r="18" fill="#1d9e75"/>
+  <text x="256" y="146" text-anchor="middle" font-size="16" fill="#fff" font-weight="800">✦</text>
+
+  <!-- Shine highlight -->
+  <ellipse cx="210" cy="230" rx="35" ry="10" fill="#ffffff" opacity="0.12" transform="rotate(-20 210 230)"/>
+  <ellipse cx="300" cy="215" rx="20" ry="6" fill="#ffffff" opacity="0.08" transform="rotate(-20 300 215)"/>
+</svg>

@@ -1,4 +1,5 @@
 ﻿import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
+import { SplashScreen } from "@capacitor/splash-screen"
 import React, { useState, useEffect } from "react"
 import { supabase } from "./lib/supabase"
 import MechanicLogin from "./components/mechanic/MechanicLogin"
@@ -320,6 +321,14 @@ function AdminDashboardRouter() {
 }
 
 export default function App() {
+  useEffect(() => {
+    // Hide native splash when React app is ready
+    setTimeout(async () => {
+      try {
+        await SplashScreen.hide({ fadeOutDuration: 500 })
+      } catch(e) { console.log("Splash already hidden") }
+    }, 500)
+  }, [])
   React.useEffect(() => {
     (async () => {
       try {

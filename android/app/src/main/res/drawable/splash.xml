@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- White background -->
     <item>
         <color android:color="#ffffff"/>
     </item>
-    <item>
+    <!-- Subtle orange tint circle behind icon -->
+    <item android:gravity="center">
+        <shape android:shape="oval">
+            <solid android:color="#FFF3E0"/>
+            <size android:width="220dp" android:height="220dp"/>
+        </shape>
+    </item>
+    <!-- App icon centered at larger size -->
+    <item
+        android:width="160dp"
+        android:height="160dp"
+        android:gravity="center">
         <bitmap
             android:src="@mipmap/ic_launcher"
             android:gravity="center"
