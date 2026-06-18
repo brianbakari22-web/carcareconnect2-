@@ -1,46 +1,42 @@
 import { Capacitor } from "@capacitor/core"
 import { supabase } from "./supabase"
-import OneSignal from "onesignal-cordova-plugin"
-
-const ONESIGNAL_APP_ID = "8722cee5-c2e2-431c-a15d-2af78773b404"
 
 export async function initPushNotifications(userId) {
   if (!Capacitor.isNativePlatform()) return
   if (!userId) return
 
   try {
-    if (!OneSignal) {
-      console.error("OneSignal SDK not available")
-      return
-    }
+    const { FirebaseMessaging } = await import("@capacitor-firebase/messaging")
+    
+    // Request permission
+    const { receive } = await FirebaseMessaging.requestPermissions()
+    if (receive !== "granted") return
+    
+    // Get FCM token
+    const { token } = await FirebaseMessaging.getToken()
+    if (!token) return
+    
+    // Save token to database
+    await supabase.from("device_tokens").upsert({
+      user_id: userId,
+      token: token,
+      platform: "fcm",
+      updated_at: new Date().toISOString()
+    }, { onConflict: "user_id,token" })
+    
+    console.log("FCM token saved!")
 
-    OneSignal.initialize(ONESIGNAL_APP_ID)
-    OneSignal.Notifications.requestPermission(true)
-    OneSignal.login(userId)
-
-    setTimeout(async () => {
-      try {
-        const subscriptionId = OneSignal.User.pushSubscription.id
-        if (subscriptionId) {
-          await supabase.from("device_tokens").upsert({
-            user_id: userId,
-            token: subscriptionId,
-            platform: "onesignal",
-            updated_at: new Date().toISOString(),
-          }, { onConflict: "user_id,token" })
-        }
-      } catch (e) {
-        console.error("Save subscription error:", e.message)
-      }
-    }, 3000)
-
-    OneSignal.Notifications.addEventListener("click", (event) => {
-      const data = event.notification.additionalData
-      if (data?.url) {
-        window.location.href = data.url
-      }
+    // Listen for notifications
+    await FirebaseMessaging.addListener("notificationReceived", notification => {
+      console.log("Notification received:", notification)
     })
+
+    await FirebaseMessaging.addListener("notificationActionPerformed", event => {
+      const url = event.notification?.data?.url
+      if (url) window.location.href = url
+    })
+
   } catch (err) {
-    console.error("OneSignal init error:", err.message)
+    console.error("FCM init error:", err.message)
   }
 }

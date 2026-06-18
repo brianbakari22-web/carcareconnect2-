@@ -1,73 +1,96 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
-const ONESIGNAL_APP_ID = Deno.env.get("ONESIGNAL_APP_ID") || "8722cee5-c2e2-431c-a15d-2af78773b404"
-const ONESIGNAL_API_KEY = Deno.env.get("ONESIGNAL_REST_API_KEY")
+const FIREBASE_PROJECT_ID = Deno.env.get("FIREBASE_PROJECT_ID")
+const FIREBASE_CLIENT_EMAIL = Deno.env.get("FIREBASE_CLIENT_EMAIL")
+const FIREBASE_PRIVATE_KEY = Deno.env.get("FIREBASE_PRIVATE_KEY")?.replace(/\\n/g, "\n")
+
+async function getAccessToken() {
+  const now = Math.floor(Date.now() / 1000)
+  const header = { alg: "RS256", typ: "JWT" }
+  const payload = {
+    iss: FIREBASE_CLIENT_EMAIL,
+    scope: "https://www.googleapis.com/auth/firebase.messaging",
+    aud: "https://oauth2.googleapis.com/token",
+    exp: now + 3600,
+    iat: now,
+  }
+
+  const encoder = new TextEncoder()
+  const headerB64 = btoa(JSON.stringify(header)).replace(/=/g,"").replace(/\+/g,"-").replace(/\//g,"_")
+  const payloadB64 = btoa(JSON.stringify(payload)).replace(/=/g,"").replace(/\+/g,"-").replace(/\//g,"_")
+  const unsigned = headerB64 + "." + payloadB64
+
+  const pemContents = FIREBASE_PRIVATE_KEY
+    .replace("-----BEGIN PRIVATE KEY-----", "")
+    .replace("-----END PRIVATE KEY-----", "")
+    .replace(/\s/g, "")
+  const binaryDer = Uint8Array.from(atob(pemContents), c => c.charCodeAt(0))
+
+  const cryptoKey = await crypto.subtle.importKey(
+    "pkcs8", binaryDer, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["sign"]
+  )
+
+  const signature = await crypto.subtle.sign("RSASSA-PKCS1-v1_5", cryptoKey, encoder.encode(unsigned))
+  const sigB64 = btoa(String.fromCharCode(...new Uint8Array(signature))).replace(/=/g,"").replace(/\+/g,"-").replace(/\//g,"_")
+  const jwt = unsigned + "." + sigB64
+
+  const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=" + jwt,
+  })
+  const tokenData = await tokenRes.json()
+  return tokenData.access_token
+}
 
 Deno.serve(async (req) => {
   try {
-    const { user_id, title, body, data, url } = await req.json()
+    const { user_id, title, body, data } = await req.json()
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     )
 
-    // Get OneSignal subscription IDs for this user
     const { data: tokens } = await supabase
       .from("device_tokens")
       .select("token")
       .eq("user_id", user_id)
-      .eq("platform", "onesignal")
+      .eq("platform", "fcm")
 
     if (!tokens || tokens.length === 0) {
-      // Fallback: send by external user ID (OneSignal user login)
-      const payload: any = {
-        app_id: ONESIGNAL_APP_ID,
-        target_channel: "push",
-        include_aliases: { external_id: [user_id] },
-        headings: { en: title },
-        contents: { en: body },
-      }
-      if (url) payload.url = url
-      if (data) payload.data = data
-
-      const res = await fetch("https://onesignal.com/api/v1/notifications", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Basic ${ONESIGNAL_API_KEY}`,
-        },
-        body: JSON.stringify(payload),
-      })
-      const result = await res.json()
-      return new Response(JSON.stringify({ success: true, result }), {
+      return new Response(JSON.stringify({ success: false, error: "No FCM tokens found" }), {
         headers: { "Content-Type": "application/json" },
       })
     }
 
-    // Send to specific subscription IDs
-    const subscriptionIds = tokens.map(t => t.token)
-    const payload: any = {
-      app_id: ONESIGNAL_APP_ID,
-      target_channel: "push",
-      include_subscription_ids: subscriptionIds,
-      headings: { en: title },
-      contents: { en: body },
+    const accessToken = await getAccessToken()
+    const results = []
+
+    for (const { token } of tokens) {
+      const res = await fetch(
+        "https://fcm.googleapis.com/v1/projects/" + FIREBASE_PROJECT_ID + "/messages:send",
+        {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer " + accessToken,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: {
+              token: token,
+              notification: { title, body },
+              data: data || {},
+              android: { priority: "high" },
+            },
+          }),
+        }
+      )
+      const result = await res.json()
+      results.push(result)
     }
-    if (url) payload.url = url
-    if (data) payload.data = data
 
-    const res = await fetch("https://onesignal.com/api/v1/notifications", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Basic ${ONESIGNAL_API_KEY}`,
-      },
-      body: JSON.stringify(payload),
-    })
-    const result = await res.json()
-
-    return new Response(JSON.stringify({ success: true, result }), {
+    return new Response(JSON.stringify({ success: true, results }), {
       headers: { "Content-Type": "application/json" },
     })
   } catch (err) {
