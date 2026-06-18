@@ -166,7 +166,19 @@
         }, 1500);
       });
     </script>
-  </body>
+    <script>
+    window.addEventListener("load", function() {
+      setTimeout(function() {
+        var splash = document.getElementById("app-splash");
+        if (splash) {
+          splash.style.transition = "opacity 0.5s ease";
+          splash.style.opacity = "0";
+          setTimeout(function() { if(splash) splash.remove(); }, 500);
+        }
+      }, 1500);
+    });
+  </script>
+</body>
 </html>
 
 
