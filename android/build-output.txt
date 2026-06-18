@@ -1,0 +1,42 @@
+
+> car-care-connect@1.0.0 build
+> vite build
+
+[36mvite v5.4.21 [32mbuilding for production...[36m[39m
+transforming...
+[32mΓ£ô[39m 696 modules transformed.
+rendering chunks...
+[plugin:vite:reporter] [plugin vite:reporter] 
+(!) C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/node_modules/@capacitor/core/dist/index.js is dynamically imported by C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/src/App.jsx, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/src/components/auth/AuthPage.jsx but also statically imported by C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/node_modules/@capacitor-firebase/messaging/dist/esm/index.js, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/node_modules/@capacitor-firebase/messaging/dist/esm/web.js, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/node_modules/@capacitor/app/dist/esm/index.js, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/node_modules/@capacitor/app/dist/esm/web.js, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/node_modules/@capacitor/browser/dist/esm/index.js, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/node_modules/@capacitor/browser/dist/esm/web.js, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/node_modules/@capacitor/geolocation/dist/esm/index.js, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/node_modules/@capacitor/geolocation/dist/esm/web.js, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/node_modules/@capacitor/splash-screen/dist/esm/index.js, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/node_modules/@capacitor/splash-screen/dist/esm/web.js, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/src/components/auth/AuthPage.jsx, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/src/lib/geolocation.js, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/src/lib/openExternal.js, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/src/lib/pushNotifications.js, dynamic import will not move module into another chunk.
+
+[plugin:vite:reporter] [plugin vite:reporter] 
+(!) C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/src/lib/geolocation.js is dynamically imported by C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/src/components/customer/CustomerServices.jsx, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/src/components/customer/CustomerServices.jsx but also statically imported by C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/src/components/customer/CustomerDiscover.jsx, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/src/components/customer/CustomerGoService.jsx, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/src/components/customer/CustomerTracking.jsx, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/src/components/driver/DriverActiveDelivery.jsx, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/src/components/driver/DriverOverview.jsx, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/src/components/mechanic/MechanicDashboard.jsx, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/src/components/provider/ProviderProfile.jsx, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/src/components/shared/EmergencySOS.jsx, dynamic import will not move module into another chunk.
+
+[plugin:vite:reporter] [plugin vite:reporter] 
+(!) C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/src/lib/openExternal.js is dynamically imported by C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/src/components/marketplace/Marketplace.jsx but also statically imported by C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/src/components/customer/CustomerBookings.jsx, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/src/components/customer/CustomerReferral.jsx, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/src/components/customer/PublicProviderStorefront.jsx, C:/Users/user/Downloads/carcareconnect_v2/carcareconnect/src/components/mechanic/MechanicDashboard.jsx, dynamic import will not move module into another chunk.
+
+computing gzip size...
+[2mdist/[22m[32mindex.html                          [39m[1m[2m   11.79 kB[22m[1m[22m[2m Γöé gzip:   2.51 kB[22m
+[2mdist/[22m[35massets/index-C3tPJB2X.css           [39m[1m[2m    0.70 kB[22m[1m[22m[2m Γöé gzip:   0.42 kB[22m
+[2mdist/[22m[36massets/web-DKpxtCkV.js              [39m[1m[2m    0.25 kB[22m[1m[22m[2m Γöé gzip:   0.21 kB[22m[2m Γöé map:     0.56 kB[22m
+[2mdist/[22m[36massets/web-DrXvOfYx.js              [39m[1m[2m    0.51 kB[22m[1m[22m[2m Γöé gzip:   0.34 kB[22m[2m Γöé map:     1.30 kB[22m
+[2mdist/[22m[36massets/index-Bf5QAe4B.js            [39m[1m[2m    0.54 kB[22m[1m[22m[2m Γöé gzip:   0.33 kB[22m[2m Γöé map:     0.57 kB[22m
+[2mdist/[22m[36massets/index-BY5VE-Iv.js            [39m[1m[2m    0.56 kB[22m[1m[22m[2m Γöé gzip:   0.34 kB[22m[2m Γöé map:     0.59 kB[22m
+[2mdist/[22m[36massets/index-DYvdQ3ng.js            [39m[1m[2m    0.85 kB[22m[1m[22m[2m Γöé gzip:   0.48 kB[22m[2m Γöé map:     2.58 kB[22m
+[2mdist/[22m[36massets/web-BXr1nx-K.js              [39m[1m[2m    0.97 kB[22m[1m[22m[2m Γöé gzip:   0.48 kB[22m[2m Γöé map:     2.18 kB[22m
+[2mdist/[22m[36massets/index-WpiRosrZ.js            [39m[1m[2m    1.21 kB[22m[1m[22m[2m Γöé gzip:   0.61 kB[22m[2m Γöé map:     2.88 kB[22m
+[2mdist/[22m[36massets/web-Bs74r-Rp.js              [39m[1m[2m    2.49 kB[22m[1m[22m[2m Γöé gzip:   1.01 kB[22m[2m Γöé map:     7.40 kB[22m
+[2mdist/[22m[36massets/ui-CaTqAy3Q.js               [39m[1m[2m   12.19 kB[22m[1m[22m[2m Γöé gzip:   4.89 kB[22m[2m Γöé map:    28.09 kB[22m
+[2mdist/[22m[36massets/purify.es-8E279hYE.js        [39m[1m[2m   25.66 kB[22m[1m[22m[2m Γöé gzip:   9.75 kB[22m[2m Γöé map:   109.55 kB[22m
+[2mdist/[22m[36massets/web-DKhPcOtj.js              [39m[1m[2m   91.29 kB[22m[1m[22m[2m Γöé gzip:  17.26 kB[22m[2m Γöé map:   363.84 kB[22m
+[2mdist/[22m[36massets/index.es-oD6osSUN.js         [39m[1m[2m  150.83 kB[22m[1m[22m[2m Γöé gzip:  51.64 kB[22m[2m Γöé map:   637.73 kB[22m
+[2mdist/[22m[36massets/vendor-C1lte47L.js           [39m[1m[2m  160.89 kB[22m[1m[22m[2m Γöé gzip:  52.59 kB[22m[2m Γöé map:   701.97 kB[22m
+[2mdist/[22m[36massets/html2canvas.esm-CBrSDip1.js  [39m[1m[2m  201.48 kB[22m[1m[22m[2m Γöé gzip:  48.08 kB[22m[2m Γöé map:   602.27 kB[22m
+[2mdist/[22m[36massets/supabase-CwrFKnKJ.js         [39m[1m[2m  210.54 kB[22m[1m[22m[2m Γöé gzip:  54.59 kB[22m[2m Γöé map: 1,138.78 kB[22m
+[2mdist/[22m[36massets/index-Bb2LkDkd.js            [39m[1m[33m1,749.02 kB[39m[22m[2m Γöé gzip: 432.98 kB[22m[2m Γöé map: 4,520.73 kB[22m
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[32mΓ£ô built in 4.16s[39m
