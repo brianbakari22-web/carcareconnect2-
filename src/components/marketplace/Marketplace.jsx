@@ -38,9 +38,18 @@ export default function Marketplace() {
 
   useEffect(() => {
     const listingId = searchParams.get("listing")
-    if (listingId && listings.length > 0) {
-      const found = listings.find(l => l.id === listingId)
-      if (found) setSelected(found)
+    if (!listingId || listings.length === 0) return
+    // Find the exact listing by ID
+    const found = listings.find(l => l.id === listingId)
+    if (found) {
+      setSelected(found)
+    } else {
+      // If not in current tab, fetch it directly
+      supabase.from("marketplace_listings")
+        .select("*, profiles!marketplace_listings_seller_id_fkey(first_name,last_name,avatar_url,business_name)")
+        .eq("id", listingId)
+        .single()
+        .then(({ data }) => { if (data) setSelected(data) })
     }
   }, [searchParams, listings])
 
