@@ -15,18 +15,24 @@ export async function initPushNotifications(userId) {
     if (permission) {
       OneSignal.login(String(userId))
       
-      // Save OneSignal subscription UUID
       setTimeout(async () => {
         try {
           const subId = OneSignal.User.pushSubscription.id
           if (subId && subId.includes("-")) {
-            await supabase.from("device_tokens").upsert({
+            // Delete ALL old tokens for this user first
+            await supabase.from("device_tokens")
+              .delete()
+              .eq("user_id", userId)
+              .eq("platform", "onesignal")
+            
+            // Insert fresh token
+            await supabase.from("device_tokens").insert({
               user_id: userId,
               token: subId,
               platform: "onesignal",
               updated_at: new Date().toISOString()
-            }, { onConflict: "user_id,token" })
-            console.log("OneSignal UUID saved:", subId)
+            })
+            console.log("Fresh OneSignal token saved:", subId)
           }
         } catch(e) { console.error("Save error:", e.message) }
       }, 3000)
