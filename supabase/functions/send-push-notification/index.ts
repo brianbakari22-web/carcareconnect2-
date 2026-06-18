@@ -8,18 +8,41 @@ Deno.serve(async (req) => {
     const { user_id, title, body } = await req.json()
     console.log("Sending to:", user_id, "Title:", title)
 
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    )
+
+    // Get subscription IDs for this user
+    const { data: tokens } = await supabase
+      .from("device_tokens")
+      .select("token, platform")
+      .eq("user_id", user_id)
+
+    console.log("Tokens:", JSON.stringify(tokens))
+
+    // Build payload - try both approaches
+    const payload: any = {
+      app_id: ONESIGNAL_APP_ID,
+      headings: { en: title },
+      contents: { en: body }
+    }
+
+    // If we have tokens, use them
+    if (tokens && tokens.length > 0) {
+      payload.include_subscription_ids = tokens.map(t => t.token)
+    } else {
+      // Fallback: send to all subscribed users (for testing)
+      payload.included_segments = ["Subscribed Users"]
+    }
+
     const res = await fetch("https://onesignal.com/api/v1/notifications", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Basic " + ONESIGNAL_API_KEY
       },
-      body: JSON.stringify({
-        app_id: ONESIGNAL_APP_ID,
-        include_external_user_ids: [user_id],
-        headings: { en: title },
-        contents: { en: body }
-      })
+      body: JSON.stringify(payload)
     })
 
     const result = await res.json()
