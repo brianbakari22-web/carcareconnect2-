@@ -14,60 +14,63 @@ async function getAccessToken() {
     exp: now + 3600,
     iat: now,
   }
-
   const encoder = new TextEncoder()
   const headerB64 = btoa(JSON.stringify(header)).replace(/=/g,"").replace(/\+/g,"-").replace(/\//g,"_")
   const payloadB64 = btoa(JSON.stringify(payload)).replace(/=/g,"").replace(/\+/g,"-").replace(/\//g,"_")
   const unsigned = headerB64 + "." + payloadB64
-
   const pemContents = FIREBASE_PRIVATE_KEY
     .replace("-----BEGIN PRIVATE KEY-----", "")
     .replace("-----END PRIVATE KEY-----", "")
     .replace(/\s/g, "")
   const binaryDer = Uint8Array.from(atob(pemContents), c => c.charCodeAt(0))
-
   const cryptoKey = await crypto.subtle.importKey(
     "pkcs8", binaryDer, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["sign"]
   )
-
   const signature = await crypto.subtle.sign("RSASSA-PKCS1-v1_5", cryptoKey, encoder.encode(unsigned))
   const sigB64 = btoa(String.fromCharCode(...new Uint8Array(signature))).replace(/=/g,"").replace(/\+/g,"-").replace(/\//g,"_")
   const jwt = unsigned + "." + sigB64
-
   const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=" + jwt,
   })
   const tokenData = await tokenRes.json()
+  console.log("Access token result:", JSON.stringify(tokenData).substring(0, 100))
   return tokenData.access_token
 }
 
 Deno.serve(async (req) => {
   try {
-    const { user_id, title, body, data } = await req.json()
+    const body = await req.json()
+    console.log("Request body:", JSON.stringify(body))
+    
+    const { user_id, title, body: msgBody, data } = body
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     )
 
-    const { data: tokens } = await supabase
+    const { data: tokens, error: tokenError } = await supabase
       .from("device_tokens")
-      .select("token")
+      .select("token, platform")
       .eq("user_id", user_id)
-      .eq("platform", "fcm")
+
+    console.log("Tokens found:", JSON.stringify(tokens), "Error:", tokenError?.message)
 
     if (!tokens || tokens.length === 0) {
-      return new Response(JSON.stringify({ success: false, error: "No FCM tokens found" }), {
+      console.log("No tokens for user:", user_id)
+      return new Response(JSON.stringify({ success: false, error: "No tokens found" }), {
         headers: { "Content-Type": "application/json" },
       })
     }
 
+    console.log("Firebase project:", FIREBASE_PROJECT_ID)
     const accessToken = await getAccessToken()
     const results = []
 
-    for (const { token } of tokens) {
+    for (const { token, platform } of tokens) {
+      console.log("Sending to token:", token.substring(0, 20), "platform:", platform)
       const res = await fetch(
         "https://fcm.googleapis.com/v1/projects/" + FIREBASE_PROJECT_ID + "/messages:send",
         {
@@ -79,7 +82,7 @@ Deno.serve(async (req) => {
           body: JSON.stringify({
             message: {
               token: token,
-              notification: { title, body },
+              notification: { title, body: msgBody },
               data: data || {},
               android: { priority: "high" },
             },
@@ -87,6 +90,7 @@ Deno.serve(async (req) => {
         }
       )
       const result = await res.json()
+      console.log("FCM result:", JSON.stringify(result))
       results.push(result)
     }
 
@@ -94,6 +98,7 @@ Deno.serve(async (req) => {
       headers: { "Content-Type": "application/json" },
     })
   } catch (err) {
+    console.error("Error:", err.message)
     return new Response(JSON.stringify({ success: false, error: err.message }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
