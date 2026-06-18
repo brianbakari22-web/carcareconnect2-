@@ -326,9 +326,9 @@ export default function App() {
     // Hide native splash when React app is ready
     setTimeout(async () => {
       try {
-        await SplashScreen.hide({ fadeOutDuration: 500 })
+        await SplashScreen.hide({ fadeOutDuration: 800 })
       } catch(e) { console.log("Splash already hidden") }
-    }, 500)
+    }, 2000)
   }, [])
   React.useEffect(() => {
     (async () => {
