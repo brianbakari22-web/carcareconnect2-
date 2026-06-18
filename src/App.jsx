@@ -328,7 +328,7 @@ export default function App() {
       try {
         await SplashScreen.hide({ fadeOutDuration: 800 })
       } catch(e) { console.log("Splash already hidden") }
-    }, 2000)
+    }, 1800)
   }, [])
   React.useEffect(() => {
     (async () => {
