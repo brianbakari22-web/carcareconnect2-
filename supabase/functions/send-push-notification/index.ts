@@ -32,8 +32,10 @@ Deno.serve(async (req) => {
     if (tokens && tokens.length > 0) {
       payload.include_subscription_ids = tokens.map(t => t.token)
     } else {
-      // Fallback: send to all subscribed users (for testing)
-      payload.included_segments = ["Subscribed Users"]
+      console.log("No tokens found for user:", user_id)
+      return new Response(JSON.stringify({ success: false, error: "No tokens" }), {
+        headers: { "Content-Type": "application/json" }
+      })
     }
 
     const res = await fetch("https://onesignal.com/api/v1/notifications", {
