@@ -6,37 +6,47 @@ export async function initPushNotifications(userId) {
   if (!userId) return
 
   try {
-    const { FirebaseMessaging } = await import("@capacitor-firebase/messaging")
-    
-    // Request permission
-    const { receive } = await FirebaseMessaging.requestPermissions()
-    if (receive !== "granted") return
-    
-    // Get FCM token
-    const { token } = await FirebaseMessaging.getToken()
-    if (!token) return
-    
-    // Save token to database
-    await supabase.from("device_tokens").upsert({
-      user_id: userId,
-      token: token,
-      platform: "fcm",
-      updated_at: new Date().toISOString()
-    }, { onConflict: "user_id,token" })
-    
-    console.log("FCM token saved!")
+    const OneSignal = window.plugins?.OneSignal
+    if (!OneSignal) {
+      console.log("OneSignal not available")
+      return
+    }
 
-    // Listen for notifications
-    await FirebaseMessaging.addListener("notificationReceived", notification => {
-      console.log("Notification received:", notification)
-    })
+    OneSignal.initialize("8722cee5-c2e2-431c-a15d-2af78773b404")
+    await OneSignal.Notifications.requestPermission(true)
+    OneSignal.login(userId)
 
-    await FirebaseMessaging.addListener("notificationActionPerformed", event => {
-      const url = event.notification?.data?.url
-      if (url) window.location.href = url
-    })
+    // Wait for subscription token
+    setTimeout(async () => {
+      try {
+        const pushToken = OneSignal.User.pushSubscription.token
+        const subId = OneSignal.User.pushSubscription.id
+        console.log("Push token:", pushToken)
+        console.log("Sub ID:", subId)
+
+        if (pushToken) {
+          await supabase.from("device_tokens").upsert({
+            user_id: userId,
+            token: pushToken,
+            platform: "onesignal",
+            updated_at: new Date().toISOString()
+          }, { onConflict: "user_id,token" })
+          console.log("Push TOKEN saved!")
+        } else if (subId) {
+          await supabase.from("device_tokens").upsert({
+            user_id: userId,
+            token: subId,
+            platform: "onesignal",
+            updated_at: new Date().toISOString()
+          }, { onConflict: "user_id,token" })
+          console.log("Sub ID saved!")
+        }
+      } catch(e) {
+        console.error("Save token error:", e.message)
+      }
+    }, 5000)
 
   } catch (err) {
-    console.error("FCM init error:", err.message)
+    console.error("Push init error:", err.message)
   }
 }
