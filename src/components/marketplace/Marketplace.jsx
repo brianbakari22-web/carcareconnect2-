@@ -359,6 +359,7 @@ export default function Marketplace() {
 }
 
 function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInfo, offers, user, isMobile, onBack, onOffer, comments, newComment, setNewComment, userLikes, toggleLike, submitComment, submitReply, deleteComment, shareViaWhatsApp, replyingTo, setReplyingTo, replyText, setReplyText, submittingComment, loadingComments }) {
+  if (!listing) return null
   const [showOffer, setShowOffer] = useState(false)
   const [showChat, setShowChat] = useState(false)
   const [offerPrice, setOfferPrice] = useState("")
