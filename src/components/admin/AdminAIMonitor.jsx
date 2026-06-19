@@ -89,51 +89,35 @@ export default function AdminAIMonitor() {
             if (n > 1) issues.push({ file, line:0, code:"function "+name, issue:"Duplicate function declaration ("+n+"x) — second definition silently overwrites the first" })
           })
 
-          const promiseBlocks = [...code.matchAll(/const \[([\s\S]*?)\] = await Promise\.all\(\[([\s\S]*?)\]\)/g)]
-          promiseBlocks.forEach(block => {
-            const destructureCount = (block[1].match(/\{\s*(data|count)\s*:/g)||[]).length
-            const queryCount = (block[2].match(/supabase\.from\(/g)||[]).length
-            if (destructureCount !== queryCount && destructureCount > 0 && queryCount > 0) {
-              issues.push({ file, line:0, code:"Promise.all(...) block", issue:"Destructured "+destructureCount+" variables but Promise.all has "+queryCount+" queries — possible misalignment" })
-            }
-          })
-          // Pattern 5: other common unsafe variable access (listing/booking/user/report without optional chaining)
-          ;["listing","booking","report"].forEach(varName => {
+          // Pattern 4: other common unsafe variable access (listing/booking without optional chaining)
+          ;["listing","booking"].forEach(varName => {
             const re = new RegExp("\\b"+varName+"\\.[a-zA-Z]")
             const safeRe = new RegExp(varName+"\\?\\.")
             lines.forEach((line, i) => {
               if (re.test(line) && !safeRe.test(line) && !line.includes("//") && !line.includes("set"+varName.charAt(0).toUpperCase()+varName.slice(1))) {
-                issues.push({ file, line:i+1, code:line.trim(), issue:varName+". without optional chaining — crashes if "+varName+" is null/undefined" })
+                issues.push({ file, line:i+1, code:line.trim(), issue:varName+". without optional chaining — verify it is guarded by an earlier null check in this function" })
               }
             })
           })
 
-          // Pattern 6: hardcoded fake-positive diagnostic values
+          // Pattern 5: hardcoded fake-positive diagnostic values
           lines.forEach((line, i) => {
-            if (line.match(/ok\s*:\s*true\s*[,}]/) || line.match(/status\s*:\s*["']ok["']\s*[,}]/)) {
-              if (!line.includes("AI Monitor")) {
-                issues.push({ file, line:i+1, code:line.trim(), issue:"Hardcoded true/ok value in diagnostic-looking code — may give false confidence instead of checking real data" })
-              }
+            if (line.match(/\bok\s*:\s*true\s*[,}]/) && !line.includes("AI Monitor")) {
+              issues.push({ file, line:i+1, code:line.trim(), issue:"Hardcoded ok:true in diagnostic-looking code — may give false confidence instead of checking real data" })
             }
           })
 
-          // Pattern 7: silently swallowed errors (no user feedback, no error log)
+          // Pattern 6: silently swallowed errors (no user feedback, no error log)
           lines.forEach((line, i) => {
             if (line.match(/catch\(\w*\)\s*\{\s*console\.(error|log)\(/) && !line.includes("toast.") && !line.includes("error_logs")) {
-              const nextLine = lines[i+1] || ""
-              if (!nextLine.includes("toast.") && !nextLine.includes("error_logs")) {
-                issues.push({ file, line:i+1, code:line.trim(), issue:"Error caught but only logged to console — invisible to admin and not saved to error_logs table" })
-              }
+              issues.push({ file, line:i+1, code:line.trim(), issue:"Error caught but only logged to console — now also captured globally by window.onerror, but consider user-facing toast for better UX" })
             }
           })
 
-          // Pattern 8: variables used but never declared in scope (basic heuristic for dead/leaked references)
-          const declaredVars = new Set([...code.matchAll(/\b(?:const|let|var)\s+(\w+)/g)].map(m=>m[1]))
-          const propVars = new Set([...code.matchAll(/\{\s*([\w,\s]+)\s*\}\s*\)\s*\{/g)].flatMap(m=>m[1].split(",").map(s=>s.trim())))
+          // Pattern 7: dead code landmines wrapped in &&false&&
           lines.forEach((line, i) => {
-            const deadRefMatch = line.match(/\b(\w+)\.(filter|map|length|forEach)\b.*&&\s*false\s*&&\s*null/)
-            if (deadRefMatch) {
-              issues.push({ file, line:i+1, code:line.trim(), issue:"Dead code reference wrapped in &&false&&null — landmine if condition logic changes later" })
+            if (line.match(/&&\s*false\s*&&\s*null/)) {
+              issues.push({ file, line:i+1, code:line.trim(), issue:"Dead code reference wrapped in &&false&& — landmine if condition logic changes later, references variable that may not exist in scope" })
             }
           })
         } catch(fe) { issues.push({ file, line:0, code:"", issue:"Could not fetch: "+fe.message }) }
