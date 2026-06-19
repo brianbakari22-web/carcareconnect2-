@@ -97,6 +97,45 @@ export default function AdminAIMonitor() {
               issues.push({ file, line:0, code:"Promise.all(...) block", issue:"Destructured "+destructureCount+" variables but Promise.all has "+queryCount+" queries — possible misalignment" })
             }
           })
+          // Pattern 5: other common unsafe variable access (listing/booking/user/report without optional chaining)
+          ;["listing","booking","report"].forEach(varName => {
+            const re = new RegExp("\\b"+varName+"\\.[a-zA-Z]")
+            const safeRe = new RegExp(varName+"\\?\\.")
+            lines.forEach((line, i) => {
+              if (re.test(line) && !safeRe.test(line) && !line.includes("//") && !line.includes("set"+varName.charAt(0).toUpperCase()+varName.slice(1))) {
+                issues.push({ file, line:i+1, code:line.trim(), issue:varName+". without optional chaining — crashes if "+varName+" is null/undefined" })
+              }
+            })
+          })
+
+          // Pattern 6: hardcoded fake-positive diagnostic values
+          lines.forEach((line, i) => {
+            if (line.match(/ok\s*:\s*true\s*[,}]/) || line.match(/status\s*:\s*["']ok["']\s*[,}]/)) {
+              if (!line.includes("AI Monitor")) {
+                issues.push({ file, line:i+1, code:line.trim(), issue:"Hardcoded true/ok value in diagnostic-looking code — may give false confidence instead of checking real data" })
+              }
+            }
+          })
+
+          // Pattern 7: silently swallowed errors (no user feedback, no error log)
+          lines.forEach((line, i) => {
+            if (line.match(/catch\(\w*\)\s*\{\s*console\.(error|log)\(/) && !line.includes("toast.") && !line.includes("error_logs")) {
+              const nextLine = lines[i+1] || ""
+              if (!nextLine.includes("toast.") && !nextLine.includes("error_logs")) {
+                issues.push({ file, line:i+1, code:line.trim(), issue:"Error caught but only logged to console — invisible to admin and not saved to error_logs table" })
+              }
+            }
+          })
+
+          // Pattern 8: variables used but never declared in scope (basic heuristic for dead/leaked references)
+          const declaredVars = new Set([...code.matchAll(/\b(?:const|let|var)\s+(\w+)/g)].map(m=>m[1]))
+          const propVars = new Set([...code.matchAll(/\{\s*([\w,\s]+)\s*\}\s*\)\s*\{/g)].flatMap(m=>m[1].split(",").map(s=>s.trim())))
+          lines.forEach((line, i) => {
+            const deadRefMatch = line.match(/\b(\w+)\.(filter|map|length|forEach)\b.*&&\s*false\s*&&\s*null/)
+            if (deadRefMatch) {
+              issues.push({ file, line:i+1, code:line.trim(), issue:"Dead code reference wrapped in &&false&&null — landmine if condition logic changes later" })
+            }
+          })
         } catch(fe) { issues.push({ file, line:0, code:"", issue:"Could not fetch: "+fe.message }) }
       }
       setCodeScan({ issues, scannedAt:new Date().toLocaleString(), filesScanned:files.length })
