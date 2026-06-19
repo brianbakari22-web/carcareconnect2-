@@ -78,14 +78,14 @@ export default function AdminDashboard() {
   async function load() {
     const [
       { data: profiles },
+      { data: emergencyAlerts },
       { data: bookings },
       { data: driverStatus },
       { data: recentBookings },
       { data: recentUsers },
-    { data: recentOrders },
+      { data: recentOrders },
       { data: inventoryItems },
       { data: commissionRates },
-      { data: emergencyAlerts },
     ] = await Promise.all([
       supabase.from("profiles").select("role,created_at,is_active"),
       supabase.from("emergency_alerts").select("*").eq("status","active").order("created_at",{ascending:false}),
@@ -209,7 +209,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Hero Banner */}
-      <div style={{ position:"relative", background:"#e6821e", border:"0.5px solid #eee", borderRadius:isMobile?10:16, overflow:"hidden", marginBottom:"1rem" }}>
+      <div style={{ position:"relative", background:"#ffffff", border:"1px solid #eeeeee", borderRadius:isMobile?10:16, overflow:"hidden", marginBottom:"1rem", boxShadow:"0 2px 12px rgba(0,0,0,0.04)" }}>
         <NetworkCanvas />
         <div style={{ position:"relative", zIndex:1, padding:isMobile?"1rem":"2rem 1.5rem", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:10 }}>
           <div>
