@@ -355,6 +355,23 @@ INVENTORY & ORDERS:
 - Orders system: LIVE and operational
 - Delivery zones configured: YES
 
+ENGAGEMENT & COMMUNICATION:
+- Total notifications sent (all-time): ${platformData.total_notifications}
+- Total chat messages exchanged: ${platformData.total_chat_messages}
+- Total loyalty point transactions: ${platformData.total_loyalty_points}
+- Push notification tokens registered: ${platformData.total_device_tokens}
+- Support messages exchanged: ${platformData.total_support_messages}
+
+FINANCIAL & PROMOTIONS:
+- Total payment records: ${platformData.total_payments}
+- Promo codes created: ${platformData.total_promo_codes}
+- Vouchers issued: ${platformData.total_vouchers_issued}
+
+GROWTH:
+- Driver documents uploaded: ${platformData.total_driver_docs}
+- Favorites/wishlist saves: ${platformData.total_favorites}
+- Referrals made: ${platformData.total_referrals}
+
 PLATFORM CONTEXT:
 Provider types: garage, parts_dealer, accessories_shop, tyre_shop, auto_electrician, car_wash, panel_beater, auto_glass
 Driver vehicle types: car, motorcycle (boda boda), tuktuk, van
