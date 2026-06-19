@@ -124,6 +124,29 @@ export default function AdminDrivers() {
     }
   }
 
+  async function rejectDriver(driverId) {
+    if (!rejectReason.trim()) return toast.error("Please add a rejection reason")
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ documents_verified: false, is_active: false })
+        .eq("id", driverId)
+      if (error) throw error
+      await supabase.from("notifications").insert({
+        user_id: driverId,
+        title: "Verification rejected ❌",
+        message: "Your driver verification was rejected: " + rejectReason + ". Please update your documents and resubmit.",
+        type: "error",
+      })
+      toast.success("Driver rejected and notified")
+      setRejectingId(null)
+      setRejectReason("")
+      loadDrivers()
+    } catch(err) {
+      toast.error(err.message)
+    }
+  }
+
   async function suspendDriver(driverId, suspend) {
     const { error } = await supabase.from("profiles").update({ is_active:!suspend }).eq("id",driverId)
     if (error) return toast.error(error.message)
@@ -463,19 +486,6 @@ function DriverStats({ driverId, isMobile }) {
 
   return (
     <div style={{ marginTop:12, paddingTop:12, borderTop:"1px solid #eeeeee" }}>
-      {/* Live Driver Map Toggle */}
-      <div style={{ marginBottom:"1rem" }}>
-        <button onClick={()=>setShowMap(!showMap)}
-          style={{ background:showMap?"#378add":"#f0f0f0", border:"none", borderRadius:8, color:showMap?"#fff":"#555", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>
-          {showMap?"🗺️ Hide Map":"🗺️ Live Driver Map (" + onlineDrivers.length + " online)"}
-        </button>
-      </div>
-      {showMap&&(
-        <div style={{ marginBottom:"1rem" }}>
-          <div ref={mapRef} style={{ width:"100%", height:350, borderRadius:12, overflow:"hidden", border:"1px solid #eeeeee", background:"#f5f5f5" }}/>
-          <div style={{ fontSize:11, color:"#888", marginTop:6 }}>Auto-refreshes every 15s · {onlineDrivers.length} driver{onlineDrivers.length!==1?"s":""} currently online</div>
-        </div>
-      )}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8, marginBottom:12 }}>
         {[
           { label:"Total jobs", value:stats.total, color:"#000000" },
