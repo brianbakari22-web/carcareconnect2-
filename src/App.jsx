@@ -7,15 +7,55 @@ import MechanicLogin from "./components/mechanic/MechanicLogin"
 import MechanicDashboard from "./components/mechanic/MechanicDashboard"
 import { MechanicAuthProvider } from "./contexts/MechanicAuthContext"
 
-// Global error handler to catch profile undefined
+// Global error handler - logs ALL uncaught errors to error_logs table for admin Live Error Tracker
 if (typeof window !== "undefined") {
   window.onerror = function(msg, src, line, col, error) {
-    if (msg.includes("profile is not defined")) {
-      console.error("PROFILE ERROR CAUGHT:", { msg, src, line, col, stack: error?.stack })
-      document.title = "ERROR: " + line + ":" + col
-    }
+    try {
+      import("./lib/supabase").then(({ supabase }) => {
+        supabase.auth.getUser().then(({ data: { user } }) => {
+          supabase.from("error_logs").insert({
+            user_id: user?.id || null,
+            error_message: String(msg).substring(0, 1000),
+            error_source: src || "unknown",
+            error_line: line || 0,
+            error_col: col || 0,
+            page_url: window.location.href,
+          }).then(() => {}).catch(()=>{})
+        }).catch(()=>{
+          supabase.from("error_logs").insert({
+            user_id: null,
+            error_message: String(msg).substring(0, 1000),
+            error_source: src || "unknown",
+            error_line: line || 0,
+            error_col: col || 0,
+            page_url: window.location.href,
+          }).then(() => {}).catch(()=>{})
+        })
+      }).catch(()=>{})
+    } catch(_) {}
+    console.error("UNCAUGHT ERROR:", { msg, src, line, col, stack: error?.stack })
+    return false
   }
+
+  window.addEventListener("unhandledrejection", function(event) {
+    try {
+      import("./lib/supabase").then(({ supabase }) => {
+        supabase.auth.getUser().then(({ data: { user } }) => {
+          supabase.from("error_logs").insert({
+            user_id: user?.id || null,
+            error_message: ("Unhandled promise rejection: " + (event.reason?.message || event.reason || "unknown")).substring(0, 1000),
+            error_source: "promise",
+            error_line: 0,
+            error_col: 0,
+            page_url: window.location.href,
+          }).then(() => {}).catch(()=>{})
+        }).catch(()=>{})
+      }).catch(()=>{})
+    } catch(_) {}
+    console.error("UNHANDLED REJECTION:", event.reason)
+  })
 }
+
 import { Toaster } from "react-hot-toast"
 import { AuthProvider, useAuth } from "./contexts/AuthContext"
 import { LanguageProvider } from "./contexts/LanguageContext"
