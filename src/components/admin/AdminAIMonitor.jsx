@@ -22,24 +22,6 @@ export default function AdminAIMonitor() {
     setLoadingErrors(true)
     try {
       const { data } = await supabase.from("error_logs")
-        .select("*")
-        .order("created_at", { ascending:false })
-        .limit(20)
-      setErrorLogs(data||[])
-    } catch(e) { console.error(e) }
-    finally { setLoadingErrors(false) }
-  }
-
-  async function clearErrorLogs() {
-    await supabase.from("error_logs").delete().neq("id","00000000-0000-0000-0000-000000000000")
-    setErrorLogs([])
-    toast.success("Error logs cleared")
-  }
-
-  async function loadErrorLogs() {
-    setLoadingErrors(true)
-    try {
-      const { data } = await supabase.from("error_logs")
         .select("*").order("created_at",{ascending:false}).limit(30)
       setErrorLogs(data||[])
     } catch(e) { console.error(e) }
@@ -237,6 +219,17 @@ export default function AdminAIMonitor() {
       const { count: totalTransactions } = await supabase.from("marketplace_transactions").select("id",{count:"exact",head:true})
       const { count: paidTransactions } = await supabase.from("marketplace_transactions").select("id",{count:"exact",head:true}).eq("status","completed")
       const { count: totalEmployees } = await supabase.from("employees").select("id",{count:"exact",head:true})
+      const { count: totalNotifications } = await supabase.from("notifications").select("id",{count:"exact",head:true})
+      const { count: totalChatMessages } = await supabase.from("chat_messages").select("id",{count:"exact",head:true})
+      const { count: totalLoyaltyPoints } = await supabase.from("loyalty_points").select("id",{count:"exact",head:true})
+      const { count: totalPayments } = await supabase.from("payments").select("id",{count:"exact",head:true})
+      const { count: totalPromoCodes } = await supabase.from("promo_codes").select("id",{count:"exact",head:true})
+      const { count: totalVouchersIssued } = await supabase.from("vouchers").select("id",{count:"exact",head:true})
+      const { count: totalDriverDocs } = await supabase.from("driver_documents").select("id",{count:"exact",head:true})
+      const { count: totalSupportMessages } = await supabase.from("support_messages").select("id",{count:"exact",head:true})
+      const { count: totalFavorites } = await supabase.from("favorites").select("id",{count:"exact",head:true})
+      const { count: totalReferrals } = await supabase.from("referrals").select("id",{count:"exact",head:true})
+      const { count: totalDeviceTokens } = await supabase.from("device_tokens").select("id",{count:"exact",head:true})
 
       const platformData = {
         api_health: apiHealth,
@@ -268,6 +261,17 @@ export default function AdminAIMonitor() {
         total_marketplace_transactions: totalTransactions||0,
         completed_marketplace_transactions: paidTransactions||0,
         total_employees: totalEmployees||0,
+        total_notifications: totalNotifications||0,
+        total_chat_messages: totalChatMessages||0,
+        total_loyalty_points: totalLoyaltyPoints||0,
+        total_payments: totalPayments||0,
+        total_promo_codes: totalPromoCodes||0,
+        total_vouchers_issued: totalVouchersIssued||0,
+        total_driver_docs: totalDriverDocs||0,
+        total_support_messages: totalSupportMessages||0,
+        total_favorites: totalFavorites||0,
+        total_referrals: totalReferrals||0,
+        total_device_tokens: totalDeviceTokens||0,
         boda_boda_drivers: bodaBodaDrivers||0,
         parts_inventory_items: partsInventory||0,
         pending_orders: pendingOrders||0,
@@ -500,8 +504,7 @@ Be specific and actionable. Max 300 words. Use bullet points.`
                         Cancel {report.platformData.stuck_bookings} stuck bookings
                       </button>
                     )}
-                    {report.platformData.stuck_bookings===0&&orders.filter&&false&&null}
-                    {report.platformData.inactive_customers_30days>0&&(
+                                        {report.platformData.inactive_customers_30days>0&&(
                       <button onClick={async()=>{
                         if(!confirm("Send re-engagement notification to "+report.platformData.inactive_customers_30days+" inactive customers?")) return
                         const { data: inactive } = await supabase.from("profiles").select("id").eq("role","customer").lt("updated_at", new Date(Date.now()-30*24*60*60*1000).toISOString())
@@ -534,19 +537,25 @@ Be specific and actionable. Max 300 words. Use bullet points.`
                     { f:"Driver verification", ok:report.platformData.verified_drivers>0 },
                     { f:"Reviews", ok:report.platformData.total_reviews>0 },
                     { f:"Service claims", ok:report.platformData.total_claims>=0 },
-                    { f:"Notifications", ok:true },
-                    { f:"Chat system", ok:true },
-                    { f:"Loyalty points", ok:true },
+                    { f:"Notifications", ok:report.platformData.total_notifications>0 },
+                    { f:"Chat system", ok:report.platformData.total_chat_messages>0 },
+                    { f:"Loyalty points", ok:report.platformData.total_loyalty_points>0 },
                     { f:"Marketplace inspect", ok:report.platformData.total_listings>0 },
-                    { f:"Employee mgmt", ok:report.platformData.total_employees>=0 },
-                    { f:"Payment tracking", ok:true },
+                    { f:"Employee mgmt", ok:report.platformData.total_employees>0 },
+                    { f:"Payment tracking", ok:report.platformData.total_payments>0 },
                     { f:"AI Monitor", ok:true },
-                    { f:"Provider types", ok:true },
+                    { f:"Provider types", ok:Object.keys(report.platformData.provider_type_breakdown||{}).length>0 },
                     { f:"Boda boda drivers", ok:report.platformData.boda_boda_drivers>=0 },
                     { f:"Inventory system", ok:report.platformData.parts_inventory_items>=0 },
-                    { f:"Parts marketplace", ok:true },
-                    { f:"Order management", ok:true },
-                    { f:"Driver deliveries", ok:true },
+                    { f:"Parts marketplace", ok:report.platformData.total_marketplace_transactions>=0 },
+                    { f:"Order management", ok:report.platformData.pending_orders>=0 },
+                    { f:"Promo codes", ok:report.platformData.total_promo_codes>0 },
+                    { f:"Vouchers", ok:report.platformData.total_vouchers_issued>0 },
+                    { f:"Driver documents", ok:report.platformData.total_driver_docs>0 },
+                    { f:"Support messages", ok:report.platformData.total_support_messages>0 },
+                    { f:"Favorites/wishlist", ok:report.platformData.total_favorites>0 },
+                    { f:"Referral program", ok:report.platformData.total_referrals>0 },
+                    { f:"Push notifications", ok:report.platformData.total_device_tokens>0 },
                   ].map(item=>(
                     <div key={item.f} style={{ display:"flex", alignItems:"center", gap:6, padding:"4px 0" }}>
                       <span style={{ fontSize:10, color:item.ok?"#1d9e75":"#e24b4a", flexShrink:0 }}>{item.ok?"✅":"❌"}</span>
