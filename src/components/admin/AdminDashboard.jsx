@@ -88,7 +88,7 @@ export default function AdminDashboard() {
       { data: commissionRates },
     ] = await Promise.all([
       supabase.from("profiles").select("role,created_at,is_active"),
-      supabase.from("emergency_alerts").select("*, profiles(emergency_contact_phone,emergency_contact_name)").eq("status","active").order("created_at",{ascending:false}),
+      supabase.from("emergency_alerts").select("*").eq("status","active").order("created_at",{ascending:false}),
       supabase.from("bookings").select("status,total_amount,created_at,booking_date,service_name,customer_id"),
       supabase.from("driver_status").select("is_online").eq("is_online", true),
       supabase.from("bookings").select("id,service_name,status,total_amount,created_at").order("created_at",{ascending:false}).limit(8),
@@ -102,7 +102,15 @@ export default function AdminDashboard() {
     const bks = bookings||[]
     const completed = bks.filter(b=>b.status==="completed")
 
-    setSosAlerts(emergencyAlerts||[])
+    if (emergencyAlerts && emergencyAlerts.length > 0) {
+      const userIds = emergencyAlerts.map(a=>a.user_id)
+      const { data: sensitiveData } = await supabase.from("profile_sensitive").select("id,phone").in("id", userIds)
+      const phoneMap = {}
+      ;(sensitiveData||[]).forEach(s => { phoneMap[s.id] = s.phone })
+      setSosAlerts(emergencyAlerts.map(a => ({...a, contact_phone: phoneMap[a.user_id]})))
+    } else {
+      setSosAlerts([])
+    }
     setStats({
       users: ps.length,
       customers: ps.filter(p=>p.role==="customer").length,
@@ -172,10 +180,10 @@ export default function AdminDashboard() {
                 <div style={{ fontSize:11, color:"#888" }}>{new Date(a.created_at).toLocaleString()}</div>
               </div>
               <div style={{ display:"flex", gap:6 }}>
-                {a.profiles?.emergency_contact_phone&&(
-                  <a href={`tel:${a.profiles.emergency_contact_phone}`}
+                {a.contact_phone&&(
+                  <a href={`tel:${a.contact_phone}`}
                     style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 10px", textDecoration:"none", fontWeight:700 }}>
-                    📞 Call emergency contact
+                    📞 Call now
                   </a>
                 )}
                 {a.latitude&&(

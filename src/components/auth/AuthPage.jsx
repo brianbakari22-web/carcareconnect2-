@@ -323,7 +323,7 @@ export default function AuthPage() {
                   </>
                 )}
                 <label style={lbl}>Phone number</label>
-                <input style={inp} placeholder="+254 700 000 000" value={form.phone} onChange={e=>setForm(f=>({...f,phone:e.target.value}))}/>
+                <input style={inp} placeholder="+254 700 000 000" value={form.phone} onChange={e=>setForm(f=>({...f,phone:e.target.value}))} required/>
               </>
             )}
 
