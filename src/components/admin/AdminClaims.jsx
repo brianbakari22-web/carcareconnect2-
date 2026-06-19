@@ -22,6 +22,7 @@ export default function AdminClaims() {
   const [adminNotes, setAdminNotes] = useState("")
   const [processing, setProcessing] = useState(false)
   const [chattingWith, setChattingWith] = useState(null) // {claimId, userId, name, role}
+  const [claimMessages, setClaimMessages] = useState([])
 
   useEffect(() => {
     load()
@@ -42,9 +43,6 @@ export default function AdminClaims() {
     setClaimMessages(data||[])
   }
 
-  async function loadClaimMessages() {
-    supabase.from("chat_messages").select("*, profiles!chat_messages_sender_id_fkey(first_name,last_name,role)").not("claim_id","is",null).eq("is_read",false).neq("sender_id",user.id).order("created_at",{ascending:false}).then(({data})=>setClaimMessages(data||[]))
-  }
 
   async function load() {
     const [{ data: cls }, { data: pens }] = await Promise.all([
@@ -164,63 +162,6 @@ export default function AdminClaims() {
       setAdminNotes("")
       load()
     } catch(err) {
-      toast.error(err.message)
-    } finally {
-      setProcessing(false)
-    }
-  }
-
-  async function issueCashRefund(claim) {
-    if (!adminNotes) return toast.error("Please add reason for cash refund exception")
-    if (!confirm(`Issue cash refund of KES ${Number(claim.bookings?.total_amount||0).toLocaleString()} to customer? This is an exception — use only when voucher is not appropriate.`)) return
-    setProcessing(true)
-    try {
-      const amount = Number(claim.bookings?.total_amount||0)
-      await Promise.all([
-        supabase.from("service_claims").update({ status:"approved", admin_notes:`CASH REFUND EXCEPTION: ${adminNotes}`, resolved_by:user.id, resolved_at:new Date().toISOString() }).eq("id",claim.id),
-        supabase.from("refunds").insert({
-          booking_id: claim.booking_id,
-          customer_id: claim.customer_id,
-          amount: amount,
-          reason: `Service Guarantee cash refund exception: ${adminNotes}`,
-          status: "approved",
-          approved_by: user.id,
-        }),
-        supabase.from("notifications").insert({
-          user_id: claim.customer_id,
-          title: "Cash refund approved 💰",
-          message: `As an exception, a cash refund of KES ${amount.toLocaleString()} has been approved for your claim. Please allow 3-5 business days for processing.`,
-          type: "success",
-        }),
-        supabase.from("provider_penalties").insert({
-          provider_id: claim.provider_id,
-          claim_id: claim.id,
-          penalty_type: "deduction",
-          amount_deducted: amount,
-          reason: `Cash refund issued to customer — ${claim.reason}`,
-          is_active: true,
-          applied_by: user.id,
-        }),
-        supabase.from("notifications").insert({
-          user_id: claim.provider_id,
-          title: "Cash refund issued against you ⚠️",
-          message: `A cash refund of KES ${amount.toLocaleString()} has been issued to a customer due to: ${claim.reason}. This amount will be deducted from your earnings.`,
-          type: "error",
-        }),
-      ])
-      toast.success("Cash refund approved and recorded")
-      setSelected(null)
-      setAdminNotes("")
-      load()
-    } catch(err) {
-      toast.error(err.message)
-    } finally {
-      setProcessing(false)
-    }
-  }
-
-  async function rejectClaimOLD(claimId) {
-    try {} catch(err) {
       toast.error(err.message)
     } finally {
       setProcessing(false)
