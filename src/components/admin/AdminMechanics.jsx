@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import useIsMobile from "../../lib/useIsMobile"
+import toast from "react-hot-toast"
 
 const CATEGORIES = {
   shop_standard: { label:"Shop Standard", icon:"🏪", color:"#378add", bg:"#eff6ff" },
@@ -19,6 +20,8 @@ export default function AdminMechanics() {
   const [services, setServices] = useState([])
   const [bookings, setBookings] = useState([])
   const [goRequests, setGoRequests] = useState([])
+  const [mechanicDocs, setMechanicDocs] = useState({})
+  const [showDocs, setShowDocs] = useState(null)
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
   const [filter, setFilter] = useState("all")
