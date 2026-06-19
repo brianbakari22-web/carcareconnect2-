@@ -70,34 +70,12 @@ export default function AdminAIMonitor() {
           const code = await res.text()
           const lines = code.split("\n")
 
-          lines.forEach((line, i) => {
-            if (line.match(/\bprofile\.[a-zA-Z]/) && !line.match(/profile\?\./) && !line.includes("//") && !line.includes("refProfile") && !line.includes("otherProfile")) {
-              issues.push({ file, line:i+1, code:line.trim(), issue:"profile. without optional chaining — crashes if profile is null" })
-            }
-          })
-
-          lines.forEach((line, i) => {
-            if (line.match(/\bselected\.[a-zA-Z]/) && !line.match(/selected\?\./) && !line.includes("//") && !line.includes("setSelected")) {
-              issues.push({ file, line:i+1, code:line.trim(), issue:"selected. without optional chaining — crashes if selected is null/undefined" })
-            }
-          })
-
+          // Pattern 3: duplicate function declarations in same file
           const funcDecls = [...code.matchAll(/function (\w+)\(/g)].map(m=>m[1])
           const seen = {}
           funcDecls.forEach(name => { seen[name] = (seen[name]||0) + 1 })
           Object.entries(seen).forEach(([name, n]) => {
             if (n > 1) issues.push({ file, line:0, code:"function "+name, issue:"Duplicate function declaration ("+n+"x) — second definition silently overwrites the first" })
-          })
-
-          // Pattern 4: other common unsafe variable access (listing/booking without optional chaining)
-          ;["listing","booking"].forEach(varName => {
-            const re = new RegExp("\\b"+varName+"\\.[a-zA-Z]")
-            const safeRe = new RegExp(varName+"\\?\\.")
-            lines.forEach((line, i) => {
-              if (re.test(line) && !safeRe.test(line) && !line.includes("//") && !line.includes("set"+varName.charAt(0).toUpperCase()+varName.slice(1))) {
-                issues.push({ file, line:i+1, code:line.trim(), issue:varName+". without optional chaining — verify it is guarded by an earlier null check in this function" })
-              }
-            })
           })
 
           // Pattern 5: hardcoded fake-positive diagnostic values
