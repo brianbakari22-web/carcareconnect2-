@@ -39,13 +39,28 @@ export default function AdminAIMonitor() {
     try {
       const files = [
         "src/App.jsx",
+        "src/contexts/AuthContext.jsx",
+        "src/contexts/MechanicAuthContext.jsx",
         "src/components/shared/Layout.jsx",
+        "src/components/shared/EmergencySOS.jsx",
+        "src/components/shared/AIAssistant.jsx",
+        "src/components/admin/AdminDashboard.jsx",
+        "src/components/admin/AdminAIMonitor.jsx",
         "src/components/provider/ProviderDashboard.jsx",
         "src/components/provider/ProviderProfile.jsx",
-        "src/components/driver/DriverProfile.jsx",
-        "src/components/customer/CustomerProfile.jsx",
-        "src/contexts/AuthContext.jsx",
+        "src/components/provider/ProviderBookings.jsx",
         "src/components/provider/ProviderPartsManager.jsx",
+        "src/components/provider/ProviderGoRequests.jsx",
+        "src/components/provider/ProviderMechanics.jsx",
+        "src/components/driver/DriverProfile.jsx",
+        "src/components/driver/DriverDashboard.jsx",
+        "src/components/driver/DriverActiveDelivery.jsx",
+        "src/components/customer/CustomerProfile.jsx",
+        "src/components/customer/CustomerGoService.jsx",
+        "src/components/mechanic/MechanicDashboard.jsx",
+        "src/components/marketplace/Marketplace.jsx",
+        "src/components/marketplace/MyListings.jsx",
+        "src/lib/pushNotifications.js",
       ]
       const issues = []
       for (const file of files) {
@@ -54,9 +69,32 @@ export default function AdminAIMonitor() {
           if (!res.ok) continue
           const code = await res.text()
           const lines = code.split("\n")
+
           lines.forEach((line, i) => {
             if (line.match(/\bprofile\.[a-zA-Z]/) && !line.match(/profile\?\./) && !line.includes("//") && !line.includes("refProfile") && !line.includes("otherProfile")) {
               issues.push({ file, line:i+1, code:line.trim(), issue:"profile. without optional chaining — crashes if profile is null" })
+            }
+          })
+
+          lines.forEach((line, i) => {
+            if (line.match(/\bselected\.[a-zA-Z]/) && !line.match(/selected\?\./) && !line.includes("//") && !line.includes("setSelected")) {
+              issues.push({ file, line:i+1, code:line.trim(), issue:"selected. without optional chaining — crashes if selected is null/undefined" })
+            }
+          })
+
+          const funcDecls = [...code.matchAll(/function (\w+)\(/g)].map(m=>m[1])
+          const seen = {}
+          funcDecls.forEach(name => { seen[name] = (seen[name]||0) + 1 })
+          Object.entries(seen).forEach(([name, n]) => {
+            if (n > 1) issues.push({ file, line:0, code:"function "+name, issue:"Duplicate function declaration ("+n+"x) — second definition silently overwrites the first" })
+          })
+
+          const promiseBlocks = [...code.matchAll(/const \[([\s\S]*?)\] = await Promise\.all\(\[([\s\S]*?)\]\)/g)]
+          promiseBlocks.forEach(block => {
+            const destructureCount = (block[1].match(/\{\s*(data|count)\s*:/g)||[]).length
+            const queryCount = (block[2].match(/supabase\.from\(/g)||[]).length
+            if (destructureCount !== queryCount && destructureCount > 0 && queryCount > 0) {
+              issues.push({ file, line:0, code:"Promise.all(...) block", issue:"Destructured "+destructureCount+" variables but Promise.all has "+queryCount+" queries — possible misalignment" })
             }
           })
         } catch(fe) { issues.push({ file, line:0, code:"", issue:"Could not fetch: "+fe.message }) }
