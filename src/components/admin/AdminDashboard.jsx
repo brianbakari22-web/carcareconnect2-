@@ -88,7 +88,7 @@ export default function AdminDashboard() {
       { data: commissionRates },
     ] = await Promise.all([
       supabase.from("profiles").select("role,created_at,is_active"),
-      supabase.from("emergency_alerts").select("*").eq("status","active").order("created_at",{ascending:false}),
+      supabase.from("emergency_alerts").select("*, profiles(phone)").eq("status","active").order("created_at",{ascending:false}),
       supabase.from("bookings").select("status,total_amount,created_at,booking_date,service_name,customer_id"),
       supabase.from("driver_status").select("is_online").eq("is_online", true),
       supabase.from("bookings").select("id,service_name,status,total_amount,created_at").order("created_at",{ascending:false}).limit(8),
@@ -172,6 +172,12 @@ export default function AdminDashboard() {
                 <div style={{ fontSize:11, color:"#888" }}>{new Date(a.created_at).toLocaleString()}</div>
               </div>
               <div style={{ display:"flex", gap:6 }}>
+                {a.profiles?.phone&&(
+                  <a href={`tel:${a.profiles.phone}`}
+                    style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 10px", textDecoration:"none", fontWeight:700 }}>
+                    📞 Call now
+                  </a>
+                )}
                 {a.latitude&&(
                   <a href={`https://maps.google.com/?q=${a.latitude},${a.longitude}`} target="_blank" rel="noreferrer"
                     style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"6px 10px", textDecoration:"none" }}>
@@ -180,6 +186,12 @@ export default function AdminDashboard() {
                 )}
                 <button onClick={async()=>{
                   await supabase.from("emergency_alerts").update({status:"resolved",resolved_at:new Date().toISOString()}).eq("id",a.id)
+                  await supabase.from("notifications").insert({
+                    user_id: a.user_id,
+                    title: "Help is on the way ✅",
+                    message: "An admin has seen your emergency alert and is responding. Stay safe.",
+                    type: "info"
+                  })
                   load()
                 }}
                   style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 10px", cursor:"pointer" }}>
