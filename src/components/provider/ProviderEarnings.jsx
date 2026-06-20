@@ -7,7 +7,7 @@ import { useAuth } from "../../contexts/AuthContext"
 
 export default function ProviderEarnings() {
   const isMobile = useIsMobile()
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const { t, language } = useLanguage()
   const [bookings, setBookings] = useState([])
   const [loading, setLoading] = useState(true)
