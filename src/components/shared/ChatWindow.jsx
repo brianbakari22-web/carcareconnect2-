@@ -136,10 +136,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
 
   }
 
-  async function deleteMessage(id) {
-    await supabase.from("chat_messages").delete().eq("id", id).eq("sender_id", effectiveUserId)
-    setMessages(prev => prev.filter(m => m.id!==id))
-  }
+  
 
   async function deleteMessage(id) {
     if (!confirm("Delete this message?")) return

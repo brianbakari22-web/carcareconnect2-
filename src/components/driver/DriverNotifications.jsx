@@ -52,10 +52,7 @@ export default function DriverNotifications() {
     toast.success("All marked as read")
   }
 
-  async function deleteNotif(id) {
-    await supabase.from("notifications").delete().eq("id", id).eq("user_id", user.id)
-    setNotifications(n => n.filter(x => x.id!==id))
-  }
+  
 
   const unread = notifications.filter(n=>!n.is_read).length
   const typeIcon = { info:"🔔", success:"✅", warning:"⚠️", error:"❌" }
