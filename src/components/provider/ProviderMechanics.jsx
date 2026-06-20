@@ -71,9 +71,7 @@ export default function ProviderMechanics() {
         first_name: form.first_name,
         last_name: form.last_name,
         phone: form.phone,
-        email: form.email||null,
         specialization: form.specialization,
-        hourly_rate: Number(form.hourly_rate)||0,
         is_active: true,
         is_available: true,
       })
