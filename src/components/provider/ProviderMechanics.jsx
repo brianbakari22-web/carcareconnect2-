@@ -49,11 +49,6 @@ export default function ProviderMechanics() {
     if (!form.first_name.trim()||!form.phone.trim()) return toast.error("Name and phone required")
     setSubmitting(true)
     try {
-      // Create auth user for mechanic
-      const { data: authData, error: authError } = await supabase.auth.admin?.createUser({
-        phone: form.phone, email: form.email||undefined, email_confirm: true
-      }).catch(()=>({data:null,error:{message:"Using profile method"}}))
-
       // Create real auth account + profile via Edge Function (profiles.id requires a genuine auth.users row)
       const accountRes = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/create-mechanic-account", {
         method: "POST",

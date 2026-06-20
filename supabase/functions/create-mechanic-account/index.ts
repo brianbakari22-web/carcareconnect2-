@@ -1,13 +1,23 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+}
+
 Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders })
+  }
+
   try {
     const { first_name, last_name, phone, email, provider_id } = await req.json()
 
     if (!first_name || !provider_id) {
       return new Response(JSON.stringify({ success: false, error: "Missing required fields" }), {
         status: 400,
-        headers: { "Content-Type": "application/json" }
+        headers: { ...corsHeaders, "Content-Type": "application/json" }
       })
     }
 
@@ -28,14 +38,12 @@ Deno.serve(async (req) => {
       console.error("Auth user creation error:", authError.message)
       return new Response(JSON.stringify({ success: false, error: authError.message }), {
         status: 400,
-        headers: { "Content-Type": "application/json" }
+        headers: { ...corsHeaders, "Content-Type": "application/json" }
       })
     }
 
     const userId = authData.user.id
 
-    // A database trigger auto-creates the profiles row from user_metadata on auth.users insert.
-    // Give it a brief moment, then update it with any fields the trigger might not set (business_name).
     await new Promise(resolve => setTimeout(resolve, 500))
 
     const { error: profileError } = await supabase.from("profiles")
@@ -46,7 +54,6 @@ Deno.serve(async (req) => {
       console.error("Profile update error:", profileError.message)
     }
 
-    // Save phone to profile_sensitive
     const { error: sensitiveError } = await supabase.from("profile_sensitive").upsert({
       id: userId,
       phone: phone || null,
@@ -58,13 +65,13 @@ Deno.serve(async (req) => {
     }
 
     return new Response(JSON.stringify({ success: true, user_id: userId }), {
-      headers: { "Content-Type": "application/json" }
+      headers: { ...corsHeaders, "Content-Type": "application/json" }
     })
   } catch (err) {
     console.error("Error:", err.message)
     return new Response(JSON.stringify({ success: false, error: err.message }), {
       status: 500,
-      headers: { "Content-Type": "application/json" }
+      headers: { ...corsHeaders, "Content-Type": "application/json" }
     })
   }
 })
