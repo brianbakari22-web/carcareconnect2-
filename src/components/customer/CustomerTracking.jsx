@@ -3,6 +3,7 @@ import { supabase } from "../../lib/supabase"
 import { getCurrentPosition } from "../../lib/geolocation"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
+import toast from "react-hot-toast"
 
 const CONCIERGE_STEPS = [
   { key:"accepted", label:"Driver assigned", color:"#378add" },
