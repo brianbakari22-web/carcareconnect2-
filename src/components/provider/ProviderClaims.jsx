@@ -129,7 +129,7 @@ export default function ProviderClaims() {
                     <div style={{ height:280, marginTop:8 }}>
                       <ChatWindow
                         claimId={c.id}
-                        otherUserId={null}
+                        otherUserId={adminId}
                         otherUserName="CCC Admin"
                         onClose={()=>setChatClaim(null)}
                       />
@@ -148,7 +148,7 @@ export default function ProviderClaims() {
                   </button>
                   {chatClaim===c.id&&(
                     <div style={{ height:280, marginTop:8 }}>
-                      <ChatWindow claimId={c.id} otherUserId={null} otherUserName="CCC Admin" onClose={()=>setChatClaim(null)}/>
+                      <ChatWindow claimId={c.id} otherUserId={adminId} otherUserName="CCC Admin" onClose={()=>setChatClaim(null)}/>
                     </div>
                   )}
                 </div>
