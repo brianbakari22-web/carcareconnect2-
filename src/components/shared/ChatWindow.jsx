@@ -18,6 +18,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, 
   const chatId = bookingId || listingId || claimId || mechanicId
 
   useEffect(() => {
+    console.log("ChatWindow mount - effectiveUserId:", effectiveUserId, "chatId:", chatId, "mechanicId:", mechanicId, "otherUserId:", otherUserId)
     if (!effectiveUserId || !chatId) return
     load()
     markRead()
