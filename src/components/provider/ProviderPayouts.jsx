@@ -174,19 +174,46 @@ export default function ProviderPayouts() {
           {payouts.length>0&&(
             <div>
               <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:10, color:"#000000" }}>Payout history</div>
-              {payouts.map(p=>(
-                <div key={p.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
-                  <div style={{ flex:1 }}>
-                    <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>KES {Number(p.amount).toLocaleString()}</div>
-                    <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>{p.bank_name} · {p.bank_account_number}</div>
-                    <div style={{ fontSize:10, color:"#888888", marginTop:2 }}>{new Date(p.created_at).toLocaleDateString()}</div>
-                    {p.admin_note&&<div style={{ fontSize:11, color:"#666", marginTop:4, fontStyle:"italic" }}>"{p.admin_note}"</div>}
+              {payouts.map(p=>{
+                const steps = [
+                  { key:"pending", label:"Requested" },
+                  { key:"approved", label:"Approved" },
+                  { key:"paid", label:"Paid" },
+                ]
+                const isRejected = p.status === "rejected"
+                const currentStepIdx = isRejected ? -1 : steps.findIndex(s=>s.key===p.status)
+                return (
+                <div key={p.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8 }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:12 }}>
+                    <div style={{ flex:1 }}>
+                      <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>KES {Number(p.amount).toLocaleString()}</div>
+                      <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>{p.bank_name} · {p.bank_account_number}</div>
+                      <div style={{ fontSize:10, color:"#888888", marginTop:2 }}>{new Date(p.created_at).toLocaleDateString()}</div>
+                      {p.admin_note&&<div style={{ fontSize:11, color:"#666", marginTop:4, fontStyle:"italic" }}>"{p.admin_note}"</div>}
+                    </div>
+                    <span style={{ fontSize:11, padding:"3px 9px", borderRadius:20, background:`${RC[p.status]}20`, color:RC[p.status], border:`1px solid ${RC[p.status]}40`, flexShrink:0 }}>
+                      {p.status}
+                    </span>
                   </div>
-                  <span style={{ fontSize:11, padding:"3px 9px", borderRadius:20, background:`${RC[p.status]}20`, color:RC[p.status], border:`1px solid ${RC[p.status]}40`, flexShrink:0 }}>
-                    {p.status}
-                  </span>
+                  {!isRejected&&(
+                    <div style={{ display:"flex", alignItems:"center" }}>
+                      {steps.map((s,i)=>(
+                        <div key={s.key} style={{ display:"flex", alignItems:"center", flex:i<steps.length-1?1:"none" }}>
+                          <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:4 }}>
+                            <div style={{ width:22, height:22, borderRadius:"50%", background:i<=currentStepIdx?"#1d9e75":"#f0f0f0", color:i<=currentStepIdx?"#fff":"#aaa", display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:700 }}>
+                              {i<currentStepIdx?"✓":i+1}
+                            </div>
+                            <div style={{ fontSize:9, color:i<=currentStepIdx?"#1d9e75":"#aaa", fontWeight:i===currentStepIdx?700:400, whiteSpace:"nowrap" }}>{s.label}</div>
+                          </div>
+                          {i<steps.length-1&&(
+                            <div style={{ flex:1, height:2, background:i<currentStepIdx?"#1d9e75":"#f0f0f0", marginBottom:14 }}/>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              ))}
+              )})}
             </div>
           )}
         </div>
