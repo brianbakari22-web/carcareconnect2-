@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
+import ChatWindow from "../shared/ChatWindow"
 
 const SPECIALIZATIONS = [
   "General Mechanic","Engine Specialist","Electrical Systems","Brake Specialist",
@@ -18,6 +19,7 @@ export default function ProviderMechanics() {
   const [expanded, setExpanded] = useState(null)
   const [pinPanel, setPinPanel] = useState(null)
   const [docsPanel, setDocsPanel] = useState(null)
+  const [chatPanel, setChatPanel] = useState(null)
   const [mechanicDocs, setMechanicDocs] = useState({})
   const [pin, setPin] = useState("")
   const [settingPin, setSettingPin] = useState(false)
@@ -254,6 +256,12 @@ export default function ProviderMechanics() {
                   style={{ background:"#f5f3ff", border:"1px solid #8b5cf640", borderRadius:8, color:"#8b5cf6", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>
                   📄 {docsPanel===m.id?"Hide Docs":"View Docs"}
                 </button>
+                {m.user_id&&(
+                  <button onClick={()=>setChatPanel(chatPanel===m.id?null:m.id)}
+                    style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:8, color:"#1d9e75", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>
+                    💬 Chat
+                  </button>
+                )}
               </div>
 
               {/* PIN setup panel */}
@@ -299,6 +307,17 @@ export default function ProviderMechanics() {
                       Tell {m.first_name} to upload documents from the mechanic portal under the 📄 Docs tab.
                     </div>
                   )}
+                </div>
+                )}
+              {chatPanel===m.id&&m.user_id&&(
+                <div style={{ height:400, marginTop:8 }}>
+                  <ChatWindow
+                    mechanicId={m.user_id}
+                    otherUserId={user.id}
+                    overrideUserId={m.user_id}
+                    otherUserName={m.first_name + " " + (m.last_name||"")}
+                    onClose={()=>setChatPanel(null)}
+                  />
                 </div>
               )}
 
