@@ -126,7 +126,7 @@ export default function CustomerLoyalty() {
         <div style={{ background:"#ffffff", border:`1px solid ${tierColor}30`, borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
           <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#000000" }}>Redeem points</div>
           <div style={{ fontSize:12, color:"#777777", marginBottom:"1rem" }}>
-            You can redeem up to {points.toLocaleString()} points for ${maxRedeemValue} off your next booking
+            You can redeem up to {points.toLocaleString()} points for KES {maxRedeemValue} off your next booking
           </div>
           <form onSubmit={redeemPoints}>
             <div style={{ display:"flex", gap:10, alignItems:"flex-end" }}>
@@ -146,7 +146,7 @@ export default function CustomerLoyalty() {
               <div style={{ textAlign:"right", flexShrink:0 }}>
                 <div style={{ fontSize:11, color:"#555555", marginBottom:6 }}>Value</div>
                 <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:tierColor }}>
-                  KES ${redeemAmount ? Math.floor(parseInt(redeemAmount||0)/redemptionRate).toLocaleString() : "0"}
+                  KES {redeemAmount ? Math.floor(parseInt(redeemAmount||0)/redemptionRate).toLocaleString() : "0"}
                 </div>
               </div>
             </div>
@@ -175,7 +175,7 @@ export default function CustomerLoyalty() {
           </div>
           <div style={{ textAlign:"right" }}>
             <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75" }}>+{Math.floor(Number(b.total_amount)*10).toLocaleString()} pts</div>
-            <div style={{ fontSize:10, color:"#777777" }}>KES ${Number(b.total_amount).toFixed(2)} spent</div>
+            <div style={{ fontSize:10, color:"#777777" }}>KES {Number(b.total_amount).toFixed(2)} spent</div>
           </div>
         </div>
       ))}

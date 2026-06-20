@@ -88,7 +88,7 @@ export default function ProviderAnalytics() {
           <div style={{ display:"flex", gap:8, alignItems:"flex-end", height:120 }}>
             {months.reverse().map(([month,rev])=>(
               <div key={month} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", gap:4 }}>
-                <div style={{ fontSize:10, color:"#378add", fontWeight:600 }}>KES ${rev.toFixed(0)}</div>
+                <div style={{ fontSize:10, color:"#378add", fontWeight:600 }}>KES {rev.toFixed(0)}</div>
                 <div style={{ width:"100%", background:"#378add", borderRadius:"4px 4px 0 0", height:`${Math.max(4,(rev/maxRev)*80)}px`, transition:"height 0.5s" }}/>
                 <div style={{ fontSize:9, color:"#777777" }}>{new Date(month+"-01").toLocaleString("default",{month:"short"})}</div>
               </div>
@@ -103,7 +103,7 @@ export default function ProviderAnalytics() {
         <div key={s.name} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
             <div style={{ fontSize:13, fontWeight:500, color:"#000000" }}>{s.name}</div>
-            <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#378add" }}>KES ${s.revenue.toFixed(2)}</div>
+            <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#378add" }}>KES {s.revenue.toFixed(2)}</div>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:8 }}>
             {[

@@ -85,7 +85,7 @@ export default function AdminServices() {
               </span>
             </div>
             <div style={{ fontSize:11, color:"#888" }}>
-              {s.category} · {s.duration}min · ${Number(s.price).toFixed(2)}
+              {s.category} · {s.duration}min · KES {Number(s.price).toLocaleString()}
               <span style={{ marginLeft:8 }}>{s.profile_public?.business_name||`${s.profile_public?.first_name||""} ${s.profile_public?.last_name||""}`}</span>
             </div>
           </div>

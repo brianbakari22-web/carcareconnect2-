@@ -138,7 +138,7 @@ export default function AdminProviders() {
               <div style={{ fontSize:11, color:"#888" }}>
                 {p.business_name&&`${p.first_name} ${p.last_name} · `}
                 {p.city&&`${p.city} · `}
-                {services[p.id]?.active||0} services · KES ${Number(earnings[p.id]||0).toLocaleString()} earned
+                {services[p.id]?.active||0} services · KES {Number(earnings[p.id]||0).toLocaleString()} earned
               </div>
             </div>
             <div style={{ display:"flex", flexDirection:"column", gap:6, alignItems:"flex-end", flexShrink:0 }}>
