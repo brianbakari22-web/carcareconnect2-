@@ -920,6 +920,7 @@ export default function MechanicDashboard() {
           <div style={{ flex:1, overflow:"hidden" }}>
             <ChatWindow
               bookingId={null}
+              mechanicId={mechanic?.mechanic_id}
               otherUserId={mechanic?.provider_id}
               overrideUserId={mechanic?.mechanic_id}
               otherUserName={mechanic?.business_name||"Garage Manager"}

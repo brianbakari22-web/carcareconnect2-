@@ -3,7 +3,7 @@ import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 
-export default function ChatWindow({ bookingId, listingId, claimId, otherUserId, otherUserName, overrideUserId, onClose, title }) {
+export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, otherUserId, otherUserName, overrideUserId, onClose, title }) {
   const { user } = useAuth()
   const effectiveUserId = overrideUserId != null ? overrideUserId : user?.id
   const { t } = useLanguage()
@@ -14,10 +14,10 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
   const bottomRef = useRef(null)
   const typingRef = useRef(null)
   const channelRef = useRef(null)
-  const chatId = bookingId || listingId || claimId
+  const chatId = bookingId || listingId || claimId || mechanicId
 
   useEffect(() => {
-    if (!user || !chatId) return
+    if (!effectiveUserId || !chatId) return
     load()
     markRead()
 
@@ -25,7 +25,9 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
       ? `booking_id=eq.${bookingId}`
       : listingId
       ? `listing_id=eq.${listingId}`
-      : `claim_id=eq.${claimId}`
+      : claimId
+      ? `claim_id=eq.${claimId}`
+      : `mechanic_id=eq.${mechanicId}`
 
     const channel = supabase.channel(`chat-${chatId}`)
       .on("postgres_changes", {
@@ -55,7 +57,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
       supabase.removeChannel(channel)
       clearTimeout(typingRef.current)
     }
-  }, [user, chatId])
+  }, [effectiveUserId, chatId])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior:"smooth" })
@@ -66,6 +68,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
     if (bookingId) query = query.eq("booking_id", bookingId)
     else if (listingId) query = query.eq("listing_id", listingId)
     else if (claimId) query = query.eq("claim_id", claimId)
+    else if (mechanicId) query = query.eq("mechanic_id", mechanicId)
     const { data } = await query.order("created_at", { ascending:true })
     setMessages(data||[])
   }
@@ -75,6 +78,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
     if (bookingId) query = query.eq("booking_id", bookingId)
     else if (listingId) query = query.eq("listing_id", listingId)
     else if (claimId) query = query.eq("claim_id", claimId)
+    else if (mechanicId) query = query.eq("mechanic_id", mechanicId)
     await query
   }
 
@@ -96,6 +100,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
       booking_id: bookingId||null,
       listing_id: listingId||null,
       claim_id: claimId||null,
+      mechanic_id: mechanicId||null,
       sender_id: effectiveUserId,
       receiver_id: otherUserId,
       message: messageText,
@@ -109,6 +114,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, otherUserId,
       booking_id: bookingId||null,
       listing_id: listingId||null,
       claim_id: claimId||null,
+      mechanic_id: mechanicId||null,
       sender_id: effectiveUserId,
       receiver_id: otherUserId,
       message: messageText,
