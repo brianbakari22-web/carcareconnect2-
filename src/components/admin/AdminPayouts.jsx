@@ -63,7 +63,7 @@ export default function AdminPayouts() {
     for (const id of selected) {
       await supabase.from("payout_requests").update({ status:"approved", updated_at:new Date().toISOString() }).eq("id",id)
       const payout = payouts.find(p=>p.id===id)
-      if (payout) await supabase.from("notifications").insert({ user_id:payout.user_id, title:"Payout approved", message:`Your payout of KES ${Number(payout.amount).toLocaleString()} has been approved`, type:"info" })
+      if (payout) await supabase.from("notifications").insert({ user_id:payout.user_id, title:"Payout approved ✅", message:`Your payout of KES ${Number(payout.amount).toLocaleString()} has been approved and is being processed.`, type:"info" })
     }
     toast.success(`${selected.length} payouts approved`)
     setSelected([])
@@ -75,7 +75,11 @@ export default function AdminPayouts() {
     for (const id of selected) {
       await supabase.from("payout_requests").update({ status:"paid", updated_at:new Date().toISOString() }).eq("id",id)
       const payout = payouts.find(p=>p.id===id)
-      if (payout) await supabase.from("notifications").insert({ user_id:payout.user_id, title:"Payout completed", message:`Your payout of KES ${Number(payout.amount).toLocaleString()} has been paid`, type:"success" })
+      if (payout) {
+        await supabase.from("notifications").insert({ user_id:payout.user_id, title:"Money sent! 💸", message:`KES ${Number(payout.amount).toLocaleString()} has been sent your way. Check your account!`, type:"success" })
+        const { data: sens } = await supabase.from("profile_sensitive").select("email").eq("id", payout.user_id).single()
+        if (sens?.email) await sendPayoutProcessed(sens.email, payout)
+      }
     }
     toast.success(`${selected.length} payouts marked as paid`)
     setSelected([])
