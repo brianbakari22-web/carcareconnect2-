@@ -71,7 +71,8 @@ export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, 
     else if (listingId) query = query.eq("listing_id", listingId)
     else if (claimId) query = query.eq("claim_id", claimId)
     else if (mechanicId) query = query.eq("mechanic_id", mechanicId)
-    const { data } = await query.order("created_at", { ascending:true })
+    const { data, error } = await query.order("created_at", { ascending:true })
+    console.log("ChatWindow load() result - data:", data, "error:", error)
     setMessages(data||[])
   }
 
