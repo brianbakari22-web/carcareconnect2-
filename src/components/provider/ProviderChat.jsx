@@ -58,27 +58,25 @@ export default function ProviderChat() {
 
   const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", completed:"#1d9e75", cancelled:"#e24b4a" }
 
-  const ChatModal = () => !selected ? null : (
-    <div style={{ position:"fixed", inset:0, zIndex:1000, display:"flex", flexDirection:isMobile?"column":"row", alignItems:isMobile?"stretch":"center", justifyContent:"center", background:"rgba(0,0,0,0.7)" }}
-      onClick={e=>{ if(e.target===e.currentTarget) setSelected(null) }}>
-      <div style={{ marginTop:isMobile?"auto":"0", background:"#ffffff", borderRadius:isMobile?"16px 16px 0 0":"16px", border:"1px solid #eeeeee", width:isMobile?"100%":520, height:isMobile?"80vh":600, display:"flex", flexDirection:"column", overflow:"hidden" }}>
-        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"1rem", borderBottom:"1px solid #eeeeee", flexShrink:0 }}>
-          <div>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#000000" }}>{selected.otherUserName}</div>
-            <div style={{ fontSize:11, color:"#777777" }}>{selected.serviceName}</div>
-          </div>
-          <button onClick={()=>setSelected(null)} style={{ background:"#f5f5f5", border:"none", borderRadius:"50%", width:32, height:32, color:"#555555", cursor:"pointer", fontSize:18, display:"flex", alignItems:"center", justifyContent:"center" }}>×</button>
-        </div>
-        <div style={{ flex:1, minHeight:0 }}>
-          <ChatWindow bookingId={selected.bookingId} otherUserId={selected.otherUserId} otherUserName={selected.otherUserName} onClose={()=>setSelected(null)}/>
-        </div>
-      </div>
-    </div>
-  )
-
   return (
     <>
-      <ChatModal />
+      {selected&&(
+        <div style={{ position:"fixed", inset:0, zIndex:1000, display:"flex", flexDirection:isMobile?"column":"row", alignItems:isMobile?"stretch":"center", justifyContent:"center", background:"rgba(0,0,0,0.7)" }}
+          onClick={e=>{ if(e.target===e.currentTarget) setSelected(null) }}>
+          <div style={{ marginTop:isMobile?"auto":"0", background:"#ffffff", borderRadius:isMobile?"16px 16px 0 0":"16px", border:"1px solid #eeeeee", width:isMobile?"100%":520, height:isMobile?"80vh":600, display:"flex", flexDirection:"column", overflow:"hidden" }}>
+            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"1rem", borderBottom:"1px solid #eeeeee", flexShrink:0 }}>
+              <div>
+                <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#000000" }}>{selected.otherUserName}</div>
+                <div style={{ fontSize:11, color:"#777777" }}>{selected.serviceName}</div>
+              </div>
+              <button onClick={()=>setSelected(null)} style={{ background:"#f5f5f5", border:"none", borderRadius:"50%", width:32, height:32, color:"#555555", cursor:"pointer", fontSize:18, display:"flex", alignItems:"center", justifyContent:"center" }}>×</button>
+            </div>
+            <div style={{ flex:1, minHeight:0 }}>
+              <ChatWindow bookingId={selected.bookingId} otherUserId={selected.otherUserId} otherUserName={selected.otherUserName} onClose={()=>setSelected(null)}/>
+            </div>
+          </div>
+        </div>
+      )}
       <div style={{ fontFamily:"Syne", fontSize:isMobile?16:18, fontWeight:800, color:"#000000", marginBottom:4 }}>Customer Messages</div>
       <div style={{ fontSize:11, color:"#777777", marginBottom:"1rem" }}>{conversations.length} active conversation{conversations.length!==1?"s":""}</div>
       {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
