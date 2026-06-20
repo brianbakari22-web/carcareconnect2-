@@ -26,9 +26,8 @@ export default function CustomerChat() {
 
   async function load() {
     const { data: bookings } = await supabase.from("bookings")
-      .select("id,service_name,provider_id,status,booking_date")
+      .select("id,service_name,provider_id,assigned_mechanic_id,status,booking_date")
       .eq("customer_id", user.id)
-      .order("created_at", { ascending:false })
       .order("created_at", { ascending:false })
 
     // Continue even if no bookings - need to load listing messages too
@@ -37,6 +36,10 @@ export default function CustomerChat() {
     const { data: profs } = await supabase.from("profiles")
       .select("id,first_name,last_name,business_name").in("id", providerIds)
 
+    const mechanicIds = [...new Set(bookings.map(b=>b.assigned_mechanic_id).filter(Boolean))]
+    const { data: mechs } = mechanicIds.length>0 ? await supabase.from("mechanics")
+      .select("id,user_id,first_name,last_name").in("id", mechanicIds) : { data: [] }
+
     const { data: lastMessages } = await supabase.from("chat_messages")
       .select("booking_id,message,created_at,sender_id,is_read,receiver_id")
       .in("booking_id", bookings.map(b=>b.id))
@@ -44,17 +47,24 @@ export default function CustomerChat() {
 
     const convs = bookings.map(b => {
       const provider = profs?.find(p=>p.id===b.provider_id)
+      const mechanic = mechs?.find(mc=>mc.id===b.assigned_mechanic_id)
       const msgs = lastMessages?.filter(m=>m.booking_id===b.id)||[]
       const last = msgs[0]
       const unread = msgs.filter(m=>m.receiver_id===user.id&&!m.is_read).length
+      // If the mechanic has actually sent/received a message on this booking, show their identity instead of the provider's
+      const mechanicIsParty = mechanic?.user_id && msgs.some(m=>m.sender_id===mechanic.user_id||m.receiver_id===mechanic.user_id)
+      const otherUserId = mechanicIsParty ? mechanic.user_id : b.provider_id
+      const otherUserName = mechanicIsParty
+        ? `${mechanic.first_name||""} ${mechanic.last_name||""}`.trim()||"Mechanic"
+        : provider?.business_name||`${provider?.first_name||""} ${provider?.last_name||""}`.trim()||"Provider"
       return {
         bookingId: b.id,
         serviceName: b.service_name,
         _hasMessages: msgs.length>0,
         bookingDate: b.booking_date,
         status: b.status,
-        otherUserId: b.provider_id,
-        otherUserName: provider?.business_name||`${provider?.first_name||""} ${provider?.last_name||""}`.trim()||"Provider",
+        otherUserId,
+        otherUserName,
         lastMessage: last?.message||"No messages yet",
         lastTime: last?.created_at,
         unread,
