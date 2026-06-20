@@ -133,11 +133,15 @@ export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, 
     }
 
     setMessages(prev => prev.map(m => m.id===tempId ? {...m, _pending:false} : m))
-    // Message sent - receiver will see unread badge on Messages tab
-    // No notification needed - direct messages go to Messages inbox
+    // Notify the recipient so they get a push/in-app alert, not just a silent unread badge
     try {
       if (!otherUserId) return
-      // Update unread count only - no notification popup
+      await supabase.from("notifications").insert({
+        user_id: otherUserId,
+        title: "New message \uD83D\uDCAC",
+        message: messageText.length > 80 ? messageText.slice(0, 80) + "..." : messageText,
+        type: "info"
+      })
     } catch(_) {}
 
 
