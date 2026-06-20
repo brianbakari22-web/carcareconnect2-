@@ -52,21 +52,25 @@ export default function ProviderMechanics() {
         phone: form.phone, email: form.email||undefined, email_confirm: true
       }).catch(()=>({data:null,error:{message:"Using profile method"}}))
 
-      // Create profile
-      const { data: profile, error: profileError } = await supabase.from("profiles").insert({
-        first_name: form.first_name,
-        last_name: form.last_name,
-        phone: form.phone,
-        email: form.email||null,
-        role: "mechanic",
-        business_name: form.first_name + " " + form.last_name
-      }).select().single()
+      // Create real auth account + profile via Edge Function (profiles.id requires a genuine auth.users row)
+      const accountRes = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/create-mechanic-account", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc" },
+        body: JSON.stringify({
+          first_name: form.first_name,
+          last_name: form.last_name,
+          phone: form.phone,
+          email: form.email||null,
+          provider_id: user.id,
+        })
+      })
+      const accountData = await accountRes.json()
+      if (!accountData.success) throw new Error(accountData.error || "Failed to create mechanic account")
 
-      if (profileError) throw profileError
-
-      // Create mechanic record
+      // Create mechanic record, linked to the real profile via user_id
       const { error: mechError } = await supabase.from("mechanics").insert({
         provider_id: user.id,
+        user_id: accountData.user_id,
         first_name: form.first_name,
         last_name: form.last_name,
         phone: form.phone,

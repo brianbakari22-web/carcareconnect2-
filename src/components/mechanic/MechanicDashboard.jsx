@@ -579,7 +579,7 @@ export default function MechanicDashboard() {
                           <ChatWindow
                             bookingId={job.id}
                             otherUserId={job.customer_id}
-                            overrideUserId={mechanic.mechanic_id}
+                            overrideUserId={mechanic.user_id}
                             otherUserName={(job.profiles?.first_name||"") + " " + (job.profiles?.last_name||"")}
                             onClose={()=>setChatJob(null)}
                           />
@@ -920,9 +920,9 @@ export default function MechanicDashboard() {
           <div style={{ flex:1, overflow:"hidden" }}>
             <ChatWindow
               bookingId={null}
-              mechanicId={mechanic?.mechanic_id}
+              mechanicId={mechanic?.user_id}
               otherUserId={mechanic?.provider_id}
-              overrideUserId={mechanic?.mechanic_id}
+              overrideUserId={mechanic?.user_id}
               otherUserName={mechanic?.business_name||"Garage Manager"}
               onClose={()=>setShowGarageChat(false)}
             />
