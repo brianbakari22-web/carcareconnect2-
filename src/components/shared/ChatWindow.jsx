@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
+import toast from "react-hot-toast"
 
 export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, otherUserId, otherUserName, overrideUserId, onClose, title }) {
   const { user } = useAuth()
@@ -122,6 +123,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, 
 
     if (error) {
       console.error("Chat error:", error)
+      toast.error("Send failed: " + (error.message || error.details || JSON.stringify(error)))
       setMessages(prev => prev.filter(m => m.id !== tempId))
       setText(messageText)
       setSending(false)

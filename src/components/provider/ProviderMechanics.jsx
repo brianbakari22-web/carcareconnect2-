@@ -313,8 +313,8 @@ export default function ProviderMechanics() {
                 <div style={{ height:400, marginTop:8 }}>
                   <ChatWindow
                     mechanicId={m.user_id}
-                    otherUserId={user.id}
-                    overrideUserId={m.user_id}
+                    otherUserId={m.user_id}
+                    overrideUserId={user.id}
                     otherUserName={m.first_name + " " + (m.last_name||"")}
                     onClose={()=>setChatPanel(null)}
                   />
