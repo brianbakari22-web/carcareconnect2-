@@ -101,11 +101,11 @@ export default function DriverClaims() {
 
           <div style={{ fontSize:10, color:"#888888", marginBottom:8 }}>{new Date(c.created_at).toLocaleString()}</div>
 
-          {(c.status==="pending"||c.status==="under_review")&&(
+          {(
             <div style={{ marginTop:8 }}>
               <button onClick={()=>setChatClaim(chatClaim===c.id?null:c.id)}
                 style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
-                💬 {chatClaim===c.id?"Close":"Respond to admin"}
+                💬 {chatClaim===c.id?"Close":(c.status==="pending"||c.status==="under_review")?"Respond to admin":"View conversation with admin"}
               </button>
               {chatClaim===c.id&&(
                 <div style={{ height:280, marginTop:8 }}>
