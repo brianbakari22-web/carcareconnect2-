@@ -100,7 +100,7 @@ export default function ProviderMechanics() {
     if (!pin||pin.length<4) return toast.error("PIN must be at least 4 digits")
     setSettingPin(true)
     try {
-      const { error } = await supabase.rpc("set_mechanic_pin", { mechanic_id: mechanicId, new_pin: pin })
+      const { error } = await supabase.rpc("set_mechanic_pin", { p_mechanic_id: mechanicId, p_pin: pin })
       if (error) throw error
       toast.success("PIN set! Mechanic can now login at carcareconnect.care/mechanic-login")
       setPinPanel(null)
