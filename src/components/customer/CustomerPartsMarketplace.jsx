@@ -17,6 +17,8 @@ const CATEGORIES = [
   { key:"other", label:"Other", icon:"📦" },
 ]
 
+const SC = { pending:"#e6821e", confirmed:"#378add", processing:"#8b5cf6", ready:"#1d9e75", delivered:"#1d9e75", cancelled:"#e24b4a" }
+
 export default function CustomerPartsMarketplace() {
   const { user } = useAuth()
   const isMobile = useIsMobile()
@@ -38,6 +40,7 @@ export default function CustomerPartsMarketplace() {
   const [chatItem, setChatItem] = useState(null)
   const [checkoutStep, setCheckoutStep] = useState("cart") // cart, details, payment
   const [customerDetails, setCustomerDetails] = useState({ name:"", phone:"", email:"" })
+  const [paymentMethod, setPaymentMethod] = useState("pesapal")
 
   useEffect(() => {
     if (!user) return
@@ -99,99 +102,7 @@ export default function CustomerPartsMarketplace() {
     return acc
   }, {})
 
-  async function loadOrders() {
-    const { data } = await supabase.from("orders").select("*, order_items(*, inventory(name,unit))").eq("customer_id", user.id).order("created_at", { ascending:false })
-    setOrders(data||[])
-  }
-
-  async function placeOrder() {
-    if (cart.length===0) return toast.error("Cart is empty")
-    if (fulfillment==="delivery"&&!selectedZone) return toast.error("Please select delivery zone")
-    if (fulfillment==="delivery"&&!deliveryAddress) return toast.error("Please enter delivery address")
-    setOrdering(true)
-    try {
-      for (const [providerId, providerItems] of Object.entries(cartByProvider)) {
-        const subtotal = providerItems.reduce((s,i)=>s+Number(i.price)*i.qty,0)
-        const commission = subtotal * 0.08
-        const providerEarnings = subtotal - commission
-
-        const { data: order, error } = await supabase.from("orders").insert({
-          customer_id: user.id,
-          provider_id: providerId,
-          status: "pending",
-          fulfillment_type: fulfillment,
-          delivery_address: deliveryAddress||null,
-          delivery_zone: zone?.name||null,
-          subtotal,
-          delivery_fee: fulfillment==="delivery"?deliveryFee:0,
-          platform_commission: commission,
-          provider_earnings: providerEarnings,
-          payment_status: "pending",
-        }).select().single()
-        if (error) throw error
-
-        await supabase.from("order_items").insert(
-          providerItems.map(i=>({
-            order_id: order.id,
-            inventory_id: i.id,
-            name: i.name,
-            quantity: i.qty,
-            unit_price: Number(i.price),
-          }))
-        )
-
-        // Update stock
-        for (const item of providerItems) {
-          await supabase.from("inventory").update({
-            stock_quantity: item.stock_quantity - item.qty
-          }).eq("id", item.id)
-        }
-
-        // Notify provider
-        await supabase.from("notifications").insert({
-          user_id: providerId,
-          title: "New order received! 🛒",
-          message: `${providerItems.length} item(s) ordered. Total: KES ${subtotal.toLocaleString()}. ${fulfillment==="delivery"?"Delivery to "+deliveryAddress:"Customer pickup"}`,
-          type: "success"
-        })
-      }
-
-      toast.success("Order placed! Redirecting to payment...")
-      setCart([])
-      setShowCart(false)
-      // Pay via Pesapal for first order
-      const firstOrderId = Object.keys(cartByProvider)[0]
-      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/pesapal-payment", {
-        method:"POST",
-        headers:{"Content-Type":"application/json","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc"},
-        body:JSON.stringify({ amount:orderTotal, bookingId:firstOrderId, customerEmail:user.email||"", customerPhone:"", customerName:"" })
-      })
-      const order = await res.json()
-      if (order.redirect_url) {
-        sessionStorage.setItem("parts_order_id", firstOrderId)
-        window.location.href = order.redirect_url
-      } else {
-        setTab("orders")
-        loadOrders()
-        load()
-      }
-    } catch(e) { toast.error(e.message) }
-    finally { setOrdering(false) }
-  }
-
-  const filtered = items.filter(i=>{
-    const matchCat = category==="all"||i.category===category
-    const matchSearch = i.name.toLowerCase().includes(search.toLowerCase())||
-      (i.brand||"").toLowerCase().includes(search.toLowerCase())||
-      (i.compatible_cars||[]).some(c=>c.toLowerCase().includes(search.toLowerCase()))
-    return matchCat&&matchSearch
-  })
-
-  const SC = { pending:"#e6821e", confirmed:"#378add", processing:"#8b5cf6", ready:"#1d9e75", delivered:"#1d9e75", cancelled:"#e24b4a" }
-  async function loadOrders() {
-    const { data } = await supabase.from("orders").select("*, order_items(*, inventory(name,unit))").eq("customer_id", user.id).order("created_at", { ascending:false })
-    setOrders(data||[])
-  }
+  
 
   async function placeOrder() {
     if (cart.length === 0) return toast.error("Cart is empty")
@@ -207,59 +118,120 @@ export default function CustomerPartsMarketplace() {
     try {
       const zone = zones.find(z => z.id === selectedZone)
       const deliveryFee = fulfillment === "delivery" && zone ? Number(zone.base_fee) : 0
-      const subtotal = cart.reduce((s, i) => s + Number(i.price) * i.qty, 0)
-      const total = subtotal + deliveryFee
-      // Group cart by provider
+
+      const { data: rateRow } = await supabase.from("commission_rates").select("platform_rate").eq("provider_type","parts_dealer").maybeSingle()
+      const commissionRate = rateRow ? Number(rateRow.platform_rate) : 0.05
+
       const byProvider = {}
       cart.forEach(item => {
         if (!byProvider[item.provider_id]) byProvider[item.provider_id] = []
         byProvider[item.provider_id].push(item)
       })
+
+      let firstOrderId = null
+      let firstOrderTotal = 0
+
       for (const [providerId, items] of Object.entries(byProvider)) {
-        const providerTotal = items.reduce((s, i) => s + Number(i.price) * i.qty, 0)
+        const subtotal = items.reduce((s, i) => s + Number(i.price) * i.qty, 0)
+        const commission = subtotal * commissionRate
+        const providerEarnings = subtotal - commission
+        const orderDeliveryFee = Object.keys(byProvider).length === 1 ? deliveryFee : 0
+
         const { data: order, error } = await supabase.from("orders").insert({
           customer_id: user.id,
           provider_id: providerId,
-          total_amount: providerTotal + (Object.keys(byProvider).length === 1 ? deliveryFee : 0),
+          subtotal,
+          delivery_fee: orderDeliveryFee,
+          platform_commission: commission,
+          provider_earnings: providerEarnings,
           fulfillment_type: fulfillment,
-          delivery_zone_id: selectedZone || null,
+          delivery_zone: zone?.name || null,
           delivery_address: deliveryAddress || null,
-          delivery_fee: deliveryFee,
           customer_name: customerDetails.name,
           customer_phone: customerDetails.phone,
-          payment_method: "cash",
+          payment_method: paymentMethod,
+          payment_status: paymentMethod === "cash" ? "pending" : "pending",
           status: "pending",
         }).select("id").single()
         if (error) throw error
+
         for (const item of items) {
           await supabase.from("order_items").insert({
             order_id: order.id,
             inventory_id: item.id,
+            name: item.name,
             quantity: item.qty,
             unit_price: Number(item.price),
-            total_price: Number(item.price) * item.qty,
           })
           await supabase.from("inventory").update({ stock_quantity: item.stock_quantity - item.qty }).eq("id", item.id)
         }
+
         await supabase.from("notifications").insert({
           user_id: providerId,
           title: "New order received! 📦",
-          message: `${customerDetails.name} ordered ${items.length} item(s) — KES ${providerTotal.toLocaleString()}`,
+          message: `${customerDetails.name} ordered ${items.length} item(s) — KES ${subtotal.toLocaleString()} (${paymentMethod === "cash" ? "Cash on delivery" : "Paid online"})`,
           type: "success",
         })
+
+        // Cash orders: accrue platform commission owed by provider, payable monthly
+        if (paymentMethod === "cash") {
+          const { data: prov } = await supabase.from("profiles").select("cash_commission_balance").eq("id", providerId).single()
+          const newBalance = Number(prov?.cash_commission_balance || 0) + commission
+          await supabase.from("profiles").update({
+            cash_commission_balance: newBalance,
+            cash_commission_due_date: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 5).toISOString().split("T")[0],
+          }).eq("id", providerId)
+        }
+
+        if (!firstOrderId) {
+          firstOrderId = order.id
+          firstOrderTotal = subtotal + orderDeliveryFee
+        }
       }
-      toast.success("Order placed successfully! 🎉")
+
       setCart([])
       setShowCart(false)
       setCheckoutStep("cart")
       setCustomerDetails({ name: "", phone: "", email: "" })
       setDeliveryAddress("")
       setSelectedZone("")
-      loadOrders()
+
+      if (paymentMethod === "cash") {
+        toast.success("Order placed! Pay cash on delivery/pickup. 🎉")
+        loadOrders()
+      } else {
+        toast.success("Order placed! Redirecting to payment...")
+        const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/pesapal-payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc" },
+          body: JSON.stringify({ amount: firstOrderTotal, bookingId: firstOrderId, customerEmail: user.email || "", customerPhone: customerDetails.phone, customerName: customerDetails.name })
+        })
+        const payRes = await res.json()
+        if (payRes.redirect_url) {
+          sessionStorage.setItem("parts_order_id", firstOrderId)
+          window.location.href = payRes.redirect_url
+        } else {
+          setTab("orders")
+          loadOrders()
+        }
+      }
     } catch(err) { toast.error(err.message) }
     finally { setOrdering(false) }
   }
 
+
+  const filtered = items.filter(item => {
+    if (!item.is_active) return false
+    if (category !== "all" && item.category !== category) return false
+    if (search) {
+      const q = search.toLowerCase()
+      const matchName = item.name?.toLowerCase().includes(q)
+      const matchBrand = item.brand?.toLowerCase().includes(q)
+      const matchDesc = item.description?.toLowerCase().includes(q)
+      if (!matchName && !matchBrand && !matchDesc) return false
+    }
+    return true
+  })
 
   return (
     <div>
@@ -466,6 +438,20 @@ export default function CustomerPartsMarketplace() {
                     </div>
                   </>
                 )}
+
+                <div style={{ marginBottom:"1rem", borderTop:"1px solid #eeeeee", paddingTop:"1rem" }}>
+                  <div style={{ fontSize:11, color:"#666", marginBottom:6, fontWeight:600 }}>Payment method</div>
+                  <div style={{ display:"flex", gap:8 }}>
+                    <button type="button" onClick={()=>setPaymentMethod("pesapal")}
+                      style={{ flex:1, background:paymentMethod==="pesapal"?"#e6821e":"#ffffff", border:(paymentMethod==="pesapal"?"1px solid #e6821e":"1px solid #e5e5e5"), borderRadius:8, color:paymentMethod==="pesapal"?"#fff":"#666", fontSize:12, fontWeight:600, padding:"10px", cursor:"pointer" }}>
+                      💳 Pay online (Pesapal)
+                    </button>
+                    <button type="button" onClick={()=>setPaymentMethod("cash")}
+                      style={{ flex:1, background:paymentMethod==="cash"?"#e6821e":"#ffffff", border:(paymentMethod==="cash"?"1px solid #e6821e":"1px solid #e5e5e5"), borderRadius:8, color:paymentMethod==="cash"?"#fff":"#666", fontSize:12, fontWeight:600, padding:"10px", cursor:"pointer" }}>
+                      💵 Cash on {fulfillment==="delivery"?"delivery":"pickup"}
+                    </button>
+                  </div>
+                </div>
 
                 <div style={{ borderTop:"1px solid #eeeeee", paddingTop:"1rem", marginTop:"0.5rem" }}>
                   <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#666", marginBottom:4 }}>
