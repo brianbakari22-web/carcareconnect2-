@@ -32,7 +32,24 @@ export default function AdminPayouts() {
     const { error } = await supabase.from("payout_requests").update({ status, admin_note:note[id]||null, updated_at:new Date().toISOString() }).eq("id",id)
     if (error) return toast.error(error.message)
     const payout = payouts.find(p=>p.id===id)
-    if (payout) await supabase.from("notifications").insert({ user_id:payout.user_id, title:`Payout ${status}`, message:`Your payout of KES ${Number(payout.amount).toLocaleString()} has been ${status}`, type:status==="paid"?"success":status==="approved"?"info":"error" })
+    if (payout) {
+      const titles = {
+        paid: "Money sent! 💸",
+        approved: "Payout approved ✅",
+        rejected: "Payout request declined",
+      }
+      const messages = {
+        paid: `KES ${Number(payout.amount).toLocaleString()} has been sent your way. Check your account!`,
+        approved: `Your payout of KES ${Number(payout.amount).toLocaleString()} has been approved and is being processed.`,
+        rejected: `Your payout request of KES ${Number(payout.amount).toLocaleString()} was declined.${note[id]?" Reason: "+note[id]:""}`,
+      }
+      await supabase.from("notifications").insert({
+        user_id: payout.user_id,
+        title: titles[status] || `Payout ${status}`,
+        message: messages[status] || `Your payout of KES ${Number(payout.amount).toLocaleString()} has been ${status}`,
+        type: status==="paid"?"success":status==="approved"?"info":"error"
+      })
+    }
     toast.success(`Payout ${status}`)
     if (status === "paid" && payout) {
       const { data: sens } = await supabase.from("profile_sensitive").select("email").eq("id", payout.user_id).single()
