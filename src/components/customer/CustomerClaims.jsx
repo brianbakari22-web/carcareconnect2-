@@ -27,12 +27,12 @@ export default function CustomerClaims() {
   const [vouchers, setVouchers] = useState([])
   const [bookings, setBookings] = useState([])
   const [loading, setLoading] = useState(true)
+  const [adminId, setAdminId] = useState(null)
   const [showForm, setShowForm] = useState(!!preselectedBooking)
   const [form, setForm] = useState({ booking_id:preselectedBooking||"", reason:"", description:"" })
   const [submitting, setSubmitting] = useState(false)
   const [tab, setTab] = useState("claims")
   const [chatClaim, setChatClaim] = useState(null)
-  const [adminId, setAdminId] = useState(null)
 
   useEffect(() => {
     if (user) {
@@ -241,17 +241,17 @@ export default function CustomerClaims() {
                   <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e" }}>KES {Number(c.bookings?.total_amount||0).toLocaleString()}</div>
                 </div>
               </div>
-              {(c.status==="pending"||c.status==="under_review")&&(
+              {true&&(
               <div style={{ marginTop:8 }}>
                 <button onClick={()=>setChatClaim(chatClaim===c.id?null:c.id)}
                   style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
-                  💬 {chatClaim===c.id?"Close":"Add evidence / message admin"}
+                  💬 {chatClaim===c.id?"Close":(c.status==="pending"||c.status==="under_review")?"Add evidence / message admin":"View conversation with admin"}
                 </button>
                 {chatClaim===c.id&&(
                   <div style={{ height:280, marginTop:8 }}>
                     <ChatWindow
                       claimId={c.id}
-                      otherUserId={null}
+                      otherUserId={adminId}
                       otherUserName="CCC Admin"
                       onClose={()=>setChatClaim(null)}
                     />
