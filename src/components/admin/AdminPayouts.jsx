@@ -105,8 +105,8 @@ export default function AdminPayouts() {
         {[
           { label:"Pending", value:payouts.filter(p=>p.status==="pending").length, color:"#e6821e" },
           { label:"Approved", value:payouts.filter(p=>p.status==="approved").length, color:"#378add" },
-          { label:"Total paid", value:`KES ${payouts.filter(p=>p.status==="paid").reduce((s,p)=>s+Number(p.amount),0).toFixed(2)}`, color:"#1d9e75" },
-          { label:"Total requested", value:`KES ${payouts.reduce((s,p)=>s+Number(p.amount),0).toFixed(2)}` },
+          { label:"Total paid", value:`KES ${payouts.filter(p=>p.status==="paid").reduce((s,p)=>s+Number(p.amount),0).toLocaleString()}`, color:"#1d9e75" },
+          { label:"Total requested", value:`KES ${payouts.reduce((s,p)=>s+Number(p.amount),0).toLocaleString()}` },
         ].map(s=>(
           <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
             <div style={{ fontSize:11, color:"#888", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
@@ -147,7 +147,7 @@ export default function AdminPayouts() {
               <input type="checkbox" checked={selected.includes(p.id)} onChange={()=>toggleSelect(p.id)} style={{ marginTop:3, cursor:"pointer" }}/>
               <div>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:2 }}>
-                  <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>KES {Number(p.amount).toFixed(2)}</div>
+                  <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>KES {Number(p.amount).toLocaleString()}</div>
                   <span style={{ fontSize:10, padding:"2px 7px", borderRadius:10, background:`${roleColor[p.profile_public?.role]||"#cccccc"}20`, color:roleColor[p.profile_public?.role]||"#888" }}>
                     {p.profile_public?.role}
                   </span>
