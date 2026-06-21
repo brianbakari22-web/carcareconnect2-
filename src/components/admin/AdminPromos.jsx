@@ -19,6 +19,12 @@ export default function AdminPromos() {
 
   async function create(e) {
     e.preventDefault()
+    if (form.discount_type==="percentage" && Number(form.discount_value) > 100) {
+      return toast.error("Percentage discount cannot exceed 100%")
+    }
+    if (Number(form.discount_value) <= 0) {
+      return toast.error("Discount value must be greater than 0")
+    }
     const { error } = await supabase.from("promo_codes").insert({
       code: form.code.toUpperCase(),
       description: form.description,
