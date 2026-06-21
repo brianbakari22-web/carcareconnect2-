@@ -4,6 +4,21 @@ import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import toast from "react-hot-toast"
 
+function StarRating({ value, onChange, label }) {
+  return (
+    <div style={{ marginBottom:"1rem" }}>
+      <div style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:8 }}>{label}</div>
+      <div style={{ display:"flex", gap:6 }}>
+        {[1,2,3,4,5].map(star=>(
+          <button key={star} type="button" onClick={()=>onChange(star)}
+            style={{ background:"none", border:"none", cursor:"pointer", fontSize:28, color:star<=value?"#e6821e":"#555555", padding:"2px" }}>★</button>
+        ))}
+      </div>
+      {value>0&&<div style={{ fontSize:11, color:"#e6821e", marginTop:4 }}>{["","Poor","Fair","Good","Very good","Excellent"][value]}</div>}
+    </div>
+  )
+}
+
 export default function CustomerReviews() {
   const { user } = useAuth()
   const { t } = useLanguage()
@@ -82,22 +97,7 @@ export default function CustomerReviews() {
       setSubmitting(false) }
   }
 
-  function StarRating({ value, onChange, label }) {
-    return (
-      <div style={{ marginBottom:"1rem" }}>
-        <div style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:8 }}>{label}</div>
-        <div style={{ display:"flex", gap:6 }}>
-          {[1,2,3,4,5].map(star=>(
-            <button key={star} type="button" onClick={()=>onChange(star)}
-              style={{ background:"none", border:"none", cursor:"pointer", fontSize:28, color:star<=value?"#e6821e":"#555555", padding:"2px" }}>★</button>
-          ))}
-        </div>
-        {value>0&&<div style={{ fontSize:11, color:"#e6821e", marginTop:4 }}>{["","Poor","Fair","Good","Very good","Excellent"][value]}</div>}
-      </div>
-    )
-  }
-
-  const pendingLabel = t("language")==="sw" ? "Zinazosubiri" : "Pending reviews"
+const pendingLabel = t("language")==="sw" ? "Zinazosubiri" : "Pending reviews"
   const submittedLabel = t("language")==="sw" ? "Maoni yangu" : "My reviews"
   const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", resize:"vertical" }
 
