@@ -151,7 +151,7 @@ export default function AdminSupport() {
           const isStaff = m.is_staff
           return (
             <div key={m.id} style={{ display:"flex", justifyContent:isStaff?"flex-end":"flex-start" }}>
-              <div style={{ maxWidth:"75%", padding:"10px 14px", borderRadius:isStaff?"14px 14px 4px 14px":"14px 14px 14px 4px", background:isStaff?"#8b5cf6":"#f5f5f5", color:"#fff", fontSize:13, lineHeight:1.5 }}>
+              <div style={{ maxWidth:"75%", padding:"10px 14px", borderRadius:isStaff?"14px 14px 4px 14px":"14px 14px 14px 4px", background:isStaff?"#8b5cf6":"#f5f5f5", color:isStaff?"#fff":"#000000", fontSize:13, lineHeight:1.5 }}>
                 <div style={{ fontSize:10, opacity:0.7, marginBottom:4 }}>
                   {isStaff?"Support Team":m.profiles?.first_name+" ("+m.profiles?.role+")"}
                 </div>

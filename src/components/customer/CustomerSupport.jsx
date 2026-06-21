@@ -161,7 +161,7 @@ export default function CustomerSupport() {
           const isStaff = m.is_staff
           return (
             <div key={m.id} style={{ display:"flex", justifyContent:isMine?"flex-end":"flex-start" }}>
-              <div style={{ maxWidth:"75%", padding:"10px 14px", borderRadius:isMine?"14px 14px 4px 14px":"14px 14px 14px 4px", background:isMine?"#e6821e":isStaff?"#faf5ff":"#ffffff", color:"#fff", fontSize:13, lineHeight:1.5 }}>
+              <div style={{ maxWidth:"75%", padding:"10px 14px", borderRadius:isMine?"14px 14px 4px 14px":"14px 14px 14px 4px", background:isMine?"#e6821e":isStaff?"#faf5ff":"#ffffff", color:isMine?"#fff":"#000000", fontSize:13, lineHeight:1.5 }}>
                 {isStaff&&!isMine&&<div style={{ fontSize:10, color:"#8b5cf6", marginBottom:4, fontWeight:600 }}>Support Team</div>}
                 <div style={{ wordBreak:"break-word" }}>{m.message}</div>
                 <div style={{ fontSize:9, opacity:0.6, marginTop:4, textAlign:isMine?"right":"left" }}>
