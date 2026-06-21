@@ -152,7 +152,8 @@ export default function Marketplace() {
   }
 
   async function deleteComment(commentId, listingId) {
-    await supabase.from("marketplace_comments").delete().eq("id", commentId)
+    if (!confirm("Delete this comment?")) return
+    await supabase.from("marketplace_comments").update({ is_deleted: true }).eq("id", commentId)
     setComments(prev => prev.filter(c => c.id !== commentId))
     setListings(ls => ls.map(l => l.id===listingId ? {...l, comments_count:Math.max(0,(l.comments_count||1)-1)} : l))
   }
