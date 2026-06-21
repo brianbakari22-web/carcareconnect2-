@@ -72,34 +72,38 @@ export default function CustomerReviews() {
         type: "success",
       })
 
-      toast.success(t("success") + " +50 points!")
-      setReviewing(null)
-      setForm({ provider_rating:0, provider_review:"", driver_rating:0, driver_review:"" })
-      load()
-    } catch(err) { toast.error(err.message) }
-    finally { // Save mechanic rating to booking
+      // Save mechanic rating to booking and update mechanic's average rating
       if (reviewing.assigned_mechanic_id && form.mechanic_rating > 0) {
         await supabase.from("bookings").update({
           mechanic_rating: form.mechanic_rating,
           mechanic_rating_comment: form.mechanic_review
         }).eq("id", reviewing.id)
-        // Update mechanic average rating
+
         const { data: mechRatings } = await supabase.from("bookings")
           .select("mechanic_rating")
           .eq("assigned_mechanic_id", reviewing.assigned_mechanic_id)
           .not("mechanic_rating", "is", null)
         if (mechRatings?.length) {
           const avg = mechRatings.reduce((s,r)=>s+r.mechanic_rating,0)/mechRatings.length
-          await supabase.from("mechanics").update({ 
+          await supabase.from("mechanics").update({
             rating: Math.round(avg*10)/10,
             total_reviews: mechRatings.length
           }).eq("id", reviewing.assigned_mechanic_id)
         }
       }
-      setSubmitting(false) }
+
+      toast.success(t("success") + " +50 points!")
+      setReviewing(null)
+      setForm({ provider_rating:0, provider_review:"", driver_rating:0, driver_review:"", mechanic_rating:0, mechanic_review:"" })
+      load()
+    } catch(err) {
+      toast.error(err.message)
+    } finally {
+      setSubmitting(false)
+    }
   }
 
-const pendingLabel = t("language")==="sw" ? "Zinazosubiri" : "Pending reviews"
+  const pendingLabel = t("language")==="sw" ? "Zinazosubiri" : "Pending reviews"
   const submittedLabel = t("language")==="sw" ? "Maoni yangu" : "My reviews"
   const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", resize:"vertical" }
 
