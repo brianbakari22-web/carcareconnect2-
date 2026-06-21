@@ -41,3 +41,44 @@ export async function initPushNotifications(userId) {
     console.error("OneSignal error:", err)
   }
 }
+
+export async function initWebPushForAdmin(userId) {
+  if (Capacitor.isNativePlatform()) return
+  if (!userId) return
+  if (typeof window === "undefined" || !window.OneSignalDeferred) return
+
+  try {
+    window.OneSignalDeferred.push(async function(OneSignal) {
+      try {
+        const permission = await OneSignal.Notifications.requestPermission(true)
+        if (!permission) return
+
+        await OneSignal.login(String(userId))
+
+        setTimeout(async () => {
+          try {
+            const subId = OneSignal.User.PushSubscription.id
+            if (subId && subId.includes("-")) {
+              await supabase.from("device_tokens")
+                .delete()
+                .eq("user_id", userId)
+                .eq("platform", "onesignal-web")
+
+              await supabase.from("device_tokens").insert({
+                user_id: userId,
+                token: subId,
+                platform: "onesignal-web",
+                updated_at: new Date().toISOString()
+              })
+              console.log("Fresh OneSignal WEB token saved:", subId)
+            }
+          } catch(e) { console.error("Web push save error:", e.message) }
+        }, 3000)
+      } catch (err) {
+        console.error("OneSignal web permission error:", err)
+      }
+    })
+  } catch (err) {
+    console.error("OneSignal web init error:", err)
+  }
+}

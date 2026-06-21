@@ -1,6 +1,6 @@
 ﻿import { createContext, useContext, useEffect, useState } from "react"
 import { supabase } from "../lib/supabase"
-import { initPushNotifications } from "../lib/pushNotifications"
+import { initPushNotifications, initWebPushForAdmin } from "../lib/pushNotifications"
 
 const AuthContext = createContext({})
 export const useAuth = () => useContext(AuthContext)
@@ -103,6 +103,9 @@ export function AuthProvider({ children }) {
         setProfile(data)
       // Initialize push notifications after profile loaded
       initPushNotifications(userId).catch(e => console.log("Push init:", e.message))
+      if (data.role === "admin") {
+        initWebPushForAdmin(userId).catch(e => console.log("Web push init:", e.message))
+      }
         setLoading(false)
         initPushNotifications(userId)
       } else if (retries < 10) {
