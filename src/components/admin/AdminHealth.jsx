@@ -187,7 +187,7 @@ function DiagnosticPanel({ checkKey, onResolved }) {
               </button>
             )}
             {diag.link&&(
-              <a href={diag.link} target={diag.link.startsWith("http")?"_blank":"_self"}
+              <a href={diag.link} target={diag.link.startsWith("http")?"_blank":"_self"} rel={diag.link.startsWith("http")?"noopener noreferrer":undefined}
                 style={{ background:"#f5f3ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, fontWeight:600, padding:"7px 14px", textDecoration:"none" }}>
                 Go fix it →
               </a>
