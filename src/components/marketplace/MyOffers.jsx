@@ -36,7 +36,10 @@ export default function MyOffers() {
     try {
       await supabase.from("marketplace_offers").update({ status:"accepted", offered_price:offer.counter_price }).eq("id",offer.id)
       await supabase.from("marketplace_listings").update({ status:"sold" }).eq("id",offer.listing_id)
-      const commission = Number(offer.counter_price) * 0.08
+      const rateKey = offer.marketplace_listings?.listing_type==="vehicle" ? "marketplace_vehicle" : "marketplace_item"
+      const { data: rateRow } = await supabase.from("commission_rates").select("platform_rate").eq("provider_type", rateKey).maybeSingle()
+      const rate = rateRow ? Number(rateRow.platform_rate) : (offer.marketplace_listings?.listing_type==="vehicle" ? 0.02 : 0.08)
+      const commission = Number(offer.counter_price) * rate
       await supabase.from("marketplace_transactions").insert({
         listing_id:offer.listing_id, offer_id:offer.id, buyer_id:user.id,
         seller_id:offer.seller_id, sale_price:offer.counter_price,
