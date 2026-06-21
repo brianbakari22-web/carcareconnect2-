@@ -60,9 +60,9 @@ export default function CustomerServices() {
     if (!voucherCode.trim()) return
     setVoucherLoading(true)
     try {
-      const { data, error } = await supabase.from("vouchers")
+      const { data, error } = await supabase.from("service_vouchers")
         .select("*")
-        .eq("code", voucherCode.trim().toUpperCase())
+        .eq("voucher_code", voucherCode.trim().toUpperCase())
         .eq("customer_id", user.id)
         .eq("is_used", false)
         .gte("expires_at", new Date().toISOString())
@@ -71,8 +71,8 @@ export default function CustomerServices() {
         toast.error("Invalid or expired voucher code")
         setVoucherData(null)
       } else {
-        setVoucherData(data)
-        toast.success(`Voucher applied — KES ${Number(data.value).toLocaleString()} discount!`)
+        setVoucherData({ ...data, value: data.amount })
+        toast.success(`Voucher applied — KES ${Number(data.amount).toLocaleString()} discount!`)
       }
     } catch(err) {
       toast.error("Could not validate voucher")
@@ -140,6 +140,10 @@ export default function CustomerServices() {
 
       if (promoData?.promo_id) {
         await supabase.rpc("increment_promo_usage", { p_promo_id: promoData.promo_id })
+      }
+
+      if (voucherData?.id && data?.[0]?.id) {
+        await supabase.from("service_vouchers").update({ is_used: true, used_at: new Date().toISOString(), used_on_booking_id: data[0].id }).eq("id", voucherData.id)
       }
 
       if (bookForm.payment_method !== "cash" && data?.[0]?.id) {
