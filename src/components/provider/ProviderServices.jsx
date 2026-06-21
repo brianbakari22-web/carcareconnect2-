@@ -26,7 +26,7 @@ function getCategories(providerType) {
   return GARAGE_CATEGORIES
 }
 
-const EMPTY = { name:"", description:"", price:"", duration_minutes:"", category:"shop_standard" }
+const EMPTY = { name:"", description:"", price:"", duration_minutes:"", category:"shop_standard", service_category_id:"" }
 
 export default function ProviderServices() {
   const { user, profile } = useAuth()
@@ -43,10 +43,13 @@ export default function ProviderServices() {
   const [form, setForm] = useState(EMPTY)
   const [saving, setSaving] = useState(false)
   const [activeCategory, setActiveCategory] = useState("all")
+  const [serviceCategories, setServiceCategories] = useState([])
 
   useEffect(() => {
     if (!user) return
     load()
+    supabase.from("service_categories").select("*").eq("is_active", true).order("name")
+      .then(({ data }) => setServiceCategories(data||[]))
     // Load commission rate for this provider type
     const providerType = profile?.provider_type || "garage"
     supabase.from("commission_rates").select("platform_rate,provider_rate")
@@ -83,6 +86,7 @@ export default function ProviderServices() {
           price: parseFloat(form.price),
           duration_minutes: parseInt(form.duration_minutes)||60,
           category: form.category,
+          service_category_id: form.service_category_id||null,
           platform_commission_rate: platformRate,
           provider_commission_rate: providerRate,
         }).eq("id", editing).eq("provider_id", user.id)
@@ -96,6 +100,7 @@ export default function ProviderServices() {
           price: parseFloat(form.price),
           duration_minutes: parseInt(form.duration_minutes)||60,
           category: form.category,
+          service_category_id: form.service_category_id||null,
           platform_commission_rate: platformRate,
           provider_commission_rate: providerRate,
           is_active: true,
@@ -157,7 +162,7 @@ export default function ProviderServices() {
 
   function startEdit(s) {
     setEditing(s.id)
-    setForm({ name:s.name, description:s.description||"", price:s.price, duration_minutes:s.duration_minutes||60, category:s.category||"shop_standard" })
+    setForm({ name:s.name, description:s.description||"", price:s.price, duration_minutes:s.duration_minutes||60, category:s.category||"shop_standard", service_category_id:s.service_category_id||"" })
     setShowForm(true)
   }
 
@@ -228,9 +233,23 @@ export default function ProviderServices() {
             {editing?"Edit service":"Add new service"}
           </div>
 
+          {/* Service type selector (admin-managed categories like Oil Change, Brake Repair) */}
+          {serviceCategories.length>0&&(
+            <div style={{ marginBottom:16 }}>
+              <label style={lbl}>What type of service is this?</label>
+              <select value={form.service_category_id} onChange={e=>setForm(f=>({...f,service_category_id:e.target.value}))}
+                style={{ width:"100%", background:"#ffffff", border:"1px solid #f0f0f0", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }}>
+                <option value="">Select a category...</option>
+                {serviceCategories.map(sc=>(
+                  <option key={sc.id} value={sc.id}>{sc.icon} {sc.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
           {/* Category selector */}
           <div style={{ marginBottom:16 }}>
-            <label style={lbl}>Service category</label>
+            <label style={lbl}>Pricing tier</label>
             <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:8 }}>
               {CATEGORIES.map(c=>(
                 <button key={c.key} type="button" onClick={()=>setForm(f=>({...f,category:c.key}))}
