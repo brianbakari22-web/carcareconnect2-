@@ -38,6 +38,13 @@ export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, 
         table: "chat_messages",
         filter: filterStr
       }, payload => {
+        // For claim chats, a single claim_id can have separate admin<->customer and admin<->provider threads.
+        // Discard realtime events that don't belong to this specific participant pair.
+        if (claimId && otherUserId) {
+          const msg = payload.new
+          const belongsHere = (msg.sender_id===effectiveUserId && msg.receiver_id===otherUserId) || (msg.sender_id===otherUserId && msg.receiver_id===effectiveUserId)
+          if (!belongsHere) return
+        }
         setMessages(prev => {
           const exists = prev.find(m => m.id===payload.new.id || m._tempId===payload.new.id)
           if (exists) return prev.map(m => m._tempId===payload.new.id ? {...payload.new} : m)
@@ -69,7 +76,14 @@ export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, 
     let query = supabase.from("chat_messages").select("*")
     if (bookingId) query = query.eq("booking_id", bookingId)
     else if (listingId) query = query.eq("listing_id", listingId)
-    else if (claimId) query = query.eq("claim_id", claimId)
+    else if (claimId) {
+      query = query.eq("claim_id", claimId)
+      // A single claim can have separate admin<->customer and admin<->provider threads.
+      // Scope to just the two participants in THIS conversation.
+      if (otherUserId) {
+        query = query.or(`and(sender_id.eq.${effectiveUserId},receiver_id.eq.${otherUserId}),and(sender_id.eq.${otherUserId},receiver_id.eq.${effectiveUserId})`)
+      }
+    }
     else if (mechanicId) query = query.eq("mechanic_id", mechanicId)
     const { data, error } = await query.order("created_at", { ascending:true })
     console.log("ChatWindow load() result - data:", data, "error:", error)
