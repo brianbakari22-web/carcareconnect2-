@@ -4,16 +4,21 @@ import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
 const PROVIDER_TYPES = [
-  { key:"garage", label:"Garage / Mechanic", icon:"🔧" },
-  { key:"garage_premium", label:"Mobile Mechanic", icon:"🚗" },
+  { key:"garage_shop_standard", label:"Garage - In Shop", icon:"🔧" },
+  { key:"garage_shop_premium", label:"Garage - Mobile Mechanic", icon:"🚗" },
+  { key:"garage_go_service", label:"Garage - GO Emergency", icon:"🚨" },
+  { key:"panel_beater_shop_standard", label:"Panel Beater - In Shop", icon:"🔨" },
+  { key:"panel_beater_shop_premium", label:"Panel Beater - On Site", icon:"🔨" },
+  { key:"auto_glass_shop_standard", label:"Auto Glass - In Shop", icon:"🪟" },
+  { key:"auto_glass_shop_premium", label:"Auto Glass - On Site", icon:"🪟" },
+  { key:"auto_electrician_shop_standard", label:"Auto Electrician - In Shop", icon:"⚡" },
+  { key:"auto_electrician_shop_premium", label:"Auto Electrician - On Site", icon:"⚡" },
+  { key:"car_wash_basic_wash", label:"Car Wash - Basic", icon:"🚿" },
+  { key:"car_wash_standard_wash", label:"Car Wash - Standard", icon:"🚿" },
+  { key:"car_wash_premium_detail", label:"Car Wash - Premium Detail", icon:"✨" },
   { key:"parts_dealer", label:"Parts Dealer", icon:"⚙️" },
   { key:"accessories_shop", label:"Accessories Shop", icon:"✨" },
   { key:"tyre_shop", label:"Tyre Shop", icon:"🛞" },
-  { key:"auto_electrician", label:"Auto Electrician", icon:"⚡" },
-  { key:"car_wash", label:"Car Wash", icon:"🚿" },
-  { key:"panel_beater", label:"Panel Beater", icon:"🔨" },
-  { key:"auto_glass", label:"Auto Glass", icon:"🪟" },
-  { key:"go_service", label:"GO Service", icon:"🚨" },
 ]
 
 export default function AdminCommissions() {

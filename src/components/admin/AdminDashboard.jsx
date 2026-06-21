@@ -117,11 +117,7 @@ export default function AdminDashboard() {
       providers: ps.filter(p=>p.role==="provider").length,
       drivers: ps.filter(p=>p.role==="driver").length,
       bookings: bks.length,
-      revenue: completed.reduce((s,b)=>{
-        const rateRow = (commissionRates||[]).find(r=>r.provider_type===(b.provider_type||"garage"))
-        const rate = rateRow ? rateRow.platform_rate : 0.10
-        return s+Number(b.total_amount)*rate
-      },0),
+      revenue: completed.reduce((s,b)=>s+Number(b.platform_commission||0),0),
       pending: bks.filter(b=>b.status==="pending").length,
       completed: completed.length,
     })
