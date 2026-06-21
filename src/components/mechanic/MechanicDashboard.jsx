@@ -43,6 +43,7 @@ export default function MechanicDashboard() {
   const [uploadingDoc, setUploadingDoc] = useState(null)
   const [chatJob, setChatJob] = useState(null)
   const [showGarageChat, setShowGarageChat] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const [perfStats, setPerfStats] = useState({ avg_rating:0, total_ratings:0, avg_response_mins:0, completion_rate:0 })
 
   useEffect(() => {
@@ -440,17 +441,32 @@ export default function MechanicDashboard() {
       )}
 
       {/* Tabs */}
-      <div style={{ background:"#ffffff", borderBottom:"1px solid #eeeeee", position:"sticky", top: activeJob ? 220 : 160, zIndex:99, overflowX:"auto", WebkitOverflowScrolling:"touch" }}>
-        <div style={{ display:"flex", minWidth:"max-content", padding:"0 4px" }}>
-          {TABS.map(t=>(
-            <button key={t.k} onClick={()=>setTab(t.k)}
-              style={{ background:"none", border:"none", borderBottom:tab===t.k?"2px solid #1d9e75":"2px solid transparent", color:tab===t.k?"#1d9e75":"#888", fontWeight:700, padding:"8px 12px", cursor:"pointer", fontFamily:"DM Sans,sans-serif", whiteSpace:"nowrap", minWidth:56 }}>
-              <div style={{ fontSize:16 }}>{t.icon}</div>
-              <div style={{ fontSize:9, marginTop:2 }}>{t.l}</div>
-            </button>
-          ))}
-        </div>
+      <div style={{ background:"#ffffff", borderBottom:"1px solid #eeeeee", position:"sticky", top: activeJob ? 220 : 160, zIndex:99, padding:"0.6rem 1rem", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+        <button onClick={()=>setMenuOpen(true)}
+          style={{ background:"#f0fdf4", border:"1px solid #1d9e7530", borderRadius:8, color:"#1d9e75", fontWeight:700, padding:"8px 14px", cursor:"pointer", fontFamily:"DM Sans,sans-serif", fontSize:13, display:"flex", alignItems:"center", gap:8 }}>
+          <span style={{ fontSize:16 }}>{TABS.find(t=>t.k===tab)?.icon}</span>
+          {TABS.find(t=>t.k===tab)?.l}
+          <span style={{ fontSize:11, marginLeft:2 }}>☰</span>
+        </button>
       </div>
+
+      {menuOpen&&(
+        <div onClick={()=>setMenuOpen(false)} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.5)", zIndex:200, display:"flex" }}>
+          <div onClick={e=>e.stopPropagation()} style={{ background:"#ffffff", width:260, maxWidth:"80vw", height:"100%", display:"flex", flexDirection:"column", overflowY:"auto", boxShadow:"2px 0 12px rgba(0,0,0,0.15)" }}>
+            <div style={{ padding:"1rem", borderBottom:"1px solid #eeeeee", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+              <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#000" }}>Menu</div>
+              <button onClick={()=>setMenuOpen(false)} style={{ background:"none", border:"none", fontSize:20, color:"#888", cursor:"pointer" }}>×</button>
+            </div>
+            {TABS.map(t=>(
+              <button key={t.k} onClick={()=>{ setTab(t.k); setMenuOpen(false) }}
+                style={{ background:tab===t.k?"#f0fdf4":"none", border:"none", borderLeft:tab===t.k?"3px solid #1d9e75":"3px solid transparent", color:tab===t.k?"#1d9e75":"#444", fontWeight:tab===t.k?700:500, padding:"14px 16px", cursor:"pointer", fontFamily:"DM Sans,sans-serif", fontSize:14, display:"flex", alignItems:"center", gap:12, textAlign:"left", width:"100%" }}>
+                <span style={{ fontSize:18 }}>{t.icon}</span>
+                {t.l}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div style={{ padding:"1rem" }}>
 
