@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -8,9 +8,16 @@ export default function MarketplacePayment({ offer, listing, onSuccess, onCancel
   const { user, profile } = useAuth()
   const isMobile = useIsMobile()
   const [paying, setPaying] = useState(false)
+  const [commissionRate, setCommissionRate] = useState(null)
+
+  useEffect(() => {
+    const rateKey = listing.listing_type==="vehicle" ? "marketplace_vehicle" : "marketplace_item"
+    supabase.from("commission_rates").select("platform_rate").eq("provider_type", rateKey).maybeSingle()
+      .then(({ data }) => setCommissionRate(data ? Number(data.platform_rate) : (listing.listing_type==="vehicle" ? 0.02 : 0.08)))
+  }, [listing.listing_type])
 
   const salePrice = offer.counter_price || offer.offered_price
-  const commission = salePrice * (listing.listing_type==="vehicle" ? 0.02 : 0.08)
+  const commission = commissionRate!=null ? salePrice * commissionRate : 0
   const sellerEarnings = salePrice - commission
   const processingFee = salePrice * 0.025
   const totalAmount = salePrice + processingFee
@@ -98,7 +105,7 @@ export default function MarketplacePayment({ offer, listing, onSuccess, onCancel
         🔒 Funds held in escrow until you confirm receipt. 7-day dispute window after delivery.
       </div>
 
-      <button onClick={initPayment} disabled={paying}
+      <button onClick={initPayment} disabled={paying||commissionRate==null}
         style={{ width:"100%", background:paying?"#555555":"#e6821e", border:"none", borderRadius:10, color:paying?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:paying?"not-allowed":"pointer", marginBottom:8 }}>
         {paying ? "Connecting to Pesapal..." : "Pay KES " + totalAmount.toFixed(0) + " →"}
       </button>

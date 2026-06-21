@@ -34,6 +34,8 @@ export default function EscrowManager() {
   async function confirmReceipt(txId) {
     if (!confirm("Confirm you have received the item in the described condition?")) return
     try {
+      const tx = transactions.buying.find(t=>t.id===txId)
+
       await supabase.from("marketplace_transactions").update({
         buyer_confirmed: true,
         buyer_confirmed_at: new Date().toISOString(),
@@ -42,15 +44,21 @@ export default function EscrowManager() {
         escrow_released_at: new Date().toISOString(),
       }).eq("id",txId)
 
-      const tx = transactions.buying.find(t=>t.id===txId)
+      // Create a real payout request so admin can actually pay the seller
+      await supabase.from("payout_requests").insert({
+        user_id: tx.seller_id,
+        amount: tx.seller_earnings,
+        status: "pending",
+      })
+
       await supabase.from("notifications").insert({
         user_id: tx.seller_id,
         title: "Payment released! 🎉",
-        message: `The buyer has confirmed receipt of "${tx.marketplace_listings?.title}". KES ${Number(tx.seller_earnings).toLocaleString()} has been released to your account.`,
+        message: `The buyer has confirmed receipt of "${tx.marketplace_listings?.title}". KES ${Number(tx.seller_earnings).toLocaleString()} payout has been requested — add your bank details under Payouts to receive it.`,
         type: "success",
       })
 
-      toast.success("Receipt confirmed — payment released to seller!")
+      toast.success("Receipt confirmed — payout requested for seller!")
       load()
     } catch(err) { toast.error(err.message) }
   }
