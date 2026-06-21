@@ -33,6 +33,10 @@ export default function CreateListing() {
     if (!agreed) return toast.error("Please agree to marketplace terms")
     setSaving(true)
     try {
+      const rateKey = form.listing_type==="vehicle" ? "marketplace_vehicle" : "marketplace_item"
+      const { data: rateRow } = await supabase.from("commission_rates").select("platform_rate").eq("provider_type", rateKey).maybeSingle()
+      const commissionRate = rateRow ? Number(rateRow.platform_rate) : (form.listing_type==="vehicle" ? 0.02 : 0.08)
+
       const payload = {
         seller_id: user.id,
         listing_type: form.listing_type,
@@ -44,7 +48,7 @@ export default function CreateListing() {
         city: form.city,
         location: form.location,
         status: "pending",
-        commission_rate: form.listing_type==="vehicle" ? 0.02 : 0.08,
+        commission_rate: commissionRate,
       }
       if (form.listing_type==="vehicle") {
         Object.assign(payload, {

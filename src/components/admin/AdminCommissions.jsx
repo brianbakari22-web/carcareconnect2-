@@ -19,6 +19,8 @@ const PROVIDER_TYPES = [
   { key:"parts_dealer", label:"Parts Dealer", icon:"⚙️" },
   { key:"accessories_shop", label:"Accessories Shop", icon:"✨" },
   { key:"tyre_shop", label:"Tyre Shop", icon:"🛞" },
+  { key:"marketplace_vehicle", label:"Marketplace - Vehicle Sale", icon:"🚙" },
+  { key:"marketplace_item", label:"Marketplace - Part/Accessory Sale", icon:"📦" },
 ]
 
 export default function AdminCommissions() {
