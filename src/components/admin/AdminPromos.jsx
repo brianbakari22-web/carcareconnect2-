@@ -8,6 +8,10 @@ export default function AdminPromos() {
   const [promos, setPromos] = useState([])
   const [form, setForm] = useState({ code:"", description:"", discount_type:"percentage", discount_value:"", min_purchase:"0", usage_limit:"100", valid_until:"" })
   const [loading, setLoading] = useState(true)
+  const [distributePanel, setDistributePanel] = useState(null)
+  const [audience, setAudience] = useState("all")
+  const [searchPhone, setSearchPhone] = useState("")
+  const [sending, setSending] = useState(false)
 
   useEffect(() => { load() }, [])
 
@@ -46,6 +50,48 @@ export default function AdminPromos() {
     load()
   }
 
+  async function distributePromo(promo) {
+    setSending(true)
+    try {
+      let userIds = []
+
+      if (audience === "all") {
+        const { data } = await supabase.from("profiles").select("id").eq("role","customer")
+        userIds = (data||[]).map(p=>p.id)
+      } else if (audience === "inactive") {
+        const cutoff = new Date(Date.now()-30*24*60*60*1000).toISOString()
+        const { data } = await supabase.from("profiles").select("id").eq("role","customer").lt("updated_at", cutoff)
+        userIds = (data||[]).map(p=>p.id)
+      } else if (audience === "specific") {
+        if (!searchPhone.trim()) { toast.error("Enter a phone or email to search"); setSending(false); return }
+        const { data: sens } = await supabase.from("profile_sensitive").select("id").or(`phone.ilike.%${searchPhone.trim()}%,email.ilike.%${searchPhone.trim()}%`)
+        userIds = (sens||[]).map(s=>s.id)
+        if (userIds.length === 0) { toast.error("No matching customer found"); setSending(false); return }
+      }
+
+      if (userIds.length === 0) { toast.error("No recipients found for this audience"); setSending(false); return }
+
+      if (!confirm(`Send promo ${promo.code} to ${userIds.length} customer${userIds.length!==1?"s":""}?`)) { setSending(false); return }
+
+      const discountText = promo.discount_type==="percentage" ? `${promo.discount_value}% off` : `KES ${promo.discount_value} off`
+      await supabase.from("notifications").insert(userIds.map(uid => ({
+        user_id: uid,
+        title: "Special offer just for you! 🎉",
+        message: `Use code ${promo.code} for ${discountText} your next booking${promo.min_purchase>0?` (min KES ${promo.min_purchase})`:""}${promo.valid_until?`. Valid until ${new Date(promo.valid_until).toLocaleDateString()}`:""}.`,
+        type: "info"
+      })))
+
+      toast.success(`Promo sent to ${userIds.length} customer${userIds.length!==1?"s":""}!`)
+      setDistributePanel(null)
+      setSearchPhone("")
+      setAudience("all")
+    } catch(err) {
+      toast.error(err.message)
+    } finally {
+      setSending(false)
+    }
+  }
+
   async function deletePromo(id) {
     if (!confirm("Delete this promo code?")) return
     await supabase.from("promo_codes").delete().eq("id",id)
@@ -76,6 +122,9 @@ export default function AdminPromos() {
             </div>
           </div>
           <div style={{ display:"flex", gap:6 }}>
+            <button onClick={()=>setDistributePanel(distributePanel===p.id?null:p.id)} style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+              📤 Distribute
+            </button>
             <button onClick={()=>togglePromo(p.id,p.is_active)} style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#888", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
               {p.is_active?"Disable":"Enable"}
             </button>
@@ -83,6 +132,27 @@ export default function AdminPromos() {
               Delete
             </button>
           </div>
+          {distributePanel===p.id&&(
+            <div style={{ background:"#fff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginTop:10, width:"100%" }}>
+              <div style={{ fontSize:12, fontWeight:700, color:"#000", marginBottom:8 }}>Send {p.code} to:</div>
+              <div style={{ display:"flex", gap:6, marginBottom:10, flexWrap:"wrap" }}>
+                {[{k:"all",l:"All customers"},{k:"inactive",l:"Inactive 30+ days"},{k:"specific",l:"Specific customer"}].map(a=>(
+                  <button key={a.k} onClick={()=>setAudience(a.k)}
+                    style={{ padding:"6px 12px", borderRadius:6, border:"none", fontSize:11, cursor:"pointer", background:audience===a.k?"#e6821e":"#f0f0f0", color:audience===a.k?"#fff":"#666" }}>
+                    {a.l}
+                  </button>
+                ))}
+              </div>
+              {audience==="specific"&&(
+                <input value={searchPhone} onChange={e=>setSearchPhone(e.target.value)} placeholder="Search by phone or email"
+                  style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:8, padding:"9px 12px", fontSize:13, color:"#000", outline:"none", marginBottom:10, boxSizing:"border-box" }}/>
+              )}
+              <button onClick={()=>distributePromo(p)} disabled={sending}
+                style={{ background:sending?"#ccc":"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:sending?"not-allowed":"pointer" }}>
+                {sending?"Sending...":"Send notification"}
+              </button>
+            </div>
+          )}
         </div>
       ))}
       {!loading && promos.length===0 && <div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"1.5rem" }}>No promo codes yet</div>}
@@ -99,7 +169,7 @@ export default function AdminPromos() {
               </select>
             </div>
             <div><label style={lbl}>Value</label><input style={inp} type="number" min="0" placeholder="20" value={form.discount_value} onChange={e=>setForm(f=>({...f,discount_value:e.target.value}))} required /></div>
-            <div><label style={lbl}>Min purchase ($)</label><input style={inp} type="number" min="0" value={form.min_purchase} onChange={e=>setForm(f=>({...f,min_purchase:e.target.value}))} /></div>
+            <div><label style={lbl}>Min purchase (KES)</label><input style={inp} type="number" min="0" value={form.min_purchase} onChange={e=>setForm(f=>({...f,min_purchase:e.target.value}))} /></div>
             <div><label style={lbl}>Usage limit</label><input style={inp} type="number" min="1" value={form.usage_limit} onChange={e=>setForm(f=>({...f,usage_limit:e.target.value}))} /></div>
             <div><label style={lbl}>Expires (optional)</label><input style={inp} type="date" value={form.valid_until} onChange={e=>setForm(f=>({...f,valid_until:e.target.value}))} /></div>
           </div>
