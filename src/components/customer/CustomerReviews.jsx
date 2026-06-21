@@ -53,7 +53,9 @@ export default function CustomerReviews() {
       const { error } = await supabase.from("reviews").insert({
         booking_id:reviewing.id, customer_id:user.id, provider_id:reviewing.provider_id,
         driver_id:reviewing.driver_id||null, provider_rating:form.provider_rating,
+        mechanic_id:reviewing.assigned_mechanic_id||null,
         mechanic_rating:reviewing.assigned_mechanic_id?form.mechanic_rating||null:null,
+        mechanic_review:reviewing.assigned_mechanic_id&&form.mechanic_review?form.mechanic_review:null,
         provider_review:form.provider_review||null,
         driver_rating:reviewing.is_concierge&&form.driver_rating>0?form.driver_rating:null,
         driver_review:reviewing.is_concierge&&form.driver_review?form.driver_review:null,
