@@ -14,6 +14,7 @@ const CHECKS = [
   { key:"unverified_drivers", label:"Unverified drivers", desc:"Drivers with credentials not yet verified", icon:"🪪", category:"users" },
   { key:"expiring_vouchers", label:"Expiring vouchers", desc:"Active vouchers expiring within 3 days", icon:"🎟️", category:"users" },
   { key:"idle_drivers", label:"Idle online drivers", desc:"Drivers online >4hrs with no job", icon:"🟢", category:"users" },
+  { key:"mechanics_no_account", label:"Mechanics without login", desc:"Mechanics missing a linked user account (cannot use chat/full features)", icon:"👨‍🔧", category:"users" },
   { key:"database", label:"Database connection", desc:"Supabase connection and response time", icon:"🗄️", category:"system" },
 ]
 
@@ -101,6 +102,12 @@ const DIAGNOSTICS = {
     causes:["Driver submitted credentials but admin not notified","Documents need manual review"],
     resolution:"Verify drivers in the Drivers section",
     link:"/admin-dashboard/drivers",
+    autoFix: null
+  },
+  mechanics_no_account: {
+    causes:["Mechanic was added before the account-linking fix","Edge Function failed during mechanic creation"],
+    resolution:"Re-add the mechanic or manually link their account in Mechanics section",
+    link:"/admin-dashboard/mechanics",
     autoFix: null
   },
   expiring_vouchers: {
@@ -246,6 +253,7 @@ export default function AdminHealth() {
         { data: unverifiedDrivers },
         { data: expiringVouchers },
         { data: onlineDrivers },
+        { data: mechanicsNoAccount },
       ] = await Promise.all([
         supabase.from("bookings").select("id,booking_number,service_name,created_at").eq("status","pending").lt("created_at",dayAgo),
         supabase.from("go_service_requests").select("id,attempt_number,sent_at").eq("status","pending"),
@@ -257,6 +265,7 @@ export default function AdminHealth() {
         supabase.from("profiles").select("id,first_name,last_name,created_at").eq("role","driver").eq("documents_verified",false).eq("is_active",true).not("license_number","is",null),
         supabase.from("service_vouchers").select("id,voucher_code,amount,expires_at").eq("is_used",false).lt("expires_at",threeDays).gt("expires_at",now.toISOString()),
         supabase.from("driver_status").select("driver_id,is_online,current_booking_id,last_seen").eq("is_online",true),
+        supabase.from("mechanics").select("id,first_name,last_name,created_at").is("user_id",null).eq("is_active",true),
       ])
 
       const idleDrivers = onlineDrivers?.filter(d=>!d.current_booking_id&&(d.last_seen||"")< fourHrsAgo)||[]
@@ -276,6 +285,7 @@ export default function AdminHealth() {
       checkResults.pending_payouts = mk(pendingPayouts,3,1,"All payouts processed","payout(s) pending >7 days",p=>({label:`KES ${Number(p.amount).toLocaleString()}`,time:p.created_at}))
       checkResults.unpaid_bookings = mk(unpaidBks,10,1,"All payments up to date","completed booking(s) unpaid",b=>({label:`#${b.booking_number} — KES ${Number(b.total_amount).toLocaleString()}`,time:b.created_at}))
       checkResults.unverified_drivers = mk(unverifiedDrivers,5,1,"All drivers verified","driver(s) awaiting verification",d=>({label:`${d.first_name} ${d.last_name}`,time:d.created_at}))
+      checkResults.mechanics_no_account = mk(mechanicsNoAccount,3,1,"All mechanics have accounts","mechanic(s) missing a linked login account",m=>({label:`${m.first_name} ${m.last_name||""}`,time:m.created_at}))
       checkResults.expiring_vouchers = mk(expiringVouchers,5,1,"No vouchers expiring soon","voucher(s) expiring within 3 days",v=>({label:`${v.voucher_code} — KES ${Number(v.amount).toLocaleString()}`,time:v.expires_at}))
       checkResults.idle_drivers = mk(idleDrivers,3,1,"All online drivers active","driver(s) idle online >4hrs",d=>({label:`Driver: ${d.driver_id?.slice(0,8)}`,time:d.last_seen}))
 
