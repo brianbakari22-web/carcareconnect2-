@@ -19,7 +19,7 @@ export default function AdminReviews() {
 
   async function load() {
     const { data } = await supabase.from("reviews")
-      .select("*, profile_public!reviews_customer_id_fkey(first_name,last_name), profile_public!reviews_provider_id_fkey(first_name,last_name,business_name)")
+      .select("*, customer:profile_public!reviews_customer_id_fkey(first_name,last_name), provider:profile_public!reviews_provider_id_fkey(first_name,last_name,business_name)")
       .order("created_at", { ascending:false })
     setReviews(data||[])
     setLoading(false)
@@ -76,12 +76,12 @@ export default function AdminReviews() {
             <div>
               <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:2 }}>
                 <div style={{ fontSize:13, fontWeight:500, color:"#000000" }}>
-                  {r["profile_public"]?.business_name || `${r["profile_public"]?.first_name||""} ${r["profile_public"]?.last_name||""}`}
+                  {r.provider?.business_name || `${r.provider?.first_name||""} ${r.provider?.last_name||""}`}
                 </div>
                 {r.is_hidden && <span style={{ fontSize:10, color:"#e24b4a", background:"#fff5f5", padding:"1px 6px", borderRadius:10 }}>Hidden</span>}
               </div>
               <div style={{ fontSize:11, color:"#888" }}>
-                By {r["profile_public"]?.first_name} {r["profile_public"]?.last_name} · {new Date(r.created_at).toLocaleDateString()}
+                By {r.customer?.first_name} {r.customer?.last_name} · {new Date(r.created_at).toLocaleDateString()}
               </div>
             </div>
             <div style={{ display:"flex", gap:1, flexShrink:0 }}>
