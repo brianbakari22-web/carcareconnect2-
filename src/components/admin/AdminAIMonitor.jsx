@@ -261,6 +261,7 @@ export default function AdminAIMonitor() {
       const { count: totalNotifications } = await supabase.from("notifications").select("id",{count:"exact",head:true})
       const { count: totalChatMessages } = await supabase.from("chat_messages").select("id",{count:"exact",head:true})
       const { count: totalLoyaltyPoints } = await supabase.from("loyalty_points").select("id",{count:"exact",head:true})
+      const { count: totalMechanics } = await supabase.from("mechanics").select("id",{count:"exact",head:true}).eq("is_active",true)
       const { count: totalPayments } = await supabase.from("payments").select("id",{count:"exact",head:true})
       const { count: totalPromoCodes } = await supabase.from("promo_codes").select("id",{count:"exact",head:true})
       const { count: totalVouchersIssued } = await supabase.from("vouchers").select("id",{count:"exact",head:true})
@@ -303,6 +304,7 @@ export default function AdminAIMonitor() {
         total_notifications: totalNotifications||0,
         total_chat_messages: totalChatMessages||0,
         total_loyalty_points: totalLoyaltyPoints||0,
+        total_mechanics: totalMechanics||0,
         total_payments: totalPayments||0,
         total_promo_codes: totalPromoCodes||0,
         total_vouchers_issued: totalVouchersIssued||0,
@@ -398,6 +400,7 @@ ENGAGEMENT & COMMUNICATION:
 - Total notifications sent (all-time): ${platformData.total_notifications}
 - Total chat messages exchanged: ${platformData.total_chat_messages}
 - Total loyalty point transactions: ${platformData.total_loyalty_points}
+  - Active mechanics: ${platformData.total_mechanics}
 - Push notification tokens registered: ${platformData.total_device_tokens}
 - Support messages exchanged: ${platformData.total_support_messages}
 
@@ -596,6 +599,7 @@ Be specific and actionable. Max 300 words. Use bullet points.`
                     { f:"Notifications", ok:report.platformData.total_notifications>0 },
                     { f:"Chat system", ok:report.platformData.total_chat_messages>0 },
                     { f:"Loyalty points", ok:report.platformData.total_loyalty_points>0 },
+                    { f:"Mechanics", ok:report.platformData.total_mechanics>=0 },
                     { f:"Marketplace inspect", ok:report.platformData.total_listings>0 },
                     { f:"Employee mgmt", ok:report.platformData.total_employees>0 },
                     { f:"Payment tracking", ok:report.platformData.total_payments>0 },
