@@ -5,6 +5,12 @@ import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
 import { useLanguage } from "../../contexts/LanguageContext"
 
+function generateVoucherCode() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+  const segments = [4,4,4].map(len=>Array.from({length:len},()=>chars[Math.floor(Math.random()*chars.length)]).join(""))
+  return "CCC-" + segments.join("-")
+}
+
 export default function CustomerLoyalty() {
   const isMobile = useIsMobile()
   const { user } = useAuth()
@@ -45,14 +51,25 @@ export default function CustomerLoyalty() {
     const pts = parseInt(redeemAmount)
     if (!pts || pts <= 0) return toast.error("Enter a valid amount")
     if (pts > points) return toast.error(`You only have ${points} points`)
-    if (pts < redemptionRate) return toast.error(`Minimum redemption is ${redemptionRate} points ($1)`)
-    const dollarValue = (pts / redemptionRate).toFixed(2)
+    if (pts < redemptionRate) return toast.error(`Minimum redemption is ${redemptionRate} points (KES 1)`)
+    const value = Math.floor(pts / redemptionRate)
     setRedeeming(true)
     try {
+      const voucherCode = generateVoucherCode()
+      const expires = new Date(Date.now()+90*24*60*60*1000).toISOString()
+
       await supabase.from("loyalty_points")
         .update({ points: points - pts })
         .eq("user_id", user.id)
-      toast.success(`Redeemed ${pts} points for KES ${Math.floor(parseInt(redeemAmount||0)/redemptionRate).toLocaleString()} discount! Use it on your next booking.`)
+
+      await supabase.from("service_vouchers").insert({
+        voucher_code: voucherCode,
+        customer_id: user.id,
+        amount: value,
+        expires_at: expires,
+      })
+
+      toast.success(`Redeemed ${pts} points for a KES ${value.toLocaleString()} voucher! Code: ${voucherCode} (valid 90 days)`)
       setRedeemAmount("")
       load()
     } catch(err) { toast.error(err.message) }

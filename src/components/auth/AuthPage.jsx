@@ -474,7 +474,7 @@ export default function AuthPage() {
       </div>
       <div style={{ padding:"1rem 1.25rem 2rem" }}>
         <div style={{ background:"#fff", borderRadius:14, padding:"0.85rem 1rem", display:"flex", alignItems:"center", gap:10, border:"1px solid #f0f0f0" }}>
-          <div style={{ width:32, height:32, borderRadius:8, background:"#fff8f0", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, flexShrink:0 }}>shield</div>
+          <div style={{ width:32, height:32, borderRadius:8, background:"#fff8f0", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, flexShrink:0 }}>🛡️</div>
           <div>
             <div style={{ fontSize:12, fontWeight:600, color:"#000" }}>Safe and Secure</div>
             <div style={{ fontSize:11, color:"#888" }}>Your data is protected and secure with us.</div>
