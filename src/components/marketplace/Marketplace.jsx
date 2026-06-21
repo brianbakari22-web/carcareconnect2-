@@ -359,13 +359,14 @@ export default function Marketplace() {
 }
 
 function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInfo, offers, user, isMobile, onBack, onOffer, comments, newComment, setNewComment, userLikes, toggleLike, submitComment, submitReply, deleteComment, shareViaWhatsApp, replyingTo, setReplyingTo, replyText, setReplyText, submittingComment, loadingComments }) {
-  if (!listing) return null
   const [showOffer, setShowOffer] = useState(false)
   const [showChat, setShowChat] = useState(false)
   const [offerPrice, setOfferPrice] = useState("")
   const [offerMessage, setOfferMessage] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const navigate = useNavigate()
+
+  if (!listing) return null
 
   const badge = sellerInfo?.role==="provider"
     ? { label:"🏪 Verified Seller", color:"#378add", bg:"#eff6ff" }
