@@ -37,7 +37,7 @@ export default function ProviderServices() {
   const isMobile = useIsMobile()
   const [services, setServices] = useState([])
   const [loading, setLoading] = useState(true)
-  const [commissionRate, setCommissionRate] = useState({ platform:10, provider:90 })
+  const [tierRates, setTierRates] = useState({})
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState(null)
   const [form, setForm] = useState(EMPTY)
@@ -50,15 +50,18 @@ export default function ProviderServices() {
     load()
     supabase.from("service_categories").select("*").eq("is_active", true).order("name")
       .then(({ data }) => setServiceCategories(data||[]))
-    // Load commission rate for this provider type
+    // Load commission rates for every tier this provider type can use
     const providerType = profile?.provider_type || "garage"
-    supabase.from("commission_rates").select("platform_rate,provider_rate")
-      .eq("provider_type", providerType).single()
+    const tierKeys = getCategories(providerType).map(cat => providerType + "_" + cat.key)
+    supabase.from("commission_rates").select("provider_type,platform_rate,provider_rate")
+      .in("provider_type", tierKeys)
       .then(({ data }) => {
-        if (data) setCommissionRate({
-          platform: Math.round(data.platform_rate*100),
-          provider: Math.round(data.provider_rate*100)
-        })
+        const map = {}
+        for (const row of (data||[])) {
+          const tierKey = row.provider_type.replace(providerType + "_", "")
+          map[tierKey] = { platform: row.platform_rate, provider: row.provider_rate }
+        }
+        setTierRates(map)
       })
   }, [user, profile?.provider_type])
 
@@ -74,9 +77,9 @@ export default function ProviderServices() {
     setSaving(true)
 
     const cat = CATEGORIES.find(c=>c.key===form.category)
-    const commissionRates = { shop_standard:0.10, shop_premium:0.20, go_service:0.15 }
-    const platformRate = commissionRates[form.category]
-    const providerRate = 1 - platformRate
+    const rate = tierRates[form.category]
+    const platformRate = rate ? Number(rate.platform) : 0.10
+    const providerRate = rate ? Number(rate.provider) : 0.90
 
     try {
       if (editing) {
@@ -335,7 +338,7 @@ export default function ProviderServices() {
                 <div style={{ display:"flex", gap:12, flexWrap:"wrap" }}>
                   <span style={{ fontSize:12, color:"#e6821e", fontFamily:"Syne", fontWeight:700 }}>KES {Number(s.price).toLocaleString()}</span>
                   <span style={{ fontSize:11, color:"#777777" }}>⏱ {s.duration_minutes||60} min</span>
-                  <span style={{ fontSize:11, color:cat.color }}>{cat.key==="shop_standard"?`You keep ${commissionRate.provider}% · Platform ${commissionRate.platform}%`:cat.key==="shop_premium"?`You keep ${Math.max(commissionRate.provider-10,70)}% · Platform ${Math.min(commissionRate.platform+10,30)}%`:`You keep ${commissionRate.provider}% · Platform ${commissionRate.platform}%`}</span>
+                  <span style={{ fontSize:11, color:cat.color }}>{tierRates[cat.key]?`You keep ${Math.round(tierRates[cat.key].provider*100)}% · Platform ${Math.round(tierRates[cat.key].platform*100)}%`:"Loading rate..."}</span>
                 </div>
               </div>
               <div style={{ display:"flex", gap:6, flexShrink:0, flexWrap:"wrap", justifyContent:"flex-end" }}>
