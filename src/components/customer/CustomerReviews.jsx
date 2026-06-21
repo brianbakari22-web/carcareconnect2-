@@ -62,9 +62,13 @@ export default function CustomerReviews() {
       })
       if (error) throw error
 
-      // Award 50 bonus points for leaving a review
-      const { data: profile } = await supabase.from("profiles").select("loyalty_points").eq("id", user.id).single()
-      await supabase.from("profiles").update({ loyalty_points: (profile?.loyalty_points||0) + 50 }).eq("id", user.id)
+      // Award 50 bonus points for leaving a review (loyalty_points is the real table CustomerLoyalty.jsx reads from)
+      const { data: lp } = await supabase.from("loyalty_points").select("points,lifetime_points").eq("user_id", user.id).maybeSingle()
+      await supabase.from("loyalty_points").upsert({
+        user_id: user.id,
+        points: (lp?.points||0) + 50,
+        lifetime_points: (lp?.lifetime_points||0) + 50,
+      }, { onConflict: "user_id" })
       await supabase.from("notifications").insert({
         user_id: user.id,
         title: "Review Bonus!",
