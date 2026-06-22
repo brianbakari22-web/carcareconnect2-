@@ -21,7 +21,6 @@ const PROVIDER_TYPES = [
   { key:"tyre_shop", label:"Tyre Shop", icon:"🛞" },
   { key:"marketplace_vehicle", label:"Marketplace - Vehicle Sale", icon:"🚙" },
   { key:"marketplace_item", label:"Marketplace - Part/Accessory Sale", icon:"📦" },
-  { key:"inspection_fee", label:"Vehicle Inspection Fee (KES flat rate)", icon:"🔍" },
 ]
 
 export default function AdminCommissions() {
