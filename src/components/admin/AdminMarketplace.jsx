@@ -13,6 +13,7 @@ export default function AdminMarketplace() {
   const [offers, setOffers] = useState([])
   const [transactions, setTransactions] = useState([])
   const [disputes, setDisputes] = useState([])
+  const [mechanics, setMechanics] = useState([])
   const [inspections, setInspections] = useState([])
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState("pending")
@@ -32,6 +33,8 @@ export default function AdminMarketplace() {
 
   async function load() {
     await Promise.all([loadListings(), loadOffers(), loadTransactions(), loadDisputes(), loadInspections()])
+    supabase.from("mechanics").select("id,first_name,last_name,specialization").eq("is_active",true)
+      .then(({ data }) => setMechanics(data||[]))
     setLoading(false)
   }
 
@@ -609,14 +612,24 @@ export default function AdminMarketplace() {
                   <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75" }}>KES {Number(insp.amount).toLocaleString()}</div>
                   <div style={{ fontSize:10, color:insp.payment_status==="paid"?"#1d9e75":"#e24b4a", marginTop:2 }}>{insp.payment_status}</div>
                   {insp.status==="pending"&&(
+                    <div style={{ marginTop:6 }}>
+                    <select id={`mech-${insp.id}`} style={{ fontSize:11, border:"1px solid #ddd", borderRadius:6, padding:"4px 8px", marginRight:6, outline:"none" }}>
+                      <option value="">Select mechanic...</option>
+                      {mechanics.map(m=>(<option key={m.id} value={m.id}>{m.first_name} {m.last_name}{m.specialization?" — "+m.specialization:""}</option>))}
+                    </select>
                     <button onClick={async()=>{
-                      await supabase.from("inspection_requests").update({ status:"assigned" }).eq("id",insp.id)
-                      await supabase.from("notifications").insert({ user_id:insp.seller_id, title:"Inspection assigned 🔍", message:`A mechanic has been assigned to inspect "${insp.marketplace_listings?.title}". Scheduled: ${insp.scheduled_date}`, type:"info" })
+                      const mechId = document.getElementById(`mech-${insp.id}`)?.value
+                      if (!mechId) return toast.error("Please select a mechanic")
+                      const mech = mechanics.find(m=>m.id===mechId)
+                      await supabase.from("inspection_requests").update({ status:"assigned", mechanic_id:mechId }).eq("id",insp.id)
+                      await supabase.from("notifications").insert({ user_id:insp.seller_id, title:"Inspection assigned 🔍", message:`${mech?.first_name} ${mech?.last_name} has been assigned to inspect "${insp.marketplace_listings?.title}". Scheduled: ${insp.scheduled_date}`, type:"info" })
                       loadInspections()
+                      toast.success("Mechanic assigned!")
                     }}
-                      style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:10, padding:"4px 10px", cursor:"pointer", marginTop:6 }}>
-                      Assign mechanic
+                      style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:10, padding:"4px 10px", cursor:"pointer" }}>
+                      Assign
                     </button>
+                  </div>
                   )}
                   {insp.status==="assigned"&&(
                     <button onClick={async()=>{
