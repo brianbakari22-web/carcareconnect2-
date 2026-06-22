@@ -58,6 +58,7 @@ export default function Marketplace() {
     let query = supabase.from("marketplace_listings")
       .select("*, profiles(first_name,last_name,role,business_name), marketplace_photos(photo_url,is_primary), video_url")
       .eq("status","active")
+      .order("featured_tier",{ascending:true, nullsFirst:false})
       .order("is_featured",{ascending:false})
       .order("created_at",{ascending:false})
     if (tab==="vehicle") query = query.eq("listing_type","vehicle")
@@ -317,9 +318,9 @@ export default function Marketplace() {
           const badge = getSellerBadge(l.profiles)
           return (
             <div key={l.id} onClick={()=>openListing(l)}
-              style={{ background:"#ffffff", border:`1px solid ${l.is_featured?"#e6821e":"#eeeeee"}`, borderRadius:12, overflow:"hidden", cursor:"pointer" }}>
+              style={{ background:"#ffffff", border:`1px solid ${l.featured_tier==="premium"?"#8b5cf6":l.is_featured?"#e6821e":"#eeeeee"}`, borderRadius:12, overflow:"hidden", cursor:"pointer" }}>
               <div style={{ height:isMobile?120:160, background:"#f5f5f5", position:"relative", display:"flex", alignItems:"center", justifyContent:"center" }}>
-                {l.is_featured&&<div style={{ position:"absolute", top:8, left:8, background:"#e6821e", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10 }}>⭐ FEATURED</div>}
+                {l.is_featured&&<div style={{ position:"absolute", top:8, left:8, background:l.featured_tier==="premium"?"#8b5cf6":"#e6821e", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10 }}>{l.featured_tier==="premium"?"👑 PREMIUM":"⭐ FEATURED"}</div>}
                 {l.is_inspected&&<div style={{ position:"absolute", top:8, right:8, background:"#1d9e75", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10 }}>✓ INSPECTED</div>}
                 {l.primary_photo ? (
                   <img src={l.primary_photo} alt={l.title} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
@@ -535,7 +536,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
 
         <div>
           <div style={{ marginBottom:8 }}>
-            {listing.is_featured&&<span style={{ fontSize:10, background:"#e6821e", color:"#fff", padding:"2px 8px", borderRadius:10, marginRight:4 }}>⭐ Featured</span>}
+            {listing.is_featured&&<span style={{ fontSize:10, background:listing.featured_tier==="premium"?"#8b5cf6":"#e6821e", color:"#fff", padding:"2px 8px", borderRadius:10, marginRight:4 }}>{listing.featured_tier==="premium"?"👑 Premium":"⭐ Featured"}</span>}
             {listing.is_inspected&&<span style={{ fontSize:10, background:"#1d9e75", color:"#fff", padding:"2px 8px", borderRadius:10 }}>✓ CCC Inspected</span>}
           </div>
           <div style={{ fontFamily:"Syne", fontSize:isMobile?18:22, fontWeight:800, color:"#000000", marginBottom:8 }}>{listing.title}</div>

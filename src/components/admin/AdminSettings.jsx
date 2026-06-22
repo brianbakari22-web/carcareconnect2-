@@ -50,7 +50,12 @@ export default function AdminSettings() {
 
   const ICONS = {
     inspection_fee: "🔍",
-    featured_listing_week_price: "⭐",
+    featured_standard_day_price: "⭐",
+    featured_standard_week_price: "⭐",
+    featured_standard_month_price: "⭐",
+    featured_premium_day_price: "👑",
+    featured_premium_week_price: "👑",
+    featured_premium_month_price: "👑",
     min_payout_amount: "💰",
     go_callout_fee: "🚨",
     marketplace_processing_fee_rate: "💳",

@@ -3,24 +3,50 @@ import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
 
+const DURATIONS = [
+  { key:"day", label:"1 Day", days:1 },
+  { key:"week", label:"1 Week", days:7 },
+  { key:"month", label:"1 Month", days:30 },
+]
+
 export default function FeaturedListing({ listingId, onSuccess }) {
   const { user, profile } = useAuth()
-  const [weeks, setWeeks] = useState(1)
-  const [weekPrice, setWeekPrice] = useState(200)
+  const [duration, setDuration] = useState("week")
+  const [tier, setTier] = useState("standard")
   const [paying, setPaying] = useState(false)
   const [listing, setListing] = useState(null)
-  const amount = weeks * weekPrice
+  const [prices, setPrices] = useState({
+    standard_day: 50, standard_week: 200, standard_month: 600,
+    premium_day: 150, premium_week: 500, premium_month: 1500,
+  })
 
   useEffect(() => {
     if (!listingId) return
     Promise.all([
-      supabase.from("marketplace_listings").select("id,title,is_featured,featured_until").eq("id", listingId).single(),
-      supabase.from("app_settings").select("value").eq("key","featured_listing_week_price").maybeSingle()
-    ]).then(([{ data: lst }, { data: price }]) => {
+      supabase.from("marketplace_listings").select("id,title,is_featured,featured_until,featured_tier").eq("id", listingId).single(),
+      supabase.from("app_settings").select("key,value").in("key", [
+        "featured_standard_day_price","featured_standard_week_price","featured_standard_month_price",
+        "featured_premium_day_price","featured_premium_week_price","featured_premium_month_price"
+      ])
+    ]).then(([{ data: lst }, { data: settings }]) => {
       setListing(lst)
-      if (price) setWeekPrice(Number(price.value))
+      if (settings) {
+        const p = {}
+        settings.forEach(s => {
+          if (s.key === "featured_standard_day_price") p.standard_day = Number(s.value)
+          if (s.key === "featured_standard_week_price") p.standard_week = Number(s.value)
+          if (s.key === "featured_standard_month_price") p.standard_month = Number(s.value)
+          if (s.key === "featured_premium_day_price") p.premium_day = Number(s.value)
+          if (s.key === "featured_premium_week_price") p.premium_week = Number(s.value)
+          if (s.key === "featured_premium_month_price") p.premium_month = Number(s.value)
+        })
+        setPrices(prev => ({...prev, ...p}))
+      }
     })
   }, [listingId])
+
+  const amount = prices[`${tier}_${duration}`] || 0
+  const days = DURATIONS.find(d=>d.key===duration)?.days || 7
 
   const isFeatured = listing?.is_featured && listing?.featured_until && new Date(listing.featured_until) > new Date()
   const daysLeft = isFeatured ? Math.ceil((new Date(listing.featured_until)-new Date())/(1000*60*60*24)) : 0
@@ -29,17 +55,19 @@ export default function FeaturedListing({ listingId, onSuccess }) {
     if (!listing) return
     setPaying(true)
     try {
-      // Create a feature payment record first
       const { data: payment, error: paymentError } = await supabase.from("featured_payments").insert({
         listing_id: listing.id,
         seller_id: user.id,
         amount,
-        weeks,
+        weeks: Math.ceil(days/7),
         status: "pending",
       }).select("id").single()
       if (paymentError) throw paymentError
 
-      // Call Pesapal edge function
+      // Store tier and days in sessionStorage for callback
+      sessionStorage.setItem("featured_tier", tier)
+      sessionStorage.setItem("featured_days", days)
+
       const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/pesapal-payment", {
         method: "POST",
         headers: {
@@ -51,18 +79,16 @@ export default function FeaturedListing({ listingId, onSuccess }) {
           bookingId: payment.id,
           customerEmail: user.email,
           customerPhone: profile?.phone || "",
-          customerName: (profile?.first_name || "") + " " + (profile?.last_name || ""),
-          description: `Feature "${listing.title}" for ${weeks} week(s)`
+          customerName: (profile?.first_name||"") + " " + (profile?.last_name||""),
+          description: `${tier==="premium"?"⭐ PREMIUM":"Standard"} Featured listing for ${days} day(s): "${listing.title}"`
         })
       })
       const order = await res.json()
       if (order.redirect_url) {
-        // Update payment record with Pesapal tracking ID
         await supabase.from("featured_payments").update({
           pesapal_tracking_id: order.order_tracking_id,
           status: "processing"
         }).eq("id", payment.id)
-        // Redirect to Pesapal
         window.location.href = order.redirect_url
       } else {
         throw new Error(order.error || "Payment initiation failed")
@@ -73,44 +99,72 @@ export default function FeaturedListing({ listingId, onSuccess }) {
   if (!listing) return <div style={{ color:"#888", fontSize:13 }}>Loading...</div>
 
   if (isFeatured) return (
-    <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:12, padding:"1rem" }}>
-      <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e", marginBottom:4 }}>⭐ Currently featured</div>
+    <div style={{ background: listing.featured_tier==="premium"?"#faf5ff":"#fff8f0", border:`1px solid ${listing.featured_tier==="premium"?"#8b5cf640":"#e6821e40"}`, borderRadius:12, padding:"1rem" }}>
+      <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:listing.featured_tier==="premium"?"#8b5cf6":"#e6821e", marginBottom:4 }}>
+        {listing.featured_tier==="premium"?"⭐ PREMIUM Featured":"⭐ Featured"}
+      </div>
       <div style={{ fontSize:11, color:"#777777" }}>{daysLeft} day{daysLeft!==1?"s":""} remaining</div>
     </div>
   )
 
   return (
-    <div style={{ background:"#ffffff", border:"1px solid #e6821e30", borderRadius:12, padding:"1.25rem" }}>
+    <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
       <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#000000", marginBottom:4 }}>⭐ Feature this listing</div>
-      <div style={{ fontSize:12, color:"#777777", marginBottom:12 }}>Featured listings appear at the top of browse and get 3x more views.</div>
+      <div style={{ fontSize:12, color:"#777777", marginBottom:16 }}>Boost your listing visibility and get more buyers.</div>
 
-      {[
-        { icon:"⭐", text:"Pinned at top of all marketplace listings" },
-        { icon:"📢", text:"Highlighted with Featured badge" },
-        { icon:"👁", text:"3x more visibility than standard listings" },
-      ].map((item,i)=>(
-        <div key={i} style={{ display:"flex", gap:8, marginBottom:4 }}>
-          <span style={{ flexShrink:0 }}>{item.icon}</span>
-          <span style={{ fontSize:11, color:"#555555" }}>{item.text}</span>
-        </div>
-      ))}
-
-      <div style={{ margin:"12px 0" }}>
-        <div style={{ fontSize:11, color:"#666", marginBottom:8 }}>Select duration:</div>
+      {/* Tier selector */}
+      <div style={{ marginBottom:16 }}>
+        <div style={{ fontSize:11, color:"#666", marginBottom:8, fontWeight:600, textTransform:"uppercase", letterSpacing:"0.05em" }}>Choose tier</div>
         <div style={{ display:"flex", gap:8 }}>
-          {[1,2,4].map(w=>(
-            <button key={w} onClick={()=>setWeeks(w)}
-              style={{ flex:1, background:weeks===w?"#e6821e":"#ffffff", border:`1px solid ${weeks===w?"#e6821e":"#555555"}`, borderRadius:8, color:weeks===w?"#fff":"#666", fontSize:12, padding:"8px 0", cursor:"pointer" }}>
-              <div style={{ fontFamily:"Syne", fontWeight:700 }}>{w}wk</div>
-              <div style={{ fontSize:10 }}>KES {w*weekPrice}</div>
+          <button onClick={()=>setTier("standard")} style={{ flex:1, background:tier==="standard"?"#fff8f0":"#ffffff", border:`2px solid ${tier==="standard"?"#e6821e":"#eeeeee"}`, borderRadius:10, padding:"10px 8px", cursor:"pointer", textAlign:"center" }}>
+            <div style={{ fontSize:16, marginBottom:4 }}>⭐</div>
+            <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:tier==="standard"?"#e6821e":"#555" }}>Standard</div>
+            <div style={{ fontSize:10, color:"#888", marginTop:2 }}>Above regular listings</div>
+          </button>
+          <button onClick={()=>setTier("premium")} style={{ flex:1, background:tier==="premium"?"#faf5ff":"#ffffff", border:`2px solid ${tier==="premium"?"#8b5cf6":"#eeeeee"}`, borderRadius:10, padding:"10px 8px", cursor:"pointer", textAlign:"center" }}>
+            <div style={{ fontSize:16, marginBottom:4 }}>👑</div>
+            <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:tier==="premium"?"#8b5cf6":"#555" }}>Premium</div>
+            <div style={{ fontSize:10, color:"#888", marginTop:2 }}>Above ALL featured listings</div>
+          </button>
+        </div>
+      </div>
+
+      {/* Duration selector */}
+      <div style={{ marginBottom:16 }}>
+        <div style={{ fontSize:11, color:"#666", marginBottom:8, fontWeight:600, textTransform:"uppercase", letterSpacing:"0.05em" }}>Choose duration</div>
+        <div style={{ display:"flex", gap:8 }}>
+          {DURATIONS.map(d=>(
+            <button key={d.key} onClick={()=>setDuration(d.key)}
+              style={{ flex:1, background:duration===d.key?(tier==="premium"?"#faf5ff":"#fff8f0"):"#ffffff", border:`2px solid ${duration===d.key?(tier==="premium"?"#8b5cf6":"#e6821e"):"#eeeeee"}`, borderRadius:10, padding:"10px 4px", cursor:"pointer", textAlign:"center" }}>
+              <div style={{ fontFamily:"Syne", fontSize:11, fontWeight:700, color:duration===d.key?(tier==="premium"?"#8b5cf6":"#e6821e"):"#555" }}>{d.label}</div>
+              <div style={{ fontSize:11, color:duration===d.key?(tier==="premium"?"#8b5cf6":"#e6821e"):"#888", marginTop:4, fontWeight:600 }}>KES {(prices[`${tier}_${d.key}`]||0).toLocaleString()}</div>
             </button>
           ))}
         </div>
       </div>
 
-      <button onClick={payToFeature} disabled={paying}
-        style={{ width:"100%", background:paying?"#e0e0e0":"#e6821e", border:"none", borderRadius:9, color:paying?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:paying?"not-allowed":"pointer" }}>
-        {paying?"Redirecting to payment...":"Pay KES "+amount+" — Feature listing"}
+      {/* Benefits */}
+      <div style={{ background: tier==="premium"?"#faf5ff":"#fff8f0", borderRadius:8, padding:"0.75rem", marginBottom:16 }}>
+        {tier==="premium" ? (
+          <>
+            <div style={{ fontSize:11, color:"#8b5cf6", fontWeight:700, marginBottom:6 }}>👑 Premium benefits</div>
+            {["Appears ABOVE all standard featured listings","👑 Premium crown badge","Maximum visibility to buyers","Priority position guaranteed"].map((b,i)=>(
+              <div key={i} style={{ fontSize:11, color:"#555", marginBottom:3 }}>✓ {b}</div>
+            ))}
+          </>
+        ) : (
+          <>
+            <div style={{ fontSize:11, color:"#e6821e", fontWeight:700, marginBottom:6 }}>⭐ Standard benefits</div>
+            {["Appears above all regular listings","⭐ Featured badge","3x more visibility","Highlighted in browse"].map((b,i)=>(
+              <div key={i} style={{ fontSize:11, color:"#555", marginBottom:3 }}>✓ {b}</div>
+            ))}
+          </>
+        )}
+      </div>
+
+      <button onClick={payToFeature} disabled={paying||!amount}
+        style={{ width:"100%", background:paying?"#e0e0e0":tier==="premium"?"#8b5cf6":"#e6821e", border:"none", borderRadius:9, color:paying?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:paying?"not-allowed":"pointer" }}>
+        {paying?"Redirecting to payment...":`Pay KES ${amount.toLocaleString()} — ${tier==="premium"?"👑 Premium":"⭐ Standard"} for ${DURATIONS.find(d=>d.key===duration)?.label}`}
       </button>
     </div>
   )

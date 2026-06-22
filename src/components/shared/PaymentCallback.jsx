@@ -60,9 +60,13 @@ export default function PaymentCallback() {
         const { data: featPayment } = await supabase.from("featured_payments")
           .select("id, listing_id, weeks").eq("id", merchantRef).maybeSingle()
         if (featPayment) {
-          const featuredUntil = new Date(Date.now()+featPayment.weeks*7*24*60*60*1000).toISOString()
+          const featuredTier = sessionStorage.getItem("featured_tier") || "standard"
+          const featuredDays = parseInt(sessionStorage.getItem("featured_days") || "7")
+          const featuredUntil = new Date(Date.now()+featuredDays*24*60*60*1000).toISOString()
+          sessionStorage.removeItem("featured_tier")
+          sessionStorage.removeItem("featured_days")
           await Promise.all([
-            supabase.from("marketplace_listings").update({ is_featured:true, featured_until:featuredUntil }).eq("id", featPayment.listing_id),
+            supabase.from("marketplace_listings").update({ is_featured:true, featured_until:featuredUntil, featured_tier:featuredTier }).eq("id", featPayment.listing_id),
             supabase.from("featured_payments").update({ status:"paid", pesapal_tracking_id:trackingId }).eq("id", featPayment.id),
           ])
           setStatus("success")
