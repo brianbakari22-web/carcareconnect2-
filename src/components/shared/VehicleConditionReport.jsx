@@ -36,6 +36,44 @@ export default function VehicleConditionReport({ bookingId, reportType, onComple
     condition_notes:"",
   })
   const [saving, setSaving] = useState(false)
+  const [photos, setPhotos] = useState([])
+  const [uploadingPhoto, setUploadingPhoto] = useState(false)
+
+  async function uploadPhoto(file) {
+    if (!file) return
+    if (!file.type.startsWith("image/")) return toast.error("Please upload an image")
+    if (file.size > 5*1024*1024) return toast.error("Photo must be under 5MB")
+    if (photos.length >= 6) return toast.error("Maximum 6 photos per report")
+    setUploadingPhoto(true)
+    try {
+      const ext = file.name.split(".").pop()
+      const path = `condition-reports/${bookingId}/${reportType}-${Date.now()}.${ext}`
+      const { error } = await supabase.storage.from("driver-photos").upload(path, file, { upsert:true })
+      if (error) throw error
+      const { data } = supabase.storage.from("driver-photos").getPublicUrl(path)
+      setPhotos(prev => [...prev, data.publicUrl])
+      toast.success("Photo added!")
+    } catch(e) { toast.error("Upload failed: " + e.message) }
+    finally { setUploadingPhoto(false) }
+  }
+
+  async function uploadPhoto(file) {
+    if (!file) return
+    if (!file.type.startsWith("image/")) return toast.error("Please upload an image")
+    if (file.size > 5*1024*1024) return toast.error("Photo must be under 5MB")
+    if (photos.length >= 6) return toast.error("Maximum 6 photos per report")
+    setUploadingPhoto(true)
+    try {
+      const ext = file.name.split(".").pop()
+      const path = `condition-reports/${bookingId}/${reportType}-${Date.now()}.${ext}`
+      const { error } = await supabase.storage.from("driver-photos").upload(path, file, { upsert:true })
+      if (error) throw error
+      const { data } = supabase.storage.from("driver-photos").getPublicUrl(path)
+      setPhotos(prev => [...prev, data.publicUrl])
+      toast.success("Photo added!")
+    } catch(e) { toast.error("Upload failed: " + e.message) }
+    finally { setUploadingPhoto(false) }
+  }
 
   async function submit(e) {
     e.preventDefault()
@@ -55,6 +93,7 @@ export default function VehicleConditionReport({ bookingId, reportType, onComple
         dirty_interior: form.dirty_interior,
         dirty_exterior: form.dirty_exterior,
         condition_notes: form.condition_notes,
+        photo_urls: photos,
       })
       if (error) throw error
 
@@ -145,6 +184,50 @@ export default function VehicleConditionReport({ bookingId, reportType, onComple
               </label>
             ))}
           </div>
+        </div>
+
+        {/* Photos */}
+        <div style={{ marginBottom:16 }}>
+          <label style={lbl}>Condition photos ({photos.length}/6)</label>
+          <div style={{ display:"flex", gap:8, flexWrap:"wrap", marginBottom:8 }}>
+            {photos.map((p,i)=>(
+              <div key={i} style={{ position:"relative", width:80, height:80 }}>
+                <img src={p} alt="" style={{ width:80, height:80, objectFit:"cover", borderRadius:8, border:"1px solid #eeeeee" }}/>
+                <button type="button" onClick={()=>setPhotos(prev=>prev.filter((_,idx)=>idx!==i))}
+                  style={{ position:"absolute", top:-6, right:-6, background:"#e24b4a", border:"none", borderRadius:"50%", color:"#fff", width:18, height:18, fontSize:11, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>×</button>
+              </div>
+            ))}
+            {photos.length<6&&(
+              <label style={{ width:80, height:80, border:"2px dashed #dddddd", borderRadius:8, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", flexDirection:"column", gap:4 }}>
+                <span style={{ fontSize:20 }}>{uploadingPhoto?"⏳":"📷"}</span>
+                <span style={{ fontSize:9, color:"#888" }}>{uploadingPhoto?"Uploading":"Add photo"}</span>
+                <input type="file" accept="image/*" style={{ display:"none" }} onChange={e=>uploadPhoto(e.target.files[0])} disabled={uploadingPhoto}/>
+              </label>
+            )}
+          </div>
+          <div style={{ fontSize:10, color:"#888" }}>Take clear photos of the vehicle condition — dashboard, exterior, any damage</div>
+        </div>
+
+        {/* Photos */}
+        <div style={{ marginBottom:16 }}>
+          <label style={lbl}>Condition photos ({photos.length}/6)</label>
+          <div style={{ display:"flex", gap:8, flexWrap:"wrap", marginBottom:8 }}>
+            {photos.map((p,i)=>(
+              <div key={i} style={{ position:"relative", width:80, height:80 }}>
+                <img src={p} alt="" style={{ width:80, height:80, objectFit:"cover", borderRadius:8, border:"1px solid #eeeeee" }}/>
+                <button type="button" onClick={()=>setPhotos(prev=>prev.filter((_,idx)=>idx!==i))}
+                  style={{ position:"absolute", top:-6, right:-6, background:"#e24b4a", border:"none", borderRadius:"50%", color:"#fff", width:18, height:18, fontSize:11, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>×</button>
+              </div>
+            ))}
+            {photos.length<6&&(
+              <label style={{ width:80, height:80, border:"2px dashed #dddddd", borderRadius:8, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", flexDirection:"column", gap:4 }}>
+                <span style={{ fontSize:20 }}>{uploadingPhoto?"⏳":"📷"}</span>
+                <span style={{ fontSize:9, color:"#888" }}>{uploadingPhoto?"Uploading":"Add photo"}</span>
+                <input type="file" accept="image/*" style={{ display:"none" }} onChange={e=>uploadPhoto(e.target.files[0])} disabled={uploadingPhoto}/>
+              </label>
+            )}
+          </div>
+          <div style={{ fontSize:10, color:"#888" }}>Take clear photos of the vehicle condition — dashboard, exterior, any damage</div>
         </div>
 
         {/* Notes */}

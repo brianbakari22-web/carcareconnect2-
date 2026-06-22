@@ -47,11 +47,17 @@ export default function DriverAvailableJobs() {
         load()
         return
       }
+      // Fetch concierge surcharge rate from app_settings
+      const { data: surchargeRow } = await supabase.from("app_settings").select("value").eq("key","concierge_surcharge_rate").maybeSingle()
+      const surchargeRate = surchargeRow ? Number(surchargeRow.value)/100 : 0.15
+      const driverEarnings = Number(job.total_amount||0) * surchargeRate
+
       const { error } = await supabase.from("bookings").update({
         driver_id: user.id,
         driver_accepted_at: new Date().toISOString(),
         concierge_status: "accepted",
         status: "driver-assigned",
+        driver_earnings: driverEarnings,
       }).eq("id", job.id).is("driver_id", null)
       if (error) throw error
 

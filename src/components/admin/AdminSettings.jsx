@@ -58,6 +58,7 @@ export default function AdminSettings() {
     featured_premium_month_price: "👑",
     min_payout_amount: "💰",
     go_callout_fee: "🚨",
+    concierge_surcharge_rate: "🚗",
     marketplace_processing_fee_rate: "💳",
   }
 
