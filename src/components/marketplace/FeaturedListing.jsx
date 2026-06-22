@@ -6,14 +6,20 @@ import toast from "react-hot-toast"
 export default function FeaturedListing({ listingId, onSuccess }) {
   const { user, profile } = useAuth()
   const [weeks, setWeeks] = useState(1)
+  const [weekPrice, setWeekPrice] = useState(200)
   const [paying, setPaying] = useState(false)
   const [listing, setListing] = useState(null)
-  const amount = weeks * 200
+  const amount = weeks * weekPrice
 
   useEffect(() => {
     if (!listingId) return
-    supabase.from("marketplace_listings").select("id,title,is_featured,featured_until").eq("id", listingId).single()
-      .then(({ data }) => setListing(data))
+    Promise.all([
+      supabase.from("marketplace_listings").select("id,title,is_featured,featured_until").eq("id", listingId).single(),
+      supabase.from("app_settings").select("value").eq("key","featured_listing_week_price").maybeSingle()
+    ]).then(([{ data: lst }, { data: price }]) => {
+      setListing(lst)
+      if (price) setWeekPrice(Number(price.value))
+    })
   }, [listingId])
 
   const isFeatured = listing?.is_featured && listing?.featured_until && new Date(listing.featured_until) > new Date()
@@ -96,7 +102,7 @@ export default function FeaturedListing({ listingId, onSuccess }) {
             <button key={w} onClick={()=>setWeeks(w)}
               style={{ flex:1, background:weeks===w?"#e6821e":"#ffffff", border:`1px solid ${weeks===w?"#e6821e":"#555555"}`, borderRadius:8, color:weeks===w?"#fff":"#666", fontSize:12, padding:"8px 0", cursor:"pointer" }}>
               <div style={{ fontFamily:"Syne", fontWeight:700 }}>{w}wk</div>
-              <div style={{ fontSize:10 }}>KES {w*200}</div>
+              <div style={{ fontSize:10 }}>KES {w*weekPrice}</div>
             </button>
           ))}
         </div>

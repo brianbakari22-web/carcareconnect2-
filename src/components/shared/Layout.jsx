@@ -78,6 +78,7 @@ const NAV = {
     { path:"/admin-dashboard/health", label:"System Health", icon:"💊" },
     { path:"/admin-dashboard/diagnostics", label:"Diagnostics", icon:"🔬" },
     { path:"/admin-dashboard/commissions", label:"Commissions", icon:"💹" },
+    { path:"/admin-dashboard/settings", label:"Settings", icon:"⚙️" },
     { path:"/admin-dashboard/marketplace", label:"Marketplace", icon:"🛒" },
     { path:"/admin-dashboard/employees", label:"Employees", icon:"👨‍💼" },
     { path:"/admin-dashboard/orders", label:"Orders", icon:"🛒" },

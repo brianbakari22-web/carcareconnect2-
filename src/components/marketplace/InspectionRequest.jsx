@@ -8,28 +8,35 @@ export default function InspectionRequest({ listing, onSuccess }) {
   const [paying, setPaying] = useState(false)
   const [scheduled, setScheduled] = useState("")
   const [existing, setExisting] = useState(null)
+  const [inspectionFee, setInspectionFee] = useState(500)
 
   useEffect(() => {
-    supabase.from("inspection_requests").select("*").eq("listing_id",listing.id).maybeSingle()
-      .then(({ data }) => setExisting(data))
+    Promise.all([
+      supabase.from("inspection_requests").select("*").eq("listing_id",listing.id).maybeSingle(),
+      supabase.from("app_settings").select("value").eq("key","inspection_fee").maybeSingle()
+    ]).then(([{ data: insp }, { data: fee }]) => {
+      setExisting(insp)
+      if (fee) setInspectionFee(Number(fee.value))
+    })
   }, [listing.id])
+
+  const processingFee = Math.round(inspectionFee * 0.025)
+  const totalFee = inspectionFee + processingFee
 
   async function requestInspection() {
     if (!scheduled) return toast.error("Please select a preferred date")
     setPaying(true)
     try {
-      // Create inspection request first
       const { data: insp, error } = await supabase.from("inspection_requests").insert({
         listing_id: listing.id,
         seller_id: user.id,
         status: "pending_payment",
-        fee: 500,
+        fee: inspectionFee,
         scheduled_date: scheduled,
       }).select("id").single()
 
       if (error) throw error
 
-      // Pay via Pesapal
       const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/pesapal-payment", {
         method: "POST",
         headers: {
@@ -37,7 +44,7 @@ export default function InspectionRequest({ listing, onSuccess }) {
           "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc"
         },
         body: JSON.stringify({
-          amount: 500,
+          amount: totalFee,
           bookingId: insp.id,
           customerEmail: user.email,
           customerPhone: profile?.phone || "",
@@ -73,16 +80,16 @@ export default function InspectionRequest({ listing, onSuccess }) {
         Get your vehicle inspected by a CCC certified mechanic. Once passed, your listing will show a verified badge and buyers can make offers.
       </div>
 
-      <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", marginBottom:16 }}>
+      <div style={{ background:"#f8f8f8", borderRadius:8, padding:"0.75rem", marginBottom:16 }}>
         <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#555555", marginBottom:4 }}>
-          <span>Inspection fee</span><span>KES 500</span>
+          <span>Inspection fee</span><span>KES {inspectionFee.toLocaleString()}</span>
         </div>
         <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#555555" }}>
-          <span>Processing fee (2.5%)</span><span>KES 13</span>
+          <span>Processing fee (2.5%)</span><span>KES {processingFee.toLocaleString()}</span>
         </div>
         <div style={{ height:1, background:"#f0f0f0", margin:"6px 0" }}/>
         <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, color:"#e6821e", fontWeight:700 }}>
-          <span>Total</span><span>KES 513</span>
+          <span>Total</span><span>KES {totalFee.toLocaleString()}</span>
         </div>
       </div>
 
@@ -94,10 +101,9 @@ export default function InspectionRequest({ listing, onSuccess }) {
       </div>
 
       <button onClick={requestInspection} disabled={paying||!scheduled}
-        style={{ width:"100%", background:paying||!scheduled?"#555555":"#e6821e", border:"none", borderRadius:10, color:paying||!scheduled?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:paying||!scheduled?"not-allowed":"pointer" }}>
-        {paying?"Connecting to Pesapal...":"Pay KES 513 & Request Inspection →"}
+        style={{ width:"100%", background:paying||!scheduled?"#e0e0e0":"#e6821e", border:"none", borderRadius:10, color:paying||!scheduled?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:paying||!scheduled?"not-allowed":"pointer" }}>
+        {paying?"Connecting to Pesapal...":"Pay KES "+totalFee.toLocaleString()+" & Request Inspection →"}
       </button>
     </div>
   )
 }
-
