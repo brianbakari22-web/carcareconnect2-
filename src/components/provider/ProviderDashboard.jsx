@@ -5,12 +5,7 @@ import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
-const COMMISSION_RATES = {
-  garage:{ platform:10, provider:90 }, garage_premium:{ platform:20, provider:80 },
-  parts_dealer:{ platform:5, provider:95 }, accessories_shop:{ platform:8, provider:92 },
-  tyre_shop:{ platform:6, provider:94 }, auto_electrician:{ platform:12, provider:88 },
-  car_wash:{ platform:10, provider:90 }, panel_beater:{ platform:15, provider:85 }, auto_glass:{ platform:12, provider:88 },
-}
+
 const TYPE_CONFIG = {
   garage:          { label:"Garage / Mechanic",   icon:"🔧", color:"#e6821e", focus:"bookings" },
   garage_premium:  { label:"Mobile Mechanic",      icon:"🚗", color:"#378add", focus:"bookings" },
@@ -34,16 +29,18 @@ export default function ProviderDashboard() {
   const [orders, setOrders] = useState([])
   const [orderStats, setOrderStats] = useState({ pending:0, revenue:0, items:0, lowStock:0 })
   const [loading, setLoading] = useState(true)
+  const [commissionDisplay, setCommissionDisplay] = useState({ platform:10, provider:90 })
   const [showPolicy, setShowPolicy] = useState(!localStorage.getItem("ccc_policy_acknowledged"))
   const [uploadingPhoto, setUploadingPhoto] = useState(false)
   const providerType = profile?.provider_type || "garage"
   const config = TYPE_CONFIG[providerType] || TYPE_CONFIG.garage
   const isInventoryFocus = config.focus === "inventory"
-  const commission = COMMISSION_RATES[providerType] || COMMISSION_RATES.garage
 
   useEffect(() => {
     if (!user) return
     load()
+    supabase.from("commission_rates").select("platform_rate,provider_rate").eq("provider_type", providerType).maybeSingle()
+      .then(({ data }) => { if (data) setCommissionDisplay({ platform:Math.round(data.platform_rate*100), provider:Math.round(data.provider_rate*100) }) })
     const sub = supabase.channel("prov-dash-v2")
       .on("postgres_changes", { event:"*", schema:"public", table:"bookings", filter:`provider_id=eq.${user.id}` }, () => load())
       .on("postgres_changes", { event:"*", schema:"public", table:"orders", filter:`provider_id=eq.${user.id}` }, () => load())
@@ -111,7 +108,7 @@ export default function ProviderDashboard() {
               {businessName}
             </div>
             <div style={{ fontSize:11, color:"rgba(255,255,255,0.85)" }}>
-              {config.icon} {config.label} · Keep {commission.provider}%
+              {config.icon} {config.label} · Keep {commissionDisplay.provider}%
             </div>
             {profile?.is_verified&&(
               <div style={{ fontSize:10, color:"#fff", marginTop:4, background:"rgba(255,255,255,0.2)", borderRadius:20, padding:"2px 10px", display:"inline-block" }}>
