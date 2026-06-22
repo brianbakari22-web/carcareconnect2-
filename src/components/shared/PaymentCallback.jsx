@@ -37,7 +37,20 @@ export default function PaymentCallback() {
       const data = await res.json()
 
       if (data.payment_status_description === "Completed") {
-        if (isGoPayment) {
+        // Check if this is a featured listing payment
+        const { data: featPayment } = await supabase.from("featured_payments")
+          .select("id, listing_id, weeks").eq("id", merchantRef).maybeSingle()
+        
+        if (featPayment) {
+          const featuredUntil = new Date(Date.now()+featPayment.weeks*7*24*60*60*1000).toISOString()
+          await Promise.all([
+            supabase.from("marketplace_listings").update({ is_featured:true, featured_until:featuredUntil }).eq("id", featPayment.listing_id),
+            supabase.from("featured_payments").update({ status:"paid", pesapal_tracking_id:trackingId }).eq("id", featPayment.id),
+          ])
+          setStatus("success")
+          toast.success("Listing featured successfully!")
+          setTimeout(() => navigate("/dashboard/marketplace/listings"), 3000)
+        } else if (isGoPayment) {
           // GO callout payment - mark paid and create go_service_request
           await supabase.from("bookings").update({
             go_callout_paid: true,
@@ -67,13 +80,26 @@ export default function PaymentCallback() {
           toast.success("Payment successful! Finding mechanic...")
           setTimeout(() => navigate("/dashboard/emergency"), 3000)
         } else {
-          await supabase.from("bookings").update({
+          // Check if marketplace transaction
+          const { data: mktTx } = await supabase.from("marketplace_transactions")
+            .select("id").eq("id", merchantRef).maybeSingle()
+          if (mktTx) {
+            await supabase.from("marketplace_transactions").update({
+              payment_status: "paid",
+              pesapal_tracking_id: trackingId
+            }).eq("id", merchantRef)
+            setStatus("success")
+            toast.success("Payment successful! Item secured in escrow.")
+            setTimeout(() => navigate("/dashboard/marketplace/offers"), 3000)
+          } else {
+            await supabase.from("bookings").update({
             payment_status: "paid",
             pesapal_tracking_id: trackingId
           }).eq("id", merchantRef)
           setStatus("success")
           toast.success("Payment successful!")
           setTimeout(() => navigate("/dashboard/bookings"), 3000)
+          }
         }
       } else {
         setStatus("failed")

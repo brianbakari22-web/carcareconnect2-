@@ -1,62 +1,70 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
 
-export default function FeaturedListing({ listing, onSuccess }) {
+export default function FeaturedListing({ listingId, onSuccess }) {
   const { user, profile } = useAuth()
   const [weeks, setWeeks] = useState(1)
   const [paying, setPaying] = useState(false)
+  const [listing, setListing] = useState(null)
   const amount = weeks * 200
 
-  const isFeatured = listing.is_featured && listing.featured_until && new Date(listing.featured_until) > new Date()
+  useEffect(() => {
+    if (!listingId) return
+    supabase.from("marketplace_listings").select("id,title,is_featured,featured_until").eq("id", listingId).single()
+      .then(({ data }) => setListing(data))
+  }, [listingId])
+
+  const isFeatured = listing?.is_featured && listing?.featured_until && new Date(listing.featured_until) > new Date()
   const daysLeft = isFeatured ? Math.ceil((new Date(listing.featured_until)-new Date())/(1000*60*60*24)) : 0
 
   async function payToFeature() {
+    if (!listing) return
     setPaying(true)
     try {
-      const ref = `FEAT-${Date.now()}-${user.id.slice(0,8)}`
-      window.FlutterwaveCheckout({
-        public_key: "FLWPUBK_TEST-7cc800b81b21b4d7075e716052932f32-X",
-        tx_ref: ref,
+      // Create a feature payment record first
+      const { data: payment, error: paymentError } = await supabase.from("featured_payments").insert({
+        listing_id: listing.id,
+        seller_id: user.id,
         amount,
-        currency: "KES",
-        payment_options: "card,mpesa",
-        customer: {
-          email: user.email,
-          name: `${profile?.first_name} ${profile?.last_name}`,
+        weeks,
+        status: "pending",
+      }).select("id").single()
+      if (paymentError) throw paymentError
+
+      // Call Pesapal edge function
+      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/pesapal-payment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc"
         },
-        customizations: {
-          title: "Feature your listing",
-          description: `Feature "${listing.title}" for ${weeks} week(s)`,
-        },
-        callback: async (response) => {
-          if (response.status==="successful") {
-            await activateFeature(ref, response.transaction_id)
-          } else {
-            toast.error("Payment failed")
-            setPaying(false)
-          }
-        },
-        onclose: () => setPaying(false),
+        body: JSON.stringify({
+          amount,
+          bookingId: payment.id,
+          customerEmail: user.email,
+          customerPhone: profile?.phone || "",
+          customerName: (profile?.first_name || "") + " " + (profile?.last_name || ""),
+          description: `Feature "${listing.title}" for ${weeks} week(s)`
+        })
       })
+      const order = await res.json()
+      if (order.redirect_url) {
+        // Update payment record with Pesapal tracking ID
+        await supabase.from("featured_payments").update({
+          pesapal_tracking_id: order.order_tracking_id,
+          status: "processing"
+        }).eq("id", payment.id)
+        // Redirect to Pesapal
+        window.location.href = order.redirect_url
+      } else {
+        throw new Error(order.error || "Payment initiation failed")
+      }
     } catch(err) { toast.error(err.message); setPaying(false) }
   }
 
-  async function activateFeature(ref, flwTxId) {
-    try {
-      const featuredUntil = new Date(Date.now()+weeks*7*24*60*60*1000).toISOString()
-      await Promise.all([
-        supabase.from("marketplace_listings").update({ is_featured:true, featured_until:featuredUntil }).eq("id",listing.id),
-        supabase.from("featured_payments").insert({
-          listing_id:listing.id, seller_id:user.id, amount, weeks,
-          flw_transaction_id:flwTxId, flw_reference:ref, status:"paid",
-        }),
-      ])
-      toast.success(`Listing featured for ${weeks} week(s)!`)
-      if (onSuccess) onSuccess()
-    } catch(err) { toast.error(err.message); setPaying(false) }
-  }
+  if (!listing) return <div style={{ color:"#888", fontSize:13 }}>Loading...</div>
 
   if (isFeatured) return (
     <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:12, padding:"1rem" }}>
@@ -95,10 +103,9 @@ export default function FeaturedListing({ listing, onSuccess }) {
       </div>
 
       <button onClick={payToFeature} disabled={paying}
-        style={{ width:"100%", background:paying?"#555555":"#e6821e", border:"none", borderRadius:9, color:paying?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:paying?"not-allowed":"pointer" }}>
-        {paying?"Processing...":"Pay KES "+amount+" — Feature listing"}
+        style={{ width:"100%", background:paying?"#e0e0e0":"#e6821e", border:"none", borderRadius:9, color:paying?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:paying?"not-allowed":"pointer" }}>
+        {paying?"Redirecting to payment...":"Pay KES "+amount+" — Feature listing"}
       </button>
     </div>
   )
 }
-
