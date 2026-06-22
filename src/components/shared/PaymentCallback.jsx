@@ -11,7 +11,6 @@ export default function PaymentCallback() {
   useEffect(() => {
     const trackingId = searchParams.get("OrderTrackingId")
     const merchantRef = searchParams.get("OrderMerchantReference")
-
     if (trackingId && merchantRef) {
       verifyPayment(trackingId, merchantRef)
     } else {
@@ -21,7 +20,6 @@ export default function PaymentCallback() {
 
   async function verifyPayment(trackingId, merchantRef) {
     try {
-      // Check if this is a GO callout payment
       const goBookingId = sessionStorage.getItem("go_booking_id")
       const goProviderId = sessionStorage.getItem("go_provider_id")
       const isGoPayment = goBookingId === merchantRef
@@ -37,10 +35,30 @@ export default function PaymentCallback() {
       const data = await res.json()
 
       if (data.payment_status_description === "Completed") {
-        // Check if this is a featured listing payment
+
+        // 1. Inspection payment
+        const { data: inspPayment } = await supabase.from("inspection_requests")
+          .select("id, listing_id, seller_id").eq("id", merchantRef).maybeSingle()
+        if (inspPayment) {
+          await supabase.from("inspection_requests").update({
+            payment_status: "paid", status: "pending", amount: 500,
+          }).eq("id", inspPayment.id)
+          await supabase.from("marketplace_listings").update({ inspection_status:"requested" }).eq("id", inspPayment.listing_id)
+          await supabase.from("notifications").insert({
+            user_id: inspPayment.seller_id,
+            title: "Inspection payment received ✅",
+            message: "Your inspection fee has been received. A CCC mechanic will be assigned shortly.",
+            type: "success",
+          })
+          setStatus("success")
+          toast.success("Inspection fee paid! We will assign a mechanic shortly.")
+          setTimeout(() => navigate("/dashboard/marketplace/listings"), 3000)
+          return
+        }
+
+        // 2. Featured listing payment
         const { data: featPayment } = await supabase.from("featured_payments")
           .select("id, listing_id, weeks").eq("id", merchantRef).maybeSingle()
-        
         if (featPayment) {
           const featuredUntil = new Date(Date.now()+featPayment.weeks*7*24*60*60*1000).toISOString()
           await Promise.all([
@@ -50,22 +68,17 @@ export default function PaymentCallback() {
           setStatus("success")
           toast.success("Listing featured successfully!")
           setTimeout(() => navigate("/dashboard/marketplace/listings"), 3000)
-        } else if (isGoPayment) {
-          // GO callout payment - mark paid and create go_service_request
+          return
+        }
+
+        // 3. GO callout payment
+        if (isGoPayment) {
           await supabase.from("bookings").update({
-            go_callout_paid: true,
-            pesapal_tracking_id: trackingId,
-            payment_status: "partial"
+            go_callout_paid: true, pesapal_tracking_id: trackingId, payment_status: "partial"
           }).eq("id", merchantRef)
-
           await supabase.from("go_service_requests").insert({
-            booking_id: merchantRef,
-            provider_id: goProviderId,
-            status: "pending",
-            attempt_number: 1,
+            booking_id: merchantRef, provider_id: goProviderId, status: "pending", attempt_number: 1,
           })
-
-          // Notify provider
           const { data: bk } = await supabase.from("bookings").select("emergency_type, emergency_location_address, profiles!bookings_customer_id_fkey(first_name,last_name)").eq("id", merchantRef).single()
           await supabase.from("notifications").insert({
             user_id: goProviderId,
@@ -73,34 +86,35 @@ export default function PaymentCallback() {
             message: "Emergency: "+(bk?.emergency_type||"").replace(/_/g," ")+" at "+(bk?.emergency_location_address||"").slice(0,60)+". Callout fee paid.",
             type: "error"
           })
-
           sessionStorage.removeItem("go_booking_id")
           sessionStorage.removeItem("go_provider_id")
           setStatus("success")
           toast.success("Payment successful! Finding mechanic...")
           setTimeout(() => navigate("/dashboard/emergency"), 3000)
-        } else {
-          // Check if marketplace transaction
-          const { data: mktTx } = await supabase.from("marketplace_transactions")
-            .select("id").eq("id", merchantRef).maybeSingle()
-          if (mktTx) {
-            await supabase.from("marketplace_transactions").update({
-              payment_status: "paid",
-              pesapal_tracking_id: trackingId
-            }).eq("id", merchantRef)
-            setStatus("success")
-            toast.success("Payment successful! Item secured in escrow.")
-            setTimeout(() => navigate("/dashboard/marketplace/offers"), 3000)
-          } else {
-            await supabase.from("bookings").update({
-            payment_status: "paid",
-            pesapal_tracking_id: trackingId
+          return
+        }
+
+        // 4. Marketplace transaction payment
+        const { data: mktTx } = await supabase.from("marketplace_transactions")
+          .select("id").eq("id", merchantRef).maybeSingle()
+        if (mktTx) {
+          await supabase.from("marketplace_transactions").update({
+            payment_status: "paid", pesapal_tracking_id: trackingId
           }).eq("id", merchantRef)
           setStatus("success")
-          toast.success("Payment successful!")
-          setTimeout(() => navigate("/dashboard/bookings"), 3000)
-          }
+          toast.success("Payment successful! Item secured in escrow.")
+          setTimeout(() => navigate("/dashboard/marketplace/offers"), 3000)
+          return
         }
+
+        // 5. Regular booking payment (default)
+        await supabase.from("bookings").update({
+          payment_status: "paid", pesapal_tracking_id: trackingId
+        }).eq("id", merchantRef)
+        setStatus("success")
+        toast.success("Payment successful!")
+        setTimeout(() => navigate("/dashboard/bookings"), 3000)
+
       } else {
         setStatus("failed")
         toast.error("Payment not completed")
@@ -126,7 +140,7 @@ export default function PaymentCallback() {
           <>
             <div style={{ fontSize:48, marginBottom:16 }}>✅</div>
             <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#1d9e75", marginBottom:8 }}>Payment successful!</div>
-            <div style={{ fontSize:13, color:"#777777" }}>Redirecting to your bookings...</div>
+            <div style={{ fontSize:13, color:"#777777" }}>Redirecting you now...</div>
           </>
         )}
         {status==="failed"&&(
@@ -140,5 +154,3 @@ export default function PaymentCallback() {
     </div>
   )
 }
-
-
