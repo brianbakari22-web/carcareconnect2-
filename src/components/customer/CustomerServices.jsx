@@ -217,6 +217,8 @@ export default function CustomerServices() {
         parts_description: bookForm.parts_description||"",
         is_concierge: bookForm.is_concierge||false,
         concierge_pickup_location: bookForm.concierge_location||null,
+        concierge_expires_at: bookForm.is_concierge ? new Date(Date.now()+30*60*1000).toISOString() : null,
+        concierge_surcharge: bookForm.is_concierge ? Number(booking.price)*0.15 : 0,
         customer_location_lat: customerLocation.lat||null,
         customer_location_lng: customerLocation.lng||null,
         customer_location_address: customerLocation.address||null,
@@ -249,6 +251,18 @@ export default function CustomerServices() {
 
         if (voucherData?.id && data?.[0]?.id) {
           await supabase.from("service_vouchers").update({ is_used: true, used_at: new Date().toISOString(), used_on_booking_id: data[0].id }).eq("id", voucherData.id)
+        }
+
+        // Start proximity-based driver matching for concierge bookings
+        if (bookForm.is_concierge && data?.[0]?.id) {
+          fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/assign-concierge-driver", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc"
+            },
+            body: JSON.stringify({ booking_id: data[0].id })
+          }).catch(e => console.warn("Concierge matching error:", e.message))
         }
 
         if (bookForm.payment_method !== "cash" && data?.[0]?.id) {

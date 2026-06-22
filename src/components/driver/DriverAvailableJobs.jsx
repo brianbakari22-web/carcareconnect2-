@@ -28,7 +28,32 @@ export default function DriverAvailableJobs() {
     return () => supabase.removeChannel(sub)
   }, [user, profile?.vetting_status])
 
-  async function load() {
+  async function declineJob(job) {
+    try {
+      // Add this driver to declined list and trigger next attempt
+      const currentDeclined = job.concierge_declined_drivers || []
+      await supabase.from("bookings").update({
+        concierge_declined_drivers: [...currentDeclined, user.id],
+        concierge_current_driver_id: null,
+        concierge_attempt_expires_at: null,
+      }).eq("id", job.id)
+
+      // Trigger next driver assignment
+      fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/assign-concierge-driver", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc"
+        },
+        body: JSON.stringify({ booking_id: job.id })
+      }).catch(e => console.warn("Next driver assignment error:", e.message))
+
+      toast.success("Job declined — next driver will be notified")
+      load()
+    } catch(e) { toast.error(e.message) }
+  }
+
+    async function load() {
     const [{ data: jobs }, { data: status }] = await Promise.all([
       supabase.from("bookings")
         .select("*, vehicles(make,model,year,license_plate,color), profiles!bookings_customer_id_fkey(first_name,last_name,city)")
@@ -199,21 +224,46 @@ export default function DriverAvailableJobs() {
               <div style={{ fontSize:11, color:"#666", fontStyle:"italic", marginBottom:10 }}>Note: "{job.notes}"</div>
             )}
 
-            {/* Accept button */}
-            <button
-              onClick={()=>acceptJob(job)}
-              disabled={accepting===job.id||!isOnline||!isVerified}
-              style={{
-                width:"100%",
-                background:accepting===job.id||!isOnline||!isVerified?"#ffffff":"#1d9e75",
-                border:`1px solid ${accepting===job.id||!isOnline||!isVerified?"#555555":"#1d9e75"}`,
-                borderRadius:10, color:accepting===job.id||!isOnline||!isVerified?"#444":"#fff",
-                fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700,
-                padding:"13px", cursor:accepting===job.id||!isOnline||!isVerified?"not-allowed":"pointer",
-                transition:"all 0.15s",
-              }}>
-              {accepting===job.id?"Accepting...":"✓ Accept this job"}
-            </button>
+            {/* Priority indicator - show when this driver is the current target */}
+            {job.concierge_current_driver_id===user?.id&&(
+              <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:8, padding:"0.6rem 0.75rem", marginBottom:10, display:"flex", alignItems:"center", gap:8 }}>
+                <span style={{ fontSize:14 }}>⏰</span>
+                <div>
+                  <div style={{ fontSize:12, color:"#e6821e", fontWeight:600 }}>You have been selected for this job!</div>
+                  <div style={{ fontSize:10, color:"#888" }}>You have 10 minutes to accept or decline</div>
+                </div>
+              </div>
+            )}
+
+            {/* Accept/Decline buttons */}
+            <div style={{ display:"flex", gap:8 }}>
+              <button
+                onClick={()=>acceptJob(job)}
+                disabled={accepting===job.id||!isOnline||!isVerified}
+                style={{
+                  flex:2,
+                  background:accepting===job.id||!isOnline||!isVerified?"#ffffff":"#1d9e75",
+                  border:`1px solid ${accepting===job.id||!isOnline||!isVerified?"#555555":"#1d9e75"}`,
+                  borderRadius:10, color:accepting===job.id||!isOnline||!isVerified?"#444":"#fff",
+                  fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700,
+                  padding:"13px", cursor:accepting===job.id||!isOnline||!isVerified?"not-allowed":"pointer",
+                  transition:"all 0.15s",
+                }}>
+                {accepting===job.id?"Accepting...":"✓ Accept this job"}
+              </button>
+              {job.concierge_current_driver_id===user?.id&&(
+                <button
+                  onClick={()=>declineJob(job)}
+                  style={{
+                    flex:1, background:"none",
+                    border:"1px solid #e24b4a40", borderRadius:10,
+                    color:"#e24b4a", fontSize:13, fontWeight:600,
+                    padding:"13px", cursor:"pointer"
+                  }}>
+                  ✗ Decline
+                </button>
+              )}
+            </div>
           </div>
         )
       })}
