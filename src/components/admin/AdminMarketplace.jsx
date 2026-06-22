@@ -188,6 +188,71 @@ export default function AdminMarketplace() {
     load()
   }
 
+  async function resolveDispute(dispute, resolution) {
+    if (!confirm(`Rule in favour of ${resolution==="buyer"?"buyer (refund)":"seller (release funds)"}?`)) return
+    try {
+      const tx = transactions.find(t=>t.id===dispute.transaction_id)
+      
+      // Update dispute
+      await supabase.from("marketplace_disputes").update({
+        status: "resolved",
+        resolution: resolution==="buyer" ? "Refund issued to buyer" : "Funds released to seller",
+        resolved_at: new Date().toISOString(),
+        resolved_by: user.id,
+      }).eq("id", dispute.id)
+
+      // Update transaction
+      await supabase.from("marketplace_transactions").update({
+        payment_status: resolution==="buyer" ? "refunded" : "released",
+        escrow_released: resolution==="seller",
+        escrow_released_at: resolution==="seller" ? new Date().toISOString() : null,
+      }).eq("id", dispute.transaction_id)
+
+      if (resolution==="seller" && tx) {
+        // Create payout request for seller
+        await supabase.from("payout_requests").insert({
+          user_id: tx.seller_id,
+          amount: tx.seller_earnings,
+          status: "pending",
+        })
+        await supabase.from("notifications").insert({
+          user_id: tx.seller_id,
+          title: "Dispute resolved in your favour 🎉",
+          message: `The dispute has been resolved. KES ${Number(tx?.seller_earnings||0).toLocaleString()} payout has been requested. Add your bank details under Payouts to receive it.`,
+          type: "success",
+        })
+        await supabase.from("notifications").insert({
+          user_id: dispute.raised_by,
+          title: "Dispute resolved",
+          message: "After review, the dispute was resolved in the seller's favour. Funds have been released.",
+          type: "info",
+        })
+      } else if (resolution==="buyer" && tx) {
+        // Create refund payout request for buyer
+        await supabase.from("payout_requests").insert({
+          user_id: tx.buyer_id,
+          amount: tx.amount,
+          status: "pending",
+        })
+        await supabase.from("notifications").insert({
+          user_id: tx.buyer_id,
+          title: "Dispute resolved — Refund incoming 💰",
+          message: `The dispute has been resolved in your favour. KES ${Number(tx?.amount||0).toLocaleString()} refund has been requested.`,
+          type: "success",
+        })
+        await supabase.from("notifications").insert({
+          user_id: tx?.seller_id,
+          title: "Dispute resolved",
+          message: "After review, the dispute was resolved in the buyer's favour. A refund has been issued.",
+          type: "info",
+        })
+      }
+
+      toast.success(`Dispute resolved in ${resolution}\'s favour`)
+      load()
+    } catch(err) { toast.error(err.message) }
+  }
+
   async function featureListing(id, featured) {
     const featuredUntil = featured ? new Date(Date.now()+7*24*60*60*1000).toISOString() : null
     await supabase.from("marketplace_listings").update({ is_featured:featured, featured_until:featuredUntil }).eq("id",id)
@@ -586,6 +651,18 @@ export default function AdminMarketplace() {
                   </div>
                   <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>Raised by: {d.profiles?.first_name} {d.profiles?.last_name}</div>
                   {d.description&&<div style={{ fontSize:11, color:"#888", fontStyle:"italic" }}>"{d.description}"</div>}
+                  {d.status==="open"&&(
+                    <div style={{ display:"flex", gap:6, marginTop:10 }}>
+                      <button onClick={()=>resolveDispute(d,"buyer")}
+                        style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, fontWeight:600, padding:"6px 12px", cursor:"pointer" }}>
+                        💰 Refund buyer
+                      </button>
+                      <button onClick={()=>resolveDispute(d,"seller")}
+                        style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, fontWeight:600, padding:"6px 12px", cursor:"pointer" }}>
+                        ✓ Release to seller
+                      </button>
+                    </div>
+                  )}
                   <div style={{ fontSize:10, color:"#888", marginTop:4 }}>{new Date(d.created_at).toLocaleString()}</div>
                 </div>
                 <div style={{ textAlign:"right" }}>
