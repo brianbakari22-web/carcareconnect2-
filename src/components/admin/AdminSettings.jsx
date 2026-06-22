@@ -14,7 +14,8 @@ export default function AdminSettings() {
   useEffect(() => { load() }, [])
 
   async function load() {
-    const { data } = await supabase.from("app_settings").select("*").order("label")
+    const { data, error } = await supabase.from("app_settings").select("*").order("label")
+    if (error) console.error("Settings load error:", error)
     setSettings(data||[])
     setLoading(false)
   }
