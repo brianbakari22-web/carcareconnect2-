@@ -163,6 +163,8 @@ import AdminInventory from "./components/admin/AdminInventory"
 import AdminSystemDiagnostics from "./components/admin/AdminSystemDiagnostics"
 import AdminCommissions from "./components/admin/AdminCommissions"
 import AdminSettings from "./components/admin/AdminSettings"
+import AdminDriverVetting from "./components/admin/AdminDriverVetting"
+import DriverApplication from "./components/driver/DriverApplication"
 import AdminPaymentTracking from "./components/admin/AdminPaymentTracking"
 
 const ADMIN_SECRET = "ccc-admin-x7k9m2p4q8"
@@ -305,6 +307,7 @@ function DashboardRouter() {
           <Route path="payouts" element={<DriverPayouts />} />
           <Route path="vehicle" element={<DriverVehicle />} />
           <Route path="performance" element={<DriverPerformance />} />
+          <Route path="application" element={<DriverApplication />} />
           <Route path="performance" element={<DriverPerformance />} />
           <Route path="notifications" element={<DriverNotifications />} />
           <Route path="chat" element={<DriverChat />} />
@@ -349,6 +352,7 @@ function AdminDashboardRouter() {
           <Route path="diagnostics" element={<AdminSystemDiagnostics />} />
           <Route path="commissions" element={<AdminCommissions />} />
           <Route path="settings" element={<AdminSettings />} />
+          <Route path="driver-vetting" element={<AdminDriverVetting />} />
           <Route path="payment-tracking" element={<AdminPaymentTracking />} />
           <Route path="providers" element={<AdminProviders />} />
           <Route path="drivers" element={<AdminDrivers />} />

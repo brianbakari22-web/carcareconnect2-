@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -6,6 +7,7 @@ import toast from "react-hot-toast"
 
 export default function DriverAvailableJobs() {
   const { user, profile } = useAuth()
+  const navigate = useNavigate()
   const isMobile = useIsMobile()
   const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(true)
@@ -14,12 +16,17 @@ export default function DriverAvailableJobs() {
 
   useEffect(() => {
     if (!user) return
+    // Gate: only approved drivers can see jobs
+    if (profile && profile.vetting_status && profile.vetting_status !== "approved") {
+      navigate("/dashboard/application")
+      return
+    }
     load()
     const sub = supabase.channel("available-jobs-live")
       .on("postgres_changes", { event:"*", schema:"public", table:"bookings" }, () => load())
       .subscribe()
     return () => supabase.removeChannel(sub)
-  }, [user])
+  }, [user, profile?.vetting_status])
 
   async function load() {
     const [{ data: jobs }, { data: status }] = await Promise.all([

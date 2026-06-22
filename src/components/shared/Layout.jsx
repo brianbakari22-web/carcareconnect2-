@@ -44,6 +44,7 @@ const NAV = {
     { path:"/dashboard/reviews", key:"myRatings", icon:"⭐" },
     { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
     { path:"/dashboard/claims", label:"My Claims", icon:"🛡️" },
+    { path:"/dashboard/application", label:"My Application", icon:"📋" },
     { path:"/dashboard/vehicle", label:"My Vehicle", icon:"🚗" },
     { path:"/dashboard/performance", label:"Performance", icon:"📊" },
 
@@ -79,6 +80,7 @@ const NAV = {
     { path:"/admin-dashboard/diagnostics", label:"Diagnostics", icon:"🔬" },
     { path:"/admin-dashboard/commissions", label:"Commissions", icon:"💹" },
     { path:"/admin-dashboard/settings", label:"Settings", icon:"⚙️" },
+    { path:"/admin-dashboard/driver-vetting", label:"Driver Vetting", icon:"🪪" },
     { path:"/admin-dashboard/marketplace", label:"Marketplace", icon:"🛒" },
     { path:"/admin-dashboard/employees", label:"Employees", icon:"👨‍💼" },
     { path:"/admin-dashboard/orders", label:"Orders", icon:"🛒" },
