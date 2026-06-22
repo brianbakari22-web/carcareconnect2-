@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
 export default function AdminMarketplace() {
   const isMobile = useIsMobile()
+  const { user } = useAuth()
   const [listings, setListings] = useState([])
   const [selectedComments, setSelectedComments] = useState([])
   const [showComments, setShowComments] = useState(null)
