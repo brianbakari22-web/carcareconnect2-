@@ -26,7 +26,7 @@ export default function CustomerChat() {
 
   async function load() {
     const { data: bookings } = await supabase.from("bookings")
-      .select("id,service_name,provider_id,assigned_mechanic_id,status,booking_date")
+      .select("id,service_name,provider_id,assigned_mechanic_id,driver_id,status,booking_date")
       .eq("customer_id", user.id)
       .order("created_at", { ascending:false })
 
@@ -39,6 +39,9 @@ export default function CustomerChat() {
     const mechanicIds = [...new Set(bookings.map(b=>b.assigned_mechanic_id).filter(Boolean))]
     const { data: mechs } = mechanicIds.length>0 ? await supabase.from("mechanics")
       .select("id,user_id,first_name,last_name").in("id", mechanicIds) : { data: [] }
+    const driverIds = [...new Set(bookings.map(b=>b.driver_id).filter(Boolean))]
+    const { data: drivers } = driverIds.length>0 ? await supabase.from("profiles")
+      .select("id,first_name,last_name").in("id", driverIds) : { data: [] }
 
     const { data: lastMessages } = await supabase.from("chat_messages")
       .select("booking_id,message,created_at,sender_id,is_read,receiver_id")
@@ -53,9 +56,13 @@ export default function CustomerChat() {
       const unread = msgs.filter(m=>m.receiver_id===user.id&&!m.is_read).length
       // If the mechanic has actually sent/received a message on this booking, show their identity instead of the provider's
       const mechanicIsParty = mechanic?.user_id && msgs.some(m=>m.sender_id===mechanic.user_id||m.receiver_id===mechanic.user_id)
-      const otherUserId = mechanicIsParty ? mechanic.user_id : b.provider_id
+      const driver = drivers?.find(d=>d.id===b.driver_id)
+      const driverIsParty = driver && msgs.some(m=>m.sender_id===driver.id||m.receiver_id===driver.id)
+      const otherUserId = mechanicIsParty ? mechanic.user_id : driverIsParty ? driver.id : b.provider_id
       const otherUserName = mechanicIsParty
         ? `${mechanic.first_name||""} ${mechanic.last_name||""}`.trim()||"Mechanic"
+        : driverIsParty
+        ? `${driver.first_name||""} ${driver.last_name||""}`.trim()||"Driver"
         : provider?.business_name||`${provider?.first_name||""} ${provider?.last_name||""}`.trim()||"Provider"
       return {
         bookingId: b.id,
