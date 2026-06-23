@@ -27,7 +27,7 @@ Deno.serve(async (req) => {
       .from("bookings")
       .select("*")
       .eq("id", booking_id)
-      .single()
+      .maybeSingle()
 
     console.log("Booking fetch result:", JSON.stringify({ booking: booking?.id, error: bookingError?.message }))
     if (bookingError || !booking) {
