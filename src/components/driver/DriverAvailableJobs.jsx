@@ -56,7 +56,7 @@ export default function DriverAvailableJobs() {
     async function load() {
     const [{ data: jobs }, { data: status }] = await Promise.all([
       supabase.from("bookings")
-        .select("*, vehicles(make,model,year,license_plate,color), profiles!bookings_customer_id_fkey(first_name,last_name,city)")
+        .select("*, vehicles(make,model,year,license_plate,color), profiles!bookings_customer_id_fkey(first_name,last_name,city), concierge_current_driver_id, concierge_attempt, concierge_attempt_expires_at")
         .eq("is_concierge", true)
         .eq("status", "confirmed")
         .is("driver_id", null)

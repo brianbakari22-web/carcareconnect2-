@@ -1,10 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
-const supabase = createClient(
-  Deno.env.get("SUPABASE_URL")!,
-  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-)
-
 // Haversine formula to calculate distance between two GPS points in km
 function getDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const R = 6371
@@ -17,8 +12,15 @@ function getDistance(lat1: number, lng1: number, lat2: number, lng2: number): nu
 }
 
 Deno.serve(async (req) => {
+  const supabase = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+  )
   try {
-    const { booking_id } = await req.json()
+    console.log("Function called, method:", req.method)
+    const body = await req.json()
+    console.log("Request body:", JSON.stringify(body))
+    const { booking_id } = body
 
     // Get booking details
     const { data: booking, error: bookingError } = await supabase
@@ -27,8 +29,9 @@ Deno.serve(async (req) => {
       .eq("id", booking_id)
       .single()
 
+    console.log("Booking fetch result:", JSON.stringify({ booking: booking?.id, error: bookingError?.message }))
     if (bookingError || !booking) {
-      return new Response(JSON.stringify({ error: "Booking not found" }), { status: 404 })
+      return new Response(JSON.stringify({ error: "Booking not found", detail: bookingError?.message }), { status: 404 })
     }
 
     // Check if booking is still concierge and unassigned
@@ -79,13 +82,23 @@ Deno.serve(async (req) => {
     }
 
     // Get all online, approved, available drivers (excluding already declined)
+    // Get online approved drivers not currently assigned to an active booking
     const { data: onlineDrivers } = await supabase
       .from("driver_status")
       .select("driver_id, current_lat, current_lng")
       .eq("is_online", true)
-      .is("current_booking_id", null)
 
-    if (!onlineDrivers?.length) {
+    // Filter out drivers with active bookings
+    const activeDriverIds = onlineDrivers?.length ? (await supabase
+      .from("bookings")
+      .select("driver_id")
+      .in("driver_id", onlineDrivers.map(d=>d.driver_id))
+      .in("status", ["driver-assigned","in-progress","arrived-for-pickup","arrived-at-dropoff"])
+    ).data?.map(b=>b.driver_id) || [] : []
+
+    const availableDrivers = (onlineDrivers||[]).filter(d => !activeDriverIds.includes(d.driver_id))
+
+    if (!availableDrivers?.length) {
       // No online drivers — try again in 10 minutes if attempts remain
       await supabase.from("bookings").update({
         concierge_attempt: attempt,
@@ -104,7 +117,7 @@ Deno.serve(async (req) => {
 
     // Filter out declined drivers
     const declinedIds = booking.concierge_declined_drivers || []
-    const eligibleDrivers = onlineDrivers.filter(d => !declinedIds.includes(d.driver_id))
+    const eligibleDrivers = availableDrivers.filter(d => !declinedIds.includes(d.driver_id))
 
     if (!eligibleDrivers.length) {
       // All available drivers declined — same as no drivers
