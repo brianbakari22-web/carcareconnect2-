@@ -29,7 +29,7 @@ export default function AdminBookings() {
     const { data: bks } = await supabase.from("bookings").select("*").order("created_at", { ascending:false })
     if (!bks?.length) { setBookings([]); setLoading(false); return }
     const userIds = [...new Set([...bks.map(b=>b.customer_id), ...bks.map(b=>b.provider_id)].filter(Boolean))]
-    const { data: profs } = await supabase.from("profiles").select("id,first_name,last_name,business_name,phone").in("id", userIds)
+    const { data: profs } = await supabase.from("profile_public").select("id,first_name,last_name,business_name").in("id", userIds)
     const profMap = {}
     profs?.forEach(p => { profMap[p.id] = p })
     setBookings(bks.map(b => ({...b, customer:profMap[b.customer_id]||null, provider:profMap[b.provider_id]||null})))
@@ -119,7 +119,7 @@ export default function AdminBookings() {
             <div style={{ flex:1, minWidth:0, marginRight:8 }}>
               <div style={{ fontSize:13, fontWeight:600, color:"#000", marginBottom:2 }}>{b.service_name}</div>
               <div style={{ fontSize:11, color:"#888" }}>
-                👤 {b.customer?.first_name} {b.customer?.last_name} {b.customer?.phone?`· ${b.customer.phone}`:""}
+                👤 {b.customer?.first_name} {b.customer?.last_name} {""}
               </div>
               <div style={{ fontSize:11, color:"#888" }}>
                 🏪 {b.provider?.business_name||`${b.provider?.first_name} ${b.provider?.last_name}`}
