@@ -19,6 +19,7 @@ export default function AdminDrivers() {
   const [rejectingId, setRejectingId] = useState(null)
   const [rejectReason, setRejectReason] = useState("")
   const [viewingDocs, setViewingDocs] = useState(null)
+  const [probations, setProbations] = useState([])
     
   useEffect(() => {
     load()
@@ -90,13 +91,21 @@ export default function AdminDrivers() {
   }, [showMap, onlineDrivers])
 
   async function loadDrivers() {
-    const { data } = await supabase.from("profiles").select("*").eq("role","driver").order("created_at",{ascending:false})
-    setDrivers(data||[])
+    const [{ data: drvs }, { data: probs }] = await Promise.all([
+      supabase.from("profiles").select("*").eq("role","driver").order("created_at",{ascending:false}),
+      supabase.from("driver_probation").select("*")
+    ])
+    setDrivers(drvs||[])
+    setProbations(probs||[])
   }
 
   async function loadStatuses() {
     const { data } = await supabase.from("driver_status").select("*")
     setDriverStatuses(data||[])
+  }
+
+  function getProbation(driverId) {
+    return probations.find(p=>p.driver_id===driverId)
   }
 
   function getStatus(driverId) {
@@ -301,6 +310,11 @@ export default function AdminDrivers() {
                       {d.documents_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#f0fdf4", padding:"2px 7px", borderRadius:10, border:"1px solid #1d9e7540" }}>✓ Verified</span>}
                       {!d.documents_verified&&d.is_active&&<span style={{ fontSize:10, color:"#e6821e", background:"#fff8f0", padding:"2px 7px", borderRadius:10 }}>⏳ Pending</span>}
                       {isSuspended&&<span style={{ fontSize:10, color:"#e24b4a", background:"#fff5f5", padding:"2px 7px", borderRadius:10 }}>🚫 Suspended</span>}
+                      {(()=>{ const prob = getProbation(d.id); if (!prob) return null; return prob.status==="probation" ? <span style={{ fontSize:10, color:"#8b5cf6", background:"#faf5ff", padding:"2px 7px", borderRadius:10, border:"1px solid #8b5cf640" }}>🔍 Probation ({prob.jobs_completed}/{prob.jobs_required})</span> : prob.status==="completed" ? <span style={{ fontSize:10, color:"#1d9e75", background:"#f0fdf4", padding:"2px 7px", borderRadius:10 }}>✓ Probation passed</span> : null })()}
+                      {d.vetting_status==="pending"&&!d.documents_verified&&<span style={{ fontSize:10, color:"#888", background:"#f5f5f5", padding:"2px 7px", borderRadius:10 }}>📋 Not applied</span>}
+                      {d.vetting_status==="documents_submitted"&&<span style={{ fontSize:10, color:"#378add", background:"#eff6ff", padding:"2px 7px", borderRadius:10 }}>📄 Docs submitted</span>}
+                      {d.vetting_status==="approved"&&<span style={{ fontSize:10, color:"#1d9e75", background:"#f0fdf4", padding:"2px 7px", borderRadius:10 }}>🪪 Vetted</span>}
+                      {d.vetting_status==="rejected"&&<span style={{ fontSize:10, color:"#e24b4a", background:"#fff5f5", padding:"2px 7px", borderRadius:10 }}>❌ Rejected</span>}
                       {isOnline&&!isSuspended&&<span style={{ fontSize:10, color:"#1d9e75" }}>🟢 Online{onJob?" · On job":""}</span>}
                       {noShowCount>0&&<span style={{ fontSize:10, color:"#e6821e", background:"#fff8f0", padding:"2px 7px", borderRadius:10 }}>⚠️ {noShowCount} no-show{noShowCount>1?"s":""}</span>}
                       {d.driver_vehicle_type&&<span style={{ fontSize:10, color:"#8b5cf6", background:"#f5f3ff", padding:"2px 7px", borderRadius:10 }}>
