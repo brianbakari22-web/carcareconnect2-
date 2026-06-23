@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
@@ -13,6 +13,24 @@ export default function DriverAvailableJobs() {
   const [loading, setLoading] = useState(true)
   const [accepting, setAccepting] = useState(null)
   const [driverStatus, setDriverStatus] = useState(null)
+  const [countdowns, setCountdowns] = useState({})
+  const timerRef = useRef(null)
+
+  // Countdown timer for job offers
+  useEffect(() => {
+    timerRef.current = setInterval(() => {
+      const now = Date.now()
+      const newCountdowns = {}
+      jobs.forEach(job => {
+        if (job.concierge_attempt_expires_at) {
+          const remaining = Math.max(0, new Date(job.concierge_attempt_expires_at).getTime() - now)
+          newCountdowns[job.id] = remaining
+        }
+      })
+      setCountdowns(newCountdowns)
+    }, 1000)
+    return () => clearInterval(timerRef.current)
+  }, [jobs])
 
   useEffect(() => {
     if (!user) return
@@ -117,6 +135,13 @@ export default function DriverAvailableJobs() {
     } finally {
       setAccepting(null)
     }
+  }
+
+  function formatCountdown(ms) {
+    if (!ms || ms <= 0) return "Expired"
+    const mins = Math.floor(ms / 60000)
+    const secs = Math.floor((ms % 60000) / 1000)
+    return `${mins}:${secs.toString().padStart(2,"0")}`
   }
 
   const isOnline = driverStatus?.is_online
@@ -226,11 +251,17 @@ export default function DriverAvailableJobs() {
 
             {/* Priority indicator - show when this driver is the current target */}
             {job.concierge_current_driver_id===user?.id&&(
-              <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:8, padding:"0.6rem 0.75rem", marginBottom:10, display:"flex", alignItems:"center", gap:8 }}>
-                <span style={{ fontSize:14 }}>⏰</span>
-                <div>
-                  <div style={{ fontSize:12, color:"#e6821e", fontWeight:600 }}>You have been selected for this job!</div>
-                  <div style={{ fontSize:10, color:"#888" }}>You have 10 minutes to accept or decline</div>
+              <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:8, padding:"0.6rem 0.75rem", marginBottom:10, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+                <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                  <span style={{ fontSize:14 }}>⏰</span>
+                  <div>
+                    <div style={{ fontSize:12, color:"#e6821e", fontWeight:600 }}>You have been selected!</div>
+                    <div style={{ fontSize:10, color:"#888" }}>Accept or decline within the time limit</div>
+                  </div>
+                </div>
+                <div style={{ textAlign:"center", background:"#e6821e", borderRadius:8, padding:"6px 10px", minWidth:52 }}>
+                  <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#fff" }}>{formatCountdown(countdowns[job.id])}</div>
+                  <div style={{ fontSize:8, color:"rgba(255,255,255,0.8)", textTransform:"uppercase" }}>remaining</div>
                 </div>
               </div>
             )}
