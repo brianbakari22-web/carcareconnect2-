@@ -23,7 +23,7 @@ async function registerIPN(token: string) {
   const res = await fetch(PESAPAL_BASE_URL + "/api/URLSetup/RegisterIPN", {
     method: "POST",
     headers: { "Content-Type": "application/json", "Accept": "application/json", "Authorization": "Bearer " + token },
-    body: JSON.stringify({ url: "https://carcareconnect2.pages.dev/payment/callback", ipn_notification_type: "GET" })
+    body: JSON.stringify({ url: "https://carcareconnect.care/payment/callback", ipn_notification_type: "GET" })
   })
   const data = await res.json()
   return data.ipn_id
@@ -49,7 +49,7 @@ serve(async (req) => {
         currency: "KES",
         amount: amount,
         description: "Car Care Connect booking payment",
-        callback_url: "https://carcareconnect2.pages.dev/payment/callback",
+        callback_url: "https://carcareconnect.care/payment/callback",
         notification_id: ipnId,
         billing_address: {
           email_address: customerEmail || "",
