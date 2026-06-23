@@ -75,7 +75,13 @@ export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, 
   async function load() {
     let query = supabase.from("chat_messages").select("*")
     if (bookingId) query = query.eq("booking_id", bookingId)
-    else if (listingId) query = query.eq("listing_id", listingId)
+    else if (listingId) {
+      query = query.eq("listing_id", listingId)
+      // Scope to just the two participants - prevents seeing other customers' messages on same listing
+      if (otherUserId) {
+        query = query.or(`and(sender_id.eq.${effectiveUserId},receiver_id.eq.${otherUserId}),and(sender_id.eq.${otherUserId},receiver_id.eq.${effectiveUserId})`)
+      }
+    }
     else if (claimId) {
       query = query.eq("claim_id", claimId)
       // A single claim can have separate admin<->customer and admin<->provider threads.
