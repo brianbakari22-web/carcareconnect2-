@@ -119,7 +119,7 @@ export default function LandingPage() {
             Nairobi.
           </h1>
           <p style={{ ...body, marginBottom:"2rem" }}>
-            Nairobi's most trusted automotive platform. Verified mechanics, 24/7 emergency roadside help, live tracking, parts marketplace — everything your car needs, one tap away.
+            Nairobi&apos;s most trusted automotive platform. Verified mechanics, 24/7 emergency roadside help, live tracking, parts marketplace — everything your car needs, one tap away.
           </p>
           <div style={{ display:"flex", gap:10, justifyContent:"center", flexWrap:"wrap", marginBottom:"2rem" }}>
             <button onClick={()=>navigate("/auth")} style={btnOrange}>🚗 Get started free</button>
@@ -149,7 +149,7 @@ export default function LandingPage() {
         <div style={{ maxWidth:580, margin:"0 auto", textAlign:"center", position:"relative", zIndex:2 }}>
           <span style={sLabel}>GO Service</span>
           <h2 style={h2w}>Broke down? We come to you.</h2>
-          <p style={{ ...body, color:"#aaa", marginBottom:"1.5rem" }}>Kenya's only 24/7 emergency roadside service. Our certified mechanics come to your exact GPS location — highway, parking lot, or home. Just KES 500 callout fee.</p>
+          <p style={{ ...body, color:"#aaa", marginBottom:"1.5rem" }}>Kenya&apos;s only 24/7 emergency roadside service. Our certified mechanics come to your exact GPS location — highway, parking lot, or home. Just KES 500 callout fee.</p>
           <div style={{ display:"flex", gap:8, flexWrap:"wrap", justifyContent:"center", marginBottom:"1.5rem" }}>
             {["🛞 Flat tyre","🔋 Dead battery","⛽ Out of fuel","🌡️ Overheating","🚚 Towing"].map(item=>(
               <span key={item} style={{ background:"rgba(34,34,34,0.9)", border:"1px solid #333", borderRadius:20, padding:"6px 14px", fontSize:13, color:"#ddd" }}>{item}</span>
@@ -391,7 +391,7 @@ export default function LandingPage() {
         <div style={{ maxWidth:500, margin:"0 auto", position:"relative", zIndex:2 }}>
           <img src="/logo.svg" alt="Car Care Connect" style={{ height:70, marginBottom:"1.5rem", animation:"glow 3s ease-in-out infinite" }}/>
           <h2 style={{ fontWeight:800, fontSize:"clamp(26px,5vw,48px)", lineHeight:1.1, color:"#fff", marginBottom:12, letterSpacing:-0.5 }}>
-            Nairobi's car care platform<br/><span style={{ color:"#e6821e" }}>starts here.</span>
+            Nairobi&apos;s car care platform<br/><span style={{ color:"#e6821e" }}>starts here.</span>
           </h2>
           <p style={{ ...body, color:"#aaa", marginBottom:"2rem" }}>Join thousands of car owners and mechanics already on CCC. Free to join. Available 24/7. Built for Nairobi.</p>
           <div style={{ display:"flex", gap:10, justifyContent:"center", flexWrap:"wrap" }}>
@@ -405,7 +405,7 @@ export default function LandingPage() {
       <div style={{ background:"rgba(17,17,17,0.95)", padding:"2rem 1.25rem", borderTop:"1px solid #222", position:"relative", zIndex:1 }}>
         <div style={{ maxWidth:800, margin:"0 auto" }}>
           <div style={{ fontWeight:700, fontSize:18, color:"#fff", marginBottom:8 }}>Car<span style={{ color:"#e6821e" }}>Care</span> Connect</div>
-          <p style={{ fontSize:12, color:"#666", marginBottom:"1rem", lineHeight:1.6 }}>🇰🇪 Nairobi's most trusted automotive platform</p>
+          <p style={{ fontSize:12, color:"#666", marginBottom:"1rem", lineHeight:1.6 }}>🇰🇪 Nairobi&apos;s most trusted automotive platform</p>
           <div style={{ display:"flex", gap:16, flexWrap:"wrap", marginBottom:"1rem" }}>
             <a href="/privacy" style={{ fontSize:12, color:"#666", textDecoration:"none" }}>Privacy Policy</a>
             <a href="/terms" style={{ fontSize:12, color:"#666", textDecoration:"none" }}>Terms of Service</a>
