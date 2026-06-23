@@ -80,7 +80,7 @@ export default function ProviderGoRequests() {
         o.start(ctx.currentTime + i*0.25)
         o.stop(ctx.currentTime + i*0.25 + 0.2)
       })
-    } catch(e) {}
+    } catch(e) { /* audio playback failed - non-critical */ }
   }
 
   function sendPushNotification(title, body) {

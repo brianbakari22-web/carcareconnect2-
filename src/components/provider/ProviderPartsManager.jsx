@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { supabase } from "../../lib/supabase"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
@@ -8,6 +8,18 @@ export default function ProviderPartsManager({ booking, onUpdate }) {
   const [parts, setParts] = useState(booking.parts_details||[])
   const [newPart, setNewPart] = useState({ name:"", quantity:1, unit_price:"" })
   const [saving, setSaving] = useState(false)
+  const [commissionRate, setCommissionRate] = useState(0.10)
+
+  useEffect(() => {
+    // Fetch commission rate for parts based on provider type
+    supabase.from("profiles").select("provider_type").eq("id", booking.provider_id).maybeSingle()
+      .then(({ data: prov }) => {
+        if (!prov?.provider_type) return
+        const key = prov.provider_type === "parts_dealer" ? "parts_dealer" : "marketplace_item"
+        supabase.from("commission_rates").select("platform_rate").eq("provider_type", key).maybeSingle()
+          .then(({ data: rate }) => { if (rate) setCommissionRate(Number(rate.platform_rate)) })
+      })
+  }, [booking.provider_id])
 
   function addPart() {
     if (!newPart.name||!newPart.unit_price) return toast.error("Part name and price required")
@@ -27,8 +39,8 @@ export default function ProviderPartsManager({ booking, onUpdate }) {
   }
 
   const totalPartsCost = parts.reduce((s,p)=>s+p.total, 0)
-  const partsCommission = totalPartsCost * 0.10
-  const partsProviderEarnings = totalPartsCost * 0.90
+  const partsCommission = totalPartsCost * commissionRate
+  const partsProviderEarnings = totalPartsCost * (1 - commissionRate)
   const updatedTotal = Number(booking.total_amount) + totalPartsCost
 
   async function saveParts() {
@@ -101,7 +113,7 @@ export default function ProviderPartsManager({ booking, onUpdate }) {
             <span>Parts total</span><span>KES {totalPartsCost.toLocaleString()}</span>
           </div>
           <div style={{ display:"flex", justifyContent:"space-between", fontSize:11, color:"#777777", marginBottom:4 }}>
-            <span>Platform fee (10%)</span><span>KES {partsCommission.toFixed(0)}</span>
+            <span>Platform fee ({Math.round(commissionRate*100)}%)</span><span>KES {partsCommission.toFixed(0)}</span>
           </div>
           <div style={{ display:"flex", justifyContent:"space-between", fontSize:11, color:"#1d9e75", marginBottom:4 }}>
             <span>Your earnings (90%)</span><span>KES {partsProviderEarnings.toFixed(0)}</span>
