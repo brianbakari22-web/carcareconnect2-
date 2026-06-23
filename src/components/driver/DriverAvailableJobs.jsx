@@ -246,7 +246,7 @@ export default function DriverAvailableJobs() {
 
             {/* Notes */}
             {job.notes&&(
-              <div style={{ fontSize:11, color:"#666", fontStyle:"italic", marginBottom:10 }}>Note: "{job.notes}"</div>
+              <div style={{ fontSize:11, color:"#666", fontStyle:"italic", marginBottom:10 }}>Note: &quot;{job.notes}&quot;</div>
             )}
 
             {/* Priority indicator - show when this driver is the current target */}
@@ -301,5 +301,6 @@ export default function DriverAvailableJobs() {
     </div>
   )
 }
+
 
 

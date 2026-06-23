@@ -348,7 +348,7 @@ export default function DriverProfile() {
 
             <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
               <div>
-                <label style={lbl}>Driver's license number *</label>
+                <label style={lbl}>Driver&apos;s license number *</label>
                 <input style={inp} placeholder="e.g. DL123456" value={credentialsForm.license_number} onChange={e=>setCredentialsForm(f=>({...f,license_number:e.target.value}))} required/>
               </div>
               <div>
@@ -535,6 +535,7 @@ export default function DriverProfile() {
     </div>
   )
 }
+
 
 
 
