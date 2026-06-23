@@ -61,7 +61,7 @@ export default function CustomerDashboard() {
               {new Date().toLocaleDateString("en-KE",{weekday:"long",day:"numeric",month:"long"})}
             </div>
             <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#fff" }}>
-              Good morning, {profile?.first_name || "there"} 👋
+              {(() => { const h = new Date().getHours(); return h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : h < 24 ? "Good evening" : "Good evening" })()} , {profile?.first_name || "there"} 👋
             </div>
             <div style={{ fontSize:12, color:"rgba(255,255,255,0.8)", marginTop:2 }}>
               {tier} member · {stats.points.toLocaleString()} pts
@@ -178,4 +178,6 @@ export default function CustomerDashboard() {
     </div>
   )
 }
+
+
 
