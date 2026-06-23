@@ -57,24 +57,6 @@ export default function VehicleConditionReport({ bookingId, reportType, onComple
     finally { setUploadingPhoto(false) }
   }
 
-  async function uploadPhoto(file) {
-    if (!file) return
-    if (!file.type.startsWith("image/")) return toast.error("Please upload an image")
-    if (file.size > 5*1024*1024) return toast.error("Photo must be under 5MB")
-    if (photos.length >= 6) return toast.error("Maximum 6 photos per report")
-    setUploadingPhoto(true)
-    try {
-      const ext = file.name.split(".").pop()
-      const path = `condition-reports/${bookingId}/${reportType}-${Date.now()}.${ext}`
-      const { error } = await supabase.storage.from("driver-photos").upload(path, file, { upsert:true })
-      if (error) throw error
-      const { data } = supabase.storage.from("driver-photos").getPublicUrl(path)
-      setPhotos(prev => [...prev, data.publicUrl])
-      toast.success("Photo added!")
-    } catch(e) { toast.error("Upload failed: " + e.message) }
-    finally { setUploadingPhoto(false) }
-  }
-
   async function submit(e) {
     e.preventDefault()
     if (!form.odometer_reading) return toast.error("Odometer reading required")

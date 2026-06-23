@@ -156,7 +156,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, 
         message: messageText.length > 80 ? messageText.slice(0, 80) + "..." : messageText,
         type: "info"
       })
-    } catch(_) {}
+    } catch(_) { /* notification send failed - non-critical */ }
 
 
 

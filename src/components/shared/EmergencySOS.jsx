@@ -61,7 +61,7 @@ export default function EmergencySOS() {
           <div style={{ background:"#fff", borderRadius:14, padding:"1.5rem", maxWidth:340, width:"100%" }}>
             <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#e24b4a", marginBottom:8, textAlign:"center" }}>🚨 Emergency Help</div>
             <div style={{ fontSize:13, color:"#666", marginBottom:16, textAlign:"center" }}>
-              Choose how you'd like to get help. Your location will be shared.
+              Choose how you&apos;d like to get help. Your location will be shared.
             </div>
 
             <a href="tel:999" style={{ display:"block", background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:10, padding:"12px", marginBottom:8, textAlign:"center", color:"#e24b4a", fontWeight:700, fontSize:14, textDecoration:"none" }}>
