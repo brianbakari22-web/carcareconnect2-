@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@capacitor-firebase/messaging": "^8.3.0",
     "@capacitor/android": "^8.4.0",
     "@capacitor/app": "^8.1.0",
     "@capacitor/browser": "^8.0.3",
@@ -17,6 +18,7 @@
     "@capacitor/geolocation": "^8.2.0",
     "@capacitor/splash-screen": "^8.0.1",
     "@supabase/supabase-js": "^2.45.0",
+    "firebase": "^12.15.0",
     "jspdf": "^4.2.1",
     "onesignal-cordova-plugin": "^5.3.11",
     "otpauth": "^9.5.1",
@@ -27,7 +29,12 @@
     "react-router-dom": "^6.26.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
     "@vitejs/plugin-react": "^4.3.1",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.6.0",
     "sharp": "^0.34.5",
     "vite": "^5.4.0"
   }
