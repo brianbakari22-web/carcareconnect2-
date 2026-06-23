@@ -51,7 +51,7 @@ export default function AdminProviders() {
     
     await supabase.from("notifications").insert({
       user_id: id,
-      title: newStatus ? "You\'re Verified! ✓" : "Verification Removed",
+      title: newStatus ? "You're Verified! ✓" : "Verification Removed",
       message: newStatus 
         ? "Your provider account has been verified. You now appear in customer search results with a verified badge!" 
         : "Your verification status has been changed. Please contact support if you have questions.",

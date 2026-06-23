@@ -240,7 +240,7 @@ export default function AdminUserDetail({ userId, onBack }) {
                   {[1,2,3,4,5].map(s=><span key={s} style={{ color:s<=r.provider_rating?"#e6821e":"#e0e0e0", fontSize:14 }}>★</span>)}
                 </div>
               </div>
-              {r.provider_review&&<div style={{ fontSize:12, color:"#888", lineHeight:1.5 }}>"{r.provider_review}"</div>}
+              {r.provider_review&&<div style={{ fontSize:12, color:"#888", lineHeight:1.5 }}>&quot;{r.provider_review}&quot;</div>}
             </div>
           ))}
           {!reviews.length&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No reviews</div>}

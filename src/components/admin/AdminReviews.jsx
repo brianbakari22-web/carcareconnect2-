@@ -92,7 +92,7 @@ export default function AdminReviews() {
           </div>
 
           {r.provider_review && (
-            <div style={{ fontSize:12, color:"#888", lineHeight:1.5, marginBottom:8 }}>"{r.provider_review}"</div>
+            <div style={{ fontSize:12, color:"#888", lineHeight:1.5, marginBottom:8 }}>&quot;{r.provider_review}&quot;</div>
           )}
 
           {r.provider_response && (
@@ -105,7 +105,7 @@ export default function AdminReviews() {
           {r.driver_rating > 0 && (
             <div style={{ fontSize:11, color:"#888", marginBottom:8 }}>
               Driver rating: {[1,2,3,4,5].map(s=><span key={s} style={{ color:s<=r.driver_rating?"#378add":"#e0e0e0" }}>★</span>)}
-              {r.driver_review && <span style={{ marginLeft:6, fontStyle:"italic" }}>"{r.driver_review}"</span>}
+              {r.driver_review && <span style={{ marginLeft:6, fontStyle:"italic" }}>&quot;{r.driver_review}&quot;</span>}
             </div>
           )}
 

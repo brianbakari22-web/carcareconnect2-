@@ -176,7 +176,7 @@ export default function Admin2FA() {
               {qrUrl&&<img src={qrUrl} alt="QR Code" style={{ width:180, height:180, borderRadius:10, border:"4px solid #fff" }}/>}
             </div>
             <div style={{ fontSize:11, color:"#999999", textAlign:"center", marginBottom:"1rem" }}>
-              Can't scan? Enter this code manually:
+              Can&apos;t scan? Enter this code manually:
             </div>
             <div style={{ background:"#ffffff", border:`1px solid ${"#f0f0f0"}`, borderRadius:8, padding:"0.75rem", fontFamily:"monospace", fontSize:13, color:"#e6821e", letterSpacing:3, textAlign:"center", wordBreak:"break-all", marginBottom:"1rem" }}>
               {secret}
@@ -231,7 +231,7 @@ export default function Admin2FA() {
           </button>
           <button onClick={()=>{ setStep("enabled"); load() }}
             style={{ width:"100%", background:"#8b5cf6", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px", cursor:"pointer" }}>
-            Done — I've saved my backup codes
+            Done — I&apos;ve saved my backup codes
           </button>
         </div>
       )}

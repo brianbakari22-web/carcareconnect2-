@@ -59,7 +59,7 @@ export default function AdminDrivers() {
     if (!showMap || !mapRef.current) return
     function initMap() {
       if (mapInstanceRef.current) {
-        Object.keys(markersRef.current).forEach(k => { try{markersRef.current[k].remove()}catch(e){} })
+        Object.keys(markersRef.current).forEach(k => { try{markersRef.current[k].remove()}catch(e){/* marker already removed */} })
         markersRef.current = {}
         onlineDrivers.forEach(d => {
           if (!d.current_latitude) return

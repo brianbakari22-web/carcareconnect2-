@@ -100,8 +100,8 @@ export default function AdminDisputes() {
                   </div>
                   <div style={{ fontSize:12, color:"#888", marginBottom:2 }}>📋 {d.bookings?.service_name} — #{d.bookings?.booking_number}</div>
                   <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>👤 {d.profiles?.first_name} {d.profiles?.last_name}</div>
-                  <div style={{ fontSize:11, color:"#888", lineHeight:1.5 }}>"{d.description}"</div>
-                  {d.admin_notes&&<div style={{ fontSize:11, color:"#378add", marginTop:4 }}>Admin: "{d.admin_notes}"</div>}
+                  <div style={{ fontSize:11, color:"#888", lineHeight:1.5 }}>&quot;{d.description}&quot;</div>
+                  {d.admin_notes&&<div style={{ fontSize:11, color:"#378add", marginTop:4 }}>Admin: &quot;{d.admin_notes}&quot;</div>}
                   <div style={{ fontSize:10, color:"#888", marginTop:4 }}>{new Date(d.created_at).toLocaleString()}</div>
                 </div>
                 {d.status==="open"&&(
@@ -204,7 +204,7 @@ export default function AdminDisputes() {
                       <span style={{ fontSize:10, color:"#1d9e75" }}>✓ No issues</span>
                     )}
                   </div>
-                  {r.condition_notes&&<div style={{ fontSize:11, color:"#888", marginTop:4, fontStyle:"italic" }}>"{r.condition_notes}"</div>}
+                  {r.condition_notes&&<div style={{ fontSize:11, color:"#888", marginTop:4, fontStyle:"italic" }}>&quot;{r.condition_notes}&quot;</div>}
                 </div>
                 <div style={{ fontSize:10, color:"#888", flexShrink:0 }}>{new Date(r.created_at).toLocaleString()}</div>
               </div>

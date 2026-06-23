@@ -253,7 +253,7 @@ export default function AdminMarketplace() {
         })
       }
 
-      toast.success(`Dispute resolved in ${resolution}\'s favour`)
+      toast.success(`Dispute resolved in ${resolution}'s favour`)
       load()
     } catch(err) { toast.error(err.message) }
   }
