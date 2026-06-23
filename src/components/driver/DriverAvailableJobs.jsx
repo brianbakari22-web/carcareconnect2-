@@ -240,7 +240,7 @@ export default function DriverAvailableJobs() {
             {job.problem_description&&(
               <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", marginBottom:10, border:"1px solid #eeeeee" }}>
                 <div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>Problem description</div>
-                <div style={{ fontSize:12, color:"#555555", fontStyle:"italic" }}>"{job.problem_description}"</div>
+                <div style={{ fontSize:12, color:"#555555", fontStyle:"italic" }}>&quot;{job.problem_description}&quot;</div>
               </div>
             )}
 
