@@ -202,7 +202,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, 
         )}
       </div>
 
-      <div style={{ flex:1, overflowY:"auto", padding:"1rem", display:"flex", flexDirection:"column", gap:8 }}>
+      <div style={{ flex:1, overflowY:"auto", padding:"1rem", display:"flex", flexDirection:"column", gap:8, maxHeight:"calc(100% - 120px)", minHeight:200 }}>
         {messages.length===0&&(
           <div style={{ textAlign:"center", color:"#888888", fontSize:12, padding:"2rem" }}>
             <div style={{ fontSize:28, marginBottom:8 }}>💬</div>
@@ -228,7 +228,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, 
         })}
         {otherTyping&&(
           <div style={{ display:"flex", justifyContent:"flex-start" }}>
-            <div style={{ padding:"10px 14px", borderRadius:"14px 14px 14px 4px", background:"1a1a1a", color:"#777777", fontSize:20, letterSpacing:4 }}>•••</div>
+            <div style={{ padding:"10px 14px", borderRadius:"14px 14px 14px 4px", background:"#f5f5f5", color:"#777777", fontSize:20, letterSpacing:4 }}>•••</div>
           </div>
         )}
         <div ref={bottomRef}/>
