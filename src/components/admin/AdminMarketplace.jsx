@@ -355,7 +355,7 @@ export default function AdminMarketplace() {
                     </div>
                     {l.listing_type==="vehicle"&&<div style={{ fontSize:11, color:"#888", marginBottom:2 }}>{[l.make,l.model,l.year].filter(Boolean).join(" ")}{l.mileage?` · ${Number(l.mileage).toLocaleString()}km`:""}</div>}
                     {l.city&&<div style={{ fontSize:11, color:"#888", marginBottom:2 }}>📍 {l.city}</div>}
-                    {l.admin_notes&&<div style={{ fontSize:11, color:"#378add", marginTop:4 }}>Admin note: "{l.admin_notes}"</div>}
+                    {l.admin_notes&&<div style={{ fontSize:11, color:"#378add", marginTop:4 }}>Admin note: &quot;{l.admin_notes}&quot;</div>}
                     <div style={{ fontSize:10, color:"#888", marginTop:4 }}>{new Date(l.created_at).toLocaleString()} · 👁 {l.views||0} views</div>
                   </div>
                   <div style={{ textAlign:"right", flexShrink:0 }}>
@@ -556,7 +556,7 @@ export default function AdminMarketplace() {
                   <div style={{ fontSize:11, color:"#888", marginBottom:4 }}>
                     Seller: {o.seller?.first_name} {o.seller?.last_name}
                   </div>
-                  {o.message&&<div style={{ fontSize:11, color:"#888", fontStyle:"italic" }}>"{o.message}"</div>}
+                  {o.message&&<div style={{ fontSize:11, color:"#888", fontStyle:"italic" }}>&quot;{o.message}&quot;</div>}
                   <div style={{ fontSize:10, color:"#888", marginTop:4 }}>{new Date(o.created_at).toLocaleString()}</div>
                 </div>
                 <div style={{ textAlign:"right" }}>
@@ -665,7 +665,7 @@ export default function AdminMarketplace() {
                     <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:d.status==="open"?"#fff5f5":"#f8f8f8", color:d.status==="open"?"#e24b4a":"#555" }}>{d.status}</span>
                   </div>
                   <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>Raised by: {d.profiles?.first_name} {d.profiles?.last_name}</div>
-                  {d.description&&<div style={{ fontSize:11, color:"#888", fontStyle:"italic" }}>"{d.description}"</div>}
+                  {d.description&&<div style={{ fontSize:11, color:"#888", fontStyle:"italic" }}>&quot;{d.description}&quot;</div>}
                   {d.status==="open"&&(
                     <div style={{ display:"flex", gap:6, marginTop:10 }}>
                       <button onClick={()=>resolveDispute(d,"buyer")}
