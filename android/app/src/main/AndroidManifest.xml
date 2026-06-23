@@ -42,9 +42,12 @@
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
         <meta-data android:name="onesignal_google_project_number" android:value="str:62459160532" />
+        <meta-data android:name="com.onesignal.NotificationIcon" android:resource="@drawable/ic_stat_onesignal_default" />
+        <meta-data android:name="com.onesignal.NotificationIconColor" android:value="0xFFE6821E" />
     </application>
 
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
 </manifest>
+
