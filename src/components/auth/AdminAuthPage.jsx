@@ -75,7 +75,7 @@ const LogoBg = memo(function LogoBg({ isMobile }) {
         <text x="350" y="225" fontFamily="Arial Black, Arial, sans-serif" fontSize="42" fontWeight="900" fill="#000000" letterSpacing="-1">Connect</text>
         <text x="350" y="258" fontFamily="Arial, sans-serif" fontSize="12" fill="#888" letterSpacing="2">DRIVE CONFIDENTLY · SERVICE SIMPLY</text>
         <line x1="350" y1="272" x2="620" y2="272" stroke="#e6821e" strokeWidth="0.5" opacity="0.4"/>
-        <text x="350" y="294" fontFamily="Arial, sans-serif" fontSize="11" fill="#555" letterSpacing="1">Nairobi's trusted auto care network</text>
+        <text x="350" y="294" fontFamily="Arial, sans-serif" fontSize="11" fill="#555" letterSpacing="1">Nairobi&apos;s trusted auto care network</text>
       </svg>
     </div>
   )

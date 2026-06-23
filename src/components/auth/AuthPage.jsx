@@ -376,7 +376,7 @@ export default function AuthPage() {
 
           <div style={{ textAlign:"center", marginTop:"1.25rem", fontSize:12, color:"#999" }}>
             {mode==="signin"&&(
-              <>Don't have an account?{" "}
+              <>Don&apos;t have an account?{" "}
                 <button onClick={()=>setMode("signup")} style={{ background:"none", border:"none", color:"#e6821e", cursor:"pointer", fontSize:12, fontFamily:"'DM Sans',sans-serif", padding:0 }}>Create one</button>
               </>
             )}
@@ -390,7 +390,7 @@ export default function AuthPage() {
             Car<span style={{ color:"#e6821e" }}>Care</span> Connect
           </div>
           <div style={{ fontSize:15, color:"#555555", marginBottom:"2rem", lineHeight:1.6 }}>
-            Nairobi's trusted auto care network — connecting vehicle owners with verified service providers.
+            Nairobi&apos;s trusted auto care network — connecting vehicle owners with verified service providers.
           </div>
           {ROLES.map(r=>(
             <div key={r.key} style={{ display:"flex", alignItems:"flex-start", gap:12, marginBottom:16, padding:"0.9rem", background:selectedRole===r.key?r.bg:"transparent", border:`1px solid ${selectedRole===r.key?r.border:"transparent"}`, borderRadius:10, transition:"all 0.15s" }}>
