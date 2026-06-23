@@ -91,7 +91,7 @@ export default function DriverReviews() {
             </div>
           </div>
           {r.driver_review && (
-            <div style={{ fontSize:12, color:"#555555", lineHeight:1.5 }}>"{r.driver_review}"</div>
+            <div style={{ fontSize:12, color:"#555555", lineHeight:1.5 }}>&quot;{r.driver_review}&quot;</div>
           )}
         </div>
       ))}
