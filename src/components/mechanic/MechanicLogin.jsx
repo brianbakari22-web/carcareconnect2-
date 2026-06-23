@@ -92,7 +92,7 @@ export default function MechanicLogin() {
           </form>
 
           <div style={{ marginTop:"1.5rem", padding:"1rem", background:"#f0fdf4", borderRadius:10, fontSize:11, color:"#555", lineHeight:1.7 }}>
-            <div style={{ fontWeight:700, color:"#1d9e75", marginBottom:4 }}>Don't have a PIN?</div>
+            <div style={{ fontWeight:700, color:"#1d9e75", marginBottom:4 }}>Don&apos;t have a PIN?</div>
             Ask your garage manager to set a PIN for you in the Provider Dashboard under Mechanics.
           </div>
         </div>

@@ -27,7 +27,7 @@ export default function PrivacyPolicy() {
           <div style={{ fontSize:13, color:"#777" }}>Last updated: June 10, 2026 - Effective: June 10, 2026</div>
         </div>
         <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:12, padding:"1.25rem", marginBottom:"2rem" }}>
-          <div style={{ fontSize:14, color:"#555", lineHeight:1.8 }}>Car Care Connect ("we", "us", or "our") is committed to protecting your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform at carcareconnect.care. By using Car Care Connect, you consent to the practices described in this policy.</div>
+          <div style={{ fontSize:14, color:"#555", lineHeight:1.8 }}>Car Care Connect (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) is committed to protecting your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform at carcareconnect.care. By using Car Care Connect, you consent to the practices described in this policy.</div>
         </div>
         <Section title="1. Who We Are">
           <div>Car Care Connect is an automotive services marketplace based in Nairobi, Kenya. We connect car owners with verified mechanics, parts dealers, car wash providers and concierge drivers.</div>

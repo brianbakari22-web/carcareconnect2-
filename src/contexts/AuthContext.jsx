@@ -134,7 +134,7 @@ export function AuthProvider({ children }) {
           localStorage.setItem(themeKey, "light")
         }
       }
-    } catch(_) {}
+    } catch(_) { /* handled */ }
     return data
   }
 
@@ -163,7 +163,7 @@ export function AuthProvider({ children }) {
         if (!localStorage.getItem(themeKey)) {
           localStorage.setItem(themeKey, "light")
         }
-      } catch(_) {}
+      } catch(_) { /* handled */ }
       const { error: profileError } = await supabase.from("profiles").upsert({
         id: data.user.id,
         first_name: firstName,

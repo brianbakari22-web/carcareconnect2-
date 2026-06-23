@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -112,7 +112,7 @@ export default function ProviderClaims() {
                   </div>
                   <div style={{ fontSize:11, color:"#777777", marginBottom:2 }}>#{c.bookings?.booking_number} · {c.bookings?.booking_date}</div>
                   <div style={{ fontSize:12, color:"#e6821e", marginBottom:2 }}>Reason: {c.reason}</div>
-                  {c.admin_notes&&<div style={{ fontSize:11, color:"#378add", marginTop:4 }}>Admin decision: "{c.admin_notes}"</div>}
+                  {c.admin_notes&&<div style={{ fontSize:11, color:"#378add", marginTop:4 }}>Admin decision: &quot;{c.admin_notes}&quot;</div>}
                   <div style={{ fontSize:10, color:"#888888", marginTop:4 }}>{new Date(c.created_at).toLocaleString()}</div>
                 </div>
                 <div style={{ textAlign:"right", flexShrink:0 }}>
@@ -188,6 +188,7 @@ export default function ProviderClaims() {
     </div>
   )
 }
+
 
 
 

@@ -279,7 +279,7 @@ export default function ProviderMechanics() {
               {/* Documents panel */}
               {docsPanel===m.id&&(
                 <div style={{ background:"#faf5ff", borderRadius:10, padding:"0.75rem" }}>
-                  <div style={{ fontSize:12, fontWeight:700, color:"#8b5cf6", marginBottom:8 }}>📄 {m.first_name}'s Documents</div>
+                  <div style={{ fontSize:12, fontWeight:700, color:"#8b5cf6", marginBottom:8 }}>📄 {m.first_name}&apos;s Documents</div>
                   {(!mechanicDocs[m.id]||mechanicDocs[m.id].length===0)&&(
                     <div style={{ fontSize:11, color:"#888", padding:"0.5rem 0" }}>No documents uploaded yet. Mechanic needs to upload from their portal.</div>
                   )}

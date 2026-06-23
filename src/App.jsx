@@ -32,7 +32,7 @@ if (typeof window !== "undefined") {
           }).then(() => {}).catch(()=>{})
         })
       }).catch(()=>{})
-    } catch(_) {}
+    } catch(_) { /* handled */ }
     console.error("UNCAUGHT ERROR:", { msg, src, line, col, stack: error?.stack })
     return false
   }
@@ -51,7 +51,7 @@ if (typeof window !== "undefined") {
           }).then(() => {}).catch(()=>{})
         }).catch(()=>{})
       }).catch(()=>{})
-    } catch(_) {}
+    } catch(_) { /* handled */ }
     console.error("UNHANDLED REJECTION:", event.reason)
   })
 }

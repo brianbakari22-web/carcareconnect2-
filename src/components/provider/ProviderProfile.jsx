@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { getCurrentPosition } from "../../lib/geolocation"
 import PhotoManager from "../shared/PhotoManager"
@@ -85,7 +85,7 @@ export default function ProviderProfile() {
           const city = data.address?.city || data.address?.town || data.address?.suburb || ""
           setLocation(l=>({...l, address:data.display_name||""}))
           if (city) setForm(f=>({...f, city}))
-        } catch {}
+        } catch { /* location parse failed - non-critical */ }
         setLocating(false)
       }).catch(err => console.warn('Location error:', err.message))
   }
@@ -189,14 +189,14 @@ export default function ProviderProfile() {
             {["garage","garage_premium","auto_electrician","mobile_mechanic"].includes(profile?.provider_type)&&(
               <div style={{ marginBottom:12 }}>
                 <label style={lbl}>🚨 GO Service radius (km)</label>
-                <div style={{ fontSize:11, color:"#888", marginBottom:6 }}>Maximum distance you're willing to travel for emergency roadside assistance</div>
+                <div style={{ fontSize:11, color:"#888", marginBottom:6 }}>Maximum distance you&apos;re willing to travel for emergency roadside assistance</div>
                 <input type="number" min="1" max="100" style={inp} placeholder="15" value={form.go_service_radius_km} onChange={e=>setForm(f=>({...f,go_service_radius_km:e.target.value}))}/>
               </div>
             )}
             {["garage","garage_premium","auto_electrician","mobile_mechanic"].includes(profile?.provider_type)&&(
               <div style={{ marginBottom:12 }}>
                 <label style={lbl}>🚨 GO Service radius (km)</label>
-                <div style={{ fontSize:11, color:"#888", marginBottom:6 }}>Maximum distance you're willing to travel for emergency roadside assistance</div>
+                <div style={{ fontSize:11, color:"#888", marginBottom:6 }}>Maximum distance you&apos;re willing to travel for emergency roadside assistance</div>
                 <input type="number" min="1" max="100" style={inp} placeholder="15" value={form.go_service_radius_km} onChange={e=>setForm(f=>({...f,go_service_radius_km:e.target.value}))}/>
               </div>
             )}
@@ -325,6 +325,8 @@ export default function ProviderProfile() {
     </div>
   )
 }
+
+
 
 
 

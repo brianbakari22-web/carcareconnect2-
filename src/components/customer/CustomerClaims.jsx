@@ -234,7 +234,7 @@ export default function CustomerClaims() {
                   <div style={{ fontSize:11, color:"#777777", marginBottom:2 }}>#{c.bookings?.booking_number} · {c.bookings?.booking_date}</div>
                   <div style={{ fontSize:12, color:"#555555", marginBottom:2 }}>Reason: {c.reason}</div>
                   <div style={{ fontSize:11, color:"#666", fontStyle:"italic" }}>&quot;{c.description}&quot;</div>
-                  {c.admin_notes&&<div style={{ fontSize:11, color:"#378add", marginTop:4 }}>Admin: "{c.admin_notes}"</div>}
+                  {c.admin_notes&&<div style={{ fontSize:11, color:"#378add", marginTop:4 }}>Admin: &quot;{c.admin_notes}&quot;</div>}
                   <div style={{ fontSize:10, color:"#888888", marginTop:4 }}>{new Date(c.created_at).toLocaleString()}</div>
                 </div>
                 <div style={{ textAlign:"right", flexShrink:0 }}>
@@ -257,7 +257,6 @@ export default function CustomerClaims() {
                   </div>
                 )}
               </div>
-            )}
             {c.status==="approved"&&(
                 <div style={{ marginTop:8, padding:"0.6rem", background:"#f0fdf4", borderRadius:7, fontSize:12, color:"#1d9e75" }}>
                   ✅ Claim approved — check your vouchers tab
