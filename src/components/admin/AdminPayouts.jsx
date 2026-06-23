@@ -183,7 +183,7 @@ export default function AdminPayouts() {
               <button onClick={()=>updatePayout(p.id,"paid")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:12, padding:"6px 14px", cursor:"pointer", whiteSpace:"nowrap" }}>Mark paid</button>
             </div>
           )}
-          {p.admin_note&&<div style={{ fontSize:11, color:"#888", marginTop:8, fontStyle:"italic" }}>Note: "{p.admin_note}"</div>}
+          {p.admin_note&&<div style={{ fontSize:11, color:"#888", marginTop:8, fontStyle:"italic" }}>Note: &quot;{p.admin_note}&quot;</div>}
         </div>
       ))}
     </div>

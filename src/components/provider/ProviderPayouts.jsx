@@ -15,10 +15,16 @@ export default function ProviderPayouts() {
   const [bankSaved, setBankSaved] = useState(false)
   const [amount, setAmount] = useState("")
   const [submitting, setSubmitting] = useState(false)
+  const [minPayout, setMinPayout] = useState(500)
   const [savingBank, setSavingBank] = useState(false)
   const [tab, setTab] = useState("payouts")
 
-  useEffect(() => { if (user) load() }, [user])
+  useEffect(() => {
+    if (!user) return
+    load()
+    supabase.from("app_settings").select("value").eq("key","min_payout_amount").maybeSingle()
+      .then(({ data }) => { if (data) setMinPayout(Number(data.value)) })
+  }, [user])
 
   async function load() {
     const [{ data: bks }, { data: pts }, { data: sens }] = await Promise.all([
@@ -57,7 +63,7 @@ export default function ProviderPayouts() {
     if (!bankSaved) return toast.error("Save your bank details first")
     const amt = Number(amount)
     const available = earnings - paid
-    if (amt < 5000) return toast.error("Minimum payout is KES 5,000")
+    if (amt < minPayout) return toast.error(`Minimum payout is KES ${minPayout.toLocaleString()}`)
     if (amt > available) return toast.error(`Maximum available is KES ${Number(available).toLocaleString()}`)
     setSubmitting(true)
     const { error } = await supabase.from("payout_requests").insert({
@@ -189,7 +195,7 @@ export default function ProviderPayouts() {
                       <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>KES {Number(p.amount).toLocaleString()}</div>
                       <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>{p.bank_name} · {p.bank_account_number}</div>
                       <div style={{ fontSize:10, color:"#888888", marginTop:2 }}>{new Date(p.created_at).toLocaleDateString()}</div>
-                      {p.admin_note&&<div style={{ fontSize:11, color:"#666", marginTop:4, fontStyle:"italic" }}>"{p.admin_note}"</div>}
+                      {p.admin_note&&<div style={{ fontSize:11, color:"#666", marginTop:4, fontStyle:"italic" }}>&quot;{p.admin_note}&quot;</div>}
                     </div>
                     <span style={{ fontSize:11, padding:"3px 9px", borderRadius:20, background:`${RC[p.status]}20`, color:RC[p.status], border:`1px solid ${RC[p.status]}40`, flexShrink:0 }}>
                       {p.status}
