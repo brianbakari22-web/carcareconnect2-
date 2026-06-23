@@ -27,3 +27,18 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+subprojects {
+    afterEvaluate { project ->
+        if (project.hasProperty("android")) {
+            project.android {
+                compileOptions {
+                    sourceCompatibility = rootProject.ext.javaVersion
+                    targetCompatibility = rootProject.ext.javaVersion
+                }
+            }
+        }
+    }
+}
+
+
