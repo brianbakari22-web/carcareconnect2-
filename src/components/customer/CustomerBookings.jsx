@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { openExternal } from "../../lib/openExternal"
@@ -324,7 +324,7 @@ export default function CustomerBookings() {
                   </div>
                 ))}
               </div>
-              {b.notes&&<div style={{ fontSize:11, color:"#666", fontStyle:"italic", marginTop:8 }}>Note: "{b.notes}"</div>}
+              {b.notes&&<div style={{ fontSize:11, color:"#666", fontStyle:"italic", marginTop:8 }}>Note: &quot;{b.notes}&quot;</div>}
             </div>
           )}
 
@@ -357,6 +357,8 @@ export default function CustomerBookings() {
     </div>
   )
 }
+
+
 
 
 

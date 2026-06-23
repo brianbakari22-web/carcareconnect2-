@@ -158,7 +158,7 @@ export default function CustomerPayments() {
                       {r.status}
                     </span>
                   </div>
-                  {r.admin_notes&&<div style={{ fontSize:11, color:"#666", marginTop:8, fontStyle:"italic" }}>Admin: "{r.admin_notes}"</div>}
+                  {r.admin_notes&&<div style={{ fontSize:11, color:"#666", marginTop:8, fontStyle:"italic" }}>Admin: &quot;{r.admin_notes}&quot;</div>}
                 </div>
               ))}
             </div>
@@ -191,6 +191,8 @@ export default function CustomerPayments() {
     </div>
   )
 }
+
+
 
 
 

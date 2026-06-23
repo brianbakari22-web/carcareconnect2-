@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
@@ -203,7 +203,7 @@ export default function CustomerReviews() {
                   {[1,2,3,4,5].map(s=><span key={s} style={{ color:s<=r.provider_rating?"#e6821e":"#555555", fontSize:16 }}>★</span>)}
                 </div>
               </div>
-              {r.provider_review&&<div style={{ fontSize:12, color:"#555555", lineHeight:1.5, marginBottom:8 }}>"{r.provider_review}"</div>}
+              {r.provider_review&&<div style={{ fontSize:12, color:"#555555", lineHeight:1.5, marginBottom:8 }}>&quot;{r.provider_review}&quot;</div>}
               {r.provider_response&&(
                 <div style={{ background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"0.75rem", marginTop:8 }}>
                   <div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>{t("language")==="sw"?"Jibu la mtoa huduma":"Provider reply"}</div>
@@ -217,6 +217,7 @@ export default function CustomerReviews() {
     </div>
   )
 }
+
 
 
 

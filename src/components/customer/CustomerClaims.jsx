@@ -233,7 +233,7 @@ export default function CustomerClaims() {
                   </div>
                   <div style={{ fontSize:11, color:"#777777", marginBottom:2 }}>#{c.bookings?.booking_number} · {c.bookings?.booking_date}</div>
                   <div style={{ fontSize:12, color:"#555555", marginBottom:2 }}>Reason: {c.reason}</div>
-                  <div style={{ fontSize:11, color:"#666", fontStyle:"italic" }}>"{c.description}"</div>
+                  <div style={{ fontSize:11, color:"#666", fontStyle:"italic" }}>&quot;{c.description}&quot;</div>
                   {c.admin_notes&&<div style={{ fontSize:11, color:"#378add", marginTop:4 }}>Admin: "{c.admin_notes}"</div>}
                   <div style={{ fontSize:10, color:"#888888", marginTop:4 }}>{new Date(c.created_at).toLocaleString()}</div>
                 </div>
@@ -241,7 +241,6 @@ export default function CustomerClaims() {
                   <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e" }}>KES {Number(c.bookings?.total_amount||0).toLocaleString()}</div>
                 </div>
               </div>
-              {true&&(
               <div style={{ marginTop:8 }}>
                 <button onClick={()=>setChatClaim(chatClaim===c.id?null:c.id)}
                   style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
@@ -322,6 +321,8 @@ export default function CustomerClaims() {
     </div>
   )
 }
+
+
 
 
 

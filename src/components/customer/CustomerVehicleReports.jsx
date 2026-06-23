@@ -167,7 +167,7 @@ export default function CustomerVehicleReports() {
                               <span style={{ fontSize:10, color:"#1d9e75" }}>✓ No issues found</span>
                             )}
                           </div>
-                          {report.condition_notes&&<div style={{ fontSize:11, color:"#777777", fontStyle:"italic" }}>"{report.condition_notes}"</div>}
+                          {report.condition_notes&&<div style={{ fontSize:11, color:"#777777", fontStyle:"italic" }}>&quot;{report.condition_notes}&quot;</div>}
                           <div style={{ fontSize:10, color:"#888888", marginTop:4 }}>{new Date(report.created_at).toLocaleString()}</div>
                         </div>
                       ):(
@@ -217,5 +217,6 @@ export default function CustomerVehicleReports() {
     </div>
   )
 }
+
 
 
