@@ -26,10 +26,13 @@ export default function AdminBookings() {
   }, [])
 
   async function load() {
-    const { data } = await supabase.from("bookings")
-      .select("*, customer:profiles!bookings_customer_id_fkey(first_name,last_name,phone), provider:profiles!bookings_provider_id_fkey(first_name,last_name,business_name)")
-      .order("created_at", { ascending:false })
-    setBookings(data||[])
+    const { data: bks } = await supabase.from("bookings").select("*").order("created_at", { ascending:false })
+    if (!bks?.length) { setBookings([]); setLoading(false); return }
+    const userIds = [...new Set([...bks.map(b=>b.customer_id), ...bks.map(b=>b.provider_id)].filter(Boolean))]
+    const { data: profs } = await supabase.from("profiles").select("id,first_name,last_name,business_name,phone").in("id", userIds)
+    const profMap = {}
+    profs?.forEach(p => { profMap[p.id] = p })
+    setBookings(bks.map(b => ({...b, customer:profMap[b.customer_id]||null, provider:profMap[b.provider_id]||null})))
     setLoading(false)
   }
 
