@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
@@ -281,7 +281,7 @@ export default function ProviderBookings() {
                 </div>
                 <div style={{ fontSize:11, color:"#777777" }}>{b.booking_date} · {b.booking_time?.slice(0,5)}</div>
                 {b.booking_number&&<div style={{ fontSize:10, color:"#888888", marginTop:2 }}>#{b.booking_number}</div>}
-                {b.problem_description&&<div style={{ fontSize:11, color:"#555555", marginTop:4, fontStyle:"italic" }}>"{b.problem_description}"</div>}
+                {b.problem_description&&<div style={{ fontSize:11, color:"#555555", marginTop:4, fontStyle:"italic" }}>&quot;{b.problem_description}&quot;</div>}
                 {b.assigned_mechanic_id&&<div style={{ fontSize:11, color:"#1d9e75", marginTop:2 }}>👨‍🔧 Mechanic assigned</div>}
                 {b.parts_details?.length>0&&(
                   <div style={{ fontSize:11, color:b.parts_approved?"#1d9e75":"#e6821e", marginTop:2 }}>
@@ -437,8 +437,8 @@ export default function ProviderBookings() {
                     </div>
                   </div>
                 )}
-                {b.notes&&<div style={{ fontSize:11, color:"#666", fontStyle:"italic", marginTop:8 }}>Note: "{b.notes}"</div>}
-                {b.problem_description&&<div style={{ fontSize:11, color:"#555555", fontStyle:"italic", marginTop:4 }}>Problem: "{b.problem_description}"</div>}
+                {b.notes&&<div style={{ fontSize:11, color:"#666", fontStyle:"italic", marginTop:8 }}>Note: &quot;{b.notes}&quot;</div>}
+                {b.problem_description&&<div style={{ fontSize:11, color:"#555555", fontStyle:"italic", marginTop:4 }}>Problem: &quot;{b.problem_description}&quot;</div>}
               </div>
             )}
           </div>
@@ -447,6 +447,7 @@ export default function ProviderBookings() {
     </div>
   )
 }
+
 
 
 
