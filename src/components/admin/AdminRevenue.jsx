@@ -41,7 +41,12 @@ export default function AdminRevenue() {
       last_booking: v.lastDate,
       predicted_clv: (v.total / v.count) * Math.min(v.count * 1.5, 20)
     })).sort((a,b)=>b.predicted_clv-a.predicted_clv).slice(0,20)
-    setClvData(clv)
+    // Fetch customer names for CLV
+    const custIds = clv.map(r=>r.customer_id)
+    const { data: custProfs } = custIds.length>0 ? await supabase.from("profile_public").select("id,first_name,last_name").in("id", custIds) : { data:[] }
+    const custMap = {}
+    custProfs?.forEach(p => { custMap[p.id] = p })
+    setClvData(clv.map(r=>({...r, customerName:`${custMap[r.customer_id]?.first_name||""} ${custMap[r.customer_id]?.last_name||""}`.trim()||"Customer"})))
     // Compute demand heatmap
     const byDay = {}; const byService = {}; const byHour = {}
     const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
@@ -189,7 +194,7 @@ export default function AdminRevenue() {
                 <div style={{display:"flex",alignItems:"center",gap:8}}>
                   <div style={{width:24,textAlign:"center",fontFamily:"Syne",fontSize:12,fontWeight:800,color:i===0?"#e6821e":i===1?"#888":i===2?"#a0703a":"#bbb"}}>{i+1}</div>
                   <div>
-                    <div style={{fontSize:12,color:"#888"}}>Customer: {row.customer_id.slice(0,8)}...</div>
+                    <div style={{fontSize:12,color:"#888"}}>{row.customerName}</div>
                     <div style={{fontSize:11,color:"#666",marginTop:2}}>{row.bookings} booking{row.bookings!==1?"s":""} · Last: {row.last_booking}</div>
                   </div>
                 </div>
