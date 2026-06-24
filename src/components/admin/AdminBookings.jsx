@@ -16,6 +16,11 @@ export default function AdminBookings() {
   const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState(null)
   const [updating, setUpdating] = useState(null)
+  const [refundModal, setRefundModal] = useState(null)
+  const [refundAmount, setRefundAmount] = useState("")
+  const [refundReason, setRefundReason] = useState("")
+  const [refundPhone, setRefundPhone] = useState("")
+  const [processingRefund, setProcessingRefund] = useState(false)
 
   useEffect(() => {
     load()
@@ -50,6 +55,50 @@ export default function AdminBookings() {
     toast.success(`Payment marked as ${payment_status}`)
     load()
     setUpdating(null)
+  }
+
+  async function openRefundModal(b) {
+    setRefundAmount(String(b.total_amount))
+    setRefundReason("")
+    setRefundPhone("")
+    setRefundModal(b)
+  }
+
+  async function processRefund() {
+    if (!refundAmount || !refundReason) return toast.error("Amount and reason required")
+    if (!refundPhone) return toast.error("Customer M-Pesa number required")
+    setProcessingRefund(true)
+    try {
+      // Record refund in database
+      await supabase.from("refund_requests").insert({
+        booking_id: refundModal.id,
+        customer_id: refundModal.customer_id,
+        amount: Number(refundAmount),
+        reason: refundReason,
+        customer_phone: refundPhone,
+        status: "pending",
+        original_amount: Number(refundModal.total_amount),
+      })
+      // Update booking payment status
+      await supabase.from("bookings").update({
+        payment_status: "refunded",
+        status: "cancelled"
+      }).eq("id", refundModal.id)
+      // Notify customer
+      await supabase.from("notifications").insert({
+        user_id: refundModal.customer_id,
+        title: "Refund initiated 💸",
+        message: `Your refund of KES ${Number(refundAmount).toLocaleString()} for "${refundModal.service_name}" is being processed. You will receive it on ${refundPhone} shortly.`,
+        type: "info"
+      })
+      toast.success(`Refund of KES ${Number(refundAmount).toLocaleString()} recorded! Send money to ${refundPhone} via M-Pesa`)
+      setRefundModal(null)
+      setRefundAmount("")
+      setRefundReason("")
+      setRefundPhone("")
+      load()
+    } catch(e) { toast.error(e.message) }
+    finally { setProcessingRefund(false) }
   }
 
   const filtered = bookings.filter(b => {
@@ -143,6 +192,7 @@ export default function AdminBookings() {
             {b.status==="in-progress"&&<button onClick={()=>updateStatus(b.id,"completed")} disabled={updating===b.id} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:6, color:"#1d9e75", fontSize:11, padding:"4px 10px", cursor:"pointer" }}>Complete</button>}
             {b.payment_status==="pending"&&<button onClick={()=>updatePayment(b.id,"paid")} disabled={updating===b.id} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:6, color:"#1d9e75", fontSize:11, padding:"4px 10px", cursor:"pointer" }}>Mark paid</button>}
             {!["completed","cancelled"].includes(b.status)&&<button onClick={()=>updateStatus(b.id,"cancelled")} disabled={updating===b.id} style={{ background:"none", border:"1px solid #e24b4a30", borderRadius:6, color:"#e24b4a", fontSize:11, padding:"4px 10px", cursor:"pointer" }}>Cancel</button>}
+            {b.payment_status==="paid"&&<button onClick={()=>openRefundModal(b)} style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:6, color:"#8b5cf6", fontSize:11, padding:"4px 10px", cursor:"pointer" }}>💸 Refund</button>}
           </div>
 
           {expanded===b.id&&(
@@ -169,6 +219,64 @@ export default function AdminBookings() {
         </div>
       ))}
       {!loading&&filtered.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No bookings found</div>}
+
+      {/* Refund Modal */}
+      {refundModal&&(
+        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.5)", zIndex:1000, display:"flex", alignItems:"center", justifyContent:"center", padding:"1rem" }}>
+          <div style={{ background:"#ffffff", borderRadius:16, padding:"1.5rem", width:"100%", maxWidth:440 }}>
+            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000", marginBottom:4 }}>💸 Process Refund</div>
+            <div style={{ fontSize:12, color:"#888", marginBottom:"1.25rem" }}>Booking #{refundModal.booking_number} · {refundModal.service_name}</div>
+
+            <div style={{ background:"#f8f8f8", borderRadius:8, padding:"0.75rem", marginBottom:"1rem" }}>
+              <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>Original payment</div>
+              <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#e6821e" }}>KES {Number(refundModal.total_amount).toLocaleString()}</div>
+              <div style={{ fontSize:11, color:"#888", marginTop:2 }}>Customer: {refundModal.customer?.first_name} {refundModal.customer?.last_name}</div>
+            </div>
+
+            <div style={{ marginBottom:12 }}>
+              <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", display:"block", marginBottom:4 }}>Refund amount (KES) *</label>
+              <input type="number" value={refundAmount} onChange={e=>setRefundAmount(e.target.value)}
+                style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:8, padding:"10px 12px", fontSize:13, outline:"none", fontFamily:"DM Sans,sans-serif" }}/>
+            </div>
+
+            <div style={{ marginBottom:12 }}>
+              <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", display:"block", marginBottom:4 }}>Customer M-Pesa number *</label>
+              <input type="tel" value={refundPhone} onChange={e=>setRefundPhone(e.target.value)}
+                placeholder="e.g. 0712345678"
+                style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:8, padding:"10px 12px", fontSize:13, outline:"none", fontFamily:"DM Sans,sans-serif" }}/>
+              <div style={{ fontSize:10, color:"#888", marginTop:4 }}>You will manually send this amount via M-Pesa after confirming</div>
+            </div>
+
+            <div style={{ marginBottom:"1.25rem" }}>
+              <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", display:"block", marginBottom:4 }}>Reason for refund *</label>
+              <select value={refundReason} onChange={e=>setRefundReason(e.target.value)}
+                style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:8, padding:"10px 12px", fontSize:13, outline:"none", fontFamily:"DM Sans,sans-serif" }}>
+                <option value="">Select reason...</option>
+                <option value="Customer cancelled before service">Customer cancelled before service</option>
+                <option value="Provider no-show">Provider no-show</option>
+                <option value="Poor service quality">Poor service quality</option>
+                <option value="Service not delivered">Service not delivered</option>
+                <option value="Duplicate payment">Duplicate payment</option>
+                <option value="Test payment">Test payment</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:8, padding:"0.75rem", marginBottom:"1.25rem" }}>
+              <div style={{ fontSize:11, color:"#e6821e", fontWeight:600, marginBottom:4 }}>⚠️ Important</div>
+              <div style={{ fontSize:11, color:"#555" }}>After clicking confirm, you must manually send KES {Number(refundAmount||0).toLocaleString()} to {refundPhone||"the customer"} via M-Pesa. The system will notify the customer that a refund is being processed.</div>
+            </div>
+
+            <div style={{ display:"flex", gap:8 }}>
+              <button onClick={()=>setRefundModal(null)} style={{ flex:1, background:"none", border:"1px solid #dddddd", borderRadius:9, color:"#888", fontSize:13, padding:"12px", cursor:"pointer" }}>Cancel</button>
+              <button onClick={processRefund} disabled={processingRefund||!refundAmount||!refundReason||!refundPhone}
+                style={{ flex:2, background:processingRefund||!refundAmount||!refundReason||!refundPhone?"#e0e0e0":"#8b5cf6", border:"none", borderRadius:9, color:processingRefund||!refundAmount||!refundReason||!refundPhone?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:processingRefund||!refundAmount||!refundReason||!refundPhone?"not-allowed":"pointer" }}>
+                {processingRefund?"Processing...":"✓ Confirm Refund"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
