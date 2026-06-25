@@ -81,25 +81,38 @@ export default function CustomerVehicles() {
     <div>
       {loading&&<div style={{color:"#777777",fontSize:13}}>Loading...</div>}
       {vehicles.map(v=>(
-        <div key={v.id} style={{background:"#ffffff",border:`1px solid ${v.is_default?"#e6821e40":"#eeeeee"}`,borderRadius:10,padding:"1rem",marginBottom:10,display:"flex",alignItems:"center",gap:14}}>
-          <div style={{width:54,height:54,background:"#fff8f0",borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,overflow:"hidden",flexShrink:0}}>
-            {v.photo_url ? <img src={v.photo_url} alt="Vehicle" style={{width:"100%",height:"100%",objectFit:"cover"}}/> : "🚗"}
-          </div>
-          <div style={{flex:1}}>
-            <div style={{fontSize:14,fontWeight:500}}>{v.make} {v.model}</div>
-            <div style={{fontSize:11,color:"#777777",marginTop:2}}>{v.year} · {v.color} · {v.license_plate}</div>
-            {v.is_default&&<div style={{fontSize:10,color:"#e6821e",marginTop:3}}>Default vehicle</div>}
-            {v.current_mileage&&<div style={{fontSize:11,color:"#888",marginTop:3}}>{Number(v.current_mileage).toLocaleString()} km</div>}
-            {getMaintenanceStatus(v).filter(a=>a.level!=="unknown").map((a,i)=>(
-              <div key={i} style={{fontSize:10,color:a.level==="overdue"?"#e24b4a":"#e6821e",background:a.level==="overdue"?"#fff5f5":"#fff8f0",padding:"2px 8px",borderRadius:10,marginTop:4,display:"inline-block",marginRight:4}}>
-                {a.level==="overdue"?"⚠️ ":"⏰ "}{a.text}
+        <div key={v.id} style={{background:"#ffffff",border:`1px solid ${v.is_default?"#e6821e40":"#eeeeee"}`,borderRadius:12,padding:"1rem",marginBottom:10}}>
+          {/* Top row: photo + name + badge */}
+          <div style={{display:"flex",alignItems:"flex-start",gap:12,marginBottom:10}}>
+            <div style={{width:64,height:64,background:"#fff8f0",borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,overflow:"hidden",flexShrink:0,border:"1px solid #e6821e20"}}>
+              {v.photo_url ? <img src={v.photo_url} alt="Vehicle" style={{width:"100%",height:"100%",objectFit:"cover"}}/> : "🚗"}
+            </div>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap",marginBottom:2}}>
+                <div style={{fontFamily:"Syne",fontSize:15,fontWeight:800,color:"#000"}}>{v.make} {v.model}</div>
+                {v.is_default&&<span style={{fontSize:10,color:"#e6821e",background:"#fff8f0",padding:"2px 8px",borderRadius:10,border:"1px solid #e6821e30",flexShrink:0}}>⭐ Default</span>}
               </div>
-            ))}
+              <div style={{fontSize:12,color:"#666",marginBottom:2}}>{v.year} · {v.color||"No color"} · {v.license_plate}</div>
+              {v.current_mileage&&<div style={{fontSize:11,color:"#888"}}>📍 {Number(v.current_mileage).toLocaleString()} km</div>}
+              {v.last_service_date&&<div style={{fontSize:11,color:"#888"}}>🔧 Last service: {new Date(v.last_service_date).toLocaleDateString()}</div>}
+              {v.last_oil_change_date&&<div style={{fontSize:11,color:"#888"}}>🛢️ Last oil change: {new Date(v.last_oil_change_date).toLocaleDateString()}</div>}
+            </div>
           </div>
+          {/* Maintenance alerts */}
+          {getMaintenanceStatus(v).filter(a=>a.level!=="unknown").length>0&&(
+            <div style={{display:"flex",flexWrap:"wrap",gap:4,marginBottom:10}}>
+              {getMaintenanceStatus(v).filter(a=>a.level!=="unknown").map((a,i)=>(
+                <div key={i} style={{fontSize:10,color:a.level==="overdue"?"#e24b4a":"#e6821e",background:a.level==="overdue"?"#fff5f5":"#fff8f0",padding:"3px 10px",borderRadius:20,border:`1px solid ${a.level==="overdue"?"#e24b4a30":"#e6821e30"}`}}>
+                  {a.level==="overdue"?"⚠️ ":"⏰ "}{a.text}
+                </div>
+              ))}
+            </div>
+          )}
+          {/* Action buttons */}
           <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-            {!v.is_default&&<button onClick={()=>setDefault(v.id)} style={{background:"none",border:"1px solid #dddddd",borderRadius:7,color:"#555555",fontSize:11,padding:"5px 10px",cursor:"pointer"}}>Set default</button>}
-            <button onClick={()=>{setEditing(v.id);setForm({make:v.make,model:v.model,year:String(v.year),color:v.color||"",license_plate:v.license_plate,photo_url:v.photo_url||"",current_mileage:v.current_mileage?String(v.current_mileage):"",last_service_date:v.last_service_date||"",last_oil_change_date:v.last_oil_change_date||""})}} style={{background:"none",border:"1px solid #dddddd",borderRadius:7,color:"#555555",fontSize:11,padding:"5px 10px",cursor:"pointer"}}>Edit</button>
-            <button onClick={()=>remove(v.id)} style={{background:"none",border:"1px solid #e24b4a40",borderRadius:7,color:"#e24b4a",fontSize:11,padding:"5px 10px",cursor:"pointer"}}>Remove</button>
+            {!v.is_default&&<button onClick={()=>setDefault(v.id)} style={{background:"#fff8f0",border:"1px solid #e6821e40",borderRadius:7,color:"#e6821e",fontSize:11,padding:"5px 10px",cursor:"pointer"}}>⭐ Set default</button>}
+            <button onClick={()=>{setEditing(v.id);setForm({make:v.make,model:v.model,year:String(v.year),color:v.color||"",license_plate:v.license_plate,photo_url:v.photo_url||"",current_mileage:v.current_mileage?String(v.current_mileage):"",last_service_date:v.last_service_date||"",last_oil_change_date:v.last_oil_change_date||""})}} style={{background:"#eff6ff",border:"1px solid #378add40",borderRadius:7,color:"#378add",fontSize:11,padding:"5px 10px",cursor:"pointer"}}>✏️ Edit</button>
+            <button onClick={()=>remove(v.id)} style={{background:"#fff5f5",border:"1px solid #e24b4a40",borderRadius:7,color:"#e24b4a",fontSize:11,padding:"5px 10px",cursor:"pointer"}}>🗑️ Remove</button>
           </div>
         </div>
       ))}
