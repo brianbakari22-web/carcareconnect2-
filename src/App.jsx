@@ -110,6 +110,7 @@ import ProviderServices from "./components/provider/ProviderServices"
 import ProviderBundles from "./components/provider/ProviderBundles"
 import ProviderEarnings from "./components/provider/ProviderEarnings"
 import ProviderAnalytics from "./components/provider/ProviderAnalytics"
+import ProviderQRCode from "./components/provider/ProviderQRCode"
 import ProviderReviews from "./components/provider/ProviderReviews"
 import ProviderBusinessHours from "./components/provider/ProviderBusinessHours"
 import ProviderPayouts from "./components/provider/ProviderPayouts"
@@ -163,6 +164,7 @@ import AdminInventory from "./components/admin/AdminInventory"
 import AdminSystemDiagnostics from "./components/admin/AdminSystemDiagnostics"
 import AdminCommissions from "./components/admin/AdminCommissions"
 import AdminSettings from "./components/admin/AdminSettings"
+import AdminQRCode from "./components/admin/AdminQRCode"
 import AdminDriverVetting from "./components/admin/AdminDriverVetting"
 import DriverApplication from "./components/driver/DriverApplication"
 import AdminPaymentTracking from "./components/admin/AdminPaymentTracking"
@@ -274,6 +276,7 @@ function DashboardRouter() {
           <Route path="bundles" element={<ProviderBundles />} />
           <Route path="earnings" element={<ProviderEarnings />} />
           <Route path="analytics" element={<ProviderAnalytics />} />
+              <Route path="qrcode" element={<ProviderQRCode />} />
           <Route path="reviews" element={<ProviderReviews />} />
           <Route path="hours" element={<ProviderBusinessHours />} />
           <Route path="availability" element={<ProviderAvailability />} />
@@ -352,6 +355,7 @@ function AdminDashboardRouter() {
           <Route path="diagnostics" element={<AdminSystemDiagnostics />} />
           <Route path="commissions" element={<AdminCommissions />} />
           <Route path="settings" element={<AdminSettings />} />
+              <Route path="qrcode" element={<AdminQRCode />} />
           <Route path="driver-vetting" element={<AdminDriverVetting />} />
           <Route path="payment-tracking" element={<AdminPaymentTracking />} />
           <Route path="providers" element={<AdminProviders />} />
