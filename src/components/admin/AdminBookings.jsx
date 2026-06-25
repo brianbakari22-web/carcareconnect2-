@@ -31,7 +31,7 @@ export default function AdminBookings() {
   }, [])
 
   async function load() {
-    const { data: bks } = await supabase.from("bookings").select("*").order("created_at", { ascending:false })
+    const { data: bks } = await supabase.from("bookings").select("*").eq("is_archived", false).order("created_at", { ascending:false })
     if (!bks?.length) { setBookings([]); setLoading(false); return }
     const userIds = [...new Set([...bks.map(b=>b.customer_id), ...bks.map(b=>b.provider_id)].filter(Boolean))]
     const { data: profs } = await supabase.from("profile_public").select("id,first_name,last_name,business_name").in("id", userIds)

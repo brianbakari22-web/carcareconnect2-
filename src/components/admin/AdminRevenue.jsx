@@ -21,8 +21,8 @@ export default function AdminRevenue() {
 
   async function load() {
     const [{ data }, { data: allBookings }] = await Promise.all([
-      supabase.from("bookings").select("*").eq("status","completed").order("created_at",{ascending:false}),
-      supabase.from("bookings").select("customer_id, total_amount, booking_date, status").eq("status","completed")
+      supabase.from("bookings").select("*").eq("status","completed").eq("is_archived", false).order("created_at",{ascending:false}),
+      supabase.from("bookings").select("customer_id, total_amount, booking_date, status").eq("status","completed").eq("is_archived", false)
     ])
     setBookings(data||[])
     const clvMap = {}

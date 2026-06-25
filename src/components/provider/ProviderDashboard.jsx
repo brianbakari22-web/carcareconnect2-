@@ -51,7 +51,7 @@ export default function ProviderDashboard() {
   async function load() {
     setLoading(true)
     const [{ data: bks }, { data: inv }, { data: ords }] = await Promise.all([
-      supabase.from("bookings").select("*").eq("provider_id", user.id).order("created_at",{ascending:false}).limit(10),
+      supabase.from("bookings").select("*").eq("provider_id", user.id).eq("is_archived", false).order("created_at",{ascending:false}).limit(10),
       supabase.from("inventory").select("*").eq("provider_id", user.id).order("created_at",{ascending:false}),
       supabase.from("orders").select("*, order_items(*)").eq("provider_id", user.id).order("created_at",{ascending:false}).limit(10),
     ])
