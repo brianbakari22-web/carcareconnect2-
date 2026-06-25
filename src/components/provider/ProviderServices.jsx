@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import PhotoManager from "../shared/PhotoManager"
 import { useAuth } from "../../contexts/AuthContext"
@@ -289,7 +289,7 @@ export default function ProviderServices() {
                       {CATEGORIES.find(c=>c.key===form.category)?.commission}
                     </div>
                     {form.price&&<div style={{ fontSize:11, color:"#777777", marginTop:2 }}>
-                      Your earnings: KES {(parseFloat(form.price||0)*(1-{shop_standard:0.10,shop_premium:0.20,go_service:0.15}[form.category])).toFixed(0)}
+                      Your earnings: KES {(parseFloat(form.price||0)*(tierRates[form.category]?Number(tierRates[form.category].provider):0.90)).toFixed(0)}
                     </div>}
                   </div>
                 )}
@@ -362,6 +362,7 @@ export default function ProviderServices() {
     </div>
   )
 }
+
 
 
 
