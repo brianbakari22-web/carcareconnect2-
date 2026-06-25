@@ -27,8 +27,7 @@ const NAV = {
     { path:"/dashboard/claims", label:"Service Guarantee", icon:"🛡️" },
     { path:"/dashboard/marketplace", label:"Marketplace", icon:"🛒" },
     { path:"/dashboard/parts", label:"Parts & Accessories", icon:"⚙️" },
-    { path:"/dashboard/new-cars", label:"New Cars", icon:"🚗" },
-    { path:"/dashboard/my-car-listings", label:"My Car Listings", icon:"🏢" },
+
     { path:"/dashboard/marketplace/my-listings", label:"My Listings", icon:"📦" },
     { path:"/dashboard/marketplace/my-offers", label:"My Offers", icon:"💰" },
     { path:"/dashboard/marketplace/transactions", label:"My Transactions", icon:"💳" },
