@@ -15,8 +15,7 @@ export default function ProviderAnalytics() {
   async function load() {
     const [{ data }, { data: revs }] = await Promise.all([
       supabase.from("bookings")
-        .select("*").eq("provider_id", user.id)
-        .order("created_at", { ascending:false }),
+        .select("*").eq("provider_id", user.id).eq("is_archived", false).order("created_at", { ascending:false }),
       supabase.from("reviews")
         .select("provider_rating, provider_response, created_at").eq("provider_id", user.id).eq("is_hidden", false)
     ])
@@ -140,6 +139,7 @@ export default function ProviderAnalytics() {
     </div>
   )
 }
+
 
 
 
