@@ -151,7 +151,7 @@ export default function CustomerTracking() {
         .leaflet-container { background:#ffffff !important; }
       `}</style>
 
-      <button onClick={()=>{ setSelected(null); setDriver(null); setMechanic(null); if(mapInstanceRef.current){mapInstanceRef.current.remove();mapInstanceRef.current=null} }}
+      <button onClick={()=>{ if(mapInstanceRef.current){ mapInstanceRef.current.remove(); mapInstanceRef.current=null } driverMarkerRef.current=null; mechanicMarkerRef.current=null; setSelected(null); setDriver(null); setMechanic(null) }}
         style={{ background:"none", border:"none", color:"#e6821e", cursor:"pointer", fontSize:13, marginBottom:"1rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
         ← Back to bookings
       </button>
@@ -301,6 +301,7 @@ export default function CustomerTracking() {
     </div>
   )
 }
+
 
 
 
