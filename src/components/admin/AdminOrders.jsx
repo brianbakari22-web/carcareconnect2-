@@ -12,6 +12,7 @@ export default function AdminOrders() {
   const [filter, setFilter] = useState("all")
   const [zones, setZones] = useState([])
   const [showZones, setShowZones] = useState(false)
+  const [search, setSearch] = useState("")
   const [zoneForm, setZoneForm] = useState({ name:"", base_fee:"", per_km_fee:"" })
 
   useEffect(() => { load(); loadZones() }, [])
@@ -69,7 +70,14 @@ export default function AdminOrders() {
     load()
   }
 
-  const filtered = filter==="all" ? orders : orders.filter(o=>o.status===filter)
+  const filtered = orders.filter(o => {
+    const matchStatus = filter==="all" || o.status===filter
+    const matchSearch = !search || 
+      o.order_number?.toLowerCase().includes(search.toLowerCase()) ||
+      `${o.profiles?.first_name} ${o.profiles?.last_name}`.toLowerCase().includes(search.toLowerCase()) ||
+      o.provider?.business_name?.toLowerCase().includes(search.toLowerCase())
+    return matchStatus && matchSearch
+  })
   const totalRevenue = orders.filter(o=>o.status==="delivered").reduce((s,o)=>s+Number(o.platform_commission||0),0)
   const pendingOrders = orders.filter(o=>o.status==="pending").length
   const todayOrders = orders.filter(o=>new Date(o.created_at).toDateString()===new Date().toDateString()).length
@@ -126,6 +134,8 @@ export default function AdminOrders() {
         </div>
       )}
 
+      <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search by order #, customer, provider..."
+        style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:8, padding:"9px 12px", fontSize:12, outline:"none", marginBottom:10, fontFamily:"DM Sans,sans-serif" }}/>
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
         {["all","pending","confirmed","processing","ready","delivered","cancelled"].map(f=>(
           <button key={f} onClick={()=>setFilter(f)}
@@ -154,6 +164,8 @@ export default function AdminOrders() {
               <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>KES {Number(o.subtotal||0).toLocaleString()}</div>
               <div style={{ fontSize:10, color:"#1d9e75" }}>Commission: KES {Number(o.platform_commission||0).toLocaleString()}</div>
               <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:(SC[o.status]||"#888")+"20", color:SC[o.status]||"#888", display:"inline-block", marginTop:4 }}>{o.status}</span>
+              <div style={{ fontSize:10, color:o.payment_status==="paid"?"#1d9e75":o.payment_status==="awaiting_payment"?"#e6821e":"#888", marginTop:2 }}>💳 {o.payment_status||"pending"}</div>
+              <div style={{ fontSize:10, color:"#888", marginTop:2 }}>{o.payment_method==="cash"?"💵 Cash":"💳 Online"}</div>
             </div>
           </div>
           <div style={{ background:"#ffffff", borderRadius:8, padding:"0.6rem", marginBottom:8 }}>
