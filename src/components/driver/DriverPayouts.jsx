@@ -17,8 +17,14 @@ export default function DriverPayouts() {
   const [submitting, setSubmitting] = useState(false)
   const [savingBank, setSavingBank] = useState(false)
   const [tab, setTab] = useState("payouts")
+  const [minPayout, setMinPayout] = useState(500)
 
-  useEffect(() => { if (user) load() }, [user])
+  useEffect(() => {
+    if (!user) return
+    load()
+    supabase.from("app_settings").select("value").eq("key","min_payout_amount").maybeSingle()
+      .then(({ data }) => { if (data) setMinPayout(Number(data.value)) })
+  }, [user])
 
   async function load() {
     const [{ data: bks }, { data: pts }, { data: sens }] = await Promise.all([
@@ -26,7 +32,7 @@ export default function DriverPayouts() {
       supabase.from("payout_requests").select("*").eq("user_id", user.id).order("created_at", { ascending:false }),
       supabase.from("profile_sensitive").select("bank_name,bank_account_name,bank_account_number").eq("id", user.id).single()
     ])
-    const totalEarned = (bks||[]).reduce((s,b)=>s+Number(b.driver_earnings||15),0)
+    const totalEarned = (bks||[]).reduce((s,b)=>s+Number(b.driver_earnings||0),0)
     const totalPaid = (pts||[]).filter(p=>p.status==="paid").reduce((s,p)=>s+Number(p.amount),0)
     setEarnings(totalEarned)
     setPaid(totalPaid)
@@ -58,7 +64,7 @@ export default function DriverPayouts() {
     if (!bankSaved) return toast.error("Save your bank details first")
     const amt = Number(amount)
     const available = earnings - paid
-    if (amt < 5000) return toast.error("Minimum payout is KES 5,000")
+    if (amt < minPayout) return toast.error(`Minimum payout is KES ${minPayout.toLocaleString()}`)
     if (amt > available) return toast.error(`Maximum available is KES ${available.toLocaleString()}`)
     setSubmitting(true)
     const { error } = await supabase.from("payout_requests").insert({
@@ -154,10 +160,10 @@ export default function DriverPayouts() {
           )}
 
           <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
-            <div style={{ fontSize:12, color:"#777777", marginBottom:"1rem" }}>{`Minimum KES 5,000 · Available: KES ${Number(available).toLocaleString()} · Transfer takes 2-3 business days`}</div>
-            {available < 5000 ? (
+            <div style={{ fontSize:12, color:"#777777", marginBottom:"1rem" }}>{`Minimum KES ${minPayout.toLocaleString()} · Available: KES ${Number(available).toLocaleString()} · Transfer takes 2-3 business days`}</div>
+            {available < minPayout ? (
               <div style={{ fontSize:13, color:"#777777", padding:"1rem", background:"#f5f5f5", borderRadius:8 }}>
-                {`Complete more deliveries to reach the KES 5,000 minimum. You need KES ${Number(5000-available).toLocaleString()} more.`}
+                {`Complete more deliveries to reach the KES ${minPayout.toLocaleString()} minimum. You need KES ${Number(minPayout-available).toLocaleString()} more.`}
               </div>
             ) : (
               <form onSubmit={requestPayout}>
@@ -227,6 +233,7 @@ export default function DriverPayouts() {
     </div>
   )
 }
+
 
 
 
