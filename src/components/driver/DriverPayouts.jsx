@@ -11,7 +11,7 @@ export default function DriverPayouts() {
   const [earnings, setEarnings] = useState(0)
   const [paid, setPaid] = useState(0)
   const [loading, setLoading] = useState(true)
-  const [bankInfo, setBankInfo] = useState({ bank_name:"", bank_account_name:"", bank_account_number:"" })
+  const [bankInfo, setBankInfo] = useState({ bank_name:"", bank_account_name:"", bank_account_number:"", mpesa_number:"", id_number:"", kra_pin:"" })
   const [bankSaved, setBankSaved] = useState(false)
   const [amount, setAmount] = useState("")
   const [submitting, setSubmitting] = useState(false)
@@ -38,7 +38,7 @@ export default function DriverPayouts() {
     setPaid(totalPaid)
     setPayouts(pts||[])
     if (sens?.bank_name) {
-      setBankInfo({ bank_name:sens.bank_name||"", bank_account_name:sens.bank_account_name||"", bank_account_number:sens.bank_account_number||"" })
+      setBankInfo({ bank_name:sens.bank_name||"", bank_account_name:sens.bank_account_name||"", bank_account_number:sens.bank_account_number||"", mpesa_number:sens.mpesa_number||"", id_number:sens.id_number||"", kra_pin:sens.kra_pin||"" })
       setBankSaved(true)
     }
     setLoading(false)
@@ -52,6 +52,9 @@ export default function DriverPayouts() {
       bank_name: bankInfo.bank_name,
       bank_account_name: bankInfo.bank_account_name,
       bank_account_number: bankInfo.bank_account_number,
+      mpesa_number: bankInfo.mpesa_number,
+      id_number: bankInfo.id_number,
+      kra_pin: bankInfo.kra_pin,
     }).eq("id", user.id)
     if (error) { toast.error(error.message); setSavingBank(false); return }
     toast.success("Bank details saved")

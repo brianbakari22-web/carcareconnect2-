@@ -11,7 +11,7 @@ export default function ProviderPayouts() {
   const [earnings, setEarnings] = useState(0)
   const [paid, setPaid] = useState(0)
   const [loading, setLoading] = useState(true)
-  const [bankInfo, setBankInfo] = useState({ bank_name:"", bank_account_name:"", bank_account_number:"" })
+  const [bankInfo, setBankInfo] = useState({ bank_name:"", bank_account_name:"", bank_account_number:"", mpesa_number:"", id_number:"", kra_pin:"" })
   const [bankSaved, setBankSaved] = useState(false)
   const [amount, setAmount] = useState("")
   const [submitting, setSubmitting] = useState(false)
@@ -38,7 +38,7 @@ export default function ProviderPayouts() {
     setPaid(totalPaid)
     setPayouts(pts||[])
     if (sens?.bank_name) {
-      setBankInfo({ bank_name:sens.bank_name||"", bank_account_name:sens.bank_account_name||"", bank_account_number:sens.bank_account_number||"" })
+      setBankInfo({ bank_name:sens.bank_name||"", bank_account_name:sens.bank_account_name||"", bank_account_number:sens.bank_account_number||"", mpesa_number:sens.mpesa_number||"", id_number:sens.id_number||"", kra_pin:sens.kra_pin||"" })
       setBankSaved(true)
     }
     setLoading(false)
@@ -51,6 +51,9 @@ export default function ProviderPayouts() {
       bank_name: bankInfo.bank_name,
       bank_account_name: bankInfo.bank_account_name,
       bank_account_number: bankInfo.bank_account_number,
+      mpesa_number: bankInfo.mpesa_number,
+      id_number: bankInfo.id_number,
+      kra_pin: bankInfo.kra_pin,
     }).eq("id", user.id)
     if (error) { toast.error(error.message); setSavingBank(false); return }
     toast.success("Bank details saved")
@@ -124,6 +127,12 @@ export default function ProviderPayouts() {
             <input style={inp} placeholder="Full name as on account" value={bankInfo.bank_account_name} onChange={e=>setBankInfo(b=>({...b,bank_account_name:e.target.value}))} required/>
             <label style={lbl}>Account number</label>
             <input style={inp} placeholder="Your bank account number" value={bankInfo.bank_account_number} onChange={e=>setBankInfo(b=>({...b,bank_account_number:e.target.value}))} required/>
+            <label style={lbl}>M-Pesa number (for faster payouts)</label>
+            <input style={inp} placeholder="e.g. 0712345678" value={bankInfo.mpesa_number} onChange={e=>setBankInfo(b=>({...b,mpesa_number:e.target.value}))}/>
+            <label style={lbl}>National ID number *</label>
+            <input style={inp} placeholder="Your national ID number" value={bankInfo.id_number} onChange={e=>setBankInfo(b=>({...b,id_number:e.target.value}))} required/>
+            <label style={lbl}>KRA PIN (required for payouts above KES 24,999)</label>
+            <input style={inp} placeholder="e.g. A012345678B" value={bankInfo.kra_pin} onChange={e=>setBankInfo(b=>({...b,kra_pin:e.target.value}))}/>
             <button type="submit" disabled={savingBank}
               style={{ background:savingBank?"#555555":"#378add", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:savingBank?"not-allowed":"pointer" }}>
               {savingBank?"Saving...":"Save bank details"}

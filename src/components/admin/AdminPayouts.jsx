@@ -24,6 +24,14 @@ export default function AdminPayouts() {
     const { data } = await supabase.from("payout_requests")
       .select("*, profile_public!payout_requests_user_id_fkey(first_name,last_name,business_name,role)")
       .order("created_at",{ascending:false})
+    // Enrich with sensitive data for payment processing
+    if (data?.length) {
+      const ids = [...new Set(data.map(p=>p.user_id))]
+      const { data: sens } = await supabase.from("profile_sensitive").select("id,phone,mpesa_number,id_number,kra_pin").in("id", ids)
+      const sensMap = {}
+      sens?.forEach(s => { sensMap[s.id] = s })
+      data.forEach(p => { Object.assign(p, sensMap[p.user_id]||{}) })
+    }
     setPayouts(data||[])
     setLoading(false)
   }
@@ -156,8 +164,11 @@ export default function AdminPayouts() {
                   {p.profile_public?.business_name||`${p.profile_public?.first_name} ${p.profile_public?.last_name}`}
                 </div>
                 <div style={{ fontSize:11, color:"#888", marginTop:2 }}>
-                  {p.bank_name} · {p.bank_account_name} · {p.bank_account_number}
+                  🏦 {p.bank_name} · {p.bank_account_name} · {p.bank_account_number}
                 </div>
+                {p.mpesa_number&&<div style={{ fontSize:11, color:"#1d9e75", marginTop:2 }}>📱 M-Pesa: {p.mpesa_number}</div>}
+                {p.id_number&&<div style={{ fontSize:11, color:"#888", marginTop:2 }}>🪪 ID: {p.id_number}</div>}
+                {p.kra_pin&&<div style={{ fontSize:11, color:"#888", marginTop:2 }}>📋 KRA PIN: {p.kra_pin}</div>}
                 <div style={{ fontSize:10, color:"#888" }}>{new Date(p.created_at).toLocaleDateString()}</div>
               </div>
             </div>
