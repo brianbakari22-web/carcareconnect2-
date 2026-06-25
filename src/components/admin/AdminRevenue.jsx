@@ -20,9 +20,10 @@ export default function AdminRevenue() {
   }, [])
 
   async function load() {
-    const [{ data }, { data: allBookings }] = await Promise.all([
+    const [{ data }, { data: allBookings }, { data: allDemandBookings }] = await Promise.all([
       supabase.from("bookings").select("*").eq("status","completed").eq("is_archived", false).order("created_at",{ascending:false}),
-      supabase.from("bookings").select("customer_id, total_amount, booking_date, status").eq("status","completed").eq("is_archived", false)
+      supabase.from("bookings").select("customer_id, total_amount, booking_date, status").eq("status","completed").eq("is_archived", false),
+      supabase.from("bookings").select("booking_date, booking_time, service_name, service_category").eq("is_archived", false)
     ])
     setBookings(data||[])
     const clvMap = {}
@@ -50,17 +51,12 @@ export default function AdminRevenue() {
     // Compute demand heatmap
     const byDay = {}; const byService = {}; const byHour = {}
     const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
-    ;(allBookings||[]).forEach(b => {
+    ;(allDemandBookings||[]).forEach(b => {
       if (b.booking_date) {
         const day = days[new Date(b.booking_date).getDay()]
         byDay[day] = (byDay[day]||0) + 1
       }
-      if (b.booking_date && b.status) {
-        const svc = b.service_name||(b.service_category)||"Other"
-      }
-    })
-    ;(data||[]).forEach(b => {
-      const svc = b.service_name||"Other"
+      const svc = b.service_name||(b.service_category)||"Other"
       byService[svc] = (byService[svc]||0) + 1
       if (b.booking_time) {
         const hr = b.booking_time.slice(0,2)+":00"
@@ -77,10 +73,15 @@ export default function AdminRevenue() {
       providersByCity[p.city][p.provider_type] = (providersByCity[p.city][p.provider_type]||0) + 1
     })
     // Find cities with high booking demand but few providers
+    // Use allDemandBookings and match to provider cities
     const cityDemand = {}
-    ;(data||[]).forEach(b => {
-      const city = b.city||"Unknown"
+    ;(allDemandBookings||[]).forEach(b => {
+      const city = b.service_location_city || b.city || "Nairobi"
       cityDemand[city] = (cityDemand[city]||0) + 1
+    })
+    // Also count by provider city to show where bookings are going
+    Object.keys(providersByCity).forEach(city => {
+      if (!cityDemand[city]) cityDemand[city] = 0
     })
     const gapAnalysis = Object.entries(cityDemand).map(([city, demand]) => ({
       city,
