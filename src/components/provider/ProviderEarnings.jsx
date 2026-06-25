@@ -1,4 +1,4 @@
-﻿import useIsMobile from "../../lib/useIsMobile"
+import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { useLanguage } from "../../contexts/LanguageContext"
 import { generateInvoice } from "../../lib/invoice"
@@ -19,7 +19,7 @@ export default function ProviderEarnings() {
     const { data } = await supabase.from("bookings")
       .select("*")
       .eq("provider_id", user.id)
-      .eq("status", "completed")
+      .eq("status", "completed").eq("is_archived", false)
       .order("booking_date", { ascending:false })
     setBookings(data||[])
     setLoading(false)
@@ -113,6 +113,7 @@ export default function ProviderEarnings() {
     </div>
   )
 }
+
 
 
 
