@@ -119,7 +119,7 @@ export default function CustomerTracking() {
   async function load() {
     const { data } = await supabase.from("bookings").select("*")
       .eq("customer_id", user.id)
-      .not("status", "in", '("completed","cancelled")')
+      .not("status", "in", "(\"completed\",\"cancelled\")").eq("is_archived", false)
       .order("created_at", { ascending:false })
     setActiveBookings(data||[])
     setLoading(false)
@@ -276,8 +276,8 @@ export default function CustomerTracking() {
       {activeBookings.map(b=>(
         <div key={b.id} onClick={()=>{ setSelected(b); setDriver(null); setMechanic(null) }}
           style={{ background:"#ffffff", border:`1px solid ${SC[b.status]||"#eeeeee"}30`, borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10, cursor:"pointer" }}
-          onMouseEnter={e=>e.currentTarget.style.background="#161616"}
-          onMouseLeave={e=>e.currentTarget.style.background="#555555"}>
+          onMouseEnter={e=>e.currentTarget.style.background="#f8f8f8"}
+          onMouseLeave={e=>e.currentTarget.style.background="#ffffff"}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
             <div>
               <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000", marginBottom:4 }}>{b.service_name}</div>
@@ -301,6 +301,7 @@ export default function CustomerTracking() {
     </div>
   )
 }
+
 
 
 
