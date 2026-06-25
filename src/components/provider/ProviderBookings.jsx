@@ -60,7 +60,7 @@ export default function ProviderBookings() {
 
   async function load() {
     const [{ data: bks }, { data: mechs }] = await Promise.all([
-      supabase.from("bookings").select("*").eq("provider_id", user.id).order("created_at",{ascending:false}),
+      supabase.from("bookings").select("*").eq("provider_id", user.id).eq("is_archived", false).order("created_at",{ascending:false}),
       supabase.from("mechanics").select("*").eq("provider_id", user.id).eq("is_active", true).eq("is_available", true),
     ])
     setBookings(bks||[])
@@ -447,6 +447,7 @@ export default function ProviderBookings() {
     </div>
   )
 }
+
 
 
 
