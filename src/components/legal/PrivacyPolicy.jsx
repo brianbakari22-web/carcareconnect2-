@@ -24,7 +24,7 @@ export default function PrivacyPolicy() {
         <div style={{ marginBottom:"2.5rem" }}>
           <div style={{ fontSize:12, color:"#e6821e", fontWeight:600, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>Legal</div>
           <div style={{ fontFamily:"Syne", fontSize:"clamp(28px,4vw,40px)", fontWeight:800, color:"#000", marginBottom:8 }}>Privacy Policy</div>
-          <div style={{ fontSize:13, color:"#777" }}>Last updated: June 10, 2026 - Effective: June 10, 2026</div>
+          <div style={{ fontSize:13, color:"#777" }}>Last updated: June 25, 2026 - Effective: June 25, 2026</div>
         </div>
         <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:12, padding:"1.25rem", marginBottom:"2rem" }}>
           <div style={{ fontSize:14, color:"#555", lineHeight:1.8 }}>Car Care Connect (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) is committed to protecting your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform at carcareconnect.care. By using Car Care Connect, you consent to the practices described in this policy.</div>
@@ -59,6 +59,13 @@ export default function PrivacyPolicy() {
             <Li>Booking details, service history, payment amounts</Li>
             <Li>Payment method type (M-Pesa, card) - we do not store card numbers</Li>
             <Li>Commission and earnings records for providers and drivers</Li>
+          </div>
+          <div><strong>Financial &amp; Tax Information (Providers and Drivers only):</strong></div>
+          <div style={{ marginTop:8, marginBottom:12 }}>
+            <Li>Bank name, account holder name, and account number (for payout processing)</Li>
+            <Li>M-Pesa number (for mobile money payouts)</Li>
+            <Li>National ID number (for identity verification and KRA compliance)</Li>
+            <Li>KRA PIN (required for payments above KES 24,999 per Kenya Revenue Authority regulations)</Li>
           </div>
           <div><strong>Usage Data:</strong></div>
           <div style={{ marginTop:8, marginBottom:12 }}>
@@ -119,6 +126,22 @@ export default function PrivacyPolicy() {
           <Li>We conduct regular security reviews</Li>
           <Li>Access to user data is restricted to authorised staff only</Li>
         </Section>
+        <Section title="6b. Financial &amp; Tax Data">
+          <div>For service providers and drivers, we collect financial and tax information for the following purposes:</div>
+          <div style={{ marginTop:8 }}>
+            <Li>Processing earnings payouts to your bank account or M-Pesa</Li>
+            <Li>Complying with Kenya Revenue Authority (KRA) withholding tax requirements</Li>
+            <Li>Verifying your identity before releasing payments</Li>
+            <Li>Maintaining accurate financial records as required by Kenyan law</Li>
+          </div>
+          <div style={{ marginTop:12, background:"#f0fdf4", border:"1px solid #1d9e7530", borderRadius:10, padding:"1rem" }}>
+            <div style={{ fontSize:13, fontWeight:600, color:"#1d9e75", marginBottom:6 }}>🔒 How we protect your financial data</div>
+            <Li>Bank details and ID information are stored in an encrypted, access-restricted database</Li>
+            <Li>Only authorised CCC administrators can view your financial details for payout processing</Li>
+            <Li>We never share your bank details, National ID or KRA PIN with third parties</Li>
+            <Li>Financial data is retained for 7 years as required by Kenyan tax law</Li>
+          </div>
+        </Section>
         <Section title="7. Data Retention">
           <Li>Account data is retained for as long as your account is active</Li>
           <Li>Booking and transaction records are retained for 7 years for legal and tax purposes</Li>
@@ -176,6 +199,7 @@ export default function PrivacyPolicy() {
             <Li>Cloudflare - hosting and CDN</Li>
             <Li>Leaflet - mapping and location services</Li>
             <Li>Anthropic Claude - AI assistant feature</Li>
+            <Li>OneSignal - push notification delivery</Li>
           </div>
         </Section>
         <Section title="13. Changes to This Policy">

@@ -131,6 +131,10 @@ export default function ProviderPayouts() {
               <div style={{ fontSize:12, fontWeight:600, color:"#1d9e75", marginBottom:4 }}>🔒 Why we collect this information</div>
               <div style={{ fontSize:11, color:"#555", lineHeight:1.6 }}>Your bank details, national ID and KRA PIN are required for secure payout processing and Kenya Revenue Authority (KRA) tax compliance. This information is encrypted and only accessible to CCC administrators for payment purposes. We never share your details with third parties.</div>
             </div>
+            <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7530", borderRadius:8, padding:"0.75rem", marginBottom:12 }}>
+              <div style={{ fontSize:12, fontWeight:600, color:"#1d9e75", marginBottom:4 }}>🔒 Why we collect this information</div>
+              <div style={{ fontSize:11, color:"#555", lineHeight:1.6 }}>Your bank details, national ID and KRA PIN are required for secure payout processing and Kenya Revenue Authority (KRA) tax compliance. This information is encrypted and only accessible to CCC administrators for payment purposes. We never share your details with third parties.</div>
+            </div>
             <label style={lbl}>M-Pesa number (for faster payouts)</label>
             <input style={inp} placeholder="e.g. 0712345678" value={bankInfo.mpesa_number} onChange={e=>setBankInfo(b=>({...b,mpesa_number:e.target.value}))}/>
             <label style={lbl}>National ID number *</label>
