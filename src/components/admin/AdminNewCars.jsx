@@ -17,22 +17,25 @@ export default function AdminNewCars() {
   const [processing, setProcessing] = useState(false)
   const [brandForm, setBrandForm] = useState({ name:"", is_popular:false })
   const [showBrandForm, setShowBrandForm] = useState(false)
+  const [applications, setApplications] = useState([])
 
   useEffect(() => { load() }, [])
 
   async function load() {
-    const [{ data: lst }, { data: enq }, { data: brs }] = await Promise.all([
+    const [{ data: lst }, { data: enq }, { data: brs }, { data: apps }] = await Promise.all([
       supabase.from("new_car_listings")
         .select("*, dealer:profiles!new_car_listings_dealer_id_fkey(first_name,last_name,email)")
         .order("created_at", { ascending:false }),
       supabase.from("car_enquiries")
         .select("*, new_car_listings(brand,model,year), customer:profiles!car_enquiries_customer_id_fkey(first_name,last_name)")
         .order("created_at", { ascending:false }),
-      supabase.from("car_brands").select("*").order("display_order")
+      supabase.from("car_brands").select("*").order("display_order"),
+      supabase.from("dealer_applications").select("*, profiles!dealer_applications_user_id_fkey(first_name,last_name,email)").order("created_at",{ascending:false})
     ])
     setListings(lst||[])
     setEnquiries(enq||[])
     setBrands(brs||[])
+    setApplications(apps||[])
     setLoading(false)
   }
 
@@ -101,6 +104,32 @@ export default function AdminNewCars() {
     load()
   }
 
+  async function approveApplication(app) {
+    await supabase.from("dealer_applications").update({ status:"approved", reviewed_by:user.id, reviewed_at:new Date().toISOString() }).eq("id",app.id)
+    await supabase.from("notifications").insert({
+      user_id: app.user_id,
+      title: "Dealer application approved! 🎉",
+      message: `Welcome to CCC! Your showroom "${app.showroom_name}" has been approved. Go to Marketplace → My Car Listings to start listing your vehicles. Pay KES 2,000 listing fee to activate each listing.`,
+      type: "success"
+    })
+    toast.success("Application approved — dealer notified!")
+    load()
+  }
+
+  async function rejectApplication(app) {
+    const reason = prompt("Rejection reason:")
+    if (!reason) return
+    await supabase.from("dealer_applications").update({ status:"rejected", admin_notes:reason, reviewed_by:user.id, reviewed_at:new Date().toISOString() }).eq("id",app.id)
+    await supabase.from("notifications").insert({
+      user_id: app.user_id,
+      title: "Dealer application update",
+      message: `Your dealer application for "${app.showroom_name}" was not approved. Reason: ${reason}. Contact us for more information.`,
+      type: "error"
+    })
+    toast.success("Application rejected — dealer notified")
+    load()
+  }
+
   async function addBrand(e) {
     e.preventDefault()
     await supabase.from("car_brands").insert({ name:brandForm.name, is_popular:brandForm.is_popular, display_order:brands.length+1 })
@@ -166,6 +195,7 @@ export default function AdminNewCars() {
           {k:"rejected",l:`Rejected (${rejected.length})`},
           {k:"enquiries",l:`Enquiries (${enquiries.length})`},
           {k:"brands",l:`Brands (${brands.length})`},
+          {k:"applications",l:`Dealer Applications (${applications.length})`},
         ].map(t=>(
           <button key={t.k} onClick={()=>{ setTab(t.k); setSelected(null) }}
             style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:11, cursor:"pointer", background:tab===t.k?"#8b5cf6":"#f8f8f8", color:tab===t.k?"#fff":"#666", fontWeight:tab===t.k?700:400 }}>
@@ -312,6 +342,39 @@ export default function AdminNewCars() {
               </div>
             ))}
           </div>
+        </div>
+      )}
+    {/* Dealer Applications tab */}
+      {tab==="applications"&&(
+        <div>
+          {applications.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No dealer applications yet</div>}
+          {applications.map(app=>(
+            <div key={app.id} style={{ background:"#f8f8f8", border:`1px solid ${app.status==="pending"?"#e6821e30":app.status==="approved"?"#1d9e7530":"#e24b4a30"}`, borderRadius:12, padding:"1rem", marginBottom:10 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
+                <div>
+                  <div style={{ fontSize:14, fontWeight:700, color:"#000", marginBottom:2 }}>{app.showroom_name}</div>
+                  <div style={{ fontSize:12, color:"#888" }}>📍 {app.showroom_location} · 📞 {app.showroom_phone}</div>
+                  {app.showroom_email&&<div style={{ fontSize:11, color:"#888" }}>✉️ {app.showroom_email}</div>}
+                  {app.business_registration&&<div style={{ fontSize:11, color:"#888" }}>🏢 Reg: {app.business_registration}</div>}
+                  {app.brands_sold?.length>0&&<div style={{ fontSize:11, color:"#888" }}>🚗 Brands: {app.brands_sold.join(", ")}</div>}
+                  {app.monthly_stock&&<div style={{ fontSize:11, color:"#888" }}>📦 Monthly stock: ~{app.monthly_stock} cars</div>}
+                  {app.website_url&&<div style={{ fontSize:11, color:"#378add" }}>🌐 {app.website_url}</div>}
+                  <div style={{ fontSize:11, color:"#888", marginTop:4 }}>👤 {app.profiles?.first_name} {app.profiles?.last_name} · {app.profiles?.email}</div>
+                  <div style={{ fontSize:10, color:"#aaa", marginTop:2 }}>{new Date(app.created_at).toLocaleString()}</div>
+                  {app.admin_notes&&<div style={{ fontSize:11, color:"#e24b4a", marginTop:4 }}>Rejection reason: {app.admin_notes}</div>}
+                </div>
+                <span style={{ fontSize:11, padding:"3px 10px", borderRadius:10, background:app.status==="pending"?"#fff8f0":app.status==="approved"?"#f0fdf4":"#fff5f5", color:app.status==="pending"?"#e6821e":app.status==="approved"?"#1d9e75":"#e24b4a", fontWeight:600 }}>
+                  {app.status}
+                </span>
+              </div>
+              {app.status==="pending"&&(
+                <div style={{ display:"flex", gap:8 }}>
+                  <button onClick={()=>approveApplication(app)} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:12, fontWeight:600, padding:"6px 14px", cursor:"pointer" }}>✓ Approve</button>
+                  <button onClick={()=>rejectApplication(app)} style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:12, padding:"6px 14px", cursor:"pointer" }}>Reject</button>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       )}
     </div>
