@@ -67,7 +67,7 @@ export default function CustomerBookings() {
   useEffect(() => { if (user) load() }, [user])
 
   async function load() {
-    const { data } = await supabase.from("bookings").select("*,profiles!bookings_driver_id_fkey(first_name,last_name)").eq("customer_id", user.id).eq("hidden_from_customer", false).order("created_at",{ascending:false})
+    const { data } = await supabase.from("bookings").select("*,profiles!bookings_driver_id_fkey(first_name,last_name)").eq("customer_id", user.id).eq("hidden_from_customer", false).eq("is_archived", false).order("created_at",{ascending:false})
     setBookings(data||[])
     setLoading(false)
   }
@@ -97,6 +97,11 @@ export default function CustomerBookings() {
     if (!confirm("Are you sure you want to cancel this booking?")) return
     const { error } = await supabase.from("bookings").update({ status:"cancelled" }).eq("id",id).eq("customer_id",user.id)
     if (error) return toast.error(error.message)
+    // Notify provider
+    const cancelled = bookings.find(b=>b.id===id)
+    if (cancelled?.provider_id) {
+      await supabase.from("notifications").insert({ user_id: cancelled.provider_id, title: "Booking cancelled", message: "Customer cancelled " + cancelled.service_name + " #" + (cancelled.booking_number||"") + " on " + cancelled.booking_date, type: "error" })
+    }
     toast.success("Booking cancelled")
     const remove = confirm("Remove this booking from your list? It will still be kept in our records.")
     if (remove) {
@@ -122,6 +127,7 @@ export default function CustomerBookings() {
       payment_status: "pending"
     })
     if (error) return toast.error(error.message)
+    await supabase.from("notifications").insert({ user_id: b.provider_id, title: "New booking!", message: b.service_name + " rebooked for " + rebookForm.date + " at " + rebookForm.time, type: "success" })
     toast.success("Booking created!")
     setRebooking(null)
     load()
@@ -357,6 +363,7 @@ export default function CustomerBookings() {
     </div>
   )
 }
+
 
 
 
