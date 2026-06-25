@@ -13,3 +13,6 @@ android/keystore.properties
 carcareconnect.keystore
 *.keystore
 
+
+.env.local
+.env

@@ -147,7 +147,7 @@ export default function CustomerTracking() {
       if (!existing) {
         const script = document.createElement("script")
         script.id = "google-maps-sdk"
-        script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyD1UjOd7rMf7QJmJgQO9Y-5my_N4TTmzgU&libraries=marker,places&loading=async"
+        script.src = "https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_KEY}&libraries=marker,places&loading=async"
         script.onload = initGoogleMap
         document.head.appendChild(script)
       } else {
@@ -338,6 +338,7 @@ export default function CustomerTracking() {
     </div>
   )
 }
+
 
 
 
