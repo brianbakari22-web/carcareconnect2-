@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
@@ -10,11 +10,15 @@ export default function WashQueue() {
   const [uploading, setUploading] = useState(null)
   useEffect(() => { if (user) { load(); const sub = supabase.channel("wash-queue").on("postgres_changes",{event:"*",schema:"public",table:"bookings",filter:`provider_id=eq.${user.id}`},()=>load()).subscribe(); return ()=>supabase.removeChannel(sub) } }, [user])
   async function load() {
-    const { data } = await supabase.from("bookings").select("*, profiles!bookings_customer_id_fkey(first_name,last_name), vehicles(make,model,color,license_plate)").eq("provider_id",user.id).in("status",["pending","confirmed","in-progress"]).order("booking_date",{ascending:true})
+    const { data } = await supabase.from("bookings").select("*, profiles!bookings_customer_id_fkey(first_name,last_name), vehicles(make,model,color,license_plate)").eq("provider_id",user.id).in("status",["pending","confirmed","in-progress"]).eq("is_archived",false).order("booking_date",{ascending:true})
     setBookings(data||[]); setLoading(false)
   }
   async function updateStatus(id, status) {
     await supabase.from("bookings").update({status}).eq("id",id)
+    if (status==="completed") {
+      const b = bookings.find(x=>x.id===id)
+      if (b?.customer_id) await supabase.from("notifications").insert({ user_id:b.customer_id, title:"Car wash complete! 🚿", message:`Your ${b.service_name} is done! Come pick up your sparkling clean car.`, type:"success" })
+    }
     toast.success(`Updated to ${status}`); load()
   }
   async function uploadPhoto(id, file, type) {
@@ -63,3 +67,4 @@ export default function WashQueue() {
     </div>
   )
 }
+
