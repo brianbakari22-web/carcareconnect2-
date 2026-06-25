@@ -1,4 +1,4 @@
-﻿import useIsMobile from "../../lib/useIsMobile"
+import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
@@ -42,7 +42,7 @@ export default function ProviderAvailability() {
         .eq("provider_id", user.id)
         .gte("booking_date", startDate)
         .lte("booking_date", endDate)
-        .not("status", "eq", "cancelled")
+        .not("status", "eq", "cancelled").eq("is_archived", false)
     ])
 
     const availMap = {}
@@ -439,6 +439,7 @@ export default function ProviderAvailability() {
     </div>
   )
 }
+
 
 
 
