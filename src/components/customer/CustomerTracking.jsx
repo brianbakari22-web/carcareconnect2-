@@ -94,7 +94,7 @@ export default function CustomerTracking() {
         fullscreenControl: true,
         zoomControl: true,
         gestureHandling: "greedy",
-        mapTypeId: "roadmap"
+        mapTypeId: "roadmap", mapId: "ccc_tracking_map"
       })
 
       if (driver?.current_lat) {
@@ -147,7 +147,7 @@ export default function CustomerTracking() {
       if (!existing) {
         const script = document.createElement("script")
         script.id = "google-maps-sdk"
-        script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyD1UjOd7rMf7QJmJgQO9Y-5my_N4TTmzgU&libraries=places"
+        script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyD1UjOd7rMf7QJmJgQO9Y-5my_N4TTmzgU&libraries=marker,places&loading=async"
         script.onload = initGoogleMap
         document.head.appendChild(script)
       } else {
@@ -338,6 +338,7 @@ export default function CustomerTracking() {
     </div>
   )
 }
+
 
 
 
