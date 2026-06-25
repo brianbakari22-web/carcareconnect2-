@@ -150,7 +150,7 @@ export default function CustomerPartsMarketplace() {
           customer_name: customerDetails.name,
           customer_phone: customerDetails.phone,
           payment_method: paymentMethod,
-          payment_status: paymentMethod === "cash" ? "pending" : "pending",
+          payment_status: paymentMethod === "cash" ? "pending" : "awaiting_payment",
           status: "pending",
         }).select("id").single()
         if (error) throw error
@@ -163,6 +163,7 @@ export default function CustomerPartsMarketplace() {
             quantity: item.qty,
             unit_price: Number(item.price),
           })
+          // Decrement stock immediately to prevent overselling
           await supabase.from("inventory").update({ stock_quantity: item.stock_quantity - item.qty }).eq("id", item.id)
         }
 
@@ -172,6 +173,8 @@ export default function CustomerPartsMarketplace() {
           message: `${customerDetails.name} ordered ${items.length} item(s) — KES ${subtotal.toLocaleString()} (${paymentMethod === "cash" ? "Cash on delivery" : "Paid online"})`,
           type: "success",
         })
+        // Notify customer
+        await supabase.from("notifications").insert({ user_id: user.id, title: "Order placed! 🛒", message: `Your order of ${items.length} item(s) worth KES ${subtotal.toLocaleString()} has been placed successfully.`, type: "success" })
 
         // Cash orders: accrue platform commission owed by provider, payable monthly
         if (paymentMethod === "cash") {
