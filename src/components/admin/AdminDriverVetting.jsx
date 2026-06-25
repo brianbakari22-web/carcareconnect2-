@@ -20,6 +20,9 @@ export default function AdminDriverVetting() {
   const [result, setResult] = useState("")
   const [notes, setNotes] = useState("")
   const [saving, setSaving] = useState(false)
+  const [rescheduling, setRescheduling] = useState(null)
+  const [rescheduleForm, setRescheduleForm] = useState({ date:"", time:"" })
+  const [search, setSearch] = useState("")
 
   useEffect(() => { load() }, [])
 
@@ -54,6 +57,7 @@ export default function AdminDriverVetting() {
     setSaving(true)
     try {
       const passed = result === "passed"
+      const conditional = result === "conditional"
 
       // Update appointment
       await supabase.from("driver_vetting_appointments").update({
@@ -64,7 +68,19 @@ export default function AdminDriverVetting() {
         updated_at: new Date().toISOString()
       }).eq("id", selected.id)
 
-      if (passed) {
+      if (conditional) {
+        // Conditional — schedule follow-up, don't approve yet
+        await Promise.all([
+          supabase.from("profiles").update({ vetting_status:"conditional" }).eq("id", selected.driver_id),
+          supabase.from("notifications").insert({
+            user_id: selected.driver_id,
+            title: "Application Update — Conditional",
+            message: "Your vetting assessment had a conditional result. " + (notes||"Please contact support for next steps."),
+            type: "warning",
+          })
+        ])
+        toast.success("Driver marked conditional — notified")
+      } else if (passed) {
         // Approve driver — create probation record
         await Promise.all([
           supabase.from("profiles").update({
@@ -111,17 +127,17 @@ export default function AdminDriverVetting() {
     finally { setSaving(false) }
   }
 
-  async function rescheduleAppointment(id) {
-    const newDate = prompt("New appointment date (YYYY-MM-DD):")
-    const newTime = prompt("New appointment time (e.g. 10:00 AM):")
-    if (!newDate || !newTime) return
+  async function rescheduleAppointment() {
+    if (!rescheduleForm.date || !rescheduleForm.time) return toast.error("Please enter date and time")
     await supabase.from("driver_vetting_appointments").update({
-      appointment_date: newDate,
-      appointment_time: newTime,
+      appointment_date: rescheduleForm.date,
+      appointment_time: rescheduleForm.time,
       status: "rescheduled",
       updated_at: new Date().toISOString()
-    }).eq("id", id)
+    }).eq("id", rescheduling)
     toast.success("Appointment rescheduled")
+    setRescheduling(null)
+    setRescheduleForm({ date:"", time:"" })
     load()
   }
 
@@ -212,7 +228,7 @@ export default function AdminDriverVetting() {
               <textarea value={notes} onChange={e=>setNotes(e.target.value)} placeholder="Assessment notes (shared with driver if rejected)..."
                 style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", color:"#000", fontSize:12, outline:"none", resize:"vertical", minHeight:80, marginBottom:10, fontFamily:"DM Sans,sans-serif" }}/>
               <div style={{ display:"flex", gap:8 }}>
-                <button onClick={()=>rescheduleAppointment(selected.id)}
+                <button onClick={()=>{ setRescheduling(selected.id); setRescheduleForm({ date:selected.appointment_date||"", time:selected.appointment_time||"" }) }}
                   style={{ flex:1, background:"none", border:"1px solid #e6821e40", borderRadius:8, color:"#e6821e", fontSize:12, padding:"9px", cursor:"pointer" }}>
                   Reschedule
                 </button>
@@ -234,8 +250,35 @@ export default function AdminDriverVetting() {
         </div>
       )}
 
+      {/* Reschedule Modal */}
+      {rescheduling&&(
+        <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:12, padding:"1.25rem", marginBottom:"1rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#e6821e", marginBottom:12 }}>📅 Reschedule Appointment</div>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:12 }}>
+            <div>
+              <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>New date</label>
+              <input type="date" value={rescheduleForm.date} onChange={e=>setRescheduleForm(f=>({...f,date:e.target.value}))}
+                style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"9px 12px", fontSize:12, outline:"none" }}/>
+            </div>
+            <div>
+              <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>New time</label>
+              <input type="time" value={rescheduleForm.time} onChange={e=>setRescheduleForm(f=>({...f,time:e.target.value}))}
+                style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"9px 12px", fontSize:12, outline:"none" }}/>
+            </div>
+          </div>
+          <div style={{ display:"flex", gap:8 }}>
+            <button onClick={rescheduleAppointment} style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"9px 20px", cursor:"pointer" }}>Confirm reschedule</button>
+            <button onClick={()=>setRescheduling(null)} style={{ background:"none", border:"1px solid #ddd", borderRadius:8, color:"#888", fontSize:12, padding:"9px 16px", cursor:"pointer" }}>Cancel</button>
+          </div>
+        </div>
+      )}
+
+      {/* Search */}
+      <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search by driver name..."
+        style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:8, padding:"9px 12px", fontSize:12, outline:"none", marginBottom:10, fontFamily:"DM Sans,sans-serif" }}/>
+
       {/* Appointments list */}
-      {filtered.map(appt=>(
+      {filtered.filter(a=>`${a.driver?.first_name} ${a.driver?.last_name}`.toLowerCase().includes(search.toLowerCase())).map(appt=>(
         <div key={appt.id} onClick={()=>selectAppointment(appt)}
           style={{ background:"#f8f8f8", border:`1px solid ${selected?.id===appt.id?"#8b5cf6":"#eeeeee"}`, borderRadius:10, padding:"1rem", marginBottom:8, cursor:"pointer" }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
