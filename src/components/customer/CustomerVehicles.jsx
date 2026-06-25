@@ -37,7 +37,8 @@ export default function CustomerVehicles() {
 
   async function remove(id) {
     if (!confirm("Remove this vehicle?")) return
-    await supabase.from("vehicles").delete().eq("id",id).eq("user_id",user.id)
+    const { error } = await supabase.from("vehicles").delete().eq("id",id).eq("user_id",user.id)
+    if (error) { toast.error(error.message); console.error("Delete error:", error); return }
     toast.success("Vehicle removed"); load()
   }
 
@@ -167,6 +168,7 @@ export default function CustomerVehicles() {
     </div>
   )
 }
+
 
 
 

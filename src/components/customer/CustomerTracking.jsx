@@ -62,15 +62,15 @@ export default function CustomerTracking() {
           setDriver(d=>d?{...d,current_lat:lat,current_lng:lng}:d)
           // Smoothly move marker
           if (driverMarkerRef.current) {
-            driverMarkerRef.current.setLatLng([lat, lng])
-            if (mapInstanceRef.current) mapInstanceRef.current.panTo([lat, lng], {animate:true, duration:1})
+            driverMarkerRef.current.setPosition({ lat, lng })
+            if (mapInstanceRef.current) mapInstanceRef.current.panTo({ lat, lng })
           }
         })
       .on("postgres_changes", { event:"INSERT", schema:"public", table:"mechanic_location_history", filter:`booking_id=eq.${selected.id}` },
         payload => {
           const { latitude, longitude } = payload.new
           setMechanic(m=>m?{...m,current_latitude:latitude,current_longitude:longitude}:m)
-          if (mechanicMarkerRef.current) mechanicMarkerRef.current.setLatLng([latitude, longitude])
+          if (mechanicMarkerRef.current) mechanicMarkerRef.current.setPosition({ lat: latitude, lng: longitude })
         })
       .on("postgres_changes", { event:"UPDATE", schema:"public", table:"bookings", filter:`id=eq.${selected.id}` },
         payload => setSelected(s=>({...s,...payload.new})))
@@ -82,38 +82,80 @@ export default function CustomerTracking() {
     if (!selected || !mapRef.current) return
     if (mapInstanceRef.current) { mapInstanceRef.current.remove(); mapInstanceRef.current = null }
 
-    setTimeout(() => {
-      if (!mapRef.current || !window.L) return
-      const L = window.L
+    function initGoogleMap() {
+      if (!mapRef.current || !window.google) return
       const lat = driver?.current_lat || mechanic?.current_latitude || -1.2921
       const lng = driver?.current_lng || mechanic?.current_longitude || 36.8219
-      const map = L.map(mapRef.current, { zoomControl:true, attributionControl:false }).setView([lat, lng], 14)
-      // Better looking map tiles
-      L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-        maxZoom:19,
-        subdomains:"abcd"
-      }).addTo(map)
+      const map = new window.google.maps.Map(mapRef.current, {
+        center: { lat, lng },
+        zoom: 15,
+        mapTypeControl: true,
+        streetViewControl: true,
+        fullscreenControl: true,
+        zoomControl: true,
+        gestureHandling: "greedy",
+        mapTypeId: "roadmap"
+      })
 
       if (driver?.current_lat) {
-        const driverIcon = L.divIcon({ className:"", html:`<div style="position:relative"><div style="position:absolute;inset:-8px;border-radius:50%;border:2px solid #378add;animation:ping 1.5s ease-out infinite;opacity:0.6"></div><div style="background:#378add;width:42px;height:42px;border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 12px rgba(55,138,221,0.5);">🚗</div></div>`, iconSize:[42,42], iconAnchor:[21,21] })
-        driverMarkerRef.current = L.marker([driver.current_lat, driver.current_lng], { icon:driverIcon }).addTo(map).bindPopup(`Driver: ${driver.first_name} ${driver.last_name}`)
+        driverMarkerRef.current = new window.google.maps.Marker({
+          position: { lat: driver.current_lat, lng: driver.current_lng },
+          map,
+          title: `Driver: ${driver.first_name} ${driver.last_name}`,
+          icon: {
+            url: "data:image/svg+xml;charset=UTF-8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#378add" stroke="white" stroke-width="3"/><text x="24" y="32" font-size="22" text-anchor="middle">🚗</text></svg>'),
+            scaledSize: new window.google.maps.Size(48, 48),
+            anchor: new window.google.maps.Point(24, 24)
+          }
+        })
       }
 
       if (mechanic?.current_latitude) {
-        const mechanicIcon = L.divIcon({ className:"", html:`<div style="position:relative"><div style="position:absolute;inset:-8px;border-radius:50%;border:2px solid #1d9e75;animation:ping 1.5s ease-out infinite;opacity:0.6"></div><div style="background:#1d9e75;width:42px;height:42px;border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 12px rgba(29,158,117,0.5);">👨‍🔧</div></div>`, iconSize:[42,42], iconAnchor:[21,21] })
-        mechanicMarkerRef.current = L.marker([mechanic.current_latitude, mechanic.current_longitude], { icon:mechanicIcon }).addTo(map).bindPopup(`Mechanic: ${mechanic.first_name} ${mechanic.last_name}`)
+        mechanicMarkerRef.current = new window.google.maps.Marker({
+          position: { lat: mechanic.current_latitude, lng: mechanic.current_longitude },
+          map,
+          title: `Mechanic: ${mechanic.first_name} ${mechanic.last_name}`,
+          icon: {
+            url: "data:image/svg+xml;charset=UTF-8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#1d9e75" stroke="white" stroke-width="3"/><text x="24" y="32" font-size="22" text-anchor="middle">👨‍🔧</text></svg>'),
+            scaledSize: new window.google.maps.Size(48, 48),
+            anchor: new window.google.maps.Point(24, 24)
+          }
+        })
       }
 
       if (navigator.geolocation) {
-        getCurrentPosition().then(async pos => {
-          const customerIcon = L.divIcon({ className:"", html:`<div style="background:#e6821e;width:38px;height:38px;border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 8px rgba(0,0,0,0.3);">👤</div>`, iconSize:[38,38], iconAnchor:[19,19] })
-          L.marker([pos.latitude, pos.longitude], { icon:customerIcon }).addTo(map).bindPopup("Your location")
+        getCurrentPosition().then(pos => {
+          new window.google.maps.Marker({
+            position: { lat: pos.latitude, lng: pos.longitude },
+            map,
+            title: "Your location",
+            icon: {
+              url: "data:image/svg+xml;charset=UTF-8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="20" fill="#e6821e" stroke="white" stroke-width="3"/><text x="22" y="30" font-size="20" text-anchor="middle">👤</text></svg>'),
+              scaledSize: new window.google.maps.Size(44, 44),
+              anchor: new window.google.maps.Point(22, 22)
+            }
+          })
         })
       }
       mapInstanceRef.current = map
-    }, 150)
+    }
 
-    return () => { if (mapInstanceRef.current) { mapInstanceRef.current.remove(); mapInstanceRef.current = null } }
+    if (window.google?.maps) {
+      initGoogleMap()
+    } else {
+      const existing = document.getElementById("google-maps-sdk")
+      if (!existing) {
+        const script = document.createElement("script")
+        script.id = "google-maps-sdk"
+        script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyD1UjOd7rMf7QJmJgQO9Y-5my_N4TTmzgU&libraries=places"
+        script.onload = initGoogleMap
+        document.head.appendChild(script)
+      } else {
+        setTimeout(initGoogleMap, 500)
+      }
+    }
+
+    return () => { mapInstanceRef.current = null; driverMarkerRef.current = null; mechanicMarkerRef.current = null }
   }, [selected?.id, driver?.current_lat, mechanic?.current_latitude])
 
   async function load() {
@@ -144,14 +186,9 @@ export default function CustomerTracking() {
 
   if (selected) return (
     <div>
-      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-      <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"/>
-      <style>{`
-        @keyframes ping { 0%{transform:scale(1);opacity:0.6} 100%{transform:scale(2.5);opacity:0} }
-        .leaflet-container { background:#ffffff !important; }
-      `}</style>
+      <style>{`@keyframes ping { 0%{transform:scale(1);opacity:0.6} 100%{transform:scale(2.5);opacity:0} }`}</style>
 
-      <button onClick={()=>{ if(mapInstanceRef.current){ mapInstanceRef.current.remove(); mapInstanceRef.current=null } driverMarkerRef.current=null; mechanicMarkerRef.current=null; setSelected(null); setDriver(null); setMechanic(null) }}
+      <button onClick={()=>{ mapInstanceRef.current = null; driverMarkerRef.current=null; mechanicMarkerRef.current=null; setSelected(null); setDriver(null); setMechanic(null) }}
         style={{ background:"none", border:"none", color:"#e6821e", cursor:"pointer", fontSize:13, marginBottom:"1rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
         ← Back to bookings
       </button>
@@ -301,6 +338,7 @@ export default function CustomerTracking() {
     </div>
   )
 }
+
 
 
 
