@@ -1,314 +1,302 @@
 import { useNavigate } from "react-router-dom"
-
 export default function TermsOfService() {
   const navigate = useNavigate()
-
+  const Section = ({ title, children }) => (
+    <div style={{ marginBottom:"2.5rem" }}>
+      <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#000", marginBottom:"1rem", paddingBottom:"0.5rem", borderBottom:"2px solid #e6821e20" }}>{title}</div>
+      <div style={{ fontSize:14, color:"#444", lineHeight:1.9 }}>{children}</div>
+    </div>
+  )
+  const Li = ({ children }) => (
+    <div style={{ display:"flex", gap:10, marginBottom:6 }}>
+      <span style={{ color:"#e6821e", flexShrink:0 }}>•</span>
+      <span>{children}</span>
+    </div>
+  )
+  const Sub = ({ title, children }) => (
+    <div style={{ marginTop:12, marginBottom:8 }}>
+      <div style={{ fontSize:13, fontWeight:700, color:"#000", marginBottom:6 }}>{title}</div>
+      {children}
+    </div>
+  )
   return (
-    <div style={{ minHeight:"100vh", background:"#ffffff", fontFamily:"'DM Sans',sans-serif", color:"#000000" }}>
+    <div style={{ minHeight:"100vh", background:"#ffffff", fontFamily:"DM Sans,sans-serif", color:"#000000" }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');`}</style>
-
       <nav style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"1.25rem 2rem", borderBottom:"1px solid #eeeeee", position:"sticky", top:0, background:"#ffffff", zIndex:10 }}>
-        <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000000", cursor:"pointer" }} onClick={()=>navigate("/auth")}>
-          🚗 Car<span style={{ color:"#e6821e" }}>Care</span> Connect
-        </div>
-        <button onClick={()=>navigate("/auth")}
-          style={{ background:"none", border:"1px solid #dddddd", borderRadius:8, color:"#555555", fontSize:13, padding:"8px 16px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
-          ← Back
-        </button>
+        <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000000", cursor:"pointer" }} onClick={()=>navigate("/")}>Car<span style={{ color:"#e6821e" }}>Care</span> Connect</div>
+        <button onClick={()=>navigate(-1)} style={{ background:"none", border:"1px solid #ddd", borderRadius:8, color:"#555", fontSize:13, padding:"8px 16px", cursor:"pointer" }}>Back</button>
       </nav>
-
       <div style={{ maxWidth:760, margin:"0 auto", padding:"3rem 2rem 5rem" }}>
         <div style={{ marginBottom:"2.5rem" }}>
           <div style={{ fontSize:12, color:"#e6821e", fontWeight:600, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>Legal</div>
-          <div style={{ fontFamily:"Syne", fontSize:"clamp(28px,4vw,40px)", fontWeight:800, color:"#000000", marginBottom:8 }}>Terms of Service</div>
-          <div style={{ fontSize:13, color:"#777777" }}>Last updated: June 18, 2026 · Effective: June 18, 2026</div>
+          <div style={{ fontFamily:"Syne", fontSize:"clamp(28px,4vw,40px)", fontWeight:800, color:"#000", marginBottom:8 }}>Terms of Service</div>
+          <div style={{ fontSize:13, color:"#777" }}>Last updated: June 25, 2026 · Effective: June 25, 2026</div>
+        </div>
+        <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:12, padding:"1.25rem", marginBottom:"2rem" }}>
+          <div style={{ fontSize:14, color:"#555", lineHeight:1.8 }}>Welcome to Car Care Connect. By accessing or using our platform at carcareconnect.care, you agree to be bound by these Terms of Service and our Privacy Policy. Please read them carefully. If you do not agree, you may not use Car Care Connect.</div>
         </div>
 
-        <div style={{ background:"#ffffff", border:"1px solid #e6821e30", borderRadius:12, padding:"1.25rem", marginBottom:"2rem" }}>
-          <div style={{ fontSize:13, color:"#555555", lineHeight:1.7 }}>
-            Welcome to Car Care Connect. By accessing or using our platform, you agree to be bound by these Terms of Service. Please read them carefully before using the platform. If you do not agree to these terms, you may not use Car Care Connect.
+        <Section title="1. Acceptance of Terms">
+          <div>By creating an account or using Car Care Connect, you confirm that you:</div>
+          <div style={{ marginTop:8 }}>
+            <Li>Are at least 18 years old and have legal capacity to enter this agreement</Li>
+            <Li>Agree to these Terms of Service and our Privacy Policy</Li>
+            <Li>Will provide accurate and complete information when registering</Li>
+            <Li>Are responsible for maintaining the confidentiality of your account credentials</Li>
           </div>
-        </div>
+          <div style={{ marginTop:12 }}>We reserve the right to update these terms at any time. Continued use of the platform after changes constitutes acceptance of the updated terms. Significant changes will be communicated via email.</div>
+        </Section>
 
-        {[
-          {
-            title: "1. Acceptance of Terms",
-            items: [
-              "By creating an account or using Car Care Connect, you confirm that you are at least 18 years old, have the legal capacity to enter into this agreement, and agree to these Terms of Service and our Privacy Policy.",
-              "We reserve the right to update these terms at any time. Continued use of the platform after changes constitutes acceptance of the updated terms.",
-            ]
-          },
-          {
-            title: "2. Description of Service",
-            items: [
-              "Car Care Connect is a digital marketplace connecting vehicle owners (customers) with automotive service providers, mechanics, and concierge drivers in Nairobi, Kenya.",
-              "We offer three service categories: Shop Standard (customer brings car to shop), Shop Premium (mechanic travels to customer location), and GO Service (emergency roadside assistance).",
-              "We provide the platform and technology infrastructure but are not directly responsible for the quality of services provided by independent service providers, mechanics, and drivers.",
-              "We reserve the right to modify, suspend, or discontinue any part of the service at any time with reasonable notice.",
-            ]
-          },
-          {
-            title: "3. Service Categories and Commission Structure",
-            items: [
-              "Shop Standard Services: Customer brings their vehicle to the provider's shop. Platform commission is 10%. Provider receives 90% of the service fee.",
-              "Shop Premium Services: Provider's mechanic travels to the customer's home or office. Platform commission is 20%. Provider receives 80% of the service fee.",
-              "GO Service (Emergency Roadside): Provider dispatches a mechanic to the customer's breakdown location. Platform commission is 15%. Provider receives 85% of the service fee.",
-              "Concierge Driver Services: A platform driver picks up and delivers the customer's vehicle. Commission split is 15% platform, 70% provider, 15% driver.",
-              "Parts and Commodities: When service providers supply parts or materials as part of a booking, the platform charges a 10% commission on the parts cost. The provider receives 90% of the parts value.",
-              "Commission rates are subject to change with 30 days notice to registered providers.",
-            ]
-          },
-          {
-            title: "4. GO Service (Emergency Roadside) Terms",
-            items: [
-              "GO Service is available only through online payment (M-Pesa or card). Cash payments are not accepted for emergency services to ensure platform commission accountability.",
-              "When a GO Service request is submitted, it is sent to available providers in sequence. Each provider has 15 minutes to accept the request.",
-              "If a provider does not respond within 15 minutes, the request is automatically forwarded to the next available provider. After 5 unsuccessful attempts, the customer is notified that no providers are currently available.",
-              "Providers who are marked as offline will not receive GO Service requests.",
-              "A KES 500 non-refundable callout fee is required before dispatch. Fee split: KES 425 to mechanic and KES 75 to platform.",
-              "Car Care Connect is not a substitute for emergency services. In life-threatening situations, contact emergency services (999) immediately.",
-            ]
-          },
-          {
-            title: "5. Vehicle Condition Reports",
-            items: [
-              "For all concierge, Shop Premium, and GO Service bookings where a driver or mechanic takes custody of a customer's vehicle, a pickup condition report must be completed before taking the vehicle and a dropoff report must be completed before returning it.",
-              "Drivers and mechanics are required to accurately record the vehicle's odometer reading, fuel level, and any pre-existing damage at both pickup and dropoff.",
-              "If the odometer difference between pickup and dropoff exceeds 30km (or the customer's custom threshold), an automatic mileage alert is sent to the customer.",
-              "Customers have 24 hours after service completion to raise a vehicle condition dispute. Disputes are reviewed by platform administrators within 5 business days.",
-              "Filing false condition reports is a serious violation that may result in immediate account termination and legal action.",
-              "Car Care Connect acts as a neutral dispute resolver and will review evidence from both parties before making a determination.",
-            ]
-          },
-          {
-            title: "6. Parts and Commodities",
-            items: [
-              "Service providers may add parts and materials to bookings when required to complete the service.",
-              "Before adding parts, providers must review the customer's problem description and parts requirements submitted at booking.",
-              "Customers must approve any parts additions before they are charged. An updated booking total will be shown for approval.",
-              "Parts pricing must be fair and transparent. Providers may not inflate parts prices. Car Care Connect reserves the right to investigate pricing complaints.",
-              "Platform commission of 10% applies to all parts and materials supplied through the platform.",
-              "Once a customer approves parts, the updated total is final and non-negotiable unless there is a genuine dispute.",
-            ]
-          },
-          {
-            title: "7. Customer Terms",
-            items: [
-              "Customers may browse services across all categories, book appointments, make payments, track mechanics, and leave reviews for completed services.",
-              "For Shop Premium and GO Service bookings, customers must provide accurate location information and be reachable during the service.",
-              "Customers must provide accurate vehicle information and problem descriptions when making bookings.",
-              "Cancellations made less than 24 hours before a scheduled appointment may be subject to cancellation fees at the provider's discretion.",
-              "Reviews must be honest and based on actual service experiences. False or defamatory reviews are prohibited.",
-              "Customers are responsible for ensuring their vehicle is accessible for pickup in concierge and Shop Premium bookings.",
-            ]
-          },
-          {
-            title: "8. Service Provider Terms",
-            items: [
-              "Service providers must be legally registered businesses or sole traders operating in Kenya.",
-              "Providers must maintain all required licenses, permits, and insurance for their services and for all mechanics they register on the platform.",
-              "Providers are responsible for the quality, safety, and accountability of all services performed by their registered mechanics.",
-              "Providers must ensure mechanics complete vehicle condition reports for all concierge, Shop Premium, and GO Service bookings.",
-              "Providers must honor confirmed bookings. Repeated cancellations may result in account suspension.",
-              "Parts pricing must reflect fair market value. Overpricing parts to inflate commissions may result in account termination.",
-              "Providers must not solicit customers to transact outside the platform to avoid commission fees.",
-              "For GO Service, providers who are marked online must maintain the ability to dispatch mechanics promptly. Accepting emergency requests without capability to dispatch may result in account suspension.",
-            ]
-          },
-          {
-            title: "9. Mechanic Terms",
-            items: [
-              "Mechanics are registered and managed by service providers. They are not independent contractors of Car Care Connect.",
-              "Mechanics must complete accurate vehicle condition reports at pickup and dropoff for all applicable service types.",
-              "Mechanics must not use customer vehicles for any purpose other than the assigned service.",
-              "Mechanics dispatched for GO Service must share their live location with customers during the service.",
-              "Mechanics must maintain professional conduct and treat all customer vehicles with due care.",
-            ]
-          },
-          {
-            title: "10. Driver Terms",
-            items: [
-              "Drivers must hold a valid Kenyan driver's license and maintain a clean driving record.",
-              "Drivers must maintain valid vehicle insurance and registration at all times.",
-              "Drivers receive 15% of the booking value for concierge delivery services.",
-              "Drivers must complete vehicle condition reports at pickup and dropoff for all concierge bookings.",
-              "Drivers must not use customer vehicles for any purpose other than the assigned delivery.",
-              "Drivers are independent contractors, not employees of Car Care Connect.",
-            ]
-          },
-          {
-            title: "11. Payments and Refunds",
-            items: [
-              "Payments are processed securely through Pesapal (regulated by the Central Bank of Kenya). Accepted methods include M-Pesa, Visa, and Mastercard.",
-              "Cash payments are accepted for Shop Standard and Shop Premium services but are NOT accepted for GO Service emergency requests.",
-              "Parts costs require customer approval before payment. Once approved, the updated total is charged.",
-              "Refund requests must be submitted within 7 days of service completion.",
-              "Refunds are reviewed within 5 business days. Approved refunds are processed within 7 business days.",
-              "Car Care Connect reserves the right to withhold payouts in cases of disputed transactions, vehicle condition disputes, or suspected fraud.",
-              "Loyalty points have no cash value and cannot be transferred between accounts.",
-            ]
-          },
-          {
-            title: "12. Marketplace Terms",
-            items: [
-              "Using the platform for any unlawful purpose or in violation of any local, national, or international law.",
-              "Harassing, threatening, or abusing other users, providers, drivers, or mechanics.",
-              "Filing false vehicle condition reports or mileage readings.",
-              "Submitting false GO Service emergency requests.",
-              "Posting false, misleading, or defamatory reviews or content.",
-              "Attempting to circumvent the platform's commission structure.",
-              "Using customer vehicles for unauthorized purposes.",
-              "Creating fake accounts, impersonating others, or providing false information.",
-              "Inflating parts prices to manipulate commission calculations.",
-            ]
-          },
-          {
-            title: "15. Limitation of Liability",
-            items: [
-              "Car Care Connect is a marketplace platform and is not liable for the quality, safety, or legality of services provided by third-party service providers, mechanics, and drivers.",
-              "We are not liable for any vehicle damage that occurs outside of documented vehicle condition reports. Disputes must follow our vehicle condition dispute process.",
-              "We are not liable for any indirect, incidental, special, or consequential damages arising from your use of the platform.",
-              "Our total liability to you for any claims arising from these terms shall not exceed the amount you paid to Car Care Connect in the 3 months preceding the claim.",
-              "We do not guarantee uninterrupted or error-free operation of the platform.",
-              "For GO Service emergencies, Car Care Connect facilitates dispatch but is not liable for delays caused by traffic, unavailability of providers, or force majeure events.",
-            ]
-          },
-          {
-            title: "16. Intellectual Property",
-            items: [
-              "The Car Care Connect name, logo, and platform design are our intellectual property. You may not use them without our written permission.",
-              "User-generated content (reviews, photos) remains your property, but you grant us a license to display it on the platform.",
-              "You may not copy, reproduce, or distribute platform content without permission.",
-            ]
-          },
-          {
-            title: "17. Governing Law and Disputes",
-            items: [
-              "These Terms of Service are governed by the laws of Kenya.",
-              "Any disputes shall first be attempted to be resolved through good-faith negotiation.",
-              "If negotiation fails, disputes shall be resolved through arbitration in Nairobi, Kenya in accordance with the Arbitration Act of Kenya.",
-              "Nothing in these terms prevents either party from seeking emergency injunctive relief from a court.",
-            ]
-          },
-          {
-            title: "18. Termination",
-            items: [
-              "You may terminate your account at any time by contacting us at carcareconnect254@gmail.com.",
-              "We may terminate or suspend your account immediately for violations of these terms.",
-              "Upon termination, your right to use the platform ceases immediately. Outstanding bookings and payments will be handled per our refund policy.",
-            ]
-          },
-          {
-            title: "19. Contact Information",
-            items: [],
-            contact: true
-          },
-          {
-            title: "20. Mechanic Portal and Sub-Accounts",
-            items: [
-              "Service providers may register mechanics as sub-accounts on the Car Care Connect platform. Each mechanic is assigned a unique mechanic code and accesses the platform at carcareconnect.care/mechanic-login using their phone number and a PIN set by their garage owner.",
-              "Mechanics are employees or contractors of the service provider, not independent contractors of Car Care Connect.",
-              "Service providers are fully responsible for the conduct, compliance, and performance of all mechanics they register on the platform.",
-              "Mechanics must upload valid identification documents (National ID, Driver's License, Certificate of Good Conduct, and Medical Certificate) through the mechanic portal. Documents are subject to verification by Car Care Connect administrators.",
-              "Unverified mechanics may not be dispatched for GO Service emergency requests.",
-              "Service providers must immediately deactivate mechanic accounts upon termination of employment or contract.",
-              "Mechanics must maintain live GPS location sharing with customers during all active GO Service and Shop Premium jobs.",
-            ]
-          },
-          {
-            title: "21. Marketplace Escrow and Buyer Protection",
-            items: [
-              "All marketplace transactions are processed through an escrow system. Funds are held by Car Care Connect until the buyer confirms receipt of the item.",
-              "Buyers have 48 hours after reported delivery to raise a dispute. After 48 hours without dispute, funds are automatically released to the seller.",
-              "Sellers may not receive payment until the buyer confirms receipt or the dispute period expires.",
-              "Car Care Connect acts as a neutral escrow agent and is not party to the transaction between buyer and seller.",
-              "In the event of a dispute, Car Care Connect will review evidence from both parties and make a final determination within 5 business days.",
-              "Fraudulent listings, misrepresentation of items, or refusal to deliver after payment may result in immediate account suspension and forfeiture of escrowed funds.",
-            ]
-          },
-          {
-            title: "22. GPS Location Data and Privacy",
-            items: [
-              "Car Care Connect collects GPS location data from drivers and mechanics during active service sessions to enable live tracking for customers.",
-              "Customer location data shared during bookings is used solely to facilitate service delivery and is accessible only to the assigned provider, mechanic, or driver.",
-              "Driver and mechanic location history is retained for 90 days for dispute resolution purposes and then permanently deleted.",
-              "Location data is never sold to third parties or used for advertising purposes.",
-              "Customers may optionally share their GPS location when making a booking to assist providers with navigation. This is voluntary and not required to complete a booking.",
-              "By using Car Care Connect, drivers and mechanics consent to GPS location sharing during active service sessions as a condition of platform participation.",
-            ]
-          },
-          {
-            title: "23. Cash Commission and Provider Obligations",
-            items: [
-              "For cash payment bookings, Car Care Connect tracks the platform commission owed by the service provider.",
-              "Cash commissions must be paid to Car Care Connect within 30 days of the completed booking.",
-              "Providers with overdue cash commission balances will receive automated warnings. After 3 unpaid commission cycles (strikes), the provider account will be automatically suspended.",
-              "Suspended providers may reinstate their account by paying all outstanding commission balances plus a KES 500 reinstatement fee.",
-              "Car Care Connect reserves the right to offset outstanding cash commissions against future online payment payouts.",
-              "Providers must maintain accurate records of all cash transactions and make these available to Car Care Connect upon request.",
-            ]
-          },
-          {
-            title: "24. Emergency Alerts and Safety Features",
-            items: [
-              "Car Care Connect provides emergency alert features for drivers (PANIC button) and mechanics (SOS button) accessible during active service sessions.",
-              "Activating the PANIC or SOS button sends an immediate alert to Car Care Connect administrators including the user's GPS coordinates.",
-              "These features are to be used only in genuine emergencies such as accidents, medical emergencies, or safety threats.",
-              "Car Care Connect will make reasonable efforts to respond to emergency alerts but is not a substitute for emergency services. In life-threatening situations, contact Police (999), Ambulance (0800 722 203), or other emergency services immediately.",
-              "Misuse of emergency alert features may result in account suspension.",
-              "Car Care Connect is not liable for outcomes arising from emergency situations but will cooperate fully with law enforcement and emergency services.",
-            ]
-          },
-          {
-            title: "25. Marketplace Social Features",
-            items: [
-              "Users may like, comment on, and share marketplace listings. These features are provided to facilitate genuine buyer-seller interaction.",
-              "Comments must be respectful, honest, and relevant to the listing. Spam, harassment, hate speech, and false information are strictly prohibited.",
-              "Car Care Connect administrators reserve the right to remove any comment or content that violates these terms without notice.",
-              "Repeated violations of community standards may result in account suspension or permanent ban from marketplace features.",
-              "Sellers may respond to comments on their listings. Seller responses are clearly marked to distinguish them from buyer comments.",
-              "Sharing listings via external platforms (WhatsApp, social media) is encouraged and permitted.",
-            ]
-          },
-        ].map(section=>(
-          <div key={section.title} style={{ marginBottom:"2.5rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000000", marginBottom:"1rem", paddingBottom:"0.5rem", borderBottom:"1px solid #eeeeee" }}>{section.title}</div>
-            {section.items.map((item,i)=>(
-              <div key={i} style={{ display:"flex", gap:12, marginBottom:10 }}>
-                <div style={{ width:6, height:6, borderRadius:"50%", background:"#e6821e", flexShrink:0, marginTop:7 }}/>
-                <div style={{ fontSize:13, color:"#555555", lineHeight:1.8 }}>{item}</div>
-              </div>
-            ))}
-            {section.contact&&(
-              <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem" }}>
-                {[
-                  { icon:"🏢", text:"Car Care Connect" },
-                  { icon:"📍", text:"Nairobi, Kenya" },
-                  { icon:"📧", text:"carcareconnect254@gmail.com" },
-                  { icon:"📞", text:"0113858966" },
-                ].map(c=>(
-                  <div key={c.text} style={{ display:"flex", gap:10, alignItems:"center", marginBottom:8, fontSize:13, color:"#555555" }}>
-                    <span>{c.icon}</span><span>{c.text}</span>
-                  </div>
-                ))}
-              </div>
-            )}
+        <Section title="2. Description of Service">
+          <div>Car Care Connect is a digital marketplace connecting vehicle owners with verified automotive service providers, mechanics, parts dealers, and concierge drivers in Nairobi, Kenya.</div>
+          <div style={{ marginTop:12 }}>We provide the platform and technology infrastructure but are not directly responsible for the quality of services provided by independent service providers, mechanics, and drivers. Car Care Connect is a marketplace facilitator, not a direct service provider.</div>
+          <div style={{ marginTop:12 }}>We reserve the right to modify, suspend, or discontinue any part of the service at any time with reasonable notice.</div>
+        </Section>
+
+        <Section title="3. Service Categories">
+          <Sub title="Shop Standard">Customer brings their vehicle to the provider&apos;s shop. Platform commission: 10%. Provider receives: 90% of the service fee.</Sub>
+          <Sub title="Shop Premium">Provider&apos;s mechanic travels to the customer&apos;s location. Platform commission: 20%. Provider receives: 80% of the service fee.</Sub>
+          <Sub title="GO Service (Emergency Roadside)">Provider dispatches a mechanic to the customer&apos;s breakdown location. Platform commission: 15%. Provider receives: 85% of the service fee. A non-refundable KES 500 callout fee is charged upfront (KES 425 to mechanic, KES 75 to platform).</Sub>
+          <Sub title="Concierge Driver Services">A platform driver picks up and delivers the customer&apos;s vehicle to a service provider. Earnings split: 15% platform, 70% provider, 15% driver.</Sub>
+          <Sub title="Parts and Materials">When providers supply parts as part of a booking, a 10% platform commission applies to the parts cost. Providers receive 90% of the parts value. Parts must be approved by the customer before being charged.</Sub>
+          <div style={{ marginTop:12, background:"#f8f8f8", borderRadius:8, padding:"0.75rem", fontSize:13, color:"#666" }}>Commission rates are configurable by platform administrators and are subject to change with 30 days notice to registered providers.</div>
+        </Section>
+
+        <Section title="4. GO Service (Emergency Roadside) Terms">
+          <Li>GO Service is available only through online payment (M-Pesa or card). Cash payments are not accepted for emergency services.</Li>
+          <Li>A non-refundable KES 500 callout fee is required before dispatch.</Li>
+          <Li>When a GO Service request is submitted, it is sent to available providers in sequence. Each provider has 10 minutes to accept.</Li>
+          <Li>If a provider does not respond within 10 minutes, the request is automatically forwarded to the next available provider.</Li>
+          <Li>After 6 unsuccessful dispatch attempts, the customer is notified that no providers are currently available and the callout fee is refunded.</Li>
+          <Li>Providers who are offline will not receive GO Service requests.</Li>
+          <Li>Providers who accept GO Service requests must dispatch a mechanic immediately. Accepting without capability to dispatch may result in account suspension.</Li>
+          <Li>Car Care Connect is not a substitute for emergency services. In life-threatening situations, contact Police (999) or Ambulance (0800 722 203) immediately.</Li>
+        </Section>
+
+        <Section title="5. Vehicle Condition Reports">
+          <div>For all concierge, Shop Premium, and GO Service bookings where a driver or mechanic takes custody of a customer&apos;s vehicle:</div>
+          <div style={{ marginTop:8 }}>
+            <Li>A pickup condition report must be completed before taking the vehicle</Li>
+            <Li>A dropoff condition report must be completed before returning the vehicle</Li>
+            <Li>Reports must include odometer reading, fuel level, and any pre-existing damage</Li>
+            <Li>Up to 6 photos may be uploaded per report to document vehicle condition</Li>
           </div>
-        ))}
+          <div style={{ marginTop:12 }}>If the odometer difference between pickup and dropoff exceeds 30km (or a customer-defined threshold), an automatic mileage alert is sent to the customer and platform administrators.</div>
+          <div style={{ marginTop:12 }}>Customers have 24 hours after service completion to raise a vehicle condition dispute. Disputes are reviewed by platform administrators within 5 business days. Filing false condition reports may result in immediate account termination and legal action.</div>
+        </Section>
+
+        <Section title="6. Marketplace — Buying and Selling">
+          <Sub title="Listing Approval">
+            <Li>All vehicle and parts listings require a CCC inspection before going live</Li>
+            <Li>A non-refundable inspection fee of KES 500 applies to each listing submission</Li>
+            <Li>Listings are reviewed and approved or rejected by CCC administrators after inspection</Li>
+            <Li>Only approved listings are visible to buyers in the marketplace</Li>
+          </Sub>
+          <Sub title="Featured Listings">
+            <Li>Sellers may promote listings with Standard or Premium featured placement</Li>
+            <Li>Premium listings appear above Standard listings in search results</Li>
+            <Li>Featured listing fees are charged per day, week, or month as selected</Li>
+            <Li>Featured listing fees are non-refundable once the promotion period has started</Li>
+          </Sub>
+          <Sub title="Escrow and Buyer Protection">
+            <Li>All marketplace transactions are processed through an escrow system</Li>
+            <Li>Funds are held by Car Care Connect until the buyer confirms receipt</Li>
+            <Li>Buyers have 48 hours after reported delivery to raise a dispute</Li>
+            <Li>After 48 hours without dispute, funds are automatically released to the seller</Li>
+            <Li>Car Care Connect acts as a neutral escrow agent and is not party to the transaction</Li>
+            <Li>In disputes, Car Care Connect will review evidence from both parties within 5 business days</Li>
+            <Li>Fraudulent listings, misrepresentation of items, or refusal to deliver may result in account suspension and forfeiture of escrowed funds</Li>
+          </Sub>
+          <Sub title="Marketplace Conduct">
+            <Li>Listings must be accurate, honestly described, and legally owned by the seller</Li>
+            <Li>Contact information may not be shared in listings, comments, or chats (the platform blocks this automatically)</Li>
+            <Li>Comments must be respectful, honest, and relevant to the listing</Li>
+            <Li>Spam, harassment, false information, and hate speech are strictly prohibited</Li>
+          </Sub>
+        </Section>
+
+        <Section title="7. Customer Terms">
+          <Li>Customers may browse, book, pay, track, and review services across all categories</Li>
+          <Li>Customers must provide accurate vehicle information and problem descriptions when booking</Li>
+          <Li>For Shop Premium and GO Service, customers must be reachable and provide accurate location</Li>
+          <Li>Cancellations made less than 24 hours before a scheduled appointment may be subject to cancellation fees at the provider&apos;s discretion</Li>
+          <Li>Reviews must be honest and based on actual service experiences. False or defamatory reviews are prohibited</Li>
+          <Li>Customers are responsible for ensuring their vehicle is accessible for pickup in concierge bookings</Li>
+          <Li>Customers earn loyalty points on completed bookings which may be redeemed for discounts per the loyalty programme terms</Li>
+        </Section>
+
+        <Section title="8. Service Provider Terms">
+          <Li>Service providers must be legally registered businesses or sole traders operating in Kenya</Li>
+          <Li>Providers must maintain all required licenses, permits, and insurance for their services</Li>
+          <Li>Providers are responsible for the quality, safety, and conduct of all mechanics they register</Li>
+          <Li>Providers must ensure mechanics complete vehicle condition reports for all applicable bookings</Li>
+          <Li>Providers must honor confirmed bookings. Repeated cancellations may result in account suspension</Li>
+          <Li>Parts pricing must reflect fair market value. Overpricing to inflate commissions may result in termination</Li>
+          <Li>Providers must not solicit customers to transact outside the platform to avoid commission fees</Li>
+          <Li>Cash commissions are due within 30 days of the completed booking. After 3 unpaid commission cycles, the provider account will be automatically suspended</Li>
+          <Li>Suspended providers may reinstate their account by paying all outstanding commissions plus a KES 500 reinstatement fee</Li>
+        </Section>
+
+        <Section title="9. Mechanic Sub-Accounts">
+          <Li>Service providers may register mechanics as sub-accounts on the platform</Li>
+          <Li>Each mechanic is assigned a unique mechanic code and accesses the platform via phone number and PIN</Li>
+          <Li>Mechanics must upload valid identification documents: National ID, Driver&apos;s License, Certificate of Good Conduct, and Medical Certificate</Li>
+          <Li>Documents are subject to verification by CCC administrators. Unverified mechanics may not be dispatched for GO Service</Li>
+          <Li>Service providers are fully responsible for the conduct and compliance of all their registered mechanics</Li>
+          <Li>Providers must immediately deactivate mechanic accounts upon termination of employment</Li>
+          <Li>Mechanics must maintain live GPS sharing with customers during all active GO Service and Shop Premium jobs</Li>
+          <Li>Mechanics must not use customer vehicles for any purpose other than the assigned service</Li>
+        </Section>
+
+        <Section title="10. Driver Terms and Vetting">
+          <Sub title="Eligibility">
+            <Li>Drivers must hold a valid Kenyan driver&apos;s license</Li>
+            <Li>Drivers must maintain valid vehicle insurance and registration</Li>
+            <Li>Drivers must pass the CCC driver vetting process before accepting jobs</Li>
+          </Sub>
+          <Sub title="Vetting Process">
+            <Li>Drivers must submit an application with personal details, vehicle information, and required documents</Li>
+            <Li>Required documents include: National ID, driver&apos;s license, vehicle logbook, insurance certificate, and Certificate of Good Conduct</Li>
+            <Li>Documents are reviewed by CCC administrators. Approved applicants must attend an in-person vetting appointment</Li>
+            <Li>New drivers are placed on a probation period during which their performance is monitored</Li>
+            <Li>Drivers who fail to meet performance standards during probation may be removed from the platform</Li>
+          </Sub>
+          <Sub title="Driver Obligations">
+            <Li>Drivers receive 15% of the booking value for concierge delivery services</Li>
+            <Li>Drivers must complete vehicle condition reports at pickup and dropoff for all concierge bookings</Li>
+            <Li>Drivers must not use customer vehicles for any purpose other than the assigned delivery</Li>
+            <Li>Drivers are independent contractors, not employees of Car Care Connect</Li>
+          </Sub>
+        </Section>
+
+        <Section title="11. Payments and Refunds">
+          <Sub title="Payment Methods">
+            <Li>Payments are processed securely through Pesapal, regulated by the Central Bank of Kenya</Li>
+            <Li>Accepted methods include M-Pesa, Visa, and Mastercard</Li>
+            <Li>Cash payments are accepted for Shop Standard and Shop Premium services only</Li>
+            <Li>GO Service emergency requests require online payment only</Li>
+          </Sub>
+          <Sub title="Refunds">
+            <Li>Refund requests must be submitted within 7 days of service completion</Li>
+            <Li>Refunds are reviewed by CCC administrators within 5 business days</Li>
+            <Li>Approved refunds are processed within 7 business days via the original payment method or M-Pesa</Li>
+            <Li>Refund amounts are determined case by case based on the circumstances</Li>
+            <Li>The KES 500 GO Service callout fee is non-refundable unless no provider was found after 6 dispatch attempts</Li>
+            <Li>The KES 500 marketplace inspection fee is non-refundable</Li>
+            <Li>Featured listing fees are non-refundable once the promotion period has started</Li>
+          </Sub>
+          <Sub title="Payouts to Providers and Drivers">
+            <Li>Providers and drivers may request payouts of their earned balance through the platform</Li>
+            <Li>Minimum payout amount is KES 500 (subject to change by platform administrators)</Li>
+            <Li>Payout requests are processed manually by CCC administrators within 2-3 business days</Li>
+            <Li>Providers and drivers must provide bank details, National ID, and KRA PIN for payout processing</Li>
+            <Li>For payments above KES 24,999, KRA withholding tax regulations apply</Li>
+            <Li>Car Care Connect reserves the right to withhold payouts in cases of disputed transactions or suspected fraud</Li>
+          </Sub>
+        </Section>
+
+        <Section title="12. Financial Data and KRA Compliance">
+          <div>Car Care Connect collects and stores the following financial and tax information from service providers and drivers for the purposes of payout processing and Kenya Revenue Authority compliance:</div>
+          <div style={{ marginTop:8 }}>
+            <Li>Bank name, account holder name, and account number</Li>
+            <Li>M-Pesa number for mobile money payouts</Li>
+            <Li>National ID number for identity verification</Li>
+            <Li>KRA PIN for tax compliance on payments above KES 24,999</Li>
+          </div>
+          <div style={{ marginTop:12 }}>This information is encrypted, access-restricted, and only used for payout processing and regulatory compliance. It is never shared with third parties outside of mandatory tax reporting obligations to the Kenya Revenue Authority.</div>
+        </Section>
+
+        <Section title="13. Loyalty Programme">
+          <Li>Customers earn loyalty points on completed and paid bookings</Li>
+          <Li>Points accumulate to Bronze, Silver, Gold, and Platinum membership tiers</Li>
+          <Li>Points may be redeemed for discounts on future bookings as determined by the platform</Li>
+          <Li>Loyalty points have no cash value and cannot be transferred between accounts</Li>
+          <Li>Car Care Connect reserves the right to modify or discontinue the loyalty programme with reasonable notice</Li>
+          <Li>Points earned fraudulently will be forfeited and the account may be suspended</Li>
+        </Section>
+
+        <Section title="14. Prohibited Conduct">
+          <div>The following are strictly prohibited on Car Care Connect:</div>
+          <div style={{ marginTop:8 }}>
+            <Li>Using the platform for any unlawful purpose or in violation of Kenyan law</Li>
+            <Li>Harassing, threatening, or abusing other users, providers, drivers, or mechanics</Li>
+            <Li>Filing false vehicle condition reports or mileage readings</Li>
+            <Li>Submitting false GO Service emergency requests</Li>
+            <Li>Posting false, misleading, or defamatory reviews or listings</Li>
+            <Li>Attempting to circumvent the platform commission structure by transacting directly</Li>
+            <Li>Using customer vehicles for unauthorized purposes</Li>
+            <Li>Creating fake accounts, impersonating others, or providing false information</Li>
+            <Li>Inflating parts prices to manipulate commission calculations</Li>
+            <Li>Sharing personal contact information in chats, listings, or comments</Li>
+            <Li>Misusing emergency PANIC or SOS alert features</Li>
+            <Li>Uploading fraudulent documents during driver vetting or mechanic onboarding</Li>
+          </div>
+          <div style={{ marginTop:12 }}>Violations may result in immediate account suspension, termination, forfeiture of earnings, and/or legal action depending on severity.</div>
+        </Section>
+
+        <Section title="15. Emergency Alerts and Safety">
+          <Li>Car Care Connect provides PANIC and SOS emergency alert buttons for drivers and mechanics during active sessions</Li>
+          <Li>Activating these buttons sends an immediate alert to CCC administrators including the user&apos;s GPS coordinates</Li>
+          <Li>Emergency alerts are to be used only in genuine emergencies such as accidents, medical emergencies, or safety threats</Li>
+          <Li>Car Care Connect will make reasonable efforts to respond to emergency alerts but is not a substitute for emergency services</Li>
+          <Li>In life-threatening situations, contact Police (999) or Ambulance (0800 722 203) immediately</Li>
+          <Li>Misuse of emergency alert features may result in account suspension</Li>
+          <Li>Car Care Connect is not liable for outcomes arising from emergency situations but will cooperate fully with law enforcement</Li>
+        </Section>
+
+        <Section title="16. GPS Location Data">
+          <Li>Car Care Connect collects GPS location from drivers and mechanics during active service sessions to enable live tracking for customers</Li>
+          <Li>Customer location shared during bookings is used solely to facilitate service delivery</Li>
+          <Li>Driver and mechanic location history is retained for 90 days for dispute resolution then permanently deleted</Li>
+          <Li>Location data is never sold to third parties or used for advertising</Li>
+          <Li>By using Car Care Connect, drivers and mechanics consent to GPS location sharing during active sessions as a condition of platform participation</Li>
+        </Section>
+
+        <Section title="17. Limitation of Liability">
+          <Li>Car Care Connect is a marketplace platform and is not liable for the quality, safety, or legality of services provided by third-party providers, mechanics, and drivers</Li>
+          <Li>We are not liable for vehicle damage that occurs outside of documented vehicle condition reports</Li>
+          <Li>We are not liable for any indirect, incidental, special, or consequential damages arising from your use of the platform</Li>
+          <Li>Our total liability for any claims shall not exceed the amount you paid to Car Care Connect in the 3 months preceding the claim</Li>
+          <Li>We do not guarantee uninterrupted or error-free operation of the platform</Li>
+          <Li>For GO Service, Car Care Connect facilitates dispatch but is not liable for delays caused by traffic, unavailability of providers, or force majeure events</Li>
+        </Section>
+
+        <Section title="18. Intellectual Property">
+          <Li>The Car Care Connect name, logo, and platform design are our intellectual property</Li>
+          <Li>You may not use our branding without written permission</Li>
+          <Li>User-generated content (reviews, photos, listings) remains your property, but you grant us a licence to display it on the platform</Li>
+          <Li>You may not copy, reproduce, or distribute platform content without permission</Li>
+        </Section>
+
+        <Section title="19. Governing Law and Disputes">
+          <Li>These Terms of Service are governed by the laws of Kenya</Li>
+          <Li>Any disputes shall first be attempted to be resolved through good-faith negotiation</Li>
+          <Li>If negotiation fails, disputes shall be resolved through arbitration in Nairobi, Kenya in accordance with the Arbitration Act of Kenya</Li>
+          <Li>Nothing in these terms prevents either party from seeking emergency injunctive relief from a court</Li>
+        </Section>
+
+        <Section title="20. Termination">
+          <Li>You may terminate your account at any time by contacting carcareconnect254@gmail.com</Li>
+          <Li>We may terminate or suspend your account immediately for violations of these terms</Li>
+          <Li>Upon termination, your right to use the platform ceases immediately</Li>
+          <Li>Outstanding bookings and payments will be handled per our refund policy</Li>
+          <Li>Account deletion requests are processed within 30 days per our Privacy Policy</Li>
+        </Section>
+
+        <Section title="21. Contact Information">
+          <div style={{ background:"#f8f8f8", borderRadius:10, padding:"1rem", marginTop:8 }}>
+            <Li>Platform: carcareconnect.care</Li>
+            <Li>Email: carcareconnect254@gmail.com</Li>
+            <Li>Phone: 0113858966</Li>
+            <Li>Location: Nairobi, Kenya</Li>
+          </div>
+          <div style={{ marginTop:12 }}>We aim to respond to all enquiries within 5 business days.</div>
+        </Section>
+
+        <div style={{ borderTop:"1px solid #eeeeee", paddingTop:"2rem", marginTop:"2rem", fontSize:13, color:"#999", textAlign:"center" }}>
+          &copy; 2026 Car Care Connect &mdash; Nairobi, Kenya &mdash; All rights reserved
+        </div>
       </div>
-
-      <footer style={{ borderTop:"1px solid #eeeeee", padding:"1.5rem 2rem", textAlign:"center" }}>
-        <div style={{ fontSize:11, color:"#555555" }}>© 2026 Car Care Connect · All rights reserved</div>
-      </footer>
     </div>
   )
 }
-
-
-
-
-
-
-
-
-
