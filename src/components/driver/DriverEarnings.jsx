@@ -26,8 +26,7 @@ export default function DriverEarnings() {
       supabase.from("bookings")
         .select("*, vehicles(make,model,license_plate)")
         .eq("driver_id", user.id)
-        .eq("status", "completed")
-        .order("created_at", { ascending:false }),
+        .eq("status", "completed").eq("is_archived", false).order("created_at", { ascending:false }),
       supabase.from("driver_expenses").select("*").eq("driver_id", user.id).order("expense_date",{ascending:false})
     ])
     setBookings(data||[])
@@ -281,7 +280,7 @@ export default function DriverEarnings() {
       )}
 
       {filtered.map(b=>{
-        const commission = Number(b.total_amount||0)*0.15
+        const commission = Number(b.driver_earnings||0) - Number(b.transport_allowance||200)
         const allowance = Number(b.transport_allowance||200)
         const total = Number(b.driver_earnings||0)
         return (
@@ -328,5 +327,6 @@ export default function DriverEarnings() {
     </div>
   )
 }
+
 
 
