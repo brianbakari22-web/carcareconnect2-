@@ -59,6 +59,12 @@ export default function AdminSettings() {
     min_payout_amount: "💰",
     go_callout_fee: "🚨",
     concierge_surcharge_rate: "🚗",
+    new_car_listing_fee: "🚗",
+    new_car_lead_fee: "💰",
+    new_car_featured_fee_day: "⭐",
+    new_car_featured_fee_week: "⭐",
+    new_car_featured_fee_month: "⭐",
+    new_car_listing_duration_days: "📅",
     marketplace_processing_fee_rate: "💳",
   }
 
@@ -135,3 +141,4 @@ export default function AdminSettings() {
     </div>
   )
 }
+
