@@ -483,7 +483,7 @@ function DriverStats({ driverId, isMobile }) {
   useEffect(() => {
     async function load() {
       const [{ data: bks }, { data: revs }, { data: pens }] = await Promise.all([
-        supabase.from("bookings").select("id,status,driver_earnings,transport_allowance,booking_date").eq("driver_id",driverId),
+        supabase.from("bookings").select("id,status,driver_earnings,transport_allowance,booking_date").eq("driver_id",driverId).eq("is_archived",false),
         supabase.from("reviews").select("driver_rating").eq("driver_id",driverId).not("driver_rating","is",null),
         supabase.from("driver_penalties").select("*").eq("driver_id",driverId).order("created_at",{ascending:false}),
       ])
@@ -528,6 +528,7 @@ function DriverStats({ driverId, isMobile }) {
     </div>
   )
 }
+
 
 
 
