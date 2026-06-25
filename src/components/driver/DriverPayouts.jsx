@@ -122,12 +122,22 @@ export default function DriverPayouts() {
           </div>
           {!bankSaved&&<div style={{ fontSize:12, color:"#e6821e", marginBottom:"1rem", background:"#fff8f0", borderRadius:8, padding:"0.75rem" }}>Add your bank details to request payouts</div>}
           <form onSubmit={saveBank}>
+            <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7530", borderRadius:8, padding:"0.75rem", marginBottom:12 }}>
+              <div style={{ fontSize:12, fontWeight:600, color:"#1d9e75", marginBottom:4 }}>🔒 Why we collect this information</div>
+              <div style={{ fontSize:11, color:"#555", lineHeight:1.6 }}>Your bank details, national ID and KRA PIN are required for secure payout processing and Kenya Revenue Authority (KRA) tax compliance. This information is encrypted and only accessible to CCC administrators for payment purposes. We never share your details with third parties.</div>
+            </div>
             <label style={lbl}>Bank name</label>
             <input style={inp} placeholder="e.g. Equity Bank, KCB, M-Pesa Paybill" value={bankInfo.bank_name} onChange={e=>setBankInfo(b=>({...b,bank_name:e.target.value}))} required/>
             <label style={lbl}>Account holder name</label>
             <input style={inp} placeholder="Full name as on account" value={bankInfo.bank_account_name} onChange={e=>setBankInfo(b=>({...b,bank_account_name:e.target.value}))} required/>
             <label style={lbl}>Account number / M-Pesa number</label>
             <input style={inp} placeholder="Account or phone number" value={bankInfo.bank_account_number} onChange={e=>setBankInfo(b=>({...b,bank_account_number:e.target.value}))} required/>
+            <label style={lbl}>M-Pesa number (for faster payouts)</label>
+            <input style={inp} placeholder="e.g. 0712345678" value={bankInfo.mpesa_number} onChange={e=>setBankInfo(b=>({...b,mpesa_number:e.target.value}))}/>
+            <label style={lbl}>National ID number *</label>
+            <input style={inp} placeholder="Your national ID number" value={bankInfo.id_number} onChange={e=>setBankInfo(b=>({...b,id_number:e.target.value}))} required/>
+            <label style={lbl}>KRA PIN (required for payouts above KES 24,999)</label>
+            <input style={inp} placeholder="e.g. A012345678B" value={bankInfo.kra_pin} onChange={e=>setBankInfo(b=>({...b,kra_pin:e.target.value}))}/>
             <button type="submit" disabled={savingBank}
               style={{ background:savingBank?"#ccc":"#e6821e", border:"none", borderRadius:9, color:savingBank?"#999":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:savingBank?"not-allowed":"pointer" }}>
               {savingBank?"Saving...":"Save bank details"}
