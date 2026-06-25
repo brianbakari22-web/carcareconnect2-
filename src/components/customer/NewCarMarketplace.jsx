@@ -33,6 +33,9 @@ export default function NewCarMarketplace() {
   const [enquiryForm, setEnquiryForm] = useState({ name:"", phone:"", email:"", message:"", enquiry_type:"general", preferred_contact:"phone" })
   const [submittingEnquiry, setSubmittingEnquiry] = useState(false)
   const [showEnquiry, setShowEnquiry] = useState(false)
+  const [showDealerReg, setShowDealerReg] = useState(false)
+  const [dealerForm, setDealerForm] = useState({ showroom_name:"", showroom_location:"", showroom_phone:"", showroom_email:"", business_registration:"", brands_sold:"", monthly_stock:"", website_url:"" })
+  const [submittingDealer, setSubmittingDealer] = useState(false)
   const featuredRef = useRef(null)
 
   useEffect(() => { load() }, [])
@@ -77,6 +80,39 @@ export default function NewCarMarketplace() {
       setEnquiryForm({ name:"", phone:"", email:"", message:"", enquiry_type:"general", preferred_contact:"phone" })
     } catch(e) { toast.error(e.message) }
     finally { setSubmittingEnquiry(false) }
+  }
+
+  async function submitDealerApplication() {
+    if (!dealerForm.showroom_name||!dealerForm.showroom_location||!dealerForm.showroom_phone) return toast.error("Showroom name, location and phone required")
+    if (!user) return toast.error("Please login to register as a dealer")
+    setSubmittingDealer(true)
+    try {
+      await supabase.from("dealer_applications").insert({
+        user_id: user.id,
+        showroom_name: dealerForm.showroom_name,
+        showroom_location: dealerForm.showroom_location,
+        showroom_phone: dealerForm.showroom_phone,
+        showroom_email: dealerForm.showroom_email||null,
+        business_registration: dealerForm.business_registration||null,
+        brands_sold: dealerForm.brands_sold ? dealerForm.brands_sold.split(",").map(b=>b.trim()).filter(Boolean) : [],
+        monthly_stock: dealerForm.monthly_stock ? Number(dealerForm.monthly_stock) : null,
+        website_url: dealerForm.website_url||null,
+      })
+      // Notify admin
+      const { data: admins } = await supabase.from("profiles").select("id").eq("role","admin").limit(1)
+      if (admins?.[0]) {
+        await supabase.from("notifications").insert({
+          user_id: admins[0].id,
+          title: "New dealer application! 🏢",
+          message: `${dealerForm.showroom_name} from ${dealerForm.showroom_location} has applied to list cars on CCC. Phone: ${dealerForm.showroom_phone}`,
+          type: "info"
+        })
+      }
+      toast.success("Application submitted! We will contact you within 24 hours.")
+      setShowDealerReg(false)
+      setDealerForm({ showroom_name:"", showroom_location:"", showroom_phone:"", showroom_email:"", business_registration:"", brands_sold:"", monthly_stock:"", website_url:"" })
+    } catch(e) { toast.error(e.message) }
+    finally { setSubmittingDealer(false) }
   }
 
   async function incrementView(car) {
@@ -427,11 +463,78 @@ export default function NewCarMarketplace() {
       <div style={{ marginTop:"2rem", background:"linear-gradient(135deg,#fff8f0,#e6821e10)", border:"1px solid #e6821e30", borderRadius:16, padding:"1.5rem", textAlign:"center" }}>
         <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000", marginBottom:6 }}>Are you a car dealer? 🏢</div>
         <div style={{ fontSize:13, color:"#555", marginBottom:"1rem", lineHeight:1.6 }}>List your vehicles on CCC and reach thousands of car buyers in Nairobi. KES 2,000/month per dealership.</div>
-        <button onClick={()=>toast("Contact carcareconnect254@gmail.com to register as a dealer!", { duration:5000, icon:"📧" })}
+        <button onClick={()=>setShowDealerReg(true)}
           style={{ background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:"pointer" }}>
           Register as a Dealer →
         </button>
       </div>
+
+      {/* Dealer Registration Modal */}
+      {showDealerReg&&(
+        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.6)", zIndex:1000, display:"flex", alignItems:"center", justifyContent:"center", padding:"1rem" }}>
+          <div style={{ background:"#ffffff", borderRadius:16, padding:"1.5rem", width:"100%", maxWidth:480, maxHeight:"90vh", overflowY:"auto" }}>
+            <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000", marginBottom:4 }}>Register as a Car Dealer 🏢</div>
+            <div style={{ fontSize:12, color:"#777", marginBottom:"1.25rem" }}>Fill in your showroom details and we will contact you within 24 hours to activate your account.</div>
+
+            <div style={{ marginBottom:10 }}>
+              <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", display:"block", marginBottom:4 }}>Showroom name *</label>
+              <input value={dealerForm.showroom_name} onChange={e=>setDealerForm(f=>({...f,showroom_name:e.target.value}))} placeholder="e.g. Toyota Kenya Westlands"
+                style={{ width:"100%", background:"#f8f8f8", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", fontSize:13, outline:"none", fontFamily:"DM Sans,sans-serif" }}/>
+            </div>
+            <div style={{ marginBottom:10 }}>
+              <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", display:"block", marginBottom:4 }}>Location *</label>
+              <input value={dealerForm.showroom_location} onChange={e=>setDealerForm(f=>({...f,showroom_location:e.target.value}))} placeholder="e.g. Westlands, Nairobi"
+                style={{ width:"100%", background:"#f8f8f8", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", fontSize:13, outline:"none", fontFamily:"DM Sans,sans-serif" }}/>
+            </div>
+            <div style={{ marginBottom:10 }}>
+              <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", display:"block", marginBottom:4 }}>Phone number *</label>
+              <input type="tel" value={dealerForm.showroom_phone} onChange={e=>setDealerForm(f=>({...f,showroom_phone:e.target.value}))} placeholder="0712 345 678"
+                style={{ width:"100%", background:"#f8f8f8", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", fontSize:13, outline:"none", fontFamily:"DM Sans,sans-serif" }}/>
+            </div>
+            <div style={{ marginBottom:10 }}>
+              <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", display:"block", marginBottom:4 }}>Email</label>
+              <input type="email" value={dealerForm.showroom_email} onChange={e=>setDealerForm(f=>({...f,showroom_email:e.target.value}))} placeholder="showroom@dealer.co.ke"
+                style={{ width:"100%", background:"#f8f8f8", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", fontSize:13, outline:"none", fontFamily:"DM Sans,sans-serif" }}/>
+            </div>
+            <div style={{ marginBottom:10 }}>
+              <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", display:"block", marginBottom:4 }}>Business registration number</label>
+              <input value={dealerForm.business_registration} onChange={e=>setDealerForm(f=>({...f,business_registration:e.target.value}))} placeholder="e.g. CPR/2021/123456"
+                style={{ width:"100%", background:"#f8f8f8", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", fontSize:13, outline:"none", fontFamily:"DM Sans,sans-serif" }}/>
+            </div>
+            <div style={{ marginBottom:10 }}>
+              <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", display:"block", marginBottom:4 }}>Brands you sell (comma separated)</label>
+              <input value={dealerForm.brands_sold} onChange={e=>setDealerForm(f=>({...f,brands_sold:e.target.value}))} placeholder="e.g. Toyota, Mazda, Suzuki"
+                style={{ width:"100%", background:"#f8f8f8", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", fontSize:13, outline:"none", fontFamily:"DM Sans,sans-serif" }}/>
+            </div>
+            <div style={{ marginBottom:10 }}>
+              <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", display:"block", marginBottom:4 }}>Average monthly stock (number of cars)</label>
+              <input type="number" value={dealerForm.monthly_stock} onChange={e=>setDealerForm(f=>({...f,monthly_stock:e.target.value}))} placeholder="e.g. 20"
+                style={{ width:"100%", background:"#f8f8f8", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", fontSize:13, outline:"none", fontFamily:"DM Sans,sans-serif" }}/>
+            </div>
+            <div style={{ marginBottom:"1.25rem" }}>
+              <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", display:"block", marginBottom:4 }}>Website (optional)</label>
+              <input value={dealerForm.website_url} onChange={e=>setDealerForm(f=>({...f,website_url:e.target.value}))} placeholder="https://yourshowroom.co.ke"
+                style={{ width:"100%", background:"#f8f8f8", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", fontSize:13, outline:"none", fontFamily:"DM Sans,sans-serif" }}/>
+            </div>
+
+            <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:8, padding:"0.75rem", marginBottom:"1.25rem" }}>
+              <div style={{ fontSize:11, color:"#e6821e", fontWeight:600, marginBottom:4 }}>💳 Listing fee: KES 2,000/month</div>
+              <div style={{ fontSize:11, color:"#555", lineHeight:1.6 }}>After approval, you will pay KES 2,000/month to list unlimited cars. Our team will contact you within 24 hours to complete onboarding.</div>
+            </div>
+
+            <div style={{ display:"flex", gap:8 }}>
+              <button onClick={submitDealerApplication} disabled={submittingDealer}
+                style={{ flex:2, background:submittingDealer?"#ccc":"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:submittingDealer?"not-allowed":"pointer" }}>
+                {submittingDealer?"Submitting...":"Submit Application"}
+              </button>
+              <button onClick={()=>setShowDealerReg(false)}
+                style={{ flex:1, background:"none", border:"1px solid #ddd", borderRadius:10, color:"#777", fontSize:13, padding:"13px", cursor:"pointer" }}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
