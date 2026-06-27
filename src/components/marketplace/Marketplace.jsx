@@ -382,16 +382,24 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
   const existingOffer = offers?.find(o=>o.status==="pending"||o.status==="countered")
 
   if (showChat) return (
-    <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.7)", zIndex:200, display:"flex", alignItems:"flex-end", justifyContent:"center" }}>
-      <div style={{ width:"100%", maxWidth:500, background:"#fff", borderRadius:"16px 16px 0 0", height:"70vh", display:"flex", flexDirection:"column", overflow:"hidden" }}>
-        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"1rem", borderBottom:"1px solid #eee", flexShrink:0 }}>
-          <div>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#000" }}>{listing.title}</div>
-            <div style={{ fontSize:11, color:"#888" }}>Chat with {sellerInfo?.business_name||sellerInfo?.first_name||"Seller"}</div>
-          </div>
-          <button onClick={()=>setShowChat(false)} style={{ background:"#f5f5f5", border:"none", borderRadius:"50%", width:32, height:32, cursor:"pointer", fontSize:18 }}>×</button>
+    <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.5)", zIndex:200, display:"flex", flexDirection:"column", justifyContent:"flex-end" }} onClick={()=>setShowChat(false)}>
+      <div style={{ width:"100%", background:"#fff", borderRadius:"20px 20px 0 0", height:"85vh", display:"flex", flexDirection:"column", overflow:"hidden", boxShadow:"0 -8px 32px rgba(0,0,0,0.15)" }} onClick={e=>e.stopPropagation()}>
+        <div style={{ display:"flex", justifyContent:"center", padding:"10px 0 0" }}>
+          <div style={{ width:36, height:4, borderRadius:2, background:"#e0e0e0" }}/>
         </div>
-        <div style={{ flex:1, minHeight:0 }}>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0.75rem 1rem", borderBottom:"1px solid #f0f0f0", flexShrink:0 }}>
+          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+            <div style={{ width:40, height:40, borderRadius:"50%", background:"linear-gradient(135deg,#e6821e,#f09840)", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#fff", flexShrink:0 }}>
+              {(sellerInfo?.business_name||sellerInfo?.first_name||"S")?.[0]?.toUpperCase()}
+            </div>
+            <div>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#000" }}>{sellerInfo?.business_name||sellerInfo?.first_name||"Seller"}</div>
+              <div style={{ fontSize:11, color:"#888" }}>Re: {listing.title?.substring(0,30)}{listing.title?.length>30?"...":""}</div>
+            </div>
+          </div>
+          <button onClick={()=>setShowChat(false)} style={{ background:"#f5f5f5", border:"none", borderRadius:"50%", width:34, height:34, cursor:"pointer", fontSize:18, display:"flex", alignItems:"center", justifyContent:"center", color:"#555" }}>×</button>
+        </div>
+        <div style={{ flex:1, minHeight:0, display:"flex", flexDirection:"column" }}>
           <ChatWindow
             listingId={listing.id}
             otherUserId={listing.seller_id}

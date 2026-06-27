@@ -238,62 +238,95 @@ export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, 
   }
 
   return (
-    <div style={{ display:"flex", flexDirection:"column", height:"100%", minHeight:320, background:"#ffffff", borderRadius:12, border:"1px solid #e5e5e5", overflow:"hidden" }}>
-      <div style={{ padding:"1rem", borderBottom:"1px solid #eeeeee", display:"flex", alignItems:"center", justifyContent:"space-between", background:"#ffffff", flexShrink:0 }}>
+    <div style={{ display:"flex", flexDirection:"column", height:"100%", background:"#f5f5f5", overflow:"hidden" }}>
+
+      {/* Header */}
+      <div style={{ padding:"0.85rem 1rem", background:"linear-gradient(135deg,#e6821e,#f09840)", display:"flex", alignItems:"center", justifyContent:"space-between", flexShrink:0 }}>
         <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-          <div style={{ width:36, height:36, borderRadius:"50%", background:"#fff8f0", border:"1px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>
+          <div style={{ width:36, height:36, borderRadius:"50%", background:"rgba(255,255,255,0.25)", border:"2px solid rgba(255,255,255,0.5)", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#fff", flexShrink:0 }}>
             {otherUserName?.[0]?.toUpperCase()||"?"}
           </div>
           <div>
-            <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{otherUserName}</div>
-            <div style={{ fontSize:10, color:otherTyping?"#1d9e75":"#555", transition:"color 0.2s" }}>
-              {otherTyping?"typing...":claimId?"Claim investigation":listingId?"Marketplace chat":"Chat"}
+            <div style={{ fontSize:14, fontWeight:700, color:"#fff", fontFamily:"Syne" }}>{otherUserName}</div>
+            <div style={{ fontSize:10, color:"rgba(255,255,255,0.8)" }}>
+              {otherTyping?"✍️ typing...":claimId?"🛡️ Claim chat":listingId?"🛒 Marketplace chat":"💬 Booking chat"}
             </div>
           </div>
         </div>
         {onClose&&(
-          <button onClick={onClose} style={{ background:"none", border:"none", color:"#777777", fontSize:20, cursor:"pointer", lineHeight:1, padding:"4px" }}>×</button>
+          <button onClick={onClose} style={{ background:"rgba(255,255,255,0.2)", border:"none", borderRadius:"50%", width:32, height:32, color:"#fff", fontSize:18, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>×</button>
         )}
       </div>
 
-      <div style={{ flex:1, overflowY:"auto", padding:"1rem", display:"flex", flexDirection:"column", gap:8, maxHeight:"calc(100% - 120px)", minHeight:200 }}>
+      {/* Contact filter notice */}
+      <div style={{ background:"#fff8f0", borderBottom:"1px solid #e6821e20", padding:"4px 12px", flexShrink:0 }}>
+        <span style={{ fontSize:10, color:"#e6821e" }}>🔒 Contact info is automatically removed to protect both parties</span>
+      </div>
+
+      {/* Messages - scrollable */}
+      <div style={{ flex:1, overflowY:"auto", padding:"1rem", display:"flex", flexDirection:"column", gap:4, WebkitOverflowScrolling:"touch" }}>
         {messages.length===0&&(
-          <div style={{ textAlign:"center", color:"#888888", fontSize:12, padding:"2rem" }}>
-            <div style={{ fontSize:28, marginBottom:8 }}>💬</div>
-            No messages yet. Start the conversation!
+          <div style={{ textAlign:"center", color:"#888", fontSize:12, padding:"3rem 1rem", display:"flex", flexDirection:"column", alignItems:"center", gap:8 }}>
+            <div style={{ fontSize:40 }}>💬</div>
+            <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#555" }}>Start the conversation</div>
+            <div style={{ fontSize:11, color:"#aaa", lineHeight:1.6 }}>Ask about availability, pricing or service details</div>
           </div>
         )}
-        {messages.map(m=>{
+        {messages.map((m,idx)=>{
           const isMine = m.sender_id===effectiveUserId
+          const prevMsg = messages[idx-1]
+          const showTime = !prevMsg || new Date(m.created_at)-new Date(prevMsg.created_at)>5*60*1000
           return (
-            <div key={m.id} style={{ display:"flex", justifyContent:isMine?"flex-end":"flex-start", alignItems:"flex-end", gap:4 }}>
-              {isMine&&!m._pending&&(
-                <button onClick={()=>deleteMessage(m.id)} style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:6, color:"#e24b4a", cursor:"pointer", fontSize:11, padding:"3px 7px", lineHeight:1, flexShrink:0 }} title="Delete">🗑</button>
-              )}
-              <div style={{ maxWidth:"75%", padding:"10px 14px", borderRadius:isMine?"14px 14px 4px 14px":"14px 14px 14px 4px", background:isMine?"#e6821e":"#ffffff", color:isMine?"#fff":"#000000", fontSize:13, lineHeight:1.5, opacity:m._pending?0.7:1, transition:"opacity 0.2s" }}>
-                <div style={{ wordBreak:"break-word" }}>{m.message}</div>
-                <div style={{ fontSize:9, opacity:0.6, marginTop:4, textAlign:isMine?"right":"left", display:"flex", alignItems:"center", justifyContent:isMine?"flex-end":"flex-start", gap:4 }}>
+            <div key={m.id}>
+              {showTime&&(
+                <div style={{ textAlign:"center", fontSize:9, color:"#aaa", margin:"8px 0 4px" }}>
                   {new Date(m.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}
-                  {isMine&&<span>{m._pending?"⏳":m.is_read?"✓✓":"✓"}</span>}
+                </div>
+              )}
+              <div style={{ display:"flex", justifyContent:isMine?"flex-end":"flex-start", alignItems:"flex-end", gap:6, marginBottom:2 }}>
+                {!isMine&&(
+                  <div style={{ width:26, height:26, borderRadius:"50%", background:"#e6821e20", display:"flex", alignItems:"center", justifyContent:"center", fontSize:10, fontWeight:700, color:"#e6821e", flexShrink:0 }}>
+                    {otherUserName?.[0]?.toUpperCase()||"?"}
+                  </div>
+                )}
+                <div style={{ maxWidth:"72%", display:"flex", flexDirection:"column", alignItems:isMine?"flex-end":"flex-start" }}>
+                  <div style={{ padding:"10px 14px", borderRadius:isMine?"18px 18px 4px 18px":"18px 18px 18px 4px", background:isMine?"linear-gradient(135deg,#e6821e,#f09840)":"#ffffff", color:isMine?"#fff":"#000", fontSize:13, lineHeight:1.6, opacity:m._pending?0.6:1, boxShadow:isMine?"0 2px 8px rgba(230,130,30,0.25)":"0 1px 3px rgba(0,0,0,0.08)", wordBreak:"break-word" }}>
+                    {m.message}
+                  </div>
+                  <div style={{ display:"flex", alignItems:"center", gap:4, marginTop:2 }}>
+                    {!showTime&&<span style={{ fontSize:9, color:"#bbb" }}>{new Date(m.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}</span>}
+                    {isMine&&<span style={{ fontSize:9, color:m.is_read?"#1d9e75":"#bbb" }}>{m._pending?"⏳":m.is_read?"✓✓":"✓"}</span>}
+                    {isMine&&!m._pending&&(
+                      <button onClick={()=>deleteMessage(m.id)} style={{ background:"none", border:"none", color:"#ddd", cursor:"pointer", fontSize:10, padding:"0 2px" }}>🗑</button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           )
         })}
         {otherTyping&&(
-          <div style={{ display:"flex", justifyContent:"flex-start" }}>
-            <div style={{ padding:"10px 14px", borderRadius:"14px 14px 14px 4px", background:"#f5f5f5", color:"#777777", fontSize:20, letterSpacing:4 }}>•••</div>
+          <div style={{ display:"flex", alignItems:"flex-end", gap:6 }}>
+            <div style={{ width:26, height:26, borderRadius:"50%", background:"#e6821e20", display:"flex", alignItems:"center", justifyContent:"center", fontSize:10, fontWeight:700, color:"#e6821e" }}>
+              {otherUserName?.[0]?.toUpperCase()||"?"}
+            </div>
+            <div style={{ padding:"10px 14px", borderRadius:"18px 18px 18px 4px", background:"#ffffff", boxShadow:"0 1px 3px rgba(0,0,0,0.08)", display:"flex", gap:3, alignItems:"center" }}>
+              <div style={{ width:6, height:6, borderRadius:"50%", background:"#e6821e", opacity:0.5 }}/>
+              <div style={{ width:6, height:6, borderRadius:"50%", background:"#e6821e", opacity:0.7 }}/>
+              <div style={{ width:6, height:6, borderRadius:"50%", background:"#e6821e", opacity:1 }}/>
+            </div>
           </div>
         )}
         <div ref={bottomRef}/>
       </div>
 
-      <form onSubmit={send} style={{ padding:"0.75rem", borderTop:"1px solid #eeeeee", display:"flex", gap:8, background:"#ffffff", flexShrink:0 }}>
+      {/* Input */}
+      <form onSubmit={send} style={{ padding:"0.75rem", borderTop:"1px solid #e0e0e0", display:"flex", gap:8, background:"#ffffff", flexShrink:0, alignItems:"flex-end" }}>
         <textarea value={text} onChange={e=>setText(e.target.value)} onKeyDown={handleKeyDown}
-          placeholder={t("typeMessage")} rows={1}
-          style={{ flex:1, background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:10, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", resize:"none", lineHeight:1.4, maxHeight:100 }}/>
+          placeholder="Type a message..." rows={1}
+          style={{ flex:1, background:"#f8f8f8", border:"1px solid #e5e5e5", borderRadius:20, padding:"10px 16px", color:"#000", fontSize:13, outline:"none", fontFamily:"DM Sans,sans-serif", resize:"none", lineHeight:1.5, maxHeight:80, WebkitOverflowScrolling:"touch" }}/>
         <button type="submit" disabled={!text.trim()||sending}
-          style={{ background:text.trim()&&!sending?"#e6821e":"#f5f5f5", border:"none", borderRadius:10, color:text.trim()&&!sending?"#fff":"#555", fontSize:18, padding:"0 16px", cursor:text.trim()&&!sending?"pointer":"default", flexShrink:0, transition:"all 0.12s" }}>
+          style={{ background:text.trim()&&!sending?"linear-gradient(135deg,#e6821e,#f09840)":"#f0f0f0", border:"none", borderRadius:"50%", width:42, height:42, color:text.trim()&&!sending?"#fff":"#aaa", fontSize:18, cursor:text.trim()&&!sending?"pointer":"default", flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", boxShadow:text.trim()&&!sending?"0 2px 8px rgba(230,130,30,0.35)":"none", transition:"all 0.15s" }}>
           ➤
         </button>
       </form>
