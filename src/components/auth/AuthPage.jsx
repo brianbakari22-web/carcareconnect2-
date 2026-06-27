@@ -1,4 +1,4 @@
-﻿import useIsMobile from "../../lib/useIsMobile"
+import useIsMobile from "../../lib/useIsMobile"
 import { useState, useEffect } from "react"
 import { Capacitor } from "@capacitor/core"
 
@@ -518,6 +518,7 @@ export default function AuthPage() {
     </div>
   )
 }
+
 
 
 
