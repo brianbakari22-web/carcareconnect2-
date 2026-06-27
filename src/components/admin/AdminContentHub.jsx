@@ -47,6 +47,7 @@ export default function AdminContentHub() {
   const [platform, setPlatform] = useState("whatsapp")
   const [caption, setCaption] = useState("")
   const [downloading, setDownloading] = useState(false)
+  const [selectedPhoto, setSelectedPhoto] = useState(null)
   const [search, setSearch] = useState("")
   const [campaign, setCampaign] = useState("")
   const [campaigns, setCampaigns] = useState([])
@@ -88,6 +89,7 @@ export default function AdminContentHub() {
 
   function selectItem(item) {
     setSelected(item)
+    setSelectedPhoto(item._photos?.[0]||null)
     setCaption(generateCaption(item, platform, item._type))
   }
 
@@ -154,14 +156,15 @@ export default function AdminContentHub() {
       ctx.fillText("Nairobi's #1 Automotive Marketplace", 40, 120)
 
       // Load and draw photo if available
-      if (item._photos?.[0]) {
+      const photoToUse = selectedPhoto || item._photos?.[0]
+      if (photoToUse) {
         try {
           const img = new Image()
           img.crossOrigin = "anonymous"
           await new Promise((res, rej) => {
             img.onload = res
             img.onerror = rej
-            img.src = item._photos[0]
+            img.src = photoToUse
           })
           ctx.drawImage(img, 0, 160, 1080, 600)
         } catch(e) {
@@ -392,13 +395,16 @@ export default function AdminContentHub() {
               {/* Photo downloads */}
               {selected._photos?.length>0&&(
                 <div style={{ marginBottom:"1rem" }}>
-                  <div style={{ fontSize:11, color:"#666", marginBottom:6 }}>📷 Download Photos ({selected._photos.length})</div>
-                  <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                  <div style={{ fontSize:11, color:"#666", marginBottom:6 }}>📷 Photos ({selected._photos.length}) — tap to select for card</div>
+                  <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:6 }}>
                     {selected._photos.map((p,i)=>(
-                      <div key={i} style={{ position:"relative" }}>
-                        <img src={p} alt="" style={{ width:60, height:60, objectFit:"cover", borderRadius:6, border:"1px solid #eee" }}/>
-                        <button onClick={()=>downloadPhoto(p, `CCC-photo-${i+1}.jpg`)}
-                          style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.5)", border:"none", borderRadius:6, color:"#fff", fontSize:16, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                      <div key={i} style={{ position:"relative", cursor:"pointer" }} onClick={()=>setSelectedPhoto(p)}>
+                        <img src={p} alt="" style={{ width:64, height:64, objectFit:"cover", borderRadius:6, border:`2px solid ${selectedPhoto===p?"#e6821e":"#eee"}` }}/>
+                        {selectedPhoto===p&&(
+                          <div style={{ position:"absolute", top:2, right:2, background:"#e6821e", borderRadius:"50%", width:16, height:16, display:"flex", alignItems:"center", justifyContent:"center", fontSize:9, color:"#fff", fontWeight:700 }}>✓</div>
+                        )}
+                        <button onClick={e=>{ e.stopPropagation(); downloadPhoto(p, `CCC-photo-${i+1}.jpg`) }}
+                          style={{ position:"absolute", bottom:0, left:0, right:0, background:"rgba(0,0,0,0.6)", border:"none", borderRadius:"0 0 6px 6px", color:"#fff", fontSize:9, cursor:"pointer", padding:"2px" }}>
                           ⬇
                         </button>
                       </div>
@@ -408,6 +414,9 @@ export default function AdminContentHub() {
                       ⬇ All
                     </button>
                   </div>
+                  {selectedPhoto&&(
+                    <div style={{ fontSize:10, color:"#e6821e" }}>✓ Selected photo will be used for branded card</div>
+                  )}
                 </div>
               )}
 
