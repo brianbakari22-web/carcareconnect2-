@@ -110,10 +110,43 @@ export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, 
     channelRef.current.send({ type:"broadcast", event:"typing", payload:{ userId:effectiveUserId } }).catch(()=>{})
   }
 
+  // Filter out contact info from messages
+  function filterContactInfo(text) {
+    let filtered = text
+    // Phone numbers - Kenyan and international formats
+    filtered = filtered.replace(/(?:\+?254|0)[17]\d{8}/g, "[contact info removed]")
+    filtered = filtered.replace(/(?:\+?\d{1,3}[-.\s]?)?(?:\(?\d{3}\)?[-.\s]?)\d{3}[-.\s]?\d{4}/g, "[contact info removed]")
+    // Email addresses
+    filtered = filtered.replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, "[contact info removed]")
+    // WhatsApp mentions
+    filtered = filtered.replace(/whatsapp\s*:?\s*[\d+\s()-]{7,}/gi, "[contact info removed]")
+    // Social media handles with contact intent
+    filtered = filtered.replace(/(?:call|text|whatsapp|wa\.me|t\.me|telegram|snapchat|instagram|ig|fb|facebook)\s*(?:me|us)?\s*(?:at|on|@|:)?\s*[\w.@+\d-]{3,}/gi, "[contact info removed]")
+    // Explicit contact sharing attempts
+    filtered = filtered.replace(/(?:my\s+(?:number|phone|contact|whatsapp|email|line)\s*(?:is|:)?\s*)[\w.@+\d\s()-]{5,}/gi, "[contact info removed]")
+    return filtered
+  }
+
+  function hasContactInfo(text) {
+    const patterns = [
+      /(?:\+?254|0)[17]\d{8}/,
+      /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/,
+      /whatsapp\s*:?\s*[\d+\s()-]{7,}/i,
+      /(?:call|text|whatsapp|wa\.me|telegram)\s*(?:me|us)?\s*(?:at|on|@|:)?\s*[\w.@+\d-]{3,}/i,
+      /(?:my\s+(?:number|phone|contact|whatsapp|email)\s*(?:is|:)?\s*)[\w.@+\d\s()-]{5,}/i,
+    ]
+    return patterns.some(p => p.test(text))
+  }
+
   async function send(e) {
     e.preventDefault()
     if (!text.trim() || sending) return
-    const messageText = text.trim()
+    const rawText = text.trim()
+    const messageText = filterContactInfo(rawText)
+    const wasFiltered = messageText !== rawText
+    if (wasFiltered) {
+      toast("📵 Contact info removed — share details only after booking is confirmed", { icon:"⚠️", duration:5000 })
+    }
     const tempId = `temp-${Date.now()}`
     setText("")
     setSending(true)
@@ -159,7 +192,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, 
       await supabase.from("notifications").insert({
         user_id: otherUserId,
         title: "New message \uD83D\uDCAC",
-        message: messageText.length > 80 ? messageText.slice(0, 80) + "..." : messageText,
+        message: hasContactInfo(messageText) ? "New message received" : messageText.length > 80 ? messageText.slice(0, 80) + "..." : messageText,
         type: "info"
       })
     } catch(_) { /* notification send failed - non-critical */ }
