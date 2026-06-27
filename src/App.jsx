@@ -165,6 +165,7 @@ import AdminSystemDiagnostics from "./components/admin/AdminSystemDiagnostics"
 import AdminCommissions from "./components/admin/AdminCommissions"
 import AdminSettings from "./components/admin/AdminSettings"
 import AdminQRCode from "./components/admin/AdminQRCode"
+import AdminContentHub from "./components/admin/AdminContentHub"
 import AdminNewCars from "./components/admin/AdminNewCars"
 import NewCarMarketplace from "./components/customer/NewCarMarketplace"
 import MyNewCarListings from "./components/customer/MyNewCarListings"
@@ -361,6 +362,7 @@ function AdminDashboardRouter() {
           <Route path="commissions" element={<AdminCommissions />} />
           <Route path="settings" element={<AdminSettings />} />
               <Route path="qrcode" element={<AdminQRCode />} />
+              <Route path="content-hub" element={<AdminContentHub />} />
               <Route path="new-cars" element={<AdminNewCars />} />
           <Route path="driver-vetting" element={<AdminDriverVetting />} />
           <Route path="payment-tracking" element={<AdminPaymentTracking />} />

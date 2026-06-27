@@ -82,6 +82,7 @@ const NAV = {
     { path:"/admin-dashboard/commissions", label:"Commissions", icon:"💹" },
     { path:"/admin-dashboard/settings", label:"Settings", icon:"⚙️" },
     { path:"/admin-dashboard/qrcode", label:"QR Code", icon:"📱" },
+    { path:"/admin-dashboard/content-hub", label:"Content Hub", icon:"🎬" },
     { path:"/admin-dashboard/new-cars", label:"New Cars", icon:"🚗" },
     { path:"/admin-dashboard/driver-vetting", label:"Driver Vetting", icon:"🪪" },
     { path:"/admin-dashboard/marketplace", label:"Marketplace", icon:"🛒" },
