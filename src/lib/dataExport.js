@@ -47,34 +47,25 @@ export async function exportUserData(userId) {
 }
 
 function mobileDownload(blob, filename) {
-  // Check if running in Capacitor/Android WebView
   const isCapacitor = window.Capacitor !== undefined
   const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent)
   
   if (isCapacitor || isMobile) {
-    // For mobile - read as data URL and open in new window
-    const reader = new FileReader()
-    reader.onload = () => {
-      const dataUrl = reader.result
-      // Try to open in browser
-      const newWin = window.open("", "_blank")
-      if (newWin) {
-        newWin.document.write('<iframe src="' + dataUrl + '" style="width:100%;height:100%;border:none;"></iframe>')
-      } else {
-        // Last resort - share via navigator.share if available
-        if (navigator.share && navigator.canShare) {
-          const file = new File([blob], filename, { type: blob.type })
-          navigator.share({ files: [file], title: filename }).catch(console.error)
-        } else {
-          alert("Download started — check your Downloads folder")
-          const a = document.createElement("a")
-          a.href = dataUrl
-          a.download = filename
-          a.click()
-        }
+    // Try navigator.share first (best mobile experience)
+    if (navigator.share) {
+      const file = new File([blob], filename, { type: blob.type })
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file], title: "Car Care Connect Data" })
+          .catch(err => {
+            if (err.name !== "AbortError") {
+              // User didn't cancel - try data URI
+              fallbackDownload(blob, filename)
+            }
+          })
+        return
       }
     }
-    reader.readAsDataURL(blob)
+    fallbackDownload(blob, filename)
   } else {
     // Desktop - standard download
     const url = URL.createObjectURL(blob)
@@ -86,6 +77,19 @@ function mobileDownload(blob, filename) {
     document.body.removeChild(a)
     setTimeout(() => URL.revokeObjectURL(url), 1000)
   }
+}
+
+function fallbackDownload(blob, filename) {
+  const reader = new FileReader()
+  reader.onload = () => {
+    const a = document.createElement("a")
+    a.href = reader.result
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+  }
+  reader.readAsDataURL(blob)
 }
 
 export function downloadJSON(data, filename) {
