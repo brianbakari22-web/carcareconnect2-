@@ -12,6 +12,8 @@ export default function AdminProviders() {
   const [selected, setSelected] = useState(null)
   const [search, setSearch] = useState("")
   const [typeFilter, setTypeFilter] = useState("all")
+  const [rejectingId, setRejectingId] = useState(null)
+  const [rejectReason, setRejectReason] = useState("")
 
   useEffect(() => { load() }, [])
 
@@ -19,7 +21,7 @@ export default function AdminProviders() {
     const [{ data: ps }, { data: svcs }, { data: bks }] = await Promise.all([
       supabase.from("profiles").select("*").eq("role","provider").order("created_at",{ascending:false}),
       supabase.from("services").select("provider_id,id,is_active"),
-      supabase.from("bookings").select("provider_id,provider_earnings,status")
+      supabase.from("bookings").select("provider_id,provider_earnings,status").eq("is_archived",false)
     ])
     setProviders(ps||[])
     const svcMap = {}
@@ -63,22 +65,20 @@ export default function AdminProviders() {
   }
 
   async function rejectVerification(id) {
-    const reason = prompt("Reason for rejection (will be sent to provider):")
-    if (!reason) return
-    
-    await supabase.from("profiles").update({ 
+    if (!rejectReason.trim()) return toast.error("Please add a rejection reason")
+    await supabase.from("profiles").update({
       verification_status: "rejected",
-      verification_notes: reason,
+      verification_notes: rejectReason,
     }).eq("id",id)
-    
     await supabase.from("notifications").insert({
       user_id: id,
       title: "Verification Update Required",
-      message: "Your verification was not approved: " + reason + ". Please update your profile and documents, then contact support.",
+      message: "Your verification was not approved: " + rejectReason + ". Please update your profile and documents, then contact support.",
       type: "warning",
     })
-    
     toast.success("Provider notified of rejection")
+    setRejectingId(null)
+    setRejectReason("")
     load()
   }
 
@@ -112,7 +112,7 @@ export default function AdminProviders() {
         style={{ width:"100%", background:"#f8f8f8", border:"1px solid #f0f0f0", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:"1rem" }}/>
 
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
-        {["all","garage","parts_dealer","accessories_shop","tyre_shop","auto_electrician","car_wash","panel_beater","auto_glass"].map(t=>(
+        {["all","garage","parts_dealer","accessories_shop","tyre_shop","auto_electrician","car_wash","panel_beater","auto_glass","mobile_mechanic"].map(t=>(
           <button key={t} onClick={()=>setTypeFilter(t)}
             style={{ padding:"5px 12px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:typeFilter===t?"#8b5cf6":"#f8f8f8", color:typeFilter===t?"#fff":"#666" }}>
             {t==="all"?"All types":t.replace(/_/g," ")}
@@ -140,6 +140,8 @@ export default function AdminProviders() {
                 {p.city&&`${p.city} · `}
                 {services[p.id]?.active||0} services · KES {Number(earnings[p.id]||0).toLocaleString()} earned
               </div>
+              {p.email&&<div style={{ fontSize:10, color:"#888" }}>✉️ {p.email}</div>}
+              {p.phone&&<div style={{ fontSize:10, color:"#888" }}>📞 {p.phone}</div>}
             </div>
             <div style={{ display:"flex", flexDirection:"column", gap:6, alignItems:"flex-end", flexShrink:0 }}>
               {p.cash_commission_balance>0&&(
@@ -168,9 +170,20 @@ export default function AdminProviders() {
                 {p.is_verified?"Remove verification":"✓ Verify provider"}
               </button>
               {!p.is_verified&&(
-                <button onClick={()=>rejectVerification(p.id)} style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:12, padding:"6px 12px", cursor:"pointer" }}>
+                <button onClick={()=>{ setRejectingId(rejectingId===p.id?null:p.id); setRejectReason("") }} style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:12, padding:"6px 12px", cursor:"pointer" }}>
                   ✗ Reject verification
                 </button>
+              )}
+              {rejectingId===p.id&&(
+                <div style={{ width:"100%", marginTop:8, background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:8, padding:"0.75rem" }}>
+                  <div style={{ fontSize:11, color:"#e24b4a", marginBottom:6 }}>Rejection reason (sent to provider):</div>
+                  <input value={rejectReason} onChange={e=>setRejectReason(e.target.value)} placeholder="e.g. Documents unclear, expired license..."
+                    style={{ width:"100%", background:"#fff", border:"1px solid #dddddd", borderRadius:7, padding:"8px 10px", fontSize:12, outline:"none", marginBottom:8 }}/>
+                  <div style={{ display:"flex", gap:6 }}>
+                    <button onClick={()=>rejectVerification(p.id)} style={{ background:"#e24b4a", border:"none", borderRadius:7, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"7px 14px", cursor:"pointer" }}>Send rejection</button>
+                    <button onClick={()=>{ setRejectingId(null); setRejectReason("") }} style={{ background:"none", border:"1px solid #ddd", borderRadius:7, color:"#888", fontSize:12, padding:"7px 12px", cursor:"pointer" }}>Cancel</button>
+                  </div>
+                </div>
               )}
               <button onClick={()=>toggleActive(p.id,p.is_active)} style={{ background:p.is_active?"#fff5f5":"#f0fdf4", border:`1px solid ${p.is_active?"#e24b4a40":"#1d9e7540"}`, borderRadius:7, color:p.is_active?"#e24b4a":"#1d9e75", fontSize:12, padding:"6px 12px", cursor:"pointer" }}>
                 {p.is_active?"Suspend":"Activate"}
