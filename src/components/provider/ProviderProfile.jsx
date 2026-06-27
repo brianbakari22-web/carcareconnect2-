@@ -201,15 +201,13 @@ export default function ProviderProfile() {
               </div>
             )}
             <label style={lbl}>Business type</label>
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:12 }}>
+            <select value={form.provider_type||""} onChange={e=>setForm(f=>({...f,provider_type:e.target.value}))}
+              style={{ width:"100%", background:"#f8f8f8", border:"1px solid #e5e5e5", borderRadius:8, padding:"11px 12px", color:"#000", fontSize:13, outline:"none", fontFamily:"DM Sans,sans-serif", marginBottom:12, cursor:"pointer" }}>
+              <option value="">Select business type...</option>
               {PROVIDER_TYPES.map(pt=>(
-                <div key={pt.key} onClick={()=>setForm(f=>({...f,provider_type:pt.key}))}
-                  style={{ background:form.provider_type===pt.key?"#eff6ff":"#f8f8f8", border:"1px solid "+(form.provider_type===pt.key?"#378add":"#dddddd"), borderRadius:8, padding:"8px 10px", cursor:"pointer" }}>
-                  <div style={{ fontSize:16, marginBottom:2 }}>{pt.icon}</div>
-                  <div style={{ fontSize:11, fontWeight:600, color:form.provider_type===pt.key?"#378add":"#888" }}>{pt.label}</div>
-                </div>
+                <option key={pt.key} value={pt.key}>{pt.icon} {pt.label}</option>
               ))}
-            </div>
+            </select>
             <button type="submit" disabled={saving}
               style={{ background:saving?"#555555":"#378add", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
               {saving?t("saving"):t("saveChanges")}
@@ -304,11 +302,11 @@ export default function ProviderProfile() {
                 <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
                   <button onClick={()=>downloadPDF(exportData, `provider-data-${new Date().toISOString().split("T")[0]}.pdf`)}
                     style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:8, color:"#1d9e75", fontSize:12, fontWeight:600, padding:"9px 16px", cursor:"pointer" }}>
-                    Γ¼ç Download PDF report
+                    📄 Download PDF report
                   </button>
                   <button onClick={()=>downloadCSV(exportData.bookings, `bookings-${new Date().toISOString().split("T")[0]}.csv`)}
                     style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:8, color:"#378add", fontSize:12, fontWeight:600, padding:"9px 16px", cursor:"pointer" }}>
-                    Γ¼ç Bookings CSV
+                    📊 Bookings CSV
                   </button>
                 </div>
               </div>
