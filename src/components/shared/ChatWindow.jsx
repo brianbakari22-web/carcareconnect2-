@@ -111,31 +111,52 @@ export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, 
   }
 
   // Filter out contact info from messages
+  function normalizeText(text) {
+    // Normalize word numbers to digits
+    return text
+      .replace(/\bzero\b/gi,"0").replace(/\bone\b/gi,"1").replace(/\btwo\b/gi,"2")
+      .replace(/\bthree\b/gi,"3").replace(/\bfour\b/gi,"4").replace(/\bfive\b/gi,"5")
+      .replace(/\bsix\b/gi,"6").replace(/\bseven\b/gi,"7").replace(/\beight\b/gi,"8")
+      .replace(/\bnine\b/gi,"9").replace(/\boh\b/gi,"0")
+      // Normalize obfuscated email
+      .replace(/\[at\]/gi,"@").replace(/\(at\)/gi,"@").replace(/\bat\b/gi,"@")
+      .replace(/\[dot\]/gi,".").replace(/\(dot\)/gi,".").replace(/\bdot\b/gi,".")
+      // Remove spaces/dashes between digits
+      .replace(/(\d)[\s\-\.](\d)/g,"$1$2")
+      .replace(/(\d)[\s\-\.](\d)/g,"$1$2")
+      .replace(/(\d)[\s\-\.](\d)/g,"$1$2")
+  }
+
   function filterContactInfo(text) {
-    let filtered = text
-    // Phone numbers - Kenyan and international formats
-    filtered = filtered.replace(/(?:\+?254|0)[17]\d{8}/g, "[contact info removed]")
-    filtered = filtered.replace(/(?:\+?\d{1,3}[-.\s]?)?(?:\(?\d{3}\)?[-.\s]?)\d{3}[-.\s]?\d{4}/g, "[contact info removed]")
-    // Email addresses
-    filtered = filtered.replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, "[contact info removed]")
-    // WhatsApp mentions
-    filtered = filtered.replace(/whatsapp\s*:?\s*[\d+\s()-]{7,}/gi, "[contact info removed]")
-    // Social media handles with contact intent
-    filtered = filtered.replace(/(?:call|text|whatsapp|wa\.me|t\.me|telegram|snapchat|instagram|ig|fb|facebook)\s*(?:me|us)?\s*(?:at|on|@|:)?\s*[\w.@+\d-]{3,}/gi, "[contact info removed]")
-    // Explicit contact sharing attempts
-    filtered = filtered.replace(/(?:my\s+(?:number|phone|contact|whatsapp|email|line)\s*(?:is|:)?\s*)[\w.@+\d\s()-]{5,}/gi, "[contact info removed]")
+    let filtered = normalizeText(text)
+    // Phone numbers - Kenyan formats (07xx, 01xx, +2547xx, +2541xx)
+    filtered = filtered.replace(/(?:\+?254|0)[17]\d{8}/g, "[contact removed]")
+    // International phone numbers
+    filtered = filtered.replace(/(?:\+?\d{1,3}[\s.-]?)?(?:\(?\d{2,4}\)?[\s.-]?)\d{3,4}[\s.-]?\d{3,4}/g, "[contact removed]")
+    // Any 10+ consecutive digits
+    filtered = filtered.replace(/\d{7,}/g, "[contact removed]")
+    // Email addresses (including obfuscated)
+    filtered = filtered.replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, "[contact removed]")
+    // WhatsApp/Telegram links
+    filtered = filtered.replace(/(?:wa\.me|t\.me|telegram\.me)[/\\]?[\w\d+]*/gi, "[contact removed]")
+    // Explicit contact sharing
+    filtered = filtered.replace(/(?:my\s+)?(?:number|phone|contact|whatsapp|wa|email|gmail|yahoo|hotmail|line|signal|viber)\s*(?:is|:|-)?\s*[\w.@+\d\s()-]{3,}/gi, "[contact removed]")
+    // Social media with contact intent
+    filtered = filtered.replace(/(?:call|text|ping|reach|hit|find|dm|message|inbox)\s*(?:me|us)?\s*(?:on|at|via|through)?\s*(?:whatsapp|wa|telegram|signal|viber|ig|instagram|facebook|fb|twitter|tiktok)?\s*[\w.@+\d-]{3,}/gi, "[contact removed]")
     return filtered
   }
 
   function hasContactInfo(text) {
+    const normalized = normalizeText(text)
     const patterns = [
       /(?:\+?254|0)[17]\d{8}/,
+      /\d{7,}/,
       /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/,
-      /whatsapp\s*:?\s*[\d+\s()-]{7,}/i,
-      /(?:call|text|whatsapp|wa\.me|telegram)\s*(?:me|us)?\s*(?:at|on|@|:)?\s*[\w.@+\d-]{3,}/i,
-      /(?:my\s+(?:number|phone|contact|whatsapp|email)\s*(?:is|:)?\s*)[\w.@+\d\s()-]{5,}/i,
+      /(?:wa\.me|t\.me)/i,
+      /(?:my\s+)?(?:number|phone|whatsapp|email)\s*(?:is|:)/i,
+      /(?:call|text|ping|reach)\s*(?:me|us)/i,
     ]
-    return patterns.some(p => p.test(text))
+    return patterns.some(p => p.test(normalized))
   }
 
   async function send(e) {
