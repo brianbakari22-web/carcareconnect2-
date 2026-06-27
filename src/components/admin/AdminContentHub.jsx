@@ -53,6 +53,8 @@ export default function AdminContentHub() {
   const [showCampaignForm, setShowCampaignForm] = useState(false)
   const [campaignForm, setCampaignForm] = useState({ name:"", description:"" })
   const [scheduledPosts, setScheduledPosts] = useState([])
+  const [showScheduleForm, setShowScheduleForm] = useState(false)
+  const [scheduleForm, setScheduleForm] = useState({ date:"", time:"" })
 
   useEffect(() => { load() }, [tab])
 
@@ -70,7 +72,7 @@ export default function AdminContentHub() {
       const { data: d } = await supabase.from("services").select("*, profiles!services_provider_id_fkey(business_name,first_name,last_name)").eq("is_active",true).order("created_at",{ascending:false})
       data = (d||[]).map(i=>({...i, _type:"service", _label:i.name, _price:i.price, _photos:[], _video:null, business_name:i.profiles?.business_name||i.profiles?.first_name }))
     } else if (tab==="providers") {
-      const { data: d } = await supabase.from("profiles").select("*").eq("role","provider").eq("is_active",true).order("created_at",{ascending:false})
+      const { data: d } = await supabase.from("profiles").select("id,first_name,last_name,business_name,provider_type,avatar_url,photos,city").eq("role","provider").eq("is_active",true).order("created_at",{ascending:false})
       data = (d||[]).map(i=>({...i, _type:"service", _label:i.business_name||i.first_name, _price:null, _photos:i.photos||[], _video:null }))
     }
     setItems(data)
@@ -227,30 +229,41 @@ export default function AdminContentHub() {
   }
 
   async function markAsPosted(itemId, platform) {
-    await supabase.from("content_posts").insert({
+    const { error } = await supabase.from("content_posts").insert({
       item_id: itemId,
+      item_type: selected?._type,
       platform,
       posted_at: new Date().toISOString(),
       caption,
     })
-    toast.success(`Marked as posted on ${platform}!`)
+    if (error) return toast.error(error.message)
+    toast.success(`✅ Marked as posted on ${platformInfo?.label}!`)
   }
 
-  async function schedulePost(item) {
-    const date = prompt("Schedule for date (YYYY-MM-DD):")
-    const time = prompt("Time (HH:MM):")
-    if (!date||!time) return
-    await supabase.from("scheduled_posts").insert({
-      item_id: item.id,
-      item_type: item._type,
-      item_label: item._label,
+  async function schedulePost() {
+    if (!scheduleForm.date||!scheduleForm.time) return toast.error("Please select date and time")
+    const { error } = await supabase.from("scheduled_posts").insert({
+      item_id: selected.id,
+      item_type: selected._type,
+      item_label: selected._label,
       platform,
       caption,
-      scheduled_for: `${date}T${time}:00`,
+      scheduled_for: `${scheduleForm.date}T${scheduleForm.time}:00`,
       status: "scheduled"
     })
+    if (error) return toast.error(error.message)
     toast.success("Post scheduled!")
+    setShowScheduleForm(false)
+    setScheduleForm({ date:"", time:"" })
+    loadScheduledPosts()
   }
+
+  async function loadScheduledPosts() {
+    const { data } = await supabase.from("scheduled_posts").select("*").eq("status","scheduled").order("scheduled_for",{ascending:true})
+    setScheduledPosts(data||[])
+  }
+
+  useEffect(() => { loadScheduledPosts() }, [])
 
   async function createCampaign(e) {
     e.preventDefault()
@@ -421,16 +434,103 @@ export default function AdminContentHub() {
               </div>
 
               {/* Mark as posted */}
-              <div>
+              <div style={{ marginBottom:"1rem" }}>
                 <div style={{ fontSize:11, color:"#666", marginBottom:6 }}>✅ Track posting</div>
                 <button onClick={()=>markAsPosted(selected.id, platform)}
                   style={{ width:"100%", background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:8, color:"#1d9e75", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px", cursor:"pointer" }}>
                   ✓ Mark as posted on {platformInfo?.label}
                 </button>
               </div>
+
+              {/* Schedule post */}
+              <div>
+                <div style={{ fontSize:11, color:"#666", marginBottom:6 }}>📅 Schedule post</div>
+                {!showScheduleForm ? (
+                  <button onClick={()=>setShowScheduleForm(true)}
+                    style={{ width:"100%", background:"#f5f3ff", border:"1px solid #8b5cf640", borderRadius:8, color:"#8b5cf6", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px", cursor:"pointer" }}>
+                    📅 Schedule for later
+                  </button>
+                ):(
+                  <div style={{ background:"#f5f3ff", border:"1px solid #8b5cf630", borderRadius:8, padding:"0.75rem" }}>
+                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:8 }}>
+                      <div>
+                        <label style={{ fontSize:10, color:"#666", display:"block", marginBottom:3 }}>Date</label>
+                        <input type="date" value={scheduleForm.date} onChange={e=>setScheduleForm(f=>({...f,date:e.target.value}))} min={new Date().toISOString().split("T")[0]}
+                          style={{ width:"100%", background:"#fff", border:"1px solid #e5e5e5", borderRadius:6, padding:"7px 8px", fontSize:12, outline:"none" }}/>
+                      </div>
+                      <div>
+                        <label style={{ fontSize:10, color:"#666", display:"block", marginBottom:3 }}>Time</label>
+                        <input type="time" value={scheduleForm.time} onChange={e=>setScheduleForm(f=>({...f,time:e.target.value}))}
+                          style={{ width:"100%", background:"#fff", border:"1px solid #e5e5e5", borderRadius:6, padding:"7px 8px", fontSize:12, outline:"none" }}/>
+                      </div>
+                    </div>
+                    <div style={{ display:"flex", gap:6 }}>
+                      <button onClick={schedulePost} style={{ flex:2, background:"#8b5cf6", border:"none", borderRadius:7, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px", cursor:"pointer" }}>Schedule</button>
+                      <button onClick={()=>setShowScheduleForm(false)} style={{ flex:1, background:"none", border:"1px solid #ddd", borderRadius:7, color:"#888", fontSize:12, padding:"8px", cursor:"pointer" }}>Cancel</button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
+      </div>
+      {/* Scheduled Posts Section */}
+      {scheduledPosts.length>0&&(
+        <div style={{ marginTop:"2rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#000", marginBottom:10 }}>📅 Scheduled Posts ({scheduledPosts.length})</div>
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(2,1fr)", gap:8 }}>
+            {scheduledPosts.map(p=>(
+              <div key={p.id} style={{ background:"#f5f3ff", border:"1px solid #8b5cf630", borderRadius:10, padding:"0.75rem" }}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:4 }}>
+                  <div style={{ fontSize:12, fontWeight:600, color:"#000" }}>{p.item_label}</div>
+                  <span style={{ fontSize:10, background:"#8b5cf6", color:"#fff", padding:"2px 8px", borderRadius:10 }}>{p.platform}</span>
+                </div>
+                <div style={{ fontSize:11, color:"#8b5cf6", marginBottom:4 }}>📅 {new Date(p.scheduled_for).toLocaleString()}</div>
+                <div style={{ fontSize:10, color:"#888", lineHeight:1.4 }}>{p.caption?.substring(0,80)}...</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Campaigns Section */}
+      <div style={{ marginTop:"2rem" }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
+          <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#000" }}>🎯 Campaigns ({campaigns.length})</div>
+          <button onClick={()=>setShowCampaignForm(f=>!f)}
+            style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"7px 14px", cursor:"pointer" }}>
+            + New Campaign
+          </button>
+        </div>
+        {showCampaignForm&&(
+          <form onSubmit={createCampaign} style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:10, padding:"1rem", marginBottom:"1rem" }}>
+            <div style={{ marginBottom:8 }}>
+              <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:3 }}>Campaign name</label>
+              <input value={campaignForm.name} onChange={e=>setCampaignForm(f=>({...f,name:e.target.value}))} placeholder="e.g. December Deals" required
+                style={{ width:"100%", background:"#fff", border:"1px solid #e5e5e5", borderRadius:7, padding:"8px 10px", fontSize:12, outline:"none" }}/>
+            </div>
+            <div style={{ marginBottom:10 }}>
+              <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:3 }}>Description</label>
+              <input value={campaignForm.description} onChange={e=>setCampaignForm(f=>({...f,description:e.target.value}))} placeholder="What is this campaign about?"
+                style={{ width:"100%", background:"#fff", border:"1px solid #e5e5e5", borderRadius:7, padding:"8px 10px", fontSize:12, outline:"none" }}/>
+            </div>
+            <div style={{ display:"flex", gap:8 }}>
+              <button type="submit" style={{ background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>Create</button>
+              <button type="button" onClick={()=>setShowCampaignForm(false)} style={{ background:"none", border:"1px solid #ddd", borderRadius:7, color:"#888", fontSize:12, padding:"8px 12px", cursor:"pointer" }}>Cancel</button>
+            </div>
+          </form>
+        )}
+        {campaigns.length===0&&!showCampaignForm&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"1.5rem" }}>No campaigns yet — create one to organize your content</div>}
+        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:8 }}>
+          {campaigns.map(camp=>(
+            <div key={camp.id} style={{ background:"#ffffff", border:"1px solid #e6821e30", borderRadius:10, padding:"0.75rem" }}>
+              <div style={{ fontSize:13, fontWeight:700, color:"#000", marginBottom:2 }}>{camp.name}</div>
+              {camp.description&&<div style={{ fontSize:11, color:"#666", marginBottom:4 }}>{camp.description}</div>}
+              <div style={{ fontSize:10, color:"#aaa" }}>{new Date(camp.created_at).toLocaleDateString()}</div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )
