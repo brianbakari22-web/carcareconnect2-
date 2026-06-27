@@ -46,14 +46,51 @@ export async function exportUserData(userId) {
   }
 }
 
+function mobileDownload(blob, filename) {
+  // Check if running in Capacitor/Android WebView
+  const isCapacitor = window.Capacitor !== undefined
+  const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent)
+  
+  if (isCapacitor || isMobile) {
+    // For mobile - read as data URL and open in new window
+    const reader = new FileReader()
+    reader.onload = () => {
+      const dataUrl = reader.result
+      // Try to open in browser
+      const newWin = window.open("", "_blank")
+      if (newWin) {
+        newWin.document.write('<iframe src="' + dataUrl + '" style="width:100%;height:100%;border:none;"></iframe>')
+      } else {
+        // Last resort - share via navigator.share if available
+        if (navigator.share && navigator.canShare) {
+          const file = new File([blob], filename, { type: blob.type })
+          navigator.share({ files: [file], title: filename }).catch(console.error)
+        } else {
+          alert("Download started — check your Downloads folder")
+          const a = document.createElement("a")
+          a.href = dataUrl
+          a.download = filename
+          a.click()
+        }
+      }
+    }
+    reader.readAsDataURL(blob)
+  } else {
+    // Desktop - standard download
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    setTimeout(() => URL.revokeObjectURL(url), 1000)
+  }
+}
+
 export function downloadJSON(data, filename) {
   const blob = new Blob([JSON.stringify(data, null, 2)], { type:"application/json" })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement("a")
-  a.href = url
-  a.download = filename
-  a.click()
-  URL.revokeObjectURL(url)
+  mobileDownload(blob, filename)
 }
 
 export function downloadCSV(rows, filename) {
@@ -69,21 +106,7 @@ export function downloadCSV(rows, filename) {
     }).join(","))
   ].join("\n")
   const blob = new Blob([csv], { type:"text/csv;charset=utf-8;" })
-  try {
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = filename
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    setTimeout(()=>URL.revokeObjectURL(url), 1000)
-  } catch(e) {
-    // Mobile fallback
-    const reader = new FileReader()
-    reader.onload = () => { window.open(reader.result) }
-    reader.readAsDataURL(blob)
-  }
+  mobileDownload(blob, filename)
 }
 
 export function downloadPDF(data, filename) {
@@ -296,24 +319,7 @@ export function downloadPDF(data, filename) {
   }
 
   // Mobile-compatible download
-  try {
-    // Try standard download first
-    doc.save(filename)
-  } catch(e) {
-    // Fallback for mobile - open in new tab
-    try {
-      const pdfOutput = doc.output("bloburl")
-      window.open(pdfOutput, "_blank")
-    } catch(e2) {
-      // Last resort - data URI
-      const dataUri = doc.output("datauristring")
-      const link = document.createElement("a")
-      link.href = dataUri
-      link.download = filename
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-    }
-  }
+  const pdfBlob = doc.output("blob")
+  mobileDownload(pdfBlob, filename)
 }
 
