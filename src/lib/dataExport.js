@@ -68,13 +68,22 @@ export function downloadCSV(rows, filename) {
       return str.includes(",") || str.includes("\n") ? `"${str}"` : str
     }).join(","))
   ].join("\n")
-  const blob = new Blob([csv], { type:"text/csv" })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement("a")
-  a.href = url
-  a.download = filename
-  a.click()
-  URL.revokeObjectURL(url)
+  const blob = new Blob([csv], { type:"text/csv;charset=utf-8;" })
+  try {
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    setTimeout(()=>URL.revokeObjectURL(url), 1000)
+  } catch(e) {
+    // Mobile fallback
+    const reader = new FileReader()
+    reader.onload = () => { window.open(reader.result) }
+    reader.readAsDataURL(blob)
+  }
 }
 
 export function downloadPDF(data, filename) {
@@ -286,6 +295,25 @@ export function downloadPDF(data, filename) {
     doc.text("Generated under Kenya Data Protection Act 2019", pageW/2, 295, { align:"center" })
   }
 
-  doc.save(filename)
+  // Mobile-compatible download
+  try {
+    // Try standard download first
+    doc.save(filename)
+  } catch(e) {
+    // Fallback for mobile - open in new tab
+    try {
+      const pdfOutput = doc.output("bloburl")
+      window.open(pdfOutput, "_blank")
+    } catch(e2) {
+      // Last resort - data URI
+      const dataUri = doc.output("datauristring")
+      const link = document.createElement("a")
+      link.href = dataUri
+      link.download = filename
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    }
+  }
 }
 
