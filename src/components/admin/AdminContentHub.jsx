@@ -396,27 +396,34 @@ export default function AdminContentHub() {
               {selected._photos?.length>0&&(
                 <div style={{ marginBottom:"1rem" }}>
                   <div style={{ fontSize:11, color:"#666", marginBottom:6 }}>📷 Photos ({selected._photos.length}) — tap to select for card</div>
-                  <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:6 }}>
+                  {/* Photo grid - tap to select */}
+                  <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:6, marginBottom:8 }}>
                     {selected._photos.map((p,i)=>(
-                      <div key={i} style={{ position:"relative", cursor:"pointer" }} onClick={()=>setSelectedPhoto(p)}>
-                        <img src={p} alt="" style={{ width:64, height:64, objectFit:"cover", borderRadius:6, border:`2px solid ${selectedPhoto===p?"#e6821e":"#eee"}` }}/>
-                        {selectedPhoto===p&&(
-                          <div style={{ position:"absolute", top:2, right:2, background:"#e6821e", borderRadius:"50%", width:16, height:16, display:"flex", alignItems:"center", justifyContent:"center", fontSize:9, color:"#fff", fontWeight:700 }}>✓</div>
-                        )}
-                        <button onClick={e=>{ e.stopPropagation(); downloadPhoto(p, `CCC-photo-${i+1}.jpg`) }}
-                          style={{ position:"absolute", bottom:0, left:0, right:0, background:"rgba(0,0,0,0.6)", border:"none", borderRadius:"0 0 6px 6px", color:"#fff", fontSize:9, cursor:"pointer", padding:"2px" }}>
-                          ⬇
+                      <div key={i}>
+                        <div onClick={()=>setSelectedPhoto(p)} style={{ cursor:"pointer", position:"relative" }}>
+                          <img src={p} alt="" style={{ width:"100%", aspectRatio:"1", objectFit:"cover", borderRadius:6, border:`2px solid ${selectedPhoto===p?"#e6821e":"#eeeeee"}`, display:"block" }}/>
+                          {selectedPhoto===p&&(
+                            <div style={{ position:"absolute", top:3, right:3, background:"#e6821e", borderRadius:"50%", width:18, height:18, display:"flex", alignItems:"center", justifyContent:"center", fontSize:10, color:"#fff", fontWeight:700, pointerEvents:"none" }}>✓</div>
+                          )}
+                        </div>
+                        <button onClick={()=>downloadPhoto(p, `CCC-photo-${i+1}.jpg`)}
+                          style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:4, color:"#555", fontSize:9, cursor:"pointer", padding:"3px 0", marginTop:3 }}>
+                          ⬇ Save
                         </button>
                       </div>
                     ))}
-                    <button onClick={()=>selected._photos.forEach((p,i)=>setTimeout(()=>downloadPhoto(p,`CCC-photo-${i+1}.jpg`),i*500))}
-                      style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:6, color:"#378add", fontSize:10, padding:"4px 8px", cursor:"pointer", alignSelf:"center" }}>
-                      ⬇ All
+                  </div>
+                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                    {selectedPhoto ? (
+                      <div style={{ fontSize:10, color:"#e6821e", fontWeight:600 }}>✓ Photo selected for branded card</div>
+                    ):(
+                      <div style={{ fontSize:10, color:"#888" }}>Tap a photo to select it for the branded card</div>
+                    )}
+                    <button onClick={()=>selected._photos.forEach((p,i)=>setTimeout(()=>downloadPhoto(p,`CCC-photo-${i+1}.jpg`),i*600))}
+                      style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:6, color:"#378add", fontSize:10, padding:"4px 10px", cursor:"pointer" }}>
+                      ⬇ Download all
                     </button>
                   </div>
-                  {selectedPhoto&&(
-                    <div style={{ fontSize:10, color:"#e6821e" }}>✓ Selected photo will be used for branded card</div>
-                  )}
                 </div>
               )}
 
