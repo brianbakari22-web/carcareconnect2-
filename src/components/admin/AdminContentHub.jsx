@@ -66,14 +66,14 @@ export default function AdminContentHub() {
       const { data: d } = await supabase.from("new_car_listings").select("*").order("created_at",{ascending:false})
       data = (d||[]).map(i=>({...i, _type:"car", _label:`${i.year} ${i.brand} ${i.model}`, _price:i.price, _photos:i.photos||[], _video:i.video_url }))
     } else if (tab==="marketplace") {
-      const { data: d } = await supabase.from("marketplace_listings").select("*").order("created_at",{ascending:false})
-      data = (d||[]).map(i=>({...i, _type:i.listing_type||"parts", _label:i.title, _price:i.price, _photos:i.photos||[], _video:i.video_url }))
+      const { data: d } = await supabase.from("marketplace_listings").select("*, marketplace_photos(photo_url)").order("created_at",{ascending:false})
+      data = (d||[]).map(i=>({...i, _type:i.listing_type||"parts", _label:i.title, _price:i.price, _photos:(i.marketplace_photos||[]).map(p=>p.photo_url), _video:i.video_url }))
     } else if (tab==="services") {
-      const { data: d } = await supabase.from("services").select("*, profiles!services_provider_id_fkey(business_name,first_name,last_name)").order("created_at",{ascending:false})
-      data = (d||[]).map(i=>({...i, _type:"service", _label:i.name, _price:i.price, _photos:[], _video:null, business_name:i.profiles?.business_name||i.profiles?.first_name }))
+      const { data: d } = await supabase.from("services").select("*, profiles!services_provider_id_fkey(business_name,first_name,last_name,profile_photo_url,avatar_url)").order("created_at",{ascending:false})
+      data = (d||[]).map(i=>({...i, _type:"service", _label:i.name, _price:i.price, _photos:i.profiles?.profile_photo_url?[i.profiles.profile_photo_url]:i.profiles?.avatar_url?[i.profiles.avatar_url]:[], _video:null, business_name:i.profiles?.business_name||i.profiles?.first_name }))
     } else if (tab==="providers") {
-      const { data: d } = await supabase.from("profiles").select("id,first_name,last_name,business_name,provider_type,avatar_url,city").eq("role","provider").order("created_at",{ascending:false})
-      data = (d||[]).map(i=>({...i, _type:"service", _label:i.business_name||i.first_name, _price:null, _photos:i.photos||[], _video:null }))
+      const { data: d } = await supabase.from("profiles").select("id,first_name,last_name,business_name,provider_type,avatar_url,profile_photo_url,city").eq("role","provider").order("created_at",{ascending:false})
+      data = (d||[]).map(i=>({...i, _type:"service", _label:i.business_name||i.first_name+" "+i.last_name, _price:null, _photos:i.profile_photo_url?[i.profile_photo_url]:i.avatar_url?[i.avatar_url]:[], _video:null }))
     }
     setItems(data)
     setLoading(false)
