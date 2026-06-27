@@ -166,7 +166,27 @@ export default function AdminContentHub() {
             img.onerror = rej
             img.src = photoToUse
           })
-          ctx.drawImage(img, 0, 160, 1080, 600)
+          // Draw image maintaining aspect ratio (cover style)
+          const imgAspect = img.width / img.height
+          const canvasAspect = 1080 / 600
+          let drawX = 0, drawY = 160, drawW = 1080, drawH = 600
+          if (imgAspect > canvasAspect) {
+            // Image wider than canvas area - fit height, crop sides
+            drawH = 600
+            drawW = img.width * (600 / img.height)
+            drawX = (1080 - drawW) / 2
+          } else {
+            // Image taller than canvas area - fit width, crop top/bottom
+            drawW = 1080
+            drawH = img.height * (1080 / img.width)
+            drawY = 160 + (600 - drawH) / 2
+          }
+          ctx.save()
+          ctx.beginPath()
+          ctx.rect(0, 160, 1080, 600)
+          ctx.clip()
+          ctx.drawImage(img, drawX, drawY, drawW, drawH)
+          ctx.restore()
         } catch(e) {
           ctx.fillStyle = "#f0f0f0"
           ctx.fillRect(0, 160, 1080, 600)
