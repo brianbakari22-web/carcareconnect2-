@@ -343,16 +343,50 @@ export default function AuthPage() {
                 <label style={lbl}>Referral code (optional)</label>
                 <input style={{ ...inp, marginBottom:16 }} placeholder="Enter referral code" value={refCode} onChange={e=>setRefCode(e.target.value.toUpperCase())}/>
 
-                <label style={{ display:"flex", alignItems:"flex-start", gap:10, cursor:"pointer", marginBottom:20, padding:"0.9rem", background:"#000000", border:"1px solid #222", borderRadius:9 }}>
-                  <input type="checkbox" checked={agreed} onChange={e=>setAgreed(e.target.checked)}
-                    style={{ marginTop:2, width:16, height:16, cursor:"pointer", flexShrink:0, accentColor:"#e6821e" }}/>
-                  <span style={{ fontSize:12, color:"#555", lineHeight:1.6 }}>
-                    I have read and agree to the{" "}
-                    <a href="/terms" target="_blank" style={{ color:"#e6821e", textDecoration:"none", fontWeight:500 }}>Terms of Service</a>
-                    {" "}and{" "}
-                    <a href="/privacy" target="_blank" style={{ color:"#e6821e", textDecoration:"none", fontWeight:500 }}>Privacy Policy</a>
-                  </span>
-                </label>
+                {/* CCC Promise Card */}
+                <div style={{ marginBottom:16 }}>
+                  <div style={{ background:"linear-gradient(135deg,#1a1a1a 0%,#2d1810 50%,#1a1a1a 100%)", border:"1.5px solid #e6821e", borderRadius:16, padding:"1.25rem", marginBottom:10, overflow:"hidden" }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:12 }}>
+                      <div style={{ fontSize:28 }}>🛡️</div>
+                      <div>
+                        <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>Your protection matters to us</div>
+                        <div style={{ fontSize:11, color:"#888", marginTop:1 }}>Before you join — our promise to you</div>
+                      </div>
+                    </div>
+                    <div style={{ marginBottom:14 }}>
+                      {[
+                        { icon:"🔒", text:"Keep your personal data private and secure" },
+                        { icon:"💳", text:"Protect every payment through verified channels" },
+                        { icon:"🛡️", text:"Back every service with our Service Guarantee" },
+                        { icon:"⚖️", text:"Resolve disputes fairly and transparently" },
+                      ].map((p,i)=>(
+                        <div key={i} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
+                          <span style={{ fontSize:13, flexShrink:0 }}>{p.icon}</span>
+                          <span style={{ fontSize:12, color:"#cccccc", lineHeight:1.5 }}>{p.text}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ height:1, background:"linear-gradient(90deg,transparent,#e6821e,transparent)", marginBottom:12 }}/>
+                    <div style={{ fontSize:11, color:"#888", marginBottom:8, textAlign:"center" }}>👇 Tap to read before agreeing</div>
+                    <div style={{ display:"flex", gap:8 }}>
+                      <a href="/terms" target="_blank" rel="noreferrer" style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:6, background:"linear-gradient(135deg,#e6821e,#f09840)", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"10px 8px", textDecoration:"none" }}>
+                        📄 Terms of Service
+                      </a>
+                      <a href="/privacy" target="_blank" rel="noreferrer" style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:6, background:"transparent", border:"1.5px solid #e6821e", borderRadius:10, color:"#e6821e", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"10px 8px", textDecoration:"none" }}>
+                        🔒 Privacy Policy
+                      </a>
+                    </div>
+                  </div>
+                  <label style={{ display:"flex", alignItems:"center", gap:12, cursor:"pointer", padding:"0.85rem 1rem", background:agreed?"#0d2b1f":"#111111", border:"1.5px solid " + (agreed?"#1d9e75":"#333333"), borderRadius:12, transition:"all 0.3s" }}>
+                    <div style={{ width:24, height:24, borderRadius:6, border:"2px solid " + (agreed?"#1d9e75":"#555"), background:agreed?"#1d9e75":"transparent", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, transition:"all 0.2s" }}>
+                      {agreed&&<span style={{ color:"#fff", fontSize:14, fontWeight:800 }}>✓</span>}
+                      <input type="checkbox" checked={agreed} onChange={e=>setAgreed(e.target.checked)} style={{ position:"absolute", opacity:0, width:0, height:0 }}/>
+                    </div>
+                    <span style={{ fontSize:13, color:agreed?"#1d9e75":"#aaaaaa", fontWeight:agreed?700:400, lineHeight:1.5 }}>
+                      {agreed ? "I have read and I am in! Let us go 🚗" : "I have read the Terms & Privacy Policy and I agree"}
+                    </span>
+                  </label>
+                </div>
               </>
             )}
 
