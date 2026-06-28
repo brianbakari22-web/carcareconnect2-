@@ -1,4 +1,4 @@
-﻿import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -113,7 +113,7 @@ export default function ProviderInventory() {
   async function updateStock(id, qty) {
     await supabase.from("inventory").update({ stock_quantity:qty, updated_at:new Date().toISOString() }).eq("id", id)
     if (qty<=3&&qty>0) toast("⚠️ Low stock warning — only "+qty+" left!", { icon:"⚠️", duration:5000 })
-    if (qty===0) toast.error("Γ¥î Item out of stock — customers cannot order this item")
+    if (qty===0) toast.error("❌ Item out of stock — customers cannot order this item")
     load()
   }
 
@@ -213,7 +213,7 @@ export default function ProviderInventory() {
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
         {[{k:"all",l:"All"}, ...CATEGORIES].map(c=>(
           <button key={c.key||c.k} onClick={()=>setCatFilter(c.key||c.k)}
-            style={{ padding:"5px 10px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:catFilter===(c.key||c.k)?"#e6821e":"#555555", color:catFilter===(c.key||c.k)?"#fff":"#666" }}>
+            style={{ padding:"5px 10px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:catFilter===(c.key||c.k)?"#e6821e":"#f0f0f0", color:catFilter===(c.key||c.k)?"#fff":"#555" }}>
             {c.icon||""} {c.label||c.l}
           </button>
         ))}
@@ -247,7 +247,7 @@ export default function ProviderInventory() {
           </div>
           <div style={{ display:"flex", alignItems:"center", gap:8, marginTop:10, flexWrap:"wrap" }}>
             <div style={{ display:"flex", alignItems:"center", gap:6, background:"#ffffff", borderRadius:7, padding:"4px 8px" }}>
-              <button onClick={()=>updateStock(item.id, Math.max(0,item.stock_quantity-1))} style={{ background:"none", border:"none", color:"#e6821e", cursor:"pointer", fontSize:16, lineHeight:1, padding:"0 4px" }}>ΓêÆ</button>
+              <button onClick={()=>updateStock(item.id, Math.max(0,item.stock_quantity-1))} style={{ background:"none", border:"none", color:"#e6821e", cursor:"pointer", fontSize:16, lineHeight:1, padding:"0 4px" }}>−</button>
               <span style={{ fontSize:12, color:"#000000", minWidth:20, textAlign:"center" }}>{item.stock_quantity}</span>
               <button onClick={()=>updateStock(item.id, item.stock_quantity+1)} style={{ background:"none", border:"none", color:"#1d9e75", cursor:"pointer", fontSize:16, lineHeight:1, padding:"0 4px" }}>+</button>
               <span style={{ fontSize:10, color:"#777777" }}>{item.unit}s</span>
@@ -264,6 +264,7 @@ export default function ProviderInventory() {
     </div>
   )
 }
+
 
 
 
