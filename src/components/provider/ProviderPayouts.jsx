@@ -1,4 +1,4 @@
-﻿import useIsMobile from "../../lib/useIsMobile"
+import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
@@ -240,6 +240,8 @@ export default function ProviderPayouts() {
     </div>
   )
 }
+
+
 
 
 
