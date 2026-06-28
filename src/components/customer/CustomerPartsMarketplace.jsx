@@ -271,14 +271,25 @@ export default function CustomerPartsMarketplace() {
             ))}
           </div>
 
+          {!loading&&filtered.length>0&&<div style={{ fontSize:11, color:"#888", marginBottom:"0.75rem" }}>{filtered.length} item{filtered.length!==1?"s":""} found</div>}
           {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
-          {!loading&&filtered.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>No items found</div>}
+          {!loading&&filtered.length===0&&(
+            <div style={{ textAlign:"center", padding:"3rem", color:"#888" }}>
+              <div style={{ fontSize:40, marginBottom:10 }}>🔍</div>
+              <div style={{ fontSize:14, fontWeight:600, color:"#555", marginBottom:6 }}>No items found</div>
+              <div style={{ fontSize:12 }}>Try a different search or category</div>
+            </div>
+          )}
 
           <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(2,1fr)", gap:12 }}>
             {filtered.map(item=>(
-              <div key={item.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, overflow:"hidden" }}>
-                {item.photos?.[0]&&(
+              <div key={item.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, overflow:"hidden", boxShadow:"0 1px 4px rgba(0,0,0,0.05)", transition:"box-shadow 0.2s" }}>
+                {item.photos?.[0] ? (
                   <img src={item.photos[0]} alt={item.name} style={{ width:"100%", height:140, objectFit:"cover" }}/>
+                ):(
+                  <div style={{ width:"100%", height:100, background:"linear-gradient(135deg,#f8f8f8,#f0f0f0)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:32 }}>
+                    {item.category==="tyres"?"🛞":item.category==="oils"?"🛢️":item.category==="electrical"?"⚡":item.category==="tools"?"🔧":"⚙️"}
+                  </div>
                 )}
                 <div style={{ padding:"1rem" }}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10, marginBottom:8 }}>
@@ -299,10 +310,16 @@ export default function CustomerPartsMarketplace() {
                     <div style={{ fontSize:10, color:item.stock_quantity<=5?"#e24b4a":"#1d9e75", marginTop:4 }}>{item.stock_quantity} in stock</div>
                   </div>
                 </div>
-                <button onClick={()=>addToCart(item)} disabled={item.stock_quantity===0}
-                  style={{ width:"100%", background:item.stock_quantity===0?"#555555":"#e6821e", border:"none", borderRadius:8, color:item.stock_quantity===0?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px", cursor:item.stock_quantity===0?"not-allowed":"pointer" }}>
-                  {item.stock_quantity===0?"Out of stock":"+ Add to cart"}
-                </button>
+                <div style={{ display:"flex", gap:6 }}>
+                  <button onClick={()=>addToCart(item)} disabled={item.stock_quantity===0}
+                    style={{ flex:1, background:item.stock_quantity===0?"#f0f0f0":"#e6821e", border:"none", borderRadius:8, color:item.stock_quantity===0?"#aaa":"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px", cursor:item.stock_quantity===0?"not-allowed":"pointer" }}>
+                    {item.stock_quantity===0?"Out of stock":"+ Add to cart"}
+                  </button>
+                  <button onClick={()=>setChatItem(item)}
+                    style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:8, color:"#378add", fontSize:12, padding:"9px 12px", cursor:"pointer" }}>
+                    💬
+                  </button>
+                </div>
                 </div>
               </div>
             ))}
@@ -323,7 +340,7 @@ export default function CustomerPartsMarketplace() {
                 </div>
                 <div style={{ textAlign:"right" }}>
                   <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>KES {Number(o.subtotal||0).toLocaleString()}</div>
-                  <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:(SC[o.status]||"#888")+"20", color:SC[o.status]||"#888" }}>{o.status}</span>
+                  <span style={{ fontSize:10, padding:"3px 10px", borderRadius:20, background:(SC[o.status]||"#888")+"20", color:SC[o.status]||"#888", fontWeight:600, border:"1px solid "+(SC[o.status]||"#888")+"30" }}>{o.status?.toUpperCase()}</span>
                 </div>
               </div>
               {o.order_items?.map(oi=>(
@@ -360,8 +377,9 @@ export default function CustomerPartsMarketplace() {
         </div>
       )}
       {showCart&&(
-        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.85)", zIndex:200, display:"flex", alignItems:"flex-end", justifyContent:"center" }}>
-          <div style={{ width:"100%", maxWidth:500, background:"#ffffff", borderRadius:"16px 16px 0 0", padding:"1.5rem", maxHeight:"85vh", overflowY:"auto" }}>
+        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.6)", zIndex:200, display:"flex", alignItems:"flex-end", justifyContent:"center" }} onClick={()=>{ setShowCart(false); setCheckoutStep("cart") }}>
+          <div style={{ width:"100%", maxWidth:500, background:"#ffffff", borderRadius:"20px 20px 0 0", padding:"1.5rem", maxHeight:"85vh", overflowY:"auto" }} onClick={e=>e.stopPropagation()}>
+            <div style={{ display:"flex", justifyContent:"center", marginBottom:8 }}><div style={{ width:36, height:4, borderRadius:2, background:"#e0e0e0" }}/></div>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1.25rem" }}>
               <div>
               <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000000" }}>
