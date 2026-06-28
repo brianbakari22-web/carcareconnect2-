@@ -5,6 +5,7 @@ import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
 
 const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
+const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"]
 
 export default function ProviderAvailability() {
   const isMobile = useIsMobile()
@@ -74,7 +75,7 @@ export default function ProviderAvailability() {
     const max = avail?.max_bookings ?? defaultMaxBookings
     if (count >= max) return { type:"full", label:"Full", color:"#fff8f0", textColor:"#e6821e" }
     if (count > 0) return { type:"partial", label:`${count}/${max}`, color:"#f0fdf4", textColor:"#1d9e75" }
-    return { type:"open", label:"Open", color:"#555555", textColor:"#555" }
+    return { type:"open", label:"Open", color:"#f8f8f8", textColor:"#555" }
   }
 
   function selectDay(day) {
@@ -207,23 +208,27 @@ export default function ProviderAvailability() {
 
   return (
     <div>
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginBottom:"1.5rem" }}>
-        {[
-          { label:"Bookings this month", value:totalBookings, color:"#378add" },
-          { label:"Blocked days", value:blockedDays, color:blockedDays>0?"#e24b4a":undefined },
-          { label:"Full days", value:fullDays, color:fullDays>0?"#e6821e":undefined },
-        ].map(s=>(
-          <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
-            <div style={{ fontSize:11, color:"#777777", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
-            <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:s.color||"#000000" }}>{s.value}</div>
+      <div style={{ background:"linear-gradient(135deg,#e6821e,#f09840)", borderRadius:14, padding:"1rem 1.25rem", marginBottom:"1.25rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+        <div>
+          <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#fff" }}>{MONTH_NAMES[month]} {year}</div>
+          <div style={{ fontSize:11, color:"rgba(255,255,255,0.8)", marginTop:2 }}>{totalBookings} booking{totalBookings!==1?"s":""} this month</div>
+        </div>
+        <div style={{ display:"flex", gap:16 }}>
+          <div style={{ textAlign:"center" }}>
+            <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:blockedDays>0?"#fecaca":"rgba(255,255,255,0.9)" }}>{blockedDays}</div>
+            <div style={{ fontSize:10, color:"rgba(255,255,255,0.7)" }}>Blocked</div>
           </div>
-        ))}
+          <div style={{ textAlign:"center" }}>
+            <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:fullDays>0?"#fed7aa":"rgba(255,255,255,0.9)" }}>{fullDays}</div>
+            <div style={{ fontSize:10, color:"rgba(255,255,255,0.7)" }}>Full</div>
+          </div>
+        </div>
       </div>
 
       <div style={{ display:"flex", gap:6, marginBottom:"1.25rem" }}>
         {[{k:"calendar",l:"Calendar"},{k:"settings",l:"Settings"}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#378add":"#555555", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
+            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#f0f0f0", color:tab===t.k?"#fff":"#555", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
             {t.l}
           </button>
         ))}
@@ -284,7 +289,7 @@ export default function ProviderAvailability() {
                   { color:"#f0fdf4", text:"#1d9e75", label:"Has bookings" },
                   { color:"#fff8f0", text:"#e6821e", label:"Full" },
                   { color:"#fff5f5", text:"#e24b4a", label:"Blocked" },
-                  { color:"#555555", text:"#555", label:"Open" },
+                  { color:"#f8f8f8", text:"#888", label:"Open" },
                 ].map(l=>(
                   <div key={l.label} style={{ display:"flex", alignItems:"center", gap:4 }}>
                     <div style={{ width:12, height:12, borderRadius:3, background:l.color, border:`1px solid ${l.text}40` }}/>
@@ -296,16 +301,16 @@ export default function ProviderAvailability() {
 
             <div style={{ display:"flex", gap:8, marginTop:10, flexWrap:"wrap" }}>
               <button onClick={()=>bulkBlock("weekends")} disabled={saving}
-                style={{ background:"#ffffff", border:"1px solid #dddddd", borderRadius:8, color:"#555555", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
-                Block all weekends
+                style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:8, color:"#e6821e", fontSize:12, fontWeight:600, padding:"8px 14px", cursor:"pointer" }}>
+                📅 Block weekends
               </button>
               <button onClick={()=>bulkBlock("all")} disabled={saving}
                 style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
                 Block entire month
               </button>
               <button onClick={clearMonth} disabled={saving}
-                style={{ background:"#ffffff", border:"1px solid #dddddd", borderRadius:8, color:"#777777", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
-                Clear month
+                style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:8, color:"#1d9e75", fontSize:12, fontWeight:600, padding:"8px 14px", cursor:"pointer" }}>
+                🔄 Clear month
               </button>
               <button onClick={()=>setShowRangeBlock(r=>!r)} disabled={saving}
                 style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:8, color:"#e6821e", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
@@ -345,7 +350,7 @@ export default function ProviderAvailability() {
           </div>
 
           {selected&&(
-            <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
+            <div style={{ background:"#ffffff", border:"1px solid #e6821e30", borderRadius:12, padding:"1.25rem", boxShadow:"0 4px 16px rgba(230,130,30,0.1)" }}>
               <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#000000" }}>
                 {new Date(selected+"T00:00:00").toLocaleDateString("default",{weekday:"long",month:"long",day:"numeric"})}
               </div>
@@ -388,8 +393,8 @@ export default function ProviderAvailability() {
 
                 <div style={{ display:"flex", gap:8 }}>
                   <button type="submit" disabled={saving}
-                    style={{ flex:1, background:saving?"#555555":"#378add", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px", cursor:saving?"not-allowed":"pointer" }}>
-                    {saving?"Saving...":"Save"}
+                    style={{ flex:1, background:saving?"#ccc":"linear-gradient(135deg,#e6821e,#f09840)", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px", cursor:saving?"not-allowed":"pointer", boxShadow:"0 4px 12px rgba(230,130,30,0.3)" }}>
+                    {saving?"Saving...":"✓ Save"}
                   </button>
                   <button type="button" onClick={()=>setSelected(null)}
                     style={{ flex:1, background:"none", border:"1px solid #dddddd", borderRadius:8, color:"#555555", fontSize:13, padding:"11px", cursor:"pointer" }}>
