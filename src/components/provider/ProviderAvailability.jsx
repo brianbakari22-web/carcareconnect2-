@@ -1,12 +1,10 @@
 import useIsMobile from "../../lib/useIsMobile"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
 
 const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
-const FULL_DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
-const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"]
 
 export default function ProviderAvailability() {
   const isMobile = useIsMobile()
@@ -21,6 +19,7 @@ export default function ProviderAvailability() {
   const [dateRange, setDateRange] = useState({ from:"", to:"", reason:"" })
   const [showRangeBlock, setShowRangeBlock] = useState(false)
   const [defaultMaxBookings, setDefaultMaxBookings] = useState(5)
+  const [tab, setTab] = useState("calendar")
 
   const year = currentMonth.getFullYear()
   const month = currentMonth.getMonth()
@@ -33,15 +32,27 @@ export default function ProviderAvailability() {
   async function load() {
     const startDate = `${monthStr}-01`
     const endDate = `${monthStr}-${String(daysInMonth).padStart(2,"0")}`
+
     const [{ data: avail }, { data: bookings }] = await Promise.all([
-      supabase.from("provider_availability").select("*").eq("provider_id", user.id).gte("date", startDate).lte("date", endDate),
-      supabase.from("bookings").select("booking_date").eq("provider_id", user.id).gte("booking_date", startDate).lte("booking_date", endDate).not("status", "eq", "cancelled").eq("is_archived", false)
+      supabase.from("provider_availability").select("*")
+        .eq("provider_id", user.id)
+        .gte("date", startDate)
+        .lte("date", endDate),
+      supabase.from("bookings").select("booking_date")
+        .eq("provider_id", user.id)
+        .gte("booking_date", startDate)
+        .lte("booking_date", endDate)
+        .not("status", "eq", "cancelled").eq("is_archived", false)
     ])
+
     const availMap = {}
     ;(avail||[]).forEach(a => { availMap[a.date] = a })
     setAvailability(availMap)
+
     const countMap = {}
-    ;(bookings||[]).forEach(b => { countMap[b.booking_date] = (countMap[b.booking_date]||0) + 1 })
+    ;(bookings||[]).forEach(b => {
+      countMap[b.booking_date] = (countMap[b.booking_date]||0) + 1
+    })
     setBookingCounts(countMap)
     setLoading(false)
   }
@@ -57,12 +68,13 @@ export default function ProviderAvailability() {
     const today = new Date(); today.setHours(0,0,0,0)
     const date = new Date(dateStr+"T00:00:00")
     const isPast = date < today
-    if (isPast) return { type:"past", color:"#f5f5f5", textColor:"#ccc", dot:null }
-    if (avail?.is_blocked) return { type:"blocked", color:"#fff5f5", textColor:"#e24b4a", dot:"#e24b4a" }
+
+    if (isPast) return { type:"past", label:"", color:"#eeeeee", textColor:"#444" }
+    if (avail?.is_blocked) return { type:"blocked", label:"Blocked", color:"#fff5f5", textColor:"#e24b4a" }
     const max = avail?.max_bookings ?? defaultMaxBookings
-    if (count >= max) return { type:"full", color:"#fff8f0", textColor:"#e6821e", dot:"#e6821e" }
-    if (count > 0) return { type:"partial", color:"#f0fdf4", textColor:"#1d9e75", dot:"#1d9e75" }
-    return { type:"open", color:"#ffffff", textColor:"#333", dot:null }
+    if (count >= max) return { type:"full", label:"Full", color:"#fff8f0", textColor:"#e6821e" }
+    if (count > 0) return { type:"partial", label:`${count}/${max}`, color:"#f0fdf4", textColor:"#1d9e75" }
+    return { type:"open", label:"Open", color:"#555555", textColor:"#555" }
   }
 
   function selectDay(day) {
@@ -72,20 +84,26 @@ export default function ProviderAvailability() {
     if (date < today) return
     setSelected(dateStr)
     const avail = availability[dateStr]
-    setForm({ max_bookings:avail?.max_bookings??defaultMaxBookings, is_blocked:avail?.is_blocked??false, block_reason:avail?.block_reason??"" })
+    setForm({
+      max_bookings: avail?.max_bookings ?? defaultMaxBookings,
+      is_blocked: avail?.is_blocked ?? false,
+      block_reason: avail?.block_reason ?? ""
+    })
   }
 
   async function saveDay(e) {
     e.preventDefault()
     setSaving(true)
     try {
-      await supabase.from("provider_availability").upsert({
-        provider_id: user.id, date: selected,
+      const { error } = await supabase.from("provider_availability").upsert({
+        provider_id: user.id,
+        date: selected,
         max_bookings: form.is_blocked ? 0 : Number(form.max_bookings),
         is_blocked: form.is_blocked,
         block_reason: form.block_reason || null
       }, { onConflict:"provider_id,date" })
-      toast.success("Saved!")
+      if (error) throw error
+      toast.success(`Saved for ${new Date(selected+"T00:00:00").toLocaleDateString("default",{weekday:"long",month:"long",day:"numeric"})}`)
       setSelected(null)
       load()
     } catch(err) { toast.error(err.message) }
@@ -93,8 +111,8 @@ export default function ProviderAvailability() {
   }
 
   async function blockDateRange() {
-    if (!dateRange.from || !dateRange.to) return toast.error("Select start and end dates")
-    if (dateRange.from > dateRange.to) return toast.error("Start must be before end")
+    if (!dateRange.from || !dateRange.to) return toast.error("Please select start and end dates")
+    if (dateRange.from > dateRange.to) return toast.error("Start date must be before end date")
     setSaving(true)
     try {
       const dates = []
@@ -102,45 +120,60 @@ export default function ProviderAvailability() {
       const end = new Date(dateRange.to+"T00:00:00")
       const today = new Date(); today.setHours(0,0,0,0)
       for (let d = new Date(start); d <= end; d.setDate(d.getDate()+1)) {
-        if (d >= today) dates.push(d.toISOString().split("T")[0])
+        if (d < today) continue
+        dates.push(d.toISOString().split("T")[0])
       }
       for (const date of dates) {
-        await supabase.from("provider_availability").upsert({ provider_id:user.id, date, is_blocked:true, block_reason:dateRange.reason||"Date range block", max_bookings:0 }, { onConflict:"provider_id,date" })
+        await supabase.from("provider_availability").upsert({
+          provider_id: user.id,
+          date,
+          is_blocked: true,
+          block_reason: dateRange.reason || "Date range block",
+          max_bookings: 0
+        }, { onConflict: "provider_id,date" })
       }
-      toast.success(`${dates.length} days blocked`)
+      toast.success(dates.length + " days blocked")
       setDateRange({ from:"", to:"", reason:"" })
       setShowRangeBlock(false)
-      load()
+      await load()
     } catch(e) { toast.error("Error blocking dates") }
     finally { setSaving(false) }
   }
 
   async function quickToggleBlock(dateStr) {
     const avail = availability[dateStr]
+    const isCurrentlyBlocked = avail?.is_blocked
     await supabase.from("provider_availability").upsert({
-      provider_id:user.id, date:dateStr,
-      is_blocked:!avail?.is_blocked,
-      block_reason:avail?.is_blocked?null:"Blocked",
-      max_bookings:avail?.is_blocked?5:0
-    }, { onConflict:"provider_id,date" })
-    load()
+      provider_id: user.id,
+      date: dateStr,
+      is_blocked: !isCurrentlyBlocked,
+      block_reason: isCurrentlyBlocked ? null : "Blocked",
+      max_bookings: isCurrentlyBlocked ? 5 : 0
+    }, { onConflict: "provider_id,date" })
+    await load()
   }
 
   async function bulkBlock(type) {
     setSaving(true)
     try {
-      const today = new Date(); today.setHours(0,0,0,0)
       const dates = []
-      for (let d=1; d<=daysInMonth; d++) {
+      for (let d = 1; d <= daysInMonth; d++) {
         const dateStr = getDateStr(d)
+        const today = new Date(); today.setHours(0,0,0,0)
         const date = new Date(dateStr+"T00:00:00")
         if (date < today) continue
         const dayOfWeek = date.getDay()
-        if (type==="weekends" && (dayOfWeek===0||dayOfWeek===6)) dates.push(dateStr)
-        if (type==="all") dates.push(dateStr)
+        if (type === "weekends" && (dayOfWeek === 0 || dayOfWeek === 6)) dates.push(dateStr)
+        if (type === "all") dates.push(dateStr)
       }
       for (const date of dates) {
-        await supabase.from("provider_availability").upsert({ provider_id:user.id, date, max_bookings:0, is_blocked:true, block_reason:type==="weekends"?"Weekend":"Blocked" }, { onConflict:"provider_id,date" })
+        await supabase.from("provider_availability").upsert({
+          provider_id: user.id,
+          date,
+          max_bookings: 0,
+          is_blocked: true,
+          block_reason: type === "weekends" ? "Weekend" : "Blocked"
+        }, { onConflict:"provider_id,date" })
       }
       toast.success(`${dates.length} dates blocked`)
       load()
@@ -151,261 +184,263 @@ export default function ProviderAvailability() {
   async function clearMonth() {
     if (!confirm("Clear all availability settings for this month?")) return
     setSaving(true)
-    await supabase.from("provider_availability").delete().eq("provider_id", user.id).gte("date", `${monthStr}-01`).lte("date", `${monthStr}-${String(daysInMonth).padStart(2,"0")}`)
+    await supabase.from("provider_availability")
+      .delete()
+      .eq("provider_id", user.id)
+      .gte("date", `${monthStr}-01`)
+      .lte("date", `${monthStr}-${String(daysInMonth).padStart(2,"0")}`)
     toast.success("Month cleared")
     setSaving(false)
     load()
   }
 
   const cells = []
-  for (let i=0; i<firstDay; i++) cells.push(null)
-  for (let d=1; d<=daysInMonth; d++) cells.push(d)
+  for (let i = 0; i < firstDay; i++) cells.push(null)
+  for (let d = 1; d <= daysInMonth; d++) cells.push(d)
 
-  const totalBookings = Object.values(bookingCounts).reduce((s,c)=>s+c,0)
+  const totalBookings = Object.values(bookingCounts).reduce((s,c)=>s+c, 0)
   const blockedDays = Object.values(availability).filter(a=>a.is_blocked).length
-  const fullDays = Object.entries(bookingCounts).filter(([date,count])=>{
-    const max = availability[date]?.max_bookings??defaultMaxBookings
-    return count>=max && !availability[date]?.is_blocked
+  const fullDays = Object.entries(bookingCounts).filter(([date, count]) => {
+    const max = availability[date]?.max_bookings ?? defaultMaxBookings
+    return count >= max && !availability[date]?.is_blocked
   }).length
-
-  const selectedDate = selected ? new Date(selected+"T00:00:00") : null
 
   return (
     <div>
-      <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#000", marginBottom:4 }}>Availability</div>
-      <div style={{ fontSize:12, color:"#777", marginBottom:"1.25rem" }}>Manage your booking calendar and block unavailable dates</div>
-
-      {/* Stats header */}
-      <div style={{ background:"linear-gradient(135deg,#e6821e,#f09840)", borderRadius:14, padding:"1rem 1.25rem", marginBottom:"1.25rem" }}>
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-          <div>
-            <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#fff" }}>{MONTH_NAMES[month]} {year}</div>
-            <div style={{ fontSize:11, color:"rgba(255,255,255,0.8)", marginTop:2 }}>{totalBookings} booking{totalBookings!==1?"s":""} this month</div>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginBottom:"1.5rem" }}>
+        {[
+          { label:"Bookings this month", value:totalBookings, color:"#378add" },
+          { label:"Blocked days", value:blockedDays, color:blockedDays>0?"#e24b4a":undefined },
+          { label:"Full days", value:fullDays, color:fullDays>0?"#e6821e":undefined },
+        ].map(s=>(
+          <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
+            <div style={{ fontSize:11, color:"#777777", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
+            <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:s.color||"#000000" }}>{s.value}</div>
           </div>
-          <div style={{ display:"flex", gap:16 }}>
-            <div style={{ textAlign:"center" }}>
-              <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:blockedDays>0?"#fecaca":"rgba(255,255,255,0.9)" }}>{blockedDays}</div>
-              <div style={{ fontSize:10, color:"rgba(255,255,255,0.7)" }}>Blocked</div>
-            </div>
-            <div style={{ textAlign:"center" }}>
-              <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:fullDays>0?"#fed7aa":"rgba(255,255,255,0.9)" }}>{fullDays}</div>
-              <div style={{ fontSize:10, color:"rgba(255,255,255,0.7)" }}>Full</div>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
 
-      <div style={{ display:"grid", gridTemplateColumns:selected&&!isMobile?"1fr 300px":"1fr", gap:"1.25rem" }}>
-        {/* Calendar */}
-        <div>
-          {/* Month navigation */}
-          <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:14, padding:"1.25rem", marginBottom:"1rem" }}>
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
-              <button onClick={()=>setCurrentMonth(new Date(year,month-1,1))}
-                style={{ background:"#f0f0f0", border:"none", borderRadius:8, width:36, height:36, cursor:"pointer", fontSize:16, display:"flex", alignItems:"center", justifyContent:"center" }}>‹</button>
-              <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:700, color:"#000" }}>{MONTH_NAMES[month]} {year}</div>
-              <button onClick={()=>setCurrentMonth(new Date(year,month+1,1))}
-                style={{ background:"#f0f0f0", border:"none", borderRadius:8, width:36, height:36, cursor:"pointer", fontSize:16, display:"flex", alignItems:"center", justifyContent:"center" }}>›</button>
-            </div>
+      <div style={{ display:"flex", gap:6, marginBottom:"1.25rem" }}>
+        {[{k:"calendar",l:"Calendar"},{k:"settings",l:"Settings"}].map(t=>(
+          <button key={t.k} onClick={()=>setTab(t.k)}
+            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#378add":"#555555", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
+            {t.l}
+          </button>
+        ))}
+      </div>
 
-            {/* Day headers */}
-            <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:4, marginBottom:6 }}>
-              {DAYS.map(d=>(
-                <div key={d} style={{ textAlign:"center", fontSize:11, color:"#888", fontWeight:600, padding:"4px 0" }}>{d}</div>
-              ))}
-            </div>
+      {tab==="calendar"&&(
+        <div style={{ display:"grid", gridTemplateColumns:selected&&!isMobile?"1fr 320px":"1fr", gap:10 }}>
+          <div>
+            <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
+                <button onClick={()=>setCurrentMonth(new Date(year,month-1,1))}
+                  style={{ background:"none", border:"none", color:"#555555", cursor:"pointer", fontSize:18, padding:"4px 8px" }}>‹</button>
+                <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:700, color:"#000000" }}>
+                  {currentMonth.toLocaleString("default",{month:"long",year:"numeric"})}
+                </div>
+                <button onClick={()=>setCurrentMonth(new Date(year,month+1,1))}
+                  style={{ background:"none", border:"none", color:"#555555", cursor:"pointer", fontSize:18, padding:"4px 8px" }}>›</button>
+              </div>
 
-            {/* Calendar grid */}
-            {loading ? (
-              <div style={{ textAlign:"center", padding:"2rem", color:"#888", fontSize:13 }}>Loading...</div>
-            ):(
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:2, marginBottom:6 }}>
+                {DAYS.map(d=><div key={d} style={{ textAlign:"center", fontSize:10, color:"#777777", padding:"4px 0" }}>{d}</div>)}
+              </div>
+
               <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:4 }}>
                 {cells.map((day,i)=>{
                   if (!day) return <div key={i}/>
                   const dateStr = getDateStr(day)
                   const status = getDayStatus(day)
-                  const isSelected = selected===dateStr
-                  const isToday = dateStr===new Date().toISOString().split("T")[0]
-                  const count = bookingCounts[dateStr]||0
-                  const avail = availability[dateStr]
+                  const isSelected = selected === dateStr
+                  const isToday = dateStr === new Date().toISOString().split("T")[0]
+                  const count = bookingCounts[dateStr] || 0
                   return (
                     <div key={day} onClick={()=>selectDay(day)}
-                      style={{ background:isSelected?"#e6821e":status.color, borderRadius:10, padding:"6px 4px", textAlign:"center", cursor:status.type==="past"?"default":"pointer", border:isToday?"2px solid #e6821e":`1px solid ${isSelected?"#e6821e":"#eeeeee"}`, transition:"all 0.15s", boxShadow:isSelected?"0 4px 12px rgba(230,130,30,0.3)":"none", minHeight:52, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center" }}>
-                      <div style={{ fontSize:13, fontWeight:isToday?800:500, color:isSelected?"#fff":status.textColor }}>{day}</div>
-                      {status.dot&&!isSelected&&(
-                        <div style={{ width:6, height:6, borderRadius:"50%", background:status.dot, marginTop:3 }}/>
+                      style={{ background:isSelected?"#378add":status.color, borderRadius:8, padding:"8px 4px", textAlign:"center", cursor:status.type==="past"?"default":"pointer", border:isToday?`2px solid #378add`:`1px solid ${isSelected?"#378add":"#f5f5f5"}`, transition:"all 0.12s" }}>
+                      <div style={{ fontSize:13, fontWeight:600, color:isSelected?"#fff":status.textColor, marginBottom:2 }}>{day}</div>
+                      {status.type!=="past"&&(
+                        <div style={{ fontSize:8, color:isSelected?"rgba(255,255,255,0.8)":status.textColor, lineHeight:1 }}>
+                          {status.label}
+                        </div>
                       )}
-                      {count>0&&!isSelected&&(
-                        <div style={{ fontSize:9, color:status.textColor, marginTop:1, fontWeight:600 }}>{count}</div>
+                      {count>0&&status.type!=="past"&&(
+                        <div style={{ width:6, height:6, borderRadius:"50%", background:isSelected?"#fff":"#378add", margin:"3px auto 0" }}/>
                       )}
-                      {avail?.is_blocked&&!isSelected&&(
-                        <div style={{ fontSize:8, color:"#e24b4a", marginTop:1 }}>🚫</div>
+                      {status.type!=="past"&&(
+                        <div onClick={e=>{ e.stopPropagation(); quickToggleBlock(getDateStr(day)) }}
+                          style={{ fontSize:8, marginTop:2, color:status.type==="blocked"?"#e24b4a":"#aaa", cursor:"pointer" }}
+                          title={status.type==="blocked"?"Unblock day":"Quick block"}>
+                          {status.type==="blocked"?"✓ tap to unblock":"🚫"}
+                        </div>
                       )}
                     </div>
                   )
                 })}
               </div>
-            )}
 
-            {/* Legend */}
-            <div style={{ display:"flex", gap:12, marginTop:"1rem", flexWrap:"wrap", justifyContent:"center" }}>
-              {[
-                { color:"#f0fdf4", dot:"#1d9e75", label:"Has bookings" },
-                { color:"#fff8f0", dot:"#e6821e", label:"Full" },
-                { color:"#fff5f5", dot:"#e24b4a", label:"Blocked" },
-                { color:"#ffffff", dot:null, label:"Open" },
-              ].map(l=>(
-                <div key={l.label} style={{ display:"flex", alignItems:"center", gap:5 }}>
-                  <div style={{ width:12, height:12, borderRadius:3, background:l.color, border:"1px solid #eee", display:"flex", alignItems:"center", justifyContent:"center" }}>
-                    {l.dot&&<div style={{ width:5, height:5, borderRadius:"50%", background:l.dot }}/>}
+              <div style={{ display:"flex", gap:12, marginTop:"1rem", flexWrap:"wrap" }}>
+                {[
+                  { color:"#f0fdf4", text:"#1d9e75", label:"Has bookings" },
+                  { color:"#fff8f0", text:"#e6821e", label:"Full" },
+                  { color:"#fff5f5", text:"#e24b4a", label:"Blocked" },
+                  { color:"#555555", text:"#555", label:"Open" },
+                ].map(l=>(
+                  <div key={l.label} style={{ display:"flex", alignItems:"center", gap:4 }}>
+                    <div style={{ width:12, height:12, borderRadius:3, background:l.color, border:`1px solid ${l.text}40` }}/>
+                    <span style={{ fontSize:10, color:"#777777" }}>{l.label}</span>
                   </div>
-                  <span style={{ fontSize:10, color:"#777" }}>{l.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Bulk actions */}
-          <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:14, padding:"1rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000", marginBottom:10 }}>⚡ Quick actions</div>
-            <div style={{ display:"flex", gap:8, flexWrap:"wrap", marginBottom:10 }}>
-              <button onClick={()=>bulkBlock("weekends")} disabled={saving}
-                style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:8, color:"#e6821e", fontSize:12, fontWeight:600, padding:"8px 14px", cursor:"pointer" }}>
-                📅 Block weekends
-              </button>
-              <button onClick={()=>bulkBlock("all")} disabled={saving}
-                style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", fontSize:12, fontWeight:600, padding:"8px 14px", cursor:"pointer" }}>
-                🚫 Block entire month
-              </button>
-              <button onClick={clearMonth} disabled={saving}
-                style={{ background:"#f8f8f8", border:"1px solid #dddddd", borderRadius:8, color:"#666", fontSize:12, fontWeight:600, padding:"8px 14px", cursor:"pointer" }}>
-                🔄 Clear month
-              </button>
-              <button onClick={()=>setShowRangeBlock(r=>!r)} disabled={saving}
-                style={{ background:"#f5f3ff", border:"1px solid #8b5cf640", borderRadius:8, color:"#8b5cf6", fontSize:12, fontWeight:600, padding:"8px 14px", cursor:"pointer" }}>
-                📆 Block date range
-              </button>
-            </div>
-
-            {/* Default max bookings */}
-            <div style={{ background:"#f8f8f8", borderRadius:10, padding:"0.75rem", marginBottom:showRangeBlock?10:0 }}>
-              <div style={{ fontSize:11, color:"#666", marginBottom:8 }}>Default max bookings per day</div>
-              <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-                <button onClick={()=>setDefaultMaxBookings(m=>Math.max(1,m-1))}
-                  style={{ width:34, height:34, borderRadius:8, background:"#fff", border:"1px solid #ddd", fontSize:18, cursor:"pointer" }}>−</button>
-                <div style={{ fontFamily:"Syne", fontSize:24, fontWeight:800, color:"#e6821e", width:36, textAlign:"center" }}>{defaultMaxBookings}</div>
-                <button onClick={()=>setDefaultMaxBookings(m=>Math.min(20,m+1))}
-                  style={{ width:34, height:34, borderRadius:8, background:"#fff", border:"1px solid #ddd", fontSize:18, cursor:"pointer" }}>+</button>
-                <div style={{ fontSize:11, color:"#888", flex:1 }}>bookings per day by default</div>
+                ))}
               </div>
             </div>
 
-            {/* Date range block form */}
+            <div style={{ display:"flex", gap:8, marginTop:10, flexWrap:"wrap" }}>
+              <button onClick={()=>bulkBlock("weekends")} disabled={saving}
+                style={{ background:"#ffffff", border:"1px solid #dddddd", borderRadius:8, color:"#555555", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
+                Block all weekends
+              </button>
+              <button onClick={()=>bulkBlock("all")} disabled={saving}
+                style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
+                Block entire month
+              </button>
+              <button onClick={clearMonth} disabled={saving}
+                style={{ background:"#ffffff", border:"1px solid #dddddd", borderRadius:8, color:"#777777", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
+                Clear month
+              </button>
+              <button onClick={()=>setShowRangeBlock(r=>!r)} disabled={saving}
+                style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:8, color:"#e6821e", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
+                📅 Block date range
+              </button>
+            </div>
             {showRangeBlock&&(
-              <div style={{ background:"#f5f3ff", border:"1px solid #8b5cf630", borderRadius:10, padding:"1rem", marginTop:10 }}>
-                <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#8b5cf6", marginBottom:10 }}>📆 Block date range</div>
+              <div style={{ marginTop:12, background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:10, padding:"1rem" }}>
+                <div style={{ fontWeight:700, fontSize:13, marginBottom:10, color:"#e6821e" }}>📅 Block a date range</div>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:8 }}>
                   <div>
-                    <label style={{ fontSize:10, color:"#666", display:"block", marginBottom:3 }}>From</label>
+                    <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>From</label>
                     <input type="date" value={dateRange.from} onChange={e=>setDateRange(r=>({...r,from:e.target.value}))}
-                      style={{ width:"100%", background:"#fff", border:"1px solid #e5e5e5", borderRadius:7, padding:"8px 10px", fontSize:12, outline:"none" }}/>
+                      style={{ width:"100%", border:"1px solid #ddd", borderRadius:6, padding:"6px 8px", fontSize:12 }}/>
                   </div>
                   <div>
-                    <label style={{ fontSize:10, color:"#666", display:"block", marginBottom:3 }}>To</label>
+                    <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>To</label>
                     <input type="date" value={dateRange.to} onChange={e=>setDateRange(r=>({...r,to:e.target.value}))}
-                      style={{ width:"100%", background:"#fff", border:"1px solid #e5e5e5", borderRadius:7, padding:"8px 10px", fontSize:12, outline:"none" }}/>
+                      style={{ width:"100%", border:"1px solid #ddd", borderRadius:6, padding:"6px 8px", fontSize:12 }}/>
                   </div>
                 </div>
                 <input value={dateRange.reason} onChange={e=>setDateRange(r=>({...r,reason:e.target.value}))}
                   placeholder="Reason (e.g. Holiday, Vacation...)"
-                  style={{ width:"100%", background:"#fff", border:"1px solid #e5e5e5", borderRadius:7, padding:"8px 10px", fontSize:12, outline:"none", marginBottom:8 }}/>
+                  style={{ width:"100%", border:"1px solid #ddd", borderRadius:6, padding:"6px 8px", fontSize:12, marginBottom:8, boxSizing:"border-box" }}/>
                 <div style={{ display:"flex", gap:8 }}>
                   <button onClick={blockDateRange} disabled={saving}
-                    style={{ flex:1, background:"#8b5cf6", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px", cursor:"pointer" }}>
+                    style={{ flex:1, background:"#e24b4a", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"8px", cursor:"pointer" }}>
                     🚫 Block these dates
                   </button>
                   <button onClick={()=>setShowRangeBlock(false)}
-                    style={{ background:"none", border:"1px solid #ddd", borderRadius:8, color:"#888", fontSize:12, padding:"9px 14px", cursor:"pointer" }}>
+                    style={{ background:"none", border:"1px solid #ddd", borderRadius:8, color:"#888", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>
                     Cancel
                   </button>
                 </div>
               </div>
             )}
           </div>
-        </div>
 
-        {/* Day detail panel */}
-        {selected&&(
-          <div style={{ background:"#ffffff", border:"1px solid #e6821e30", borderRadius:14, padding:"1.25rem", position:isMobile?"static":"sticky", top:80 }}>
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:"1rem" }}>
-              <div>
-                <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000" }}>
-                  {selectedDate?.toLocaleDateString("default",{weekday:"long"})}
-                </div>
-                <div style={{ fontSize:12, color:"#888" }}>
-                  {selectedDate?.toLocaleDateString("default",{month:"long",day:"numeric",year:"numeric"})}
-                </div>
-                <div style={{ fontSize:11, color:"#e6821e", marginTop:4 }}>
-                  {bookingCounts[selected]||0} booking{(bookingCounts[selected]||0)!==1?"s":""} on this day
-                </div>
+          {selected&&(
+            <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#000000" }}>
+                {new Date(selected+"T00:00:00").toLocaleDateString("default",{weekday:"long",month:"long",day:"numeric"})}
               </div>
-              <button onClick={()=>setSelected(null)}
-                style={{ background:"#f0f0f0", border:"none", borderRadius:"50%", width:30, height:30, cursor:"pointer", fontSize:16, display:"flex", alignItems:"center", justifyContent:"center" }}>×</button>
-            </div>
-
-            <form onSubmit={saveDay}>
-              {/* Block toggle */}
-              <label style={{ display:"flex", alignItems:"center", gap:12, cursor:"pointer", padding:"0.85rem", background:form.is_blocked?"#fff5f5":"#f8f8f8", borderRadius:10, border:`1px solid ${form.is_blocked?"#e24b4a40":"#eeeeee"}`, marginBottom:"1rem", transition:"all 0.2s" }}>
-                <div style={{ position:"relative", width:44, height:24, flexShrink:0 }}>
-                  <input type="checkbox" checked={form.is_blocked} onChange={e=>setForm(f=>({...f,is_blocked:e.target.checked}))} style={{ opacity:0, width:0, height:0, position:"absolute" }}/>
-                  <div style={{ position:"absolute", inset:0, background:form.is_blocked?"#e24b4a":"#ddd", borderRadius:12, transition:"background 0.2s" }}>
-                    <div style={{ position:"absolute", top:2, left:form.is_blocked?22:2, width:20, height:20, background:"#fff", borderRadius:"50%", transition:"left 0.2s", boxShadow:"0 1px 4px rgba(0,0,0,0.2)" }}/>
+              <div style={{ fontSize:11, color:"#777777", marginBottom:"1.25rem" }}>
+                {bookingCounts[selected]||0} booking{(bookingCounts[selected]||0)!==1?"s":""} today
+              </div>
+              <form onSubmit={saveDay}>
+                <label style={{ display:"flex", alignItems:"center", gap:10, cursor:"pointer", marginBottom:"1rem", padding:"0.75rem", background:"#fff5f5", borderRadius:8, border:"1px solid #e24b4a20" }}>
+                  <input type="checkbox" checked={form.is_blocked} onChange={e=>setForm(f=>({...f,is_blocked:e.target.checked}))} style={{ width:16, height:16, cursor:"pointer" }}/>
+                  <div>
+                    <div style={{ fontSize:13, color:"#e24b4a", fontWeight:500 }}>Block this day</div>
+                    <div style={{ fontSize:11, color:"#666" }}>No bookings allowed</div>
                   </div>
-                </div>
-                <div>
-                  <div style={{ fontSize:13, fontWeight:600, color:form.is_blocked?"#e24b4a":"#333" }}>
-                    {form.is_blocked?"🚫 Day blocked":"✅ Day open"}
+                </label>
+
+                {form.is_blocked&&(
+                  <div style={{ marginBottom:"1rem" }}>
+                    <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Reason (optional)</label>
+                    <input value={form.block_reason} onChange={e=>setForm(f=>({...f,block_reason:e.target.value}))}
+                      placeholder="e.g. Public holiday, Staff training"
+                      style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }}/>
                   </div>
-                  <div style={{ fontSize:11, color:"#888" }}>{form.is_blocked?"No bookings allowed":"Accepting bookings"}</div>
-                </div>
-              </label>
+                )}
 
-              {form.is_blocked&&(
-                <div style={{ marginBottom:"1rem" }}>
-                  <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>Block reason (optional)</label>
-                  <input value={form.block_reason} onChange={e=>setForm(f=>({...f,block_reason:e.target.value}))}
-                    placeholder="e.g. Public holiday, Training day"
-                    style={{ width:"100%", background:"#f8f8f8", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", color:"#000", fontSize:12, outline:"none", fontFamily:"DM Sans,sans-serif" }}/>
-                </div>
-              )}
-
-              {!form.is_blocked&&(
-                <div style={{ marginBottom:"1rem" }}>
-                  <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:8 }}>Max bookings this day</label>
-                  <div style={{ display:"flex", alignItems:"center", gap:12, background:"#f8f8f8", borderRadius:10, padding:"0.75rem" }}>
-                    <button type="button" onClick={()=>setForm(f=>({...f,max_bookings:Math.max(1,f.max_bookings-1)}))}
-                      style={{ width:36, height:36, borderRadius:8, background:"#fff", border:"1px solid #ddd", fontSize:20, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>−</button>
-                    <div style={{ flex:1, textAlign:"center" }}>
-                      <div style={{ fontFamily:"Syne", fontSize:28, fontWeight:800, color:"#e6821e" }}>{form.max_bookings}</div>
-                      <div style={{ fontSize:10, color:"#888" }}>max bookings</div>
+                {!form.is_blocked&&(
+                  <div style={{ marginBottom:"1rem" }}>
+                    <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Max bookings this day</label>
+                    <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                      <button type="button" onClick={()=>setForm(f=>({...f,max_bookings:Math.max(1,f.max_bookings-1)}))}
+                        style={{ width:36, height:36, borderRadius:8, background:"#f5f5f5", border:"1px solid #dddddd", color:"#000000", fontSize:18, cursor:"pointer" }}>−</button>
+                      <div style={{ fontFamily:"Syne", fontSize:24, fontWeight:800, color:"#378add", width:40, textAlign:"center" }}>{form.max_bookings}</div>
+                      <button type="button" onClick={()=>setForm(f=>({...f,max_bookings:Math.min(20,f.max_bookings+1)}))}
+                        style={{ width:36, height:36, borderRadius:8, background:"#f5f5f5", border:"1px solid #dddddd", color:"#000000", fontSize:18, cursor:"pointer" }}>+</button>
                     </div>
-                    <button type="button" onClick={()=>setForm(f=>({...f,max_bookings:Math.min(20,f.max_bookings+1)}))}
-                      style={{ width:36, height:36, borderRadius:8, background:"#fff", border:"1px solid #ddd", fontSize:20, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>+</button>
+                    <div style={{ fontSize:11, color:"#777777", marginTop:6 }}>
+                      {bookingCounts[selected]||0} booked · {Math.max(0,form.max_bookings-(bookingCounts[selected]||0))} slots remaining
+                    </div>
                   </div>
-                  <div style={{ fontSize:11, color:"#888", marginTop:6, textAlign:"center" }}>
-                    {bookingCounts[selected]||0} booked · {Math.max(0,form.max_bookings-(bookingCounts[selected]||0))} slots free
-                  </div>
-                </div>
-              )}
+                )}
 
-              <button type="submit" disabled={saving}
-                style={{ width:"100%", background:saving?"#ccc":"linear-gradient(135deg,#e6821e,#f09840)", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:saving?"not-allowed":"pointer", boxShadow:"0 4px 12px rgba(230,130,30,0.3)" }}>
-                {saving?"Saving...":"✓ Save changes"}
-              </button>
-            </form>
+                <div style={{ display:"flex", gap:8 }}>
+                  <button type="submit" disabled={saving}
+                    style={{ flex:1, background:saving?"#555555":"#378add", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px", cursor:saving?"not-allowed":"pointer" }}>
+                    {saving?"Saving...":"Save"}
+                  </button>
+                  <button type="button" onClick={()=>setSelected(null)}
+                    style={{ flex:1, background:"none", border:"1px solid #dddddd", borderRadius:8, color:"#555555", fontSize:13, padding:"11px", cursor:"pointer" }}>
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+        </div>
+      )}
+
+      {tab==="settings"&&(
+        <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", maxWidth:400 }}>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#000000" }}>Default settings</div>
+          <div style={{ fontSize:12, color:"#777777", marginBottom:"1.5rem" }}>Applied to days with no specific settings</div>
+
+          <div style={{ marginBottom:"1.5rem" }}>
+            <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:8 }}>Default max bookings per day</label>
+            <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+              <button onClick={()=>setDefaultMaxBookings(m=>Math.max(1,m-1))}
+                style={{ width:40, height:40, borderRadius:8, background:"#f5f5f5", border:"1px solid #dddddd", color:"#000000", fontSize:20, cursor:"pointer" }}>−</button>
+              <div style={{ fontFamily:"Syne", fontSize:28, fontWeight:800, color:"#378add", width:50, textAlign:"center" }}>{defaultMaxBookings}</div>
+              <button onClick={()=>setDefaultMaxBookings(m=>Math.min(20,m+1))}
+                style={{ width:40, height:40, borderRadius:8, background:"#f5f5f5", border:"1px solid #dddddd", color:"#000000", fontSize:20, cursor:"pointer" }}>+</button>
+            </div>
+            <div style={{ fontSize:11, color:"#777777", marginTop:8 }}>
+              This applies to all days unless you set a specific limit on the calendar
+            </div>
           </div>
-        )}
-      </div>
+
+          <div style={{ background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:10, padding:"1rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8, color:"#000000" }}>How it works</div>
+            {[
+              { icon:"🟢", text:"Open — day has available slots" },
+              { icon:"🟡", text:"Partial — some bookings made" },
+              { icon:"🔴", text:"Full — max bookings reached" },
+              { icon:"Γ¢ö", text:"Blocked — no bookings allowed" },
+            ].map(i=>(
+              <div key={i.text} style={{ display:"flex", gap:8, marginBottom:6, fontSize:12, color:"#555555" }}>
+                <span>{i.icon}</span><span>{i.text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
+
+
+
+
+
