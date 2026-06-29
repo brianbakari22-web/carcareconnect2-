@@ -249,14 +249,14 @@ export default function NewCarMarketplace() {
                   💬 Send Enquiry
                 </button>
                 {selected.showroom_phone&&(
-                  <a href={`tel:${selected.showroom_phone}`} style={{ display:"block", textAlign:"center", background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:10, color:"#1d9e75", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", textDecoration:"none" }}>
+                  <button onClick={()=>{ window.open("tel:"+selected.showroom_phone,"_system") }} style={{ display:"block", width:"100%", textAlign:"center", background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:10, color:"#1d9e75", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer" }}>
                     📞 Call Showroom
-                  </a>
+                  </button>
                 )}
                 {selected.showroom_phone&&(
-                  <a href={`https://wa.me/254${selected.showroom_phone.replace(/^0/,"")}`} target="_blank" rel="noreferrer" style={{ display:"block", textAlign:"center", background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:10, color:"#1d9e75", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", textDecoration:"none" }}>
+                  <button onClick={()=>{ window.open("https://wa.me/254"+selected.showroom_phone.replace(/^0/,""),"_system") }} style={{ display:"block", width:"100%", textAlign:"center", background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:10, color:"#1d9e75", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer" }}>
                     💚 WhatsApp Dealer
-                  </a>
+                  </button>
                 )}
                 <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:8, padding:"0.75rem", marginTop:4 }}>
                   <div style={{ fontSize:11, color:"#e6821e", fontWeight:600, marginBottom:4 }}>🛡️ CCC Guarantee</div>
