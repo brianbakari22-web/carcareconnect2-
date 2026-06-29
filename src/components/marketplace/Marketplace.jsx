@@ -256,7 +256,7 @@ export default function Marketplace() {
       </div>
 
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
-        {[{k:"all",l:"All",icon:"🛒"},{k:"vehicle",l:"Vehicles",icon:"🚗"},{k:"part",l:"Parts",icon:"🔧"},{k:"accessory",l:"Accessories",icon:"✨"},{k:"new_cars",l:"New Cars 🆕",icon:"🚗"},{k:"parts_shop",l:"Parts & Accessories",icon:"⚙️"},{k:"my_listings",l:"My Car Listings",icon:"🏢"}].map(t=>(
+        {[{k:"all",l:"All",icon:"🛒"},{k:"vehicle",l:"Vehicles",icon:"🚗"},{k:"new_cars",l:"New Cars",icon:"🆕"},{k:"parts_shop",l:"Parts & Accessories",icon:"⚙️"},{k:"my_listings",l:"My Listings",icon:"🏢"}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
             style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#f0f0f0", color:tab===t.k?"#fff":"#555", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
             {t.icon} {t.l}
@@ -337,7 +337,7 @@ export default function Marketplace() {
               </div>
               <div style={{ padding:"0.75rem" }}>
                 <div style={{ fontFamily:"Syne", fontSize:isMobile?12:13, fontWeight:700, color:"#000000", marginBottom:4, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{l.title}</div>
-                {l.listing_type==="vehicle"&&<div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>{[l.make,l.model,l.year].filter(Boolean).join(" ")}{l.mileage?` · ${Number(l.mileage).toLocaleString()}km`:""}</div>}
+                {l.listing_type==="vehicle"&&l.mileage&&<div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>{Number(l.mileage).toLocaleString()} km · {l.year||""}</div>}
                 {l.listing_type==="part"&&<div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>{l.part_category}</div>}
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
                   <div style={{ fontFamily:"Syne", fontSize:isMobile?13:15, fontWeight:800, color:"#e6821e" }}>KES {Number(l.price).toLocaleString()}</div>
@@ -350,7 +350,7 @@ export default function Marketplace() {
                 </div>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
                   <span style={{ fontSize:9, padding:"2px 6px", borderRadius:6, background:badge.bg, color:badge.color }}>{badge.label}</span>
-                  {l.city&&<span style={{ fontSize:9, color:"#888888" }}>📍 {l.city}</span>}
+                  {l.city&&<span style={{ fontSize:9, color:"#888" }}>📍 {l.city}</span>}
                 </div>
                 <div style={{ display:"flex", gap:4, flexWrap:"wrap" }}>
                   {l.condition&&<span style={{ fontSize:9, padding:"1px 6px", borderRadius:6, background:"#f5f5f5", color:"#666" }}>{l.condition}</span>}
