@@ -283,52 +283,74 @@ export default function CustomerPartsMarketplace() {
             </div>
           )}
 
-          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(2,1fr)", gap:12 }}>
-            {filtered.map(item=>(
-              <div key={item.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, overflow:"hidden", boxShadow:"0 1px 4px rgba(0,0,0,0.05)", transition:"box-shadow 0.2s" }}>
-                {item.photos?.[0] ? (
-                  <img src={item.photos[0]} alt={item.name} style={{ width:"100%", height:140, objectFit:"cover", cursor:"zoom-in" }} onClick={()=>setLightbox({ open:true, photos:item.photos, index:0 })}/>
-                ):(
-                  <div style={{ width:"100%", height:100, background:"linear-gradient(135deg,#f8f8f8,#f0f0f0)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:32 }}>
-                    {item.category==="tyres"?"🛞":item.category==="oils"?"🛢️":item.category==="electrical"?"⚡":item.category==="tools"?"🔧":"⚙️"}
+          {/* Category rows when browsing all, grid when filtered */}
+          {category === "all" ? (
+            <div>
+              {CATEGORIES.filter(cat => cat.key !== "all" && filtered.some(i => i.category === cat.key)).map(cat => (
+                <div key={cat.key} style={{ marginBottom:"1.5rem" }}>
+                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
+                    <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#000" }}>{cat.icon} {cat.label}</div>
+                    <button onClick={()=>setCategory(cat.key)} style={{ fontSize:11, color:"#e6821e", background:"none", border:"none", cursor:"pointer", fontWeight:600 }}>See all →</button>
                   </div>
-                )}
-                <div style={{ padding:"1rem" }}>
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10, marginBottom:8 }}>
-                  <div style={{ flex:1, minWidth:0 }}>
-                    <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:4 }}>{item.name}</div>
-                    {item.brand&&<div style={{ fontSize:11, color:"#555555", marginBottom:2 }}>Brand: {item.brand}</div>}
-                    {item.compatible_cars?.length>0&&<div style={{ fontSize:10, color:"#777777", marginBottom:2 }}>🚗 {item.compatible_cars.slice(0,3).join(", ")}{item.compatible_cars.length>3?"...":""}</div>}
-                    {item.description&&<div style={{ fontSize:11, color:"#777777", marginBottom:4, lineHeight:1.5 }}>{item.description}</div>}
-                    <div style={{ fontSize:11, color:"#777777" }}>
-                      🏪 {item.profiles?.business_name||`${item.profiles?.first_name} ${item.profiles?.last_name}`}
-                  {item.video_url&&(
-                    <video src={item.video_url} controls style={{ width:"100%", borderRadius:8, marginTop:6, maxHeight:160 }}/>
+                  <div style={{ display:"flex", gap:10, overflowX:"auto", paddingBottom:8, scrollbarWidth:"none", WebkitOverflowScrolling:"touch" }}>
+                    {filtered.filter(i => i.category === cat.key).map(item=>(
+                      <div key={item.id} style={{ flexShrink:0, width:160, background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, overflow:"hidden", boxShadow:"0 1px 4px rgba(0,0,0,0.05)" }}>
+                        {item.photos?.[0] ? (
+                          <img src={item.photos[0]} alt={item.name} style={{ width:"100%", height:110, objectFit:"cover", cursor:"zoom-in" }} onClick={()=>setLightbox({ open:true, photos:item.photos, index:0 })}/>
+                        ):(
+                          <div style={{ width:"100%", height:110, background:"linear-gradient(135deg,#f8f8f8,#f0f0f0)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:32 }}>{cat.icon}</div>
+                        )}
+                        <div style={{ padding:"0.65rem" }}>
+                          <div style={{ fontSize:12, fontWeight:600, color:"#000", marginBottom:2, lineHeight:1.3 }}>{item.name.length>28?item.name.substring(0,28)+"...":item.name}</div>
+                          {item.brand&&<div style={{ fontSize:10, color:"#888", marginBottom:3 }}>{item.brand}</div>}
+                          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:800, color:"#e6821e", marginBottom:6 }}>KES {Number(item.price).toLocaleString()}</div>
+                          <div style={{ display:"flex", gap:5 }}>
+                            <button onClick={()=>addToCart(item)} disabled={item.stock_quantity===0}
+                              style={{ flex:1, background:item.stock_quantity===0?"#f0f0f0":"#e6821e", border:"none", borderRadius:7, color:item.stock_quantity===0?"#aaa":"#fff", fontSize:10, fontWeight:700, padding:"6px 4px", cursor:item.stock_quantity===0?"not-allowed":"pointer" }}>
+                              {item.stock_quantity===0?"Out of stock":"+ Cart"}
+                            </button>
+                            <button onClick={()=>setChatItem(item)} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"6px 8px", cursor:"pointer" }}>💬</button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(2,1fr)", gap:12 }}>
+              {filtered.map(item=>(
+                <div key={item.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, overflow:"hidden", boxShadow:"0 1px 4px rgba(0,0,0,0.05)" }}>
+                  {item.photos?.[0] ? (
+                    <img src={item.photos[0]} alt={item.name} style={{ width:"100%", height:140, objectFit:"cover", cursor:"zoom-in" }} onClick={()=>setLightbox({ open:true, photos:item.photos, index:0 })}/>
+                  ):(
+                    <div style={{ width:"100%", height:110, background:"linear-gradient(135deg,#f8f8f8,#f0f0f0)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:36 }}>
+                      {CATEGORIES.find(cat=>cat.key===item.category)?.icon||"📦"}
+                    </div>
                   )}
-                      {item.profiles?.city?` · ${item.profiles.city}`:""}
-                      {item.profiles?.is_verified&&<span style={{ color:"#1d9e75", marginLeft:4 }}>✓</span>}
+                  <div style={{ padding:"0.85rem" }}>
+                    <div style={{ fontSize:13, fontWeight:600, color:"#000", marginBottom:3 }}>{item.name}</div>
+                    {item.brand&&<div style={{ fontSize:10, color:"#888", marginBottom:2 }}>Brand: {item.brand}</div>}
+                    {item.compatible_cars?.length>0&&<div style={{ fontSize:10, color:"#777", marginBottom:4 }}>🚗 {item.compatible_cars.slice(0,2).join(", ")}</div>}
+                    <div style={{ fontSize:11, color:"#888", marginBottom:6 }}>🏪 {item.profiles?.business_name||item.profiles?.first_name} {item.profiles?.is_verified&&"✓"}</div>
+                    {item.video_url&&<video src={item.video_url} controls style={{ width:"100%", borderRadius:7, marginBottom:6, maxHeight:130 }}/>}
+                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
+                      <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(item.price).toLocaleString()}</div>
+                      <div style={{ fontSize:10, color:item.stock_quantity<=5?"#e24b4a":"#1d9e75" }}>{item.stock_quantity} in stock</div>
+                    </div>
+                    <div style={{ display:"flex", gap:6 }}>
+                      <button onClick={()=>addToCart(item)} disabled={item.stock_quantity===0}
+                        style={{ flex:1, background:item.stock_quantity===0?"#f0f0f0":"#e6821e", border:"none", borderRadius:8, color:item.stock_quantity===0?"#aaa":"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px", cursor:item.stock_quantity===0?"not-allowed":"pointer" }}>
+                        {item.stock_quantity===0?"Out of stock":"+ Add to cart"}
+                      </button>
+                      <button onClick={()=>setChatItem(item)} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:8, color:"#378add", fontSize:12, padding:"9px 12px", cursor:"pointer" }}>💬</button>
                     </div>
                   </div>
-                  <div style={{ textAlign:"right", flexShrink:0 }}>
-                    <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(item.price).toLocaleString()}</div>
-                    <div style={{ fontSize:10, color:"#777777" }}>/{item.unit}</div>
-                    <div style={{ fontSize:10, color:item.stock_quantity<=5?"#e24b4a":"#1d9e75", marginTop:4 }}>{item.stock_quantity} in stock</div>
-                  </div>
                 </div>
-                <div style={{ display:"flex", gap:6 }}>
-                  <button onClick={()=>addToCart(item)} disabled={item.stock_quantity===0}
-                    style={{ flex:1, background:item.stock_quantity===0?"#f0f0f0":"#e6821e", border:"none", borderRadius:8, color:item.stock_quantity===0?"#aaa":"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px", cursor:item.stock_quantity===0?"not-allowed":"pointer" }}>
-                    {item.stock_quantity===0?"Out of stock":"+ Add to cart"}
-                  </button>
-                  <button onClick={()=>setChatItem(item)}
-                    style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:8, color:"#378add", fontSize:12, padding:"9px 12px", cursor:"pointer" }}>
-                    💬
-                  </button>
-                </div>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </>
       )}
 
