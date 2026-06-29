@@ -249,12 +249,12 @@ export default function NewCarMarketplace() {
                   💬 Send Enquiry
                 </button>
                 {selected.showroom_phone&&(
-                  <button onClick={()=>{ window.open("tel:"+selected.showroom_phone,"_system") }} style={{ display:"block", width:"100%", textAlign:"center", background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:10, color:"#1d9e75", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer" }}>
+                  <button onClick={async()=>{ try { if(window.Capacitor?.isNativePlatform()) { const { Browser } = await import("@capacitor/browser"); await Browser.open({ url:"tel:"+selected.showroom_phone }) } else { window.location.href="tel:"+selected.showroom_phone } } catch(e) { window.location.href="tel:"+selected.showroom_phone } }} style={{ display:"block", width:"100%", textAlign:"center", background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:10, color:"#1d9e75", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer" }}>
                     📞 Call Showroom
                   </button>
                 )}
                 {selected.showroom_phone&&(
-                  <button onClick={()=>{ window.open("https://wa.me/254"+selected.showroom_phone.replace(/^0/,""),"_system") }} style={{ display:"block", width:"100%", textAlign:"center", background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:10, color:"#1d9e75", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer" }}>
+                  <button onClick={async()=>{ const url="https://wa.me/254"+selected.showroom_phone.replace(/^0/,""); try { if(window.Capacitor?.isNativePlatform()) { const { Browser } = await import("@capacitor/browser"); await Browser.open({ url }) } else { window.open(url,"_blank") } } catch(e) { window.open(url,"_blank") } }} style={{ display:"block", width:"100%", textAlign:"center", background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:10, color:"#1d9e75", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer" }}>
                     💚 WhatsApp Dealer
                   </button>
                 )}
