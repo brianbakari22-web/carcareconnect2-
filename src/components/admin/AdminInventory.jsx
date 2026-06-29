@@ -90,7 +90,12 @@ export default function AdminInventory() {
       {!loading&&filtered.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No items found</div>}
 
       {filtered.map(item=>(
-        <div key={item.id} style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8, opacity:item.is_active?1:0.6 }}>
+        <div key={item.id} style={{ background:"#f8f8f8", border:"1px solid "+(item.stock_quantity===0?"#e24b4a30":item.stock_quantity<=5?"#e6821e30":"#eeeeee"), borderRadius:12, padding:"1rem", marginBottom:8, opacity:item.is_active?1:0.6 }}>
+          <div style={{ display:"flex", gap:12, alignItems:"flex-start" }}>
+            {item.photos?.[0]&&(
+              <img src={item.photos[0]} alt="" style={{ width:60, height:60, objectFit:"cover", borderRadius:8, flexShrink:0, border:"1px solid #eee" }}/>
+            )}
+            <div style={{ flex:1, minWidth:0 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
@@ -113,6 +118,8 @@ export default function AdminInventory() {
             </div>
           </div>
         </div>
+            </div>
+          </div>
       ))}
     </div>
   )

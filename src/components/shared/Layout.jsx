@@ -26,7 +26,6 @@ const NAV = {
     { path:"/dashboard/vehicle-reports", label:"Vehicle Reports", icon:"📋" },
     { path:"/dashboard/claims", label:"Service Guarantee", icon:"🛡️" },
     { path:"/dashboard/marketplace", label:"Marketplace", icon:"🛒" },
-    { path:"/dashboard/parts", label:"Parts & Accessories", icon:"⚙️" },
 
     { path:"/dashboard/marketplace/my-listings", label:"My Listings", icon:"📦" },
     { path:"/dashboard/marketplace/my-offers", label:"My Offers", icon:"💰" },

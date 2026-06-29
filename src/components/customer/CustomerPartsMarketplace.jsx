@@ -4,6 +4,7 @@ import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 import ChatWindow from "../shared/ChatWindow"
+import PhotoLightbox from "../shared/PhotoLightbox"
 
 const CATEGORIES = [
   { key:"all", label:"All", icon:"🔍" },
@@ -41,6 +42,7 @@ export default function CustomerPartsMarketplace() {
   const [checkoutStep, setCheckoutStep] = useState("cart") // cart, details, payment
   const [customerDetails, setCustomerDetails] = useState({ name:"", phone:"", email:"" })
   const [paymentMethod, setPaymentMethod] = useState("pesapal")
+  const [lightbox, setLightbox] = useState({ open:false, photos:[], index:0 })
 
   useEffect(() => {
     if (!user) return
@@ -285,7 +287,7 @@ export default function CustomerPartsMarketplace() {
             {filtered.map(item=>(
               <div key={item.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, overflow:"hidden", boxShadow:"0 1px 4px rgba(0,0,0,0.05)", transition:"box-shadow 0.2s" }}>
                 {item.photos?.[0] ? (
-                  <img src={item.photos[0]} alt={item.name} style={{ width:"100%", height:140, objectFit:"cover" }}/>
+                  <img src={item.photos[0]} alt={item.name} style={{ width:"100%", height:140, objectFit:"cover", cursor:"zoom-in" }} onClick={()=>setLightbox({ open:true, photos:item.photos, index:0 })}/>
                 ):(
                   <div style={{ width:"100%", height:100, background:"linear-gradient(135deg,#f8f8f8,#f0f0f0)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:32 }}>
                     {item.category==="tyres"?"🛞":item.category==="oils"?"🛢️":item.category==="electrical"?"⚡":item.category==="tools"?"🔧":"⚙️"}
@@ -300,6 +302,9 @@ export default function CustomerPartsMarketplace() {
                     {item.description&&<div style={{ fontSize:11, color:"#777777", marginBottom:4, lineHeight:1.5 }}>{item.description}</div>}
                     <div style={{ fontSize:11, color:"#777777" }}>
                       🏪 {item.profiles?.business_name||`${item.profiles?.first_name} ${item.profiles?.last_name}`}
+                  {item.video_url&&(
+                    <video src={item.video_url} controls style={{ width:"100%", borderRadius:8, marginTop:6, maxHeight:160 }}/>
+                  )}
                       {item.profiles?.city?` · ${item.profiles.city}`:""}
                       {item.profiles?.is_verified&&<span style={{ color:"#1d9e75", marginLeft:4 }}>✓</span>}
                     </div>
@@ -507,5 +512,6 @@ export default function CustomerPartsMarketplace() {
 
 
 
+      {lightbox.open&&<PhotoLightbox photos={lightbox.photos} currentIndex={lightbox.index} onClose={()=>setLightbox(l=>({...l,open:false}))} onPrev={()=>setLightbox(l=>({...l,index:Math.max(0,l.index-1)}))} onNext={()=>setLightbox(l=>({...l,index:Math.min(l.photos.length-1,l.index+1)}))}/>}
 
 

@@ -329,7 +329,7 @@ export default function AdminContentHub() {
           {k:"new_cars",l:"🚗 New Cars"},
           {k:"marketplace",l:"🛒 Marketplace"},
           {k:"services",l:"🔧 Services"},
-          {k:"providers",l:"🏪 Providers"},
+          {k:"providers",l:"🏪 Providers"},{k:"inventory",l:"📦 Inventory"},
         ].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
             style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#f8f8f8", color:tab===t.k?"#fff":"#666", fontWeight:tab===t.k?700:400 }}>

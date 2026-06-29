@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
+import PhotoLightbox from "../shared/PhotoLightbox"
 import toast from "react-hot-toast"
 
 const CATEGORIES = [
@@ -20,7 +21,7 @@ const UNITS = ["piece","set","pair","litre","kg","box","roll"]
 const EMPTY = {
   name:"", description:"", category:"parts", subcategory:"",
   price:"", stock_quantity:"", unit:"piece", brand:"",
-  compatible_cars:"", is_active:true, photos:[]
+  compatible_cars:"", is_active:true, photos:[], video_url:""
 }
 
 export default function ProviderInventory() {
@@ -33,10 +34,12 @@ export default function ProviderInventory() {
   const [form, setForm] = useState(EMPTY)
   const [saving, setSaving] = useState(false)
   const [uploadingPhoto, setUploadingPhoto] = useState(false)
+  const [uploadingVideo, setUploadingVideo] = useState(false)
   const [photoPreview, setPhotoPreview] = useState(null)
   const photoRef = useRef(null)
   const [search, setSearch] = useState("")
   const [catFilter, setCatFilter] = useState("all")
+  const [lightbox, setLightbox] = useState({ open:false, photos:[], index:0 })
   const [tab, setTab] = useState("inventory")
 
   useEffect(() => {
@@ -84,6 +87,7 @@ export default function ProviderInventory() {
         stock_quantity: Number(form.stock_quantity)||0,
         compatible_cars: form.compatible_cars ? form.compatible_cars.split(",").map(s=>s.trim()) : [],
         photos: photoUrl ? [photoUrl] : [],
+        video_url: form.video_url||null,
       }
       if (editing) {
         await supabase.from("inventory").update(payload).eq("id", editing)
@@ -253,6 +257,35 @@ export default function ProviderInventory() {
                 <input ref={photoRef} type="file" accept="image/*" style={{ display:"none" }}
                   onChange={e=>{ const f=e.target.files[0]; if(f) setPhotoPreview(URL.createObjectURL(f)) }}/>
               </label>
+            <div style={{ marginBottom:12 }}>
+              <label style={lbl}>Video (optional)</label>
+              {form.video_url&&(
+                <div style={{ position:"relative", marginBottom:8 }}>
+                  <video src={form.video_url} controls style={{ width:"100%", maxHeight:160, borderRadius:10 }}/>
+                  <button type="button" onClick={()=>setForm(f=>({...f,video_url:""}))}
+                    style={{ position:"absolute", top:6, right:6, background:"rgba(0,0,0,0.5)", border:"none", borderRadius:"50%", width:24, height:24, color:"#fff", fontSize:12, cursor:"pointer" }}>×</button>
+                </div>
+              )}
+              <label style={{ display:"block", width:"100%", background:"#f8f8f8", border:"2px dashed #e5e5e5", borderRadius:10, padding:"12px", color:"#888", fontSize:12, cursor:"pointer", textAlign:"center" }}>
+                {uploadingVideo?"⏳ Uploading video...":"🎥 " +(form.video_url?"Tap to change video":"Tap to upload video (max 50MB)")}
+                <input type="file" accept="video/*" style={{ display:"none" }} onChange={async e=>{
+                  const file = e.target.files[0]
+                  if (!file) return
+                  if (file.size > 50*1024*1024) return toast.error("Video must be under 50MB")
+                  setUploadingVideo(true)
+                  try {
+                    const ext = file.name.split(".").pop()
+                    const path = user.id + "/video-" + Date.now() + "." + ext
+                    const { error } = await supabase.storage.from("provider-photos").upload(path, file, { upsert:true })
+                    if (error) throw error
+                    const { data } = supabase.storage.from("provider-photos").getPublicUrl(path)
+                    setForm(f=>({...f,video_url:data.publicUrl}))
+                    toast.success("Video uploaded!")
+                  } catch(e) { toast.error(e.message) }
+                  finally { setUploadingVideo(false) }
+                }}/>
+              </label>
+            </div>
             </div>
 
             <div style={{ display:"flex", gap:8 }}>
@@ -305,7 +338,7 @@ export default function ProviderInventory() {
           <div style={{ display:"flex", gap:12, alignItems:"flex-start" }}>
             {/* Photo */}
             <div style={{ width:60, height:60, borderRadius:10, overflow:"hidden", flexShrink:0, background:"#f8f8f8", border:"1px solid #eee", display:"flex", alignItems:"center", justifyContent:"center", fontSize:24 }}>
-              {item.photos?.[0] ? <img src={item.photos[0]} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }}/> : CATEGORIES.find(c=>c.key===item.category)?.icon||"📦"}
+              {item.photos?.[0] ? <img src={item.photos[0]} alt="" style={{ width:"100%", height:"100%", objectFit:"cover", cursor:"zoom-in" }} onClick={()=>setLightbox({ open:true, photos:item.photos, index:0 })}/> : CATEGORIES.find(c=>c.key===item.category)?.icon||"📦"}
             </div>
 
             <div style={{ flex:1, minWidth:0 }}>
@@ -359,6 +392,7 @@ export default function ProviderInventory() {
           </div>
         </div>
       ))}
+      {lightbox.open&&<PhotoLightbox photos={lightbox.photos} currentIndex={lightbox.index} onClose={()=>setLightbox(l=>({...l,open:false}))} onPrev={()=>setLightbox(l=>({...l,index:Math.max(0,l.index-1)}))} onNext={()=>setLightbox(l=>({...l,index:Math.min(l.photos.length-1,l.index+1)}))}/>}
     </div>
   )
 }

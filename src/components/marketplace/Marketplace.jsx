@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import NewCarMarketplace from "../customer/NewCarMarketplace"
 import MyNewCarListings from "../customer/MyNewCarListings"
+import CustomerPartsMarketplace from "../customer/CustomerPartsMarketplace"
 import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import ChatWindow from "../shared/ChatWindow"
@@ -238,6 +239,7 @@ export default function Marketplace() {
   )
 
   if (tab==="new_cars") return <NewCarMarketplace />
+  if (tab==="parts_shop") return <CustomerPartsMarketplace />
   if (tab==="my_listings") return <MyNewCarListings />
 
   return (
@@ -254,7 +256,7 @@ export default function Marketplace() {
       </div>
 
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
-        {[{k:"all",l:"All",icon:"🛒"},{k:"vehicle",l:"Vehicles",icon:"🚗"},{k:"part",l:"Parts",icon:"🔧"},{k:"accessory",l:"Accessories",icon:"✨"},{k:"new_cars",l:"New Cars 🆕",icon:"🚗"},{k:"my_listings",l:"My Car Listings",icon:"🏢"}].map(t=>(
+        {[{k:"all",l:"All",icon:"🛒"},{k:"vehicle",l:"Vehicles",icon:"🚗"},{k:"part",l:"Parts",icon:"🔧"},{k:"accessory",l:"Accessories",icon:"✨"},{k:"new_cars",l:"New Cars 🆕",icon:"🚗"},{k:"parts_shop",l:"Parts & Accessories",icon:"⚙️"},{k:"my_listings",l:"My Car Listings",icon:"🏢"}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
             style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#f0f0f0", color:tab===t.k?"#fff":"#555", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
             {t.icon} {t.l}
