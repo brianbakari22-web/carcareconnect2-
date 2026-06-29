@@ -24,13 +24,13 @@ export default function AdminNewCars() {
   async function load() {
     const [{ data: lst }, { data: enq }, { data: brs }, { data: apps }] = await Promise.all([
       supabase.from("new_car_listings")
-        .select("*, dealer:profiles!new_car_listings_dealer_id_fkey(first_name,last_name,email)")
+        .select("*, dealer:profiles!new_car_listings_dealer_id_fkey(first_name,last_name,provider_type,city)")
         .order("created_at", { ascending:false }),
       supabase.from("car_enquiries")
         .select("*, new_car_listings(brand,model,year), customer:profiles!car_enquiries_customer_id_fkey(first_name,last_name)")
         .order("created_at", { ascending:false }),
       supabase.from("car_brands").select("*").order("display_order"),
-      supabase.from("dealer_applications").select("*, profiles!dealer_applications_user_id_fkey(first_name,last_name,email)").order("created_at",{ascending:false})
+      supabase.from("dealer_applications").select("*, profiles!dealer_applications_user_id_fkey(first_name,last_name)").order("created_at",{ascending:false})
     ])
     setListings(lst||[])
     setEnquiries(enq||[])
@@ -219,7 +219,7 @@ export default function AdminNewCars() {
                     <div>
                       <div style={{ fontSize:14, fontWeight:700, color:"#000" }}>{l.year} {l.brand} {l.model} {l.variant||""}</div>
                       <div style={{ fontSize:11, color:"#888" }}>🏢 {l.showroom_name} · 📍 {l.showroom_location}</div>
-                      <div style={{ fontSize:11, color:"#888" }}>👤 {l.dealer?.first_name} {l.dealer?.last_name} · {l.dealer?.email}</div>
+                      <div style={{ fontSize:11, color:"#888" }}>👤 {l.dealer?.first_name} {l.dealer?.last_name}</div>
                       <div style={{ fontSize:10, color:"#aaa", marginTop:2 }}>{new Date(l.created_at).toLocaleString()} · 👁 {l.views||0} · 💬 {l.enquiries||0}</div>
                     </div>
                     <div style={{ textAlign:"right" }}>
