@@ -421,39 +421,55 @@ export default function NewCarMarketplace() {
         </div>
       )}
 
-      <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(2,1fr)", gap:12 }}>
+      <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
         {filtered.map(car=>(
           <div key={car.id} onClick={()=>incrementView(car)}
-            style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:14, overflow:"hidden", cursor:"pointer" }}>
+            style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:16, overflow:"hidden", cursor:"pointer", boxShadow:"0 2px 8px rgba(0,0,0,0.06)" }}>
+            {/* Full width photo */}
             <div style={{ position:"relative" }}>
               {car.photos?.[0] ? (
-                <img src={car.photos[0]} alt={car.brand} style={{ width:"100%", height:180, objectFit:"cover" }}/>
+                <img src={car.photos[0]} alt={car.brand} style={{ width:"100%", height:200, objectFit:"cover" }}/>
               ):(
-                <div style={{ height:180, background:"linear-gradient(135deg,#f8f8f8,#e6821e10)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:56 }}>🚗</div>
+                <div style={{ height:200, background:"linear-gradient(135deg,#fff8f0,#e6821e15)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:64 }}>🚗</div>
               )}
-              {car.is_featured&&<span style={{ position:"absolute", top:8, left:8, background:"#e6821e", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:8 }}>⭐ FEATURED</span>}
-              {car.discount_price&&<span style={{ position:"absolute", top:8, right:8, background:"#1d9e75", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:8 }}>🏷️ SALE</span>}
+              {car.is_featured&&<span style={{ position:"absolute", top:10, left:10, background:"#e6821e", color:"#fff", fontSize:10, fontWeight:700, padding:"3px 10px", borderRadius:20, boxShadow:"0 2px 8px rgba(230,130,30,0.4)" }}>⭐ FEATURED</span>}
+              {car.discount_price&&<span style={{ position:"absolute", top:10, right:10, background:"#1d9e75", color:"#fff", fontSize:10, fontWeight:700, padding:"3px 10px", borderRadius:20 }}>🏷️ SALE</span>}
+              {/* Photo count */}
+              {car.photos?.length>1&&<span style={{ position:"absolute", bottom:10, right:10, background:"rgba(0,0,0,0.5)", color:"#fff", fontSize:10, padding:"2px 8px", borderRadius:10 }}>📷 {car.photos.length}</span>}
             </div>
             <div style={{ padding:"1rem" }}>
+              {/* Title and price row */}
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
-                <div style={{ flex:1, minWidth:0, marginRight:8 }}>
-                  <div style={{ fontSize:14, fontWeight:700, color:"#000", marginBottom:2 }}>{car.year} {car.brand} {car.model}</div>
-                  {car.variant&&<div style={{ fontSize:11, color:"#888", marginBottom:4 }}>{car.variant}</div>}
-                  <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
-                    {car.engine_cc&&<span style={{ fontSize:10, color:"#555", background:"#f5f5f5", padding:"2px 6px", borderRadius:6 }}>{car.engine_cc}cc</span>}
-                    <span style={{ fontSize:10, color:"#555", background:"#f5f5f5", padding:"2px 6px", borderRadius:6 }}>{car.transmission}</span>
-                    <span style={{ fontSize:10, color:"#555", background:"#f5f5f5", padding:"2px 6px", borderRadius:6, textTransform:"capitalize" }}>{car.body_type}</span>
-                  </div>
+                <div style={{ flex:1, minWidth:0, marginRight:12 }}>
+                  <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000", marginBottom:2 }}>{car.year} {car.brand} {car.model}</div>
+                  {car.variant&&<div style={{ fontSize:12, color:"#888", marginBottom:6 }}>{car.variant}</div>}
                 </div>
                 <div style={{ textAlign:"right", flexShrink:0 }}>
-                  <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:car.discount_price?"#1d9e75":"#e6821e" }}>
+                  <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:car.discount_price?"#1d9e75":"#e6821e" }}>
                     KES {Number(car.discount_price||car.price).toLocaleString()}
                   </div>
-                  {car.discount_price&&<div style={{ fontSize:10, color:"#888", textDecoration:"line-through" }}>KES {Number(car.price).toLocaleString()}</div>}
+                  {car.discount_price&&<div style={{ fontSize:11, color:"#aaa", textDecoration:"line-through" }}>KES {Number(car.price).toLocaleString()}</div>}
                 </div>
               </div>
-              <div style={{ fontSize:11, color:"#888" }}>🏢 {car.showroom_name} · 📍 {car.showroom_location}</div>
-              <div style={{ fontSize:10, color:"#aaa", marginTop:4 }}>👁 {car.views||0} views · 💬 {car.enquiries||0} enquiries</div>
+              {/* Specs pills */}
+              <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:10 }}>
+                {car.engine_cc&&<span style={{ fontSize:11, color:"#555", background:"#f5f5f5", padding:"3px 10px", borderRadius:20 }}>{car.engine_cc}cc</span>}
+                {car.transmission&&<span style={{ fontSize:11, color:"#555", background:"#f5f5f5", padding:"3px 10px", borderRadius:20 }}>{car.transmission}</span>}
+                {car.fuel_type&&<span style={{ fontSize:11, color:"#555", background:"#f5f5f5", padding:"3px 10px", borderRadius:20 }}>{car.fuel_type}</span>}
+                {car.body_type&&<span style={{ fontSize:11, color:"#555", background:"#f5f5f5", padding:"3px 10px", borderRadius:20, textTransform:"capitalize" }}>{car.body_type}</span>}
+                {car.color&&<span style={{ fontSize:11, color:"#555", background:"#f5f5f5", padding:"3px 10px", borderRadius:20 }}>🎨 {car.color}</span>}
+              </div>
+              {/* Showroom and stats */}
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", borderTop:"1px solid #f5f5f5", paddingTop:8 }}>
+                <div>
+                  <div style={{ fontSize:12, color:"#555", fontWeight:600 }}>🏢 {car.showroom_name}</div>
+                  {car.showroom_location&&<div style={{ fontSize:11, color:"#888" }}>📍 {car.showroom_location}</div>}
+                </div>
+                <div style={{ textAlign:"right" }}>
+                  <div style={{ fontSize:10, color:"#aaa" }}>👁 {car.views||0} views</div>
+                  <div style={{ fontSize:10, color:"#aaa" }}>💬 {car.enquiries||0} enquiries</div>
+                </div>
+              </div>
             </div>
           </div>
         ))}
