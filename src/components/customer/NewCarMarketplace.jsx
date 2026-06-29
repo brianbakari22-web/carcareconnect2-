@@ -227,6 +227,13 @@ export default function NewCarMarketplace() {
           )}
 
           {/* Showroom */}
+          {/* Video */}
+          {selected.video_url&&(
+            <div style={{ marginBottom:"1.5rem" }}>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000", marginBottom:8 }}>🎥 Video walkthrough</div>
+              <video src={selected.video_url} controls style={{ width:"100%", borderRadius:12, maxHeight:260, background:"#000" }}/>
+            </div>
+          )}
           <div style={{ background:"#f8f8f8", borderRadius:12, padding:"1rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000", marginBottom:8 }}>🏢 Showroom</div>
             <div style={{ fontSize:13, fontWeight:600, color:"#000", marginBottom:4 }}>{selected.showroom_name}</div>

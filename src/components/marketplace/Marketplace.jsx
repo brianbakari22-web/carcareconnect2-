@@ -424,7 +424,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
               {loadingComments&&<div style={{ color:"#888", fontSize:12, textAlign:"center" }}>Loading...</div>}
               {!loadingComments&&comments.length===0&&<div style={{ color:"#888", fontSize:12, textAlign:"center", padding:"1rem" }}>No comments yet. Be the first!</div>}
               {/* Video context label */}
-              {listing.video_url&&listing.video_status==="approved"&&(
+              {listing.video_url&&(
                 <div style={{ fontSize:11, color:"#888", marginBottom:12, display:"flex", alignItems:"center", gap:6 }}>
                   <span>🎥</span> Comments below refer to this listing and its video
                 </div>
