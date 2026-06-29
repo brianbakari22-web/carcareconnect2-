@@ -502,6 +502,7 @@ export default function CustomerPartsMarketplace() {
           </div>
         </div>
       )}
+      {lightbox.open&&<PhotoLightbox photos={lightbox.photos} currentIndex={lightbox.index} onClose={()=>setLightbox(l=>({...l,open:false}))} onPrev={()=>setLightbox(l=>({...l,index:Math.max(0,l.index-1)}))} onNext={()=>setLightbox(l=>({...l,index:Math.min(l.photos.length-1,l.index+1)}))}/>}
     </div>
   )
 }
@@ -512,6 +513,5 @@ export default function CustomerPartsMarketplace() {
 
 
 
-      {lightbox.open&&<PhotoLightbox photos={lightbox.photos} currentIndex={lightbox.index} onClose={()=>setLightbox(l=>({...l,open:false}))} onPrev={()=>setLightbox(l=>({...l,index:Math.max(0,l.index-1)}))} onNext={()=>setLightbox(l=>({...l,index:Math.min(l.photos.length-1,l.index+1)}))}/>}
 
 
