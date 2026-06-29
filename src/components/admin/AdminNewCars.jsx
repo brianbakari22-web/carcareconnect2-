@@ -213,7 +213,23 @@ export default function AdminNewCars() {
           {(filtered).map(l=>(
             <div key={l.id} style={{ background:"#f8f8f8", border:`1px solid ${selected===l.id?"#8b5cf6":"#eeeeee"}`, borderRadius:12, padding:"1rem", marginBottom:10 }}>
               <div style={{ display:"flex", gap:12, alignItems:"flex-start" }}>
-                {l.photos?.[0]&&<img src={l.photos[0]} alt="" style={{ width:90, height:65, objectFit:"cover", borderRadius:8, flexShrink:0 }}/>}
+                {/* Photos */}
+                {l.photos?.length>0&&(
+                  <div style={{ flexShrink:0 }}>
+                    <div style={{ display:"flex", gap:4 }}>
+                      {l.photos.slice(0,3).map((p,i)=>(
+                        <img key={i} src={p} alt="" onClick={()=>window.open(p,"_blank")}
+                          style={{ width:i===0?90:55, height:65, objectFit:"cover", borderRadius:8, cursor:"pointer", border:"1px solid #eee" }}/>
+                      ))}
+                      {l.photos.length>3&&<div style={{ width:55, height:65, borderRadius:8, background:"#f0f0f0", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, color:"#888", fontWeight:700 }}>+{l.photos.length-3}</div>}
+                    </div>
+                    {l.video_url&&(
+                      <div style={{ marginTop:4 }}>
+                        <video src={l.video_url} controls style={{ width:"100%", maxHeight:80, borderRadius:8 }}/>
+                      </div>
+                    )}
+                  </div>
+                )}
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:6 }}>
                     <div>
@@ -257,6 +273,16 @@ export default function AdminNewCars() {
                         ✓ Approve
                       </button>
                     )}
+                    {l.is_active&&(
+                      <button onClick={async()=>{ if(!confirm("Suspend this listing?")) return; await supabase.from("new_car_listings").update({ is_active:false }).eq("id",l.id); load() }}
+                        style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"4px 10px", cursor:"pointer" }}>
+                        ⏸ Suspend
+                      </button>
+                    )}
+                    <button onClick={async()=>{ if(!confirm("Delete this listing permanently?")) return; await supabase.from("new_car_listings").delete().eq("id",l.id); load() }}
+                      style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"4px 10px", cursor:"pointer" }}>
+                      🗑 Delete
+                    </button>
                   </div>
 
                   {selected===l.id&&(
