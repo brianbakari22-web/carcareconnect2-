@@ -14,7 +14,7 @@ const EMPTY = {
   engine_cc:"", transmission:"automatic", fuel_type:"petrol", drive_type:"2wd",
   color:"", interior_color:"", seats:5, doors:4,
   price:"", discount_price:"", price_negotiable:false,
-  description:"", features:"", photos:[],
+  description:"", features:"", photos:[], video_url:"",
   showroom_name:"", showroom_location:"", showroom_phone:"", showroom_email:"",
   stock_count:1
 }
@@ -31,6 +31,7 @@ export default function MyNewCarListings() {
   const [saving, setSaving] = useState(false)
   const [tab, setTab] = useState("listings")
   const [uploadingPhoto, setUploadingPhoto] = useState(false)
+  const [uploadingVideo, setUploadingVideo] = useState(false)
   const [fees, setFees] = useState({ listing_fee:2000, duration_days:30 })
   const photoRef = useRef(null)
 
@@ -97,6 +98,7 @@ export default function MyNewCarListings() {
         description: form.description||null,
         features: form.features ? form.features.split(",").map(f=>f.trim()).filter(Boolean) : [],
         photos: form.photos,
+        video_url: form.video_url||null,
         showroom_name: form.showroom_name,
         showroom_location: form.showroom_location,
         showroom_phone: form.showroom_phone||null,
@@ -273,6 +275,36 @@ export default function MyNewCarListings() {
             {/* Photos */}
             <div style={{ marginBottom:"1rem" }}>
               <label style={lbl}>Photos ({form.photos.length} uploaded)</label>
+            {/* Video upload */}
+            <div style={{ marginBottom:12 }}>
+              <label style={lbl}>Video walkthrough (optional)</label>
+              {form.video_url&&(
+                <div style={{ position:"relative", marginBottom:8 }}>
+                  <video src={form.video_url} controls style={{ width:"100%", maxHeight:200, borderRadius:10 }}/>
+                  <button type="button" onClick={()=>setForm(f=>({...f,video_url:""}))}
+                    style={{ position:"absolute", top:6, right:6, background:"rgba(0,0,0,0.5)", border:"none", borderRadius:"50%", width:24, height:24, color:"#fff", fontSize:12, cursor:"pointer" }}>×</button>
+                </div>
+              )}
+              <label style={{ display:"block", width:"100%", background:"#f8f8f8", border:"2px dashed #e5e5e5", borderRadius:10, padding:"12px", color:"#888", fontSize:12, cursor:"pointer", textAlign:"center" }}>
+                {uploadingVideo?"⏳ Uploading video...":"🎥 "+(form.video_url?"Change video":"Upload video walkthrough (max 50MB)")}
+                <input type="file" accept="video/*" style={{ display:"none" }} onChange={async e=>{
+                  const file = e.target.files[0]
+                  if (!file) return
+                  if (file.size > 50*1024*1024) return toast.error("Video must be under 50MB")
+                  setUploadingVideo(true)
+                  try {
+                    const ext = file.name.split(".").pop()
+                    const path = user.id+"/car-video-"+Date.now()+"."+ext
+                    const { error } = await supabase.storage.from("marketplace").upload(path, file, { upsert:true })
+                    if (error) throw error
+                    const { data } = supabase.storage.from("marketplace").getPublicUrl(path)
+                    setForm(f=>({...f,video_url:data.publicUrl}))
+                    toast.success("Video uploaded!")
+                  } catch(e) { toast.error(e.message) }
+                  finally { setUploadingVideo(false) }
+                }}/>
+              </label>
+            </div>
               <div style={{ display:"flex", gap:8, flexWrap:"wrap", marginBottom:8 }}>
                 {form.photos.map((p,i)=>(
                   <div key={i} style={{ position:"relative" }}>
