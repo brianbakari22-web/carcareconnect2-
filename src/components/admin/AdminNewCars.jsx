@@ -218,8 +218,8 @@ export default function AdminNewCars() {
                   <div style={{ flexShrink:0, width:isMobile?"100%":"auto" }}>
                     {l.photos?.length>0 ? (
                       <div style={{ display:"flex", gap:3, flexDirection:"column" }}>
+                        <img src={l.photos[0]} alt="" onClick={()=>window.open(l.photos[0],"_blank")}
                           style={{ width:isMobile?"100%":80, height:isMobile?160:60, objectFit:"cover", borderRadius:8, cursor:"pointer", border:"1px solid #eee" }}/>
-                          style={{ width:80, height:60, objectFit:"cover", borderRadius:8, cursor:"pointer", border:"1px solid #eee" }}/>
                         {l.photos.length>1&&(
                           <div style={{ display:"flex", gap:3 }}>
                             {l.photos.slice(1,3).map((p,i)=>(
