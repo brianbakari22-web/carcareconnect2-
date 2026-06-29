@@ -213,12 +213,12 @@ export default function AdminNewCars() {
             const status = getListingStatus(l)
             return (
               <div key={l.id} style={{ background:"#ffffff", border:"1px solid "+(selected===l.id?"#8b5cf6":"#eeeeee"), borderRadius:14, padding:"1rem", marginBottom:10, boxShadow:"0 1px 4px rgba(0,0,0,0.04)" }}>
-                <div style={{ display:"flex", gap:12, alignItems:"flex-start" }}>
+                <div style={{ display:"flex", gap:12, alignItems:"flex-start", flexDirection:isMobile?"column":"row" }}>
                   {/* Photos strip */}
-                  <div style={{ flexShrink:0 }}>
+                  <div style={{ flexShrink:0, width:isMobile?"100%":"auto" }}>
                     {l.photos?.length>0 ? (
                       <div style={{ display:"flex", gap:3, flexDirection:"column" }}>
-                        <img src={l.photos[0]} alt="" onClick={()=>window.open(l.photos[0],"_blank")}
+                          style={{ width:isMobile?"100%":80, height:isMobile?160:60, objectFit:"cover", borderRadius:8, cursor:"pointer", border:"1px solid #eee" }}/>
                           style={{ width:80, height:60, objectFit:"cover", borderRadius:8, cursor:"pointer", border:"1px solid #eee" }}/>
                         {l.photos.length>1&&(
                           <div style={{ display:"flex", gap:3 }}>
