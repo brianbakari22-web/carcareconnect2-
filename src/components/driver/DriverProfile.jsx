@@ -28,18 +28,11 @@ export default function DriverProfile() {
     first_name:"", last_name:"", city:""
   })
 
-  const [idDocFile, setIdDocFile] = useState(null)
-  const [idDocBackFile, setIdDocBackFile] = useState(null)
-  const [goodConductFile, setGoodConductFile] = useState(null)
-  const [licenseDocFile, setLicenseDocFile] = useState(null)
   const [profilePhotoFile, setProfilePhotoFile] = useState(null)
   const [uploading, setUploading] = useState(false)
   const [docs, setDocs] = useState([])
   const [docForm, setDocForm] = useState({ type:"license", expiry_date:"", notes:"" })
   const [docUploading, setDocUploading] = useState(false)
-  const [kraPinFile, setKraPinFile] = useState(null)
-  const [medicalCertFile, setMedicalCertFile] = useState(null)
-  const [psvBadgeFile, setPsvBadgeFile] = useState(null)
   
   const [credentialsForm, setCredentialsForm] = useState({
     id_number:"",
@@ -115,41 +108,18 @@ export default function DriverProfile() {
   async function saveCredentials(e) {
     e.preventDefault()
     setSaving(true)
-      setUploading(true)
-      try {
-        let idDocUrl = profile?.id_doc_front_url
-        let idDocBackUrl = profile?.id_doc_back_url
-        let licenseDocUrl = profile?.license_document_url
-        let goodConductUrl = profile?.good_conduct_url
-        let kraPinUrl = profile?.kra_pin_url
-        let medicalCertUrl = profile?.medical_cert_url
-        let psvBadgeUrl = profile?.psv_badge_url
-        let profilePhotoUrl = profile?.profile_photo_url
-        if (idDocFile) idDocUrl = await uploadDocument(idDocFile, "id-front")
-        if (idDocBackFile) idDocBackUrl = await uploadDocument(idDocBackFile, "id-back")
-        if (licenseDocFile) licenseDocUrl = await uploadDocument(licenseDocFile, "license")
-        if (goodConductFile) goodConductUrl = await uploadDocument(goodConductFile, "good-conduct")
-        if (kraPinFile) kraPinUrl = await uploadDocument(kraPinFile, "kra-pin")
-        if (medicalCertFile) medicalCertUrl = await uploadDocument(medicalCertFile, "medical-cert")
-        if (psvBadgeFile) psvBadgeUrl = await uploadDocument(psvBadgeFile, "psv-badge")
-        if (profilePhotoFile) profilePhotoUrl = await uploadDocument(profilePhotoFile, "profile")
-        await updateProfile({
+    setUploading(true)
+    try {
+      let profilePhotoUrl = profile?.profile_photo_url
+      if (profilePhotoFile) profilePhotoUrl = await uploadDocument(profilePhotoFile, "profile")
+      await updateProfile({
         ...credentialsForm,
         years_experience: parseInt(credentialsForm.years_experience)||0,
-          id_doc_front_url: idDocUrl,
-          id_doc_back_url: idDocBackUrl,
-          license_document_url: licenseDocUrl,
-          good_conduct_url: goodConductUrl,
-          kra_pin_url: kraPinUrl,
-          medical_cert_url: medicalCertUrl,
-          psv_badge_url: psvBadgeUrl,
-          profile_photo_url: profilePhotoUrl,
-          kra_pin_number: credentialsForm.kra_pin_number,
-          psv_badge_number: credentialsForm.psv_badge_number,
-        })
+        profile_photo_url: profilePhotoUrl,
+      })
       toast.success("Credentials saved — pending admin verification")
     } catch(err) { toast.error(err.message) }
-    finally { setSaving(false) }
+    finally { setSaving(false); setUploading(false) }
   }
 
   async function loadDocs() {
@@ -365,44 +335,10 @@ export default function DriverProfile() {
             <label style={lbl}>Years of driving experience *</label>
             <input style={inp} type="number" min="0" max="50" placeholder="e.g. 5" value={credentialsForm.years_experience} onChange={e=>setCredentialsForm(f=>({...f,years_experience:e.target.value}))} required/>
 
-            {/* DOCUMENT UPLOADS */}
-            <div style={{ marginBottom:16 }}>
-              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8, color:"#000000" }}>Upload documents</div>
-              <div style={{ fontSize:11, color:"#777777", marginBottom:10 }}>Upload clear photos for admin verification. Max 10MB each.</div>
-              {[
-                { key:"id_doc_front_url", label:"National ID (front)", icon:"📋" },
-                { key:"id_doc_back_url", label:"National ID (back)", icon:"📋" },
-                { key:"license_document_url", label:"Drivers License", icon:"🪪" },
-                { key:"psv_badge_url", label:"PSV Badge (if applicable)", icon:"🔖" },
-                { key:"good_conduct_url", label:"Certificate of Good Conduct", icon:"📄" },
-                { key:"insurance_url", label:"Insurance Certificate", icon:"📝" },
-              ].map(doc=>(
-                <div key={doc.key} style={{ marginBottom:12, background:"#ffffff", borderRadius:10, padding:"0.75rem", border:"1px solid #eeeeee" }}>
-                  <div style={{ fontSize:12, color:"#555555", marginBottom:6 }}>{doc.icon} {doc.label}</div>
-                  {credentialsForm[doc.key]&&(
-                    <div style={{ position:"relative", marginBottom:6 }}>
-                      <img src={credentialsForm[doc.key]} alt={doc.label} style={{ width:"100%", maxHeight:120, objectFit:"cover", borderRadius:8 }}/>
-                      <span style={{ position:"absolute", top:4, right:4, background:"#1d9e75", borderRadius:6, fontSize:10, color:"#fff", padding:"2px 8px" }}>✓ Uploaded</span>
-                    </div>
-                  )}
-                  <input type="file" accept="image/*,application/pdf"
-                    onChange={async(e)=>{
-                      const file = e.target.files[0]
-                      if (!file) return
-                      if (file.size > 10*1024*1024) return toast.error("File too large - max 10MB")
-                      try {
-                        const ext = file.name.split(".").pop()
-                        const path = `${user.id}/${doc.key}-${Date.now()}.${ext}`
-                        const { error } = await supabase.storage.from("driver-documents").upload(path, file, { upsert:true })
-                        if (error) throw error
-                        const { data } = supabase.storage.from("driver-documents").getPublicUrl(path)
-                        setCredentialsForm(c=>({...c, [doc.key]:data.publicUrl}))
-                        toast.success(doc.label + " uploaded!")
-                      } catch(err) { toast.error(err.message) }
-                    }}
-                    style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"8px", color:"#555555", fontSize:12 }}/>
-                </div>
-              ))}
+            {/* Document upload moved to Documents tab for single source of truth */}
+            <div style={{ marginBottom:16, background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:10, padding:"1rem" }}>
+              <div style={{ fontSize:13, color:"#e6821e", fontWeight:600, marginBottom:4 }}>📄 Upload your documents</div>
+              <div style={{ fontSize:12, color:"#777" }}>ID, License, PSV Badge, Insurance and Good Conduct certificates are uploaded in the Documents tab, where you can also view their verification status and expiry dates.</div>
             </div>
             <div style={{ height:1, background:"#f0f0f0", margin:"8px 0 16px" }}/>
             <div style={{ height:1, background:"#f0f0f0", margin:"8px 0 16px" }}/>
@@ -535,6 +471,7 @@ export default function DriverProfile() {
     </div>
   )
 }
+
 
 
 
