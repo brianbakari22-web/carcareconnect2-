@@ -117,8 +117,8 @@ export default function DriverProfile() {
     setSaving(true)
       setUploading(true)
       try {
-        let idDocUrl = profile?.id_document_url
-        let idDocBackUrl = profile?.id_document_back_url
+        let idDocUrl = profile?.id_doc_front_url
+        let idDocBackUrl = profile?.id_doc_back_url
         let licenseDocUrl = profile?.license_document_url
         let goodConductUrl = profile?.good_conduct_url
         let kraPinUrl = profile?.kra_pin_url
@@ -136,8 +136,8 @@ export default function DriverProfile() {
         await updateProfile({
         ...credentialsForm,
         years_experience: parseInt(credentialsForm.years_experience)||0,
-          id_document_url: idDocUrl,
-          id_document_back_url: idDocBackUrl,
+          id_doc_front_url: idDocUrl,
+          id_doc_back_url: idDocBackUrl,
           license_document_url: licenseDocUrl,
           good_conduct_url: goodConductUrl,
           kra_pin_url: kraPinUrl,
@@ -535,6 +535,8 @@ export default function DriverProfile() {
     </div>
   )
 }
+
+
 
 
 
