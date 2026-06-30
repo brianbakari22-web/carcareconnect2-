@@ -55,7 +55,8 @@ export default function ProviderOrders() {
 
   async function updateStatus(orderId, status) {
     const order = orders.find(o=>o.id===orderId)
-    await supabase.from("orders").update({ status, updated_at:new Date().toISOString() }).eq("id", orderId)
+    const { error } = await supabase.from("orders").update({ status, updated_at:new Date().toISOString() }).eq("id", orderId)
+    if (error) { toast.error("Failed to update order: "+error.message); return }
     if (order?.customer_id) {
       const messages = {
         confirmed: "Your order has been confirmed! We are preparing your items.",
@@ -276,5 +277,6 @@ export default function ProviderOrders() {
     </div>
   )
 }
+
 
 
