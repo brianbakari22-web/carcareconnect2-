@@ -32,7 +32,7 @@ export default function ProviderServices() {
   const { user, profile } = useAuth()
   const providerType = profile?.provider_type || "garage"
   const CATEGORIES = getCategories(providerType)
-  const isInventoryProvider = ["parts_dealer","accessories_shop","tyre_shop"].includes(providerType)
+  const isInventoryProvider = ["parts_dealer","accessories_shop"].includes(providerType)
   const { t } = useLanguage()
   const isMobile = useIsMobile()
   const [services, setServices] = useState([])
@@ -177,7 +177,7 @@ export default function ProviderServices() {
     <div style={{ textAlign:"center", padding:"3rem 1rem" }}>
       <div style={{ fontSize:48, marginBottom:16 }}>📦</div>
       <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000000", marginBottom:8 }}>
-        {providerType==="parts_dealer"?"Parts Dealer":providerType==="tyre_shop"?"Tyre Shop":"Accessories Shop"}
+        {providerType==="parts_dealer"?"Parts Dealer":"Accessories Shop"}
       </div>
       <div style={{ fontSize:13, color:"#777777", marginBottom:"1.5rem", lineHeight:1.7 }}>
         As a {providerType.replace(/_/g," ")}, you manage your products through Inventory, not services.

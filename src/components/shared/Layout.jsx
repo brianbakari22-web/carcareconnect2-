@@ -162,6 +162,8 @@ export default function Layout({ children }) {
   }, [user?.id])
   const providerType = profile?.provider_type || "garage"
   const isInventoryProvider = ["parts_dealer","accessories_shop","tyre_shop"].includes(providerType)
+  const isPureInventoryProvider = ["parts_dealer","accessories_shop"].includes(providerType)
+  const hasInventory = ["parts_dealer","accessories_shop","tyre_shop","auto_glass"].includes(providerType)
   const isServiceProvider = ["garage","garage_premium","auto_electrician","car_wash","panel_beater","auto_glass"].includes(providerType)
   const isTyreShop = providerType === "tyre_shop"
 
@@ -193,11 +195,11 @@ export default function Layout({ children }) {
   const providerNav = [
     { path:"/dashboard", key:"overview", icon:"🏠" },
     { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
-    { path:"/dashboard/services", key:"myServices", icon:"🔧" },
+    ...(!isPureInventoryProvider ? [{ path:"/dashboard/services", key:"myServices", icon:"🔧" }] : []),
     ...( ["garage","garage_premium","panel_beater","auto_electrician","mobile_mechanic"].includes(providerType) ? [
       { path:"/dashboard/bundles", label:"Service Bundles", icon:"📦" },
     ] : []),
-    ...( ["parts_dealer","accessories_shop","tyre_shop","auto_glass"].includes(providerType) ? [
+    ...( hasInventory ? [
       { path:"/dashboard/inventory", label:"Inventory", icon:"📦" },
       { path:"/dashboard/orders", label:"Orders", icon:"🛒" },
     ] : []),
@@ -227,10 +229,16 @@ export default function Layout({ children }) {
 
   const nav = role === "provider" ? providerNav : (NAV[role] || [])
   const isDeliveryDriver = ["motorcycle","tuktuk","van"].includes(profile?.driver_vehicle_type||"car")
-  const providerBottomNav = isInventoryProvider ? [
+  const providerBottomNav = isPureInventoryProvider ? [
     { path:"/dashboard", key:"overview", icon:"🏠" },
     { path:"/dashboard/inventory", label:"Inventory", icon:"📦" },
     { path:"/dashboard/orders", label:"Orders", icon:"🛒" },
+    { path:"/dashboard/chat", key:"messages", icon:"✉️" },
+    { path:"more", label:"Menu", icon:"☰" },
+  ] : hasInventory ? [
+    { path:"/dashboard", key:"overview", icon:"🏠" },
+    { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
+    { path:"/dashboard/inventory", label:"Inventory", icon:"📦" },
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"more", label:"Menu", icon:"☰" },
   ] : [
