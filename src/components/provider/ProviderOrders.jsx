@@ -98,6 +98,7 @@ export default function ProviderOrders() {
       .eq("role","driver")
       .eq("is_active",true)
       .eq("documents_verified",true)
+      .eq("driver_category","marketplace")
     if (!drivers?.length) return toast.error("No verified drivers available")
     const preferred = drivers.filter(d=>d.driver_vehicle_type===preferredType)
     const driver = preferred.length>0 ? preferred[0] : drivers[0]
@@ -278,6 +279,7 @@ export default function ProviderOrders() {
     </div>
   )
 }
+
 
 
 
