@@ -1,4 +1,4 @@
-﻿import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 import { supabase } from "../lib/supabase"
 import { initPushNotifications, initWebPushForAdmin } from "../lib/pushNotifications"
 
@@ -139,6 +139,7 @@ export function AuthProvider({ children }) {
   }
 
   async function signUp({ email, password, firstName, lastName, phone, role, businessName, providerType, driverVehicleType }, referralCode="") {
+    const driverCategory = driverVehicleType === "none" ? "concierge" : "marketplace"
     let referrerId = null
     if (referralCode) {
       const { data: refProfile } = await supabase.from("profiles").select("id").eq("referral_code", referralCode.toUpperCase()).single()
@@ -171,7 +172,8 @@ export function AuthProvider({ children }) {
         role: role || "customer",
         business_name: businessName || "",
         provider_type: providerType || "garage",
-        driver_vehicle_type: driverVehicleType || "car",
+        driver_vehicle_type: driverVehicleType==="none" ? null : (driverVehicleType || "car"),
+        driver_category: role==="driver" ? driverCategory : null,
         referred_by: referrerId,
         is_active: true,
       })
@@ -212,6 +214,7 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   )
 }
+
 
 
 

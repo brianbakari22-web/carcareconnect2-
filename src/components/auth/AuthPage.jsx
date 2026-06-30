@@ -18,10 +18,11 @@ const PROVIDER_TYPES = [
   { key:"auto_glass", label:"Auto Glass", icon:"🪟", desc:"Windscreen specialist" },
 ]
 const DRIVER_VEHICLE_TYPES = [
-  { key:"car", label:"Car", icon:"🚗", desc:"Standard delivery" },
-  { key:"motorcycle", label:"Boda Boda", icon:"🏍️", desc:"Fast parts delivery" },
-  { key:"tuktuk", label:"Tuktuk", icon:"🛺", desc:"Local delivery" },
-  { key:"van", label:"Van/Pickup", icon:"🚐", desc:"Large items" },
+  { key:"car", label:"My Car", icon:"🚗", desc:"Standard delivery", category:"marketplace" },
+  { key:"motorcycle", label:"My Bodaboda", icon:"🏍️", desc:"Fast parts delivery", category:"marketplace" },
+  { key:"tuktuk", label:"My Tuktuk", icon:"🛺", desc:"Local delivery", category:"marketplace" },
+  { key:"van", label:"My Van/Pickup", icon:"🚐", desc:"Large items", category:"marketplace" },
+  { key:"none", label:"Concierge Driver", icon:"🧑‍✈️", desc:"No vehicle — pick up & chauffeur customer cars", category:"concierge" },
 ]
 const ROLES = [
   {
