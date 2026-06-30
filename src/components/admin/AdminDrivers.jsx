@@ -130,6 +130,7 @@ export default function AdminDrivers() {
         .eq("id", driverId)
         .select()
       if (error) throw error
+      await supabase.from("driver_documents").update({ is_verified: verified, status: verified?"approved":"pending", verified_at: verified?new Date().toISOString():null }).eq("driver_id", driverId)
       await supabase.from("notifications").insert({
         user_id: driverId,
         title: verified ? "Account verified! ✅" : "Verification revoked ⚠️",
@@ -524,6 +525,7 @@ function DriverStats({ driverId, isMobile }) {
     </div>
   )
 }
+
 
 
 
