@@ -16,6 +16,19 @@ const CATEGORIES = [
   { key:"other", label:"Other", icon:"📦" },
 ]
 
+const PROVIDER_CATEGORY_PRIORITY = {
+  parts_dealer: ["parts","tools","electrical","body","other","accessories","oils","tyres"],
+  accessories_shop: ["accessories","electrical","other","parts","tools","body","oils","tyres"],
+  tyre_shop: ["tyres","tools","other","parts","accessories","electrical","body","oils"],
+  auto_glass: ["body","tools","other","parts","accessories","electrical","oils","tyres"],
+}
+
+function getOrderedCategories(providerType) {
+  const priority = PROVIDER_CATEGORY_PRIORITY[providerType]
+  if (!priority) return CATEGORIES
+  return [...CATEGORIES].sort((a,b) => priority.indexOf(a.key) - priority.indexOf(b.key))
+}
+
 const UNITS = ["piece","set","pair","litre","kg","box","roll"]
 
 const EMPTY = {
@@ -25,7 +38,7 @@ const EMPTY = {
 }
 
 export default function ProviderInventory() {
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const isMobile = useIsMobile()
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
@@ -129,6 +142,8 @@ export default function ProviderInventory() {
     window.scrollTo(0,0)
   }
 
+  const orderedCategories = getOrderedCategories(profile?.provider_type)
+
   const filtered = items.filter(i=>{
     const matchCat = catFilter==="all"||i.category===catFilter
     const matchSearch = !search || i.name.toLowerCase().includes(search.toLowerCase()) || (i.brand||"").toLowerCase().includes(search.toLowerCase())
@@ -211,7 +226,7 @@ export default function ProviderInventory() {
               <div>
                 <label style={lbl}>Category</label>
                 <select style={inp} value={form.category} onChange={e=>setForm(f=>({...f,category:e.target.value}))}>
-                  {CATEGORIES.map(c=><option key={c.key} value={c.key}>{c.icon} {c.label}</option>)}
+                  {orderedCategories.map(c=><option key={c.key} value={c.key}>{c.icon} {c.label}</option>)}
                 </select>
               </div>
               <div>
@@ -311,7 +326,7 @@ export default function ProviderInventory() {
             style={{ padding:"6px 12px", borderRadius:8, border:"none", fontSize:11, cursor:"pointer", background:catFilter==="all"?"#e6821e":"#f0f0f0", color:catFilter==="all"?"#fff":"#555", fontWeight:catFilter==="all"?700:400 }}>
             🔍 All
           </button>
-          {CATEGORIES.map(c=>(
+          {orderedCategories.map(c=>(
             <button key={c.key} onClick={()=>setCatFilter(c.key)}
               style={{ padding:"6px 12px", borderRadius:8, border:"none", fontSize:11, cursor:"pointer", background:catFilter===c.key?"#e6821e":"#f0f0f0", color:catFilter===c.key?"#fff":"#555", fontWeight:catFilter===c.key?700:400 }}>
               {c.icon} {c.label}
