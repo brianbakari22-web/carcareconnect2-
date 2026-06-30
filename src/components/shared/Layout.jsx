@@ -276,7 +276,6 @@ export default function Layout({ children }) {
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"more", label:"Menu", icon:"☰" },
   ]
-  const bottomNav = role==="provider" ? providerBottomNav : role==="driver" ? driverBottomNav : (BOTTOM_NAV[role] || [])
   const driverBottomNav = isConciergeDriver ? [
     { path:"/dashboard", key:"overview", icon:"🏠" },
     { path:"/dashboard/jobs", key:"availableJobs", icon:"📦" },
@@ -290,6 +289,7 @@ export default function Layout({ children }) {
     { path:"more", label:"Menu", icon:"☰" },
   ]
   const initials = `${profile?.first_name?.[0]||""}${profile?.last_name?.[0]||""}`.toUpperCase()
+  const bottomNav = role==="provider" ? providerBottomNav : role==="driver" ? driverBottomNav : (BOTTOM_NAV[role] || [])
 
   const roleColors = {
     customer: { active:"#e6821e", activeBg:"#fff8f0" },
