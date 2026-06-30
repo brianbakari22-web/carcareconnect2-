@@ -40,6 +40,7 @@ const NAV = {
     { path:"/dashboard", key:"overview", icon:"🏠" },
     { path:"/dashboard/jobs", key:"availableJobs", icon:"📦" },
     { path:"/dashboard/active", key:"activeDelivery", icon:"🚗" },
+    { path:"/dashboard/deliveries", label:"Order Deliveries", icon:"📦" },
     { path:"/dashboard/earnings", key:"earnings", icon:"💰" },
     { path:"/dashboard/reviews", key:"myRatings", icon:"⭐" },
     { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },

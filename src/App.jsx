@@ -128,6 +128,7 @@ import DriverClaims from "./components/driver/DriverClaims"
 import DriverOverview from "./components/driver/DriverOverview"
 import DriverAvailableJobs from "./components/driver/DriverAvailableJobs"
 import DriverActiveDelivery from "./components/driver/DriverActiveDelivery"
+import DriverDeliveries from "./components/driver/DriverDeliveries"
 import DriverEarnings from "./components/driver/DriverEarnings"
 import DriverReviews from "./components/driver/DriverReviews"
 import DriverPayouts from "./components/driver/DriverPayouts"
@@ -310,6 +311,7 @@ function DashboardRouter() {
           <Route index element={<DriverOverview />} />
           <Route path="jobs" element={<DriverAvailableJobs />} />
           <Route path="active" element={<DriverActiveDelivery />} />
+              <Route path="deliveries" element={<DriverDeliveries />} />
           <Route path="history" element={<DriverEarnings />} />
           <Route path="reviews" element={<DriverReviews />} />
           <Route path="earnings" element={<DriverEarnings />} />
