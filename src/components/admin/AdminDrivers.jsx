@@ -17,6 +17,7 @@ export default function AdminDrivers() {
   const [tab, setTab] = useState("all")
   const [selected, setSelected] = useState(null)
   const [search, setSearch] = useState("")
+  const [categoryFilter, setCategoryFilter] = useState("all")
   const [rejectingId, setRejectingId] = useState(null)
   const [rejectReason, setRejectReason] = useState("")
   const [viewingDocs, setViewingDocs] = useState(null)
@@ -222,12 +223,13 @@ export default function AdminDrivers() {
 
   const filtered = drivers.filter(d=>{
     const matchSearch = `${d.first_name} ${d.last_name} ${d.license_number||""} ${d.id_number||""}`.toLowerCase().includes(search.toLowerCase())
+    const matchCategory = categoryFilter==="all" || (d.driver_category||"marketplace")===categoryFilter
     const status = getStatus(d.id)
-    if (tab==="online") return matchSearch && status?.is_online
-    if (tab==="verified") return matchSearch && d.documents_verified
-    if (tab==="pending") return matchSearch && !d.documents_verified && d.is_active
-    if (tab==="suspended") return matchSearch && (!d.is_active || status?.is_suspended)
-    return matchSearch
+    if (tab==="online") return matchSearch && matchCategory && status?.is_online
+    if (tab==="verified") return matchSearch && matchCategory && d.documents_verified
+    if (tab==="pending") return matchSearch && matchCategory && !d.documents_verified && d.is_active
+    if (tab==="suspended") return matchSearch && matchCategory && (!d.is_active || status?.is_suspended)
+    return matchSearch && matchCategory
   })
 
   const onlineCount = driverStatuses.filter(s=>s.is_online).length
@@ -272,6 +274,16 @@ export default function AdminDrivers() {
             {t.l}
           </button>
         ))}
+
+      {/* Category filter */}
+      <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
+        {[{k:"all",l:"All categories"},{k:"concierge",l:"🧑‍✈️ Concierge"},{k:"marketplace",l:"🚗 Marketplace"}].map(c=>(
+          <button key={c.k} onClick={()=>setCategoryFilter(c.k)}
+            style={{ padding:"6px 12px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:categoryFilter===c.k?"#e6821e":"#f0f0f0", color:categoryFilter===c.k?"#fff":"#555", fontWeight:categoryFilter===c.k?700:400 }}>
+            {c.l}
+          </button>
+        ))}
+      </div>
       </div>
 
       {/* Search */}
@@ -328,7 +340,8 @@ export default function AdminDrivers() {
                       {d.vetting_status==="rejected"&&<span style={{ fontSize:10, color:"#e24b4a", background:"#fff5f5", padding:"2px 7px", borderRadius:10 }}>❌ Rejected</span>}
                       {isOnline&&!isSuspended&&<span style={{ fontSize:10, color:"#1d9e75" }}>🟢 Online{onJob?" · On job":""}</span>}
                       {noShowCount>0&&<span style={{ fontSize:10, color:"#e6821e", background:"#fff8f0", padding:"2px 7px", borderRadius:10 }}>⚠️ {noShowCount} no-show{noShowCount>1?"s":""}</span>}
-                      {d.driver_vehicle_type&&<span style={{ fontSize:10, color:"#8b5cf6", background:"#f5f3ff", padding:"2px 7px", borderRadius:10 }}>
+                      <span style={{ fontSize:10, color:(d.driver_category||"marketplace")==="concierge"?"#e6821e":"#378add", background:(d.driver_category||"marketplace")==="concierge"?"#fff8f0":"#eff6ff", padding:"2px 7px", borderRadius:10, fontWeight:600 }}>{(d.driver_category||"marketplace")==="concierge"?"🧑‍✈️ Concierge":"🚗 Marketplace"}</span>
+                      {(d.driver_category!=="concierge")&&d.driver_vehicle_type&&<span style={{ fontSize:10, color:"#8b5cf6", background:"#f5f3ff", padding:"2px 7px", borderRadius:10 }}>
                         {d.driver_vehicle_type==="motorcycle"?"🏍️ Boda Boda":d.driver_vehicle_type==="tuktuk"?"🛺 Tuktuk":d.driver_vehicle_type==="van"?"🚐 Van":"🚗 Car"}
                       </span>}
                     </div>
@@ -525,6 +538,7 @@ function DriverStats({ driverId, isMobile }) {
     </div>
   )
 }
+
 
 
 
