@@ -194,7 +194,7 @@ export default function Layout({ children }) {
 
   const providerNav = [
     { path:"/dashboard", key:"overview", icon:"🏠" },
-    { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
+    ...(!isPureInventoryProvider ? [{ path:"/dashboard/bookings", key:"bookings", icon:"📅" }] : []),
     ...(!isPureInventoryProvider ? [{ path:"/dashboard/services", key:"myServices", icon:"🔧" }] : []),
     ...( ["garage","garage_premium","panel_beater","auto_electrician","mobile_mechanic"].includes(providerType) ? [
       { path:"/dashboard/bundles", label:"Service Bundles", icon:"📦" },
