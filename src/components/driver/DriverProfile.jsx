@@ -206,6 +206,7 @@ export default function DriverProfile() {
   const TABS = [
     { k:"personal", l:"Personal" },
     { k:"credentials", l:"Credentials" },
+    { k:"documents", l:"Documents" },
     { k:"contact", l:"Contact" },
     { k:"security", l:"Security" },
   ]
@@ -471,6 +472,7 @@ export default function DriverProfile() {
     </div>
   )
 }
+
 
 
 
