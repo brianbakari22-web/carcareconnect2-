@@ -87,7 +87,7 @@ export default function ProviderReviews() {
 
       {loading && <div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading && reviews.length === 0 && (
-        <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>No reviews yet. Complete bookings to receive ratings.</div>
+        <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>No reviews yet. {["parts_dealer","accessories_shop"].includes(profile?.provider_type) ? "Complete orders" : "Complete bookings"} to receive ratings.</div>
       )}
 
       {reviews.map(r => (
