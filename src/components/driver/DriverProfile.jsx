@@ -184,7 +184,7 @@ export default function DriverProfile() {
 
       // Also update profile URL columns
       const urlMap = {
-        license: "license_doc_url",
+        license: "license_document_url",
         id_front: "id_doc_front_url",
         id_back: "id_doc_back_url",
         psv_badge: "psv_badge_url",
@@ -372,7 +372,7 @@ export default function DriverProfile() {
               {[
                 { key:"id_doc_front_url", label:"National ID (front)", icon:"📋" },
                 { key:"id_doc_back_url", label:"National ID (back)", icon:"📋" },
-                { key:"license_doc_url", label:"Drivers License", icon:"🪪" },
+                { key:"license_document_url", label:"Drivers License", icon:"🪪" },
                 { key:"psv_badge_url", label:"PSV Badge (if applicable)", icon:"🔖" },
                 { key:"good_conduct_url", label:"Certificate of Good Conduct", icon:"📄" },
                 { key:"insurance_url", label:"Insurance Certificate", icon:"📝" },
@@ -535,6 +535,7 @@ export default function DriverProfile() {
     </div>
   )
 }
+
 
 
 

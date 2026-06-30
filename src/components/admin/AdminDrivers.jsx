@@ -327,7 +327,7 @@ export default function AdminDrivers() {
                         { l:"National ID", v:d.id_number||"—" },
                         { l:"ID Front", v:d.id_doc_front_url?"✓ Uploaded":"✗ Missing" },
                         { l:"ID Back", v:d.id_doc_back_url?"✓ Uploaded":"✗ Missing" },
-                        { l:"License Doc", v:d.license_doc_url?"✓ Uploaded":"✗ Missing" },
+                        { l:"License Doc", v:d.license_document_url?"✓ Uploaded":"✗ Missing" },
                         { l:"PSV Badge", v:d.psv_badge_url?"✓ Uploaded":"✗ Missing" },
                         { l:"Good Conduct", v:d.good_conduct_url?"✓ Uploaded":"✗ Missing" },
                         { l:"License No.", v:d.license_number||"—" },
@@ -374,7 +374,7 @@ export default function AdminDrivers() {
                           {[
                             { key:"id_doc_front_url", label:"ID Front" },
                             { key:"id_doc_back_url", label:"ID Back" },
-                            { key:"license_doc_url", label:"License" },
+                            { key:"license_document_url", label:"License" },
                             { key:"psv_badge_url", label:"PSV Badge" },
                             { key:"good_conduct_url", label:"Good Conduct" },
                             { key:"insurance_url", label:"Insurance" },
@@ -418,7 +418,7 @@ export default function AdminDrivers() {
                       {[
                         { key:"id_doc_front_url", label:"ID Front" },
                         { key:"id_doc_back_url", label:"ID Back" },
-                        { key:"license_doc_url", label:"License" },
+                        { key:"license_document_url", label:"License" },
                         { key:"psv_badge_url", label:"PSV Badge" },
                         { key:"good_conduct_url", label:"Good Conduct" },
                         { key:"insurance_url", label:"Insurance" },
@@ -426,7 +426,7 @@ export default function AdminDrivers() {
                         <button onClick={()=>setViewingDocs(viewingDocs===d.id?null:d.id)}
                           style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
                           📋 View docs ({[
-                            d.id_doc_front_url,d.id_doc_back_url,d.license_doc_url,
+                            d.id_doc_front_url,d.id_doc_back_url,d.license_document_url,
                             d.psv_badge_url,d.good_conduct_url,d.insurance_url
                           ].filter(Boolean).length})
                         </button>
@@ -528,6 +528,7 @@ function DriverStats({ driverId, isMobile }) {
     </div>
   )
 }
+
 
 
 
