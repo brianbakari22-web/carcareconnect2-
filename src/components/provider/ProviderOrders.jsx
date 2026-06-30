@@ -100,11 +100,11 @@ export default function ProviderOrders() {
     if (!drivers?.length) return toast.error("No verified drivers available")
     const preferred = drivers.filter(d=>d.driver_vehicle_type===preferredType)
     const driver = preferred.length>0 ? preferred[0] : drivers[0]
-    await supabase.from("orders").update({ delivery_driver_id:driver.id, delivery_status:"driver_assigned" }).eq("id", orderId)
+    await supabase.from("orders").update({ delivery_driver_id:driver.id, delivery_status:"driver_assigned", delivery_attempt_expires_at:new Date(Date.now()+15*60*1000).toISOString() }).eq("id", orderId)
     await supabase.from("notifications").insert({
       user_id: driver.id,
       title: "🚚 New delivery job!",
-      message: "New delivery assigned: "+order?.order_items?.length+" item(s) to "+order?.delivery_address+". Zone: "+order?.delivery_zone+". Check your deliveries now!",
+      message: "New delivery assigned: "+order?.order_items?.length+" item(s) to "+order?.delivery_address+". Zone: "+order?.delivery_zone+". You have 15 minutes to accept!",
       type: "success"
     })
     toast.success("Driver assigned: "+driver.first_name+" "+driver.last_name+" ("+driver.driver_vehicle_type+")")
@@ -276,3 +276,5 @@ export default function ProviderOrders() {
     </div>
   )
 }
+
+

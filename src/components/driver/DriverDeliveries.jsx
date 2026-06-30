@@ -11,6 +11,12 @@ export default function DriverDeliveries() {
   const [available, setAvailable] = useState([])
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState("available")
+  const [now, setNow] = useState(Date.now())
+
+  useEffect(() => {
+    const interval = setInterval(()=>setNow(Date.now()), 1000)
+    return () => clearInterval(interval)
+  }, [])
 
   useEffect(() => {
     if (!user) return
@@ -58,10 +64,32 @@ export default function DriverDeliveries() {
     load()
   }
 
+  async function declineDelivery(orderId) {
+    if (!confirm("Decline this delivery? It will be reassigned to another driver.")) return
+    const order = deliveries.find(d=>d.id===orderId)
+    await supabase.from("orders").update({
+      delivery_driver_id: null,
+      delivery_status: null,
+      delivery_attempt_expires_at: null,
+      delivery_declined_drivers: [...(order?.delivery_declined_drivers||[]), user.id]
+    }).eq("id", orderId)
+    toast.success("Delivery declined")
+    load()
+  }
+
+  function formatCountdown(expiresAt) {
+    if (!expiresAt) return null
+    const diff = new Date(expiresAt).getTime() - now
+    if (diff <= 0) return "Expired"
+    const mins = Math.floor(diff/60000)
+    const secs = Math.floor((diff%60000)/1000)
+    return mins+":"+String(secs).padStart(2,"0")
+  }
+
   async function updateDeliveryStatus(orderId, status, customerId) {
     await supabase.from("orders").update({
       delivery_status: status,
-      ...(status==="picked_up"?{ pickup_confirmed_at:new Date().toISOString() }:{}),
+      ...(status==="picked_up"?{ pickup_confirmed_at:new Date().toISOString(), delivery_attempt_expires_at:null }:{}),
       ...(status==="delivered"?{ delivered_at:new Date().toISOString(), status:"delivered" }:{})
     }).eq("id", orderId)
     const messages = {
@@ -160,11 +188,23 @@ export default function DriverDeliveries() {
                   KES {(Number(o.delivery_fee||0)*0.85).toLocaleString()}
                 </div>
               </div>
+              {o.delivery_status==="driver_assigned"&&o.delivery_attempt_expires_at&&(
+                <div style={{ background: formatCountdown(o.delivery_attempt_expires_at)==="Expired" ? "#fff5f5" : "#fff8f0", border:"1px solid "+(formatCountdown(o.delivery_attempt_expires_at)==="Expired"?"#e24b4a40":"#e6821e40"), borderRadius:8, padding:"0.6rem 0.85rem", marginBottom:10, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                  <span style={{ fontSize:12, color: formatCountdown(o.delivery_attempt_expires_at)==="Expired" ? "#e24b4a" : "#e6821e", fontWeight:600 }}>
+                    ⏰ {formatCountdown(o.delivery_attempt_expires_at)==="Expired" ? "Time expired - reassigning..." : "Accept within "+formatCountdown(o.delivery_attempt_expires_at)}
+                  </span>
+                </div>
+              )}
               <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
                 {o.delivery_status==="driver_assigned"&&(
-                  <button onClick={()=>updateDeliveryStatus(o.id,"picked_up",o.customer_id)} style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"6px 14px", cursor:"pointer", fontWeight:600 }}>
-                    📦 Confirm pickup
-                  </button>
+                  <>
+                    <button onClick={()=>updateDeliveryStatus(o.id,"picked_up",o.customer_id)} style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"6px 14px", cursor:"pointer", fontWeight:600 }}>
+                      📦 Confirm pickup
+                    </button>
+                    <button onClick={()=>declineDelivery(o.id)} style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"6px 14px", cursor:"pointer", fontWeight:600 }}>
+                      ✗ Decline
+                    </button>
+                  </>
                 )}
                 {o.delivery_status==="picked_up"&&(
                   <button onClick={()=>updateDeliveryStatus(o.id,"delivered",o.customer_id)} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 14px", cursor:"pointer", fontWeight:600 }}>
@@ -199,4 +239,5 @@ export default function DriverDeliveries() {
     </div>
   )
 }
+
 
