@@ -39,6 +39,11 @@ export default function CustomerPartsMarketplace() {
   const [orders, setOrders] = useState([])
   const [tab, setTab] = useState("browse")
   const [chatItem, setChatItem] = useState(null)
+  const [reviewOrder, setReviewOrder] = useState(null)
+  const [reviewRating, setReviewRating] = useState(5)
+  const [reviewText, setReviewText] = useState("")
+  const [submittingReview, setSubmittingReview] = useState(false)
+  const [myReviews, setMyReviews] = useState({})
   const [checkoutStep, setCheckoutStep] = useState("cart") // cart, details, payment
   const [customerDetails, setCustomerDetails] = useState({ name:"", phone:"", email:"" })
   const [paymentMethod, setPaymentMethod] = useState("pesapal")
@@ -48,6 +53,7 @@ export default function CustomerPartsMarketplace() {
     if (!user) return
     load()
     loadOrders()
+    loadMyReviews()
     // Real-time inventory updates
     const sub = supabase.channel("marketplace-inventory")
       .on("postgres_changes", { event:"*", schema:"public", table:"inventory" }, () => load())
@@ -66,6 +72,39 @@ export default function CustomerPartsMarketplace() {
     setItems(inv||[])
     setZones(zns||[])
     setLoading(false)
+  }
+
+  async function loadMyReviews() {
+    const { data } = await supabase.from("reviews").select("order_id,provider_rating").eq("customer_id", user.id).not("order_id","is",null)
+    const map = {}
+    ;(data||[]).forEach(r => { map[r.order_id] = r.provider_rating })
+    setMyReviews(map)
+  }
+
+  async function submitOrderReview() {
+    if (!reviewOrder) return
+    setSubmittingReview(true)
+    try {
+      await supabase.from("reviews").insert({
+        order_id: reviewOrder.id,
+        customer_id: user.id,
+        provider_id: reviewOrder.provider_id,
+        provider_rating: reviewRating,
+        provider_review: reviewText||null
+      })
+      await supabase.from("notifications").insert({
+        user_id: reviewOrder.provider_id,
+        title: "New review received! ⭐",
+        message: reviewRating+" star review for order #"+reviewOrder.order_number+(reviewText?": \""+reviewText+"\"":""),
+        type: "info"
+      })
+      toast.success("Thank you for your review!")
+      setReviewOrder(null)
+      setReviewRating(5)
+      setReviewText("")
+      loadMyReviews()
+    } catch(e) { toast.error(e.message) }
+    finally { setSubmittingReview(false) }
   }
 
   async function loadOrders() {
@@ -377,8 +416,43 @@ export default function CustomerPartsMarketplace() {
                 </div>
               ))}
               {o.delivery_zone&&<div style={{ fontSize:11, color:"#378add", marginTop:4 }}>📍 Delivery: {o.delivery_zone} · KES {Number(o.delivery_fee||0).toLocaleString()}</div>}
+              {o.status==="delivered"&&!myReviews[o.id]&&(
+                <button onClick={()=>{ setReviewOrder(o); setReviewRating(5); setReviewText("") }}
+                  style={{ width:"100%", marginTop:8, background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:8, color:"#e6821e", fontSize:12, fontWeight:600, padding:"8px", cursor:"pointer" }}>
+                  ⭐ Rate this order
+                </button>
+              )}
+              {o.status==="delivered"&&myReviews[o.id]&&(
+                <div style={{ marginTop:8, fontSize:11, color:"#1d9e75", textAlign:"center" }}>
+                  ✓ You rated this {myReviews[o.id]} star{myReviews[o.id]!==1?"s":""}
+                </div>
+              )}
             </div>
           ))}
+        </div>
+      )}
+
+      {reviewOrder&&(
+        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.6)", zIndex:300, display:"flex", alignItems:"flex-end", justifyContent:"center" }} onClick={()=>setReviewOrder(null)}>
+          <div style={{ width:"100%", maxWidth:500, background:"#fff", borderRadius:"20px 20px 0 0", padding:"1.5rem" }} onClick={e=>e.stopPropagation()}>
+            <div style={{ display:"flex", justifyContent:"center", marginBottom:12 }}><div style={{ width:36, height:4, borderRadius:2, background:"#e0e0e0" }}/></div>
+            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000", marginBottom:4, textAlign:"center" }}>Rate your order</div>
+            <div style={{ fontSize:12, color:"#888", marginBottom:"1.25rem", textAlign:"center" }}>#{reviewOrder.order_number} from {reviewOrder.profiles?.business_name||reviewOrder.profiles?.first_name}</div>
+            <div style={{ display:"flex", justifyContent:"center", gap:8, marginBottom:"1.25rem" }}>
+              {[1,2,3,4,5].map(n=>(
+                <button key={n} onClick={()=>setReviewRating(n)} style={{ background:"none", border:"none", fontSize:32, cursor:"pointer", filter:n<=reviewRating?"none":"grayscale(1) opacity(0.3)" }}>⭐</button>
+              ))}
+            </div>
+            <textarea value={reviewText} onChange={e=>setReviewText(e.target.value)} placeholder="How was the quality and service? (optional)"
+              style={{ width:"100%", background:"#f8f8f8", border:"1px solid #e5e5e5", borderRadius:10, padding:"10px 12px", fontSize:13, outline:"none", resize:"vertical", minHeight:80, marginBottom:"1rem", fontFamily:"DM Sans,sans-serif" }}/>
+            <div style={{ display:"flex", gap:8 }}>
+              <button onClick={submitOrderReview} disabled={submittingReview}
+                style={{ flex:1, background:submittingReview?"#ccc":"linear-gradient(135deg,#e6821e,#f09840)", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:submittingReview?"not-allowed":"pointer" }}>
+                {submittingReview?"Submitting...":"Submit review"}
+              </button>
+              <button onClick={()=>setReviewOrder(null)} style={{ background:"none", border:"1px solid #ddd", borderRadius:10, color:"#888", fontSize:13, padding:"13px 20px", cursor:"pointer" }}>Cancel</button>
+            </div>
+          </div>
         </div>
       )}
 
