@@ -6,6 +6,7 @@ import toast from "react-hot-toast"
 export default function AdminDrivers() {
   const isMobile = useIsMobile()
   const [drivers, setDrivers] = useState([])
+  const [driverDocs, setDriverDocs] = useState({})
   const [driverStatuses, setDriverStatuses] = useState([])
   const [loading, setLoading] = useState(true)
   const [showMap, setShowMap] = useState(false)
@@ -91,12 +92,21 @@ export default function AdminDrivers() {
   }, [showMap, onlineDrivers])
 
   async function loadDrivers() {
-    const [{ data: drvs }, { data: probs }] = await Promise.all([
+    const [{ data: drvs }, { data: probs }, { data: docs }] = await Promise.all([
       supabase.from("profiles").select("*").eq("role","driver").order("created_at",{ascending:false}),
-      supabase.from("driver_probation").select("*")
+      supabase.from("driver_probation").select("*"),
+      supabase.from("driver_documents").select("*")
     ])
     setDrivers(drvs||[])
     setProbations(probs||[])
+    const docMap = {}
+    ;(docs||[]).forEach(doc => {
+      if (!docMap[doc.driver_id]) docMap[doc.driver_id] = {}
+      if (!docMap[doc.driver_id][doc.type] || new Date(doc.created_at) > new Date(docMap[doc.driver_id][doc.type].created_at)) {
+        docMap[doc.driver_id][doc.type] = doc
+      }
+    })
+    setDriverDocs(docMap)
   }
 
   async function loadStatuses() {
@@ -325,11 +335,11 @@ export default function AdminDrivers() {
                     <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(3,1fr)", gap:6, marginBottom:10 }}>
                       {[
                         { l:"National ID", v:d.id_number||"—" },
-                        { l:"ID Front", v:d.id_doc_front_url?"✓ Uploaded":"✗ Missing" },
-                        { l:"ID Back", v:d.id_doc_back_url?"✓ Uploaded":"✗ Missing" },
-                        { l:"License Doc", v:d.license_document_url?"✓ Uploaded":"✗ Missing" },
-                        { l:"PSV Badge", v:d.psv_badge_url?"✓ Uploaded":"✗ Missing" },
-                        { l:"Good Conduct", v:d.good_conduct_url?"✓ Uploaded":"✗ Missing" },
+                        { l:"ID Front", v:driverDocs[d.id]?.id_front?"✓ Uploaded":"✗ Missing" },
+                        { l:"ID Back", v:driverDocs[d.id]?.id_back?"✓ Uploaded":"✗ Missing" },
+                        { l:"License Doc", v:driverDocs[d.id]?.license?"✓ Uploaded":"✗ Missing" },
+                        { l:"PSV Badge", v:driverDocs[d.id]?.psv_badge?"✓ Uploaded":"✗ Missing" },
+                        { l:"Good Conduct", v:driverDocs[d.id]?.good_conduct?"✓ Uploaded":"✗ Missing" },
                         { l:"License No.", v:d.license_number||"—" },
                         { l:"License class", v:d.license_class||"—" },
                         { l:"Expiry", v:d.license_expiry||"—" },
@@ -371,22 +381,18 @@ export default function AdminDrivers() {
                       <div style={{ marginTop:10, background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"0.75rem" }}>
                         <div style={{ fontSize:12, color:"#888", marginBottom:8 }}>Uploaded documents:</div>
                         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(120px,1fr))", gap:8 }}>
-                          {[
-                            { key:"id_doc_front_url", label:"ID Front" },
-                            { key:"id_doc_back_url", label:"ID Back" },
-                            { key:"license_document_url", label:"License" },
-                            { key:"psv_badge_url", label:"PSV Badge" },
-                            { key:"good_conduct_url", label:"Good Conduct" },
-                            { key:"insurance_url", label:"Insurance" },
-                            { key:"vehicle_photo_url", label:"Vehicle" },
-                          ].filter(doc=>d[doc.key]).map(doc=>(
-                            <div key={doc.key} style={{ textAlign:"center" }}>
-                              <a href={d[doc.key]} target="_blank" rel="noreferrer">
-                                <img src={d[doc.key]} alt={doc.label} style={{ width:"100%", height:80, objectFit:"cover", borderRadius:7, border:"1px solid #dddddd" }}/>
+                          {Object.entries(driverDocs[d.id]||{}).map(([type,doc])=>(
+                            <div key={type} style={{ textAlign:"center" }}>
+                              <a href={doc.document_url} target="_blank" rel="noreferrer">
+                                <img src={doc.document_url} alt={type} style={{ width:"100%", height:80, objectFit:"cover", borderRadius:7, border:"1px solid #dddddd" }}/>
                               </a>
-                              <div style={{ fontSize:10, color:"#888", marginTop:3 }}>{doc.label}</div>
+                              <div style={{ fontSize:10, color:"#888", marginTop:3, textTransform:"capitalize" }}>{type.replace(/_/g," ")}</div>
+                              <div style={{ fontSize:9, color:doc.status==="approved"?"#1d9e75":doc.status==="rejected"?"#e24b4a":"#e6821e" }}>{doc.status}</div>
                             </div>
                           ))}
+                          {Object.keys(driverDocs[d.id]||{}).length===0&&(
+                            <div style={{ fontSize:11, color:"#888", gridColumn:"1/-1" }}>No documents uploaded yet</div>
+                          )}
                         </div>
                       </div>
                     )}
@@ -415,20 +421,10 @@ export default function AdminDrivers() {
                           </button>
                         </>
                       )}
-                      {[
-                        { key:"id_doc_front_url", label:"ID Front" },
-                        { key:"id_doc_back_url", label:"ID Back" },
-                        { key:"license_document_url", label:"License" },
-                        { key:"psv_badge_url", label:"PSV Badge" },
-                        { key:"good_conduct_url", label:"Good Conduct" },
-                        { key:"insurance_url", label:"Insurance" },
-                      ].filter(doc=>d[doc.key]).length>0&&(
+                      {Object.keys(driverDocs[d.id]||{}).length>0&&(
                         <button onClick={()=>setViewingDocs(viewingDocs===d.id?null:d.id)}
                           style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
-                          📋 View docs ({[
-                            d.id_doc_front_url,d.id_doc_back_url,d.license_document_url,
-                            d.psv_badge_url,d.good_conduct_url,d.insurance_url
-                          ].filter(Boolean).length})
+                          📋 View docs ({Object.keys(driverDocs[d.id]||{}).length})
                         </button>
                       )}
                       {d.documents_verified&&(
@@ -528,6 +524,7 @@ function DriverStats({ driverId, isMobile }) {
     </div>
   )
 }
+
 
 
 
