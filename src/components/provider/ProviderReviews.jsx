@@ -7,7 +7,7 @@ import { useLanguage } from "../../contexts/LanguageContext"
 
 export default function ProviderReviews() {
   const isMobile = useIsMobile()
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const { t, language } = useLanguage()
   const [reviews, setReviews] = useState([])
   const [loading, setLoading] = useState(true)
@@ -157,6 +157,7 @@ export default function ProviderReviews() {
     </div>
   )
 }
+
 
 
 
