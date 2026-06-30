@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import { useTheme } from "../../contexts/ThemeContext"
@@ -167,6 +167,8 @@ export default function Layout({ children }) {
   const hasInventory = ["parts_dealer","accessories_shop","tyre_shop","auto_glass"].includes(providerType)
   const isServiceProvider = ["garage","garage_premium","auto_electrician","car_wash","panel_beater","auto_glass"].includes(providerType)
   const isTyreShop = providerType === "tyre_shop"
+  const driverCategory = profile?.driver_category || "marketplace"
+  const isConciergeDriver = driverCategory === "concierge"
 
 
 
@@ -228,7 +230,32 @@ export default function Layout({ children }) {
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
   ]
 
-  const nav = role === "provider" ? providerNav : (NAV[role] || [])
+  const driverNav = isConciergeDriver ? [
+    { path:"/dashboard", key:"overview", icon:"🏠" },
+    { path:"/dashboard/jobs", key:"availableJobs", icon:"📦" },
+    { path:"/dashboard/active", key:"activeDelivery", icon:"🚗" },
+    { path:"/dashboard/earnings", key:"earnings", icon:"💰" },
+    { path:"/dashboard/reviews", key:"myRatings", icon:"⭐" },
+    { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
+    { path:"/dashboard/claims", label:"My Claims", icon:"🛡️" },
+    { path:"/dashboard/application", label:"My Application", icon:"📋" },
+    { path:"/dashboard/performance", label:"Performance", icon:"📊" },
+    { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
+    { path:"/dashboard/chat", key:"messages", icon:"✉️" },
+    { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
+  ] : [
+    { path:"/dashboard", key:"overview", icon:"🏠" },
+    { path:"/dashboard/deliveries", label:"Order Deliveries", icon:"📦" },
+    { path:"/dashboard/earnings", key:"earnings", icon:"💰" },
+    { path:"/dashboard/reviews", key:"myRatings", icon:"⭐" },
+    { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
+    { path:"/dashboard/claims", label:"My Claims", icon:"🛡️" },
+    { path:"/dashboard/vehicle", label:"My Vehicle", icon:"🚗" },
+    { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
+    { path:"/dashboard/chat", key:"messages", icon:"✉️" },
+    { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
+  ]
+  const nav = role === "provider" ? providerNav : role === "driver" ? driverNav : (NAV[role] || [])
   const isDeliveryDriver = ["motorcycle","tuktuk","van"].includes(profile?.driver_vehicle_type||"car")
   const providerBottomNav = isPureInventoryProvider ? [
     { path:"/dashboard", key:"overview", icon:"🏠" },
@@ -249,7 +276,19 @@ export default function Layout({ children }) {
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"more", label:"Menu", icon:"☰" },
   ]
-  const bottomNav = role==="provider" ? providerBottomNav : (BOTTOM_NAV[role] || [])
+  const bottomNav = role==="provider" ? providerBottomNav : role==="driver" ? driverBottomNav : (BOTTOM_NAV[role] || [])
+  const driverBottomNav = isConciergeDriver ? [
+    { path:"/dashboard", key:"overview", icon:"🏠" },
+    { path:"/dashboard/jobs", key:"availableJobs", icon:"📦" },
+    { path:"/dashboard/active", key:"activeDelivery", icon:"🚗" },
+    { path:"/dashboard/earnings", key:"earnings", icon:"💰" },
+    { path:"more", label:"Menu", icon:"☰" },
+  ] : [
+    { path:"/dashboard", key:"overview", icon:"🏠" },
+    { path:"/dashboard/deliveries", label:"Deliveries", icon:"📦" },
+    { path:"/dashboard/earnings", key:"earnings", icon:"💰" },
+    { path:"more", label:"Menu", icon:"☰" },
+  ]
   const initials = `${profile?.first_name?.[0]||""}${profile?.last_name?.[0]||""}`.toUpperCase()
 
   const roleColors = {
@@ -464,6 +503,9 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
+
+
 
 
 
