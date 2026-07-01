@@ -13,12 +13,14 @@ export default function DriverPerformance() {
   useEffect(() => { if (user) load() }, [user])
 
   async function load() {
-    const [{ data: bks }, { data: revs }, { data: status }] = await Promise.all([
-      supabase.from("bookings").select("status,total_amount,created_at,service_name").eq("driver_id", user.id),
+    const [{ data: bks }, { data: revs }, { data: status }, { data: ords }] = await Promise.all([
+      supabase.from("bookings").select("status,total_amount,created_at,service_name,driver_earnings").eq("driver_id", user.id),
       supabase.from("reviews").select("driver_rating,driver_review,created_at").eq("driver_id", user.id).order("created_at",{ascending:false}),
       supabase.from("driver_status").select("*").eq("driver_id", user.id).single(),
+      supabase.from("orders").select("status,delivery_fee,created_at,order_number").eq("delivery_driver_id", user.id),
     ])
-    const all = bks||[]
+    const isConciergeLoad = profile?.driver_category === "concierge"
+    const all = isConciergeLoad ? (bks||[]) : (ords||[])
     const completed = all.filter(b=>b.status==="completed")
     const cancelled = all.filter(b=>b.status==="cancelled")
     const avgRating = revs?.length ? (revs.reduce((s,r)=>s+Number(r.driver_rating||0),0)/revs.length).toFixed(1) : "—"
@@ -32,10 +34,10 @@ export default function DriverPerformance() {
       acceptanceRate,
       completionRate,
       noShows: status?.no_show_count||0,
-      totalEarnings: completed.reduce((s,b)=>s+Number(b.driver_earnings||0),0),
+      totalEarnings: isConciergeLoad ? completed.reduce((s,b)=>s+Number(b.driver_earnings||0),0) : completed.reduce((s,o)=>s+Number(o.delivery_fee||0)*0.85,0),
       onlineHours: 0,
     })
-    setRecentJobs(all.slice(0,10))
+    setRecentJobs(all.slice(0,10).map(j=>({ ...j, service_name: j.service_name || "Order #"+(j.order_number||"") })))
     setLoading(false)
   }
 
@@ -45,7 +47,8 @@ export default function DriverPerformance() {
     tuktuk: { icon:"🛺", label:"Tuktuk" },
     van: { icon:"🚐", label:"Van Driver" },
   }
-  const vc = vehicleConfig[profile?.driver_vehicle_type||"car"]
+  const isConcierge = profile?.driver_category === "concierge"
+  const vc = isConcierge ? { icon:"🧑‍✈️", label:"Concierge Driver" } : (vehicleConfig[profile?.driver_vehicle_type||"car"])
 
   if (loading) return <div style={{ color:"#777777", fontSize:13 }}>Loading...</div>
 
