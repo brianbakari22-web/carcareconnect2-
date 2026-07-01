@@ -26,10 +26,12 @@ export default function CustomerClaims() {
   const [claims, setClaims] = useState([])
   const [vouchers, setVouchers] = useState([])
   const [bookings, setBookings] = useState([])
+  const [orders, setOrders] = useState([])
+  const [claimType, setClaimType] = useState("booking")
   const [loading, setLoading] = useState(true)
   const [adminId, setAdminId] = useState(null)
   const [showForm, setShowForm] = useState(!!preselectedBooking)
-  const [form, setForm] = useState({ booking_id:preselectedBooking||"", reason:"", description:"" })
+  const [form, setForm] = useState({ booking_id:preselectedBooking||"", order_id:"", reason:"", description:"" })
   const [submitting, setSubmitting] = useState(false)
   const [tab, setTab] = useState("claims")
   const [chatClaim, setChatClaim] = useState(null)
@@ -43,7 +45,7 @@ export default function CustomerClaims() {
   }, [user])
 
   async function load() {
-    const [{ data: cls }, { data: vchs }, { data: bks }] = await Promise.all([
+    const [{ data: cls }, { data: vchs }, { data: bks }, { data: ords }] = await Promise.all([
       supabase.from("service_claims")
         .select("*, bookings(service_name,booking_number,booking_date,total_amount)")
         .eq("customer_id", user.id)
@@ -58,25 +60,30 @@ export default function CustomerClaims() {
         .eq("status", "completed")
         .order("created_at", { ascending:false })
         .limit(20),
+      supabase.from("orders").select("id,order_number,status,subtotal,provider_id,created_at").eq("customer_id", user.id).eq("status","delivered").order("created_at", { ascending:false }).limit(20),
     ])
     setClaims(cls||[])
     setVouchers(vchs||[])
     setBookings(bks||[])
+    setOrders(ords||[])
     setLoading(false)
   }
 
   async function submitClaim(e) {
     e.preventDefault()
-    if (!form.booking_id) return toast.error("Please select a booking")
+    if (claimType==="booking" && !form.booking_id) return toast.error("Please select a booking")
+    if (claimType==="order" && !form.order_id) return toast.error("Please select an order")
     if (!form.reason) return toast.error("Please select a reason")
     if (!form.description) return toast.error("Please describe the issue")
     setSubmitting(true)
     try {
       const booking = bookings.find(b=>b.id===form.booking_id)
+      const order = orders.find(o=>o.id===form.order_id)
       const { error } = await supabase.from("service_claims").insert({
-        booking_id: form.booking_id,
+        booking_id: claimType==="booking" ? form.booking_id : null,
+        order_id: claimType==="order" ? form.order_id : null,
         customer_id: user.id,
-        provider_id: booking?.provider_id,
+        provider_id: claimType==="booking" ? booking?.provider_id : order?.provider_id,
         reason: form.reason,
         description: form.description,
         status: "pending",
@@ -90,7 +97,7 @@ export default function CustomerClaims() {
       })
       toast.success("Claim submitted — we will review within 24 hours")
       setShowForm(false)
-      setForm({ booking_id:"", reason:"", description:"" })
+      setForm({ booking_id:"", order_id:"", reason:"", description:"" })
       load()
     } catch(err) { toast.error(err.message) }
     finally { setSubmitting(false) }
@@ -179,13 +186,28 @@ export default function CustomerClaims() {
         <div style={{ background:"#ffffff", border:"1px solid #e6821e30", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
           <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000", marginBottom:"1rem" }}>Submit a service claim</div>
           <form onSubmit={submitClaim}>
-            <label style={lbl}>Select booking *</label>
-            <select style={inp} value={form.booking_id} onChange={e=>setForm(f=>({...f,booking_id:e.target.value}))} required>
-              <option value="">Select a completed booking</option>
-              {bookings.map(b=>(
-                <option key={b.id} value={b.id}>{b.service_name} — #{b.booking_number} · {b.booking_date} · KES {Number(b.total_amount).toLocaleString()}</option>
-              ))}
-            </select>
+            <div style={{ display:"flex", gap:8, marginBottom:12 }}>
+              <button type="button" onClick={()=>setClaimType("booking")} style={{ flex:1, padding:"8px", borderRadius:8, border:"1px solid "+(claimType==="booking"?"#e6821e":"#e0e0e0"), background:claimType==="booking"?"#fff8f0":"#f8f8f8", color:claimType==="booking"?"#e6821e":"#555", fontSize:12, fontWeight:claimType==="booking"?700:400, cursor:"pointer" }}>📅 A service booking</button>
+              <button type="button" onClick={()=>setClaimType("order")} style={{ flex:1, padding:"8px", borderRadius:8, border:"1px solid "+(claimType==="order"?"#e6821e":"#e0e0e0"), background:claimType==="order"?"#fff8f0":"#f8f8f8", color:claimType==="order"?"#e6821e":"#555", fontSize:12, fontWeight:claimType==="order"?700:400, cursor:"pointer" }}>📦 A parts order</button>
+            </div>
+            {claimType==="booking"&&(
+              <><label style={lbl}>Select booking *</label>
+              <select style={inp} value={form.booking_id} onChange={e=>setForm(f=>({...f,booking_id:e.target.value}))}>
+                <option value="">Select a completed booking</option>
+                {bookings.map(b=>(
+                  <option key={b.id} value={b.id}>{b.service_name} — #{b.booking_number} · {b.booking_date} · KES {Number(b.total_amount).toLocaleString()}</option>
+                ))}
+              </select></>
+            )}
+            {claimType==="order"&&(
+              <><label style={lbl}>Select order *</label>
+              <select style={inp} value={form.order_id} onChange={e=>setForm(f=>({...f,order_id:e.target.value}))}>
+                <option value="">Select a delivered order</option>
+                {orders.map(o=>(
+                  <option key={o.id} value={o.id}>Order #{o.order_number} · KES {Number(o.subtotal||0).toLocaleString()} · {new Date(o.created_at).toLocaleDateString()}</option>
+                ))}
+              </select></>
+            )}
             <label style={lbl}>Reason *</label>
             <select style={inp} value={form.reason} onChange={e=>setForm(f=>({...f,reason:e.target.value}))} required>
               <option value="">Select reason</option>
@@ -203,7 +225,7 @@ export default function CustomerClaims() {
                 style={{ background:submitting?"#555555":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:submitting?"not-allowed":"pointer" }}>
                 {submitting?"Submitting...":"Submit claim"}
               </button>
-              <button type="button" onClick={()=>{ setShowForm(false); setForm({ booking_id:"", reason:"", description:"" }) }}
+              <button type="button" onClick={()=>{ setShowForm(false); setForm({ booking_id:"", order_id:"", reason:"", description:"" }) }}
                 style={{ background:"none", border:"1px solid #dddddd", borderRadius:9, color:"#666", fontSize:13, padding:"11px 16px", cursor:"pointer" }}>
                 Cancel
               </button>
