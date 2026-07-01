@@ -67,7 +67,7 @@ export default function ProviderProfile() {
     e.preventDefault()
     setSaving(true)
     try {
-      await updateProfile({ latitude:parseFloat(location.latitude)||null, longitude:parseFloat(location.longitude)||null, city:form.city })
+      await updateProfile({ latitude:parseFloat(location.latitude)||null, longitude:parseFloat(location.longitude)||null, city:form.city, address:location.address||null })
       toast.success("Location saved")
     } catch(err) { toast.error(err.message) }
     finally { setSaving(false) }
@@ -242,6 +242,8 @@ export default function ProviderProfile() {
               {locating?"Detecting...":"📍 Use my current location"}
             </button>
             {location.address&&<div style={{ fontSize:11, color:"#777777", marginBottom:12, padding:"0.6rem", background:"#ffffff", borderRadius:7 }}>{location.address}</div>}
+              <label style={lbl}>Street address</label>
+              <input style={inp} placeholder="e.g. Westlands, Waiyaki Way, Nairobi" value={location.address||""} onChange={e=>setLocation(l=>({...l,address:e.target.value}))}/>
             <label style={lbl}>Or enter coordinates manually</label>
             <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
               <div>
@@ -323,6 +325,8 @@ export default function ProviderProfile() {
     </div>
   )
 }
+
+
 
 
 

@@ -31,11 +31,11 @@ export default function DriverDeliveries() {
   async function load() {
     const [{ data: mine }, { data: avail }] = await Promise.all([
       supabase.from("orders")
-        .select("*, order_items(name,quantity), profiles!orders_customer_id_fkey(first_name,last_name,city), provider:profiles!orders_provider_id_fkey(first_name,last_name,business_name,city)")
+        .select("*, order_items(name,quantity), profiles!orders_customer_id_fkey(first_name,last_name,city,latitude,longitude), provider:profiles!orders_provider_id_fkey(first_name,last_name,business_name,city,address,latitude,longitude)")
         .eq("delivery_driver_id", user.id)
         .order("created_at", { ascending:false }),
       supabase.from("orders")
-        .select("*, order_items(name,quantity), profiles!orders_customer_id_fkey(first_name,last_name,city), provider:profiles!orders_provider_id_fkey(first_name,last_name,business_name,city)")
+        .select("*, order_items(name,quantity), profiles!orders_customer_id_fkey(first_name,last_name,city,latitude,longitude), provider:profiles!orders_provider_id_fkey(first_name,last_name,business_name,city,address,latitude,longitude)")
         .eq("fulfillment_type","delivery")
         .eq("status","ready")
         .is("delivery_driver_id",null)
@@ -153,6 +153,9 @@ export default function DriverDeliveries() {
                 <div>
                   <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:2 }}>#{o.order_number}</div>
                   <div style={{ fontSize:11, color:"#777777" }}>📦 Pick up from: {o.provider?.business_name||o.provider?.first_name} · {o.provider?.city}</div>
+                  {o.provider?.latitude&&o.provider?.longitude&&(
+                    <a href={`https://www.google.com/maps/dir/?api=1&destination=${o.provider.latitude},${o.provider.longitude}`} target="_blank" rel="noreferrer" style={{ fontSize:11, color:"#e6821e", textDecoration:"none" }}>🗺️ Navigate to pickup →</a>
+                  )}
                   <div style={{ fontSize:11, color:"#777777" }}>📍 Deliver to: {o.delivery_address}</div>
                   <div style={{ fontSize:11, color:"#378add" }}>Zone: {o.delivery_zone}</div>
                   <div style={{ fontSize:10, color:"#888888" }}>{o.order_items?.length} item(s)</div>
@@ -179,7 +182,13 @@ export default function DriverDeliveries() {
                 <div>
                   <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:2 }}>#{o.order_number}</div>
                   <div style={{ fontSize:11, color:"#777777" }}>📦 {o.provider?.business_name||o.provider?.first_name} · {o.provider?.city}</div>
-                  <div style={{ fontSize:11, color:"#777777" }}>📍 {o.delivery_address}</div>
+                  {o.provider?.latitude&&o.provider?.longitude&&(
+                    <a href={`https://www.google.com/maps/dir/?api=1&destination=${o.provider.latitude},${o.provider.longitude}`} target="_blank" rel="noreferrer" style={{ fontSize:11, color:"#e6821e", textDecoration:"none" }}>🗺️ Navigate to provider →</a>
+                  )}
+                  <div style={{ fontSize:11, color:"#777777" }}>📍 Deliver to: {o.delivery_address}</div>
+                  {o.profiles?.latitude&&o.profiles?.longitude&&(
+                    <a href={`https://www.google.com/maps/dir/?api=1&destination=${o.profiles.latitude},${o.profiles.longitude}`} target="_blank" rel="noreferrer" style={{ fontSize:11, color:"#378add", textDecoration:"none" }}>🗺️ Navigate to customer →</a>
+                  )}
                   <span style={{ fontSize:10, padding:"2px 8px", borderRadius:8, background:(SC[o.delivery_status]||"#888")+"20", color:SC[o.delivery_status]||"#888", display:"inline-block", marginTop:4 }}>
                     {o.delivery_status?.replace(/_/g," ")||"assigned"}
                   </span>
@@ -239,5 +248,6 @@ export default function DriverDeliveries() {
     </div>
   )
 }
+
 
 

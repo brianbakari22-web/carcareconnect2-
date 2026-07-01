@@ -35,6 +35,9 @@ export default function CustomerPartsMarketplace() {
   const [fulfillment, setFulfillment] = useState("pickup")
   const [selectedZone, setSelectedZone] = useState("")
   const [deliveryAddress, setDeliveryAddress] = useState("")
+  const [deliveryLat, setDeliveryLat] = useState(null)
+  const [deliveryLng, setDeliveryLng] = useState(null)
+  const [detectingLocation, setDetectingLocation] = useState(false)
   const [ordering, setOrdering] = useState(false)
   const [orders, setOrders] = useState([])
   const [tab, setTab] = useState("browse")
@@ -188,6 +191,8 @@ export default function CustomerPartsMarketplace() {
           fulfillment_type: fulfillment,
           delivery_zone: zone?.name || null,
           delivery_address: deliveryAddress || null,
+        delivery_latitude: deliveryLat || null,
+        delivery_longitude: deliveryLng || null,
           customer_name: customerDetails.name,
           customer_phone: customerDetails.phone,
           payment_method: paymentMethod,
@@ -238,6 +243,8 @@ export default function CustomerPartsMarketplace() {
       setCheckoutStep("cart")
       setCustomerDetails({ name: "", phone: "", email: "" })
       setDeliveryAddress("")
+      setDeliveryLat(null)
+      setDeliveryLng(null)
       setSelectedZone("")
 
       if (paymentMethod === "cash") {
@@ -555,8 +562,13 @@ export default function CustomerPartsMarketplace() {
                     </div>
                     <div style={{ marginBottom:8 }}>
                       <div style={{ fontSize:11, color:"#666", marginBottom:4 }}>Delivery address</div>
-                      <input value={deliveryAddress} onChange={e=>setDeliveryAddress(e.target.value)} placeholder="Your full delivery address..."
-                        style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none" }}/>
+                      <div style={{ display:"flex", gap:6 }}>
+                        <input value={deliveryAddress} onChange={e=>setDeliveryAddress(e.target.value)} placeholder="Your full delivery address..."
+                          style={{ flex:1, background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none" }}/>
+                        <button type="button" disabled={detectingLocation} onClick={()=>{ setDetectingLocation(true); import("../../lib/geolocation").then(m=>m.getCurrentPosition()).then(async pos=>{ setDeliveryLat(pos.latitude); setDeliveryLng(pos.longitude); const r=await fetch("https://nominatim.openstreetmap.org/reverse?lat="+pos.latitude+"&lon="+pos.longitude+"&format=json"); const d=await r.json(); setDeliveryAddress(d.display_name||"Location detected") }).catch(()=>{}).finally(()=>setDetectingLocation(false)) }} style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"0 12px", cursor:"pointer", flexShrink:0 }}>
+                          {detectingLocation?"...":"📍 Detect"}
+                        </button>
+                      </div>
                     </div>
                   </>
                 )}
@@ -602,6 +614,7 @@ export default function CustomerPartsMarketplace() {
     </div>
   )
 }
+
 
 
 
