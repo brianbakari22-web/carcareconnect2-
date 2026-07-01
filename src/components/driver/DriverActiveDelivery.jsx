@@ -29,8 +29,8 @@ export default function DriverActiveDelivery() {
         // Update driver current location
         await supabase.from("driver_status").upsert({
           driver_id: user.id,
-          current_latitude: pos.latitude,
-          current_longitude: pos.longitude,
+          current_lat: pos.latitude,
+          current_lng: pos.longitude,
           is_online: true,
           updated_at: new Date().toISOString()
         }, { onConflict: "driver_id" })
@@ -285,6 +285,7 @@ export default function DriverActiveDelivery() {
     </div>
   )
 }
+
 
 
 

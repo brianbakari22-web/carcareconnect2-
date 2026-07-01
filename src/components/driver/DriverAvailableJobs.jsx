@@ -74,7 +74,7 @@ export default function DriverAvailableJobs() {
     async function load() {
     const [{ data: jobs }, { data: status }] = await Promise.all([
       supabase.from("bookings")
-        .select("*, vehicles(make,model,year,license_plate,color), profiles!bookings_customer_id_fkey(first_name,last_name,city), concierge_current_driver_id, concierge_attempt, concierge_attempt_expires_at")
+        .select("*, vehicles(make,model,year,license_plate,color), profiles!bookings_customer_id_fkey(first_name,last_name,city,latitude,longitude), provider:profiles!bookings_provider_id_fkey(first_name,last_name,business_name,city,address), concierge_current_driver_id, concierge_attempt, concierge_attempt_expires_at, concierge_pickup_location, concierge_surcharge")
         .eq("is_concierge", true)
         .eq("status", "confirmed")
         .is("driver_id", null)
@@ -236,6 +236,30 @@ export default function DriverAvailableJobs() {
               </div>
             </div>
 
+            {/* Pickup & Dropoff locations */}
+            <div style={{ display:"grid", gridTemplateColumns:"1fr", gap:8, marginBottom:12 }}>
+              {job.concierge_pickup_location&&(
+                <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:8, padding:"0.75rem" }}>
+                  <div style={{ fontSize:10, color:"#e6821e", fontWeight:600, marginBottom:4 }}>📍 PICKUP — Go here first</div>
+                  <div style={{ fontSize:12, color:"#000", fontWeight:600 }}>{job.concierge_pickup_location}</div>
+                  {customer?.latitude&&customer?.longitude&&(
+                    <a href={`https://www.google.com/maps/dir/?api=1&destination=${customer.latitude},${customer.longitude}`} target="_blank" rel="noreferrer"
+                      style={{ fontSize:11, color:"#e6821e", textDecoration:"none", display:"block", marginTop:4 }}>
+                      🗺️ Open in Google Maps →
+                    </a>
+                  )}
+                </div>
+              )}
+              {job.provider&&(
+                <div style={{ background:"#eff6ff", border:"1px solid #378add30", borderRadius:8, padding:"0.75rem" }}>
+                  <div style={{ fontSize:10, color:"#378add", fontWeight:600, marginBottom:4 }}>🔧 DROPOFF — Take car here</div>
+                  <div style={{ fontSize:12, color:"#000", fontWeight:600 }}>{job.provider?.business_name||job.provider?.first_name}</div>
+                  {job.provider?.address&&<div style={{ fontSize:11, color:"#555", marginTop:2 }}>📍 {job.provider.address}</div>}
+                  {job.provider?.city&&<div style={{ fontSize:11, color:"#777", marginTop:2 }}>{job.provider.city}</div>}
+                </div>
+              )}
+            </div>
+
             {/* Problem description */}
             {job.problem_description&&(
               <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", marginBottom:10, border:"1px solid #eeeeee" }}>
@@ -301,6 +325,7 @@ export default function DriverAvailableJobs() {
     </div>
   )
 }
+
 
 
 
