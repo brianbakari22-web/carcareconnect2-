@@ -74,9 +74,9 @@ export default function DriverApplication() {
     try {
       const ext = file.name.split(".").pop()
       const path = `${user.id}/${type}-${Date.now()}.${ext}`
-      const { error } = await supabase.storage.from("driver-photos").upload(path, file, { upsert:true })
+      const { error } = await supabase.storage.from("driver-documents").upload(path, file, { upsert:true })
       if (error) throw error
-      const { data } = supabase.storage.from("driver-photos").getPublicUrl(path)
+      const { data } = supabase.storage.from("driver-documents").getPublicUrl(path)
       // Save to driver_documents
       const { data: doc } = await supabase.from("driver_documents").upsert({
         driver_id: user.id,
@@ -280,3 +280,4 @@ export default function DriverApplication() {
     </div>
   )
 }
+
