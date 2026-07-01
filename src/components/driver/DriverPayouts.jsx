@@ -7,6 +7,7 @@ import toast from "react-hot-toast"
 export default function DriverPayouts() {
   const isMobile = useIsMobile()
   const { user, profile } = useAuth()
+  const isConcierge = profile?.driver_category === "concierge"
   const [payouts, setPayouts] = useState([])
   const [earnings, setEarnings] = useState(0)
   const [paid, setPaid] = useState(0)
@@ -20,14 +21,13 @@ export default function DriverPayouts() {
   const [minPayout, setMinPayout] = useState(500)
 
   useEffect(() => {
-    if (!user) return
+    if (!user || !profile) return
     load()
     supabase.from("app_settings").select("value").eq("key","min_payout_amount").maybeSingle()
       .then(({ data }) => { if (data) setMinPayout(Number(data.value)) })
-  }, [user])
+  }, [user, profile?.driver_category])
 
   async function load() {
-  const isConcierge = profile?.driver_category === "concierge"
 
     const [{ data: bks }, { data: pts }, { data: sens }, { data: ords }] = await Promise.all([
       supabase.from("bookings").select("driver_earnings").eq("driver_id", user.id).eq("status", "completed"),
