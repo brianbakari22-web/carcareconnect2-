@@ -6,7 +6,7 @@ import toast from "react-hot-toast"
 
 export default function DriverPayouts() {
   const isMobile = useIsMobile()
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const [payouts, setPayouts] = useState([])
   const [earnings, setEarnings] = useState(0)
   const [paid, setPaid] = useState(0)
@@ -27,12 +27,17 @@ export default function DriverPayouts() {
   }, [user])
 
   async function load() {
-    const [{ data: bks }, { data: pts }, { data: sens }] = await Promise.all([
+  const isConcierge = profile?.driver_category === "concierge"
+
+    const [{ data: bks }, { data: pts }, { data: sens }, { data: ords }] = await Promise.all([
       supabase.from("bookings").select("driver_earnings").eq("driver_id", user.id).eq("status", "completed"),
       supabase.from("payout_requests").select("*").eq("user_id", user.id).order("created_at", { ascending:false }),
-      supabase.from("profile_sensitive").select("bank_name,bank_account_name,bank_account_number").eq("id", user.id).single()
+      supabase.from("profile_sensitive").select("bank_name,bank_account_name,bank_account_number").eq("id", user.id).single(),
+      supabase.from("orders").select("delivery_fee").eq("delivery_driver_id", user.id).eq("status","delivered")
     ])
-    const totalEarned = (bks||[]).reduce((s,b)=>s+Number(b.driver_earnings||0),0)
+    const conciergeEarned = (bks||[]).reduce((s,b)=>s+Number(b.driver_earnings||0),0)
+    const marketplaceEarned = (ords||[]).reduce((s,o)=>s+Number(o.delivery_fee||0)*0.85,0)
+    const totalEarned = isConcierge ? conciergeEarned : marketplaceEarned
     const totalPaid = (pts||[]).filter(p=>p.status==="paid").reduce((s,p)=>s+Number(p.amount),0)
     setEarnings(totalEarned)
     setPaid(totalPaid)
