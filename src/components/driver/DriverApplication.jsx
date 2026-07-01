@@ -93,24 +93,31 @@ export default function DriverApplication() {
   async function submitApplication() {
     if (!appointmentDate || !appointmentTime) return toast.error("Please select an appointment date and time")
     setSubmitting(true)
-    try {
+      try {
       // Save agreement
-      await supabase.from("driver_agreements").upsert({
+      const { error: agreementError } = await supabase.from("driver_agreements").upsert({
         driver_id: user.id,
         agreement_version: "1.0",
         agreed_at: new Date().toISOString(),
-      }, { onConflict: "driver_id" })
+      }, { onConflict: "driver_id" }).select()
+      if (agreementError) { console.error("AGREEMENT FAILED:", agreementError); throw agreementError }
+      console.log("STEP 1: Agreement saved")
 
       // Book appointment
-      await supabase.from("driver_vetting_appointments").upsert({
+      const { error: appointmentError } = await supabase.from("driver_vetting_appointments").upsert({
         driver_id: user.id,
         appointment_date: appointmentDate,
         appointment_time: appointmentTime,
         location,
         status: "scheduled",
-      }, { onConflict: "driver_id" })
+      }, { onConflict: "driver_id" }).select()
+      if (appointmentError) { console.error("APPOINTMENT FAILED:", appointmentError); throw appointmentError }
+      console.log("STEP 2: Appointment saved")
 
       // Update profile vetting status
+      const { error: profileError } = await supabase.from("profiles").update({ vetting_status: "documents_submitted" }).eq("id", user.id)
+      if (profileError) { console.error("PROFILE FAILED:", profileError); throw profileError }
+      console.log("STEP 3: Profile updated")
       await supabase.from("profiles").update({ vetting_status: "documents_submitted" }).eq("id", user.id)
 
       // Notify admin
