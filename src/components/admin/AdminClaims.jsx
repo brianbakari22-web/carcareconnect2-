@@ -47,7 +47,7 @@ export default function AdminClaims() {
   async function load() {
     const [{ data: cls }, { data: pens }] = await Promise.all([
       supabase.from("service_claims")
-        .select("*, bookings(service_name,booking_number,booking_date,total_amount,provider_id), customer:profiles!service_claims_customer_id_fkey(first_name,last_name), provider:profiles!service_claims_provider_id_fkey(first_name,last_name,business_name)")
+        .select("*, bookings(service_name,booking_number,booking_date,total_amount,provider_id), orders(order_number,subtotal,created_at,provider_id), customer:profiles!service_claims_customer_id_fkey(first_name,last_name), provider:profiles!service_claims_provider_id_fkey(first_name,last_name,business_name)")
         .order("created_at",{ascending:false}),
       supabase.from("provider_penalties").select("*, profiles(first_name,last_name,business_name)").order("created_at",{ascending:false}),
     ])
@@ -238,10 +238,10 @@ export default function AdminClaims() {
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
-                    <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{c.bookings?.service_name}</div>
+                    <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{c.bookings?.service_name || (c.orders ? "Order #"+c.orders.order_number : "Unknown")}</div>
                     <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:`${SC[c.status]||"#888"}20`, color:SC[c.status]||"#888" }}>{c.status?.replace("_"," ")}</span>
                   </div>
-                  <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>#{c.bookings?.booking_number} · {c.bookings?.booking_date}</div>
+                  <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>{c.bookings ? "#"+c.bookings.booking_number+" · "+c.bookings.booking_date : c.orders ? "Order · KES "+Number(c.orders.subtotal||0).toLocaleString()+" · "+new Date(c.orders.created_at).toLocaleDateString() : ""}</div>
                   <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>👤 Customer: {c.customer?.first_name} {c.customer?.last_name}</div>
                   <div style={{ fontSize:11, color:"#888", marginBottom:4 }}>🏪 Provider: {c.provider?.business_name||`${c.provider?.first_name} ${c.provider?.last_name}`}</div>
                   <div style={{ fontSize:12, color:"#e6821e", marginBottom:2 }}>Reason: {c.reason}</div>
