@@ -22,6 +22,8 @@ export default function DriverOverview() {
   const [todayStats, setTodayStats] = useState({ jobs:0, earnings:0, rating:"—" })
   const [weekStats, setWeekStats] = useState({ jobs:0, earnings:0 })
   const [penalties, setPenalties] = useState([])
+  const [probation, setProbation] = useState(null)
+  const [rating, setRating] = useState(null)
   const locationIntervalRef = useRef(null)
 
   useEffect(() => {
@@ -35,7 +37,7 @@ export default function DriverOverview() {
   }, [user])
 
   async function load() {
-    await Promise.all([loadStatus(), loadActiveJob(), loadStats(), loadPenalties()])
+    await Promise.all([loadStatus(), loadActiveJob(), loadStats(), loadPenalties(), loadProbation(), loadRating()])
     setLoading(false)
   }
 
@@ -63,6 +65,19 @@ export default function DriverOverview() {
   async function loadPenalties() {
     const { data } = await supabase.from("driver_penalties").select("*").eq("driver_id", user.id).eq("is_active", true)
     setPenalties(data||[])
+  }
+
+  async function loadProbation() {
+    const { data } = await supabase.from("driver_probation").select("*").eq("driver_id", user.id).maybeSingle()
+    setProbation(data)
+  }
+
+  async function loadRating() {
+    const { data } = await supabase.from("reviews").select("provider_rating").eq("driver_id", user.id)
+    if (data?.length) {
+      const avg = data.reduce((s,r)=>s+Number(r.provider_rating||0),0)/data.length
+      setRating(avg.toFixed(1))
+    }
   }
 
   async function updateLocation(lat, lng) {
@@ -104,7 +119,10 @@ export default function DriverOverview() {
   const isSuspended = driverStatus?.is_suspended
   const noShowCount = driverStatus?.no_show_count||0
   const vehicleType = profile?.driver_vehicle_type || "car"
-  const vehicleConfig = VEHICLE_CONFIG[vehicleType] || VEHICLE_CONFIG.car
+  const isConcierge = profile?.driver_category === "concierge"
+  const vehicleConfig = isConcierge 
+    ? { icon:"🧑‍✈️", label:"Concierge Driver", color:"#1d9e75", desc:"Vehicle pickup and chauffeur service" }
+    : (VEHICLE_CONFIG[vehicleType] || VEHICLE_CONFIG.car)
 
   if (loading) return <div style={{ color:"#888", fontSize:13, padding:"2rem", textAlign:"center" }}>Loading...</div>
 
@@ -145,7 +163,7 @@ export default function DriverOverview() {
             { label:"Today jobs", value:todayStats.jobs, icon:"📅", color:"#378add" },
             { label:"Today earnings", value:`KES ${Number(todayStats.earnings).toLocaleString()}`, icon:"💵", color:"#1d9e75" },
             { label:"Week jobs", value:weekStats.jobs, icon:"📊", color:"#8b5cf6" },
-            { label:"Week earnings", value:`KES ${Number(weekStats.earnings).toLocaleString()}`, icon:"💰", color:"#e6821e" },
+            { label:"Rating", value:rating?`⭐ ${rating}`:"—", icon:"⭐", color:"#e6821e" },
           ].map(s=>(
             <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"0.75rem", display:"flex", alignItems:"center", gap:8 }}>
               <div style={{ fontSize:20 }}>{s.icon}</div>
@@ -186,6 +204,37 @@ export default function DriverOverview() {
         {!isVerified&&!isSuspended&&(
           <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.85rem", marginBottom:"1rem" }}>
             <div style={{ fontSize:12, color:"#e6821e" }}>⚠️ Documents pending verification — go to Profile → Credentials</div>
+          </div>
+        )}
+
+        {/* Probation status */}
+        {probation&&probation.status==="probation"&&(
+          <div style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#8b5cf6", marginBottom:6 }}>🔍 Probation period</div>
+            <div style={{ fontSize:12, color:"#555", marginBottom:8 }}>Complete {probation.jobs_required} jobs with 4.5+ stars to become a fully verified driver.</div>
+            <div style={{ background:"#ede9fe", borderRadius:8, height:8, overflow:"hidden" }}>
+              <div style={{ background:"#8b5cf6", height:"100%", width:`${Math.min(100,(probation.jobs_completed/probation.jobs_required)*100)}%`, borderRadius:8, transition:"width 0.3s" }}/>
+            </div>
+            <div style={{ fontSize:11, color:"#8b5cf6", marginTop:4, textAlign:"right" }}>{probation.jobs_completed}/{probation.jobs_required} jobs completed</div>
+          </div>
+        )}
+        {probation&&probation.status==="completed"&&(
+          <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:10, padding:"0.85rem", marginBottom:"1rem" }}>
+            <div style={{ fontSize:13, color:"#1d9e75", fontWeight:600 }}>✓ Probation completed — you are a fully verified CCC Driver!</div>
+          </div>
+        )}
+
+        {/* Quick actions */}
+        {isOnline&&isVerified&&!isSuspended&&(
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:"1rem" }}>
+            <a href={isConcierge?"/dashboard/jobs":"/dashboard/deliveries"} style={{ background:"#1d9e75", borderRadius:10, padding:"0.85rem", textAlign:"center", textDecoration:"none" }}>
+              <div style={{ fontSize:20, marginBottom:2 }}>{isConcierge?"📦":"🚚"}</div>
+              <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#fff" }}>{isConcierge?"Available Jobs":"Order Deliveries"}</div>
+            </a>
+            <a href={isConcierge?"/dashboard/active":"/dashboard/deliveries"} style={{ background:"#378add", borderRadius:10, padding:"0.85rem", textAlign:"center", textDecoration:"none" }}>
+              <div style={{ fontSize:20, marginBottom:2 }}>{isConcierge?"🚗":"📦"}</div>
+              <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#fff" }}>{isConcierge?"Active Delivery":"My Deliveries"}</div>
+            </a>
           </div>
         )}
 
@@ -248,4 +297,6 @@ export default function DriverOverview() {
     </div>
   )
 }
+
+
 
