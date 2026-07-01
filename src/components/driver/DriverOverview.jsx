@@ -67,7 +67,7 @@ export default function DriverOverview() {
 
   async function updateLocation(lat, lng) {
     try {
-      await supabase.from("driver_status").upsert({ driver_id:user.id, current_latitude:lat, current_longitude:lng, last_location_updated:new Date().toISOString(), updated_at:new Date().toISOString() }, { onConflict:"driver_id" })
+      await supabase.from("driver_status").upsert({ driver_id:user.id, current_lat:lat, current_lng:lng, last_location_update:new Date().toISOString(), updated_at:new Date().toISOString() }, { onConflict:"driver_id" })
       await supabase.from("profiles").update({ latitude:lat, longitude:lng }).eq("id", user.id)
     } catch(err) { console.error("Location update failed:", err) }
   }
@@ -76,7 +76,7 @@ export default function DriverOverview() {
     if (locationIntervalRef.current) clearInterval(locationIntervalRef.current)
     locationIntervalRef.current = setInterval(() => {
       getCurrentPosition().then(async pos => {
-        await supabase.from("driver_status").update({ current_latitude:pos.latitude, current_longitude:pos.longitude, last_seen:new Date().toISOString() }).eq("driver_id", user.id)
+        await supabase.from("driver_status").update({ current_lat:pos.latitude, current_lng:pos.longitude, updated_at:new Date().toISOString() }).eq("driver_id", user.id)
       }).catch(err => console.warn("Location update failed:", err.message))
     }, 30000)
   }
@@ -90,7 +90,7 @@ export default function DriverOverview() {
     setToggling(true)
     try {
       const newStatus = !driverStatus?.is_online
-      await supabase.from("driver_status").upsert({ driver_id:user.id, is_online:newStatus, last_seen:new Date().toISOString() }, { onConflict:"driver_id" })
+      await supabase.from("driver_status").upsert({ driver_id:user.id, is_online:newStatus, updated_at:new Date().toISOString() }, { onConflict:"driver_id" })
       setDriverStatus(s=>({...s, is_online:newStatus}))
       if (newStatus) startLocationSharing()
       else if (locationIntervalRef.current) clearInterval(locationIntervalRef.current)
@@ -248,3 +248,4 @@ export default function DriverOverview() {
     </div>
   )
 }
+
