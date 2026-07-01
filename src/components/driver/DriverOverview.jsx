@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react"
+import { useNavigate } from "react-router-dom"
 import { supabase } from "../../lib/supabase"
 import { getCurrentPosition } from "../../lib/geolocation"
 import { useAuth } from "../../contexts/AuthContext"
@@ -14,6 +15,7 @@ const VEHICLE_CONFIG = {
 
 export default function DriverOverview() {
   const { user, profile } = useAuth()
+  const navigate = useNavigate()
   const isMobile = useIsMobile()
   const [driverStatus, setDriverStatus] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -227,14 +229,14 @@ export default function DriverOverview() {
         {/* Quick actions */}
         {isOnline&&isVerified&&!isSuspended&&(
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:"1rem" }}>
-            <a href={isConcierge?"/dashboard/jobs":"/dashboard/deliveries"} style={{ background:"#1d9e75", borderRadius:10, padding:"0.85rem", textAlign:"center", textDecoration:"none" }}>
+            <button onClick={()=>navigate(isConcierge?"/dashboard/jobs":"/dashboard/deliveries")} style={{ background:"#1d9e75", border:"none", borderRadius:10, padding:"0.85rem", textAlign:"center", cursor:"pointer", width:"100%" }}>
               <div style={{ fontSize:20, marginBottom:2 }}>{isConcierge?"📦":"🚚"}</div>
               <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#fff" }}>{isConcierge?"Available Jobs":"Order Deliveries"}</div>
-            </a>
-            <a href={isConcierge?"/dashboard/active":"/dashboard/deliveries"} style={{ background:"#378add", borderRadius:10, padding:"0.85rem", textAlign:"center", textDecoration:"none" }}>
+            </button>
+            <button onClick={()=>navigate(isConcierge?"/dashboard/active":"/dashboard/deliveries")} style={{ background:"#378add", border:"none", borderRadius:10, padding:"0.85rem", textAlign:"center", cursor:"pointer", width:"100%" }}>
               <div style={{ fontSize:20, marginBottom:2 }}>{isConcierge?"🚗":"📦"}</div>
               <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#fff" }}>{isConcierge?"Active Delivery":"My Deliveries"}</div>
-            </a>
+            </button>
           </div>
         )}
 
