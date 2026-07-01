@@ -184,7 +184,7 @@ export default function AdminDriverVetting() {
             <div>
               <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#000" }}>{selected.driver?.first_name} {selected.driver?.last_name}</div>
               <div style={{ fontSize:11, color:"#888" }}>{selected.driver?.email} · {selected.driver?.phone}</div>
-              <div style={{ fontSize:11, color:"#888" }}>Vehicle: {selected.driver?.driver_vehicle_type} · {selected.appointment_date} at {selected.appointment_time}</div>
+              <div style={{ fontSize:11, color:"#888" }}>Vehicle: {selected.driver?.driver_category==="concierge"?"🧑‍✈️ Concierge Driver":(selected.driver?.driver_vehicle_type||"—")} · {selected.appointment_date} at {selected.appointment_time}</div>
             </div>
             <button onClick={()=>setSelected(null)} style={{ background:"none", border:"none", fontSize:18, color:"#888", cursor:"pointer" }}>×</button>
           </div>
@@ -285,7 +285,7 @@ export default function AdminDriverVetting() {
             <div>
               <div style={{ fontSize:13, fontWeight:600, color:"#000", marginBottom:2 }}>{appt.driver?.first_name} {appt.driver?.last_name}</div>
               <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>📅 {appt.appointment_date} · ⏰ {appt.appointment_time}</div>
-              <div style={{ fontSize:11, color:"#888" }}>Vehicle: {appt.driver?.driver_vehicle_type}</div>
+              <div style={{ fontSize:11, color:"#888" }}>Vehicle: {appt.driver?.driver_category==="concierge"?"🧑‍✈️ Concierge Driver":(appt.driver?.driver_vehicle_type||"—")}</div>
             </div>
             <div style={{ textAlign:"right" }}>
               <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:`${STATUS_COLORS[appt.status]||"#888"}20`, color:STATUS_COLORS[appt.status]||"#888", fontWeight:600 }}>{appt.status}</span>
@@ -302,4 +302,5 @@ export default function AdminDriverVetting() {
     </div>
   )
 }
+
 
