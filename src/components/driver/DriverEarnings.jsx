@@ -6,6 +6,8 @@ import toast from "react-hot-toast"
 
 export default function DriverEarnings() {
   const { user, profile, updateProfile } = useAuth()
+  const isConcierge = profile?.driver_category === "concierge"
+  const [orders, setOrders] = useState([])
   const isMobile = useIsMobile()
   const [bookings, setBookings] = useState([])
   const [loading, setLoading] = useState(true)
@@ -22,15 +24,17 @@ export default function DriverEarnings() {
   useEffect(() => { if (user) load() }, [user])
 
   async function load() {
-    const [{ data }, { data: exps }] = await Promise.all([
+    const [{ data }, { data: exps }, { data: ords }] = await Promise.all([
       supabase.from("bookings")
         .select("*, vehicles(make,model,license_plate)")
         .eq("driver_id", user.id)
         .eq("status", "completed").eq("is_archived", false).order("created_at", { ascending:false }),
-      supabase.from("driver_expenses").select("*").eq("driver_id", user.id).order("expense_date",{ascending:false})
+      supabase.from("driver_expenses").select("*").eq("driver_id", user.id).order("expense_date",{ascending:false}),
+      supabase.from("orders").select("*").eq("delivery_driver_id", user.id).eq("status","delivered").order("created_at",{ascending:false})
     ])
     setBookings(data||[])
     setExpenses(exps||[])
+    setOrders(ords||[])
     setLoading(false)
   }
   async function saveExpense(e) {
@@ -82,14 +86,23 @@ export default function DriverEarnings() {
   }
 
   const filtered = filterByPeriod(bookings)
+  const filteredOrders = orders.filter(o=>{
+    const date = new Date(o.created_at)
+    if (period==="today") return date.toDateString()===new Date().toDateString()
+    if (period==="week") return date>=new Date(Date.now()-7*24*60*60*1000)
+    if (period==="month") return date>=new Date(new Date().getFullYear(),new Date().getMonth(),1)
+    return true
+  })
 
-  const totalCommission = filtered.reduce((s,b)=>s+Number(b.total_amount||0)*0.15, 0)
-  const totalAllowance = filtered.reduce((s,b)=>s+Number(b.transport_allowance||200), 0)
-  const totalEarnings = filtered.reduce((s,b)=>s+Number(b.driver_earnings||0), 0)
-  const totalJobs = filtered.length
+  // Use orders for marketplace, bookings for concierge
+  const totalCommission = isConcierge
+    ? filtered.reduce((s,b)=>s+Number(b.total_amount||0)*0.15, 0)
+    : filteredOrders.reduce((s,o)=>s+Number(o.delivery_fee||0)*0.85, 0)
+  const totalAllowance = isConcierge ? filtered.reduce((s,b)=>s+Number(b.transport_allowance||200), 0) : 0
+  const totalEarnings = totalCommission + totalAllowance
+  const totalJobs = isConcierge ? filtered.length : filteredOrders.length
   const avgPerJob = totalJobs ? (totalEarnings/totalJobs).toFixed(0) : 0
-  const unpaidCount = filtered.filter(b=>b.payment_status!=="paid").length
-
+  const unpaidCount = isConcierge ? filtered.filter(b=>b.payment_status!=="paid").length : 0
   // Monthly goal tracking (independent of period filter)
   const now = new Date()
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
@@ -134,7 +147,7 @@ export default function DriverEarnings() {
         <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75", marginBottom:"1rem" }}>💰 Earnings breakdown</div>
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4,1fr)", gap:10, marginBottom:12 }}>
           {[
-            { label:"Commission (15%)", value:`KES ${totalCommission.toFixed(0)}`, color:"#378add" },
+            { label:isConcierge?"Commission (15%)":"Delivery earnings (85%)", value:`KES ${totalCommission.toFixed(0)}`, color:"#378add" },
             { label:"Transport allowance", value:`KES ${totalAllowance.toFixed(0)}`, color:"#e6821e" },
             { label:"Total earned", value:`KES ${totalEarnings.toFixed(0)}`, color:"#1d9e75" },
             { label:"Avg per job", value:`KES ${Number(avgPerJob).toLocaleString()}`, color:"#8b5cf6" },
@@ -327,6 +340,8 @@ export default function DriverEarnings() {
     </div>
   )
 }
+
+
 
 
 
