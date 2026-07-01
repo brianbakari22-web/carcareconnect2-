@@ -28,7 +28,7 @@ export default function AdminDriverVetting() {
 
   async function load() {
     const { data } = await supabase.from("driver_vetting_appointments")
-      .select("*, driver:profiles!driver_vetting_appointments_driver_id_fkey(id,first_name,last_name,email,phone,driver_vehicle_type,vetting_status,is_verified)")
+      .select("*, driver:profiles!driver_vetting_appointments_driver_id_fkey(id,first_name,last_name,driver_vehicle_type,vetting_status,is_verified,driver_category)")
       .order("appointment_date", { ascending:true })
     setAppointments(data||[])
     setLoading(false)
@@ -302,3 +302,4 @@ export default function AdminDriverVetting() {
     </div>
   )
 }
+
