@@ -181,6 +181,21 @@ export function AuthProvider({ children }) {
         is_active: true,
       })
       if (profileError) console.error("Profile upsert error:", profileError)
+      else {
+        // Set profile immediately so components render with correct data
+        setProfile({
+          id: data.user.id,
+          first_name: firstName,
+          last_name: lastName,
+          role: role || "customer",
+          business_name: businessName || "",
+          provider_type: providerType || "garage",
+          driver_vehicle_type: driverVehicleType==="none" ? null : (driverVehicleType || "car"),
+          driver_category: role==="driver" ? driverCategory : null,
+          is_active: true,
+        })
+        setProfileReady(true)
+      }
       await supabase.from("profile_sensitive").upsert({
         id: data.user.id,
         email, phone: phone || "",
