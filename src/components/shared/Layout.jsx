@@ -46,7 +46,7 @@ const NAV = {
     { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
     { path:"/dashboard/claims", label:"My Claims", icon:"🛡️" },
     { path:"/dashboard/application", label:"My Application", icon:"📋" },
-    { path:"/dashboard/vehicle", label:vehicleLabel, icon:vehicleIcon },
+    { path:"/dashboard/vehicle", label:"My Vehicle", icon:"🚗" },
     { path:"/dashboard/performance", label:"Performance", icon:"📊" },
 
 
