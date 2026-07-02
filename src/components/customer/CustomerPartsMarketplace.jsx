@@ -475,7 +475,7 @@ export default function CustomerPartsMarketplace() {
             </div>
             <div style={{ flex:1, minHeight:0 }}>
               <ChatWindow
-                listingId={chatItem.id}
+                inventoryId={chatItem.id}
                 otherUserId={chatItem.provider_id}
                 otherUserName={chatItem.profiles?.business_name||chatItem.profiles?.first_name||"Seller"}
                 onClose={()=>setChatItem(null)}
@@ -614,6 +614,7 @@ export default function CustomerPartsMarketplace() {
     </div>
   )
 }
+
 
 
 

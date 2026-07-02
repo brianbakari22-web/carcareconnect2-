@@ -4,7 +4,7 @@ import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import toast from "react-hot-toast"
 
-export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, otherUserId, otherUserName, overrideUserId, onClose, title }) {
+export default function ChatWindow({ bookingId, listingId, inventoryId, claimId, mechanicId, otherUserId, otherUserName, overrideUserId, onClose, title }) {
   const { user } = useAuth()
   const effectiveUserId = overrideUserId != null ? overrideUserId : user?.id
   const { t } = useLanguage()
@@ -15,7 +15,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, 
   const bottomRef = useRef(null)
   const typingRef = useRef(null)
   const channelRef = useRef(null)
-  const chatId = bookingId || listingId || claimId || mechanicId
+  const chatId = bookingId || listingId || inventoryId || claimId || mechanicId
 
   useEffect(() => {
     console.log("ChatWindow mount - effectiveUserId:", effectiveUserId, "chatId:", chatId, "mechanicId:", mechanicId, "otherUserId:", otherUserId)
@@ -25,12 +25,13 @@ export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, 
 
     const filterStr = bookingId
       ? `booking_id=eq.${bookingId}`
+      : inventoryId
+      ? `inventory_id=eq.${inventoryId}`
       : listingId
       ? `listing_id=eq.${listingId}`
       : claimId
       ? `claim_id=eq.${claimId}`
       : `mechanic_id=eq.${mechanicId}`
-
     const channel = supabase.channel(`chat-${chatId}`)
       .on("postgres_changes", {
         event: "INSERT",
@@ -75,7 +76,9 @@ export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, 
   async function load() {
     let query = supabase.from("chat_messages").select("*")
     if (bookingId) query = query.eq("booking_id", bookingId)
-    else if (listingId) {
+    else if (inventoryId) {
+      query = query.eq("inventory_id", inventoryId)
+    } else if (listingId) {
       query = query.eq("listing_id", listingId)
       // Scope to just the two participants - prevents seeing other customers' messages on same listing
       if (otherUserId) {
@@ -99,6 +102,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, 
   async function markRead() {
     let query = supabase.from("chat_messages").update({ is_read:true }).eq("receiver_id", effectiveUserId).eq("is_read", false)
     if (bookingId) query = query.eq("booking_id", bookingId)
+    else if (inventoryId) query = query.eq("inventory_id", inventoryId)
     else if (listingId) query = query.eq("listing_id", listingId)
     else if (claimId) query = query.eq("claim_id", claimId)
     else if (mechanicId) query = query.eq("mechanic_id", mechanicId)
@@ -176,6 +180,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, 
       id: tempId, _tempId: tempId,
       booking_id: bookingId||null,
       listing_id: listingId||null,
+        inventory_id: inventoryId||null,
       claim_id: claimId||null,
       mechanic_id: mechanicId||null,
       sender_id: effectiveUserId,
@@ -190,6 +195,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, 
     const { error } = await supabase.from("chat_messages").insert({
       booking_id: bookingId||null,
       listing_id: listingId||null,
+        inventory_id: inventoryId||null,
       claim_id: claimId||null,
       mechanic_id: mechanicId||null,
       sender_id: effectiveUserId,
@@ -249,7 +255,7 @@ export default function ChatWindow({ bookingId, listingId, claimId, mechanicId, 
           <div>
             <div style={{ fontSize:14, fontWeight:700, color:"#fff", fontFamily:"Syne" }}>{otherUserName}</div>
             <div style={{ fontSize:10, color:"rgba(255,255,255,0.8)" }}>
-              {otherTyping?"✍️ typing...":claimId?"🛡️ Claim chat":listingId?"🛒 Marketplace chat":"💬 Booking chat"}
+              {otherTyping?"✍️ typing...":claimId?"🛡️ Claim chat":inventoryId?"🛒 Parts chat":listingId?"🛒 Marketplace chat":"💬 Booking chat"}
             </div>
           </div>
         </div>
