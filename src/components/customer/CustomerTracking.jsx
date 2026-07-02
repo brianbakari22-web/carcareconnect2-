@@ -19,6 +19,8 @@ export default function CustomerTracking() {
   const { user } = useAuth()
   const isMobile = useIsMobile()
   const [activeBookings, setActiveBookings] = useState([])
+  const [activeOrders, setActiveOrders] = useState([])
+  const [trackingType, setTrackingType] = useState("booking") // "booking" or "order"
   const [selected, setSelected] = useState(null)
   const [driver, setDriver] = useState(null)
   const [mechanic, setMechanic] = useState(null)
@@ -47,10 +49,12 @@ export default function CustomerTracking() {
   useEffect(() => {
     if (!selected) return
     if (selected.driver_id) loadDriver(selected)
+    if (selected.delivery_driver_id) loadOrderDriver(selected)
     if (selected.assigned_mechanic_id) loadMechanic(selected)
     // Live update every 10 seconds
     const interval = setInterval(() => {
       if (selected.driver_id) loadDriver(selected)
+      if (selected.delivery_driver_id) loadOrderDriver(selected)
       if (selected.assigned_mechanic_id) loadMechanic(selected)
     }, 10000)
 
@@ -123,6 +127,21 @@ export default function CustomerTracking() {
         })
       }
 
+      // Provider/shop location marker
+      const providerLat = selected?.provider?.latitude
+      const providerLng = selected?.provider?.longitude
+      if (providerLat && providerLng) {
+        providerMarkerRef.current = new window.google.maps.Marker({
+          position: { lat: Number(providerLat), lng: Number(providerLng) },
+          map,
+          title: selected?.provider?.business_name || "Service Provider",
+          icon: {
+            url: "data:image/svg+xml;charset=UTF-8," + encodeURIComponent('<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"48\" height=\"48\" viewBox=\"0 0 48 48\"><circle cx=\"24\" cy=\"24\" r=\"22\" fill=\"#1d9e75\" stroke=\"white\" stroke-width=\"3\"/><text x=\"24\" y=\"32\" font-size=\"22\" text-anchor=\"middle\">🔧</text></svg>'),
+            scaledSize: new window.google.maps.Size(48, 48),
+            anchor: new window.google.maps.Point(24, 24)
+          }
+        })
+      }
       if (navigator.geolocation) {
         getCurrentPosition().then(pos => {
           new window.google.maps.Marker({
@@ -159,11 +178,20 @@ export default function CustomerTracking() {
   }, [selected?.id, driver?.current_lat, mechanic?.current_latitude])
 
   async function load() {
-    const { data } = await supabase.from("bookings").select("*")
-      .eq("customer_id", user.id)
-      .not("status", "in", "(\"completed\",\"cancelled\")").eq("is_archived", false)
-      .order("created_at", { ascending:false })
-    setActiveBookings(data||[])
+    const [{ data: bks }, { data: ords }] = await Promise.all([
+      supabase.from("bookings").select("*")
+        .eq("customer_id", user.id)
+        .not("status", "in", "(\"completed\",\"cancelled\")").eq("is_archived", false)
+        .order("created_at", { ascending:false }),
+      supabase.from("orders")
+        .select("*, delivery_driver:profiles!orders_delivery_driver_id_fkey(first_name,last_name), provider:profiles!orders_provider_id_fkey(first_name,last_name,business_name,latitude,longitude,address,city)")
+        .eq("customer_id", user.id)
+        .not("status", "in", "(delivered,cancelled)")
+        .not("delivery_driver_id", "is", null)
+        .order("created_at", { ascending:false })
+    ])
+    setActiveBookings(bks||[])
+    setActiveOrders(ords||[])
     setLoading(false)
   }
 
@@ -171,9 +199,15 @@ export default function CustomerTracking() {
     if (!booking.driver_id) return
     const [{ data: prof }, { data: status }] = await Promise.all([
       supabase.from("profiles").select("first_name,last_name").eq("id", booking.driver_id).single(),
-      supabase.from("driver_status").select("current_latitude,current_longitude,is_online").eq("driver_id", booking.driver_id).maybeSingle(),
+      supabase.from("driver_status").select("current_lat,current_lng,is_online").eq("driver_id", booking.driver_id).maybeSingle(),
     ])
-    setDriver({ ...prof, current_lat:status?.current_latitude, current_lng:status?.current_longitude, is_online:status?.is_online })
+    setDriver({ ...prof, current_lat:status?.current_lat, current_lng:status?.current_lng, is_online:status?.is_online })
+  }
+
+  async function loadOrderDriver(order) {
+    if (!order.delivery_driver_id) return
+    const { data: status } = await supabase.from("driver_status").select("current_lat,current_lng,is_online").eq("driver_id", order.delivery_driver_id).maybeSingle()
+    if (status) setDriver(d => d ? {...d, current_lat:status.current_lat, current_lng:status.current_lng} : d)
   }
 
   async function loadMechanic(booking) {
@@ -302,15 +336,48 @@ export default function CustomerTracking() {
       <div style={{ fontFamily:"Syne", fontSize:isMobile?16:18, fontWeight:800, color:"#000000", marginBottom:4 }}>Track your service</div>
       <div style={{ fontSize:12, color:"#777777", marginBottom:"1.25rem" }}>Live tracking for active bookings</div>
 
+      {/* Tabs */}
+      <div style={{ display:"flex", gap:6, marginBottom:"1rem" }}>
+        <button onClick={()=>setTrackingType("booking")} style={{ flex:1, padding:"8px", borderRadius:8, border:"none", background:trackingType==="booking"?"#e6821e":"#f0f0f0", color:trackingType==="booking"?"#fff":"#555", fontSize:12, fontWeight:trackingType==="booking"?700:400, cursor:"pointer" }}>📅 Service bookings</button>
+        <button onClick={()=>setTrackingType("order")} style={{ flex:1, padding:"8px", borderRadius:8, border:"none", background:trackingType==="order"?"#e6821e":"#f0f0f0", color:trackingType==="order"?"#fff":"#555", fontSize:12, fontWeight:trackingType==="order"?700:400, cursor:"pointer" }}>📦 Order deliveries</button>
+      </div>
+
       {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
-      {!loading&&activeBookings.length===0&&(
+
+      {!loading&&trackingType==="order"&&activeOrders.length===0&&(
+        <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
+          <div style={{ fontSize:32, marginBottom:10 }}>📦</div>
+          No active order deliveries to track
+        </div>
+      )}
+
+      {trackingType==="order"&&activeOrders.map(o=>(
+        <div key={o.id} onClick={()=>{ setSelected({...o, provider: o.provider, delivery_driver: o.delivery_driver}); setDriver(o.delivery_driver?{...o.delivery_driver}:null); setMechanic(null) }}
+          style={{ background:"#ffffff", border:"1px solid #e6821e30", borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10, cursor:"pointer" }}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+            <div>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000", marginBottom:4 }}>Order #{o.order_number}</div>
+              <div style={{ fontSize:11, color:"#777777", marginBottom:4 }}>📦 {o.provider?.business_name||o.provider?.first_name}</div>
+              <div style={{ fontSize:11, color:"#378add" }}>📍 {o.delivery_address}</div>
+              <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:"#e6821e20", color:"#e6821e", display:"inline-block", marginTop:4 }}>{o.delivery_status?.replace(/_/g," ")||"assigned"}</span>
+            </div>
+            <div style={{ textAlign:"right" }}>
+              <div style={{ fontSize:12, color:"#e6821e", marginBottom:4 }}>KES {Number(o.subtotal||0).toLocaleString()}</div>
+              <div style={{ fontSize:11, color:"#1d9e75" }}>🚚 {o.delivery_driver?.first_name} {o.delivery_driver?.last_name}</div>
+              <div style={{ fontSize:11, color:"#378add", marginTop:4 }}>Track →</div>
+            </div>
+          </div>
+        </div>
+      ))}
+
+      {!loading&&trackingType==="booking"&&activeBookings.length===0&&(
         <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
           <div style={{ fontSize:32, marginBottom:10 }}>📍</div>
           No active bookings to track
         </div>
       )}
 
-      {activeBookings.map(b=>(
+      {trackingType==="booking"&&activeBookings.map(b=>(
         <div key={b.id} onClick={()=>{ setSelected(b); setDriver(null); setMechanic(null) }}
           style={{ background:"#ffffff", border:`1px solid ${SC[b.status]||"#eeeeee"}30`, borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10, cursor:"pointer" }}
           onMouseEnter={e=>e.currentTarget.style.background="#f8f8f8"}
