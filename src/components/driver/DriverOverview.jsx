@@ -14,7 +14,7 @@ const VEHICLE_CONFIG = {
 }
 
 export default function DriverOverview() {
-  const { user, profile } = useAuth()
+  const { user, profile, loading: authLoading } = useAuth()
   console.log("DriverOverview render", { profile, vehicleType: profile?.driver_vehicle_type })
   const navigate = useNavigate()
   const isMobile = useIsMobile()
@@ -127,7 +127,7 @@ export default function DriverOverview() {
     ? { icon:"🧑‍✈️", label:"Concierge Driver", color:"#1d9e75", desc:"Vehicle pickup and chauffeur service" }
     : (VEHICLE_CONFIG[vehicleType] || VEHICLE_CONFIG.car)
 
-  if (loading || !profile) return <div style={{ color:"#888", fontSize:13, padding:"2rem", textAlign:"center" }}>Loading...</div>
+  if (loading || authLoading || !profile) return <div style={{ color:"#888", fontSize:13, padding:"2rem", textAlign:"center" }}>Loading...</div>
 
   return (
     <div style={{ margin:"-1rem", fontFamily:"DM Sans,sans-serif" }}>
@@ -300,6 +300,8 @@ export default function DriverOverview() {
     </div>
   )
 }
+
+
 
 
 
