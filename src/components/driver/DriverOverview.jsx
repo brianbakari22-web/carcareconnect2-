@@ -29,7 +29,7 @@ export default function DriverOverview() {
   const locationIntervalRef = useRef(null)
 
   useEffect(() => {
-    if (!user) return
+    if (!user || !profile) return
     load()
     const sub = supabase.channel("driver-overview-live")
       .on("postgres_changes", { event:"*", schema:"public", table:"driver_status", filter:`driver_id=eq.${user.id}` }, () => loadStatus())
@@ -299,6 +299,8 @@ export default function DriverOverview() {
     </div>
   )
 }
+
+
 
 
 
