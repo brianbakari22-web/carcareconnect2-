@@ -27,7 +27,9 @@ export default function ProviderChat() {
       .not("status","eq","deleted")
       .order("created_at", { ascending:false })
 
-    if (!bookings||bookings.length===0) { setConversations([]); setLoading(false); return }
+    if (!bookings||bookings.length===0) { 
+    // Still check for inventory chats even with no bookings
+  }
 
     const customerIds = [...new Set(bookings.map(b=>b.customer_id))]
     const { data: profs } = await supabase.from("profiles")
@@ -52,6 +54,37 @@ export default function ProviderChat() {
         lastMessage: last?.message||"No messages yet", lastTime: last?.created_at, unread,
       }
     })
+    // Fetch inventory/parts chat messages for this provider
+    const { data: invMsgs } = await supabase.from("chat_messages")
+      .select("*, inventory!chat_messages_inventory_id_fkey(name,provider_id), sender:profiles!chat_messages_sender_id_fkey(first_name,last_name)")
+      .not("inventory_id", "is", null)
+      .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
+      .order("created_at", { ascending:false })
+
+    if (invMsgs?.length) {
+      const inventoryIds = [...new Set(invMsgs.map(m=>m.inventory_id))]
+      inventoryIds.forEach(invId => {
+        const msgs = invMsgs.filter(m=>m.inventory_id===invId)
+        const last = msgs[0]
+        const otherUserId = last.sender_id===user.id ? last.receiver_id : last.sender_id
+        const otherProfile = last.sender_id===user.id ? null : last.sender
+        const unread = msgs.filter(m=>m.receiver_id===user.id&&!m.is_read).length
+        if (!convs.find(c=>c.inventoryId===invId)) {
+          convs.push({
+            _hasMessages: true,
+            inventoryId: invId,
+            bookingId: null,
+            serviceName: last.inventory?.name||"Parts inquiry",
+            otherUserId,
+            otherUserName: otherProfile ? otherProfile.first_name+" "+otherProfile.last_name : "Customer",
+            lastMessage: last.message||"",
+            lastTime: last.created_at,
+            unread,
+          })
+        }
+      })
+    }
+
     setConversations(convs.filter(c=>c._hasMessages))
     setLoading(false)
   }
@@ -72,7 +105,7 @@ export default function ProviderChat() {
               <button onClick={()=>setSelected(null)} style={{ background:"#f5f5f5", border:"none", borderRadius:"50%", width:32, height:32, color:"#555555", cursor:"pointer", fontSize:18, display:"flex", alignItems:"center", justifyContent:"center" }}>×</button>
             </div>
             <div style={{ flex:1, minHeight:0 }}>
-              <ChatWindow bookingId={selected.bookingId} otherUserId={selected.otherUserId} otherUserName={selected.otherUserName} onClose={()=>setSelected(null)}/>
+              <ChatWindow bookingId={selected.bookingId} inventoryId={selected.inventoryId} otherUserId={selected.otherUserId} otherUserName={selected.otherUserName} onClose={()=>setSelected(null)}/>
             </div>
           </div>
         </div>
@@ -109,6 +142,7 @@ export default function ProviderChat() {
     </>
   )
 }
+
 
 
 
