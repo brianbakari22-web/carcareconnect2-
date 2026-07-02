@@ -175,7 +175,7 @@ export default function AdminAIMonitor() {
 
       // Fraud detection queries
       const { data: suspiciousCustomers } = await supabase.from("bookings")
-        .select("customer_id, count")
+        .select("customer_id")
         .eq("status","cancelled")
         .gte("created_at", new Date(Date.now()-7*24*60*60*1000).toISOString())
       
@@ -209,7 +209,7 @@ export default function AdminAIMonitor() {
 
       // Expiring documents
       const { data: expiringDocs } = await supabase.from("driver_documents")
-        .select("driver_id, document_type, expiry_date")
+        .select("driver_id, type, expiry_date")
         .lt("expiry_date", new Date(Date.now()+7*24*60*60*1000).toISOString())
         .gt("expiry_date", new Date().toISOString())
         .eq("status","approved")
@@ -221,7 +221,7 @@ export default function AdminAIMonitor() {
 
       // High review providers
       const { data: topReviews } = await supabase.from("reviews")
-        .select("provider_id, rating")
+        .select("provider_id, provider_rating")
         .gte("created_at", new Date(Date.now()-30*24*60*60*1000).toISOString())
 
       // Provider type breakdown
@@ -330,7 +330,7 @@ export default function AdminAIMonitor() {
         expiring_documents: expiringDocs?.length||0,
         // Provider performance
         providers_with_claims: [...new Set(providerClaims?.map(c=>c.provider_id)||[])].length,
-        avg_rating_this_month: topReviews?.length>0?(topReviews.reduce((s,r)=>s+Number(r.rating||0),0)/topReviews.length).toFixed(1):"N/A",
+        avg_rating_this_month: topReviews?.length>0?(topReviews.reduce((s,r)=>s+Number(r.provider_rating||0),0)/topReviews.length).toFixed(1):"N/A",
       }
 
       const prompt = `You are the Car Care Connect AI Admin Monitor. Analyze this platform data and give a CONCISE priority report.
