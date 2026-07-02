@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { getCurrentPosition } from "../../lib/geolocation"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
@@ -565,7 +566,7 @@ export default function CustomerPartsMarketplace() {
                       <div style={{ display:"flex", gap:6 }}>
                         <input value={deliveryAddress} onChange={e=>setDeliveryAddress(e.target.value)} placeholder="Your full delivery address..."
                           style={{ flex:1, background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none" }}/>
-                        <button type="button" disabled={detectingLocation} onClick={()=>{ setDetectingLocation(true); import("../../lib/geolocation").then(m=>m.getCurrentPosition()).then(async pos=>{ setDeliveryLat(pos.latitude); setDeliveryLng(pos.longitude); const r=await fetch("https://nominatim.openstreetmap.org/reverse?lat="+pos.latitude+"&lon="+pos.longitude+"&format=json"); const d=await r.json(); setDeliveryAddress(d.display_name||"Location detected") }).catch(()=>{}).finally(()=>setDetectingLocation(false)) }} style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"0 12px", cursor:"pointer", flexShrink:0 }}>
+                        <button type="button" disabled={detectingLocation} onClick={()=>{ setDetectingLocation(true); Promise.resolve().then(async ()=>{ const pos = await getCurrentPosition(); return pos }).then(async pos=>{ setDeliveryLat(pos.latitude); setDeliveryLng(pos.longitude); const r=await fetch("https://nominatim.openstreetmap.org/reverse?lat="+pos.latitude+"&lon="+pos.longitude+"&format=json"); const d=await r.json(); setDeliveryAddress(d.display_name||"Location detected") }).catch(()=>{}).finally(()=>setDetectingLocation(false)) }} style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"0 12px", cursor:"pointer", flexShrink:0 }}>
                           {detectingLocation?"...":"📍 Detect"}
                         </button>
                       </div>
@@ -614,6 +615,7 @@ export default function CustomerPartsMarketplace() {
     </div>
   )
 }
+
 
 
 
