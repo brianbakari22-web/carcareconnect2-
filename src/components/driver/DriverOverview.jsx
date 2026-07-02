@@ -7,7 +7,7 @@ import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
 const VEHICLE_CONFIG = {
-  car:        { icon:"🚗", label:"Concierge Driver",  color:"#1d9e75", desc:"Vehicle pickup and delivery" },
+  car:        { icon:"🚗", label:"Car Driver",       color:"#1d9e75", desc:"Standard delivery" },
   motorcycle: { icon:"🏍️", label:"Boda Boda Rider",   color:"#e6821e", desc:"Fast parts and accessories delivery" },
   tuktuk:     { icon:"🛺", label:"Tuktuk Driver",      color:"#378add", desc:"Local area parts delivery" },
   van:        { icon:"🚐", label:"Van Driver",          color:"#8b5cf6", desc:"Bulk parts and large item delivery" },
