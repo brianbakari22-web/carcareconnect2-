@@ -5,7 +5,8 @@ import useIsMobile from "../../lib/useIsMobile"
 import ChatWindow from "../shared/ChatWindow"
 
 export default function DriverChat() {
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
+  const isConcierge = profile?.driver_category === "concierge"
   const isMobile = useIsMobile()
   const [conversations, setConversations] = useState([])
   const [selected, setSelected] = useState(null)
@@ -104,7 +105,7 @@ export default function DriverChat() {
 
   const filtered = tab==="marketplace"
     ? conversations.filter(c=>c.type==="marketplace")
-    : tab==="bookings"
+    : tab==="jobs"
     ? conversations.filter(c=>c.type==="booking")
     : conversations
 
@@ -122,7 +123,7 @@ export default function DriverChat() {
 
           {/* Tabs */}
           <div style={{ display:"flex", gap:6, marginBottom:4 }}>
-            {[{k:"all",l:"All"},{k:"bookings",l:"Jobs"},{k:"marketplace",l:"Marketplace"}].map(t=>(
+          {(isConcierge ? [{k:"all",l:"All"},{k:"jobs",l:"Jobs"}] : [{k:"all",l:"All"},{k:"jobs",l:"Jobs"},{k:"marketplace",l:"Marketplace"}]).map(t=>(
               <button key={t.k} onClick={()=>setTab(t.k)}
                 style={{ padding:"5px 12px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:tab===t.k?"#1d9e75":"#555555", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif" }}>
                 {t.l}
