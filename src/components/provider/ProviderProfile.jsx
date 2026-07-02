@@ -87,7 +87,7 @@ export default function ProviderProfile() {
           if (city) setForm(f=>({...f, city}))
         } catch { /* location parse failed - non-critical */ }
         setLocating(false)
-      }).catch(err => console.warn('Location error:', err.message))
+      }).catch(err => { console.warn('Location error:', err.message); toast.error('Could not detect location: ' + err.message) }).finally(() => setLocating(false))
   }
 
   async function changePassword(e) {
@@ -325,6 +325,7 @@ export default function ProviderProfile() {
     </div>
   )
 }
+
 
 
 
