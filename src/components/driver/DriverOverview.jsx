@@ -15,6 +15,7 @@ const VEHICLE_CONFIG = {
 
 export default function DriverOverview() {
   const { user, profile } = useAuth()
+  console.log("DriverOverview render", { profile, vehicleType: profile?.driver_vehicle_type })
   const navigate = useNavigate()
   const isMobile = useIsMobile()
   const [driverStatus, setDriverStatus] = useState(null)
