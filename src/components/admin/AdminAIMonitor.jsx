@@ -256,7 +256,7 @@ export default function AdminAIMonitor() {
       const { count: resolvedClaims } = await supabase.from("service_claims").select("id",{count:"exact",head:true}).eq("status","resolved")
       const { count: totalGoRequests } = await supabase.from("go_service_requests").select("id",{count:"exact",head:true})
       const { count: totalTransactions } = await supabase.from("marketplace_transactions").select("id",{count:"exact",head:true})
-      const { count: paidTransactions } = await supabase.from("marketplace_transactions").select("id",{count:"exact",head:true}).eq("status","completed")
+      const { count: paidTransactions } = await supabase.from("marketplace_transactions").select("id",{count:"exact",head:true}).eq("payment_status","completed")
       const { count: totalEmployees } = await supabase.from("employees").select("id",{count:"exact",head:true})
       const { count: totalNotifications } = await supabase.from("notifications").select("id",{count:"exact",head:true})
       const { count: totalChatMessages } = await supabase.from("chat_messages").select("id",{count:"exact",head:true})
@@ -705,4 +705,5 @@ Be specific and actionable. Max 300 words. Use bullet points.`
     </div>
   )
 }
+
 
