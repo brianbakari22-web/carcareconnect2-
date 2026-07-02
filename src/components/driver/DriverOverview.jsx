@@ -268,12 +268,17 @@ export default function DriverOverview() {
         {/* Earnings structure */}
         <div style={{ background:"#f8f8f8", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
           <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75", marginBottom:10 }}>💰 Your earnings structure</div>
-          {[
-            { icon:"💵", label:"Commission", desc:"15% of service fee per delivery" },
-            { icon:"🚌", label:"Transport allowance", desc:"KES 200 per booking — covers your travel costs" },
+          {(isConcierge ? [
+            { icon:"💵", label:"Commission", desc:"15% of service fee — paid after delivery complete" },
+            { icon:"🚌", label:"Transport allowance", desc:"KES 200 per booking — covers your travel to pick up and return the car" },
             { icon:"⚠️", label:"No-show policy", desc:"Allowance only paid after pickup report filed. No-shows result in penalties." },
-            { icon:"🔒", label:"Payment security", desc:"Earnings released only after delivery is completed and confirmed" },
-          ].map(item=>(
+            { icon:"🔒", label:"Payment security", desc:"Both released only after you complete the delivery and file the dropoff report" },
+          ] : [
+            { icon:"📦", label:"Delivery earnings", desc:"85% of delivery fee — paid after successful delivery" },
+            { icon:"🗺️", label:"Per delivery", desc:"Earn more by completing more deliveries in your zone" },
+            { icon:"⚠️", label:"No-show policy", desc:"Declining or missing deliveries may result in suspension" },
+            { icon:"🔒", label:"Payment security", desc:"Earnings released only after customer confirms delivery received" },
+          ]).map(item=>(
             <div key={item.label} style={{ display:"flex", gap:10, alignItems:"flex-start", marginBottom:8 }}>
               <span style={{ fontSize:16, flexShrink:0 }}>{item.icon}</span>
               <div>
