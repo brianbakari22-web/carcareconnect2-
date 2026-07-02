@@ -46,7 +46,7 @@ const NAV = {
     { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
     { path:"/dashboard/claims", label:"My Claims", icon:"🛡️" },
     { path:"/dashboard/application", label:"My Application", icon:"📋" },
-    { path:"/dashboard/vehicle", label:"My Vehicle", icon:"🚗" },
+    { path:"/dashboard/vehicle", label:vehicleLabel, icon:vehicleIcon },
     { path:"/dashboard/performance", label:"Performance", icon:"📊" },
 
 
@@ -169,6 +169,14 @@ export default function Layout({ children }) {
   const isTyreShop = providerType === "tyre_shop"
   const driverCategory = profile?.driver_category || "marketplace"
   const isConciergeDriver = driverCategory === "concierge"
+  const vehicleLabel = profile?.driver_vehicle_type === "motorcycle" ? "My Bodaboda" 
+    : profile?.driver_vehicle_type === "tuktuk" ? "My Tuktuk"
+    : profile?.driver_vehicle_type === "van" ? "My Van/Pickup"
+    : "My Car"
+  const vehicleIcon = profile?.driver_vehicle_type === "motorcycle" ? "🏍️"
+    : profile?.driver_vehicle_type === "tuktuk" ? "🛺"
+    : profile?.driver_vehicle_type === "van" ? "🚐"
+    : "🚗"
 
 
 
@@ -250,7 +258,7 @@ export default function Layout({ children }) {
     { path:"/dashboard/reviews", key:"myRatings", icon:"⭐" },
     { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
     { path:"/dashboard/claims", label:"My Claims", icon:"🛡️" },
-    { path:"/dashboard/vehicle", label:"My Vehicle", icon:"🚗" },
+    { path:"/dashboard/vehicle", label:vehicleLabel, icon:vehicleIcon },
     { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
