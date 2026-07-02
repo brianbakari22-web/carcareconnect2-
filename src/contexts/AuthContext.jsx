@@ -209,7 +209,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{
-      user, profile, loading,
+      user, profile, loading, profileReady,
       signUp, signIn, signOut, updateProfile,
       refreshProfile: () => fetchProfile(user?.id)
     }}>
@@ -217,6 +217,7 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   )
 }
+
 
 
 
