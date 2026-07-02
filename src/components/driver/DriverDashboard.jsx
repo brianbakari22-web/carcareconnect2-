@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
+import { openExternal } from "../../lib/openExternal"
 import toast from "react-hot-toast"
 
 const DELIVERY_STEPS = [
@@ -129,7 +130,7 @@ export default function DriverDashboard() {
 
   function openNavigation(address) {
     if (!address) return toast.error("No address available")
-    window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`, "_blank")
+    openExternal(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`)
   }
 
   function openWhatsApp(phone, name, serviceName) {
