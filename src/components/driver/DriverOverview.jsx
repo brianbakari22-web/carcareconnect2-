@@ -30,14 +30,14 @@ export default function DriverOverview() {
   const locationIntervalRef = useRef(null)
 
   useEffect(() => {
-    if (!user || !profile) return
+    if (!user || !profile || !profileReady) return
     load()
     const sub = supabase.channel("driver-overview-live")
       .on("postgres_changes", { event:"*", schema:"public", table:"driver_status", filter:`driver_id=eq.${user.id}` }, () => loadStatus())
       .on("postgres_changes", { event:"*", schema:"public", table:"bookings", filter:`driver_id=eq.${user.id}` }, () => loadActiveJob())
       .subscribe()
     return () => { supabase.removeChannel(sub); if (locationIntervalRef.current) clearInterval(locationIntervalRef.current) }
-  }, [user])
+  }, [user, profileReady])
 
   async function load() {
     await Promise.all([loadStatus(), loadActiveJob(), loadStats(), loadPenalties(), loadProbation(), loadRating()])
@@ -300,6 +300,8 @@ export default function DriverOverview() {
     </div>
   )
 }
+
+
 
 
 
