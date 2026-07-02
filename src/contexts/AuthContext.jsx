@@ -9,6 +9,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [profileReady, setProfileReady] = useState(false)
 
   // Initial session load
   useEffect(() => {
@@ -28,6 +29,7 @@ export function AuthProvider({ children }) {
       } else {
         setUser(null)
         setProfile(null)
+        setProfileReady(false)
         setLoading(false)
       }
     })
@@ -101,6 +103,7 @@ export function AuthProvider({ children }) {
       if (error) throw error
       if (data) {
         setProfile(data)
+        setProfileReady(true)
       // Initialize push notifications after profile loaded
       initPushNotifications(userId).catch(e => console.log("Push init:", e.message))
       if (data.role === "admin") {
