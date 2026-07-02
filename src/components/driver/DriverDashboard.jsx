@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
-import { openExternal } from "../../lib/openExternal"
+import { openExternal, openMapsNavigation } from "../../lib/openExternal"
 import toast from "react-hot-toast"
 
 const DELIVERY_STEPS = [

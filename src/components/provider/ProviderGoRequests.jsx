@@ -1,6 +1,6 @@
 ﻿import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
-import { openExternal } from "../../lib/openExternal"
+import { openExternal, openMapsNavigation } from "../../lib/openExternal"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
