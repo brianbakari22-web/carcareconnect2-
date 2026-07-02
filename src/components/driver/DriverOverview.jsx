@@ -126,7 +126,7 @@ export default function DriverOverview() {
     ? { icon:"🧑‍✈️", label:"Concierge Driver", color:"#1d9e75", desc:"Vehicle pickup and chauffeur service" }
     : (VEHICLE_CONFIG[vehicleType] || VEHICLE_CONFIG.car)
 
-  if (loading) return <div style={{ color:"#888", fontSize:13, padding:"2rem", textAlign:"center" }}>Loading...</div>
+  if (loading || !profile) return <div style={{ color:"#888", fontSize:13, padding:"2rem", textAlign:"center" }}>Loading...</div>
 
   return (
     <div style={{ margin:"-1rem", fontFamily:"DM Sans,sans-serif" }}>
@@ -299,6 +299,7 @@ export default function DriverOverview() {
     </div>
   )
 }
+
 
 
 
