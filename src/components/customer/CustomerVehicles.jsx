@@ -14,7 +14,7 @@ export default function CustomerVehicles() {
   const [loading, setLoading] = useState(true)
   const [trackers, setTrackers] = useState([])
   const [showTracker, setShowTracker] = useState(null)
-  const [trackerForm, setTrackerForm] = useState({ provider:"cartrack", api_key:"", vehicle_identifier:"" })
+  const [trackerForm, setTrackerForm] = useState({ provider:"cartrack", api_key:"", api_secret:"", vehicle_identifier:"" })
   const [savingTracker, setSavingTracker] = useState(false)
 
   useEffect(() => { if (user) load() }, [user])
@@ -92,7 +92,7 @@ export default function CustomerVehicles() {
     if (existing) {
       await supabase.from("vehicle_trackers").update({
         provider: trackerForm.provider,
-        api_key: trackerForm.api_key,
+        api_key: trackerForm.api_key, api_secret: trackerForm.api_secret,
         vehicle_identifier: trackerForm.vehicle_identifier,
         is_active: true
       }).eq("id", existing.id)
@@ -101,7 +101,7 @@ export default function CustomerVehicles() {
         customer_id: user.id,
         vehicle_id: showTracker.id,
         provider: trackerForm.provider,
-        api_key: trackerForm.api_key,
+        api_key: trackerForm.api_key, api_secret: trackerForm.api_secret,
         vehicle_identifier: trackerForm.vehicle_identifier,
         is_active: true
       })
@@ -225,14 +225,18 @@ export default function CustomerVehicles() {
               <select value={trackerForm.provider} onChange={e=>setTrackerForm(f=>({...f,provider:e.target.value}))}
                 style={{ width:"100%", background:"#f5f5f5", border:"1px solid #e0e0e0", borderRadius:8, padding:"10px 12px", fontSize:13, marginBottom:10, outline:"none" }}>
                 <option value="cartrack">Cartrack Kenya</option>
-                <option value="syentech">Syentech</option>
-                <option value="itrack">iTrack</option>
-                <option value="rewire">Rewire Security</option>
-                <option value="other">Other (Generic GPS)</option>
+                <option value="itrack">iTrack (itrack.live)</option>
+                <option value="itrace">iTrace Africa</option>
+                <option value="other">Other (contact support)</option>
               </select>
               <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>API Key / Access Token *</label>
-              <input value={trackerForm.api_key} onChange={e=>setTrackerForm(f=>({...f,api_key:e.target.value}))} placeholder="Enter your tracker API key"
+              <input value={trackerForm.api_key} onChange={e=>setTrackerForm(f=>({...f,api_key:e.target.value}))} placeholder="Enter your tracker API key / username"
                 style={{ width:"100%", background:"#f5f5f5", border:"1px solid #e0e0e0", borderRadius:8, padding:"10px 12px", fontSize:13, marginBottom:10, outline:"none", boxSizing:"border-box" }} required/>
+              {trackerForm.provider==="cartrack"&&(
+                <><label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>Password / API Secret *</label>
+                <input value={trackerForm.api_secret||""} onChange={e=>setTrackerForm(f=>({...f,api_secret:e.target.value}))} placeholder="Your Cartrack password"
+                  style={{ width:"100%", background:"#f5f5f5", border:"1px solid #e0e0e0", borderRadius:8, padding:"10px 12px", fontSize:13, marginBottom:10, outline:"none", boxSizing:"border-box" }}/></>
+              )}
               <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>Vehicle ID (from tracker dashboard)</label>
               <input value={trackerForm.vehicle_identifier} onChange={e=>setTrackerForm(f=>({...f,vehicle_identifier:e.target.value}))} placeholder="e.g. VH-12345 or plate number"
                 style={{ width:"100%", background:"#f5f5f5", border:"1px solid #e0e0e0", borderRadius:8, padding:"10px 12px", fontSize:13, marginBottom:16, outline:"none", boxSizing:"border-box" }}/>
@@ -257,4 +261,5 @@ export default function CustomerVehicles() {
     </div>
   )
 }
+
 
