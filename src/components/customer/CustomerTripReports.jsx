@@ -11,6 +11,14 @@ export default function CustomerTripReports() {
   const [logs, setLogs] = useState([])
   const [loading, setLoading] = useState(true)
   const [loadingLogs, setLoadingLogs] = useState(false)
+  const [trackers, setTrackers] = useState([])
+
+  useEffect(() => { if (user) loadTrackers() }, [user])
+
+  async function loadTrackers() {
+    const { data } = await supabase.from("vehicle_trackers").select("*").eq("customer_id", user.id)
+    setTrackers(data||[])
+  }
 
   useEffect(() => { if (user) load() }, [user])
 
