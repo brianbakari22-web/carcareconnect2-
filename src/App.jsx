@@ -149,6 +149,8 @@ import AdminReviews from "./components/admin/AdminReviews"
 import AdminLoyalty from "./components/admin/AdminLoyalty"
 import AdminProviders from "./components/admin/AdminProviders"
 import AdminDrivers from "./components/admin/AdminDrivers"
+import AdminLiveMap from "./components/admin/AdminLiveMap"
+import AdminTripReports from "./components/admin/AdminTripReports"
 import AdminCategories from "./components/admin/AdminCategories"
 import Admin2FA from "./components/admin/Admin2FA"
 import Admin2FAVerify from "./components/admin/Admin2FAVerify"
@@ -373,6 +375,9 @@ function AdminDashboardRouter() {
           <Route path="payment-tracking" element={<AdminPaymentTracking />} />
           <Route path="providers" element={<AdminProviders />} />
           <Route path="drivers" element={<AdminDrivers />} />
+          <Route path="drivers" element={<AdminDrivers />} />
+<Route path="live-map" element={<AdminLiveMap />} />
+<Route path="trip-reports" element={<AdminTripReports />} />
           <Route path="mechanics" element={<AdminMechanics />} />
           <Route path="disputes" element={<AdminDisputes />} />
           <Route path="penalties" element={<AdminPenalties />} />

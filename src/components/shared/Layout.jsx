@@ -63,6 +63,8 @@ const NAV = {
     { path:"/admin-dashboard/users", label:"Users", icon:"👥" },
     { path:"/admin-dashboard/providers", label:"Providers", icon:"🔧" },
     { path:"/admin-dashboard/drivers", label:"Drivers", icon:"🚗" },
+    { path:"/admin-dashboard/live-map", label:"Live Map", icon:"🗺️" },
+    { path:"/admin-dashboard/trip-reports", label:"Trip Reports", icon:"📍" },
     { path:"/admin-dashboard/mechanics", label:"Mechanics & Services", icon:"👨‍🔧" },
     { path:"/admin-dashboard/penalties", label:"Penalties", icon:"🚫" },
     { path:"/admin-dashboard/disputes", label:"Disputes & Reports", icon:"⚠️" },
@@ -512,6 +514,8 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
+
 
 
 
