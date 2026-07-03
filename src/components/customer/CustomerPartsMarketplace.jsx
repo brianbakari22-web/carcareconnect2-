@@ -5,6 +5,7 @@ import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 import ChatWindow from "../shared/ChatWindow"
+import PesapalPayment from "../shared/PesapalPayment"
 import PhotoLightbox from "../shared/PhotoLightbox"
 
 const CATEGORIES = [
@@ -43,6 +44,8 @@ export default function CustomerPartsMarketplace() {
   const [orders, setOrders] = useState([])
   const [tab, setTab] = useState("browse")
   const [chatItem, setChatItem] = useState(null)
+  const [pendingOrder, setPendingOrder] = useState(null)
+  const [showOrderPayment, setShowOrderPayment] = useState(false)
   const [reviewOrder, setReviewOrder] = useState(null)
   const [reviewRating, setReviewRating] = useState(5)
   const [reviewText, setReviewText] = useState("")
@@ -450,6 +453,22 @@ export default function CustomerPartsMarketplace() {
               </button>
               <button onClick={()=>setReviewOrder(null)} style={{ background:"none", border:"1px solid #ddd", borderRadius:10, color:"#888", fontSize:13, padding:"13px 20px", cursor:"pointer" }}>Cancel</button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {showOrderPayment&&pendingOrder&&(
+        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.8)", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center", padding:"1rem" }}>
+          <div style={{ width:"100%", maxWidth:420 }}>
+            <PesapalPayment
+              amount={pendingOrder.amount}
+              bookingId={pendingOrder.id}
+              customerEmail={user?.email}
+              customerPhone={profile?.phone}
+              customerName={profile?.first_name+" "+profile?.last_name}
+              onSuccess={()=>{ setShowOrderPayment(false); setPendingOrder(null); setTab("orders"); loadOrders(); toast.success("Payment successful! 🎉") }}
+              onCancel={()=>{ setShowOrderPayment(false); setPendingOrder(null) }}
+            />
           </div>
         </div>
       )}

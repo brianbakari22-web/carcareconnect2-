@@ -19,7 +19,13 @@ export default function PesapalPayment({ amount, bookingId, customerEmail, custo
       const order = await res.json()
 
       if (order.redirect_url) {
+        // Update bookings table if this is a booking payment
         await supabase.from("bookings").update({
+          pesapal_tracking_id: order.order_tracking_id,
+          payment_status: "processing"
+        }).eq("id", bookingId)
+        // Also update orders table if this is an order payment
+        await supabase.from("orders").update({
           pesapal_tracking_id: order.order_tracking_id,
           payment_status: "processing"
         }).eq("id", bookingId)
@@ -67,5 +73,6 @@ export default function PesapalPayment({ amount, bookingId, customerEmail, custo
     </div>
   )
 }
+
 
 
