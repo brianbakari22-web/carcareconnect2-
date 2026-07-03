@@ -17,6 +17,8 @@ export default function PesapalPayment({ amount, bookingId, customerEmail, custo
         body: JSON.stringify({ amount, bookingId, customerEmail, customerPhone, customerName })
       })
       const order = await res.json()
+      console.log("Pesapal full response:", JSON.stringify(order))
+      console.log("Status:", res.status, "redirect_url:", order.redirect_url)
 
       if (order.redirect_url) {
         // Update bookings table if this is a booking payment
@@ -73,6 +75,7 @@ export default function PesapalPayment({ amount, bookingId, customerEmail, custo
     </div>
   )
 }
+
 
 
 
