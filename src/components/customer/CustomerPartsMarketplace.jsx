@@ -197,7 +197,7 @@ export default function CustomerPartsMarketplace() {
           customer_name: customerDetails.name,
           customer_phone: customerDetails.phone,
           payment_method: paymentMethod,
-          payment_status: paymentMethod === "cash" ? "pending" : "awaiting_payment",
+          payment_status: "awaiting_payment",
           status: "pending",
         }).select("id").single()
         if (error) throw error
@@ -217,21 +217,13 @@ export default function CustomerPartsMarketplace() {
         await supabase.from("notifications").insert({
           user_id: providerId,
           title: "New order received! 📦",
-          message: `${customerDetails.name} ordered ${items.length} item(s) — KES ${subtotal.toLocaleString()} (${paymentMethod === "cash" ? "Cash on delivery" : "Paid online"})`,
+          message: `${customerDetails.name} ordered ${items.length} item(s) — KES ${subtotal.toLocaleString()} (Paid online via Pesapal)`,
           type: "success",
         })
         // Notify customer
         await supabase.from("notifications").insert({ user_id: user.id, title: "Order placed! 🛒", message: `Your order of ${items.length} item(s) worth KES ${subtotal.toLocaleString()} has been placed successfully.`, type: "success" })
 
-        // Cash orders: accrue platform commission owed by provider, payable monthly
-        if (paymentMethod === "cash") {
-          const { data: prov } = await supabase.from("profiles").select("cash_commission_balance").eq("id", providerId).single()
-          const newBalance = Number(prov?.cash_commission_balance || 0) + commission
-          await supabase.from("profiles").update({
-            cash_commission_balance: newBalance,
-            cash_commission_due_date: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 5).toISOString().split("T")[0],
-          }).eq("id", providerId)
-        }
+
 
         if (!firstOrderId) {
           firstOrderId = order.id
@@ -248,10 +240,7 @@ export default function CustomerPartsMarketplace() {
       setDeliveryLng(null)
       setSelectedZone("")
 
-      if (paymentMethod === "cash") {
-        toast.success("Order placed! Pay cash on delivery/pickup. 🎉")
-        loadOrders()
-      } else {
+      {
         toast.success("Order placed! Redirecting to payment...")
         const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/pesapal-payment", {
           method: "POST",
@@ -581,10 +570,7 @@ export default function CustomerPartsMarketplace() {
                       style={{ flex:1, background:paymentMethod==="pesapal"?"#e6821e":"#ffffff", border:(paymentMethod==="pesapal"?"1px solid #e6821e":"1px solid #e5e5e5"), borderRadius:8, color:paymentMethod==="pesapal"?"#fff":"#666", fontSize:12, fontWeight:600, padding:"10px", cursor:"pointer" }}>
                       💳 Pay online (Pesapal)
                     </button>
-                    <button type="button" onClick={()=>setPaymentMethod("cash")}
-                      style={{ flex:1, background:paymentMethod==="cash"?"#e6821e":"#ffffff", border:(paymentMethod==="cash"?"1px solid #e6821e":"1px solid #e5e5e5"), borderRadius:8, color:paymentMethod==="cash"?"#fff":"#666", fontSize:12, fontWeight:600, padding:"10px", cursor:"pointer" }}>
-                      💵 Cash on {fulfillment==="delivery"?"delivery":"pickup"}
-                    </button>
+
                   </div>
                 </div>
 
