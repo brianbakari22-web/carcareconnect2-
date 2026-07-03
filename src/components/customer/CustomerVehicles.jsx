@@ -88,7 +88,7 @@ export default function CustomerVehicles() {
     e.preventDefault()
     if (!trackerForm.api_key) return
     setSavingTracker(true)
-    const existing = trackers.find(t=>t.vehicle_id===showTracker.id)
+    const existing = trackers.find(t=>t.vehicle_id===showTracker?.id)
     if (existing) {
       await supabase.from("vehicle_trackers").update({
         provider: trackerForm.provider,
@@ -216,7 +216,7 @@ export default function CustomerVehicles() {
           onClick={e=>{ if(e.target===e.currentTarget) setShowTracker(null) }}>
           <div style={{ background:"#fff", borderRadius:"16px 16px 0 0", padding:"1.5rem", width:"100%", maxWidth:480 }}>
             <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, marginBottom:4 }}>🔗 Link Tracker</div>
-            <div style={{ fontSize:12, color:"#888", marginBottom:"1rem" }}>{showTracker.make} {showTracker.model} · {showTracker.license_plate}</div>
+            <div style={{ fontSize:12, color:"#888", marginBottom:"1rem" }}>{showTracker?.make} {showTracker?.model} · {showTracker?.license_plate}</div>
             <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7530", borderRadius:8, padding:"0.75rem", marginBottom:"1rem", fontSize:12, color:"#555", lineHeight:1.6 }}>
               💡 Enter your tracker API key from your tracker provider dashboard. CCC uses your own credentials — we never store location without your permission.
             </div>
@@ -240,7 +240,7 @@ export default function CustomerVehicles() {
                 <button type="submit" disabled={savingTracker} style={{ flex:1, background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer" }}>
                   {savingTracker?"Saving...":"Save tracker"}
                 </button>
-                {trackers.find(t=>t.vehicle_id===showTracker.id)&&(
+                {trackers.find(t=>t.vehicle_id===showTracker?.id)&&(
                   <button type="button" onClick={()=>removeTracker(showTracker.id)} style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:10, color:"#e24b4a", fontSize:13, padding:"12px 16px", cursor:"pointer" }}>Remove</button>
                 )}
                 <button type="button" onClick={()=>setShowTracker(null)} style={{ background:"#f5f5f5", border:"none", borderRadius:10, color:"#555", fontSize:13, padding:"12px 16px", cursor:"pointer" }}>Cancel</button>
@@ -257,3 +257,4 @@ export default function CustomerVehicles() {
     </div>
   )
 }
+
