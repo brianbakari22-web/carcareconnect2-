@@ -19,7 +19,18 @@ export default function AdminUsers() {
   async function load() {
     const { data } = await supabase.from("profiles")
       .select("*").order("created_at",{ascending:false})
-    setUsers(data||[])
+    if (data?.length) {
+      const { data: sensitive } = await supabase.from("profile_sensitive")
+        .select("id,email,phone").in("id", data.map(u=>u.id))
+      const merged = data.map(u => ({
+        ...u,
+        email: sensitive?.find(s=>s.id===u.id)?.email || "",
+        phone: sensitive?.find(s=>s.id===u.id)?.phone || ""
+      }))
+      setUsers(merged)
+    } else {
+      setUsers([])
+    }
     setLoading(false)
   }
 
@@ -99,7 +110,7 @@ export default function AdminUsers() {
       <div style={{ display:"flex", gap:8, marginBottom:"1rem", flexWrap:"wrap" }}>
         <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search name, email, city..."
           style={{ flex:1, minWidth:180, background:"#f8f8f8", border:"1px solid #f0f0f0", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }}/>
-        {["all","customer","provider","driver","admin"].map(r=>(
+        {["all","customer","provider","driver","mechanic","admin"].map(r=>(
           <button key={r} onClick={()=>setFilter(r)}
             style={{ padding:"8px 14px", borderRadius:7, border:"none", fontSize:12, cursor:"pointer", background:filter===r?"#e6821e":"#f8f8f8", color:filter===r?"#fff":"#666", fontFamily:"'DM Sans',sans-serif" }}>
             {r.charAt(0).toUpperCase()+r.slice(1)}
@@ -166,6 +177,7 @@ export default function AdminUsers() {
     </div>
   )
 }
+
 
 
 
