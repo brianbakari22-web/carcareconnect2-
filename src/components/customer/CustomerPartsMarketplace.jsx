@@ -248,6 +248,7 @@ export default function CustomerPartsMarketplace() {
           body: JSON.stringify({ amount: firstOrderTotal, bookingId: firstOrderId, customerEmail: user.email || "", customerPhone: customerDetails.phone, customerName: customerDetails.name })
         })
         const payRes = await res.json()
+        console.log("Pesapal response:", JSON.stringify(payRes))
         if (payRes.redirect_url) {
           sessionStorage.setItem("parts_order_id", firstOrderId)
           window.location.href = payRes.redirect_url
