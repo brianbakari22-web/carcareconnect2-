@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 
 function FloatingParts() {
@@ -111,22 +111,22 @@ export default function LandingPage() {
               <div style={{ width:7, height:7, borderRadius:"50%", background:"#16a34a", position:"absolute" }}/>
               <div style={{ position:"absolute", inset:0, borderRadius:"50%", background:"#16a34a", animation:"ping 1.5s ease-out infinite" }}/>
             </div>
-            <span style={{ fontSize:12, color:"#16a34a", fontWeight:600 }}>🇰🇪 Built in Kenya · Serving Nairobi</span>
+            <span style={{ fontSize:12, color:"#16a34a", fontWeight:600 }}>🇰🇪 Built in Kenya · Serving Kenya & Beyond</span>
           </div>
           <h1 style={{ fontSize:"clamp(36px,7vw,72px)", fontWeight:800, lineHeight:1.08, letterSpacing:-1.5, color:"#000", marginBottom:"1.25rem" }}>
             One app.<br/>
             <span style={{ color:"#e6821e" }}>Every car need.</span><br/>
-            Nairobi.
+            Nairobi & beyond.
           </h1>
           <p style={{ ...body, marginBottom:"2rem" }}>
-            Nairobi&apos;s most trusted automotive platform. Verified mechanics, 24/7 emergency roadside help, live tracking, parts marketplace — everything your car needs, one tap away.
+            Kenya&apos;s fastest-growing automotive platform. Verified mechanics, 24/7 emergency roadside help, live tracking, parts marketplace — built in Kenya, scaling across Africa.
           </p>
           <div style={{ display:"flex", gap:10, justifyContent:"center", flexWrap:"wrap", marginBottom:"2rem" }}>
             <button onClick={()=>navigate("/auth")} style={btnOrange}>🚗 Get started free</button>
             <button onClick={()=>navigate("/auth")} style={btnOutline}>Sign in →</button>
           </div>
           <div style={{ display:"flex", gap:6, justifyContent:"center", flexWrap:"wrap" }}>
-            {[["24/7","Emergency service"],["5min","Avg response"],["100%","Verified providers"],["🇰🇪","Made in Kenya"]].map(([v,l])=>(
+            {[["24/7","Emergency service"],["5min","Avg response"],["100%","Verified providers"],["🌍","Kenya & Beyond"]].map(([v,l])=>(
               <div key={l} style={{ textAlign:"center", padding:"0.5rem 0.9rem", background:"rgba(245,245,245,0.9)", borderRadius:10 }}>
                 <div style={{ fontWeight:800, fontSize:16, color:"#000" }}>{v}</div>
                 <div style={{ fontSize:10, color:"#888", marginTop:1 }}>{l}</div>
@@ -393,7 +393,7 @@ export default function LandingPage() {
           <h2 style={{ fontWeight:800, fontSize:"clamp(26px,5vw,48px)", lineHeight:1.1, color:"#fff", marginBottom:12, letterSpacing:-0.5 }}>
             Nairobi&apos;s car care platform<br/><span style={{ color:"#e6821e" }}>starts here.</span>
           </h2>
-          <p style={{ ...body, color:"#aaa", marginBottom:"2rem" }}>Join thousands of car owners and mechanics already on CCC. Free to join. Available 24/7. Built for Nairobi.</p>
+          <p style={{ ...body, color:"#aaa", marginBottom:"2rem" }}>Join thousands of car owners across Kenya already on CCC. Free to join. Available 24/7. Built for Kenya, scaling across Africa.</p>
           <div style={{ display:"flex", gap:10, justifyContent:"center", flexWrap:"wrap" }}>
             <button onClick={()=>navigate("/auth")} style={btnOrange}>🚗 Get started free</button>
             <button onClick={()=>navigate("/auth")} style={{ ...btnOutline, color:"#fff", borderColor:"#555" }}>Sign in →</button>
