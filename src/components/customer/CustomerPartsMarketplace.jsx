@@ -243,23 +243,8 @@ export default function CustomerPartsMarketplace() {
       setDeliveryLng(null)
       setSelectedZone("")
 
-      {
-        toast.success("Order placed! Redirecting to payment...")
-        const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/pesapal-payment", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc" },
-          body: JSON.stringify({ amount: firstOrderTotal, bookingId: firstOrderId, customerEmail: user.email || "", customerPhone: customerDetails.phone, customerName: customerDetails.name })
-        })
-        const payRes = await res.json()
-        console.log("Pesapal response:", JSON.stringify(payRes))
-        if (payRes.redirect_url) {
-          sessionStorage.setItem("parts_order_id", firstOrderId)
-          window.location.href = payRes.redirect_url
-        } else {
-          setTab("orders")
-          loadOrders()
-        }
-      }
+      setPendingOrder({ id: firstOrderId, amount: firstOrderTotal })
+      setShowOrderPayment(true)
     } catch(err) { toast.error(err.message) }
     finally { setOrdering(false) }
   }
