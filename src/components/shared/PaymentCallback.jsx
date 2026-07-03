@@ -126,6 +126,12 @@ export default function PaymentCallback() {
             message: "A customer has paid for their order. Check your Orders dashboard.",
             type: "success"
           })
+          await supabase.from("notifications").insert({
+            user_id: order.customer_id,
+            title: "Order placed! 🛒",
+            message: "Your payment was successful and your order has been placed. The provider will prepare your items.",
+            type: "success"
+          })
           setStatus("success")
           toast.success("Payment successful! Your order has been placed.")
           setTimeout(() => navigate("/dashboard/marketplace"), 3000)
@@ -179,3 +185,4 @@ export default function PaymentCallback() {
     </div>
   )
 }
+

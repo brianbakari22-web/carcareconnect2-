@@ -223,8 +223,6 @@ export default function CustomerPartsMarketplace() {
           message: `${customerDetails.name} ordered ${items.length} item(s) — KES ${subtotal.toLocaleString()} (Paid online via Pesapal)`,
           type: "success",
         })
-        // Notify customer
-        await supabase.from("notifications").insert({ user_id: user.id, title: "Order placed! 🛒", message: `Your order of ${items.length} item(s) worth KES ${subtotal.toLocaleString()} has been placed successfully.`, type: "success" })
 
 
 
@@ -568,16 +566,6 @@ export default function CustomerPartsMarketplace() {
                   </>
                 )}
 
-                <div style={{ marginBottom:"1rem", borderTop:"1px solid #eeeeee", paddingTop:"1rem" }}>
-                  <div style={{ fontSize:11, color:"#666", marginBottom:6, fontWeight:600 }}>Payment method</div>
-                  <div style={{ display:"flex", gap:8 }}>
-                    <button type="button" onClick={()=>setPaymentMethod("pesapal")}
-                      style={{ flex:1, background:paymentMethod==="pesapal"?"#e6821e":"#ffffff", border:(paymentMethod==="pesapal"?"1px solid #e6821e":"1px solid #e5e5e5"), borderRadius:8, color:paymentMethod==="pesapal"?"#fff":"#666", fontSize:12, fontWeight:600, padding:"10px", cursor:"pointer" }}>
-                      💳 Pay online (Pesapal)
-                    </button>
-
-                  </div>
-                </div>
 
                 <div style={{ borderTop:"1px solid #eeeeee", paddingTop:"1rem", marginTop:"0.5rem" }}>
                   <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#666", marginBottom:4 }}>
