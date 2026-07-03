@@ -41,15 +41,22 @@ export default function AdminLiveMap() {
       const svDiv = document.getElementById("admin-street-view")
       if (!svDiv || !window.google?.maps?.StreetViewPanorama) return
       try {
-        new window.google.maps.StreetViewPanorama(svDiv, {
-          position: { lat: selected.current_lat, lng: selected.current_lng },
-          pov: { heading: 34, pitch: 10 },
-          zoom: 1,
-          addressControl: false,
-          showRoadLabels: true,
-          motionTracking: false,
+        const sv = new window.google.maps.StreetViewService()
+        sv.getPanorama({ location:{ lat:selected.current_lat, lng:selected.current_lng }, radius:100 }, (data, status) => {
+          if (status === "OK") {
+            new window.google.maps.StreetViewPanorama(svDiv, {
+              position: { lat: selected.current_lat, lng: selected.current_lng },
+              pov: { heading: 34, pitch: 10 },
+              zoom: 1,
+              addressControl: false,
+              showRoadLabels: true,
+              motionTracking: false,
+            })
+          } else {
+            svDiv.innerHTML = "<div style=\"display:flex;align-items:center;justify-content:center;height:100%;color:#888;font-size:12px;flex-direction:column;gap:8px\"><span style=\"font-size:24px\">🗺️</span>Street View not available at this location</div>"
+          }
         })
-      } catch(e) { console.log("Street view not available:", e.message) }
+      } catch(e) { svDiv.innerHTML = "<div style=\"display:flex;align-items:center;justify-content:center;height:100%;color:#888;font-size:12px;\">Street View unavailable</div>" }
     }, 300)
   }, [selected?.driver_id])
 
