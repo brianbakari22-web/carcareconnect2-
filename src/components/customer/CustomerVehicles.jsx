@@ -12,10 +12,16 @@ export default function CustomerVehicles() {
   const [uploadingPhoto, setUploadingPhoto] = useState(false)
   const [editing, setEditing] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [trackers, setTrackers] = useState([])
+  const [showTracker, setShowTracker] = useState(null)
+  const [trackerForm, setTrackerForm] = useState({ provider:"cartrack", api_key:"", vehicle_identifier:"" })
+  const [savingTracker, setSavingTracker] = useState(false)
 
   useEffect(() => { if (user) load() }, [user])
 
   async function load() {
+    const { data: trk } = await supabase.from("vehicle_trackers").select("*").eq("customer_id", user.id)
+    setTrackers(trk||[])
     const { data } = await supabase.from("vehicles").select("*").eq("user_id", user.id).order("is_default",{ascending:false})
     setVehicles(data||[]); setLoading(false)
   }
@@ -78,6 +84,42 @@ export default function CustomerVehicles() {
   const inp = {width:"100%",background:"#ffffff",border:"1px solid #e5e5e5",borderRadius:8,padding:"10px 12px",color:"#000000",fontSize:13,outline:"none",marginBottom:10,fontFamily:"'DM Sans',sans-serif"}
   const lbl = {fontSize:11,color:"#666",textTransform:"uppercase",letterSpacing:"0.05em",display:"block",marginBottom:4}
 
+  async function saveTracker(e) {
+    e.preventDefault()
+    if (!trackerForm.api_key) return
+    setSavingTracker(true)
+    const existing = trackers.find(t=>t.vehicle_id===showTracker.id)
+    if (existing) {
+      await supabase.from("vehicle_trackers").update({
+        provider: trackerForm.provider,
+        api_key: trackerForm.api_key,
+        vehicle_identifier: trackerForm.vehicle_identifier,
+        is_active: true
+      }).eq("id", existing.id)
+    } else {
+      await supabase.from("vehicle_trackers").insert({
+        customer_id: user.id,
+        vehicle_id: showTracker.id,
+        provider: trackerForm.provider,
+        api_key: trackerForm.api_key,
+        vehicle_identifier: trackerForm.vehicle_identifier,
+        is_active: true
+      })
+    }
+    const { data: trk } = await supabase.from("vehicle_trackers").select("*").eq("customer_id", user.id)
+    setTrackers(trk||[])
+    setShowTracker(null)
+    setSavingTracker(false)
+    toast.success("Tracker linked successfully!")
+  }
+
+  async function removeTracker(vehicleId) {
+    await supabase.from("vehicle_trackers").delete().eq("vehicle_id", vehicleId).eq("customer_id", user.id)
+    const { data: trk } = await supabase.from("vehicle_trackers").select("*").eq("customer_id", user.id)
+    setTrackers(trk||[])
+    toast.success("Tracker removed")
+  }
+
   return (
     <div>
       {loading&&<div style={{color:"#777777",fontSize:13}}>Loading...</div>}
@@ -114,6 +156,10 @@ export default function CustomerVehicles() {
             {!v.is_default&&<button onClick={()=>setDefault(v.id)} style={{background:"#fff8f0",border:"1px solid #e6821e40",borderRadius:7,color:"#e6821e",fontSize:11,padding:"5px 10px",cursor:"pointer"}}>⭐ Set default</button>}
             <button onClick={()=>{setEditing(v.id);setForm({make:v.make,model:v.model,year:String(v.year),color:v.color||"",license_plate:v.license_plate,photo_url:v.photo_url||"",current_mileage:v.current_mileage?String(v.current_mileage):"",last_service_date:v.last_service_date||"",last_oil_change_date:v.last_oil_change_date||""})}} style={{background:"#eff6ff",border:"1px solid #378add40",borderRadius:7,color:"#378add",fontSize:11,padding:"5px 10px",cursor:"pointer"}}>✏️ Edit</button>
             <button onClick={()=>remove(v.id)} style={{background:"#fff5f5",border:"1px solid #e24b4a40",borderRadius:7,color:"#e24b4a",fontSize:11,padding:"5px 10px",cursor:"pointer"}}>🗑️ Remove</button>
+            {trackers.find(t=>t.vehicle_id===v.id)
+              ? <button onClick={()=>setShowTracker(v)} style={{background:"#f0fdf4",border:"1px solid #1d9e7540",borderRadius:7,color:"#1d9e75",fontSize:11,padding:"5px 10px",cursor:"pointer"}}>📡 Tracker linked</button>
+              : <button onClick={()=>setShowTracker(v)} style={{background:"#f8f8f8",border:"1px solid #ddd",borderRadius:7,color:"#555",fontSize:11,padding:"5px 10px",cursor:"pointer"}}>🔗 Link tracker</button>
+            }
           </div>
         </div>
       ))}
@@ -168,6 +214,44 @@ export default function CustomerVehicles() {
     </div>
   )
 }
+      {showTracker&&(
+        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.7)", zIndex:200, display:"flex", alignItems:"flex-end", justifyContent:"center" }}
+          onClick={e=>{ if(e.target===e.currentTarget) setShowTracker(null) }}>
+          <div style={{ background:"#fff", borderRadius:"16px 16px 0 0", padding:"1.5rem", width:"100%", maxWidth:480 }}>
+            <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, marginBottom:4 }}>🔗 Link Tracker</div>
+            <div style={{ fontSize:12, color:"#888", marginBottom:"1rem" }}>{showTracker.make} {showTracker.model} · {showTracker.license_plate}</div>
+            <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7530", borderRadius:8, padding:"0.75rem", marginBottom:"1rem", fontSize:12, color:"#555", lineHeight:1.6 }}>
+              💡 Enter your tracker API key from your tracker provider dashboard. CCC uses your own credentials — we never store location without your permission.
+            </div>
+            <form onSubmit={saveTracker}>
+              <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>Tracker Provider</label>
+              <select value={trackerForm.provider} onChange={e=>setTrackerForm(f=>({...f,provider:e.target.value}))}
+                style={{ width:"100%", background:"#f5f5f5", border:"1px solid #e0e0e0", borderRadius:8, padding:"10px 12px", fontSize:13, marginBottom:10, outline:"none" }}>
+                <option value="cartrack">Cartrack Kenya</option>
+                <option value="syentech">Syentech</option>
+                <option value="itrack">iTrack</option>
+                <option value="rewire">Rewire Security</option>
+                <option value="other">Other (Generic GPS)</option>
+              </select>
+              <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>API Key / Access Token *</label>
+              <input value={trackerForm.api_key} onChange={e=>setTrackerForm(f=>({...f,api_key:e.target.value}))} placeholder="Enter your tracker API key"
+                style={{ width:"100%", background:"#f5f5f5", border:"1px solid #e0e0e0", borderRadius:8, padding:"10px 12px", fontSize:13, marginBottom:10, outline:"none", boxSizing:"border-box" }} required/>
+              <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>Vehicle ID (from tracker dashboard)</label>
+              <input value={trackerForm.vehicle_identifier} onChange={e=>setTrackerForm(f=>({...f,vehicle_identifier:e.target.value}))} placeholder="e.g. VH-12345 or plate number"
+                style={{ width:"100%", background:"#f5f5f5", border:"1px solid #e0e0e0", borderRadius:8, padding:"10px 12px", fontSize:13, marginBottom:16, outline:"none", boxSizing:"border-box" }}/>
+              <div style={{ display:"flex", gap:8 }}>
+                <button type="submit" disabled={savingTracker} style={{ flex:1, background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer" }}>
+                  {savingTracker?"Saving...":"Save tracker"}
+                </button>
+                {trackers.find(t=>t.vehicle_id===showTracker.id)&&(
+                  <button type="button" onClick={()=>removeTracker(showTracker.id)} style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:10, color:"#e24b4a", fontSize:13, padding:"12px 16px", cursor:"pointer" }}>Remove</button>
+                )}
+                <button type="button" onClick={()=>setShowTracker(null)} style={{ background:"#f5f5f5", border:"none", borderRadius:10, color:"#555", fontSize:13, padding:"12px 16px", cursor:"pointer" }}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
 
 
