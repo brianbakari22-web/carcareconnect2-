@@ -16,11 +16,22 @@ export default function AdminLiveMap() {
       .on("postgres_changes", { event:"*", schema:"public", table:"driver_status" }, () => load())
       .subscribe()
     const interval = setInterval(load, 30000)
-    return () => { supabase.removeChannel(sub); clearInterval(interval) }
+    return () => { 
+      supabase.removeChannel(sub)
+      clearInterval(interval)
+      // Cleanup map on unmount
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current = null
+      }
+      Object.keys(markersRef.current).forEach(id => {
+        markersRef.current[id].setMap(null)
+      })
+      markersRef.current = {}
+    }
   }, [])
 
   useEffect(() => {
-    if (!loading && drivers.length > 0) initMap()
+    if (!loading) initMap()
   }, [drivers, loading])
 
   async function load() {
@@ -108,7 +119,7 @@ export default function AdminLiveMap() {
         ))}
         <button onClick={load} style={{ marginLeft:"auto", padding:"6px 14px", borderRadius:7, border:"1px solid #eee", fontSize:12, cursor:"pointer", background:"#fff", color:"#555" }}>🔄 Refresh</button>
       </div>
-      <div ref={mapRef} style={{ width:"100%", height:400, borderRadius:12, overflow:"hidden", background:"#f0f0f0", marginBottom:"1rem", border:"1px solid #eee" }}>
+      <div ref={mapRef} style={{ width:"100%", height:"calc(100vh - 320px)", minHeight:300, borderRadius:12, overflow:"hidden", background:"#f0f0f0", marginBottom:"1rem", border:"1px solid #eee" }}>
         {loading&&<div style={{ display:"flex", alignItems:"center", justifyContent:"center", height:"100%", color:"#888", fontSize:13 }}>Loading map...</div>}
         {!loading&&drivers.filter(d=>d.current_lat).length===0&&(
           <div style={{ display:"flex", alignItems:"center", justifyContent:"center", height:"100%", color:"#888", fontSize:13, flexDirection:"column", gap:8 }}>
