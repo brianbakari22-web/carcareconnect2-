@@ -24,13 +24,13 @@ export default function PrivacyPolicy() {
         <div style={{ marginBottom:"2.5rem" }}>
           <div style={{ fontSize:12, color:"#e6821e", fontWeight:600, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>Legal</div>
           <div style={{ fontFamily:"Syne", fontSize:"clamp(28px,4vw,40px)", fontWeight:800, color:"#000", marginBottom:8 }}>Privacy Policy</div>
-          <div style={{ fontSize:13, color:"#777" }}>Last updated: June 25, 2026 - Effective: June 25, 2026</div>
+          <div style={{ fontSize:13, color:"#777" }}>Last updated: July 3, 2026 · Effective: July 3, 2026</div>
         </div>
         <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:12, padding:"1.25rem", marginBottom:"2rem" }}>
-          <div style={{ fontSize:14, color:"#555", lineHeight:1.8 }}>Car Care Connect (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) is committed to protecting your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform at carcareconnect.care. By using Car Care Connect, you consent to the practices described in this policy.</div>
+          <div style={{ fontSize:14, color:"#555", lineHeight:1.8 }}>Car Care Connect (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) is committed to protecting your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform at carcareconnect.care. Car Care Connect is a technology marketplace platform — we connect users with independent service providers and do not provide automotive services directly. By using Car Care Connect, you consent to the practices described in this policy.</div>
         </div>
         <Section title="1. Who We Are">
-          <div>Car Care Connect is an automotive services marketplace based in Nairobi, Kenya. We connect car owners with verified mechanics, parts dealers, car wash providers and concierge drivers.</div>
+          <div>Car Care Connect is a technology marketplace platform based in Kenya. We connect car owners with independent verified mechanics, parts dealers, car wash providers, and concierge drivers across Kenya and beyond. We do not provide automotive services directly — all services are provided by independent third-party contractors.</div>
           <div style={{ marginTop:12 }}>
             <Li>Platform: carcareconnect.care</Li>
             <Li>Contact: carcareconnect254@gmail.com</Li>
@@ -98,7 +98,7 @@ export default function PrivacyPolicy() {
         <Section title="4. How We Share Your Information">
           <div><strong>With Service Providers:</strong> When you book a service, your name and vehicle details are shared with the relevant provider.</div>
           <div style={{ marginTop:10 }}><strong>With Drivers:</strong> Your pickup/delivery address is shared with the assigned driver.</div>
-          <div style={{ marginTop:10 }}><strong>With Pesapal:</strong> Payment data is processed by Pesapal, regulated by the Central Bank of Kenya. We do not store your card details.</div>
+          <div style={{ marginTop:10 }}><strong>With Pesapal:</strong> All payments are processed exclusively by Pesapal Limited, regulated by the Central Bank of Kenya. Car Care Connect does not hold, store, or have custody of your funds at any time. We do not store your card details. Marketplace funds are held by Pesapal — not Car Care Connect.</div>
           <div style={{ marginTop:10 }}><strong>With Supabase:</strong> Our database and authentication provider stores your account data securely.</div>
           <div style={{ marginTop:12 }}><strong>We do NOT:</strong></div>
           <div style={{ marginTop:8 }}>
@@ -221,7 +221,7 @@ export default function PrivacyPolicy() {
           <div style={{ marginTop:12 }}>We aim to respond to all privacy enquiries within 5 business days.</div>
         </Section>
         <div style={{ borderTop:"1px solid #eeeeee", paddingTop:"2rem", marginTop:"2rem", fontSize:13, color:"#999", textAlign:"center" }}>
-          2026 Car Care Connect - Nairobi, Kenya - All rights reserved
+          © 2026 Car Care Connect · Kenya & Beyond · All rights reserved
         </div>
       </div>
     </div>
