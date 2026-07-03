@@ -201,7 +201,7 @@ export default function CustomerPartsMarketplace() {
           customer_phone: customerDetails.phone,
           payment_method: paymentMethod,
           payment_status: "awaiting_payment",
-          status: "pending",
+          status: "pending_payment",
         }).select("id").single()
         if (error) throw error
 
@@ -610,7 +610,7 @@ export default function CustomerPartsMarketplace() {
                     style={{ width:"100%", background:ordering?"#ccc":"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:ordering?"not-allowed":"pointer" }}>
                     {ordering?"Placing order...":"Place order →"}
                   </button>
-                  <div style={{ fontSize:11, color:"#888888", textAlign:"center", marginTop:8 }}>Payment collected on delivery/pickup</div>
+              <div style={{ fontSize:11, color:"#888888", textAlign:"center", marginTop:8 }}>🔒 Secure payment via Pesapal</div>
                 </div>
               </>
             )}

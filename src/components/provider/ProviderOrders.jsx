@@ -48,6 +48,7 @@ export default function ProviderOrders() {
     const { data } = await supabase.from("orders")
       .select("*, order_items(*, inventory(name,unit,category)), profiles!orders_customer_id_fkey(first_name,last_name,city)")
       .eq("provider_id", user.id)
+      .neq("status","pending_payment")
       .order("created_at", { ascending:false })
     setOrders(data||[])
     setLoading(false)
@@ -279,6 +280,7 @@ export default function ProviderOrders() {
     </div>
   )
 }
+
 
 
 

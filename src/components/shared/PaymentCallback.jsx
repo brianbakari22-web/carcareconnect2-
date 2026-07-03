@@ -111,7 +111,28 @@ export default function PaymentCallback() {
           return
         }
 
-        // 5. Regular booking payment (default)
+        // 5. Parts/inventory order payment
+        const { data: order } = await supabase.from("orders")
+          .select("id,customer_id,provider_id").eq("id", merchantRef).maybeSingle()
+        if (order) {
+          await supabase.from("orders").update({
+            payment_status: "paid",
+            pesapal_tracking_id: trackingId,
+            status: "pending"
+          }).eq("id", merchantRef)
+          await supabase.from("notifications").insert({
+            user_id: order.provider_id,
+            title: "New order received! 📦",
+            message: "A customer has paid for their order. Check your Orders dashboard.",
+            type: "success"
+          })
+          setStatus("success")
+          toast.success("Payment successful! Your order has been placed.")
+          setTimeout(() => navigate("/dashboard/marketplace"), 3000)
+          return
+        }
+
+        // 6. Regular booking payment (default)
         await supabase.from("bookings").update({
           payment_status: "paid", pesapal_tracking_id: trackingId
         }).eq("id", merchantRef)
