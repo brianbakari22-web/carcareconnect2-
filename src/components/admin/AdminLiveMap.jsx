@@ -34,6 +34,25 @@ export default function AdminLiveMap() {
     if (!loading) initMap()
   }, [drivers, loading])
 
+  useEffect(() => {
+    if (!selected?.current_lat) return
+    // Wait for DOM to render the street view div
+    setTimeout(() => {
+      const svDiv = document.getElementById("admin-street-view")
+      if (!svDiv || !window.google?.maps?.StreetViewPanorama) return
+      try {
+        new window.google.maps.StreetViewPanorama(svDiv, {
+          position: { lat: selected.current_lat, lng: selected.current_lng },
+          pov: { heading: 34, pitch: 10 },
+          zoom: 1,
+          addressControl: false,
+          showRoadLabels: true,
+          motionTracking: false,
+        })
+      } catch(e) { console.log("Street view not available:", e.message) }
+    }, 300)
+  }, [selected?.driver_id])
+
   async function load() {
     const { data } = await supabase.from("driver_status")
       .select("*, driver:profiles!driver_status_driver_id_fkey(first_name,last_name,driver_vehicle_type,driver_category,documents_verified)")
@@ -141,6 +160,12 @@ export default function AdminLiveMap() {
               <div style={{ fontSize:11, color:selected.is_online?"#1d9e75":"#888", marginTop:2 }}>{selected.is_online?"🟢 Online":"⚫ Offline"}</div>
               <div style={{ fontSize:11, color:"#888", marginTop:4 }}>📍 {selected.current_lat?.toFixed(5)}, {selected.current_lng?.toFixed(5)}</div>
               {selected.updated_at&&<div style={{ fontSize:11, color:"#aaa", marginTop:2 }}>Last seen: {new Date(selected.updated_at).toLocaleTimeString()}</div>}
+            {selected.current_lat&&(
+              <div style={{ marginTop:10 }}>
+                <div style={{ fontSize:11, fontWeight:600, color:"#000", marginBottom:6 }}>🏙️ Street View</div>
+                <div id="admin-street-view" style={{ width:"100%", height:200, borderRadius:8, overflow:"hidden", background:"#f0f0f0" }}/>
+              </div>
+            )}
             </div>
             <button onClick={()=>setSelected(null)} style={{ background:"#f5f5f5", border:"none", borderRadius:"50%", width:28, height:28, cursor:"pointer", fontSize:16 }}>×</button>
           </div>
