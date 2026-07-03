@@ -45,7 +45,7 @@ export default function AdminLiveMap() {
   function initMap() {
     if (!mapRef.current) return
     function buildMap() {
-      if (!window.google?.maps) return
+      if (!window.google?.maps?.Map) return
       const online = drivers.filter(d=>d.current_lat&&d.current_lng)
       if (!online.length) return
       const center = { lat: online[0].current_lat, lng: online[0].current_lng }
@@ -73,14 +73,19 @@ export default function AdminLiveMap() {
         }
       })
     }
-    if (window.google?.maps) { buildMap() }
-    else {
-      const ex = document.getElementById("google-maps-admin")
-      if (!ex) {
+    if (window.google?.maps?.Map) {
+      buildMap()
+    } else {
+      // Use existing SDK script or load new one
+      const existingScript = document.getElementById("google-maps-sdk") || document.getElementById("google-maps-admin")
+      if (existingScript) {
+        // Script already loading - wait for it
+        existingScript.addEventListener("load", buildMap)
+      } else {
         const s = document.createElement("script")
         s.id = "google-maps-admin"
-        s.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_KEY}&libraries=marker&loading=async`
-        s.onload = buildMap
+        s.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_KEY}&libraries=marker,places&loading=async`
+        s.onload = () => { setTimeout(buildMap, 100) }
         document.head.appendChild(s)
       }
     }
