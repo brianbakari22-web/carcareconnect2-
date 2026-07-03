@@ -26,7 +26,7 @@ export async function initPushNotifications(userId) {
               .eq("platform", "onesignal")
             
             // Insert fresh token
-            await supabase.from("device_tokens").insert({
+            await supabase.from("device_tokens").upsert({ onConflict: "token",
               user_id: userId,
               token: subId,
               platform: "onesignal",
@@ -64,7 +64,7 @@ export async function initWebPushForAdmin(userId) {
                 .eq("user_id", userId)
                 .eq("platform", "onesignal-web")
 
-              await supabase.from("device_tokens").insert({
+              await supabase.from("device_tokens").upsert({ onConflict: "token",
                 user_id: userId,
                 token: subId,
                 platform: "onesignal-web",
@@ -82,3 +82,4 @@ export async function initWebPushForAdmin(userId) {
     console.error("OneSignal web init error:", err)
   }
 }
+
