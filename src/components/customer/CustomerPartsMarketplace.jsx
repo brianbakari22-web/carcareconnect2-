@@ -23,7 +23,7 @@ const CATEGORIES = [
 const SC = { pending:"#e6821e", confirmed:"#378add", processing:"#8b5cf6", ready:"#1d9e75", delivered:"#1d9e75", cancelled:"#e24b4a" }
 
 export default function CustomerPartsMarketplace() {
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const isMobile = useIsMobile()
   const [items, setItems] = useState([])
   const [providers, setProviders] = useState({})
@@ -621,6 +621,7 @@ export default function CustomerPartsMarketplace() {
     </div>
   )
 }
+
 
 
 
