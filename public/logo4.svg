@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <circle cx="200" cy="200" r="200" fill="white"/>
+  <circle cx="200" cy="200" r="192" fill="none" stroke="#e6821e" stroke-width="18"/>
+  <rect x="192" y="80" width="16" height="240" fill="#e6821e" rx="4"/>
+  <rect x="140" y="192" width="40" height="16" fill="#e0e0e0" rx="3"/>
+  <rect x="220" y="192" width="40" height="16" fill="#e0e0e0" rx="3"/>
+  <text x="200" y="195" font-family="Arial Black, sans-serif" font-weight="900" font-size="82" fill="#111111" text-anchor="middle" dominant-baseline="middle">CCC</text>
+  <text x="200" y="272" font-family="Arial, sans-serif" font-weight="700" font-size="20" fill="#e6821e" text-anchor="middle">CAR CARE CONNECT</text>
+  <text x="200" y="298" font-family="Arial, sans-serif" font-size="16" fill="#888888" text-anchor="middle">Kenya &amp; Beyond</text>
+</svg>
