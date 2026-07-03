@@ -1,4 +1,4 @@
-﻿import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { SplashScreen } from "@capacitor/splash-screen"
 import { initPushNotifications } from "./lib/pushNotifications"
 import React, { useState, useEffect } from "react"
@@ -82,6 +82,7 @@ import CustomerNotifications from "./components/customer/CustomerNotifications"
 import CustomerLoyalty from "./components/customer/CustomerLoyalty"
 import CustomerDiscover from "./components/customer/CustomerDiscover"
 import CustomerTracking from "./components/customer/CustomerTracking"
+import CustomerTripReports from "./components/customer/CustomerTripReports"
 import CustomerChat from "./components/customer/CustomerChat"
 import CustomerFavorites from "./components/customer/CustomerFavorites"
 import CustomerReferral from "./components/customer/CustomerReferral"
@@ -254,6 +255,8 @@ function DashboardRouter() {
           <Route path="vehicles" element={<CustomerVehicles />} />
           <Route path="discover" element={<CustomerDiscover />} />
           <Route path="tracking" element={<CustomerTracking />} />
+          <Route path="tracking" element={<CustomerTracking />} />
+<Route path="trip-reports" element={<CustomerTripReports />} />
           <Route path="loyalty" element={<CustomerLoyalty />} />
           <Route path="payments" element={<CustomerPayments />} />
           <Route path="reviews" element={<CustomerReviews />} />

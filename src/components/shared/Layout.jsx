@@ -16,6 +16,7 @@ const NAV = {
     { path:"/dashboard/vehicles", key:"myVehicles", icon:"🚗" },
     { path:"/dashboard/discover", key:"discover", icon:"🌍" },
     { path:"/dashboard/tracking", key:"trackDriver", icon:"📍" },
+    { path:"/dashboard/trip-reports", label:"Trip Reports", icon:"🗺️" },
     { path:"/dashboard/loyalty", key:"loyalty", icon:"⭐" },
     { path:"/dashboard/payments", key:"payments", icon:"💳" },
     { path:"/dashboard/reviews", key:"reviews", icon:"⭐" },
@@ -511,6 +512,7 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 
 

@@ -94,7 +94,32 @@ export default function DriverOverview() {
     if (locationIntervalRef.current) clearInterval(locationIntervalRef.current)
     locationIntervalRef.current = setInterval(() => {
       getCurrentPosition().then(async pos => {
-        await supabase.from("driver_status").update({ current_lat:pos.latitude, current_lng:pos.longitude, updated_at:new Date().toISOString() }).eq("driver_id", user.id)
+        // Always update driver_status
+        await supabase.from("driver_status").update({
+          current_lat:pos.latitude, current_lng:pos.longitude, updated_at:new Date().toISOString()
+        }).eq("driver_id", user.id)
+        // Log to booking_location_logs if active booking
+        const { data: activeBooking } = await supabase.from("bookings")
+          .select("id").eq("driver_id", user.id)
+          .in("status", ["confirmed","in-progress","driver-assigned"])
+          .maybeSingle()
+        if (activeBooking?.id) {
+          await supabase.from("booking_location_logs").insert({
+            booking_id: activeBooking.id, driver_id: user.id,
+            lat: pos.latitude, lng: pos.longitude, source: "driver"
+          })
+        }
+        // Log for active order deliveries
+        const { data: activeOrder } = await supabase.from("orders")
+          .select("id").eq("delivery_driver_id", user.id)
+          .in("delivery_status", ["assigned","picked_up"])
+          .maybeSingle()
+        if (activeOrder?.id) {
+          await supabase.from("booking_location_logs").insert({
+            booking_id: activeOrder.id, driver_id: user.id,
+            lat: pos.latitude, lng: pos.longitude, source: "driver"
+          })
+        }
       }).catch(err => console.warn("Location update failed:", err.message))
     }, 30000)
   }
