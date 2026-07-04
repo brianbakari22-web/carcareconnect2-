@@ -112,6 +112,12 @@ export default function CustomerSupport() {
     if (!newMessage.trim() || !selected) return
     setSending(true)
     const { error } = await supabase.from("support_messages").insert({ ticket_id: selected.id, sender_id: user.id, message: newMessage.trim(), is_staff: false })
+    if (!error) {
+      const { data: admins } = await supabase.from("profiles").select("id").eq("role","admin")
+      for (const admin of (admins||[])) {
+        await supabase.from("notifications").insert({ user_id: admin.id, title: "Support reply from customer 💬", message: (profile?.first_name||"Customer")+" replied on ticket #"+selected.ticket_number, type:"info" })
+      }
+    }
     if (error) { toast.error(error.message); setSending(false); return }
     setNewMessage(""); setSending(false)
   }
@@ -297,3 +303,4 @@ export default function CustomerSupport() {
     </div>
   )
 }
+
