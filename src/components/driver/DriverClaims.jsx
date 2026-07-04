@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
-import ChatWindow from "../shared/ChatWindow"
+import ClaimChat from "../shared/ClaimChat"
 import toast from "react-hot-toast"
 
 export default function DriverClaims() {
@@ -108,13 +108,8 @@ export default function DriverClaims() {
                 💬 {chatClaim===c.id?"Close":(c.status==="pending"||c.status==="under_review")?"Respond to admin":"View conversation with admin"}
               </button>
               {chatClaim===c.id&&(
-                <div style={{ height:280, marginTop:8 }}>
-                  <ChatWindow
-                    claimId={c.id}
-                    otherUserId={adminId}
-                    otherUserName="CCC Admin"
-                    onClose={()=>setChatClaim(null)}
-                  />
+                <div style={{ marginTop:8 }}>
+                  <ClaimChat claimId={c.id} claim={c} onClose={()=>setChatClaim(null)}/>
                 </div>
               )}
             </div>

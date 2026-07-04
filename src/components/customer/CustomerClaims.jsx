@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
+import ClaimChat from "../shared/ClaimChat"
 import { useLocation } from "react-router-dom"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
-import ChatWindow from "../shared/ChatWindow"
 
 const CLAIM_REASONS = [
   "Service not completed properly",
@@ -323,13 +323,8 @@ export default function CustomerClaims() {
                   💬 {chatClaim===c.id?"Close":(c.status==="pending"||c.status==="under_review")?"Add evidence / message admin":"View conversation with admin"}
                 </button>
                 {chatClaim===c.id&&(
-                  <div style={{ height:280, marginTop:8 }}>
-                    <ChatWindow
-                      claimId={c.id}
-                      otherUserId={adminId}
-                      otherUserName="CCC Admin"
-                      onClose={()=>setChatClaim(null)}
-                    />
+                  <div style={{ marginTop:8 }}>
+                    <ClaimChat claimId={c.id} claim={c} onClose={()=>setChatClaim(null)}/>
                   </div>
                 )}
               </div>
@@ -396,6 +391,8 @@ export default function CustomerClaims() {
     </div>
   )
 }
+
+
 
 
 

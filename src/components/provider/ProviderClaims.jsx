@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
-import ChatWindow from "../shared/ChatWindow"
+import ClaimChat from "../shared/ClaimChat"
 
 const SC = { pending:"#e6821e", under_review:"#8b5cf6", approved:"#1d9e75", rejected:"#e24b4a" }
 
@@ -103,7 +103,7 @@ export default function ProviderClaims() {
             </div>
           )}
           {claims.map(c=>(
-            <div key={c.id} style={{ background:"#ffffff", border:`1px solid ${SC[c.status]||"#eeeeee"}30`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
+            <div key={c.id} style={{ background:"#f8f8f8", border:"1px solid #eee", borderLeft:`4px solid ${SC[c.status]||"#eee"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
@@ -123,16 +123,11 @@ export default function ProviderClaims() {
                 <div style={{ marginTop:8 }}>
                   <button onClick={()=>setChatClaim(chatClaim===c.id?null:c.id)}
                     style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
-                    💬 {chatClaim===c.id?"Close":"Respond to admin"}
+                    💬 {chatClaim===c.id?"Close":"Submit response / evidence"}
                   </button>
                   {chatClaim===c.id&&(
-                    <div style={{ height:280, marginTop:8 }}>
-                      <ChatWindow
-                        claimId={c.id}
-                        otherUserId={adminId}
-                        otherUserName="CCC Admin"
-                        onClose={()=>setChatClaim(null)}
-                      />
+                    <div style={{ marginTop:8 }}>
+                      <ClaimChat claimId={c.id} claim={c} onClose={()=>setChatClaim(null)}/>
                     </div>
                   )}
                 </div>
@@ -147,8 +142,8 @@ export default function ProviderClaims() {
                     ⚠️ {chatClaim===c.id?"Close":"Dispute this decision"}
                   </button>
                   {chatClaim===c.id&&(
-                    <div style={{ height:280, marginTop:8 }}>
-                      <ChatWindow claimId={c.id} otherUserId={adminId} otherUserName="CCC Admin" onClose={()=>setChatClaim(null)}/>
+                    <div style={{ marginTop:8 }}>
+                      <ClaimChat claimId={c.id} claim={c} onClose={()=>setChatClaim(null)}/>
                     </div>
                   )}
                 </div>
