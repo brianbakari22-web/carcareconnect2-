@@ -33,6 +33,24 @@ export default function ProviderDashboard() {
   const [showPolicy, setShowPolicy] = useState(!localStorage.getItem("ccc_policy_acknowledged"))
   const [uploadingPhoto, setUploadingPhoto] = useState(false)
   const providerType = profile?.provider_type || "garage"
+
+  // Suspension check
+  if (profile?.is_banned) return (
+    <div style={{ padding:"2rem", textAlign:"center", color:"#e24b4a" }}>
+      <div style={{ fontSize:32, marginBottom:10 }}>🚫</div>
+      <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, marginBottom:8 }}>Account Permanently Banned</div>
+      <div style={{ fontSize:13, color:"#666" }}>Your account has been permanently banned due to repeated service violations. Contact support if you believe this is an error.</div>
+    </div>
+  )
+  if (profile?.is_suspended) return (
+    <div style={{ padding:"2rem", textAlign:"center", color:"#e6821e" }}>
+      <div style={{ fontSize:32, marginBottom:10 }}>⏸️</div>
+      <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, marginBottom:8 }}>Account Suspended</div>
+      <div style={{ fontSize:13, color:"#666", marginBottom:8 }}>Your account has been temporarily suspended due to a service claim. You cannot accept new bookings during this period.</div>
+      {profile?.suspension_expires_at&&<div style={{ fontSize:12, color:"#e6821e" }}>Suspension lifts: {new Date(profile.suspension_expires_at).toLocaleString()}</div>}
+      <div style={{ fontSize:11, color:"#888", marginTop:8 }}>Contact support at carcareconnect254@gmail.com to appeal.</div>
+    </div>
+  )
   const config = TYPE_CONFIG[providerType] || TYPE_CONFIG.garage
   const isInventoryFocus = config.focus === "inventory"
 

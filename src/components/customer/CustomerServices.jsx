@@ -45,7 +45,7 @@ export default function CustomerServices() {
   async function load() {
     const [{ data: svcs }, { data: provs }, { data: vehs }, { data: bds }] = await Promise.all([
       supabase.from("services").select("*").eq("is_active", true).order("created_at", { ascending:false }),
-      supabase.from("profiles").select("id,first_name,last_name,business_name,city,latitude,longitude,is_verified").eq("role","provider"),
+      supabase.from("profiles").select("id,first_name,last_name,business_name,city,latitude,longitude,is_verified").eq("role","provider").eq("is_active",true),
       supabase.from("vehicles").select("*").eq("user_id", user.id),
       supabase.from("service_bundles").select("*").eq("is_active", true).order("created_at", { ascending:false }),
     ])

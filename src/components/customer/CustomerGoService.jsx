@@ -126,7 +126,7 @@ export default function CustomerGoService() {
     const { data } = await supabase.from("services")
       .select("*, profiles(business_name,first_name,last_name,city,latitude,longitude,go_service_radius_km)")
       .eq("category", "go_service")
-      .eq("is_active", true)
+      .eq("is_active", true).eq("profiles.is_active", true)
     let services = data||[]
     if (location.lat && location.lng) {
       services = services.map(s => {

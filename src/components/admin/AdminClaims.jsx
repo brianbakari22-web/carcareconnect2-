@@ -129,7 +129,12 @@ export default function AdminClaims() {
 
       // Suspend provider if needed
       if (suspendProvider) {
-        await supabase.from("profiles").update({ is_active: penaltyType!=="permanent_ban" }).eq("id",claim.provider_id)
+        await supabase.from("profiles").update({
+          is_active: penaltyType!=="permanent_ban",
+          is_suspended: penaltyType==="suspension_7d" || penaltyType==="suspension_30d",
+          is_banned: penaltyType==="permanent_ban",
+          suspension_expires_at: suspendUntil
+        }).eq("id",claim.provider_id)
       }
 
       toast.success(`Claim approved — voucher ${voucherCode} issued to customer`)

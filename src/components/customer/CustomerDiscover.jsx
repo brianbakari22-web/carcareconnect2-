@@ -61,7 +61,7 @@ export default function CustomerDiscover() {
   }
 
   async function loadProviders() {
-    const { data } = await supabase.from("profile_public").select("*").eq("role","provider").eq("is_active",true)
+    const { data } = await supabase.from("profile_public").select("*").eq("role","provider").eq("is_active",true).eq("is_active",true)
     setProviders(data||[])
   }
 
