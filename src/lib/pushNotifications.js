@@ -46,40 +46,30 @@ export async function initWebPushForAdmin(userId) {
   if (Capacitor.isNativePlatform()) return
   if (!userId) return
   if (typeof window === "undefined" || !window.OneSignalDeferred) return
-
   try {
     window.OneSignalDeferred.push(async function(OneSignal) {
       try {
         const permission = await OneSignal.Notifications.requestPermission(true)
         if (!permission) return
-
         await OneSignal.login(String(userId))
-
-        setTimeout(async () => {
+        let attempts = 0
+        const tryGetToken = async () => {
+          attempts++
           try {
-            const subId = OneSignal.User.PushSubscription.id
+            const subId = OneSignal.User.pushSubscription?.id || OneSignal.User.PushSubscription?.id
             if (subId && subId.includes("-")) {
-              await supabase.from("device_tokens")
-                .delete()
-                .eq("user_id", userId)
-                .eq("platform", "onesignal-web")
-
-              await supabase.from("device_tokens").upsert({ onConflict: "token",
-                user_id: userId,
-                token: subId,
-                platform: "onesignal-web",
+              await supabase.from("device_tokens").upsert({
+                user_id: userId, token: subId, platform: "onesignal-web",
                 updated_at: new Date().toISOString()
-              })
-              console.log("Fresh OneSignal WEB token saved:", subId)
+              }, { onConflict: "token" })
+              console.log("OneSignal WEB token saved:", subId)
+            } else if (attempts < 5) {
+              setTimeout(tryGetToken, 3000)
             }
           } catch(e) { console.error("Web push save error:", e.message) }
-        }, 3000)
-      } catch (err) {
-        console.error("OneSignal web permission error:", err)
-      }
+        }
+        setTimeout(tryGetToken, 3000)
+      } catch(err) { console.error("OneSignal web permission error:", err) }
     })
-  } catch (err) {
-    console.error("OneSignal web init error:", err)
-  }
+  } catch(err) { console.error("OneSignal web init error:", err) }
 }
-
