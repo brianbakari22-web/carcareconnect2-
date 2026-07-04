@@ -260,7 +260,6 @@ export default function CustomerProfile() {
               </div>
             )}
           </div>
-        )}
       )}
     </div>
   )
