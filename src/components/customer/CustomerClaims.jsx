@@ -22,8 +22,8 @@ export default function CustomerClaims() {
   const isMobile = useIsMobile()
   const location = useLocation()
   const preselectedBooking = new URLSearchParams(location.search).get("booking")
-
   const [claims, setClaims] = useState([])
+  const [claimsAgainstMe, setClaimsAgainstMe] = useState([])
   const [vouchers, setVouchers] = useState([])
   const [bookings, setBookings] = useState([])
   const [orders, setOrders] = useState([])
@@ -55,27 +55,30 @@ export default function CustomerClaims() {
   }, [user])
 
   async function load() {
-    const [{ data: cls }, { data: vchs }, { data: bks }, { data: ords }] = await Promise.all([
+    const [{ data: cls }, { data: vchs }, { data: bks }, { data: ords }, { data: against }] = await Promise.all([
       supabase.from("service_claims")
         .select("*, bookings(service_name,booking_number,booking_date,total_amount)")
-        .eq("customer_id", user.id)
-        .order("created_at", { ascending:false }),
+        .eq("customer_id", user.id).order("created_at", { ascending:false }),
       supabase.from("service_vouchers")
-        .select("*")
-        .eq("customer_id", user.id)
-        .order("created_at", { ascending:false }),
+        .select("*").eq("customer_id", user.id).order("created_at", { ascending:false }),
       supabase.from("bookings")
         .select("id,service_name,booking_number,booking_date,total_amount,status,provider_id")
-        .eq("customer_id", user.id)
-        .eq("status", "completed")
-        .order("created_at", { ascending:false })
-        .limit(20),
-      supabase.from("orders").select("id,order_number,status,subtotal,provider_id,created_at").eq("customer_id", user.id).eq("status","delivered").order("created_at", { ascending:false }).limit(20),
+        .eq("customer_id", user.id).eq("status","completed")
+        .order("created_at", { ascending:false }).limit(20),
+      supabase.from("orders")
+        .select("id,order_number,status,subtotal,provider_id,created_at")
+        .eq("customer_id", user.id).eq("status","delivered")
+        .order("created_at", { ascending:false }).limit(20),
+      supabase.from("service_claims")
+        .select("*, bookings(service_name,booking_number,booking_date), claimant:profiles!service_claims_claimant_id_fkey(first_name,last_name,role)")
+        .eq("against_id", user.id).eq("against_type","customer")
+        .order("created_at", { ascending:false }),
     ])
     setClaims(cls||[])
     setVouchers(vchs||[])
     setBookings(bks||[])
     setOrders(ords||[])
+    setClaimsAgainstMe(against||[])
     setLoading(false)
   }
 
@@ -219,13 +222,14 @@ export default function CustomerClaims() {
         )}
       </div>
       {/* Tabs */}
-      <div style={{ display:"flex", gap:6, marginBottom:"1.25rem" }}>
+      <div style={{ display:"flex", gap:6, marginBottom:"1.25rem", flexWrap:"wrap" }}>
         {[
-          { k:"claims", l:`My claims (${claims.length})` },
-          { k:"vouchers", l:`Vouchers (${vouchers.length})` },
+          { k:"claims", l:"My claims ("+claims.length+")" },
+          { k:"against", l:"Against me ("+claimsAgainstMe.length+")" },
+          { k:"vouchers", l:"Vouchers ("+vouchers.length+")" },
         ].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#555555", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
+            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#555555", color:tab===t.k?"#fff":"#666", fontWeight:tab===t.k?700:400 }}>
             {t.l}
           </button>
         ))}
@@ -336,6 +340,48 @@ export default function CustomerClaims() {
               {c.status==="rejected"&&c.admin_notes&&(
                 <div style={{ marginTop:8, padding:"0.6rem", background:"#fff5f5", borderRadius:7, fontSize:12, color:"#e24b4a" }}>
                   ❌ Claim rejected: {c.admin_notes}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+      {/* Against me tab */}
+      {tab==="against"&&(
+        <div>
+          {claimsAgainstMe.length===0&&(
+            <div style={{ textAlign:"center", padding:"2rem", color:"#888" }}>
+              <div style={{ fontSize:32, marginBottom:10 }}>✅</div>
+              No claims have been filed against you
+            </div>
+          )}
+          {claimsAgainstMe.map(c=>(
+            <div key={c.id} style={{ background:"#f8f8f8", border:"1px solid #eee", borderLeft:`4px solid ${SC[c.status]||"#eee"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+                <div style={{ flex:1 }}>
+                  <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:2 }}>{c.bookings?.service_name}</div>
+                  <div style={{ fontSize:11, color:"#888" }}>Filed by: {c.claimant?.first_name} {c.claimant?.last_name} ({c.claimant?.role})</div>
+                  <div style={{ fontSize:12, color:"#e6821e", marginTop:4 }}>Reason: {c.reason}</div>
+                  <div style={{ fontSize:11, color:"#666", fontStyle:"italic", marginTop:2 }}>"{c.description}"</div>
+                  {c.admin_notes&&<div style={{ fontSize:11, color:"#378add", marginTop:4 }}>Admin decision: "{c.admin_notes}"</div>}
+                  <div style={{ fontSize:10, color:"#aaa", marginTop:4 }}>{new Date(c.created_at).toLocaleDateString()}</div>
+                </div>
+                <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:(SC[c.status]||"#888")+"20", color:SC[c.status]||"#888", fontWeight:600 }}>{c.status?.replace("_"," ")}</span>
+              </div>
+              {(c.status==="pending"||c.status==="under_review")&&(
+                <div style={{ marginTop:8 }}>
+                  <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:8, padding:"0.6rem", fontSize:11, color:"#666", marginBottom:6 }}>
+                    ⚠️ A claim has been filed against you. You can submit your response and evidence below.
+                  </div>
+                  <button onClick={()=>setChatClaim(chatClaim===c.id?null:c.id)}
+                    style={{ background:"#f5f3ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+                    💬 {chatClaim===c.id?"Close":"Submit my response / evidence"}
+                  </button>
+                  {chatClaim===c.id&&(
+                    <div style={{ marginTop:8 }}>
+                      <ClaimChat claimId={c.id} claim={c} onClose={()=>setChatClaim(null)}/>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
