@@ -26,10 +26,8 @@ export async function initPushNotifications(userId) {
               .eq("platform", "onesignal")
             
             // Insert fresh token
-            await supabase.from("device_tokens").upsert({ onConflict: "token",
-              user_id: userId,
-              token: subId,
-              platform: "onesignal",
+            await supabase.from("device_tokens").upsert({
+              user_id: userId, token: subId, platform: "onesignal",
               updated_at: new Date().toISOString()
             })
             console.log("Fresh OneSignal token saved:", subId)
@@ -61,7 +59,7 @@ export async function initWebPushForAdmin(userId) {
               await supabase.from("device_tokens").upsert({
                 user_id: userId, token: subId, platform: "onesignal-web",
                 updated_at: new Date().toISOString()
-              }, { onConflict: "token" })
+            }, { onConflict: "user_id,token" })
               console.log("OneSignal WEB token saved:", subId)
             } else if (attempts < 5) {
               setTimeout(tryGetToken, 3000)
@@ -73,3 +71,4 @@ export async function initWebPushForAdmin(userId) {
     })
   } catch(err) { console.error("OneSignal web init error:", err) }
 }
+
