@@ -44,6 +44,15 @@ export default function CustomerClaims() {
     }
   }, [user])
 
+  // Real-time claim status updates
+  useEffect(() => {
+    if (!user) return
+    const sub = supabase.channel("customer-claims-"+user.id)
+      .on("postgres_changes", { event:"UPDATE", schema:"public", table:"service_claims", filter:"customer_id=eq."+user.id }, () => load())
+      .subscribe()
+    return () => supabase.removeChannel(sub)
+  }, [user])
+
   async function load() {
     const [{ data: cls }, { data: vchs }, { data: bks }, { data: ords }] = await Promise.all([
       supabase.from("service_claims")
@@ -95,6 +104,16 @@ export default function CustomerClaims() {
         message: "Your service claim has been submitted. Our team will review it within 24 hours.",
         type: "success",
       })
+      // Notify all admins
+      const { data: admins } = await supabase.from("profiles").select("id").eq("role","admin")
+      for (const admin of (admins||[])) {
+        await supabase.from("notifications").insert({
+          user_id: admin.id,
+          title: "New service claim 🛡️",
+          message: (profile?.first_name||"Customer")+" "+(profile?.last_name||"")+" submitted a claim: "+form.reason,
+          type: "warning"
+        })
+      }
       toast.success("Claim submitted — we will review within 24 hours")
       setShowForm(false)
       setForm({ booking_id:"", order_id:"", reason:"", description:"" })
