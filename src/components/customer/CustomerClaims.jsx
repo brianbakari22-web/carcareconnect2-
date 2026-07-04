@@ -33,6 +33,7 @@ export default function CustomerClaims() {
   const [showForm, setShowForm] = useState(!!preselectedBooking)
   const [form, setForm] = useState({ booking_id:preselectedBooking||"", order_id:"", reason:"", description:"" })
   const [submitting, setSubmitting] = useState(false)
+  const [showHowItWorks, setShowHowItWorks] = useState(false)
   const [tab, setTab] = useState("claims")
   const [chatClaim, setChatClaim] = useState(null)
 
@@ -192,25 +193,31 @@ export default function CustomerClaims() {
       )}
 
       {/* How it works */}
-      <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem", marginBottom:"1.5rem" }}>
-        <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000", marginBottom:10 }}>How our Service Guarantee works</div>
-        {[
-          { icon:"1️⃣", title:"Submit a claim", desc:"Tell us what went wrong within 7 days of completion" },
-          { icon:"2️⃣", title:"We review", desc:"Our team reviews your claim within 24 hours" },
-          { icon:"3️⃣", title:"Get a voucher", desc:"If approved, you receive a service voucher worth the full amount" },
-          { icon:"4️⃣", title:"Rebook for free", desc:"Use your voucher to book the same service with any other provider" },
-          { icon:"5️⃣", title:"Provider accountability", desc:"The original provider is penalized and cost deducted from their earnings" },
-        ].map(step=>(
-          <div key={step.icon} style={{ display:"flex", gap:10, alignItems:"flex-start", marginBottom:10 }}>
-            <span style={{ fontSize:16, flexShrink:0 }}>{step.icon}</span>
-            <div>
-              <div style={{ fontSize:12, color:"#000000", fontWeight:600 }}>{step.title}</div>
-              <div style={{ fontSize:11, color:"#777777", lineHeight:1.5 }}>{step.desc}</div>
-            </div>
+      <div style={{ background:"#f8f8f8", border:"1px solid #eee", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
+        <button onClick={()=>setShowHowItWorks(!showHowItWorks)} style={{ width:"100%", background:"none", border:"none", display:"flex", justifyContent:"space-between", alignItems:"center", cursor:"pointer", padding:0 }}>
+          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000" }}>How our Service Guarantee works</div>
+          <span style={{ color:"#e6821e", fontSize:16 }}>{showHowItWorks?"−":"+"}</span>
+        </button>
+        {showHowItWorks&&(
+          <div style={{ marginTop:10 }}>
+            {[
+              { icon:"1️⃣", title:"Submit a claim", desc:"Tell us what went wrong within 7 days of completion" },
+              { icon:"2️⃣", title:"We review", desc:"Our team reviews your claim within 24 hours" },
+              { icon:"3️⃣", title:"Get a voucher", desc:"If approved, receive a service voucher worth the full amount" },
+              { icon:"4️⃣", title:"Rebook for free", desc:"Use your voucher to book with any other provider" },
+              { icon:"5️⃣", title:"Provider accountability", desc:"The original provider is penalized and amount deducted from their earnings" },
+            ].map(step=>(
+              <div key={step.icon} style={{ display:"flex", gap:10, alignItems:"flex-start", marginBottom:8 }}>
+                <span style={{ fontSize:16, flexShrink:0 }}>{step.icon}</span>
+                <div>
+                  <div style={{ fontSize:12, color:"#000", fontWeight:600 }}>{step.title}</div>
+                  <div style={{ fontSize:11, color:"#777", lineHeight:1.5 }}>{step.desc}</div>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        )}
       </div>
-
       {/* Tabs */}
       <div style={{ display:"flex", gap:6, marginBottom:"1.25rem" }}>
         {[
@@ -293,7 +300,7 @@ export default function CustomerClaims() {
             </div>
           )}
           {claims.map(c=>(
-            <div key={c.id} style={{ background:"#ffffff", border:`1px solid ${SC[c.status]||"#eeeeee"}30`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
+            <div key={c.id} style={{ background:"#f8f8f8", border:"1px solid #eee", borderLeft:`4px solid ${SC[c.status]||"#eee"}`, borderRadius:10, padding:"1rem", marginBottom:8, cursor:"default" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
