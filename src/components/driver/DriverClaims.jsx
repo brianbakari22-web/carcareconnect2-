@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -28,6 +28,9 @@ export default function DriverClaims() {
   const [tab, setTab] = useState("against")
   const [showForm, setShowForm] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [evidencePhotos, setEvidencePhotos] = useState([])
+  const [uploadingEvidence, setUploadingEvidence] = useState(false)
+  const evidenceInputRef = useRef(null)
   const [form, setForm] = useState({ booking_id:"", reason:"", description:"" })
 
   useEffect(() => {
@@ -56,6 +59,25 @@ export default function DriverClaims() {
     setFiledClaims(filed||[])
     setBookings(bks||[])
     setLoading(false)
+  }
+
+  async function uploadEvidencePhoto(file) {
+    const ext = file.name.split(".").pop()
+    const path = `claims/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`
+    const { error } = await supabase.storage.from("claim-evidence").upload(path, file)
+    if (error) throw error
+    const { data } = supabase.storage.from("claim-evidence").getPublicUrl(path)
+    return data.publicUrl
+  }
+
+  async function handleEvidenceSelect(e) {
+    const files = Array.from(e.target.files).slice(0, 3)
+    setUploadingEvidence(true)
+    try {
+      const urls = await Promise.all(files.map(uploadEvidencePhoto))
+      setEvidencePhotos(prev => [...prev, ...urls].slice(0, 3))
+    } catch(err) { console.error("Photo upload failed:", err.message) }
+    setUploadingEvidence(false)
   }
 
   async function submitClaim(e) {
@@ -99,6 +121,7 @@ export default function DriverClaims() {
       toast.success("Claim submitted successfully")
       setShowForm(false)
       setForm({ booking_id:"", reason:"", description:"" })
+      setEvidencePhotos([])
       load()
     } catch(err) { toast.error(err.message) }
     finally { setSubmitting(false) }
@@ -160,6 +183,26 @@ export default function DriverClaims() {
             <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:8, padding:"0.75rem", marginBottom:12, fontSize:11, color:"#666" }}>
               ⚠️ Only file genuine claims. False claims may result in account suspension.
             </div>
+              {/* Evidence photos */}
+              <div style={{ marginBottom:12 }}>
+                <div style={{ fontSize:11, color:"#666", fontWeight:600, marginBottom:6 }}>📸 Attach evidence photos (optional, max 3)</div>
+                <input ref={evidenceInputRef} type="file" accept="image/*" multiple style={{ display:"none" }} onChange={handleEvidenceSelect}/>
+                <div style={{ display:"flex", gap:6, flexWrap:"wrap", alignItems:"center" }}>
+                  {evidencePhotos.map((url,i)=>(
+                    <div key={i} style={{ position:"relative" }}>
+                      <img src={url} alt="Evidence" style={{ width:60, height:60, objectFit:"cover", borderRadius:8, border:"1px solid #eee" }}/>
+                      <button type="button" onClick={()=>setEvidencePhotos(p=>p.filter((_,j)=>j!==i))}
+                        style={{ position:"absolute", top:-4, right:-4, background:"#e24b4a", border:"none", borderRadius:"50%", width:16, height:16, color:"#fff", fontSize:10, cursor:"pointer" }}>x</button>
+                    </div>
+                  ))}
+                  {evidencePhotos.length<3&&(
+                    <button type="button" onClick={()=>evidenceInputRef.current?.click()} disabled={uploadingEvidence}
+                      style={{ width:60, height:60, background:"#f8f8f8", border:"2px dashed #ddd", borderRadius:8, cursor:"pointer", fontSize:20, color:"#aaa" }}>
+                      {uploadingEvidence?"⏳":"📷"}
+                    </button>
+                  )}
+                </div>
+              </div>
             <div style={{ display:"flex", gap:8 }}>
               <button type="submit" disabled={submitting}
                 style={{ background:submitting?"#ccc":"#8b5cf6", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:submitting?"not-allowed":"pointer" }}>
