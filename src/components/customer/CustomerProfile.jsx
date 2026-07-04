@@ -15,6 +15,8 @@ export default function CustomerProfile() {
   const [saving, setSaving] = useState(false)
   const [tab, setTab] = useState("profile")
   const [exporting, setExporting] = useState(false)
+  const [deletingAccount, setDeletingAccount] = useState(false)
+  const [pendingDeletion, setPendingDeletion] = useState(null)
   const [exportData, setExportData] = useState(null)
 
   useEffect(() => {
@@ -67,19 +69,42 @@ export default function CustomerProfile() {
   }
 
   async function handleDeleteAccount() {
-    if (!confirm("Are you sure you want to delete your account? This cannot be undone.")) return
-    if (!confirm("All your data including bookings, payments and loyalty points will be permanently deleted. Continue?")) return
-    const { error } = await supabase.rpc("delete_user_account")
-    if (error) {
-      await supabase.from("support_tickets").insert({
-        customer_id: user.id,
-        subject: "Account deletion request",
-        category: "other",
-        priority: "high",
-        status: "open"
+    setDeletingAccount(true)
+    try {
+      const { data: check } = await supabase.rpc("check_account_deletable", { user_id: user.id })
+      if (!check.can_delete) {
+        let blockers = []
+        if (check.active_bookings > 0) blockers.push(check.active_bookings + " active booking(s)")
+        if (check.pending_payments > 0) blockers.push(check.pending_payments + " pending payment(s)")
+        if (check.open_claims > 0) blockers.push(check.open_claims + " open claim(s)")
+        if (check.active_orders > 0) blockers.push(check.active_orders + " active order(s)")
+        if (check.pending_payouts > 0) blockers.push(check.pending_payouts + " pending payout(s)")
+        toast.error("Cannot delete account: " + blockers.join(", "), { duration:6000 })
+        setDeletingAccount(false); return
+      }
+      const { data: existing } = await supabase.from("deletion_requests")
+        .select("*").eq("user_id", user.id).eq("status","pending").maybeSingle()
+      if (existing) {
+        const hoursLeft = Math.ceil((new Date(existing.scheduled_for) - new Date()) / 3600000)
+        toast("Deletion already scheduled in " + hoursLeft + " hour(s). Log in to cancel.", { duration:6000 })
+        setDeletingAccount(false); return
+      }
+      if (!window.confirm("Delete your account?\\n\\nYour account will be permanently deleted in 24 hours.\\nYou can cancel by logging in within 24 hours.")) {
+        setDeletingAccount(false); return
+      }
+      await supabase.from("deletion_requests").insert({
+        user_id: user.id,
+        scheduled_for: new Date(Date.now() + 24*60*60*1000).toISOString(),
+        status: "pending"
       })
-      toast.success("Deletion request submitted. Our team will process it within 30 days.")
-    }
+      await supabase.from("notifications").insert({
+        user_id: user.id, title: "Account deletion scheduled ⚠️",
+        message: "Your account will be deleted in 24 hours. Log in to your profile to cancel.", type: "error"
+      })
+      toast.success("Account deletion scheduled. You have 24 hours to cancel by logging in.", { duration:8000 })
+      setPendingDeletion({ scheduled_for: new Date(Date.now() + 24*60*60*1000).toISOString() })
+    } catch(err) { toast.error(err.message) }
+    setDeletingAccount(false)
   }
 
   const initials = `${profile?.first_name?.[0]||""}${profile?.last_name?.[0]||""}`.toUpperCase()
@@ -232,13 +257,27 @@ export default function CustomerProfile() {
 
           <div style={{ background:"#fff5f5", border:"1px solid #e24b4a20", borderRadius:12, padding:"1.25rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#e24b4a" }}>Delete account</div>
-            <div style={{ fontSize:12, color:"#666", marginBottom:"1rem", lineHeight:1.6 }}>
-              Permanently delete your account and all associated data. This action cannot be undone.
-            </div>
-            <button onClick={handleDeleteAccount}
-              style={{ background:"none", border:"1px solid #e24b4a", borderRadius:9, color:"#e24b4a", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:"pointer" }}>
-              Request account deletion
-            </button>
+            {pendingDeletion ? (
+              <div>
+                <div style={{ background:"#fff3cd", border:"1px solid #ffc10730", borderRadius:8, padding:"0.75rem", marginBottom:"1rem", fontSize:12, color:"#856404", lineHeight:1.6 }}>
+                  ⚠️ Your account is scheduled for deletion on <strong>{new Date(pendingDeletion.scheduled_for).toLocaleString()}</strong>. Cancel below to keep your account.
+                </div>
+                <button onClick={async()=>{ await supabase.from("deletion_requests").update({status:"cancelled"}).eq("user_id",user.id).eq("status","pending"); setPendingDeletion(null); toast.success("Account deletion cancelled!") }}
+                  style={{ background:"#1d9e75", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:"pointer" }}>
+                  ✅ Cancel deletion — keep my account
+                </button>
+              </div>
+            ) : (
+              <div>
+                <div style={{ fontSize:12, color:"#666", marginBottom:"1rem", lineHeight:1.6 }}>
+                  Your account will be scheduled for deletion in 24 hours. You can cancel at any time within that window. Financial records are retained for 7 years as required by Kenyan law.
+                </div>
+                <button onClick={handleDeleteAccount} disabled={deletingAccount}
+                  style={{ background:"none", border:"1px solid #e24b4a", borderRadius:9, color:"#e24b4a", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:"pointer" }}>
+                  {deletingAccount ? "Checking..." : "🗑️ Request account deletion"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
