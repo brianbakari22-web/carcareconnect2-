@@ -10,7 +10,8 @@ const CATEGORIES = [
   { k:"driver", l:"Driver Complaint", icon:"🚗" },
   { k:"parts", l:"Parts Order", icon:"📦" },
   { k:"account", l:"Account Issue", icon:"👤" },
-  { k:"technical", l:"Technical Problem", icon:"🔧" },
+  { k:"provider", l:"Provider Issue", icon:"🔧" },
+  { k:"technical", l:"Technical Problem", icon:"⚙️" },
   { k:"other", l:"Other", icon:"💬" },
 ]
 
@@ -303,4 +304,5 @@ export default function CustomerSupport() {
     </div>
   )
 }
+
 
