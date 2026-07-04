@@ -18,6 +18,7 @@ export default function AdminClaims() {
   const [penalties, setPenalties] = useState([])
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState("claims")
+  const [claimDirection, setClaimDirection] = useState("all")
   const [selected, setSelected] = useState(null)
   const [adminNotes, setAdminNotes] = useState("")
   const [processing, setProcessing] = useState(false)
