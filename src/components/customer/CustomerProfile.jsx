@@ -202,84 +202,65 @@ export default function CustomerProfile() {
         </form>
       )}
 
-      {tab==="data"&&(
-        <div>
-          <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#000000" }}>Your data</div>
-            <div style={{ fontSize:12, color:"#666", marginBottom:"1.25rem", lineHeight:1.6 }}>
-              Under the Kenya Data Protection Act 2019, you have the right to access and download all data we hold about you.
+        {tab==="data"&&(
+          <div>
+            {/* Header */}
+            <div style={{ background:"linear-gradient(135deg,#fff8f0,#fff)", border:"1px solid #e6821e20", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#000", marginBottom:4 }}>📦 My Personal Data</div>
+              <div style={{ fontSize:12, color:"#666", lineHeight:1.7 }}>Under Kenya Data Protection Act, you have the right to download or delete all your personal data stored on Car Care Connect.</div>
             </div>
-
-            {exporting&&<div style={{ color:"#777777", fontSize:13, marginBottom:"1rem" }}>Loading your data...</div>}
-
+            {exporting&&(
+              <div style={{ textAlign:"center", padding:"2rem", color:"#888", fontSize:13 }}>
+                <div style={{ fontSize:32, marginBottom:8 }}>⏳</div>
+                Loading your data...
+              </div>
+            )}
+            {!exporting&&!exportData&&(
+              <div>
+                <button onClick={loadExportData} style={{ width:"100%", background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:"pointer", marginBottom:"0.75rem" }}>
+                  📂 Load my data
+                </button>
+                <div style={{ fontSize:11, color:"#aaa", textAlign:"center" }}>We will compile all your data. This may take a few seconds.</div>
+              </div>
+            )}
             {exportData&&(
-              <div style={{ marginBottom:"1.25rem" }}>
-                <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:8, marginBottom:"1rem" }}>
+              <div>
+                <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#555", marginBottom:8, textTransform:"uppercase", letterSpacing:"0.05em" }}>Your data summary</div>
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8, marginBottom:"1.25rem" }}>
                   {[
-                    { label:"Bookings", value:exportData.bookings.length },
-                    { label:"Payments", value:exportData.payments.length },
-                    { label:"Reviews", value:exportData.reviews.length },
-                    { label:"Notifications", value:exportData.notifications.length },
-                    { label:"Support tickets", value:exportData.support_tickets.length },
-                    { label:"Vehicles", value:exportData.vehicles.length },
-                  ].map(s=>(
-                    <div key={s.label} style={{ background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"0.75rem", textAlign:"center" }}>
-                      <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#e6821e" }}>{s.value}</div>
-                      <div style={{ fontSize:10, color:"#777777", marginTop:2 }}>{s.label}</div>
+                    { label:"Bookings", value:exportData.bookings?.length||0, icon:"📅", color:"#378add" },
+                    { label:"Payments", value:exportData.payments?.length||0, icon:"💳", color:"#1d9e75" },
+                    { label:"Vehicles", value:exportData.vehicles?.length||0, icon:"🚗", color:"#e6821e" },
+                    { label:"Reviews", value:exportData.reviews?.length||0, icon:"⭐", color:"#f59e0b" },
+                    { label:"Points", value:exportData.loyaltyPoints||0, icon:"🎁", color:"#8b5cf6" },
+                    { label:"Claims", value:exportData.claims?.length||0, icon:"🛡️", color:"#e24b4a" },
+                  ].map(item=>(
+                    <div key={item.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"0.75rem 0.5rem", textAlign:"center", border:"1px solid #eee" }}>
+                      <div style={{ fontSize:20, marginBottom:4 }}>{item.icon}</div>
+                      <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:item.color }}>{item.value}</div>
+                      <div style={{ fontSize:10, color:"#888", marginTop:2 }}>{item.label}</div>
                     </div>
                   ))}
                 </div>
-
-                <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
-                  <button onClick={()=>downloadPDF(exportData, `carcareconnect-data-${new Date().toISOString().split("T")[0]}.pdf`)}
-                    style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:8, color:"#1d9e75", fontSize:12, fontWeight:600, padding:"9px 16px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
-                    ⬇ Download PDF report
+                <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#555", marginBottom:8, textTransform:"uppercase", letterSpacing:"0.05em" }}>Download formats</div>
+                <div style={{ display:"grid", gridTemplateColumns:"1fr", gap:8, marginBottom:"1rem" }}>
+                  <button onClick={()=>downloadJSON(exportData)} style={{ background:"#fff", border:"1px solid #378add", borderRadius:10, color:"#378add", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer", display:"flex", alignItems:"center", gap:8 }}>
+                    <span>📦</span><span>Download as JSON</span><span style={{ marginLeft:"auto", fontSize:10, color:"#aaa" }}>Full data export</span>
                   </button>
-                  <button onClick={()=>downloadCSV(exportData.bookings, `bookings-${new Date().toISOString().split("T")[0]}.csv`)}
-                    style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:8, color:"#378add", fontSize:12, fontWeight:600, padding:"9px 16px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
-                    ⬇ Bookings CSV
+                  <button onClick={()=>downloadCSV(exportData)} style={{ background:"#fff", border:"1px solid #1d9e75", borderRadius:10, color:"#1d9e75", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer", display:"flex", alignItems:"center", gap:8 }}>
+                    <span>📊</span><span>Download as CSV</span><span style={{ marginLeft:"auto", fontSize:10, color:"#aaa" }}>Spreadsheet format</span>
                   </button>
-                  <button onClick={()=>downloadCSV(exportData.payments, `payments-${new Date().toISOString().split("T")[0]}.csv`)}
-                    style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:8, color:"#378add", fontSize:12, fontWeight:600, padding:"9px 16px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
-                    ⬇ Payments CSV
+                  <button onClick={()=>downloadPDF(exportData)} style={{ background:"#fff", border:"1px solid #e6821e", borderRadius:10, color:"#e6821e", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer", display:"flex", alignItems:"center", gap:8 }}>
+                    <span>📄</span><span>Download as PDF</span><span style={{ marginLeft:"auto", fontSize:10, color:"#aaa" }}>Printable report</span>
                   </button>
                 </div>
-              </div>
-            )}
-
-            {!exporting&&!exportData&&(
-              <button onClick={loadExportData}
-                style={{ background:"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:"pointer" }}>
-                Load my data
-              </button>
-            )}
-          </div>
-
-          <div style={{ background:"#fff5f5", border:"1px solid #e24b4a20", borderRadius:12, padding:"1.25rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:4, color:"#e24b4a" }}>Delete account</div>
-            {pendingDeletion ? (
-              <div>
-                <div style={{ background:"#fff3cd", border:"1px solid #ffc10730", borderRadius:8, padding:"0.75rem", marginBottom:"1rem", fontSize:12, color:"#856404", lineHeight:1.6 }}>
-                  ⚠️ Your account is scheduled for deletion on <strong>{new Date(pendingDeletion.scheduled_for).toLocaleString()}</strong>. Cancel below to keep your account.
-                </div>
-                <button onClick={async()=>{ await supabase.from("deletion_requests").update({status:"cancelled"}).eq("user_id",user.id).eq("status","pending"); setPendingDeletion(null); toast.success("Account deletion cancelled!") }}
-                  style={{ background:"#1d9e75", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:"pointer" }}>
-                  ✅ Cancel deletion — keep my account
-                </button>
-              </div>
-            ) : (
-              <div>
-                <div style={{ fontSize:12, color:"#666", marginBottom:"1rem", lineHeight:1.6 }}>
-                  Your account will be scheduled for deletion in 24 hours. You can cancel at any time within that window. Financial records are retained for 7 years as required by Kenyan law.
-                </div>
-                <button onClick={handleDeleteAccount} disabled={deletingAccount}
-                  style={{ background:"none", border:"1px solid #e24b4a", borderRadius:9, color:"#e24b4a", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:"pointer" }}>
-                  {deletingAccount ? "Checking..." : "🗑️ Request account deletion"}
+                <button onClick={()=>setExportData(null)} style={{ width:"100%", background:"none", border:"1px solid #eee", borderRadius:8, color:"#888", fontSize:12, padding:"8px", cursor:"pointer" }}>
+                  🔄 Reload data
                 </button>
               </div>
             )}
           </div>
-        </div>
+        )}
       )}
     </div>
   )
