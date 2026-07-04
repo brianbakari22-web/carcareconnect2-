@@ -18,7 +18,7 @@ const CLAIM_REASONS = [
 ]
 
 export default function CustomerClaims() {
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const isMobile = useIsMobile()
   const location = useLocation()
   const preselectedBooking = new URLSearchParams(location.search).get("booking")
