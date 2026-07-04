@@ -47,7 +47,7 @@ export default function AdminClaims() {
   async function load() {
     const [{ data: cls }, { data: pens }] = await Promise.all([
       supabase.from("service_claims")
-        .select("*, bookings(service_name,booking_number,booking_date,total_amount,provider_id), orders(order_number,subtotal,created_at,provider_id), customer:profiles!service_claims_customer_id_fkey(first_name,last_name), provider:profiles!service_claims_provider_id_fkey(first_name,last_name,business_name)")
+        .select("*, bookings(service_name,booking_number,booking_date,total_amount,provider_id), orders(order_number,subtotal,created_at,provider_id), customer:profiles!service_claims_customer_id_fkey(first_name,last_name), provider:profiles!service_claims_provider_id_fkey(first_name,last_name,business_name), claimant:profiles!service_claims_claimant_id_fkey(first_name,last_name,role), against:profiles!service_claims_against_id_fkey(first_name,last_name,role)")
         .order("created_at",{ascending:false}),
       supabase.from("provider_penalties").select("*, profiles(first_name,last_name,business_name)").order("created_at",{ascending:false}),
     ])
@@ -221,18 +221,24 @@ export default function AdminClaims() {
       )}
 
       {/* Tabs */}
-      <div style={{ display:"flex", gap:6, marginBottom:"1.25rem", flexWrap:"wrap" }}>
-        {[
-          { k:"claims", l:"All claims" },
-          { k:"penalties", l:`Provider penalties (${penalties.length})` },
-        ].map(t=>(
+      <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
+        {[{ k:"claims", l:"All claims" },{ k:"penalties", l:"Penalties ("+penalties.length+")" }].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#8b5cf6":"#f8f8f8", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
+            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#8b5cf6":"#f8f8f8", color:tab===t.k?"#fff":"#666", fontWeight:tab===t.k?700:400 }}>
             {t.l}
           </button>
         ))}
       </div>
-
+      {tab==="claims"&&(
+        <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
+          {[{ k:"all", l:"All" },{ k:"against_provider", l:"By customers" },{ k:"against_customer", l:"By providers/drivers" }].map(d=>(
+            <button key={d.k} onClick={()=>setClaimDirection(d.k)}
+              style={{ padding:"5px 12px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:claimDirection===d.k?"#e6821e":"#f0f0f0", color:claimDirection===d.k?"#fff":"#555" }}>
+              {d.l}
+            </button>
+          ))}
+        </div>
+      )}
       {/* CLAIMS TAB */}
       {tab==="claims"&&(
         <div>
@@ -247,7 +253,7 @@ export default function AdminClaims() {
                     <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:`${SC[c.status]||"#888"}20`, color:SC[c.status]||"#888" }}>{c.status?.replace("_"," ")}</span>
                   </div>
                   <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>{c.bookings ? "#"+c.bookings.booking_number+" · "+c.bookings.booking_date : c.orders ? "Order · KES "+Number(c.orders.subtotal||0).toLocaleString()+" · "+new Date(c.orders.created_at).toLocaleDateString() : ""}</div>
-                  <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>👤 Customer: {c.customer?.first_name} {c.customer?.last_name}</div>
+                  <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>👤 Filed by: {c.claimant?.first_name} {c.claimant?.last_name} ({c.claimant_type||"customer"}) → Against: {c.against?.first_name} {c.against?.last_name} ({c.against_type||"provider"})</div>
                   <div style={{ fontSize:11, color:"#888", marginBottom:4 }}>🏪 Provider: {c.provider?.business_name||`${c.provider?.first_name} ${c.provider?.last_name}`}</div>
                   <div style={{ fontSize:12, color:"#e6821e", marginBottom:2 }}>Reason: {c.reason}</div>
                   <div style={{ fontSize:11, color:"#888", fontStyle:"italic" }}>&quot;{c.description}&quot;</div>

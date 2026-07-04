@@ -5,118 +5,247 @@ import useIsMobile from "../../lib/useIsMobile"
 import ClaimChat from "../shared/ClaimChat"
 import toast from "react-hot-toast"
 
+const SC = { pending:"#e6821e", under_review:"#378add", approved:"#1d9e75", rejected:"#e24b4a" }
+
+const CLAIM_REASONS = [
+  "Customer vehicle was in undisclosed poor condition",
+  "Customer provided wrong pickup location deliberately",
+  "Customer was abusive or threatening",
+  "Customer had undisclosed vehicle damage before pickup",
+  "Customer no-show after driver arrived",
+  "Customer made false damage claim against driver",
+  "Other",
+]
+
 export default function DriverClaims() {
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const isMobile = useIsMobile()
   const [claims, setClaims] = useState([])
+  const [filedClaims, setFiledClaims] = useState([])
+  const [bookings, setBookings] = useState([])
   const [loading, setLoading] = useState(true)
   const [chatClaim, setChatClaim] = useState(null)
-  const [adminId, setAdminId] = useState(null)
-  const [tab, setTab] = useState("claims")
+  const [tab, setTab] = useState("against")
+  const [showForm, setShowForm] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [form, setForm] = useState({ booking_id:"", reason:"", description:"" })
 
   useEffect(() => {
     if (!user) return
     load()
-    supabase.from("profiles").select("id").eq("role","admin").limit(1)
-      .then(({ data }) => { if (data?.length) setAdminId(data[0].id) })
+    const sub = supabase.channel("driver-claims-"+user.id)
+      .on("postgres_changes", { event:"UPDATE", schema:"public", table:"service_claims", filter:`driver_id=eq.${user.id}` }, () => load())
+      .subscribe()
+    return () => supabase.removeChannel(sub)
   }, [user])
 
   async function load() {
     setLoading(true)
-    const { data } = await supabase.from("service_claims")
-      .select("*, bookings(service_name,booking_number,booking_date,total_amount)")
-      .eq("driver_id", user.id)
-      .order("created_at", { ascending:false })
-    setClaims(data||[])
+    const [{ data: cls }, { data: filed }, { data: bks }] = await Promise.all([
+      supabase.from("service_claims")
+        .select("*, bookings(service_name,booking_number,booking_date,total_amount), customer:profiles!service_claims_customer_id_fkey(first_name,last_name)")
+        .eq("driver_id", user.id).order("created_at", { ascending:false }),
+      supabase.from("service_claims")
+        .select("*, bookings(service_name,booking_number,booking_date), against:profiles!service_claims_against_id_fkey(first_name,last_name)")
+        .eq("claimant_id", user.id).eq("claimant_type","driver").order("created_at", { ascending:false }),
+      supabase.from("bookings")
+        .select("id,service_name,booking_number,booking_date,customer_id,profiles!bookings_customer_id_fkey(first_name,last_name)")
+        .eq("driver_id", user.id).eq("status","completed").order("created_at", { ascending:false }).limit(20)
+    ])
+    setClaims(cls||[])
+    setFiledClaims(filed||[])
+    setBookings(bks||[])
     setLoading(false)
   }
 
-  const STATUS_COLOR = { pending:"#e6821e", under_review:"#378add", approved:"#1d9e75", rejected:"#e24b4a" }
-  const STATUS_BG = { pending:"#fff8f0", under_review:"#eff6ff", approved:"#f0fdf4", rejected:"#fff5f5" }
+  async function submitClaim(e) {
+    e.preventDefault()
+    if (!form.booking_id) return toast.error("Please select a booking")
+    if (!form.reason) return toast.error("Please select a reason")
+    if (!form.description) return toast.error("Please describe the issue")
+    setSubmitting(true)
+    try {
+      const booking = bookings.find(b=>b.id===form.booking_id)
+      const { error } = await supabase.from("service_claims").insert({
+        claimant_id: user.id,
+        claimant_type: "driver",
+        against_id: booking?.customer_id,
+        against_type: "customer",
+        customer_id: booking?.customer_id,
+        driver_id: user.id,
+        booking_id: form.booking_id,
+        reason: form.reason,
+        description: form.description,
+        status: "pending",
+      })
+      if (error) throw error
+      const { data: admins } = await supabase.from("profiles").select("id").eq("role","admin")
+      for (const admin of (admins||[])) {
+        await supabase.from("notifications").insert({
+          user_id: admin.id,
+          title: "Driver filed claim against customer 🛡️",
+          message: (profile?.first_name||"Driver")+" "+(profile?.last_name||"")+" filed a claim: "+form.reason,
+          type: "warning"
+        })
+      }
+      if (booking?.customer_id) {
+        await supabase.from("notifications").insert({
+          user_id: booking.customer_id,
+          title: "A claim has been filed against you ⚠️",
+          message: "A driver has filed a claim regarding booking "+booking.booking_number+". Our team will review within 24 hours.",
+          type: "warning"
+        })
+      }
+      toast.success("Claim submitted successfully")
+      setShowForm(false)
+      setForm({ booking_id:"", reason:"", description:"" })
+      load()
+    } catch(err) { toast.error(err.message) }
+    finally { setSubmitting(false) }
+  }
+
+  const inp = { width:"100%", background:"#f5f5f5", border:"1px solid #e0e0e0", borderRadius:8, padding:"10px 12px", fontSize:13, outline:"none", marginBottom:12, boxSizing:"border-box" }
+  const lbl = { fontSize:11, color:"#666", display:"block", marginBottom:4, fontWeight:600 }
 
   return (
-    <div style={{ maxWidth:700, margin:"0 auto" }}>
-      <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#000000", marginBottom:4 }}>Service Claims</div>
-      <div style={{ fontSize:12, color:"#777777", marginBottom:"1.5rem" }}>Claims related to your deliveries</div>
-
-      {/* Stats */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginBottom:"1.5rem" }}>
+    <div>
+      <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000", marginBottom:"1rem" }}>🛡️ Claims Center</div>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:8, marginBottom:"1rem" }}>
         {[
-          { label:"Total claims", value:claims.length },
-          { label:"Pending", value:claims.filter(c=>c.status==="pending"||c.status==="under_review").length },
-          { label:"Resolved", value:claims.filter(c=>c.status==="approved"||c.status==="rejected").length },
-        ].map((s,i)=>(
-          <div key={i} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"0.9rem", textAlign:"center" }}>
-            <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#000000" }}>{s.value}</div>
-            <div style={{ fontSize:11, color:"#777777" }}>{s.label}</div>
+          { label:"Against you", value:claims.length, color:"#e24b4a" },
+          { label:"Filed by you", value:filedClaims.length, color:"#8b5cf6" },
+          { label:"Pending", value:claims.filter(c=>c.status==="pending").length, color:"#e6821e" },
+        ].map(s=>(
+          <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"0.75rem", textAlign:"center", border:"1px solid #eee" }}>
+            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:s.color }}>{s.value}</div>
+            <div style={{ fontSize:10, color:"#888", marginTop:2 }}>{s.label}</div>
           </div>
         ))}
       </div>
-
-      {/* Policy */}
-      <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:"1.5rem" }}>
-        <div style={{ fontSize:12, fontWeight:600, color:"#000000", marginBottom:8 }}>🛡️ Claims Policy for Drivers</div>
-        <div style={{ fontSize:11, color:"#555555", lineHeight:1.7 }}>
-          ⚠️ 1st claim — Warning issued<br/>
-          🚫 2nd claim — 24 hour suspension<br/>
-          ❌ 3rd claim — 72 hour suspension<br/>
-          🔴 4th claim — Permanent ban<br/>
-          💡 Respond to admin within 48 hours of notification
-        </div>
+      <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
+        {[
+          { k:"against", l:"Against you ("+claims.length+")" },
+          { k:"filed", l:"Filed by you ("+filedClaims.length+")" },
+        ].map(t=>(
+          <button key={t.k} onClick={()=>setTab(t.k)}
+            style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#f0f0f0", color:tab===t.k?"#fff":"#555", fontWeight:tab===t.k?700:400 }}>
+            {t.l}
+          </button>
+        ))}
+        <button onClick={()=>setShowForm(!showForm)}
+          style={{ marginLeft:"auto", background:"#8b5cf6", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"7px 14px", cursor:"pointer" }}>
+          + File a claim
+        </button>
       </div>
-
-      {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
-
-      {!loading&&claims.length===0&&(
-        <div style={{ textAlign:"center", padding:"3rem", color:"#888888" }}>
-          <div style={{ fontSize:32, marginBottom:10 }}>✅</div>
-          <div style={{ fontSize:13 }}>No claims against your deliveries — keep up the great work!</div>
+      {showForm&&(
+        <div style={{ background:"#f8f8f8", border:"1px solid #8b5cf640", borderRadius:12, padding:"1.25rem", marginBottom:"1rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, marginBottom:"1rem" }}>File a Claim Against a Customer</div>
+          <form onSubmit={submitClaim}>
+            <label style={lbl}>Select booking *</label>
+            <select style={inp} value={form.booking_id} onChange={e=>setForm(f=>({...f,booking_id:e.target.value}))} required>
+              <option value="">Select a completed booking</option>
+              {bookings.map(b=>(
+                <option key={b.id} value={b.id}>{b.service_name} — #{b.booking_number} · {b.profiles?.first_name} {b.profiles?.last_name}</option>
+              ))}
+            </select>
+            <label style={lbl}>Reason *</label>
+            <select style={inp} value={form.reason} onChange={e=>setForm(f=>({...f,reason:e.target.value}))} required>
+              <option value="">Select reason</option>
+              {CLAIM_REASONS.map(r=><option key={r} value={r}>{r}</option>)}
+            </select>
+            <label style={lbl}>Description *</label>
+            <textarea style={{ ...inp, resize:"vertical", minHeight:80 }}
+              placeholder="Describe what happened..." rows={4}
+              value={form.description} onChange={e=>setForm(f=>({...f,description:e.target.value}))} required/>
+            <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:8, padding:"0.75rem", marginBottom:12, fontSize:11, color:"#666" }}>
+              ⚠️ Only file genuine claims. False claims may result in account suspension.
+            </div>
+            <div style={{ display:"flex", gap:8 }}>
+              <button type="submit" disabled={submitting}
+                style={{ background:submitting?"#ccc":"#8b5cf6", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:submitting?"not-allowed":"pointer" }}>
+                {submitting?"Submitting...":"Submit claim"}
+              </button>
+              <button type="button" onClick={()=>setShowForm(false)}
+                style={{ background:"none", border:"1px solid #ddd", borderRadius:9, color:"#666", fontSize:13, padding:"11px 16px", cursor:"pointer" }}>
+                Cancel
+              </button>
+            </div>
+          </form>
         </div>
       )}
-
-      {claims.map(c=>(
-        <div key={c.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:12 }}>
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
-            <div>
-              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000", marginBottom:2 }}>
-                {c.bookings?.service_name||"Service"}
-              </div>
-              <div style={{ fontSize:11, color:"#777777" }}>
-                #{c.bookings?.booking_number} · {c.bookings?.booking_date ? new Date(c.bookings.booking_date).toLocaleDateString() : ""}
-              </div>
-            </div>
-            <span style={{ fontSize:11, padding:"3px 10px", borderRadius:20, background:STATUS_BG[c.status]||"#555555", color:STATUS_COLOR[c.status]||"#888", fontWeight:600 }}>
-              {c.status?.replace("_"," ")}
-            </span>
-          </div>
-
-          <div style={{ fontSize:12, color:"#e6821e", marginBottom:4 }}>Reason: {c.reason}</div>
-          <div style={{ fontSize:12, color:"#555555", marginBottom:4, lineHeight:1.5 }}>{c.description}</div>
-          {c.admin_notes&&(
-            <div style={{ background:"#eff6ff", border:"1px solid #378add30", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
-              <div style={{ fontSize:11, color:"#378add", fontWeight:600, marginBottom:2 }}>Admin decision:</div>
-              <div style={{ fontSize:12, color:"#555555" }}>{c.admin_notes}</div>
+      {loading&&<div style={{ color:"#888", fontSize:13 }}>Loading...</div>}
+      {tab==="against"&&(
+        <div>
+          {!loading&&claims.length===0&&(
+            <div style={{ textAlign:"center", padding:"2rem", color:"#888" }}>
+              <div style={{ fontSize:32, marginBottom:10 }}>✅</div>
+              No claims against you — great work!
             </div>
           )}
-
-          <div style={{ fontSize:10, color:"#888888", marginBottom:8 }}>{new Date(c.created_at).toLocaleString()}</div>
-
-          {(
-            <div style={{ marginTop:8 }}>
-              <button onClick={()=>setChatClaim(chatClaim===c.id?null:c.id)}
-                style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
-                💬 {chatClaim===c.id?"Close":(c.status==="pending"||c.status==="under_review")?"Respond to admin":"View conversation with admin"}
-              </button>
-              {chatClaim===c.id&&(
+          {claims.map(c=>(
+            <div key={c.id} style={{ background:"#f8f8f8", border:"1px solid #eee", borderLeft:`4px solid ${SC[c.status]||"#eee"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+                <div style={{ flex:1 }}>
+                  <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:2 }}>{c.bookings?.service_name}</div>
+                  <div style={{ fontSize:11, color:"#888" }}>#{c.bookings?.booking_number} · {c.bookings?.booking_date}</div>
+                  <div style={{ fontSize:11, color:"#888" }}>Customer: {c.customer?.first_name} {c.customer?.last_name}</div>
+                  <div style={{ fontSize:12, color:"#e6821e", marginTop:4 }}>Reason: {c.reason}</div>
+                  {c.admin_notes&&<div style={{ fontSize:11, color:"#378add", marginTop:4 }}>Admin: "{c.admin_notes}"</div>}
+                </div>
+                <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:(SC[c.status]||"#888")+"20", color:SC[c.status]||"#888", fontWeight:600 }}>{c.status?.replace("_"," ")}</span>
+              </div>
+              {(c.status==="pending"||c.status==="under_review")&&(
                 <div style={{ marginTop:8 }}>
-                  <ClaimChat claimId={c.id} claim={c} onClose={()=>setChatClaim(null)}/>
+                  <button onClick={()=>setChatClaim(chatClaim===c.id?null:c.id)}
+                    style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+                    💬 {chatClaim===c.id?"Close":"Submit response / evidence"}
+                  </button>
+                  {chatClaim===c.id&&(
+                    <div style={{ marginTop:8 }}>
+                      <ClaimChat claimId={c.id} claim={c} onClose={()=>setChatClaim(null)}/>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
-          )}
+          ))}
         </div>
-      ))}
+      )}
+      {tab==="filed"&&(
+        <div>
+          {!loading&&filedClaims.length===0&&(
+            <div style={{ textAlign:"center", padding:"2rem", color:"#888" }}>
+              <div style={{ fontSize:32, marginBottom:10 }}>📋</div>
+              No claims filed yet
+            </div>
+          )}
+          {filedClaims.map(c=>(
+            <div key={c.id} style={{ background:"#f8f8f8", border:"1px solid #eee", borderLeft:`4px solid ${SC[c.status]||"#eee"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+                <div style={{ flex:1 }}>
+                  <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:2 }}>{c.bookings?.service_name}</div>
+                  <div style={{ fontSize:11, color:"#888" }}>Against: {c.against?.first_name} {c.against?.last_name} (Customer)</div>
+                  <div style={{ fontSize:12, color:"#e6821e", marginTop:4 }}>Reason: {c.reason}</div>
+                  {c.admin_notes&&<div style={{ fontSize:11, color:"#378add", marginTop:4 }}>Admin decision: "{c.admin_notes}"</div>}
+                  <div style={{ fontSize:10, color:"#aaa", marginTop:4 }}>{new Date(c.created_at).toLocaleDateString()}</div>
+                </div>
+                <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:(SC[c.status]||"#888")+"20", color:SC[c.status]||"#888", fontWeight:600 }}>{c.status?.replace("_"," ")}</span>
+              </div>
+              <div style={{ marginTop:8 }}>
+                <button onClick={()=>setChatClaim(chatClaim===c.id?null:c.id)}
+                  style={{ background:"#f5f3ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+                  💬 {chatClaim===c.id?"Close":"View discussion"}
+                </button>
+                {chatClaim===c.id&&(
+                  <div style={{ marginTop:8 }}>
+                    <ClaimChat claimId={c.id} claim={c} onClose={()=>setChatClaim(null)}/>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
-
