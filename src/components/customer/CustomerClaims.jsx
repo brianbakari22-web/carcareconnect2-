@@ -134,6 +134,34 @@ export default function CustomerClaims() {
     <div>
       <div style={{ fontFamily:"Syne", fontSize:isMobile?16:18, fontWeight:800, color:"#000000", marginBottom:4 }}>Service Guarantee</div>
       <div style={{ fontSize:12, color:"#777777", marginBottom:"1.25rem" }}>Not happy with a service? We will make it right.</div>
+      {/* Stats bar */}
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8, marginBottom:"1rem" }}>
+        {[
+          { label:"Pending", value:claims.filter(c=>c.status==="pending").length, color:"#e6821e" },
+          { label:"Under review", value:claims.filter(c=>c.status==="under_review").length, color:"#8b5cf6" },
+          { label:"Approved", value:claims.filter(c=>c.status==="approved").length, color:"#1d9e75" },
+          { label:"Vouchers", value:activeVouchers.length, color:"#378add" },
+        ].map(s=>(
+          <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"0.75rem 0.5rem", textAlign:"center", border:"1px solid #eee" }}>
+            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:s.color }}>{s.value}</div>
+            <div style={{ fontSize:10, color:"#888", marginTop:2 }}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+      {/* Stats bar */}
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8, marginBottom:"1rem" }}>
+        {[
+          { label:"Pending", value:claims.filter(c=>c.status==="pending").length, color:"#e6821e" },
+          { label:"Under review", value:claims.filter(c=>c.status==="under_review").length, color:"#8b5cf6" },
+          { label:"Approved", value:claims.filter(c=>c.status==="approved").length, color:"#1d9e75" },
+          { label:"Vouchers", value:activeVouchers.length, color:"#378add" },
+        ].map(s=>(
+          <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"0.75rem 0.5rem", textAlign:"center", border:"1px solid #eee" }}>
+            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:s.color }}>{s.value}</div>
+            <div style={{ fontSize:10, color:"#888", marginTop:2 }}>{s.label}</div>
+          </div>
+        ))}
+      </div>
 
       {/* Active vouchers banner */}
       {activeVouchers.length>0&&(
