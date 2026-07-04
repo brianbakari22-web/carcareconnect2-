@@ -257,6 +257,17 @@ export default function AdminClaims() {
                   <div style={{ fontSize:11, color:"#888", marginBottom:4 }}>🏪 Provider: {c.provider?.business_name||`${c.provider?.first_name} ${c.provider?.last_name}`}</div>
                   <div style={{ fontSize:12, color:"#e6821e", marginBottom:2 }}>Reason: {c.reason}</div>
                   <div style={{ fontSize:11, color:"#888", fontStyle:"italic" }}>&quot;{c.description}&quot;</div>
+                  {c.evidence_urls?.length>0&&(
+                    <div style={{ marginTop:6, marginBottom:4 }}>
+                      <div style={{ fontSize:10, color:"#888", marginBottom:4 }}>📸 Evidence submitted:</div>
+                      <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                        {c.evidence_urls.map((url,i)=>(
+                          <img key={i} src={url} alt="Evidence" onClick={()=>window.open(url,"_blank")}
+                            style={{ width:60, height:60, objectFit:"cover", borderRadius:6, cursor:"pointer", border:"1px solid #eee" }}/>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   {c.admin_notes&&<div style={{ fontSize:11, color:"#378add", marginTop:4 }}>Decision notes: &quot;{c.admin_notes}&quot;</div>}
                   <div style={{ fontSize:10, color:"#888", marginTop:4 }}>{new Date(c.created_at).toLocaleString()}</div>
                 </div>
