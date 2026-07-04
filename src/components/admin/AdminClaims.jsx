@@ -3,7 +3,7 @@ import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
-import ChatWindow from "../shared/ChatWindow"
+import ClaimChat from "../shared/ClaimChat"
 
 function generateVoucherCode() {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -315,14 +315,8 @@ export default function AdminClaims() {
                       </button>
                     </div>
                     {chattingWith?.claimId===c.id&&(
-                      <div style={{ height:300, marginBottom:8 }}>
-                        <ChatWindow
-                          claimId={c.id}
-                          otherUserId={chattingWith.userId}
-                          otherUserName={chattingWith.name}
-                          title={`Claim investigation — ${chattingWith.role}`}
-                          onClose={()=>setChattingWith(null)}
-                        />
+                      <div style={{ marginBottom:8 }}>
+                        <ClaimChat claimId={c.id} claim={c} onClose={()=>setChattingWith(null)}/>
                       </div>
                     )}
                   </div>
