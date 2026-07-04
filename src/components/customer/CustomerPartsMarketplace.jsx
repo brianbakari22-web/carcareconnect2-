@@ -6,6 +6,7 @@ import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 import ChatWindow from "../shared/ChatWindow"
 import PesapalPayment from "../shared/PesapalPayment"
+import { downloadOrderReceipt, downloadOrdersCSV } from "../../lib/invoice"
 import PhotoLightbox from "../shared/PhotoLightbox"
 
 const CATEGORIES = [
@@ -281,6 +282,12 @@ export default function CustomerPartsMarketplace() {
             {t.l} {t.k==="orders"&&orders.length>0&&`(${orders.length})`}
           </button>
         ))}
+      {tab==="orders"&&orders.length>0&&(
+        <button onClick={()=>downloadOrdersCSV(orders)}
+          style={{ marginBottom:8, background:"#f8f8f8", border:"1px solid #ddd", borderRadius:8, color:"#555", fontSize:11, padding:"6px 14px", cursor:"pointer", display:"block", marginLeft:"auto" }}>
+          📥 Export CSV
+        </button>
+      )}
       </div>
 
       {tab==="browse"&&(
@@ -409,6 +416,10 @@ export default function CustomerPartsMarketplace() {
               {o.status==="delivered"&&myReviews[o.id]&&(
                 <div style={{ marginTop:8, fontSize:11, color:"#1d9e75", textAlign:"center" }}>
                   ✓ You rated this {myReviews[o.id]} star{myReviews[o.id]!==1?"s":""}
+              <button onClick={()=>downloadOrderReceipt(o, o.profiles, profile, o.order_items)}
+                style={{ width:"100%", marginTop:6, background:"#f8f8f8", border:"1px solid #ddd", borderRadius:8, color:"#555", fontSize:11, padding:"7px", cursor:"pointer" }}>
+                📄 Download receipt
+              </button>
                 </div>
               )}
             </div>
@@ -594,6 +605,7 @@ export default function CustomerPartsMarketplace() {
     </div>
   )
 }
+
 
 
 

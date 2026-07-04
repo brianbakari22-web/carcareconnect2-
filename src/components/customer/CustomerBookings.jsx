@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom"
 import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
-import { downloadInvoice } from "../../lib/invoice"
+import { downloadInvoice, downloadBookingsCSV } from "../../lib/invoice"
 import ChatWindow from "../shared/ChatWindow"
 
 const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", completed:"#1d9e75", cancelled:"#e24b4a" }
@@ -146,6 +146,12 @@ export default function CustomerBookings() {
           </button>
         ))}
       </div>
+      {bookings.length>0&&(
+        <button onClick={()=>downloadBookingsCSV(bookings.map(b=>({...b,provider_name:b.providers?.business_name||b.providers?.first_name||"",vehicle_plate:b.vehicles?.license_plate||""})))}
+          style={{ marginBottom:8, background:"#f8f8f8", border:"1px solid #ddd", borderRadius:8, color:"#555", fontSize:11, padding:"6px 14px", cursor:"pointer", display:"block", marginLeft:"auto" }}>
+          📥 Export CSV
+        </button>
+      )}
 
       {loading&&<div style={{ color:"#777777", fontSize:13 }}>{t("loading")}</div>}
       {!loading&&filtered.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>{t("noBookingsFound")}</div>}
@@ -363,6 +369,7 @@ export default function CustomerBookings() {
     </div>
   )
 }
+
 
 
 

@@ -2,7 +2,7 @@ import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
-import { generateInvoice } from "../../lib/invoice"
+import { generateInvoice, downloadPaymentsCSV } from "../../lib/invoice"
 import { useLanguage } from "../../contexts/LanguageContext"
 import toast from "react-hot-toast"
 
@@ -74,6 +74,12 @@ export default function CustomerPayments() {
             {t.l}
           </button>
         ))}
+      {tab==="history"&&bookings.length>0&&(
+        <button onClick={()=>downloadPaymentsCSV(bookings.map(b=>({...b,type:"Service",description:b.service_name,amount:b.total_amount})))}
+          style={{ marginBottom:8, background:"#f8f8f8", border:"1px solid #ddd", borderRadius:8, color:"#555", fontSize:11, padding:"6px 14px", cursor:"pointer", display:"block", marginLeft:"auto" }}>
+          📥 Export CSV
+        </button>
+      )}
       </div>
 
       {tab==="history"&&(
@@ -191,6 +197,7 @@ export default function CustomerPayments() {
     </div>
   )
 }
+
 
 
 
