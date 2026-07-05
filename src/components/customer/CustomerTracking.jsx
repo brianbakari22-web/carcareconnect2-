@@ -401,9 +401,8 @@ export default function CustomerTracking() {
             <div style={{ textAlign:"right" }}>
               <div style={{ fontSize:12, color:"#e6821e", marginBottom:4 }}>KES {Number(b.total_amount).toLocaleString()}</div>
               <div style={{ fontSize:11, color:"#777777" }}>
-                {b.driver_id?"🚗 Driver assigned":b.assigned_mechanic_id?"👨‍🔧 Mechanic assigned":"⏳ Pending"}
+                {b.driver_id?"🚗 Driver assigned":b.assigned_mechanic_id?"👨‍🔧 Mechanic assigned":""}
               </div>
-              <div style={{ fontSize:11, color:"#378add", marginTop:4 }}>Track →</div>
             </div>
           </div>
         </div>
