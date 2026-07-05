@@ -197,11 +197,12 @@ export default function CustomerTracking() {
 
   async function loadDriver(booking) {
     if (!booking.driver_id) return
-    const [{ data: prof }, { data: status }] = await Promise.all([
+    const [{ data: prof }, { data: status }, { data: sensitive }] = await Promise.all([
       supabase.from("profiles").select("first_name,last_name").eq("id", booking.driver_id).single(),
       supabase.from("driver_status").select("current_lat,current_lng,is_online").eq("driver_id", booking.driver_id).maybeSingle(),
+      supabase.from("profile_sensitive").select("phone").eq("id", booking.driver_id).maybeSingle(),
     ])
-    setDriver({ ...prof, current_lat:status?.current_lat, current_lng:status?.current_lng, is_online:status?.is_online })
+    setDriver({ ...prof, phone:sensitive?.phone, current_lat:status?.current_lat, current_lng:status?.current_lng, is_online:status?.is_online })
   }
 
   async function loadOrderDriver(order) {
@@ -274,13 +275,18 @@ export default function CustomerTracking() {
                 <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{driver.first_name} {driver.last_name}</div>
                 <div style={{ fontSize:11, color:"#777777" }}>Concierge Driver</div>
               </div>
-              <div style={{ marginLeft:"auto" }}>
+              <div style={{ marginLeft:"auto", display:"flex", flexDirection:"column", alignItems:"flex-end", gap:6 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:5 }}>
                   <div style={{ width:7, height:7, borderRadius:"50%", background:driver.current_lat?"#378add":"#555", boxShadow:driver.current_lat?"0 0 6px #378add":"none" }}/>
                   <span style={{ fontSize:10, color:driver.current_lat?"#378add":"#555" }}>
                     {driver.current_lat?"Live":"No location"}
                   </span>
                 </div>
+                {driver.phone&&(
+                  <a href={"tel:"+driver.phone} style={{ background:"#1d9e75", borderRadius:6, color:"#fff", fontSize:11, fontWeight:700, padding:"4px 10px", textDecoration:"none" }}>
+                    📞 Call
+                  </a>
+                )}
               </div>
             </div>
           </div>
