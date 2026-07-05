@@ -156,7 +156,7 @@ export default function CustomerDiscover() {
     } else {
       await supabase.from("favorites").insert({ customer_id:user.id, provider_id:providerId })
       setFavorites(f=>[...f, providerId])
-      toast.success(language==="sw"?"Imehifadhiwa kwenye vipendwa Γ¥ñ∩╕Å":"Saved to favorites Γ¥ñ∩╕Å")
+      toast.success(language==="sw"?"Imehifadhiwa kwenye vipendwa ❤️":"Saved to favorites ❤️")
     }
   }
 
@@ -274,7 +274,7 @@ export default function CustomerDiscover() {
         </button>
         <button onClick={()=>setShowFilters(f=>!f)}
           style={{ background:showFilters?"#fff8f0":"#f5f5f5", border:`1px solid ${showFilters?"#e6821e40":"#e0e0e0"}`, borderRadius:8, color:showFilters?"#e6821e":"#555", fontSize:12, padding:"0 14px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
-          {t("filters")} {showFilters?"Γû▓":"▼"}
+          {t("filters")} {showFilters?"▲":"▼"}
         </button>
       </div>
 
@@ -421,7 +421,7 @@ export default function CustomerDiscover() {
         <div>
           <button onClick={()=>setSelectedProvider(null)}
             style={{ background:"none", border:"none", color:"#666", cursor:"pointer", fontSize:13, marginBottom:"1rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
-            ΓåÉ {t("backToProviders")}
+            ← {t("backToProviders")}
           </button>
           <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1rem" }}>
             <div style={{ display:"flex", alignItems:"center", gap:14 }}>

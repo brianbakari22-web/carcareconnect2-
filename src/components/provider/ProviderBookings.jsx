@@ -161,7 +161,7 @@ export default function ProviderBookings() {
       await supabase.from("notifications").insert([
         {
           user_id: booking.customer_id,
-          title: "Service completed! How was it? Γ¡É",
+          title: "Service completed! How was it? ⭐",
           message: "Your "+booking.service_name+" has been completed! Please go to My Bookings → tap the booking → Leave a Review. Your feedback helps other customers and earns you 50 bonus loyalty points!",
           type: "success"
         },
@@ -194,7 +194,7 @@ export default function ProviderBookings() {
   if (showReport) return (
     <div>
       <button onClick={()=>setShowReport(null)} style={{ background:"none", border:"none", color:"#378add", cursor:"pointer", fontSize:13, marginBottom:"1rem", fontFamily:"DM Sans,sans-serif", padding:0 }}>
-        ΓåÉ Back to bookings
+        ← Back to bookings
       </button>
       <VehicleConditionReport
         bookingId={showReport}
@@ -346,7 +346,7 @@ export default function ProviderBookings() {
               {b.status==="completed"&&(
                 <button onClick={()=>downloadBookingInvoice(b)}
                   style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                  Γ¼ç Invoice
+                  🧾 Invoice
                 </button>
               )}
 
