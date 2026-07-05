@@ -31,6 +31,12 @@ function FloatingParts() {
 
 export default function LandingPage() {
   const navigate = useNavigate()
+  const [logoUrl, setLogoUrl] = useState("/logo_c.svg")
+  
+  useEffect(() => {
+    supabase.from("platform_settings").select("value").eq("key","logo_url").single()
+      .then(({ data }) => { if (data?.value) setLogoUrl(data.value) })
+  }, [])
   const [openFaq, setOpenFaq] = useState(null)
   const btnOrange = { background:"#e6821e", border:"none", borderRadius:500, color:"#fff", fontSize:14, fontWeight:700, padding:"13px 26px", cursor:"pointer", fontFamily:"DM Sans,sans-serif" }
   const btnOutline = { background:"none", border:"1.5px solid #000", borderRadius:500, color:"#000", fontSize:14, fontWeight:600, padding:"12px 24px", cursor:"pointer", fontFamily:"DM Sans,sans-serif" }
@@ -105,7 +111,7 @@ export default function LandingPage() {
       <div style={{ paddingTop:56, position:"relative", overflow:"hidden", minHeight:"92vh", display:"flex", flexDirection:"column", justifyContent:"center", zIndex:1 }}>
         <FloatingParts/>
         <div style={{ padding:"3rem 1.25rem 2.5rem", maxWidth:620, margin:"0 auto", textAlign:"center", position:"relative", zIndex:2 }}>
-          <img src="/logo_c.svg" alt="Car Care Connect" style={{ height:160, marginBottom:"1.5rem", animation:"glow 3s ease-in-out infinite" }}/>
+          <img src={logoUrl} alt="Car Care Connect" style={{ height:160, marginBottom:"1.5rem", animation:"glow 3s ease-in-out infinite" }}/>
           <div style={{ display:"inline-flex", alignItems:"center", gap:6, background:"rgba(240,253,244,0.9)", border:"1px solid #bbf7d0", borderRadius:20, padding:"5px 14px", marginBottom:"1.5rem" }}>
             <div style={{ position:"relative", width:7, height:7 }}>
               <div style={{ width:7, height:7, borderRadius:"50%", background:"#16a34a", position:"absolute" }}/>

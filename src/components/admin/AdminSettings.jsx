@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
@@ -10,8 +10,37 @@ export default function AdminSettings() {
   const [editing, setEditing] = useState(null)
   const [form, setForm] = useState({ value:"", description:"" })
   const [saving, setSaving] = useState(false)
+  const [logoUrl, setLogoUrl] = useState("/logo_c.svg")
+  const [uploadingLogo, setUploadingLogo] = useState(false)
+  const logoInputRef = useRef(null)
 
-  useEffect(() => { load() }, [])
+  useEffect(() => {
+    load()
+    loadLogo()
+  }, [])
+
+  async function loadLogo() {
+    const { data } = await supabase.from("platform_settings").select("value").eq("key","logo_url").single()
+    if (data?.value) setLogoUrl(data.value)
+  }
+
+  async function uploadLogo(e) {
+    const file = e.target.files[0]
+    if (!file) return
+    setUploadingLogo(true)
+    try {
+      const ext = file.name.split(".").pop()
+      const path = `logo/platform_logo.${ext}`
+      const { error } = await supabase.storage.from("platform-assets").upload(path, file, { upsert:true })
+      if (error) throw error
+      const { data } = supabase.storage.from("platform-assets").getPublicUrl(path)
+      const url = data.publicUrl
+      await supabase.from("platform_settings").upsert({ key:"logo_url", value:url, updated_at:new Date().toISOString() }, { onConflict:"key" })
+      setLogoUrl(url)
+      toast.success("Logo updated! Refresh the page to see changes.")
+    } catch(err) { toast.error(err.message) }
+    setUploadingLogo(false)
+  }
 
   async function load() {
     const { data, error } = await supabase.from("app_settings").select("*").order("label")
@@ -73,6 +102,25 @@ export default function AdminSettings() {
       <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#000000", marginBottom:4 }}>Platform Settings</div>
       <div style={{ fontSize:12, color:"#888", marginBottom:"1.5rem" }}>Configure fees, rates and platform-wide settings</div>
 
+      {/* Branding Section */}
+      <div style={{ background:"#f8f8f8", border:"1px solid #eee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
+        <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, marginBottom:4 }}>🎨 Platform Branding</div>
+        <div style={{ fontSize:12, color:"#888", marginBottom:"1rem" }}>Upload a custom logo that appears on the login and landing pages</div>
+        <div style={{ display:"flex", alignItems:"center", gap:"1rem", flexWrap:"wrap" }}>
+          <div style={{ width:80, height:80, borderRadius:12, border:"2px solid #eee", overflow:"hidden", background:"#fff", display:"flex", alignItems:"center", justifyContent:"center" }}>
+            <img src={logoUrl} alt="Platform logo" style={{ width:"100%", height:"100%", objectFit:"contain" }} onError={e=>e.target.src="/logo_c.svg"}/>
+          </div>
+          <div>
+            <div style={{ fontSize:13, fontWeight:600, color:"#000", marginBottom:6 }}>Current logo</div>
+            <div style={{ fontSize:11, color:"#888", marginBottom:10 }}>Recommended: SVG or PNG, square format, min 200x200px</div>
+            <input ref={logoInputRef} type="file" accept="image/*,.svg" style={{ display:"none" }} onChange={uploadLogo}/>
+            <button onClick={()=>logoInputRef.current?.click()} disabled={uploadingLogo}
+              style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:uploadingLogo?"not-allowed":"pointer" }}>
+              {uploadingLogo?"Uploading...":"📤 Upload new logo"}
+            </button>
+          </div>
+        </div>
+      </div>
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(2,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {[
           { label:"Total settings", value:settings.length },

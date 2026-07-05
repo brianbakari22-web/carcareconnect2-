@@ -88,6 +88,12 @@ export default function AuthPage() {
   const [resetSent, setResetSent] = useState(false)
   const [form, setForm] = useState({ email:"", password:"", firstName:"", lastName:"", phone:"", businessName:"", providerType:"garage", driverVehicleType:"car" })
   const [loading, setLoading] = useState(false)
+  const [logoUrl, setLogoUrl] = useState("/logo_c.svg")
+
+  useEffect(() => {
+    supabase.from("platform_settings").select("value").eq("key","logo_url").single()
+      .then(({ data }) => { if (data?.value) setLogoUrl(data.value) })
+  }, [])
   const [refCode, setRefCode] = useState("")
   const [agreed, setAgreed] = useState(false)
   const [visible, setVisible] = useState(false)
@@ -533,7 +539,7 @@ export default function AuthPage() {
         </div>
       </nav>
       <div style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"3rem 1.25rem", textAlign:"center" }}>
-          <img src="/logo_c.svg" alt="Car Care Connect" style={{ height:140, marginBottom:"1.75rem" }}/>
+          <img src={logoUrl} alt="Car Care Connect" style={{ height:140, marginBottom:"1.75rem" }}/>
         <h1 style={{ fontSize:"clamp(28px,6vw,52px)", fontWeight:800, lineHeight:1.1, letterSpacing:-1, color:"#000", marginBottom:"1rem" }}>One app.<br/><span style={{ color:"#e6821e" }}>Every car need.</span></h1>
         <p style={{ fontSize:15, color:"#555", maxWidth:440, margin:"0 auto 2.5rem", lineHeight:1.7 }}>Nairobi most trusted automotive platform. Book mechanics, order parts, wash your car and more.</p>
         <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:16, width:"100%", maxWidth:400, marginBottom:"2rem" }}>
