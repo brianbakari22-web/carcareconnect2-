@@ -59,7 +59,7 @@ export default function CustomerTracking() {
     }, 10000)
 
     const sub = supabase.channel(`tracking-${selected.id}`)
-      .on("postgres_changes", { event:"INSERT", schema:"public", table:"driver_location_history", filter:`booking_id=eq.${selected.id}` },
+      .on("postgres_changes", { event:"INSERT", schema:"public", table:"booking_location_logs", filter:`booking_id=eq.${selected.id}` },
         payload => {
           const lat = payload.new.lat || payload.new.latitude
           const lng = payload.new.lng || payload.new.longitude
@@ -411,6 +411,7 @@ export default function CustomerTracking() {
     </div>
   )
 }
+
 
 
 
