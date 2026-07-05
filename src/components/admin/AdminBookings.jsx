@@ -44,10 +44,17 @@ export default function AdminBookings() {
   async function updateStatus(id, status) {
     setUpdating(id)
     await supabase.from("bookings").update({ status }).eq("id", id)
-    toast.success(`Booking ${status}`)
+    const booking = bookings.find(b=>b.id===id)
+    if (booking?.customer_id) {
+      const msgs = { confirmed:"Your booking has been confirmed ✅", "in-progress":"Your service is now in progress 🔧", completed:"Your service has been completed ✅ Please leave a review!", cancelled:"Your booking has been cancelled ❌" }
+      if (msgs[status]) {
+        await supabase.from("notifications").insert({ user_id: booking.customer_id, title: msgs[status], message: booking.service_name+" #"+booking.booking_number, type: status==="cancelled"?"error":status==="completed"?"success":"info" })
+      }
+    }
+    toast.success("Booking "+status)
     load()
     setUpdating(null)
-  }
+}
 
   async function updatePayment(id, payment_status) {
     setUpdating(id)
@@ -163,7 +170,7 @@ export default function AdminBookings() {
       {loading&&<div style={{ color:"#888", fontSize:13 }}>Loading...</div>}
 
       {filtered.map(b=>(
-        <div key={b.id} style={{ background:"#f8f8f8", border:`1px solid ${expanded===b.id?"#e6821e40":"#eeeeee"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
+        <div key={b.id} style={{ background:"#f8f8f8", border:"1px solid #eee", borderLeft:`4px solid ${SC[b.status]||"#eee"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:6 }}>
             <div style={{ flex:1, minWidth:0, marginRight:8 }}>
               <div style={{ fontSize:13, fontWeight:600, color:"#000", marginBottom:2 }}>{b.service_name}</div>
