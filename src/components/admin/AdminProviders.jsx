@@ -15,8 +15,13 @@ export default function AdminProviders() {
   const [rejectingId, setRejectingId] = useState(null)
   const [rejectReason, setRejectReason] = useState("")
 
-  useEffect(() => { load() }, [])
-
+  useEffect(() => {
+    load()
+    const sub = supabase.channel("admin-providers-live")
+      .on("postgres_changes", { event:"*", schema:"public", table:"profiles", filter:"role=eq.provider" }, () => load())
+      .subscribe()
+    return () => supabase.removeChannel(sub)
+  }, [])
   async function load() {
     const [{ data: ps }, { data: svcs }, { data: bks }] = await Promise.all([
       supabase.from("profiles").select("*").eq("role","provider").order("created_at",{ascending:false}),
@@ -83,9 +88,14 @@ export default function AdminProviders() {
   }
 
   async function toggleActive(id, is_active) {
-    await supabase.from("profiles").update({ is_active:!is_active }).eq("id",id)
+    await supabase.from("profiles").update({
+      is_active: !is_active,
+      is_suspended: is_active, // suspending if currently active
+      suspension_expires_at: is_active ? new Date(Date.now()+7*24*60*60*1000).toISOString() : null
+    }).eq("id",id)
+    // Notify provider
+    await supabase.from("notifications").insert({ user_id: id, title: is_active?"Account suspended ⚠️":"Account reactivated ✅", message: is_active?"Your provider account has been temporarily suspended. Contact support for details.":"Your provider account has been reactivated. You can now accept bookings.", type: is_active?"error":"success" })
     toast.success(is_active?"Provider suspended":"Provider activated")
-    load()
   }
 
   const filtered = providers.filter(p=>
