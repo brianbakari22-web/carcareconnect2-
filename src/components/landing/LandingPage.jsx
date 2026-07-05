@@ -112,7 +112,7 @@ export default function LandingPage() {
       <div style={{ paddingTop:56, position:"relative", overflow:"hidden", minHeight:"92vh", display:"flex", flexDirection:"column", justifyContent:"center", zIndex:1 }}>
         <FloatingParts/>
         <div style={{ padding:"3rem 1.25rem 2.5rem", maxWidth:620, margin:"0 auto", textAlign:"center", position:"relative", zIndex:2 }}>
-          <img src={logoUrl} alt="Car Care Connect" style={{ height:120, marginBottom:"1.5rem", animation:"glow 3s ease-in-out infinite", objectFit:"contain" }}/>
+          <img src={logoUrl} alt="Car Care Connect" style={{ height:120, display:"block", margin:"0 auto 1.5rem", animation:"glow 3s ease-in-out infinite", objectFit:"contain" }}/>
           <div style={{ display:"inline-flex", alignItems:"center", gap:6, background:"rgba(240,253,244,0.9)", border:"1px solid #bbf7d0", borderRadius:20, padding:"5px 14px", marginBottom:"1.5rem" }}>
             <div style={{ position:"relative", width:7, height:7 }}>
               <div style={{ width:7, height:7, borderRadius:"50%", background:"#16a34a", position:"absolute" }}/>
