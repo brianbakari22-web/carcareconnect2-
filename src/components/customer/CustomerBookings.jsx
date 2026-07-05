@@ -22,6 +22,7 @@ export default function CustomerBookings() {
   const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState(null)
   const [rebooking, setRebooking] = useState(null)
+  const [search, setSearch] = useState("")
   const [invoiceLoading, setInvoiceLoading] = useState(null)
   const [driverInfo, setDriverInfo] = useState({})
   const [providerPhones, setProviderPhones] = useState({})
@@ -64,7 +65,14 @@ export default function CustomerBookings() {
 
   const [rebookForm, setRebookForm] = useState({ date:"", time:"" })
 
-  useEffect(() => { if (user) load() }, [user])
+  useEffect(() => {
+    if (!user) return
+    load()
+    const sub = supabase.channel("customer-bookings-"+user.id)
+      .on("postgres_changes", { event:"UPDATE", schema:"public", table:"bookings", filter:`customer_id=eq.${user.id}` }, () => load())
+      .subscribe()
+    return () => supabase.removeChannel(sub)
+  }, [user])
 
   async function load() {
     const { data } = await supabase.from("bookings").select("*,profiles!bookings_driver_id_fkey(first_name,last_name)").eq("customer_id", user.id).eq("hidden_from_customer", false).eq("is_archived", false).order("created_at",{ascending:false})
@@ -128,16 +136,38 @@ export default function CustomerBookings() {
     })
     if (error) return toast.error(error.message)
     await supabase.from("notifications").insert({ user_id: b.provider_id, title: "New booking!", message: b.service_name + " rebooked for " + rebookForm.date + " at " + rebookForm.time, type: "success" })
+    await supabase.from("notifications").insert({ user_id: user.id, title: "Booking confirmed ✅", message: "Your "+b.service_name+" has been rebooked for "+rebookForm.date+" at "+rebookForm.time, type: "success" })
     toast.success("Booking created!")
     setRebooking(null)
     load()
   }
 
-  const filtered = filter==="all" ? bookings : bookings.filter(b=>b.status===filter)
+  const filtered = bookings.filter(b => {
+    const matchFilter = filter==="all" || b.status===filter
+    const matchSearch = !search || (b.service_name+b.booking_number+(b.notes||"")).toLowerCase().includes(search.toLowerCase())
+    return matchFilter && matchSearch
+  })
   const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }
 
   return (
     <div>
+      {/* Stats bar */}
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8, marginBottom:"1rem" }}>
+        {[
+          { label:"Total", value:bookings.length, color:"#000" },
+          { label:"Active", value:bookings.filter(b=>["pending","confirmed","in-progress"].includes(b.status)).length, color:"#378add" },
+          { label:"Completed", value:bookings.filter(b=>b.status==="completed").length, color:"#1d9e75" },
+          { label:"Cancelled", value:bookings.filter(b=>b.status==="cancelled").length, color:"#e24b4a" },
+        ].map(s=>(
+          <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"0.6rem", textAlign:"center", border:"1px solid #eee" }}>
+            <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:s.color }}>{s.value}</div>
+            <div style={{ fontSize:10, color:"#888", marginTop:2 }}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+      {/* Search */}
+      <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search by service name or booking number..."
+        style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eee", borderRadius:8, padding:"9px 12px", fontSize:13, outline:"none", marginBottom:"0.75rem", boxSizing:"border-box" }}/>
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
         {["all","pending","confirmed","in-progress","completed","cancelled"].map(s=>(
           <button key={s} onClick={()=>setFilter(s)}
@@ -157,7 +187,7 @@ export default function CustomerBookings() {
       {!loading&&filtered.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>{t("noBookingsFound")}</div>}
 
       {filtered.map(b=>(
-        <div key={b.id} style={{ background:"#ffffff", border:`1px solid ${SC[b.status]||"#eee"}30`, borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8 }}>
+        <div key={b.id} style={{ background:"#ffffff", border:"1px solid #eee", borderLeft:`4px solid ${SC[b.status]||"#eee"}`, borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
             <div style={{ flex:1, minWidth:0, marginRight:8 }}>
               <div style={{ fontSize:isMobile?13:14, fontWeight:500, color:"#000000", marginBottom:2, display:"flex", alignItems:"center", gap:6 }}>
@@ -176,6 +206,12 @@ export default function CustomerBookings() {
           </div>
 
           <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+            {["confirmed","in-progress"].includes(b.status)&&(
+              <button onClick={()=>navigate("/dashboard/tracking")}
+                style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                📍 Track
+              </button>
+            )}
             {["pending","confirmed"].includes(b.status)&&(
               <button onClick={()=>cancelBooking(b.id)}
                 style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
@@ -184,6 +220,10 @@ export default function CustomerBookings() {
             )}
             {b.status==="completed"&&(
               <>
+                <button onClick={()=>navigate("/dashboard/reviews")}
+                  style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                  ⭐ Review
+                </button>
                 <button onClick={()=>navigate(`/dashboard/claims?booking=${b.id}`)}
                   style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                   🛡️ Service guarantee
@@ -369,6 +409,8 @@ export default function CustomerBookings() {
     </div>
   )
 }
+
+
 
 
 
