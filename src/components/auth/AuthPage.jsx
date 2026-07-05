@@ -88,11 +88,16 @@ export default function AuthPage() {
   const [resetSent, setResetSent] = useState(false)
   const [form, setForm] = useState({ email:"", password:"", firstName:"", lastName:"", phone:"", businessName:"", providerType:"garage", driverVehicleType:"car" })
   const [loading, setLoading] = useState(false)
-  const [logoUrl, setLogoUrl] = useState("/logo_c.svg")
+  const [logoUrl, setLogoUrl] = useState(localStorage.getItem("ccc_logo_url")||"/logo_c.svg")
 
   useEffect(() => {
     supabase.from("platform_settings").select("value").eq("key","logo_url").single()
-      .then(({ data }) => { if (data?.value) setLogoUrl(data.value) })
+      .then(({ data }) => {
+        if (data?.value) {
+          setLogoUrl(data.value)
+          localStorage.setItem("ccc_logo_url", data.value)
+        }
+      })
   }, [])
   const [refCode, setRefCode] = useState("")
   const [agreed, setAgreed] = useState(false)

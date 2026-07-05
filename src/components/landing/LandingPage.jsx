@@ -32,11 +32,11 @@ function FloatingParts() {
 
 export default function LandingPage() {
   const navigate = useNavigate()
-  const [logoUrl, setLogoUrl] = useState("/logo_c.svg")
+  const [logoUrl, setLogoUrl] = useState(localStorage.getItem("ccc_logo_url")||"/logo_c.svg")
   
   useEffect(() => {
     supabase.from("platform_settings").select("value").eq("key","logo_url").single()
-      .then(({ data }) => { if (data?.value) setLogoUrl(data.value) })
+      .then(({ data }) => { if (data?.value) { setLogoUrl(data.value); localStorage.setItem("ccc_logo_url", data.value) } })
   }, [])
   const [openFaq, setOpenFaq] = useState(null)
   const btnOrange = { background:"#e6821e", border:"none", borderRadius:500, color:"#fff", fontSize:14, fontWeight:700, padding:"13px 26px", cursor:"pointer", fontFamily:"DM Sans,sans-serif" }

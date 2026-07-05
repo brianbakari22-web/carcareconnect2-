@@ -118,7 +118,7 @@ export default function AdminSettings() {
                 style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:uploadingLogo?"not-allowed":"pointer" }}>
                 {uploadingLogo?"Uploading...":"Upload logo"}
               </button>
-              <button onClick={()=>{ setLogoUrl("/logo_c.svg"); supabase.from("platform_settings").upsert({ key:"logo_url", value:"/logo_c.svg" },{ onConflict:"key" }); toast.success("Reset to default") }}
+              <button onClick={()=>{ setLogoUrl("/logo_c.svg"); localStorage.setItem("ccc_logo_url","/logo_c.svg"); supabase.from("platform_settings").upsert({ key:"logo_url", value:"/logo_c.svg" },{ onConflict:"key" }); toast.success("Reset to default") }}
                 style={{ background:"#f5f5f5", border:"1px solid #ddd", borderRadius:8, color:"#555", fontSize:12, padding:"8px 12px", cursor:"pointer" }}>
                 Reset
               </button>
