@@ -1,4 +1,4 @@
-﻿import useIsMobile from "../../lib/useIsMobile"
+import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { getCurrentPosition } from "../../lib/geolocation"
@@ -17,6 +17,7 @@ export default function CustomerDiscover() {
   const { t, language } = useLanguage()
   const navigate = useNavigate()
   const [providers, setProviders] = useState([])
+  const [ratings, setRatings] = useState({})
   const [bundles, setBundles] = useState([])
   const [drivers, setDrivers] = useState([])
   const [services, setServices] = useState([])
@@ -61,8 +62,27 @@ export default function CustomerDiscover() {
   }
 
   async function loadProviders() {
-    const { data } = await supabase.from("profile_public").select("*").eq("role","provider").eq("is_active",true).eq("is_active",true)
+    const { data } = await supabase.from("profile_public")
+      .select("*").eq("role","provider").eq("is_active",true)
+      .not("first_name","ilike","%test%")
     setProviders(data||[])
+    if (data?.length) {
+      const { data: reviews } = await supabase.from("reviews")
+        .select("provider_id,rating").in("provider_id", data.map(p=>p.id))
+      if (reviews?.length) {
+        const rMap = {}
+        reviews.forEach(r => {
+          if (!rMap[r.provider_id]) rMap[r.provider_id] = []
+          rMap[r.provider_id].push(r.rating)
+        })
+        const avgMap = {}
+        Object.keys(rMap).forEach(id => {
+          const arr = rMap[id]
+          avgMap[id] = (arr.reduce((s,r)=>s+r,0)/arr.length).toFixed(1)
+        })
+        setRatings(avgMap)
+      }
+    }
   }
 
   async function loadDrivers() {
@@ -377,6 +397,7 @@ export default function CustomerDiscover() {
                       style={{ background:"none", border:"none", fontSize:20, cursor:"pointer", color:isFav?"#e24b4a":"#444", padding:"2px", lineHeight:1 }}>
                       {isFav?"⭐":"⭐"}
                     </button>
+                    {ratings[p.id]&&<div style={{ fontSize:11, color:"#f59e0b", fontWeight:600 }}>⭐ {ratings[p.id]}</div>}
                     <div style={{ fontSize:12, color:"#e6821e", fontWeight:500 }}>{t("viewProfile")} →</div>
                   </div>
                 </div>
