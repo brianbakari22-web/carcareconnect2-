@@ -112,7 +112,7 @@ export default function LandingPage() {
       <div style={{ paddingTop:56, position:"relative", overflow:"hidden", minHeight:"92vh", display:"flex", flexDirection:"column", justifyContent:"center", zIndex:1 }}>
         <FloatingParts/>
         <div style={{ padding:"3rem 1.25rem 2.5rem", maxWidth:620, margin:"0 auto", textAlign:"center", position:"relative", zIndex:2 }}>
-          <img src={logoUrl} alt="Car Care Connect" style={{ height:160, marginBottom:"1.5rem", animation:"glow 3s ease-in-out infinite" }}/>
+          <img src={logoUrl} alt="Car Care Connect" style={{ height:isMobile?100:120, marginBottom:"1.5rem", animation:"glow 3s ease-in-out infinite", objectFit:"contain" }}/>
           <div style={{ display:"inline-flex", alignItems:"center", gap:6, background:"rgba(240,253,244,0.9)", border:"1px solid #bbf7d0", borderRadius:20, padding:"5px 14px", marginBottom:"1.5rem" }}>
             <div style={{ position:"relative", width:7, height:7 }}>
               <div style={{ width:7, height:7, borderRadius:"50%", background:"#16a34a", position:"absolute" }}/>
@@ -396,7 +396,7 @@ export default function LandingPage() {
       <div style={{ background:"rgba(0,0,0,0.90)", padding:"4rem 1.25rem", textAlign:"center", position:"relative", overflow:"hidden", zIndex:1 }}>
         <FloatingParts/>
         <div style={{ maxWidth:500, margin:"0 auto", position:"relative", zIndex:2 }}>
-          <img src="/logo.svg" alt="Car Care Connect" style={{ height:70, marginBottom:"1.5rem", animation:"glow 3s ease-in-out infinite" }}/>
+          <img src={logoUrl} alt="Car Care Connect" style={{ height:70, marginBottom:"1.5rem", animation:"glow 3s ease-in-out infinite", objectFit:"contain" }}/>
           <h2 style={{ fontWeight:800, fontSize:"clamp(26px,5vw,48px)", lineHeight:1.1, color:"#fff", marginBottom:12, letterSpacing:-0.5 }}>
             Nairobi&apos;s car care platform<br/><span style={{ color:"#e6821e" }}>starts here.</span>
           </h2>
