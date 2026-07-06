@@ -50,6 +50,7 @@ function getItemUrl(item) {
 
 export default function AdminContentHub() {
   const isMobile = useIsMobile()
+  const studioRef = useRef(null)
   const [tab, setTab] = useState("new_cars")
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
@@ -403,7 +404,7 @@ export default function AdminContentHub() {
 
         {/* Content generator panel */}
         {selected&&(
-          <div style={{ position:isMobile?"static":"sticky", top:80 }}>
+          <div ref={studioRef} style={{ position:isMobile?"static":"sticky", top:80, scrollMarginTop:16 }}>
             {/* POST STUDIO */}
             <div style={{ background:"#0f0f0f", borderRadius:20, overflow:"hidden", marginBottom:"1rem" }}>
               <div style={{ padding:"1rem 1.25rem 0.75rem", borderBottom:"1px solid #1e1e1e", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
