@@ -429,10 +429,23 @@ export default function AdminContentHub() {
   useEffect(() => { loadScheduledPosts() }, [])
 
   async function createCampaign(e) {
-    e.preventDefault()
-    await supabase.from("content_campaigns").insert({ name:campaignForm.name, description:campaignForm.description, goal:campaignForm.goal, start_date:campaignForm.start_date||null, end_date:campaignForm.end_date||null, color:campaignForm.color, target_platforms:campaignForm.target_platforms, post_count_target:campaignForm.post_count_target })
+    if (e?.preventDefault) e.preventDefault()
+    if (!campaignForm.name.trim()) return toast.error("Campaign name required")
+    const { data, error } = await supabase.from("content_campaigns").insert({
+      name: campaignForm.name.trim(),
+      description: campaignForm.description,
+      goal: campaignForm.goal,
+      start_date: campaignForm.start_date||null,
+      end_date: campaignForm.end_date||null,
+      color: campaignForm.color||"#e6821e",
+      target_platforms: campaignForm.target_platforms,
+      post_count_target: campaignForm.post_count_target,
+      status: "active",
+      created_by: (await supabase.auth.getUser()).data.user?.id
+    }).select()
+    if (error) { console.error(error); return toast.error("Failed: "+error.message) }
     toast.success("Campaign created!")
-    setCampaignForm({ name:"", description:"" })
+    setCampaignForm({ name:"", description:"", goal:"", start_date:"", end_date:"", color:"#e6821e", target_platforms:[], post_count_target:7 })
     setShowCampaignForm(false)
     loadCampaigns()
   }
