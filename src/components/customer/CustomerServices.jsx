@@ -349,12 +349,6 @@ export default function CustomerServices() {
             const provider = providers.find(p=>p.id===b.provider_id)
             return (
               <div key={b.id} style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10 }}>
-            {s.photos?.length>0&&(
-              <div style={{ marginBottom:"0.75rem", borderRadius:8, overflow:"hidden", position:"relative" }}>
-                <img src={s.photos[0]} alt={s.name} style={{ width:"100%", height:160, objectFit:"cover", display:"block" }}/>
-                {s.photos.length>1&&<div style={{ position:"absolute", bottom:6, right:6, background:"rgba(0,0,0,0.6)", borderRadius:8, padding:"2px 8px", fontSize:10, color:"#fff" }}>📷 {s.photos.length}</div>}
-              </div>
-            )}
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10 }}>
                   <div style={{ flex:1, minWidth:0 }}>
                     <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6, flexWrap:"wrap" }}>
@@ -503,6 +497,12 @@ export default function CustomerServices() {
         const provider = providers.find(p=>p.id===s.provider_id)
         return (
           <div key={s.id} style={{ background:"#ffffff", border:`1px solid ${cat.border}`, borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10 }}>
+            {s.photos?.length>0&&(
+              <div style={{ marginBottom:"0.75rem", borderRadius:8, overflow:"hidden", position:"relative" }}>
+                <img src={s.photos[0]} alt={s.name} style={{ width:"100%", height:160, objectFit:"cover", display:"block" }}/>
+                {s.photos.length>1&&<div style={{ position:"absolute", bottom:6, right:6, background:"rgba(0,0,0,0.6)", borderRadius:8, padding:"2px 8px", fontSize:10, color:"#fff" }}>📷 {s.photos.length}</div>}
+              </div>
+            )}
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10 }}>
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6, flexWrap:"wrap" }}>
