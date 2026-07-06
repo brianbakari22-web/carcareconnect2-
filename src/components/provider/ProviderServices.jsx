@@ -92,7 +92,6 @@ export default function ProviderServices() {
           service_category_id: form.service_category_id||null,
           provider_commission_rate: providerRate,
           photos: form.photos||[],
-          provider_commission_rate: providerRate,
         }).eq("id", editing).eq("provider_id", user.id)
         if (error) throw error
         toast.success("Service updated")
@@ -104,7 +103,6 @@ export default function ProviderServices() {
           price: parseFloat(form.price),
           provider_commission_rate: providerRate,
           photos: form.photos||[],
-          provider_commission_rate: providerRate,
           service_category_id: form.service_category_id||null,
           platform_commission_rate: platformRate,
           provider_commission_rate: providerRate,

@@ -62,6 +62,7 @@ export default function AdminContentHub() {
   const [search, setSearch] = useState("")
   const [campaign, setCampaign] = useState("")
   const [campaigns, setCampaigns] = useState([])
+  const [showGuide, setShowGuide] = useState(null)
   const [socialAccounts, setSocialAccounts] = useState({ whatsapp:"", tiktok:"", instagram:"", facebook:"", x:"", youtube:"" })
   const [editingSocial, setEditingSocial] = useState(false)
   const [showSocialSetup, setShowSocialSetup] = useState(false)
@@ -172,7 +173,7 @@ export default function AdminContentHub() {
         youtube: socialAccounts.youtube||"https://studio.youtube.com",
       }
       window.open(appUrls[platformKey], "_blank")
-      toast.success("Caption copied! Paste it when you create your post.")
+      setShowGuide(platformKey)
     }
   }
 
@@ -768,6 +769,30 @@ export default function AdminContentHub() {
           ))}
         </div>
       </div>
+    {showGuide&&(
+      <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.75)", zIndex:9999, display:"flex", alignItems:"flex-end", justifyContent:"center", padding:"1rem" }} onClick={()=>setShowGuide(null)}>
+        <div style={{ background:"#1a1a1a", borderRadius:16, padding:"1.5rem", width:"100%", maxWidth:420 }} onClick={e=>e.stopPropagation()}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#fff" }}>{PLATFORMS.find(p=>p.key===showGuide)?.icon} Post on {PLATFORMS.find(p=>p.key===showGuide)?.label}</div>
+            <button onClick={()=>setShowGuide(null)} style={{ background:"#2a2a2a", border:"none", borderRadius:"50%", width:28, height:28, color:"#aaa", cursor:"pointer", fontSize:14 }}>x</button>
+          </div>
+          {[
+            { step:1, text:"Caption copied to clipboard" },
+            { step:2, text:PLATFORMS.find(p=>p.key===showGuide)?.label+" is now open in new tab" },
+            { step:3, text:"Tap + to create a new post" },
+            { step:4, text:"Upload the branded card you downloaded" },
+            { step:5, text:"Paste caption and post!" },
+          ].map(s=>(
+            <div key={s.step} style={{ display:"flex", alignItems:"flex-start", gap:10, marginBottom:8 }}>
+              <div style={{ width:22, height:22, borderRadius:"50%", background:"#e6821e", display:"flex", alignItems:"center", justifyContent:"center", fontSize:10, fontWeight:800, color:"#fff", flexShrink:0 }}>{s.step}</div>
+              <div style={{ fontSize:12, color:"#ccc", paddingTop:2 }}>{s.text}</div>
+            </div>
+          ))}
+          <div style={{ background:"#e6821e15", border:"1px solid #e6821e30", borderRadius:8, padding:"0.75rem", fontSize:11, color:"#e6821e", marginTop:8 }}>Download branded card first using the image button above</div>
+          <button onClick={()=>setShowGuide(null)} style={{ width:"100%", background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer", marginTop:"1rem" }}>Got it!</button>
+        </div>
+      </div>
+    )}
     </div>
   )
 }
