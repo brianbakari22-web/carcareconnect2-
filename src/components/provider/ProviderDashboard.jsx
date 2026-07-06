@@ -60,7 +60,11 @@ export default function ProviderDashboard() {
     supabase.from("commission_rates").select("platform_rate,provider_rate").eq("provider_type", providerType).maybeSingle()
       .then(({ data }) => { if (data) setCommissionDisplay({ platform:Math.round(data.platform_rate*100), provider:Math.round(data.provider_rate*100) }) })
     const sub = supabase.channel("prov-dash-v2")
-      .on("postgres_changes", { event:"*", schema:"public", table:"bookings", filter:`provider_id=eq.${user.id}` }, () => load())
+      .on("postgres_changes", { event:"INSERT", schema:"public", table:"bookings", filter:`provider_id=eq.${user.id}` }, payload => {
+        load()
+        toast.success(`New booking: ${payload.new.service_name} 🎉`, { duration:10000 })
+      })
+      .on("postgres_changes", { event:"UPDATE", schema:"public", table:"bookings", filter:`provider_id=eq.${user.id}` }, () => load())
       .on("postgres_changes", { event:"*", schema:"public", table:"orders", filter:`provider_id=eq.${user.id}` }, () => load())
       .subscribe()
     return () => supabase.removeChannel(sub)
@@ -155,7 +159,7 @@ export default function ProviderDashboard() {
               { label:"Low stock", value:orderStats.lowStock, color:orderStats.lowStock>0?"#e24b4a":"#555", icon:"⚠️" },
               { label:"Revenue", value:"KES "+orderStats.revenue.toLocaleString(), color:"#1d9e75", icon:"💰" },
             ].map(s=>(
-              <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"0.75rem", display:"flex", alignItems:"center", gap:8 }}>
+              <div key={s.label} style={{ background:s.pulse?"#fff8f0":"#f8f8f8", borderRadius:10, padding:"0.75rem", display:"flex", alignItems:"center", gap:8, border:s.pulse?"2px solid #e6821e30":"2px solid transparent", boxShadow:s.pulse?"0 0 8px #e6821e20":"none" }}>
                 <div style={{ fontSize:20 }}>{s.icon}</div>
                 <div>
                   <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:s.color }}>{s.value}</div>
@@ -167,7 +171,7 @@ export default function ProviderDashboard() {
         ) : (
           <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:8 }}>
             {[
-              { label:"Pending", value:bookingStats.pending, color:"#e6821e", icon:"⏳" },
+              { label:"Pending", value:bookingStats.pending, color:"#e6821e", icon:"⏳", pulse:bookingStats.pending>0 },
               { label:"Confirmed", value:bookingStats.confirmed, color:"#378add", icon:"✅" },
               { label:"Completed", value:bookingStats.completed, color:"#1d9e75", icon:"🎉" },
               { label:"Earnings", value:"KES "+Number(bookingStats.earnings).toLocaleString(), color:"#8b5cf6", icon:"💰" },
