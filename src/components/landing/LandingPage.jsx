@@ -33,7 +33,7 @@ function FloatingParts() {
 export default function LandingPage() {
   const [showPlayBanner, setShowPlayBanner] = useState(true)
   const isAndroid = /Android/i.test(navigator.userAgent)
-  const isStandalone = window.matchMedia("(display-mode: standalone)").matches
+  const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true || document.referrer.includes("android-app://")
   const navigate = useNavigate()
   const [logoUrl, setLogoUrl] = useState(localStorage.getItem("ccc_logo_url")||"/logo_c.svg")
   
@@ -84,7 +84,7 @@ export default function LandingPage() {
 
   return (
     <div style={{ fontFamily:"DM Sans,sans-serif", background:"transparent", color:"#000", minHeight:"100vh", position:"relative" }}>
-      {showPlayBanner&&isAndroid&&!isStandalone&&(
+      {showPlayBanner&&isAndroid&&!isStandalone&&typeof window.Capacitor==="undefined"&&(
         <div style={{ position:"fixed", bottom:0, left:0, right:0, background:"#1a1a1a", zIndex:9999, padding:"0.875rem 1rem", display:"flex", alignItems:"center", gap:10, borderTop:"2px solid #e6821e" }}>
           <img src="/logo.svg" alt="CCC" style={{ width:40, height:40, borderRadius:10 }}/>
           <div style={{ flex:1 }}>
