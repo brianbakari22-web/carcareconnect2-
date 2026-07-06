@@ -72,6 +72,9 @@ export default function AdminContentHub() {
     } else if (tab==="services") {
       const { data: d } = await supabase.from("services").select("*, profiles!services_provider_id_fkey(business_name,first_name,last_name,profile_photo_url,avatar_url)").order("created_at",{ascending:false})
       data = (d||[]).map(i=>({...i, _type:"service", _label:i.name, _price:i.price, _photos:i.profiles?.profile_photo_url?[i.profiles.profile_photo_url]:i.profiles?.avatar_url?[i.profiles.avatar_url]:[], _video:null, business_name:i.profiles?.business_name||i.profiles?.first_name }))
+    } else if (tab==="inventory") {
+      const { data: d } = await supabase.from("inventory").select("*, profiles!inventory_provider_id_fkey(business_name,first_name,last_name)").eq("is_active",true).order("created_at",{ascending:false})
+      data = (d||[]).map(i=>({...i, _type:"parts", _label:i.name, _price:i.price, _photos:i.photos||[], _video:null, business_name:i.profiles?.business_name||i.profiles?.first_name }))
     } else if (tab==="providers") {
       const { data: d } = await supabase.from("profiles").select("id,first_name,last_name,business_name,provider_type,avatar_url,profile_photo_url,city").eq("role","provider").order("created_at",{ascending:false})
       data = (d||[]).filter(i=>i.first_name&&i.first_name!=="Deleted").map(i=>({...i, _type:"service", _label:i.business_name||i.first_name+" "+i.last_name, _price:null, _photos:i.profile_photo_url?[i.profile_photo_url]:i.avatar_url?[i.avatar_url]:[], _video:null }))
@@ -467,6 +470,21 @@ export default function AdminContentHub() {
                   {downloading?"Generating...":"⬇ Download Branded Card (1080×1080)"}
                 </button>
                 <div style={{ fontSize:10, color:"#888", marginTop:4, textAlign:"center" }}>Square format — perfect for Instagram, Facebook & WhatsApp</div>
+              </div>
+
+              {/* Social Share */}
+              <div style={{ marginBottom:"1rem" }}>
+                <div style={{ fontSize:11, color:"#666", marginBottom:8 }}>🚀 Share directly</div>
+                <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:6 }}>
+                  {PLATFORMS.map(p=>(
+                    <button key={p.key} onClick={()=>shareToSocial(p.key)}
+                      style={{ background:p.color+"15", border:`1px solid ${p.color}40`, borderRadius:8, color:p.color, fontSize:11, fontWeight:700, padding:"8px 4px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:3 }}>
+                      <span style={{ fontSize:16 }}>{p.icon}</span>
+                      <span style={{ fontSize:9 }}>{p.key==="instagram"||p.key==="tiktok"||p.key==="youtube"?"Copy+Open":"Share"}</span>
+                    </button>
+                  ))}
+                </div>
+                <div style={{ fontSize:9, color:"#aaa", marginTop:4, textAlign:"center" }}>WhatsApp, Facebook & X support direct sharing. Instagram/TikTok/YouTube: caption is copied, then app opens.</div>
               </div>
 
               {/* Mark as posted */}
