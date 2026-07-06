@@ -38,7 +38,17 @@ export default function ProviderBookings() {
     load()
     loadPartsRequests()
     const sub = supabase.channel("provider-bookings-live")
-      .on("postgres_changes", { event:"*", schema:"public", table:"bookings", filter:`provider_id=eq.${user.id}` }, () => { load(); toast("Booking updated", { icon:"📋" }) })
+      .on("postgres_changes", { event:"INSERT", schema:"public", table:"bookings", filter:`provider_id=eq.${user.id}` }, payload => {
+        load()
+        toast.success(`New booking: ${payload.new.service_name} 🎉`, { duration:8000 })
+      })
+      .on("postgres_changes", { event:"UPDATE", schema:"public", table:"bookings", filter:`provider_id=eq.${user.id}` }, payload => {
+        load()
+        const status = payload.new.status
+        if (status === "cancelled") toast.error("Booking cancelled by customer")
+        else if (status === "confirmed") toast.success("Booking confirmed ✅")
+        else toast("Booking updated", { icon:"📋" })
+      })
       .subscribe()
     return () => supabase.removeChannel(sub)
   }, [user])
