@@ -19,6 +19,7 @@
     <meta name="theme-color" content="#e6821e" />
     <style>html,body,#root{background:#ffffff!important;}</style>
     <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="google-play-app" content="app-id=care.carcareconnect.app" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Car Care Connect" />
     <meta name="geo.region" content="KE-30" />
@@ -102,7 +103,14 @@
   <!-- Canonical -->
   <link rel="canonical" href="https://carcareconnect.care/" />
 
-    <script type="module" crossorigin src="/assets/index-Biickq7B.js"></script>
+  
+  <script>
+    // Disable PWA install prompt - redirect to Play Store instead
+    window.addEventListener("beforeinstallprompt", function(e) {
+      e.preventDefault();
+    });
+  </script>
+    <script type="module" crossorigin src="/assets/index-l8R3_mF3.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-C1lte47L.js">
     <link rel="modulepreload" crossorigin href="/assets/supabase-CwrFKnKJ.js">
     <link rel="modulepreload" crossorigin href="/assets/ui-CaTqAy3Q.js">

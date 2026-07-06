@@ -31,6 +31,9 @@ function FloatingParts() {
 
 
 export default function LandingPage() {
+  const [showPlayBanner, setShowPlayBanner] = useState(true)
+  const isAndroid = /Android/i.test(navigator.userAgent)
+  const isStandalone = window.matchMedia("(display-mode: standalone)").matches
   const navigate = useNavigate()
   const [logoUrl, setLogoUrl] = useState(localStorage.getItem("ccc_logo_url")||"/logo_c.svg")
   
@@ -81,6 +84,21 @@ export default function LandingPage() {
 
   return (
     <div style={{ fontFamily:"DM Sans,sans-serif", background:"transparent", color:"#000", minHeight:"100vh", position:"relative" }}>
+      {showPlayBanner&&isAndroid&&!isStandalone&&(
+        <div style={{ position:"fixed", bottom:0, left:0, right:0, background:"#1a1a1a", zIndex:9999, padding:"0.875rem 1rem", display:"flex", alignItems:"center", gap:10, borderTop:"2px solid #e6821e" }}>
+          <img src="/logo.svg" alt="CCC" style={{ width:40, height:40, borderRadius:10 }}/>
+          <div style={{ flex:1 }}>
+            <div style={{ fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:800, color:"#fff" }}>Car Care Connect</div>
+            <div style={{ fontSize:11, color:"#888" }}>Get the official app on Google Play</div>
+          </div>
+          <a href="https://play.google.com/store/apps/details?id=care.carcareconnect.app"
+            target="_blank" rel="noopener noreferrer"
+            style={{ background:"#e6821e", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"8px 14px", textDecoration:"none", flexShrink:0 }}>
+            Install
+          </a>
+          <button onClick={()=>setShowPlayBanner(false)} style={{ background:"none", border:"none", color:"#666", cursor:"pointer", fontSize:18, padding:"4px", flexShrink:0 }}>✕</button>
+        </div>
+      )}
       {/* White base */}
       <div style={{ position:"fixed", inset:0, zIndex:-1, background:"#fff" }}/>
 
