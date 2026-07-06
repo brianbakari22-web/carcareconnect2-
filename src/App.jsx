@@ -391,6 +391,34 @@ function AdminDashboardRouter() {
   )
 }
 
+
+// Check for new app version every 5 minutes
+if (typeof window !== "undefined") {
+  let lastVersion = null;
+  async function checkForUpdate() {
+    try {
+      const res = await fetch("/index.html?cachebust=" + Date.now(), { cache:"no-store" });
+      const html = await res.text();
+      const match = html.match(/index-([^"]+).js/);
+      const version = match ? match[1] : null;
+      if (lastVersion && version && lastVersion !== version) {
+        // New version detected - show toast
+        if (window.__ccc_update_toast_shown) return;
+        window.__ccc_update_toast_shown = true;
+        const toast = document.createElement("div");
+        toast.innerHTML = `<div style="position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:12px 20px;border-radius:12px;z-index:99999;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,0.3);font-family:DM Sans,sans-serif;font-size:13px;white-space:nowrap">
+          <span>🆕 New version available</span>
+          <button onclick="window.location.reload()" style="background:#e6821e;border:none;border-radius:8px;color:#fff;padding:6px 14px;cursor:pointer;font-weight:700;font-size:12px">Update</button>
+        </div>`;
+        document.body.appendChild(toast);
+      }
+      lastVersion = version;
+    } catch(e) {}
+  }
+  checkForUpdate();
+  setInterval(checkForUpdate, 5 * 60 * 1000);
+}
+
 export default function App() {
   useEffect(() => {
     // Hide native splash when React app is ready
