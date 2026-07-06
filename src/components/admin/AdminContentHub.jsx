@@ -20,12 +20,12 @@ const HASHTAGS = {
   general: "#CCC #CarCareConnect #Nairobi #Kenya #Automotive #CarCare #NairobiLife",
 }
 
-function generateCaption(item, platform, type) {
+function generateCaption(item, platform, type, itemUrl) {
   const price = item.price || item.total_amount || ""
   const name = item.brand ? `${item.year} ${item.brand} ${item.model}` : item.service_name || item.name || item.title || "Amazing deal"
   const showroom = item.showroom_name || item.business_name || "Car Care Connect"
   const tags = type==="car" ? HASHTAGS.car : type==="wash" ? HASHTAGS.wash : type==="parts" ? HASHTAGS.parts : type==="service" ? HASHTAGS.service : HASHTAGS.general
-  const url = "https://carcareconnect.care"
+  const url = itemUrl || "https://carcareconnect.care"
 
   const captions = {
     whatsapp: `🚗 *${name}*\n\n💰 KES ${Number(price).toLocaleString()}\n🏢 ${showroom}\n\n✅ Verified on Car Care Connect\n📱 Book now: ${url}\n\n${tags}`,
@@ -36,6 +36,16 @@ function generateCaption(item, platform, type) {
     youtube: `${name}\n\nPrice: KES ${Number(price).toLocaleString()}\nShowroom: ${showroom}\n\nCar Care Connect is Nairobi's #1 automotive services marketplace. Browse new cars, book services, find parts and accessories — all in one place.\n\n🔗 Visit us: ${url}\n📞 Call us: 0113858966\n✉️ Email: carcareconnect254@gmail.com\n\n${tags}`,
   }
   return captions[platform] || captions.whatsapp
+}
+
+function getItemUrl(item) {
+  const base = "https://carcareconnect.care"
+  if (!item) return base
+  if (item._type === "car") return `${base}/dashboard/marketplace?car=${item.id}`
+  if (item._type === "service") return `${base}/dashboard/services?service=${item.id}`
+  if (item._type === "parts") return `${base}/dashboard/parts?item=${item.id}`
+  if (item._type === "provider") return `${base}/dashboard/discover?provider=${item.id}`
+  return base
 }
 
 export default function AdminContentHub() {
@@ -102,12 +112,12 @@ export default function AdminContentHub() {
   function selectItem(item) {
     setSelected(item)
     setSelectedPhoto(item._photos?.[0]||null)
-    setCaption(generateCaption(item, platform, item._type))
+    setCaption(generateCaption(item, platform, item._type, getItemUrl(item)))
   }
 
   function updateCaption(p) {
     setPlatform(p)
-    if (selected) setCaption(generateCaption(selected, p, selected._type))
+    if (selected) setCaption(generateCaption(selected, p, selected._type, getItemUrl(selected)))
   }
 
   function copyCaption() {
@@ -422,6 +432,21 @@ export default function AdminContentHub() {
                 <button onClick={copyCaption} style={{ width:"100%", background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px", cursor:"pointer", marginTop:6 }}>
                   📋 Copy Caption
                 </button>
+              </div>
+
+              {/* Deep link URL */}
+              <div style={{ marginBottom:"1rem" }}>
+                <div style={{ fontSize:11, color:"#666", marginBottom:6 }}>🔗 Share URL</div>
+                <div style={{ display:"flex", gap:6, alignItems:"center" }}>
+                  <div style={{ flex:1, background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:8, padding:"8px 10px", fontSize:10, color:"#378add", wordBreak:"break-all", fontFamily:"monospace" }}>
+                    {getItemUrl(selected)}
+                  </div>
+                  <button onClick={()=>{ navigator.clipboard.writeText(getItemUrl(selected)); toast.success("URL copied!") }}
+                    style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:8, color:"#378add", fontSize:11, fontWeight:700, padding:"8px 10px", cursor:"pointer", flexShrink:0 }}>
+                    📋
+                  </button>
+                </div>
+                <div style={{ fontSize:9, color:"#aaa", marginTop:4 }}>This link takes customers directly to this item on CCC</div>
               </div>
 
               {/* Photo downloads */}
