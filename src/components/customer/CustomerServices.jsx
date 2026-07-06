@@ -497,14 +497,14 @@ export default function CustomerServices() {
         const provider = providers.find(p=>p.id===s.provider_id)
         return (
           <div key={s.id} style={{ background:"#ffffff", border:`1px solid ${cat.border}`, borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10 }}>
-            {s.photos?.length>0&&(
-              <div style={{ marginBottom:"0.875rem", borderRadius:"10px 10px 0 0", overflow:"hidden", position:"relative", marginBottom:"0.875rem" }}>
-                <img src={s.photos[0]} alt={s.name} style={{ width:"100%", height:isMobile?180:200, objectFit:"cover", display:"block" }}/>
-                <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.35))" }}/>
-                {s.photos.length>1&&<div style={{ position:"absolute", bottom:8, right:8, background:"rgba(0,0,0,0.55)", backdropFilter:"blur(4px)", borderRadius:8, padding:"2px 8px", fontSize:10, color:"#fff", display:"flex", alignItems:"center", gap:4 }}>📷 {s.photos.length}</div>}
-                <div style={{ position:"absolute", top:8, left:8 }}>
-                  <span style={{ fontSize:10, padding:"3px 8px", borderRadius:10, background:cat.bg, color:cat.color, border:`1px solid ${cat.border}`, backdropFilter:"blur(4px)" }}>{cat.icon} {cat.label}</span>
-                </div>
+            {s.photos?.length>0 ? (
+              <div style={{ marginBottom:"0.875rem", borderRadius:10, overflow:"hidden", position:"relative" }}>
+                <img src={s.photos[0]} alt={s.name} style={{ width:"100%", height:160, objectFit:"cover", display:"block" }}/>
+                {s.photos.length>1&&<div style={{ position:"absolute", bottom:6, right:6, background:"rgba(0,0,0,0.55)", borderRadius:8, padding:"2px 8px", fontSize:10, color:"#fff" }}>📷 {s.photos.length}</div>}
+              </div>
+            ) : (
+              <div style={{ marginBottom:"0.875rem", borderRadius:10, height:80, background:cat.bg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:36 }}>
+                {cat.icon}
               </div>
             )}
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10 }}>
