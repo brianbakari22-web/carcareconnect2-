@@ -755,44 +755,61 @@ export default function AdminContentHub() {
         </div>
       )}
 
-      {/* Campaigns Section */}
-      <div style={{ marginTop:"2rem" }}>
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
-          <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#000" }}>🎯 Campaigns ({campaigns.length})</div>
-          <button onClick={()=>setShowCampaignForm(f=>!f)}
-            style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"7px 14px", cursor:"pointer" }}>
-            + New Campaign
-          </button>
+        {/* Campaigns Section */}
+        <div style={{ marginTop:"2rem", background:"#0f0f0f", borderRadius:16, padding:"1.25rem" }}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
+            <div>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#fff" }}>🎯 Campaigns</div>
+              <div style={{ fontSize:10, color:"#555", marginTop:2 }}>Organize your content into campaigns</div>
+            </div>
+            <button onClick={()=>setShowCampaignForm(f=>!f)}
+              style={{ background:showCampaignForm?"#2a2a2a":"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"7px 14px", cursor:"pointer" }}>
+              {showCampaignForm?"✕ Cancel":"+ New Campaign"}
+            </button>
+          </div>
+          {showCampaignForm&&(
+            <div style={{ background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:8 }}>
+                <div>
+                  <label style={{ fontSize:9, color:"#555", display:"block", marginBottom:3, textTransform:"uppercase" }}>Campaign Name</label>
+                  <input value={campaignForm.name} onChange={e=>setCampaignForm(f=>({...f,name:e.target.value}))} placeholder="e.g. December Deals"
+                    style={{ width:"100%", background:"#0f0f0f", border:"1px solid #2a2a2a", borderRadius:8, padding:"8px 10px", fontSize:12, color:"#ccc", outline:"none", fontFamily:"DM Sans,sans-serif" }}/>
+                </div>
+                <div>
+                  <label style={{ fontSize:9, color:"#555", display:"block", marginBottom:3, textTransform:"uppercase" }}>Description</label>
+                  <input value={campaignForm.description} onChange={e=>setCampaignForm(f=>({...f,description:e.target.value}))} placeholder="What is this campaign about?"
+                    style={{ width:"100%", background:"#0f0f0f", border:"1px solid #2a2a2a", borderRadius:8, padding:"8px 10px", fontSize:12, color:"#ccc", outline:"none", fontFamily:"DM Sans,sans-serif" }}/>
+                </div>
+              </div>
+              <button onClick={createCampaign} style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 20px", cursor:"pointer" }}>
+                Create Campaign
+              </button>
+            </div>
+          )}
+          {campaigns.length===0&&!showCampaignForm&&(
+            <div style={{ textAlign:"center", padding:"2rem", color:"#333" }}>
+              <div style={{ fontSize:32, marginBottom:8 }}>🎯</div>
+              <div style={{ fontSize:12, color:"#555" }}>No campaigns yet</div>
+              <div style={{ fontSize:10, color:"#444", marginTop:4 }}>Create campaigns to organize your content by theme or season</div>
+            </div>
+          )}
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:8 }}>
+            {campaigns.map((camp,ci)=>(
+              <div key={camp.id} style={{ background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:12, padding:"0.875rem", position:"relative" }}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:4 }}>
+                  <div style={{ fontSize:13, fontWeight:700, color:"#fff" }}>{camp.name}</div>
+                  <div style={{ width:10, height:10, borderRadius:"50%", background:["#e6821e","#378add","#1d9e75","#8b5cf6","#e24b4a"][ci%5], flexShrink:0 }}/>
+                </div>
+                {camp.description&&<div style={{ fontSize:10, color:"#666", marginBottom:6 }}>{camp.description}</div>}
+                <div style={{ fontSize:9, color:"#444", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                  <span>{new Date(camp.created_at).toLocaleDateString()}</span>
+                  <button onClick={async()=>{ if(confirm("Delete campaign?")) { await supabase.from("content_campaigns").delete().eq("id",camp.id); loadCampaigns() } }}
+                    style={{ background:"none", border:"none", color:"#555", cursor:"pointer", fontSize:12, padding:"2px 6px" }}>🗑</button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-        {showCampaignForm&&(
-          <form onSubmit={createCampaign} style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:10, padding:"1rem", marginBottom:"1rem" }}>
-            <div style={{ marginBottom:8 }}>
-              <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:3 }}>Campaign name</label>
-              <input value={campaignForm.name} onChange={e=>setCampaignForm(f=>({...f,name:e.target.value}))} placeholder="e.g. December Deals" required
-                style={{ width:"100%", background:"#fff", border:"1px solid #e5e5e5", borderRadius:7, padding:"8px 10px", fontSize:12, outline:"none" }}/>
-            </div>
-            <div style={{ marginBottom:10 }}>
-              <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:3 }}>Description</label>
-              <input value={campaignForm.description} onChange={e=>setCampaignForm(f=>({...f,description:e.target.value}))} placeholder="What is this campaign about?"
-                style={{ width:"100%", background:"#fff", border:"1px solid #e5e5e5", borderRadius:7, padding:"8px 10px", fontSize:12, outline:"none" }}/>
-            </div>
-            <div style={{ display:"flex", gap:8 }}>
-              <button type="submit" style={{ background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>Create</button>
-              <button type="button" onClick={()=>setShowCampaignForm(false)} style={{ background:"none", border:"1px solid #ddd", borderRadius:7, color:"#888", fontSize:12, padding:"8px 12px", cursor:"pointer" }}>Cancel</button>
-            </div>
-          </form>
-        )}
-        {campaigns.length===0&&!showCampaignForm&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"1.5rem" }}>No campaigns yet — create one to organize your content</div>}
-        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:8 }}>
-          {campaigns.map(camp=>(
-            <div key={camp.id} style={{ background:"#ffffff", border:"1px solid #e6821e30", borderRadius:10, padding:"0.75rem" }}>
-              <div style={{ fontSize:13, fontWeight:700, color:"#000", marginBottom:2 }}>{camp.name}</div>
-              {camp.description&&<div style={{ fontSize:11, color:"#666", marginBottom:4 }}>{camp.description}</div>}
-              <div style={{ fontSize:10, color:"#aaa" }}>{new Date(camp.created_at).toLocaleDateString()}</div>
-            </div>
-          ))}
-        </div>
-      </div>
     {showGuide&&(
       <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.75)", zIndex:9999, display:"flex", alignItems:"flex-end", justifyContent:"center", padding:"1rem" }}>
         <div style={{ background:"#1a1a1a", borderRadius:16, padding:"1.5rem", width:"100%", maxWidth:420 }} onClick={e=>e.stopPropagation()}>
