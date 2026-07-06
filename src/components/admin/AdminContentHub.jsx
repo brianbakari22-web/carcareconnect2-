@@ -41,10 +41,10 @@ function generateCaption(item, platform, type, itemUrl) {
 function getItemUrl(item) {
   const base = "https://carcareconnect.care"
   if (!item) return base
-  if (item._type === "car") return `${base}/dashboard/marketplace?car=${item.id}`
-  if (item._type === "service") return `${base}/dashboard/services?service=${item.id}`
-  if (item._type === "parts") return `${base}/dashboard/parts?item=${item.id}`
-  if (item._type === "provider") return `${base}/dashboard/discover?provider=${item.id}`
+  if (item._type === "car") return `${base}/provider/${item.provider_id||item.id}`
+  if (item._type === "service") return `${base}/service/${item.id}`
+  if (item._type === "parts") return `${base}/parts/${item.id}`
+  if (item._type === "provider") return `${base}/provider/${item.id}`
   return base
 }
 

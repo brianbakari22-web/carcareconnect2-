@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { SplashScreen } from "@capacitor/splash-screen"
+import PublicServicePage from "./components/public/PublicServicePage"
+import PublicItemPage from "./components/public/PublicItemPage"
 import { initPushNotifications } from "./lib/pushNotifications"
 import React, { useState, useEffect } from "react"
 import { supabase } from "./lib/supabase"
@@ -445,6 +447,8 @@ export default function App() {
               <Route path="/dashboard/*" element={<ProtectedRoute><DashboardRouter /></ProtectedRoute>} />
               <Route path="/not-found" element={<NotFound />} />
               <Route path="/provider/:id" element={<PublicProviderStorefront />} />
+              <Route path="/service/:id" element={<PublicServicePage />} />
+              <Route path="/parts/:id" element={<PublicItemPage />} />
               <Route path="/" element={<LandingPage />} />
               <Route path="*" element={<Navigate to="/auth" replace />} />
             </Routes>
