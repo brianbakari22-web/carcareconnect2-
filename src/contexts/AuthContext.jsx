@@ -99,7 +99,7 @@ export function AuthProvider({ children }) {
         .select("*")
         .eq("id", userId)
         .maybeSingle()
-      console.log("fetchProfile result", data, error)
+      // console.log("fetchProfile result", data, error)
       if (error) throw error
       if (data) {
         setProfile(data)
@@ -109,9 +109,8 @@ export function AuthProvider({ children }) {
       if (data.role === "admin") {
         initWebPushForAdmin(userId).catch(e => console.log("Web push init:", e.message))
       }
-        setLoading(false)
-        initPushNotifications(userId)
-      } else if (retries < 10) {
+      setLoading(false)
+      } else if (retries < 3) {
         setTimeout(() => fetchProfile(userId, retries+1), 500)
       } else {
         setLoading(false)

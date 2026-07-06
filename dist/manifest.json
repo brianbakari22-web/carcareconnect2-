@@ -1,0 +1,23 @@
+{
+  "name": "Car Care Connect",
+  "short_name": "CCC",
+  "description": "Nairobi's #1 automotive services marketplace",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#e6821e",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "automotive",
+    "lifestyle"
+  ],
+  "lang": "en"
+}
