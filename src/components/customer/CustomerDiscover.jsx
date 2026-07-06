@@ -1,6 +1,7 @@
 import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { useSearchParams } from "react-router-dom"
 import { getCurrentPosition } from "../../lib/geolocation"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
@@ -16,6 +17,7 @@ export default function CustomerDiscover() {
   const { user } = useAuth()
   const { t, language } = useLanguage()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [providers, setProviders] = useState([])
   const [ratings, setRatings] = useState({})
   const [bundles, setBundles] = useState([])
@@ -55,6 +57,17 @@ export default function CustomerDiscover() {
       .subscribe()
     return () => supabase.removeChannel(sub)
   }, [user])
+
+  useEffect(() => {
+    const providerId = searchParams.get("provider")
+    if (!providerId || providers.length === 0) return
+    const found = providers.find(p => p.id === providerId)
+    if (found) setSelectedProvider(found)
+    else {
+      supabase.from("profiles").select("*").eq("id", providerId).single()
+        .then(({ data }) => { if (data) setSelectedProvider(data) })
+    }
+  }, [searchParams, providers])
 
   async function load() {
     await Promise.all([loadProviders(), loadDrivers(), loadServices(), loadBundles(), loadBusinessHours(), loadClosures()])

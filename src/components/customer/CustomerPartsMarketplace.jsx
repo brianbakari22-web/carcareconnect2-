@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { useSearchParams } from "react-router-dom"
 import { getCurrentPosition } from "../../lib/geolocation"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -26,6 +27,7 @@ const SC = { pending:"#e6821e", confirmed:"#378add", processing:"#8b5cf6", ready
 export default function CustomerPartsMarketplace() {
   const { user, profile } = useAuth()
   const isMobile = useIsMobile()
+  const [searchParams] = useSearchParams()
   const [items, setItems] = useState([])
   const [providers, setProviders] = useState({})
   const [zones, setZones] = useState([])
@@ -69,6 +71,18 @@ export default function CustomerPartsMarketplace() {
       .subscribe()
     return () => supabase.removeChannel(sub)
   }, [user])
+
+  useEffect(() => {
+    const itemId = searchParams.get("item")
+    if (!itemId || items.length === 0) return
+    const found = items.find(i => i.id === itemId)
+    if (found) {
+      setSelectedItem(found)
+    } else {
+      supabase.from("inventory").select("*").eq("id", itemId).single()
+        .then(({ data }) => { if (data) setSelectedItem(data) })
+    }
+  }, [searchParams, items])
 
   async function load() {
     const { data: inv } = await supabase.from("inventory")

@@ -1,5 +1,6 @@
 ﻿import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { useSearchParams } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -14,6 +15,7 @@ const CATEGORIES = [
 
 export default function CustomerServices() {
   const isMobile = useIsMobile()
+  const [searchParams] = useSearchParams()
   const { user, profile } = useAuth()
   const { t } = useLanguage()
   const [services, setServices] = useState([])
@@ -41,6 +43,19 @@ export default function CustomerServices() {
   const [bulkVehicles, setBulkVehicles] = useState([])
 
   useEffect(() => { if (user) load() }, [user])
+
+  useEffect(() => {
+    const serviceId = searchParams.get("service")
+    if (!serviceId || services.length === 0) return
+    const found = services.find(s => s.id === serviceId)
+    if (found) {
+      setBooking(found)
+      setBookForm({ date:"", time:"", notes:"", payment_method:"mpesa", is_concierge:false })
+    } else {
+      supabase.from("services").select("*").eq("id", serviceId).single()
+        .then(({ data }) => { if (data) { setBooking(data); setBookForm({ date:"", time:"", notes:"", payment_method:"mpesa", is_concierge:false }) } })
+    }
+  }, [searchParams, services])
 
   async function load() {
     const [{ data: svcs }, { data: provs }, { data: vehs }, { data: bds }] = await Promise.all([
