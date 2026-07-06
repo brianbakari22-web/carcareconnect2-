@@ -484,6 +484,20 @@ export default function CustomerDiscover() {
             </div>
           )}
 
+          {["parts_dealer","accessories_shop","tyre_shop"].includes(selectedProvider.provider_type) ? (
+            <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:12, padding:"1.25rem", marginBottom:"1rem", textAlign:"center" }}>
+              <div style={{ fontSize:32, marginBottom:8 }}>🛒</div>
+              <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#000000", marginBottom:6 }}>
+                {selectedProvider.provider_type==="parts_dealer"?"Parts Dealer":selectedProvider.provider_type==="accessories_shop"?"Accessories Shop":"Tyre Shop"}
+              </div>
+              <div style={{ fontSize:12, color:"#666", marginBottom:"1rem" }}>This provider sells products through the Parts Marketplace. Browse their inventory and place orders there.</div>
+              <button onClick={()=>window.dispatchEvent(new CustomEvent("ccc-navigate",{detail:"parts"}))}
+                style={{ background:"#e6821e", color:"#fff", border:"none", borderRadius:8, padding:"10px 20px", fontSize:13, fontWeight:700, cursor:"pointer" }}>
+                🛒 Browse their products
+              </button>
+            </div>
+          ) : (
+            <div>
           <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:10, color:"#000000" }}>
             {t("servicesOffered")} ({providerServices(selectedProvider.id).length})
           </div>
@@ -513,9 +527,10 @@ export default function CustomerDiscover() {
               </div>
             ))}
           </div>
+            </div>
+          )}
         </div>
       )}
-
       {tab==="services"&&(
         <div>
           {bundles.length>0&&(
