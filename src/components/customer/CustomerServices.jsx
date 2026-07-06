@@ -742,7 +742,12 @@ export default function CustomerServices() {
               customerPhone={profile?.phone}
               customerName={profile?.first_name+" "+profile?.last_name}
               onSuccess={()=>{ setShowPayment(false); setPendingBooking(null); toast.success("Payment successful!") }}
-              onCancel={()=>{ setShowPayment(false); setPendingBooking(null) }}
+              onCancel={async ()=>{ 
+              if (pendingBooking?.id) {
+                await supabase.from("bookings").delete().eq("id", pendingBooking.id).eq("payment_status","pending")
+                toast("Booking cancelled", { icon:"ℹ️" })
+              }
+              setShowPayment(false); setPendingBooking(null) }}
             />
           </div>
         </div>
