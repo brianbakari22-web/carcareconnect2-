@@ -144,6 +144,38 @@ export default function AdminContentHub() {
     toast.success("Caption copied!")
   }
 
+  function shareToSocial(platformKey) {
+    const url = "https://carcareconnect.care"
+    const encodedCaption = encodeURIComponent(caption)
+    const encodedUrl = encodeURIComponent(url)
+    const savedUrl = socialAccounts[platformKey]
+
+    const shareUrls = {
+      whatsapp: savedUrl ? savedUrl : `https://wa.me/?text=${encodedCaption}`,
+      facebook: savedUrl ? savedUrl : `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedCaption}`,
+      x: savedUrl ? savedUrl : `https://twitter.com/intent/tweet?text=${encodeURIComponent(caption.substring(0,260))}&url=${encodedUrl}`,
+      instagram: null,
+      tiktok: null,
+      youtube: null,
+    }
+
+    const shareUrl = shareUrls[platformKey]
+    if (shareUrl) {
+      window.open(shareUrl, "_blank", "width=600,height=500")
+      navigator.clipboard.writeText(caption)
+      toast.success(`Opening ${PLATFORMS.find(p=>p.key===platformKey)?.label}... Caption copied!`)
+    } else {
+      navigator.clipboard.writeText(caption)
+      const appUrls = {
+        instagram: socialAccounts.instagram||"https://www.instagram.com",
+        tiktok: socialAccounts.tiktok||"https://www.tiktok.com",
+        youtube: socialAccounts.youtube||"https://studio.youtube.com",
+      }
+      window.open(appUrls[platformKey], "_blank")
+      toast.success("Caption copied! Paste it when you create your post.")
+    }
+  }
+
   async function downloadPhoto(url, filename) {
     setDownloading(true)
     try {
