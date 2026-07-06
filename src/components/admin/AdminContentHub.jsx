@@ -404,157 +404,170 @@ export default function AdminContentHub() {
         {/* Content generator panel */}
         {selected&&(
           <div style={{ position:isMobile?"static":"sticky", top:80 }}>
-            <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:16, padding:"1.25rem", marginBottom:"1rem" }}>
-              <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#000", marginBottom:"1rem" }}>📱 Post Generator</div>
-
-              {/* Platform selector */}
-              <div style={{ marginBottom:"1rem" }}>
-                <div style={{ fontSize:11, color:"#666", marginBottom:6 }}>Select platform</div>
-                <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:6 }}>
-                  {PLATFORMS.map(p=>(
-                    <button key={p.key} onClick={()=>updateCaption(p.key)}
-                      style={{ background:platform===p.key?p.color:"#f8f8f8", border:`1px solid ${platform===p.key?p.color:"#eeeeee"}`, borderRadius:8, padding:"6px 4px", cursor:"pointer", textAlign:"center" }}>
-                      <div style={{ fontSize:16 }}>{p.icon}</div>
-                      <div style={{ fontSize:9, color:platform===p.key?"#fff":"#555", marginTop:2, fontWeight:platform===p.key?700:400 }}>{p.label}</div>
-                    </button>
-                  ))}
+            {/* POST STUDIO */}
+            <div style={{ background:"#0f0f0f", borderRadius:20, overflow:"hidden", marginBottom:"1rem" }}>
+              <div style={{ padding:"1rem 1.25rem 0.75rem", borderBottom:"1px solid #1e1e1e", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                <div>
+                  <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#fff" }}>✦ Post Studio</div>
+                  <div style={{ fontSize:10, color:"#555" }}>Build content for your platforms</div>
                 </div>
+                {selected&&<div style={{ fontSize:10, color:"#e6821e", background:"#e6821e15", border:"1px solid #e6821e30", borderRadius:10, padding:"3px 8px" }}>{selected._type?.toUpperCase()}</div>}
               </div>
 
-              {/* Caption editor */}
-              <div style={{ marginBottom:"1rem" }}>
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:4 }}>
-                  <div style={{ fontSize:11, color:"#666" }}>Caption</div>
-                  {charLimit&&<div style={{ fontSize:10, color:overLimit?"#e24b4a":"#888" }}>{charCount}/{charLimit}</div>}
-                </div>
-                <textarea value={caption} onChange={e=>setCaption(e.target.value)}
-                  style={{ width:"100%", background:"#f8f8f8", border:`1px solid ${overLimit?"#e24b4a":"#eeeeee"}`, borderRadius:8, padding:"10px 12px", fontSize:12, outline:"none", resize:"vertical", minHeight:160, fontFamily:"DM Sans,sans-serif", lineHeight:1.6 }}/>
-                <button onClick={copyCaption} style={{ width:"100%", background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px", cursor:"pointer", marginTop:6 }}>
-                  📋 Copy Caption
-                </button>
-              </div>
-
-              {/* Deep link URL */}
-              <div style={{ marginBottom:"1rem" }}>
-                <div style={{ fontSize:11, color:"#666", marginBottom:6 }}>🔗 Share URL</div>
-                <div style={{ display:"flex", gap:6, alignItems:"center" }}>
-                  <div style={{ flex:1, background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:8, padding:"8px 10px", fontSize:10, color:"#378add", wordBreak:"break-all", fontFamily:"monospace" }}>
-                    {getItemUrl(selected)}
+              {/* Image preview */}
+              {selectedPhoto ? (
+                <div style={{ position:"relative" }}>
+                  <img src={selectedPhoto} alt="" style={{ width:"100%", height:190, objectFit:"cover", display:"block" }}/>
+                  <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom, transparent 50%, #0f0f0f)" }}/>
+                  <div style={{ position:"absolute", bottom:10, left:12, right:12 }}>
+                    <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:800, color:"#fff" }}>{selected?._label}</div>
+                    {selected?._price&&<div style={{ fontSize:12, color:"#e6821e", fontWeight:700 }}>KES {Number(selected._price).toLocaleString()}</div>}
                   </div>
-                  <button onClick={()=>{ navigator.clipboard.writeText(getItemUrl(selected)); toast.success("URL copied!") }}
-                    style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:8, color:"#378add", fontSize:11, fontWeight:700, padding:"8px 10px", cursor:"pointer", flexShrink:0 }}>
-                    📋
-                  </button>
+                  {selected?._photos?.length>1&&(
+                    <div style={{ position:"absolute", top:8, right:8, background:"rgba(0,0,0,0.6)", borderRadius:10, padding:"2px 8px", fontSize:10, color:"#fff" }}>
+                      📷 {selected._photos.length}
+                    </div>
+                  )}
                 </div>
-                <div style={{ fontSize:9, color:"#aaa", marginTop:4 }}>This link takes customers directly to this item on CCC</div>
-              </div>
+              ) : selected ? (
+                <div style={{ height:120, background:"#1a1a1a", display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:6 }}>
+                  <div style={{ fontSize:40 }}>{selected._category_icon||"🔧"}</div>
+                  <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#fff" }}>{selected._label}</div>
+                  {selected._price&&<div style={{ fontSize:11, color:"#e6821e" }}>KES {Number(selected._price).toLocaleString()}</div>}
+                </div>
+              ) : (
+                <div style={{ height:100, background:"#1a1a1a", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                  <div style={{ fontSize:12, color:"#333" }}>← Select an item to generate content</div>
+                </div>
+              )}
 
-              {/* Photo downloads */}
-              {selected._photos?.length>0&&(
+              <div style={{ padding:"1rem 1.25rem" }}>
+                {/* Platform pills */}
                 <div style={{ marginBottom:"1rem" }}>
-                  <div style={{ fontSize:11, color:"#666", marginBottom:6 }}>📷 Photos ({selected._photos.length}) — tap to select for card</div>
-                  {/* Photo grid - tap to select */}
-                  <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:6, marginBottom:8 }}>
-                    {selected._photos.map((p,i)=>(
-                      <div key={i}>
-                        <div onClick={()=>setSelectedPhoto(p)} style={{ cursor:"pointer", position:"relative" }}>
-                          <img src={p} alt="" style={{ width:"100%", aspectRatio:"1", objectFit:"cover", borderRadius:6, border:`2px solid ${selectedPhoto===p?"#e6821e":"#eeeeee"}`, display:"block" }}/>
-                          {selectedPhoto===p&&(
-                            <div style={{ position:"absolute", top:3, right:3, background:"#e6821e", borderRadius:"50%", width:18, height:18, display:"flex", alignItems:"center", justifyContent:"center", fontSize:10, color:"#fff", fontWeight:700, pointerEvents:"none" }}>✓</div>
-                          )}
-                        </div>
-                        <button onClick={()=>downloadPhoto(p, `CCC-photo-${i+1}.jpg`)}
-                          style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:4, color:"#555", fontSize:9, cursor:"pointer", padding:"3px 0", marginTop:3 }}>
-                          ⬇ Save
-                        </button>
-                      </div>
+                  <div style={{ fontSize:9, color:"#444", marginBottom:6, textTransform:"uppercase", letterSpacing:"0.08em" }}>Platform</div>
+                  <div style={{ display:"flex", gap:5, flexWrap:"wrap" }}>
+                    {PLATFORMS.map(p=>(
+                      <button key={p.key} onClick={()=>updateCaption(p.key)}
+                        style={{ background:platform===p.key?p.color:"#1e1e1e", border:`1px solid ${platform===p.key?p.color:"#2a2a2a"}`, borderRadius:20, padding:"4px 10px", cursor:"pointer", display:"flex", alignItems:"center", gap:4, transition:"all 0.15s" }}>
+                        <span style={{ fontSize:11 }}>{p.icon}</span>
+                        <span style={{ fontSize:10, color:platform===p.key?"#fff":"#555", fontWeight:platform===p.key?700:400 }}>{p.label}</span>
+                      </button>
                     ))}
                   </div>
-                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                    {selectedPhoto ? (
-                      <div style={{ fontSize:10, color:"#e6821e", fontWeight:600 }}>✓ Photo selected for branded card</div>
-                    ):(
-                      <div style={{ fontSize:10, color:"#888" }}>Tap a photo to select it for the branded card</div>
-                    )}
-                    <button onClick={()=>selected._photos.forEach((p,i)=>setTimeout(()=>downloadPhoto(p,`CCC-photo-${i+1}.jpg`),i*600))}
-                      style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:6, color:"#378add", fontSize:10, padding:"4px 10px", cursor:"pointer" }}>
-                      ⬇ Download all
+                </div>
+
+                {/* Caption */}
+                <div style={{ marginBottom:"0.75rem" }}>
+                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:4 }}>
+                    <div style={{ fontSize:9, color:"#444", textTransform:"uppercase", letterSpacing:"0.08em" }}>Caption</div>
+                    {charLimit&&<div style={{ fontSize:9, color:overLimit?"#e24b4a":"#444" }}>{charCount}/{charLimit}</div>}
+                  </div>
+                  <textarea value={caption} onChange={e=>setCaption(e.target.value)}
+                    style={{ width:"100%", background:"#1a1a1a", border: overLimit ? "1px solid #e24b4a" : "1px solid #2a2a2a", borderRadius:10, padding:"10px 12px", fontSize:11, outline:"none", resize:"vertical", minHeight:130, fontFamily:"DM Sans,sans-serif", lineHeight:1.6, color:"#ccc" }}/>
+                </div>
+
+                {/* URL row */}
+                {selected&&(
+                  <div style={{ display:"flex", gap:6, alignItems:"center", marginBottom:"0.75rem", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, padding:"6px 10px" }}>
+                    <span style={{ fontSize:11 }}>🔗</span>
+                    <div style={{ flex:1, fontSize:9, color:"#378add", fontFamily:"monospace", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{getItemUrl(selected)}</div>
+                    <button onClick={()=>{ navigator.clipboard.writeText(getItemUrl(selected)); toast.success("URL copied!") }}
+                      style={{ background:"#378add20", border:"none", borderRadius:6, color:"#378add", fontSize:10, fontWeight:700, padding:"3px 8px", cursor:"pointer", flexShrink:0 }}>
+                      Copy
                     </button>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Video download */}
-              {selected._video&&(
-                <div style={{ marginBottom:"1rem" }}>
-                  <div style={{ fontSize:11, color:"#666", marginBottom:6 }}>🎥 Video</div>
-                  <video src={selected._video} controls style={{ width:"100%", borderRadius:8, maxHeight:160 }}/>
-                  <button onClick={()=>downloadVideo(selected._video, `CCC-${selected._label?.replace(/\s+/g,"-")}-video.mp4`)} disabled={downloading}
-                    style={{ width:"100%", background:"#8b5cf6", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px", cursor:"pointer", marginTop:6 }}>
-                    {downloading?"Downloading...":"⬇ Download Video"}
+                {/* Photo strip */}
+                {selected?._photos?.length>0&&(
+                  <div style={{ marginBottom:"0.75rem" }}>
+                    <div style={{ fontSize:9, color:"#444", textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:5 }}>Photos</div>
+                    <div style={{ display:"flex", gap:5, overflowX:"auto", paddingBottom:4 }}>
+                      {selected._photos.map((p,i)=>(
+                        <div key={i} onClick={()=>setSelectedPhoto(p)} style={{ position:"relative", flexShrink:0, cursor:"pointer" }}>
+                          <img src={p} alt="" style={{ width:54, height:54, objectFit:"cover", borderRadius:8, border:`2px solid ${selectedPhoto===p?"#e6821e":"#2a2a2a"}`, display:"block" }}/>
+                          {selectedPhoto===p&&<div style={{ position:"absolute", top:2, right:2, background:"#e6821e", borderRadius:"50%", width:14, height:14, display:"flex", alignItems:"center", justifyContent:"center", fontSize:8, color:"#fff" }}>✓</div>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Action buttons */}
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:6, marginBottom:"0.75rem" }}>
+                  <button onClick={copyCaption}
+                    style={{ background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"9px", cursor:"pointer" }}>
+                    📋 Copy Caption
+                  </button>
+                  <button onClick={()=>selected&&generateContentCard(selected)} disabled={downloading}
+                    style={{ background:"#1d9e75", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"9px", cursor:downloading?"not-allowed":"pointer", opacity:downloading?0.6:1 }}>
+                    {downloading?"Generating...":"🖼 Branded Card"}
                   </button>
                 </div>
-              )}
 
-              {/* Content card generator */}
-              <div style={{ marginBottom:"1rem" }}>
-                <div style={{ fontSize:11, color:"#666", marginBottom:6 }}>🖼️ Generate Content Card</div>
-                <button onClick={()=>generateContentCard(selected)} disabled={downloading}
-                  style={{ width:"100%", background:"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"10px", cursor:"pointer" }}>
-                  {downloading?"Generating...":"⬇ Download Branded Card (1080×1080)"}
-                </button>
-                <div style={{ fontSize:10, color:"#888", marginTop:4, textAlign:"center" }}>Square format — perfect for Instagram, Facebook & WhatsApp</div>
-              </div>
-
-              {/* Social Share */}
-              <div style={{ marginBottom:"1rem" }}>
-                <div style={{ fontSize:11, color:"#666", marginBottom:8 }}>🚀 Share directly</div>
-                <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:6 }}>
-                  {PLATFORMS.map(p=>(
-                    <button key={p.key} onClick={()=>shareToSocial(p.key)}
-                      style={{ background:p.color+"15", border:`1px solid ${p.color}40`, borderRadius:8, color:p.color, fontSize:11, fontWeight:700, padding:"8px 4px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:3 }}>
-                      <span style={{ fontSize:16 }}>{p.icon}</span>
-                      <span style={{ fontSize:9 }}>{p.key==="instagram"||p.key==="tiktok"||p.key==="youtube"?"Copy+Open":"Share"}</span>
+                {/* Video download */}
+                {selected?._video&&(
+                  <div style={{ marginBottom:"0.75rem" }}>
+                    <video src={selected._video} controls style={{ width:"100%", borderRadius:8, maxHeight:140 }}/>
+                    <button onClick={()=>downloadVideo(selected._video, `CCC-video.mp4`)} disabled={downloading}
+                      style={{ width:"100%", background:"#8b5cf6", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"8px", cursor:"pointer", marginTop:5 }}>
+                      ⬇ Download Video
                     </button>
-                  ))}
-                </div>
-                <div style={{ fontSize:9, color:"#aaa", marginTop:4, textAlign:"center" }}>WhatsApp, Facebook & X support direct sharing. Instagram/TikTok/YouTube: caption is copied, then app opens.</div>
-              </div>
+                  </div>
+                )}
 
-              {/* Mark as posted */}
-              <div style={{ marginBottom:"1rem" }}>
-                <div style={{ fontSize:11, color:"#666", marginBottom:6 }}>✅ Track posting</div>
-                <button onClick={()=>markAsPosted(selected.id, platform)}
-                  style={{ width:"100%", background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:8, color:"#1d9e75", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px", cursor:"pointer" }}>
-                  ✓ Mark as posted on {platformInfo?.label}
-                </button>
-              </div>
-
-              {/* Schedule post */}
-              <div>
-                <div style={{ fontSize:11, color:"#666", marginBottom:6 }}>📅 Schedule post</div>
-                {!showScheduleForm ? (
-                  <button onClick={()=>setShowScheduleForm(true)}
-                    style={{ width:"100%", background:"#f5f3ff", border:"1px solid #8b5cf640", borderRadius:8, color:"#8b5cf6", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px", cursor:"pointer" }}>
-                    📅 Schedule for later
+                {/* Download all photos */}
+                {selected?._photos?.length>0&&(
+                  <button onClick={()=>selected._photos.forEach((p,i)=>setTimeout(()=>downloadPhoto(p,`CCC-photo-${i+1}.jpg`),i*600))}
+                    style={{ width:"100%", background:"#1e1e1e", border:"1px solid #2a2a2a", borderRadius:10, color:"#888", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"8px", cursor:"pointer", marginBottom:"0.75rem" }}>
+                    ⬇ Download All Photos
                   </button>
-                ):(
-                  <div style={{ background:"#f5f3ff", border:"1px solid #8b5cf630", borderRadius:8, padding:"0.75rem" }}>
+                )}
+
+                {/* Share row */}
+                <div style={{ marginBottom:"0.75rem" }}>
+                  <div style={{ fontSize:9, color:"#444", textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:5 }}>Share directly</div>
+                  <div style={{ display:"grid", gridTemplateColumns:"repeat(6,1fr)", gap:4 }}>
+                    {PLATFORMS.map(p=>(
+                      <button key={p.key} onClick={()=>shareToSocial(p.key)}
+                        style={{ background:p.color+"18", border:`1px solid ${p.color}30`, borderRadius:8, color:p.color, padding:"8px 2px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:2 }}>
+                        <span style={{ fontSize:16 }}>{p.icon}</span>
+                        <span style={{ fontSize:7, fontWeight:700 }}>{["instagram","tiktok","youtube"].includes(p.key)?"Open":"Share"}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Track + Schedule row */}
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:6 }}>
+                  <button onClick={()=>selected&&markAsPosted(selected.id, platform)}
+                    style={{ background:"#1e1e1e", border:"1px solid #1d9e7530", borderRadius:10, color:"#1d9e75", fontFamily:"Syne,sans-serif", fontSize:10, fontWeight:700, padding:"9px 4px", cursor:"pointer" }}>
+                    ✓ Mark Posted
+                  </button>
+                  <button onClick={()=>setShowScheduleForm(s=>!s)}
+                    style={{ background:"#1e1e1e", border:"1px solid #8b5cf630", borderRadius:10, color:"#8b5cf6", fontFamily:"Syne,sans-serif", fontSize:10, fontWeight:700, padding:"9px 4px", cursor:"pointer" }}>
+                    📅 Schedule
+                  </button>
+                </div>
+
+                {/* Schedule form */}
+                {showScheduleForm&&(
+                  <div style={{ background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:10, padding:"0.75rem", marginTop:6 }}>
                     <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:8 }}>
                       <div>
-                        <label style={{ fontSize:10, color:"#666", display:"block", marginBottom:3 }}>Date</label>
+                        <label style={{ fontSize:9, color:"#555", display:"block", marginBottom:3, textTransform:"uppercase" }}>Date</label>
                         <input type="date" value={scheduleForm.date} onChange={e=>setScheduleForm(f=>({...f,date:e.target.value}))} min={new Date().toISOString().split("T")[0]}
-                          style={{ width:"100%", background:"#fff", border:"1px solid #e5e5e5", borderRadius:6, padding:"7px 8px", fontSize:12, outline:"none" }}/>
+                          style={{ width:"100%", background:"#0f0f0f", border:"1px solid #2a2a2a", borderRadius:6, padding:"7px 8px", fontSize:11, outline:"none", color:"#ccc" }}/>
                       </div>
                       <div>
-                        <label style={{ fontSize:10, color:"#666", display:"block", marginBottom:3 }}>Time</label>
+                        <label style={{ fontSize:9, color:"#555", display:"block", marginBottom:3, textTransform:"uppercase" }}>Time</label>
                         <input type="time" value={scheduleForm.time} onChange={e=>setScheduleForm(f=>({...f,time:e.target.value}))}
-                          style={{ width:"100%", background:"#fff", border:"1px solid #e5e5e5", borderRadius:6, padding:"7px 8px", fontSize:12, outline:"none" }}/>
+                          style={{ width:"100%", background:"#0f0f0f", border:"1px solid #2a2a2a", borderRadius:6, padding:"7px 8px", fontSize:11, outline:"none", color:"#ccc" }}/>
                       </div>
                     </div>
                     <div style={{ display:"flex", gap:6 }}>
-                      <button onClick={schedulePost} style={{ flex:2, background:"#8b5cf6", border:"none", borderRadius:7, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px", cursor:"pointer" }}>Schedule</button>
-                      <button onClick={()=>setShowScheduleForm(false)} style={{ flex:1, background:"none", border:"1px solid #ddd", borderRadius:7, color:"#888", fontSize:12, padding:"8px", cursor:"pointer" }}>Cancel</button>
+                      <button onClick={schedulePost} style={{ flex:2, background:"#8b5cf6", border:"none", borderRadius:7, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"8px", cursor:"pointer" }}>Schedule</button>
+                      <button onClick={()=>setShowScheduleForm(false)} style={{ flex:1, background:"none", border:"1px solid #2a2a2a", borderRadius:7, color:"#555", fontSize:11, padding:"8px", cursor:"pointer" }}>Cancel</button>
                     </div>
                   </div>
                 )}
