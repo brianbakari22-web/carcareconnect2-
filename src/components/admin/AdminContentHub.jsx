@@ -770,7 +770,7 @@ export default function AdminContentHub() {
         </div>
       </div>
     {showGuide&&(
-      <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.75)", zIndex:9999, display:"flex", alignItems:"flex-end", justifyContent:"center", padding:"1rem" }} onClick={()=>setShowGuide(null)}>
+      <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.75)", zIndex:9999, display:"flex", alignItems:"flex-end", justifyContent:"center", padding:"1rem" }}>
         <div style={{ background:"#1a1a1a", borderRadius:16, padding:"1.5rem", width:"100%", maxWidth:420 }} onClick={e=>e.stopPropagation()}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#fff" }}>{PLATFORMS.find(p=>p.key===showGuide)?.icon} Post on {PLATFORMS.find(p=>p.key===showGuide)?.label}</div>
