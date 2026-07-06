@@ -275,7 +275,7 @@ export default function CustomerTracking() {
         <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#000000", marginBottom:4 }}>{selected.service_name}</div>
         <div style={{ display:"flex", gap:10, flexWrap:"wrap", marginBottom:10 }}>
           <span style={{ fontSize:11, padding:"2px 8px", borderRadius:10, background:`${SC[selected.status]||"#888"}20`, color:SC[selected.status]||"#888" }}>{selected.status}</span>
-          {selected.concierge_status&&<span style={{ fontSize:11, padding:"2px 8px", borderRadius:10, background:"#faf5ff", color:"#8b5cf6" }}>{selected.concierge_status?.replace("_"," ")}</span>}
+          {selected.concierge_status&&selected.concierge_status!=="pending"&&<span style={{ fontSize:11, padding:"2px 8px", borderRadius:10, background:"#faf5ff", color:"#8b5cf6" }}>{selected.concierge_status?.replace(/_/g," ")}</span>}
           <span style={{ fontSize:11, color:"#777777" }}>#{selected.booking_number}</span>
         </div>
 
