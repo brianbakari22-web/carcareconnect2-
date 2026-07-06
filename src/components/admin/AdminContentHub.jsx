@@ -320,7 +320,7 @@ export default function AdminContentHub() {
     loadCampaigns()
   }
 
-  const filtered = items.filter(i => !search || i._label?.toLowerCase().includes(search.toLowerCase()))
+  const filtered = (selected&&isMobile?items.filter(i=>i.id===selected.id):items).filter(i => !search || i._label?.toLowerCase().includes(search.toLowerCase()))
   const platformInfo = PLATFORMS.find(p=>p.key===platform)
   const charCount = caption.length
   const charLimit = platformInfo?.maxChars
@@ -364,6 +364,12 @@ export default function AdminContentHub() {
       <div style={{ display:"grid", gridTemplateColumns:selected&&!isMobile?"1fr 420px":"1fr", gap:"1.5rem" }}>
         {/* Content list */}
         <div>
+          {selected&&isMobile&&(
+            <button onClick={()=>setSelected(null)}
+              style={{ background:"none", border:"none", color:"#e6821e", cursor:"pointer", fontSize:13, marginBottom:8, padding:0, fontFamily:"DM Sans,sans-serif", display:"flex", alignItems:"center", gap:4 }}>
+              ← Back to all content
+            </button>
+          )}
           <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search content..."
             style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:8, padding:"9px 12px", fontSize:12, outline:"none", marginBottom:10, fontFamily:"DM Sans,sans-serif" }}/>
 
