@@ -26,7 +26,7 @@ function getCategories(providerType) {
   return GARAGE_CATEGORIES
 }
 
-const EMPTY = { name:"", description:"", price:"", duration_minutes:"", category:"shop_standard", service_category_id:"" }
+const EMPTY = { name:"", description:"", price:"", duration_minutes:"", category:"shop_standard", service_category_id:"", photos:[] }
 
 export default function ProviderServices() {
   const { user, profile } = useAuth()
@@ -90,7 +90,9 @@ export default function ProviderServices() {
           duration_minutes: parseInt(form.duration_minutes)||60,
           category: form.category,
           service_category_id: form.service_category_id||null,
-          platform_commission_rate: platformRate,
+          provider_commission_rate: providerRate,
+          photos: form.photos||[],
+          photos: form.photos||[],
           provider_commission_rate: providerRate,
         }).eq("id", editing).eq("provider_id", user.id)
         if (error) throw error
@@ -101,8 +103,10 @@ export default function ProviderServices() {
           name: form.name,
           description: form.description,
           price: parseFloat(form.price),
-          duration_minutes: parseInt(form.duration_minutes)||60,
-          category: form.category,
+          provider_commission_rate: providerRate,
+          photos: form.photos||[],
+          provider_commission_rate: providerRate,
+          photos: form.photos||[],
           service_category_id: form.service_category_id||null,
           platform_commission_rate: platformRate,
           provider_commission_rate: providerRate,
@@ -298,6 +302,17 @@ export default function ProviderServices() {
             <div style={{ marginBottom:14 }}>
               <label style={lbl}>Description</label>
               <textarea style={{ ...inp, resize:"vertical", minHeight:70 }} placeholder="Describe what this service includes..." value={form.description} onChange={e=>setForm(f=>({...f,description:e.target.value}))}/>
+            <div style={{ marginBottom:14 }}>
+              <label style={lbl}>Service photos (optional)</label>
+              <div style={{ fontSize:10, color:"#888", marginBottom:6 }}>Add photos of your work — these appear in the Content Hub for social media sharing</div>
+              <PhotoManager
+                bucket="service-photos"
+                folder={`services/${user.id}`}
+                existingPhotos={form.photos||[]}
+                onPhotosChange={photos=>setForm(f=>({...f,photos}))}
+                maxPhotos={5}
+              />
+            </div>
             </div>
             <div style={{ display:"flex", gap:8 }}>
               <button type="submit" disabled={saving}

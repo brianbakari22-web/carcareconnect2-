@@ -70,8 +70,17 @@ export default function AdminContentHub() {
       const { data: d } = await supabase.from("marketplace_listings").select("*, marketplace_photos!marketplace_photos_listing_id_fkey(photo_url)").order("created_at",{ascending:false})
       data = (d||[]).map(i=>({...i, _type:i.listing_type||"parts", _label:i.title, _price:i.price, _photos:(i.marketplace_photos||[]).map(p=>p.photo_url), _video:i.video_url }))
     } else if (tab==="services") {
-      const { data: d } = await supabase.from("services").select("*, profiles!services_provider_id_fkey(business_name,first_name,last_name,profile_photo_url,avatar_url)").order("created_at",{ascending:false})
-      data = (d||[]).map(i=>({...i, _type:"service", _label:i.name, _price:i.price, _photos:i.profiles?.profile_photo_url?[i.profiles.profile_photo_url]:i.profiles?.avatar_url?[i.profiles.avatar_url]:[], _video:null, business_name:i.profiles?.business_name||i.profiles?.first_name }))
+      const { data: d } = await supabase.from("services").select("*, profiles!services_provider_id_fkey(business_name,first_name,last_name,profile_photo_url,avatar_url)").eq("is_active",true).order("created_at",{ascending:false})
+      data = (d||[]).map(i=>({
+        ...i,
+        _type:"service",
+        _label:i.name,
+        _price:i.price,
+        _photos: i.photos?.length>0 ? i.photos : i.profiles?.profile_photo_url ? [i.profiles.profile_photo_url] : i.profiles?.avatar_url ? [i.profiles.avatar_url] : [],
+        _video:null,
+        business_name:i.profiles?.business_name||i.profiles?.first_name,
+        _category_icon: i.category==="car_wash"?"🚿":i.category==="go_service"?"🚨":i.category==="shop_premium"?"🏡":"🔧"
+      }))
     } else if (tab==="inventory") {
       const { data: d } = await supabase.from("inventory").select("*, profiles!inventory_provider_id_fkey(business_name,first_name,last_name)").eq("is_active",true).order("created_at",{ascending:false})
       data = (d||[]).map(i=>({...i, _type:"parts", _label:i.name, _price:i.price, _photos:i.photos||[], _video:null, business_name:i.profiles?.business_name||i.profiles?.first_name }))
@@ -360,7 +369,7 @@ export default function AdminContentHub() {
                     <img src={item._photos[0]} alt="" style={{ width:"100%", height:140, objectFit:"cover", borderRadius:8 }}/>
                   ):(
                     <div style={{ width:"100%", height:140, background:"#f0f0f0", borderRadius:8, display:"flex", alignItems:"center", justifyContent:"center", fontSize:36 }}>
-                      {item._type==="car"?"🚗":item._type==="wash"?"🚿":item._type==="service"?"🔧":"📦"}
+                      {item._category_icon||( item._type==="car"?"🚗":item._type==="wash"?"🚿":item._type==="service"?"🔧":"📦")}
                     </div>
                   )}
                   {item._video&&(
