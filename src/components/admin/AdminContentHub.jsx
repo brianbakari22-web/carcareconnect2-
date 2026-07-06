@@ -167,13 +167,13 @@ export default function AdminContentHub() {
       toast.success(`Opening ${PLATFORMS.find(p=>p.key===platformKey)?.label}... Caption copied!`)
     } else {
       navigator.clipboard.writeText(caption)
+      setShowGuide(platformKey)
       const appUrls = {
         instagram: socialAccounts.instagram||"https://www.instagram.com",
         tiktok: socialAccounts.tiktok||"https://www.tiktok.com",
         youtube: socialAccounts.youtube||"https://studio.youtube.com",
       }
-      window.open(appUrls[platformKey], "_blank")
-      setShowGuide(platformKey)
+      setTimeout(() => window.open(appUrls[platformKey], "_blank"), 500)
     }
   }
 
