@@ -224,8 +224,6 @@ export default function ProviderAvailability() {
                   if (!day) return <div key={i}/>
                   const dateStr = getDateStr(day)
                   const status = getDayStatus(day)
-                  const isSelected = selected===dateStr
-                  const isToday = dateStr===new Date().toISOString().split("T")[0]
                   const count = bookingCounts[dateStr]||0
                   return (
                     <div key={day} onClick={()=>selectDay(day)}

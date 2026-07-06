@@ -180,114 +180,138 @@ export default function AdminContentHub() {
       canvas.height = 1080
       const ctx = canvas.getContext("2d")
 
-      // Background
-      ctx.fillStyle = "#ffffff"
+      // === BACKGROUND ===
+      ctx.fillStyle = "#0f0f0f"
       ctx.fillRect(0, 0, 1080, 1080)
 
-      // Orange header bar
-      ctx.fillStyle = "#E6821E"
-      ctx.fillRect(0, 0, 1080, 160)
-
-      // CCC Logo text
-      ctx.fillStyle = "#ffffff"
-      ctx.font = "bold 52px Arial"
-      ctx.fillText("Car Care Connect", 40, 80)
-      ctx.font = "24px Arial"
-      ctx.fillStyle = "rgba(255,255,255,0.8)"
-      ctx.fillText("Nairobi's #1 Automotive Marketplace", 40, 120)
-
-      // Load and draw photo if available
+      // === PHOTO SECTION (full bleed with gradient) ===
       const photoToUse = selectedPhoto || item._photos?.[0]
       if (photoToUse) {
         try {
           const img = new Image()
           img.crossOrigin = "anonymous"
-          await new Promise((res, rej) => {
-            img.onload = res
-            img.onerror = rej
-            img.src = photoToUse
-          })
-          // Draw image maintaining aspect ratio (cover style)
+          await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = photoToUse })
           const imgAspect = img.width / img.height
-          const canvasAspect = 1080 / 600
-          let drawX = 0, drawY = 160, drawW = 1080, drawH = 600
-          if (imgAspect > canvasAspect) {
-            // Image wider than canvas area - fit height, crop sides
-            drawH = 600
-            drawW = img.width * (600 / img.height)
-            drawX = (1080 - drawW) / 2
-          } else {
-            // Image taller than canvas area - fit width, crop top/bottom
-            drawW = 1080
-            drawH = img.height * (1080 / img.width)
-            drawY = 160 + (600 - drawH) / 2
-          }
-          ctx.save()
-          ctx.beginPath()
-          ctx.rect(0, 160, 1080, 600)
-          ctx.clip()
+          const canvasAspect = 1080 / 680
+          let drawX = 0, drawY = 0, drawW = 1080, drawH = 680
+          if (imgAspect > canvasAspect) { drawH = 680; drawW = img.width*(680/img.height); drawX = (1080-drawW)/2 }
+          else { drawW = 1080; drawH = img.height*(1080/img.width); drawY = (680-drawH)/2 }
+          ctx.save(); ctx.beginPath(); ctx.rect(0,0,1080,680); ctx.clip()
           ctx.drawImage(img, drawX, drawY, drawW, drawH)
           ctx.restore()
         } catch(e) {
-          ctx.fillStyle = "#f0f0f0"
-          ctx.fillRect(0, 160, 1080, 600)
-          ctx.fillStyle = "#888"
-          ctx.font = "80px Arial"
+          ctx.fillStyle = "#1a1a1a"
+          ctx.fillRect(0,0,1080,680)
+          ctx.fillStyle = "#333"
+          ctx.font = "120px Arial"
           ctx.textAlign = "center"
-          ctx.fillText("🚗", 540, 500)
+          ctx.fillText(item._category_icon||"🔧", 540, 380)
           ctx.textAlign = "left"
         }
       } else {
-        ctx.fillStyle = "#f0f0f0"
-        ctx.fillRect(0, 160, 1080, 600)
-        ctx.fillStyle = "#888"
-        ctx.font = "80px Arial"
+        ctx.fillStyle = "#1a1a1a"
+        ctx.fillRect(0,0,1080,680)
+        ctx.fillStyle = "#333"
+        ctx.font = "120px Arial"
         ctx.textAlign = "center"
-        ctx.fillText("🚗", 540, 500)
+        ctx.fillText(item._category_icon||"🔧", 540, 380)
         ctx.textAlign = "left"
       }
 
-      // Bottom info panel
-      ctx.fillStyle = "#1a1a1a"
-      ctx.fillRect(0, 760, 1080, 320)
+      // === GRADIENT OVERLAY on photo ===
+      const grad = ctx.createLinearGradient(0, 300, 0, 680)
+      grad.addColorStop(0, "rgba(0,0,0,0)")
+      grad.addColorStop(1, "rgba(0,0,0,0.85)")
+      ctx.fillStyle = grad
+      ctx.fillRect(0, 0, 1080, 680)
 
-      // Item name
+      // === LOGO top-left ===
+      ctx.fillStyle = "#E6821E"
+      ctx.beginPath()
+      ctx.roundRect(30, 30, 220, 60, 12)
+      ctx.fill()
       ctx.fillStyle = "#ffffff"
-      ctx.font = "bold 44px Arial"
-      const label = item._label || "Amazing Deal"
-      ctx.fillText(label.length > 30 ? label.substring(0,30)+"..." : label, 40, 830)
+      ctx.font = "bold 28px Arial"
+      ctx.fillText("CarCare Connect", 50, 70)
 
-      // Price
-      if (item._price) {
-        ctx.fillStyle = "#E6821E"
-        ctx.font = "bold 52px Arial"
-        ctx.fillText(`KES ${Number(item._price).toLocaleString()}`, 40, 900)
+      // === CATEGORY BADGE top-right ===
+      const typeLabel = item._type==="service"?"SERVICE":item._type==="car"?"NEW CAR":item._type==="parts"?"PARTS":"PRODUCT"
+      ctx.fillStyle = "rgba(0,0,0,0.6)"
+      ctx.beginPath()
+      ctx.roundRect(830, 30, 220, 60, 12)
+      ctx.fill()
+      ctx.fillStyle = "#E6821E"
+      ctx.font = "bold 24px Arial"
+      ctx.textAlign = "center"
+      ctx.fillText(typeLabel, 940, 70)
+      ctx.textAlign = "left"
+
+      // === BOTTOM INFO PANEL ===
+      ctx.fillStyle = "#111111"
+      ctx.fillRect(0, 680, 1080, 400)
+
+      // === ITEM NAME ===
+      ctx.fillStyle = "#ffffff"
+      ctx.font = "bold 52px Arial"
+      const label = item._label || "Amazing Deal"
+      const shortLabel = label.length > 28 ? label.substring(0,28)+"..." : label
+      ctx.fillText(shortLabel, 40, 760)
+
+      // === DESCRIPTION ===
+      if (item.description || item.name) {
+        const desc = (item.description||item.name||"").substring(0,60)
+        ctx.fillStyle = "#888888"
+        ctx.font = "26px Arial"
+        ctx.fillText(desc.length>55?desc.substring(0,55)+"...":desc, 40, 810)
       }
 
-      // Showroom/provider
-      const sub = item.showroom_name || item.business_name || item.showroom_location || ""
+      // === PRICE ===
+      if (item._price && Number(item._price) > 0) {
+        ctx.fillStyle = "#E6821E"
+        ctx.font = "bold 64px Arial"
+        ctx.fillText(`KES ${Number(item._price).toLocaleString()}`, 40, 890)
+      }
+
+      // === PROVIDER ===
+      const sub = item.showroom_name || item.business_name || ""
       if (sub) {
-        ctx.fillStyle = "#aaaaaa"
+        ctx.fillStyle = "#cccccc"
         ctx.font = "28px Arial"
         ctx.fillText(`🏢 ${sub}`, 40, 950)
       }
 
-      // Website
+      // === DIVIDER ===
+      ctx.fillStyle = "#222222"
+      ctx.fillRect(0, 970, 1080, 2)
+
+      // === FOOTER ===
       ctx.fillStyle = "#E6821E"
-      ctx.font = "bold 28px Arial"
-      ctx.fillText("carcareconnect.care", 40, 1020)
+      ctx.font = "bold 30px Arial"
+      ctx.fillText("carcareconnect.care", 40, 1040)
+      ctx.fillStyle = "#666666"
+      ctx.font = "26px Arial"
+      ctx.fillText("📞 0113858966", 420, 1040)
+      ctx.fillStyle = "#444444"
+      ctx.font = "22px Arial"
+      ctx.fillText("✉ carcareconnect254@gmail.com", 680, 1040)
 
-      // Phone
-      ctx.fillStyle = "#aaaaaa"
-      ctx.font = "24px Arial"
-      ctx.fillText("📞 0113858966", 600, 1020)
+      // === VERIFIED BADGE if applicable ===
+      if (item.is_verified) {
+        ctx.fillStyle = "#1d9e75"
+        ctx.beginPath()
+        ctx.roundRect(40, 895, 200, 44, 10)
+        ctx.fill()
+        ctx.fillStyle = "#ffffff"
+        ctx.font = "bold 22px Arial"
+        ctx.fillText("✓ VERIFIED", 70, 923)
+      }
 
-      // Download
+      // === DOWNLOAD ===
       const link = document.createElement("a")
       link.download = `CCC-${(item._label||"content").replace(/\s+/g,"-")}-card.png`
       link.href = canvas.toDataURL("image/png")
       link.click()
-      toast.success("Content card downloaded!")
+      toast.success("Content card downloaded! 🎨")
     } catch(e) { toast.error("Card generation failed: " + e.message) }
     finally { setDownloading(false) }
   }
