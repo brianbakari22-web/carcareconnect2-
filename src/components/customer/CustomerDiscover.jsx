@@ -491,7 +491,7 @@ export default function CustomerDiscover() {
                 {selectedProvider.provider_type==="parts_dealer"?"Parts Dealer":selectedProvider.provider_type==="accessories_shop"?"Accessories Shop":"Tyre Shop"}
               </div>
               <div style={{ fontSize:12, color:"#666", marginBottom:"1rem" }}>This provider sells products through the Parts Marketplace. Browse their inventory and place orders there.</div>
-              <button onClick={()=>window.dispatchEvent(new CustomEvent("ccc-navigate",{detail:"parts"}))}
+              <button onClick={()=>navigate("/dashboard/parts")}
                 style={{ background:"#e6821e", color:"#fff", border:"none", borderRadius:8, padding:"10px 20px", fontSize:13, fontWeight:700, cursor:"pointer" }}>
                 🛒 Browse their products
               </button>
