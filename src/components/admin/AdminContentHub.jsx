@@ -62,6 +62,9 @@ export default function AdminContentHub() {
   const [search, setSearch] = useState("")
   const [campaign, setCampaign] = useState("")
   const [campaigns, setCampaigns] = useState([])
+  const [socialAccounts, setSocialAccounts] = useState({ whatsapp:"", tiktok:"", instagram:"", facebook:"", x:"", youtube:"" })
+  const [editingSocial, setEditingSocial] = useState(false)
+  const [showSocialSetup, setShowSocialSetup] = useState(false)
   const [showCampaignForm, setShowCampaignForm] = useState(false)
   const [campaignForm, setCampaignForm] = useState({ name:"", description:"" })
   const [scheduledPosts, setScheduledPosts] = useState([])
@@ -108,7 +111,22 @@ export default function AdminContentHub() {
     setCampaigns(data||[])
   }
 
-  useEffect(() => { loadCampaigns() }, [])
+  async function loadSocialAccounts() {
+    const { data } = await supabase.from("platform_settings").select("key,value").in("key",["social_whatsapp","social_tiktok","social_instagram","social_facebook","social_x","social_youtube"])
+    if (data) {
+      const acc = {}
+      data.forEach(r => { acc[r.key.replace("social_","")] = r.value||"" })
+      setSocialAccounts(acc)
+    }
+  }
+
+  async function saveSocialAccount(platform, url) {
+    await supabase.from("platform_settings").upsert({ key:"social_"+platform, value:url }, { onConflict:"key" })
+    setSocialAccounts(a => ({...a, [platform]:url}))
+    toast.success("Account saved!")
+  }
+
+  useEffect(() => { loadCampaigns(); loadSocialAccounts() }, [])
 
   function selectItem(item) {
     setSelected(item)
@@ -346,6 +364,60 @@ export default function AdminContentHub() {
         ))}
       </div>
 
+        {/* Social Accounts Setup */}
+        <div style={{ background:"#0f0f0f", borderRadius:12, padding:"0.875rem 1rem", marginBottom:"1.25rem" }}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:showSocialSetup?12:0 }}>
+            <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:800, color:"#fff" }}>📱 Your Social Accounts</div>
+              <div style={{ fontSize:9, color:"#555", background:"#1a1a1a", borderRadius:10, padding:"2px 8px" }}>
+                {Object.values(socialAccounts).filter(v=>v).length}/6 connected
+              </div>
+            </div>
+            <button onClick={()=>setShowSocialSetup(s=>!s)}
+              style={{ background:"#1a1a1a", border:"none", borderRadius:8, color:"#888", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+              {showSocialSetup?"Done":"⚙ Setup"}
+            </button>
+          </div>
+          {!showSocialSetup&&(
+            <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginTop:8 }}>
+              {[
+                { key:"whatsapp", icon:"💚", label:"WhatsApp" },
+                { key:"tiktok", icon:"🎵", label:"TikTok" },
+                { key:"instagram", icon:"📸", label:"Instagram" },
+                { key:"facebook", icon:"👥", label:"Facebook" },
+                { key:"x", icon:"🐦", label:"X" },
+                { key:"youtube", icon:"▶️", label:"YouTube" },
+              ].map(p=>(
+                <div key={p.key} style={{ display:"flex", alignItems:"center", gap:4, background:"#1a1a1a", borderRadius:20, padding:"4px 10px", border:`1px solid ${socialAccounts[p.key]?"#1d9e7540":"#2a2a2a"}` }}>
+                  <span style={{ fontSize:12 }}>{p.icon}</span>
+                  <span style={{ fontSize:10, color:socialAccounts[p.key]?"#1d9e75":"#555" }}>{socialAccounts[p.key]?"✓":"–"}</span>
+                </div>
+              ))}
+            </div>
+          )}
+          {showSocialSetup&&(
+            <div style={{ display:"grid", gap:8 }}>
+              {[
+                { key:"whatsapp", icon:"💚", label:"WhatsApp", placeholder:"https://wa.me/254113858966" },
+                { key:"tiktok", icon:"🎵", label:"TikTok", placeholder:"https://www.tiktok.com/@yourhandle" },
+                { key:"instagram", icon:"📸", label:"Instagram", placeholder:"https://www.instagram.com/yourhandle" },
+                { key:"facebook", icon:"👥", label:"Facebook", placeholder:"https://www.facebook.com/yourpage" },
+                { key:"x", icon:"🐦", label:"X (Twitter)", placeholder:"https://twitter.com/yourhandle" },
+                { key:"youtube", icon:"▶️", label:"YouTube", placeholder:"https://youtube.com/@yourchannel" },
+              ].map(p=>(
+                <div key={p.key} style={{ display:"flex", gap:6, alignItems:"center" }}>
+                  <span style={{ fontSize:16, flexShrink:0 }}>{p.icon}</span>
+                  <input
+                    defaultValue={socialAccounts[p.key]}
+                    placeholder={p.placeholder}
+                    onBlur={e=>saveSocialAccount(p.key, e.target.value.trim())}
+                    style={{ flex:1, background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, padding:"7px 10px", fontSize:11, color:"#ccc", outline:"none", fontFamily:"DM Sans,sans-serif" }}/>
+                  {socialAccounts[p.key]&&<span style={{ fontSize:14, color:"#1d9e75", flexShrink:0 }}>✓</span>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       {/* Content type tabs */}
       <div style={{ display:"flex", gap:6, marginBottom:"1.25rem", flexWrap:"wrap" }}>
         {[
