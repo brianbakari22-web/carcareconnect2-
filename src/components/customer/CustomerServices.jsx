@@ -498,8 +498,8 @@ export default function CustomerServices() {
         return (
           <div key={s.id} style={{ background:"#ffffff", border:`1px solid ${cat.border}`, borderRadius:12, padding:isMobile?"0.9rem":"1.1rem", marginBottom:10 }}>
             {s.photos?.length>0&&(
-              <div style={{ marginBottom:"0.875rem", borderRadius:"10px 10px 0 0", overflow:"hidden", position:"relative", margin:"-0.9rem -0.9rem 0.875rem -0.9rem" }}>
-                <img src={s.photos[0]} alt={s.name} style={{ width:"100%", height:180, objectFit:"cover", display:"block" }}/>
+              <div style={{ marginBottom:"0.875rem", borderRadius:"10px 10px 0 0", overflow:"hidden", position:"relative", margin:isMobile?"-0.9rem -0.9rem 0.875rem -0.9rem":"-1.1rem -1.1rem 0.875rem -1.1rem" }}>
+                <img src={s.photos[0]} alt={s.name} style={{ width:"100%", height:isMobile?180:200, objectFit:"cover", display:"block" }}/>
                 <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.35))" }}/>
                 {s.photos.length>1&&<div style={{ position:"absolute", bottom:8, right:8, background:"rgba(0,0,0,0.55)", backdropFilter:"blur(4px)", borderRadius:8, padding:"2px 8px", fontSize:10, color:"#fff", display:"flex", alignItems:"center", gap:4 }}>📷 {s.photos.length}</div>}
                 <div style={{ position:"absolute", top:8, left:8 }}>
