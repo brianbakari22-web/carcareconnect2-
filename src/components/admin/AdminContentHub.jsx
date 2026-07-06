@@ -67,8 +67,11 @@ export default function AdminContentHub() {
   const [editingSocial, setEditingSocial] = useState(false)
   const [showSocialSetup, setShowSocialSetup] = useState(false)
   const [showCampaignForm, setShowCampaignForm] = useState(false)
-  const [campaignForm, setCampaignForm] = useState({ name:"", description:"" })
+  const [campaignForm, setCampaignForm] = useState({ name:"", description:"", goal:"", start_date:"", end_date:"", color:"#e6821e", target_platforms:[], post_count_target:7 })
   const [scheduledPosts, setScheduledPosts] = useState([])
+  const [selectedCampaign, setSelectedCampaign] = useState(null)
+  const [campaignPosts, setCampaignPosts] = useState([])
+  const [calendarView, setCalendarView] = useState(false)
   const [showScheduleForm, setShowScheduleForm] = useState(false)
   const [scheduleForm, setScheduleForm] = useState({ date:"", time:"" })
 
@@ -105,6 +108,14 @@ export default function AdminContentHub() {
     }
     setItems(data)
     setLoading(false)
+  }
+
+  async function loadCampaignPosts(campaignId) {
+    const { data } = await supabase.from("content_posts")
+      .select("*")
+      .eq("campaign_id", campaignId)
+      .order("scheduled_for", { ascending: true })
+    setCampaignPosts(data||[])
   }
 
   async function loadCampaigns() {
@@ -364,6 +375,22 @@ export default function AdminContentHub() {
     finally { setDownloading(false) }
   }
 
+  async function addToCampaign(campaignId) {
+    if (!selected) return
+    await supabase.from("content_posts").insert({
+      item_id: selected.id,
+      item_type: selected._type,
+      platform,
+      caption,
+      campaign_id: campaignId,
+      status: "draft",
+      item_label: selected._label,
+      item_photo: selected._photos?.[0]||null,
+    })
+    toast.success("Added to campaign!")
+    loadCampaignPosts(campaignId)
+  }
+
   async function markAsPosted(itemId, platform) {
     const { error } = await supabase.from("content_posts").insert({
       item_id: itemId,
@@ -403,7 +430,7 @@ export default function AdminContentHub() {
 
   async function createCampaign(e) {
     e.preventDefault()
-    await supabase.from("content_campaigns").insert({ name:campaignForm.name, description:campaignForm.description })
+    await supabase.from("content_campaigns").insert({ name:campaignForm.name, description:campaignForm.description, goal:campaignForm.goal, start_date:campaignForm.start_date||null, end_date:campaignForm.end_date||null, color:campaignForm.color, target_platforms:campaignForm.target_platforms, post_count_target:campaignForm.post_count_target })
     toast.success("Campaign created!")
     setCampaignForm({ name:"", description:"" })
     setShowCampaignForm(false)
@@ -771,19 +798,59 @@ export default function AdminContentHub() {
             <div style={{ background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
               <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:8 }}>
                 <div>
-                  <label style={{ fontSize:9, color:"#555", display:"block", marginBottom:3, textTransform:"uppercase" }}>Campaign Name</label>
+                  <label style={{ fontSize:9, color:"#555", display:"block", marginBottom:3, textTransform:"uppercase" }}>Campaign Name *</label>
                   <input value={campaignForm.name} onChange={e=>setCampaignForm(f=>({...f,name:e.target.value}))} placeholder="e.g. December Deals"
-                    style={{ width:"100%", background:"#0f0f0f", border:"1px solid #2a2a2a", borderRadius:8, padding:"8px 10px", fontSize:12, color:"#ccc", outline:"none", fontFamily:"DM Sans,sans-serif" }}/>
+                    style={{ width:"100%", background:"#0f0f0f", border:"1px solid #2a2a2a", borderRadius:8, padding:"8px 10px", fontSize:12, color:"#ccc", outline:"none" }}/>
                 </div>
                 <div>
-                  <label style={{ fontSize:9, color:"#555", display:"block", marginBottom:3, textTransform:"uppercase" }}>Description</label>
-                  <input value={campaignForm.description} onChange={e=>setCampaignForm(f=>({...f,description:e.target.value}))} placeholder="What is this campaign about?"
-                    style={{ width:"100%", background:"#0f0f0f", border:"1px solid #2a2a2a", borderRadius:8, padding:"8px 10px", fontSize:12, color:"#ccc", outline:"none", fontFamily:"DM Sans,sans-serif" }}/>
+                  <label style={{ fontSize:9, color:"#555", display:"block", marginBottom:3, textTransform:"uppercase" }}>Goal</label>
+                  <input value={campaignForm.goal} onChange={e=>setCampaignForm(f=>({...f,goal:e.target.value}))} placeholder="e.g. 100 new signups"
+                    style={{ width:"100%", background:"#0f0f0f", border:"1px solid #2a2a2a", borderRadius:8, padding:"8px 10px", fontSize:12, color:"#ccc", outline:"none" }}/>
+                </div>
+                <div>
+                  <label style={{ fontSize:9, color:"#555", display:"block", marginBottom:3, textTransform:"uppercase" }}>Start Date</label>
+                  <input type="date" value={campaignForm.start_date} onChange={e=>setCampaignForm(f=>({...f,start_date:e.target.value}))}
+                    style={{ width:"100%", background:"#0f0f0f", border:"1px solid #2a2a2a", borderRadius:8, padding:"8px 10px", fontSize:12, color:"#ccc", outline:"none" }}/>
+                </div>
+                <div>
+                  <label style={{ fontSize:9, color:"#555", display:"block", marginBottom:3, textTransform:"uppercase" }}>End Date</label>
+                  <input type="date" value={campaignForm.end_date} onChange={e=>setCampaignForm(f=>({...f,end_date:e.target.value}))}
+                    style={{ width:"100%", background:"#0f0f0f", border:"1px solid #2a2a2a", borderRadius:8, padding:"8px 10px", fontSize:12, color:"#ccc", outline:"none" }}/>
                 </div>
               </div>
-              <button onClick={createCampaign} style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 20px", cursor:"pointer" }}>
-                Create Campaign
-              </button>
+              <div style={{ marginBottom:8 }}>
+                <label style={{ fontSize:9, color:"#555", display:"block", marginBottom:3, textTransform:"uppercase" }}>Description</label>
+                <input value={campaignForm.description} onChange={e=>setCampaignForm(f=>({...f,description:e.target.value}))} placeholder="What is this campaign about?"
+                  style={{ width:"100%", background:"#0f0f0f", border:"1px solid #2a2a2a", borderRadius:8, padding:"8px 10px", fontSize:12, color:"#ccc", outline:"none" }}/>
+              </div>
+              <div style={{ marginBottom:12 }}>
+                <label style={{ fontSize:9, color:"#555", display:"block", marginBottom:6, textTransform:"uppercase" }}>Campaign Color</label>
+                <div style={{ display:"flex", gap:8 }}>
+                  {["#e6821e","#378add","#1d9e75","#8b5cf6","#e24b4a","#f59e0b"].map(col=>(
+                    <div key={col} onClick={()=>setCampaignForm(f=>({...f,color:col}))}
+                      style={{ width:24, height:24, borderRadius:"50%", background:col, cursor:"pointer", border:`3px solid ${campaignForm.color===col?"#fff":"transparent"}`, transition:"border 0.15s" }}/>
+                  ))}
+                </div>
+              </div>
+              <div style={{ marginBottom:12 }}>
+                <label style={{ fontSize:9, color:"#555", display:"block", marginBottom:6, textTransform:"uppercase" }}>Target Platforms</label>
+                <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                  {PLATFORMS.map(p=>(
+                    <button key={p.key} type="button" onClick={()=>setCampaignForm(f=>({ ...f, target_platforms: f.target_platforms.includes(p.key) ? f.target_platforms.filter(x=>x!==p.key) : [...f.target_platforms, p.key] }))}
+                      style={{ background:campaignForm.target_platforms.includes(p.key)?p.color+"30":"#0f0f0f", border:`1px solid ${campaignForm.target_platforms.includes(p.key)?p.color:"#2a2a2a"}`, borderRadius:20, padding:"4px 10px", cursor:"pointer", fontSize:11, color:campaignForm.target_platforms.includes(p.key)?p.color:"#555" }}>
+                      {p.icon} {p.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div style={{ display:"flex", gap:8 }}>
+                <button onClick={createCampaign} style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 20px", cursor:"pointer" }}>
+                  Create Campaign
+                </button>
+                <button onClick={()=>setShowCampaignForm(false)} style={{ background:"none", border:"1px solid #2a2a2a", borderRadius:8, color:"#555", fontSize:12, padding:"9px 16px", cursor:"pointer" }}>
+                  Cancel
+                </button>
+              </div>
             </div>
           )}
           {campaigns.length===0&&!showCampaignForm&&(
@@ -795,21 +862,103 @@ export default function AdminContentHub() {
           )}
           <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)", gap:8 }}>
             {campaigns.map((camp,ci)=>(
-              <div key={camp.id} style={{ background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:12, padding:"0.875rem", position:"relative" }}>
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:4 }}>
-                  <div style={{ fontSize:13, fontWeight:700, color:"#fff" }}>{camp.name}</div>
-                  <div style={{ width:10, height:10, borderRadius:"50%", background:["#e6821e","#378add","#1d9e75","#8b5cf6","#e24b4a"][ci%5], flexShrink:0 }}/>
+              <div key={camp.id} style={{ background:"#1a1a1a", border:`1px solid ${camp.color||"#2a2a2a"}30`, borderRadius:12, padding:"0.875rem", cursor:"pointer" }}
+                onClick={()=>{ setSelectedCampaign(camp); loadCampaignPosts(camp.id) }}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:6 }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                    <div style={{ width:12, height:12, borderRadius:"50%", background:camp.color||"#e6821e", flexShrink:0 }}/>
+                    <div style={{ fontSize:13, fontWeight:700, color:"#fff" }}>{camp.name}</div>
+                  </div>
+                  <button onClick={async(e)=>{ e.stopPropagation(); if(confirm("Delete campaign?")) { await supabase.from("content_campaigns").delete().eq("id",camp.id); loadCampaigns() } }}
+                    style={{ background:"none", border:"none", color:"#444", cursor:"pointer", fontSize:12 }}>🗑</button>
                 </div>
                 {camp.description&&<div style={{ fontSize:10, color:"#666", marginBottom:6 }}>{camp.description}</div>}
-                <div style={{ fontSize:9, color:"#444", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                  <span>{new Date(camp.created_at).toLocaleDateString()}</span>
-                  <button onClick={async()=>{ if(confirm("Delete campaign?")) { await supabase.from("content_campaigns").delete().eq("id",camp.id); loadCampaigns() } }}
-                    style={{ background:"none", border:"none", color:"#555", cursor:"pointer", fontSize:12, padding:"2px 6px" }}>🗑</button>
+                {camp.goal&&<div style={{ fontSize:10, color:camp.color||"#e6821e", marginBottom:6 }}>🎯 {camp.goal}</div>}
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:4 }}>
+                  <div style={{ display:"flex", gap:4 }}>
+                    {(camp.target_platforms||[]).map(pk=>(
+                      <span key={pk} style={{ fontSize:14 }}>{PLATFORMS.find(p=>p.key===pk)?.icon}</span>
+                    ))}
+                  </div>
+                  <div style={{ fontSize:9, color:"#444" }}>
+                    {camp.start_date&&`${camp.start_date} → ${camp.end_date||"ongoing"}`}
+                  </div>
+                </div>
+                <div style={{ marginTop:8, background:"#0f0f0f", borderRadius:6, padding:"4px 8px", fontSize:10, color:"#555", textAlign:"center" }}>
+                  View calendar →
                 </div>
               </div>
             ))}
           </div>
         </div>
+      {/* Campaign Detail Modal */}
+      {selectedCampaign&&(
+        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.88)", zIndex:9998, overflowY:"auto" }} onClick={()=>setSelectedCampaign(null)}>
+          <div style={{ background:"#0f0f0f", minHeight:"100vh", maxWidth:600, margin:"0 auto", padding:"1.5rem 1rem" }} onClick={e=>e.stopPropagation()}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1.5rem" }}>
+              <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                <div style={{ width:14, height:14, borderRadius:"50%", background:selectedCampaign.color||"#e6821e" }}/>
+                <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#fff" }}>{selectedCampaign.name}</div>
+              </div>
+              <button onClick={()=>setSelectedCampaign(null)} style={{ background:"#1a1a1a", border:"none", borderRadius:"50%", width:32, height:32, color:"#aaa", cursor:"pointer", fontSize:16 }}>x</button>
+            </div>
+            {selectedCampaign.description&&<div style={{ fontSize:13, color:"#888", marginBottom:8 }}>{selectedCampaign.description}</div>}
+            {selectedCampaign.goal&&<div style={{ fontSize:12, color:selectedCampaign.color||"#e6821e", marginBottom:8 }}>Goal: {selectedCampaign.goal}</div>}
+            {selectedCampaign.start_date&&<div style={{ fontSize:11, color:"#555", marginBottom:"1.5rem" }}>{selectedCampaign.start_date} to {selectedCampaign.end_date||"ongoing"}</div>}
+            {selected&&(
+              <div style={{ background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:12, padding:"0.875rem", marginBottom:"1.5rem" }}>
+                <div style={{ fontSize:11, color:"#888", marginBottom:8 }}>Add selected item to this campaign:</div>
+                <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:10 }}>
+                  {selected._photos?.[0]&&<img src={selected._photos[0]} style={{ width:44, height:44, borderRadius:8, objectFit:"cover" }}/>}
+                  <div>
+                    <div style={{ fontSize:12, fontWeight:600, color:"#fff" }}>{selected._label}</div>
+                    <div style={{ fontSize:10, color:"#666" }}>{selected._type}</div>
+                  </div>
+                </div>
+                <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:10 }}>
+                  {PLATFORMS.map(p=>(
+                    <button key={p.key} onClick={()=>setPlatform(p.key)}
+                      style={{ background:platform===p.key?p.color+"30":"#0f0f0f", border:"1px solid "+(platform===p.key?p.color:"#2a2a2a"), borderRadius:20, padding:"3px 10px", cursor:"pointer", fontSize:11, color:platform===p.key?p.color:"#555" }}>
+                      {p.icon} {p.label}
+                    </button>
+                  ))}
+                </div>
+                <button onClick={()=>addToCampaign(selectedCampaign.id)}
+                  style={{ background:selectedCampaign.color||"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>
+                  + Add to Campaign
+                </button>
+              </div>
+            )}
+            <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#fff", marginBottom:10 }}>Posts ({campaignPosts.length})</div>
+            {campaignPosts.length===0&&(
+              <div style={{ textAlign:"center", padding:"2rem", color:"#333" }}>
+                <div style={{ fontSize:32, marginBottom:8 }}>📭</div>
+                <div style={{ fontSize:12, color:"#555" }}>No posts yet — select content and add it here</div>
+              </div>
+            )}
+            <div style={{ display:"grid", gap:8 }}>
+              {campaignPosts.map(post=>(
+                <div key={post.id} style={{ background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:10, padding:"0.75rem", display:"flex", alignItems:"center", gap:10 }}>
+                  {post.item_photo&&<img src={post.item_photo} style={{ width:48, height:48, borderRadius:8, objectFit:"cover", flexShrink:0 }}/>}
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ fontSize:12, fontWeight:600, color:"#fff", marginBottom:2 }}>{post.item_label||"Content"}</div>
+                    <div style={{ display:"flex", gap:6, alignItems:"center" }}>
+                      <span style={{ fontSize:14 }}>{PLATFORMS.find(p=>p.key===post.platform)?.icon}</span>
+                      <span style={{ fontSize:10, color:"#555" }}>{post.platform}</span>
+                      <span style={{ fontSize:10, padding:"1px 6px", borderRadius:6, background:post.status==="posted"?"#1d9e7520":"#e6821e20", color:post.status==="posted"?"#1d9e75":"#e6821e" }}>{post.status}</span>
+                    </div>
+                  </div>
+                  <button onClick={async()=>{ await supabase.from("content_posts").update({ status:"posted", posted_at:new Date().toISOString() }).eq("id",post.id); loadCampaignPosts(selectedCampaign.id); toast.success("Marked as posted!") }}
+                    style={{ background:"#1d9e7520", border:"1px solid #1d9e7540", borderRadius:8, color:"#1d9e75", fontSize:10, fontWeight:700, padding:"5px 10px", cursor:"pointer", flexShrink:0 }}>
+                    {post.status==="posted"?"Posted":"Mark posted"}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
     {showGuide&&(
       <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.75)", zIndex:9999, display:"flex", alignItems:"flex-end", justifyContent:"center", padding:"1rem" }}>
         <div style={{ background:"#1a1a1a", borderRadius:16, padding:"1.5rem", width:"100%", maxWidth:420 }} onClick={e=>e.stopPropagation()}>
