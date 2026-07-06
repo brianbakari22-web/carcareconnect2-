@@ -65,13 +65,17 @@ export default function CustomerTracking() {
     const sub = supabase.channel(`tracking-${selected.id}`)
       .on("postgres_changes", { event:"INSERT", schema:"public", table:"booking_location_logs", filter:`booking_id=eq.${selected.id}` },
         payload => {
-          const lat = payload.new.lat || payload.new.latitude
-          const lng = payload.new.lng || payload.new.longitude
-          setDriver(d=>d?{...d,current_lat:lat,current_lng:lng}:d)
-          // Smoothly move marker
-          if (driverMarkerRef.current) {
-            driverMarkerRef.current.setPosition({ lat, lng })
-            if (mapInstanceRef.current) mapInstanceRef.current.panTo({ lat, lng })
+          const lat = Number(payload.new.lat || payload.new.latitude)
+          const lng = Number(payload.new.lng || payload.new.longitude)
+          if (payload.new.source === "tracker") {
+            setTrackerLocation(t => t ? {...t, last_lat:lat, last_lng:lng} : {last_lat:lat, last_lng:lng})
+            if (trackerMarkerRef.current) trackerMarkerRef.current.setPosition({ lat, lng })
+          } else {
+            setDriver(d=>d?{...d,current_lat:lat,current_lng:lng}:d)
+            if (driverMarkerRef.current) {
+              driverMarkerRef.current.setPosition({ lat, lng })
+              if (mapInstanceRef.current) mapInstanceRef.current.panTo({ lat, lng })
+            }
           }
         })
       .on("postgres_changes", { event:"INSERT", schema:"public", table:"mechanic_location_history", filter:`booking_id=eq.${selected.id}` },
