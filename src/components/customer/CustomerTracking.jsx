@@ -29,6 +29,9 @@ export default function CustomerTracking() {
   const mapInstanceRef = useRef(null)
   const driverMarkerRef = useRef(null)
   const mechanicMarkerRef = useRef(null)
+  const trackerMarkerRef = useRef(null)
+  const [trackerLocation, setTrackerLocation] = useState(null)
+  const [divergenceAlert, setDivergenceAlert] = useState(false)
 
   useEffect(() => {
     if (!user) return
@@ -51,6 +54,7 @@ export default function CustomerTracking() {
     if (selected.driver_id) loadDriver(selected)
     if (selected.delivery_driver_id) loadOrderDriver(selected)
     if (selected.assigned_mechanic_id) loadMechanic(selected)
+    if (selected.vehicle_id) loadTracker(selected)
     // Live update every 10 seconds
     const interval = setInterval(() => {
       if (selected.driver_id) loadDriver(selected)
@@ -121,6 +125,20 @@ export default function CustomerTracking() {
           title: `Mechanic: ${mechanic.first_name} ${mechanic.last_name}`,
           icon: {
             url: "data:image/svg+xml;charset=UTF-8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#1d9e75" stroke="white" stroke-width="3"/><text x="24" y="32" font-size="22" text-anchor="middle">👨‍🔧</text></svg>'),
+            scaledSize: new window.google.maps.Size(48, 48),
+            anchor: new window.google.maps.Point(24, 24)
+          }
+        })
+      }
+
+      // Tracker/vehicle GPS marker
+      if (trackerLocation?.last_lat) {
+        trackerMarkerRef.current = new window.google.maps.Marker({
+          position: { lat: Number(trackerLocation.last_lat), lng: Number(trackerLocation.last_lng) },
+          map,
+          title: "Vehicle tracker location",
+          icon: {
+            url: "data:image/svg+xml;charset=UTF-8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#e6821e" stroke="white" stroke-width="3"/><text x="24" y="32" font-size="22" text-anchor="middle">📡</text></svg>'),
             scaledSize: new window.google.maps.Size(48, 48),
             anchor: new window.google.maps.Point(24, 24)
           }
@@ -217,13 +235,34 @@ export default function CustomerTracking() {
     setMechanic(data)
   }
 
+  async function loadTracker(booking) {
+    if (!booking.vehicle_id) return
+    const { data } = await supabase.from("vehicle_trackers")
+      .select("last_lat,last_lng,last_seen,provider,is_active")
+      .eq("vehicle_id", booking.vehicle_id)
+      .eq("is_active", true)
+      .maybeSingle()
+    if (data?.last_lat) {
+      setTrackerLocation(data)
+      // Check divergence vs driver
+      if (driver?.current_lat && data.last_lat) {
+        const R = 6371000
+        const dLat = (data.last_lat - driver.current_lat) * Math.PI/180
+        const dLng = (data.last_lng - driver.current_lng) * Math.PI/180
+        const a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(driver.current_lat*Math.PI/180)*Math.cos(data.last_lat*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2)
+        const dist = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+        setDivergenceAlert(dist > 500)
+      }
+    }
+  }
+
   const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", completed:"#1d9e75", "driver-assigned":"#1d9e75" }
 
   if (selected) return (
     <div>
       <style>{`@keyframes ping { 0%{transform:scale(1);opacity:0.6} 100%{transform:scale(2.5);opacity:0} }`}</style>
 
-      <button onClick={()=>{ mapInstanceRef.current = null; driverMarkerRef.current=null; mechanicMarkerRef.current=null; setSelected(null); setDriver(null); setMechanic(null) }}
+      <button onClick={()=>{ mapInstanceRef.current = null; driverMarkerRef.current=null; mechanicMarkerRef.current=null; setSelected(null); setDriver(null); setMechanic(null); setTrackerLocation(null); setDivergenceAlert(false); trackerMarkerRef.current=null }}
         style={{ background:"none", border:"none", color:"#e6821e", cursor:"pointer", fontSize:13, marginBottom:"1rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>
         ← Back to bookings
       </button>
@@ -244,6 +283,15 @@ export default function CustomerTracking() {
               <span style={{ fontSize:12, color:"#1d9e75", fontWeight:600 }}>Live tracking active</span>
             </div>
             <span style={{ fontSize:11, color:"#777777" }}>Updates every 10s</span>
+          </div>
+        )}
+        {divergenceAlert&&(
+          <div style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:8, padding:"0.75rem", marginBottom:10, display:"flex", alignItems:"center", gap:8 }}>
+            <span style={{ fontSize:18 }}>⚠️</span>
+            <div>
+              <div style={{ fontSize:12, color:"#e24b4a", fontWeight:700 }}>Vehicle location mismatch</div>
+              <div style={{ fontSize:11, color:"#777777" }}>Driver and tracker GPS are more than 500m apart. Contact support if concerned.</div>
+            </div>
           </div>
         )}
         {selected.is_concierge&&selected.concierge_status&&(
@@ -331,6 +379,7 @@ export default function CustomerTracking() {
         <div style={{ display:"flex", gap:12, marginTop:8, flexWrap:"wrap" }}>
           {driver&&<div style={{ display:"flex", alignItems:"center", gap:5 }}><span style={{ fontSize:14 }}>🚗</span><span style={{ fontSize:10, color:"#777777" }}>Driver</span></div>}
           {mechanic&&<div style={{ display:"flex", alignItems:"center", gap:5 }}><span style={{ fontSize:14 }}>👨‍🔧</span><span style={{ fontSize:10, color:"#777777" }}>Mechanic</span></div>}
+          {trackerLocation&&<div style={{ display:"flex", alignItems:"center", gap:5 }}><span style={{ fontSize:14 }}>📡</span><span style={{ fontSize:10, color:"#777777" }}>Tracker</span></div>}
           <div style={{ display:"flex", alignItems:"center", gap:5 }}><span style={{ fontSize:14 }}>👤</span><span style={{ fontSize:10, color:"#777777" }}>You</span></div>
         </div>
       </div>
