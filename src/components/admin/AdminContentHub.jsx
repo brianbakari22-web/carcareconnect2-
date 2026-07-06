@@ -194,14 +194,29 @@ export default function AdminContentHub() {
   async function downloadVideo(url, filename) {
     setDownloading(true)
     try {
-      const res = await fetch(url)
-      const blob = await res.blob()
+      // Try fetch first
+      const res = await fetch(url, { mode: "cors" })
+      if (res.ok) {
+        const blob = await res.blob()
+        const a = document.createElement("a")
+        a.href = URL.createObjectURL(blob)
+        a.download = filename || "ccc-video.mp4"
+        a.click()
+        toast.success("Video downloaded!")
+      } else {
+        // Fallback - open in new tab for manual save
+        window.open(url, "_blank")
+        toast("Video opened in new tab — long press to save", { icon: "📹", duration: 6000 })
+      }
+    } catch(e) {
+      // Final fallback - direct link
       const a = document.createElement("a")
-      a.href = URL.createObjectURL(blob)
+      a.href = url
       a.download = filename || "ccc-video.mp4"
+      a.target = "_blank"
       a.click()
-      toast.success("Video downloaded!")
-    } catch(e) { toast.error("Download failed — try right-click → Save video") }
+      toast("Downloading video...", { icon: "📹" })
+    }
     finally { setDownloading(false) }
   }
 
@@ -644,11 +659,20 @@ export default function AdminContentHub() {
                 {/* Video download */}
                 {selected?._video&&(
                   <div style={{ marginBottom:"0.75rem" }}>
-                    <video src={selected._video} controls style={{ width:"100%", borderRadius:8, maxHeight:140 }}/>
-                    <button onClick={()=>downloadVideo(selected._video, `CCC-video.mp4`)} disabled={downloading}
-                      style={{ width:"100%", background:"#8b5cf6", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"8px", cursor:"pointer", marginTop:5 }}>
-                      ⬇ Download Video
-                    </button>
+                    <div style={{ position:"relative", borderRadius:10, overflow:"hidden", marginBottom:6 }}>
+                      <video src={selected._video} controls style={{ width:"100%", borderRadius:10, display:"block", maxHeight:180, background:"#000" }}/>
+                      <div style={{ position:"absolute", top:6, right:6, background:"rgba(0,0,0,0.6)", borderRadius:6, padding:"2px 8px", fontSize:10, color:"#fff" }}>📹 Video</div>
+                    </div>
+                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:5 }}>
+                      <button onClick={()=>downloadVideo(selected._video, `CCC-${(selected._label||"video").replace(/\\s+/g,"-")}.mp4`)} disabled={downloading}
+                        style={{ background:"#8b5cf6", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"8px", cursor:downloading?"not-allowed":"pointer", opacity:downloading?0.6:1 }}>
+                        {downloading?"...":"⬇ Download"}
+                      </button>
+                      <button onClick={()=>{ navigator.clipboard.writeText(selected._video); toast.success("Video URL copied!") }}
+                        style={{ background:"#1e1e1e", border:"1px solid #2a2a2a", borderRadius:8, color:"#aaa", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"8px", cursor:"pointer" }}>
+                        🔗 Copy URL
+                      </button>
+                    </div>
                   </div>
                 )}
 
