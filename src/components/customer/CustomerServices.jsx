@@ -741,7 +741,47 @@ export default function CustomerServices() {
               customerEmail={user?.email}
               customerPhone={profile?.phone}
               customerName={profile?.first_name+" "+profile?.last_name}
-              onSuccess={()=>{ setShowPayment(false); setPendingBooking(null); toast.success("Payment successful!") }}
+              onSuccess={async ()=>{
+              try {
+                if (pendingBooking?.id) {
+                  // Update booking payment status
+                  await supabase.from("bookings").update({
+                    payment_status: "paid",
+                    status: "confirmed"
+                  }).eq("id", pendingBooking.id)
+
+                  // Fetch booking to get provider_id
+                  const { data: bk } = await supabase.from("bookings")
+                    .select("provider_id, service_name, booking_number")
+                    .eq("id", pendingBooking.id).single()
+
+                  // Notify provider
+                  if (bk?.provider_id) {
+                    await supabase.from("notifications").insert({
+                      user_id: bk.provider_id,
+                      type: "booking",
+                      title: "New booking received! 🎉",
+                      message: `A customer has booked ${bk.service_name} (#${bk.booking_number}). Payment confirmed.`,
+                      data: { booking_id: pendingBooking.id }
+                    })
+                  }
+
+                  // Notify customer
+                  await supabase.from("notifications").insert({
+                    user_id: user.id,
+                    type: "booking",
+                    title: "Booking confirmed! ✅",
+                    message: `Your booking #${bk?.booking_number} has been confirmed. The provider will be in touch shortly.`,
+                    data: { booking_id: pendingBooking.id }
+                  })
+                }
+                toast.success("Payment successful! Booking confirmed 🎉")
+              } catch(e) {
+                console.error("onSuccess error:", e)
+                toast.success("Payment received! Your booking is being confirmed.")
+              }
+              setShowPayment(false); setPendingBooking(null)
+            }}
               onCancel={async ()=>{ 
               if (pendingBooking?.id) {
                 await supabase.from("bookings").delete().eq("id", pendingBooking.id).eq("payment_status","pending")
