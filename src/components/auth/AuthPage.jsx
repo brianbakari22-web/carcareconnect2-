@@ -4,7 +4,7 @@ import { Capacitor } from "@capacitor/core"
 
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import toast from "react-hot-toast"
 
 const PROVIDER_TYPES = [
@@ -82,6 +82,8 @@ export default function AuthPage() {
 
   const { signIn, signUp, profile, user } = useAuth()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const redirectTo = searchParams.get("redirect") || "/dashboard"
   const [step, setStep] = useState("landing")
   const [selectedRole, setSelectedRole] = useState(null)
   const [mode, setMode] = useState("signin")
@@ -175,11 +177,11 @@ export default function AuthPage() {
           if (!u) return setTimeout(checkProfile, 300)
           const { data: prof } = await supabase.from("profiles").select("role").eq("id", u.id).single()
           if (prof?.role) {
-            navigate("/dashboard")
+            navigate(redirectTo)
           } else if (tries++ < 15) {
             setTimeout(checkProfile, 300)
           } else {
-            navigate("/dashboard")
+            navigate(redirectTo)
           }
         }
         checkProfile()
