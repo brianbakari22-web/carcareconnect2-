@@ -92,7 +92,6 @@ export default function ProviderServices() {
           service_category_id: form.service_category_id||null,
           provider_commission_rate: providerRate,
           photos: form.photos||[],
-          photos: form.photos||[],
           provider_commission_rate: providerRate,
         }).eq("id", editing).eq("provider_id", user.id)
         if (error) throw error
@@ -106,7 +105,6 @@ export default function ProviderServices() {
           provider_commission_rate: providerRate,
           photos: form.photos||[],
           provider_commission_rate: providerRate,
-          photos: form.photos||[],
           service_category_id: form.service_category_id||null,
           platform_commission_rate: platformRate,
           provider_commission_rate: providerRate,
@@ -307,10 +305,11 @@ export default function ProviderServices() {
               <div style={{ fontSize:10, color:"#888", marginBottom:6 }}>Add photos of your work — these appear in the Content Hub for social media sharing</div>
               <PhotoManager
                 bucket="service-photos"
-                folder={`services/${user.id}`}
-                existingPhotos={form.photos||[]}
-                onPhotosChange={photos=>setForm(f=>({...f,photos}))}
+                userId={user.id}
+                photos={form.photos||[]}
+                onUpdate={photos=>setForm(f=>({...f,photos}))}
                 maxPhotos={5}
+                label="Service Photos"
               />
             </div>
             </div>
