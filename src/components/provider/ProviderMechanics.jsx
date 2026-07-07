@@ -1,8 +1,4 @@
 import { useEffect, useState } from "react"
-                <button onClick={()=>{ setCommPanel(commPanel===m.id?null:m.id); setCommForm({ rate:m.commission_type==="percentage"?String(Math.round((m.commission_rate||0.15)*100)):String(m.commission_rate||500), type:m.commission_type||"percentage" }) }}
-                  style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:8, color:"#e6821e", fontSize:12, fontWeight:700, padding:"7px 12px", cursor:"pointer" }}>
-                  💰 Pay
-                </button>
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
@@ -301,10 +297,16 @@ export default function ProviderMechanics() {
                   📄 {docsPanel===m.id?"Hide Docs":"View Docs"}
                 </button>
                 {m.user_id&&(
-                  <button onClick={()=>setChatPanel(chatPanel===m.id?null:m.id)}
-                    style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:8, color:"#1d9e75", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>
-                    💬 Chat
-                  </button>
+                  <>
+                    <button onClick={()=>setChatPanel(chatPanel===m.id?null:m.id)}
+                      style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:8, color:"#1d9e75", fontSize:12, fontWeight:700, padding:"7px 12px", cursor:"pointer" }}>
+                      💬 Chat
+                    </button>
+                    <button onClick={()=>{ setCommPanel(commPanel===m.id?null:m.id); setCommForm({ rate:m.commission_type==="percentage"?String(Math.round((m.commission_rate||0.15)*100)):String(m.commission_rate||500), type:m.commission_type||"percentage" }) }}
+                      style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:8, color:"#e6821e", fontSize:12, fontWeight:700, padding:"7px 12px", cursor:"pointer" }}>
+                      💰 Pay
+                    </button>
+                  </>
                 )}
               </div>
 
