@@ -375,6 +375,123 @@ export default function AdminContentHub() {
     finally { setDownloading(false) }
   }
 
+  async function generateCampaignCard(campaign) {
+    setDownloading(true)
+    try {
+      const canvas = document.createElement("canvas")
+      canvas.width = 1080
+      canvas.height = 1080
+      const ctx = canvas.getContext("2d")
+      const campColor = campaign.color || "#E6821E"
+
+      // === BACKGROUND - dark gradient ===
+      const bgGrad = ctx.createLinearGradient(0, 0, 1080, 1080)
+      bgGrad.addColorStop(0, "#0f0f0f")
+      bgGrad.addColorStop(1, "#1a1a1a")
+      ctx.fillStyle = bgGrad
+      ctx.fillRect(0, 0, 1080, 1080)
+
+      // === ACCENT LINE top ===
+      ctx.fillStyle = campColor
+      ctx.fillRect(0, 0, 1080, 8)
+
+      // === CCC LOGO BADGE ===
+      ctx.fillStyle = campColor
+      ctx.beginPath()
+      ctx.roundRect(40, 40, 260, 70, 14)
+      ctx.fill()
+      ctx.fillStyle = "#ffffff"
+      ctx.font = "bold 32px Arial"
+      ctx.fillText("CarCare Connect", 60, 85)
+
+      // === LAUNCH BADGE top right ===
+      ctx.fillStyle = "rgba(255,255,255,0.08)"
+      ctx.beginPath()
+      ctx.roundRect(800, 40, 240, 70, 14)
+      ctx.fill()
+      ctx.fillStyle = campColor
+      ctx.font = "bold 26px Arial"
+      ctx.textAlign = "center"
+      ctx.fillText("CAMPAIGN", 920, 82)
+      ctx.textAlign = "left"
+
+      // === BIG CAMPAIGN NAME ===
+      ctx.fillStyle = "#ffffff"
+      ctx.font = "bold 72px Arial"
+      const campName = campaign.name || "Campaign"
+      const shortName = campName.length > 18 ? campName.substring(0,18)+"..." : campName
+      ctx.fillText(shortName, 40, 280)
+
+      // === DIVIDER LINE ===
+      ctx.fillStyle = campColor
+      ctx.fillRect(40, 300, 200, 6)
+
+      // === DESCRIPTION ===
+      if (campaign.description) {
+        ctx.fillStyle = "#aaaaaa"
+        ctx.font = "32px Arial"
+        const desc = campaign.description.substring(0, 55)
+        ctx.fillText(desc.length > 50 ? desc+"..." : desc, 40, 370)
+      }
+
+      // === GOAL ===
+      if (campaign.goal) {
+        ctx.fillStyle = campColor
+        ctx.font = "bold 36px Arial"
+        ctx.fillText("Goal: "+campaign.goal.substring(0,40), 40, 450)
+      }
+
+      // === DATES ===
+      if (campaign.start_date) {
+        ctx.fillStyle = "#666666"
+        ctx.font = "28px Arial"
+        ctx.fillText(campaign.start_date + " - " + (campaign.end_date||"ongoing"), 40, 510)
+      }
+
+      // === PLATFORM ICONS ===
+      if (campaign.target_platforms?.length > 0) {
+        ctx.fillStyle = "#444444"
+        ctx.font = "24px Arial"
+        ctx.fillText("Platforms:", 40, 590)
+        const platformIcons = { whatsapp:"💚", tiktok:"🎵", instagram:"📸", facebook:"👥", x:"🐦", youtube:"▶️" }
+        campaign.target_platforms.forEach((p, i) => {
+          ctx.font = "52px Arial"
+          ctx.fillText(platformIcons[p]||"📱", 40 + (i * 80), 660)
+        })
+      }
+
+      // === BOTTOM PANEL ===
+      ctx.fillStyle = campColor
+      ctx.fillRect(0, 860, 1080, 220)
+
+      // === WEBSITE ===
+      ctx.fillStyle = "#ffffff"
+      ctx.font = "bold 48px Arial"
+      ctx.textAlign = "center"
+      ctx.fillText("carcareconnect.care", 540, 940)
+
+      // === TAGLINE ===
+      ctx.fillStyle = "rgba(255,255,255,0.8)"
+      ctx.font = "32px Arial"
+      ctx.fillText("Your Car, Our Care, Simplified", 540, 1000)
+
+      // === PHONE ===
+      ctx.fillStyle = "rgba(255,255,255,0.6)"
+      ctx.font = "26px Arial"
+      ctx.fillText("📞 0113858966", 540, 1050)
+      ctx.textAlign = "left"
+
+      // === DOWNLOAD ===
+      const link = document.createElement("a")
+      link.download = `CCC-Campaign-${(campaign.name||"launch").replace(/\s+/g,"-")}.png`
+      link.href = canvas.toDataURL("image/png")
+      link.click()
+      toast.success("Campaign card downloaded! 🎨")
+    } catch(e) { toast.error("Card generation failed: " + e.message) }
+    finally { setDownloading(false) }
+  }
+
+
   async function addToCampaign(campaignId) {
     if (!selected) return
     await supabase.from("content_posts").insert({
@@ -918,6 +1035,10 @@ export default function AdminContentHub() {
             {selectedCampaign.description&&<div style={{ fontSize:13, color:"#888", marginBottom:8 }}>{selectedCampaign.description}</div>}
             {selectedCampaign.goal&&<div style={{ fontSize:12, color:selectedCampaign.color||"#e6821e", marginBottom:8 }}>Goal: {selectedCampaign.goal}</div>}
             {selectedCampaign.start_date&&<div style={{ fontSize:11, color:"#555", marginBottom:"1.5rem" }}>{selectedCampaign.start_date} to {selectedCampaign.end_date||"ongoing"}</div>}
+            <button onClick={()=>generateCampaignCard(selectedCampaign)} disabled={downloading}
+              style={{ background:selectedCampaign.color||"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer", width:"100%", marginBottom:"1.5rem", opacity:downloading?0.6:1 }}>
+              {downloading?"Generating...":"🖼 Download Campaign Card (1080×1080)"}
+            </button>
             {selected&&(
               <div style={{ background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:12, padding:"0.875rem", marginBottom:"1.5rem" }}>
                 <div style={{ fontSize:11, color:"#888", marginBottom:8 }}>Add selected item to this campaign:</div>
