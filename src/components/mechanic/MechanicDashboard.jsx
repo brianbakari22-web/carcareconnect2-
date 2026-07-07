@@ -126,7 +126,7 @@ export default function MechanicDashboard() {
         // Try upload with public bucket
         const { error } = await supabase.storage.from("provider-photos").upload(path, file, { upsert:true, contentType: file.type })
         if (error) throw error
-        const { data } = supabase.storage.from("marketplace").getPublicUrl(path)
+        const { data } = supabase.storage.from("provider-photos").getPublicUrl(path)
         // Upsert document record
         await supabase.from("driver_documents").upsert({
           driver_id: mechanic.mechanic_id,
