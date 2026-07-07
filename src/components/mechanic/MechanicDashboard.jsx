@@ -649,7 +649,7 @@ export default function MechanicDashboard() {
             </div>
             <div style={{ background:"#f8f8f8", borderRadius:10, padding:"1rem", fontSize:12, color:"#555", lineHeight:1.8, marginBottom:"1rem" }}>
               <div style={{ fontWeight:700, marginBottom:4, color:"#000" }}>💡 About your earnings</div>
-              {mechanic?.commission_type==="fixed" ? `Earnings shown as KES ${Number(mechanic?.commission_rate||0).toLocaleString()} fixed per job as agreed with ${mechanic?.business_name||"your garage"}.` : `Earnings shown at ${Math.round((mechanic?.commission_rate||0.15)*100)}% of completed job value as agreed with ${mechanic?.business_name||"your garage"}.`}
+              {mechanic?.commission_rate ? (mechanic?.commission_type==="fixed" ? `Fixed KES ${Number(mechanic?.commission_rate).toLocaleString()} per job — agreed with ${mechanic?.business_name||"your garage"}.` : `${Math.round(Number(mechanic?.commission_rate)*100)}% of job value — agreed with ${mechanic?.business_name||"your garage"}.`) : "Pay rate not set yet. Contact your garage manager."}
             </div>
             {history.filter(j=>j.status==="completed").length>0&&(
               <div>
