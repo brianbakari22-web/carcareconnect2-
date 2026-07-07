@@ -501,6 +501,9 @@ export default function MechanicDashboard() {
                     <div style={{ fontSize:12, color:"#555" }}>{job.profiles?.first_name} {job.profiles?.last_name}</div>
                     <div style={{ fontSize:11, color:"#888", marginTop:2 }}>📅 {job.booking_date} · {job.booking_time}</div>
                     {job.emergency_location_address&&<div style={{ fontSize:11, color:"#e6821e", marginTop:2 }}>📍 {job.emergency_location_address}</div>}
+                    {job.problem_description&&<div style={{ fontSize:11, color:"#555", marginTop:2, background:"#f8f8f8", borderRadius:6, padding:"3px 8px" }}>💬 {job.problem_description.substring(0,80)}{job.problem_description.length>80?"...":""}</div>}
+                    {job.parts_needed&&<div style={{ fontSize:10, color:"#e6821e", marginTop:2 }}>🔩 Customer indicated parts needed</div>}
+                    {job.notes&&<div style={{ fontSize:11, color:"#666", marginTop:2 }}>📝 {job.notes.substring(0,60)}{job.notes.length>60?"...":""}</div>}
                   </div>
                   <div style={{ fontSize:16, color:"#888" }}>{expandedJob===job.id?"▲":"▼"}</div>
                 </div>
