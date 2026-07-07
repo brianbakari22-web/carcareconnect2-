@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-                <button onClick={()=>{ setCommPanel(commPanel===m.id?null:m.id); setCommForm({ rate:String(Math.round((m.commission_rate||0.15)*100)), type:m.commission_type||"percentage" }) }}
+                <button onClick={()=>{ setCommPanel(commPanel===m.id?null:m.id); setCommForm({ rate:m.commission_type==="percentage"?String(Math.round((m.commission_rate||0.15)*100)):String(m.commission_rate||500), type:m.commission_type||"percentage" }) }}
                   style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:8, color:"#e6821e", fontSize:12, fontWeight:700, padding:"7px 12px", cursor:"pointer" }}>
                   💰 Pay
                 </button>
@@ -78,6 +78,8 @@ export default function ProviderMechanics() {
         last_name: form.last_name,
         phone: form.phone,
         specialization: form.specialization,
+        commission_rate: form.commission_type==="percentage" ? (parseFloat(form.commission_rate)||15)/100 : parseFloat(form.commission_rate)||500,
+        commission_type: form.commission_type||"percentage",
         is_active: true,
         is_available: true,
       })
@@ -104,7 +106,7 @@ export default function ProviderMechanics() {
 
   async function updateCommission(mechanicId) {
     const { error } = await supabase.from("mechanics").update({
-      commission_rate: parseFloat(commForm.rate)||0.15,
+      commission_rate: commForm.type==="percentage" ? (parseFloat(commForm.rate)||15)/100 : parseFloat(commForm.rate)||500,
       commission_type: commForm.type
     }).eq("id", mechanicId)
     if (error) return toast.error(error.message)
