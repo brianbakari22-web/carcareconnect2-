@@ -961,10 +961,22 @@ export default function AdminContentHub() {
                       <span style={{ fontSize:10, padding:"1px 6px", borderRadius:6, background:post.status==="posted"?"#1d9e7520":"#e6821e20", color:post.status==="posted"?"#1d9e75":"#e6821e" }}>{post.status}</span>
                     </div>
                   </div>
+                <div style={{ display:"flex", flexDirection:"column", gap:5, flexShrink:0 }}>
                   <button onClick={async()=>{ await supabase.from("content_posts").update({ status:"posted", posted_at:new Date().toISOString() }).eq("id",post.id); loadCampaignPosts(selectedCampaign.id); toast.success("Marked as posted!") }}
-                    style={{ background:"#1d9e7520", border:"1px solid #1d9e7540", borderRadius:8, color:"#1d9e75", fontSize:10, fontWeight:700, padding:"5px 10px", cursor:"pointer", flexShrink:0 }}>
-                    {post.status==="posted"?"Posted":"Mark posted"}
+                    style={{ background:"#1d9e7520", border:"1px solid #1d9e7540", borderRadius:8, color:"#1d9e75", fontSize:10, fontWeight:700, padding:"5px 10px", cursor:"pointer" }}>
+                    {post.status==="posted"?"✓ Posted":"Mark posted"}
                   </button>
+                  {post.item_photo&&(
+                    <button onClick={()=>downloadPhoto(post.item_photo, `CCC-${(post.item_label||"post").replace(/\s+/g,"-")}.jpg`)}
+                      style={{ background:"#8b5cf620", border:"1px solid #8b5cf640", borderRadius:8, color:"#8b5cf6", fontSize:10, fontWeight:700, padding:"5px 10px", cursor:"pointer" }}>
+                      ⬇ Photo
+                    </button>
+                  )}
+                  <button onClick={()=>{ navigator.clipboard.writeText(post.caption||caption); toast.success("Caption copied!") }}
+                    style={{ background:"#e6821e20", border:"1px solid #e6821e40", borderRadius:8, color:"#e6821e", fontSize:10, fontWeight:700, padding:"5px 10px", cursor:"pointer" }}>
+                    📋 Caption
+                  </button>
+                </div>
                 </div>
               ))}
             </div>
