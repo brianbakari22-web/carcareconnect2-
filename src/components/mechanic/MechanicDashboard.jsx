@@ -172,9 +172,9 @@ export default function MechanicDashboard() {
     const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()-7).toISOString()
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
     setEarnings({
-      today: data.filter(b=>b.created_at>=todayStart).reduce((s,b)=>s+Number(b.provider_earnings||0)*0.15,0),
-      week: data.filter(b=>b.created_at>=weekStart).reduce((s,b)=>s+Number(b.provider_earnings||0)*0.15,0),
-      month: data.filter(b=>b.created_at>=monthStart).reduce((s,b)=>s+Number(b.provider_earnings||0)*0.15,0),
+      today: data.filter(b=>b.created_at>=todayStart).reduce((s,b)=>s+(mechanic.commission_type==="fixed" ? Number(mechanic.commission_rate||0) : Number(b.provider_earnings||0)*(mechanic.commission_rate||0.15)),0),
+      week: data.filter(b=>b.created_at>=weekStart).reduce((s,b)=>s+(mechanic.commission_type==="fixed" ? Number(mechanic.commission_rate||0) : Number(b.provider_earnings||0)*(mechanic.commission_rate||0.15)),0),
+      month: data.filter(b=>b.created_at>=monthStart).reduce((s,b)=>s+(mechanic.commission_type==="fixed" ? Number(mechanic.commission_rate||0) : Number(b.provider_earnings||0)*(mechanic.commission_rate||0.15)),0),
       total_jobs: data.length
     })
   }
@@ -662,7 +662,7 @@ export default function MechanicDashboard() {
                     </div>
                     <div style={{ textAlign:"right" }}>
                       <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:800, color:"#1d9e75" }}>KES {Math.round(mechanic.commission_type==="fixed" ? Number(mechanic.commission_rate||0) : Number(job.provider_earnings||0)*(Number(mechanic.commission_rate||15)/100)).toLocaleString()}</div>
-                      <div style={{ fontSize:9, color:"#aaa" }}>15% of KES {Number(job.provider_earnings||0).toLocaleString()}</div>
+                    <div style={{ fontSize:9, color:"#aaa" }}>{mechanic?.commission_type==="fixed"?"Fixed rate":Math.round((mechanic?.commission_rate||0.15)*100)+"% of KES "+Number(job.provider_earnings||0).toLocaleString()}</div>
                     </div>
                   </div>
                 ))}
