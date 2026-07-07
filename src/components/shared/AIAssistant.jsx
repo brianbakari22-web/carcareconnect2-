@@ -942,12 +942,13 @@ const GREETINGS = {
 }
 
 const QUICK = {
-  customer: ["My car wont start", "How do I book a service?", "How does Service Guarantee work?", "How do I earn loyalty points?"],
-  provider: ["How does commission work?", "Service Guarantee policy?", "How do I get paid?", "How do GO requests work?"],
-  driver: ["What documents do I need?", "How are earnings calculated?", "What is a no-show penalty?", "How do I complete a delivery?"],
-  admin: ["Commission structure?", "Service Guarantee policy?", "Driver verification process?", "Scan for code errors"],
+  customer: ["My car wont start", "How do I track my driver?", "How does Service Guarantee work?", "Share a service with a friend"],
+  provider: ["How do I upload service photos?", "How does payment work?", "How do I share my storefront?", "How do GO requests work?"],
+  driver: ["How does GPS tracking work?", "How are earnings calculated?", "What is a no-show penalty?", "How do I complete a delivery?"],
+  admin: ["What is the Content Hub?", "How do campaigns work?", "Commission structure?", "Play Store status?"],
   mechanic: ["How do I start a job?", "Common oil change steps?", "What parts for brake job?", "How do I request parts?"]
 }
+
 
 export default function AIAssistant({ bottomOffset = 88, forcedRole = null }) {
   const { profile } = useAuth()
