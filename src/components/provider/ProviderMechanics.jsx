@@ -1,4 +1,8 @@
 import { useEffect, useState } from "react"
+                <button onClick={()=>{ setCommPanel(commPanel===m.id?null:m.id); setCommForm({ rate:String(Math.round((m.commission_rate||0.15)*100)), type:m.commission_type||"percentage" }) }}
+                  style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:8, color:"#e6821e", fontSize:12, fontWeight:700, padding:"7px 12px", cursor:"pointer" }}>
+                  💰 Pay
+                </button>
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
@@ -20,6 +24,8 @@ export default function ProviderMechanics() {
   const [pinPanel, setPinPanel] = useState(null)
   const [docsPanel, setDocsPanel] = useState(null)
   const [chatPanel, setChatPanel] = useState(null)
+  const [commPanel, setCommPanel] = useState(null)
+  const [commForm, setCommForm] = useState({ rate:"15", type:"percentage" })
   const [mechanicDocs, setMechanicDocs] = useState({})
   const [pin, setPin] = useState("")
   const [settingPin, setSettingPin] = useState(false)
@@ -93,6 +99,17 @@ export default function ProviderMechanics() {
 
   async function toggleAvailable(m) {
     await supabase.from("mechanics").update({ is_available: !m.is_available }).eq("id", m.id)
+    load()
+  }
+
+  async function updateCommission(mechanicId) {
+    const { error } = await supabase.from("mechanics").update({
+      commission_rate: parseFloat(commForm.rate)||0.15,
+      commission_type: commForm.type
+    }).eq("id", mechanicId)
+    if (error) return toast.error(error.message)
+    toast.success("Pay structure updated!")
+    setCommPanel(null)
     load()
   }
 
@@ -288,6 +305,33 @@ export default function ProviderMechanics() {
                   </button>
                 )}
               </div>
+
+                {/* Commission edit panel */}
+                {commPanel===m.id&&(
+                  <div style={{ background:"#fff8f0", borderRadius:10, padding:"0.75rem", marginBottom:10, border:"1px solid #e6821e20" }}>
+                    <div style={{ fontSize:12, fontWeight:700, color:"#e6821e", marginBottom:8 }}>💰 Update Pay Structure</div>
+                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:8 }}>
+                      <select value={commForm.type} onChange={e=>setCommForm(f=>({...f,type:e.target.value}))}
+                        style={{ background:"#fff", border:"1px solid #eeeeee", borderRadius:8, padding:"8px 10px", fontSize:12, outline:"none" }}>
+                        <option value="percentage">% of job value</option>
+                        <option value="fixed">Fixed per job (KES)</option>
+                      </select>
+                      <input type="number" value={commForm.rate} onChange={e=>setCommForm(f=>({...f,rate:e.target.value}))}
+                        placeholder={commForm.type==="percentage"?"e.g. 15":"e.g. 500"}
+                        style={{ background:"#fff", border:"1px solid #eeeeee", borderRadius:8, padding:"8px 10px", fontSize:12, outline:"none" }}/>
+                    </div>
+                    <div style={{ display:"flex", gap:6 }}>
+                      <button onClick={()=>updateCommission(m.id)}
+                        style={{ flex:1, background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"8px", cursor:"pointer" }}>
+                        Save
+                      </button>
+                      <button onClick={()=>setCommPanel(null)}
+                        style={{ background:"none", border:"1px solid #ddd", borderRadius:7, color:"#888", fontSize:11, padding:"8px 12px", cursor:"pointer" }}>
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
 
               {/* PIN setup panel */}
               {pinPanel===m.id&&(
