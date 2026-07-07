@@ -23,7 +23,7 @@ export default function ProviderMechanics() {
   const [mechanicDocs, setMechanicDocs] = useState({})
   const [pin, setPin] = useState("")
   const [settingPin, setSettingPin] = useState(false)
-  const [form, setForm] = useState({ first_name:"", last_name:"", phone:"", email:"", specialization:"General Mechanic", hourly_rate:"" })
+  const [form, setForm] = useState({ first_name:"", last_name:"", phone:"", email:"", specialization:"General Mechanic", hourly_rate:"", commission_rate:"15", commission_type:"percentage" })
   const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => { if (user) load() }, [user])
@@ -78,7 +78,7 @@ export default function ProviderMechanics() {
       if (mechError) throw mechError
 
       toast.success("Mechanic added! Set their PIN so they can login.")
-      setForm({ first_name:"", last_name:"", phone:"", email:"", specialization:"General Mechanic", hourly_rate:"" })
+      setForm({ first_name:"", last_name:"", phone:"", email:"", specialization:"General Mechanic", hourly_rate:"", commission_rate:"15", commission_type:"percentage" })
       setShowAdd(false)
       load()
     } catch(err) { toast.error(err.message) }
@@ -172,6 +172,30 @@ export default function ProviderMechanics() {
             <input type="number" value={form.hourly_rate} onChange={e=>setForm(f=>({...f,hourly_rate:e.target.value}))}
               placeholder="500" style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:8, padding:"9px 12px", fontSize:13, color:"#000", outline:"none", boxSizing:"border-box" }}/>
           </div>
+          <div style={{ marginBottom:"1rem" }}>
+            <div style={{ fontSize:11, color:"#555", marginBottom:6, fontWeight:600 }}>Pay structure (your agreement with mechanic)</div>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
+              <div>
+                <div style={{ fontSize:10, color:"#888", marginBottom:3 }}>Commission type</div>
+                <select value={form.commission_type} onChange={e=>setForm(f=>({...f,commission_type:e.target.value}))}
+                  style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:8, padding:"9px 12px", fontSize:12, color:"#000", outline:"none" }}>
+                  <option value="percentage">% of job value</option>
+                  <option value="fixed">Fixed per job (KES)</option>
+                </select>
+              </div>
+              <div>
+                <div style={{ fontSize:10, color:"#888", marginBottom:3 }}>{form.commission_type==="percentage"?"Percentage (%)":"Amount (KES)"}</div>
+                <input type="number" value={form.commission_rate} onChange={e=>setForm(f=>({...f,commission_rate:e.target.value}))}
+                  placeholder={form.commission_type==="percentage"?"e.g. 15":"e.g. 500"}
+                  style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:8, padding:"9px 12px", fontSize:12, color:"#000", outline:"none" }}/>
+              </div>
+            </div>
+            <div style={{ fontSize:10, color:"#888", marginTop:4 }}>
+              {form.commission_type==="percentage"
+                ? "Mechanic earns "+form.commission_rate+"% of each completed job value"
+                : "Mechanic earns KES "+form.commission_rate+" per completed job"}
+            </div>
+          </div>
           <button onClick={addMechanic} disabled={submitting}
             style={{ width:"100%", background:submitting?"#888":"#1d9e75", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px", cursor:"pointer" }}>
             {submitting?"Adding...":"Add Mechanic →"}
@@ -229,6 +253,14 @@ export default function ProviderMechanics() {
                   <div style={{ fontSize:10, color:"#888", marginBottom:2 }}>Rate</div>
                   <div style={{ fontSize:12, fontWeight:600, color:"#000" }}>KES {m.hourly_rate}/hr</div>
                 </div>}
+              {m.commission_rate>0&&<div style={{ background:"#f0fdf4", borderRadius:8, padding:"8px 10px" }}>
+                <div style={{ fontSize:10, color:"#888", marginBottom:2 }}>Pay structure</div>
+                <div style={{ fontSize:12, fontWeight:600, color:"#1d9e75" }}>
+                  {m.commission_type==="fixed"
+                    ? "KES "+Number(m.commission_rate).toLocaleString()+" per job"
+                    : Math.round(m.commission_rate*100)+"% of job value"}
+                </div>
+              </div>}
               </div>
 
               {/* Action buttons */}

@@ -647,10 +647,27 @@ export default function MechanicDashboard() {
                 </div>
               ))}
             </div>
-            <div style={{ background:"#f8f8f8", borderRadius:10, padding:"1rem", fontSize:12, color:"#555", lineHeight:1.8 }}>
+            <div style={{ background:"#f8f8f8", borderRadius:10, padding:"1rem", fontSize:12, color:"#555", lineHeight:1.8, marginBottom:"1rem" }}>
               <div style={{ fontWeight:700, marginBottom:4, color:"#000" }}>💡 About your earnings</div>
-              Earnings shown are estimated at 15% of completed job value. Actual payout depends on your agreement with {mechanic?.business_name||"your garage"}.
+              {mechanic?.commission_type==="fixed" ? `Earnings shown as KES ${Number(mechanic?.commission_rate||0).toLocaleString()} fixed per job as agreed with ${mechanic?.business_name||"your garage"}.` : `Earnings shown at ${Math.round((mechanic?.commission_rate||0.15)*100)}% of completed job value as agreed with ${mechanic?.business_name||"your garage"}.`}
             </div>
+            {history.filter(j=>j.status==="completed").length>0&&(
+              <div>
+                <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000", marginBottom:8 }}>Recent Completed Jobs</div>
+                {history.filter(j=>j.status==="completed").slice(0,10).map(job=>(
+                  <div key={job.id} style={{ background:"#fff", border:"1px solid #eeeeee", borderRadius:10, padding:"0.75rem", marginBottom:8, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                    <div>
+                      <div style={{ fontSize:12, fontWeight:600, color:"#000" }}>{job.services?.name||job.service_name}</div>
+                      <div style={{ fontSize:10, color:"#888", marginTop:2 }}>📅 {job.booking_date} · {job.profiles?.first_name} {job.profiles?.last_name}</div>
+                    </div>
+                    <div style={{ textAlign:"right" }}>
+                      <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:800, color:"#1d9e75" }}>KES {Math.round(mechanic.commission_type==="fixed" ? Number(mechanic.commission_rate||0) : Number(job.provider_earnings||0)*(Number(mechanic.commission_rate||15)/100)).toLocaleString()}</div>
+                      <div style={{ fontSize:9, color:"#aaa" }}>15% of KES {Number(job.provider_earnings||0).toLocaleString()}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -673,9 +690,12 @@ export default function MechanicDashboard() {
                     <div style={{ fontSize:10, color:"#888", marginTop:2 }}>📅 {job.booking_date}</div>
                     {job.mechanic_notes&&<div style={{ fontSize:10, color:"#666", marginTop:4, background:"#f8f8f8", borderRadius:6, padding:"4px 8px" }}>📝 {job.mechanic_notes}</div>}
                   </div>
-                  <span style={{ fontSize:10, padding:"3px 8px", borderRadius:10, background:job.status==="completed"?"#f0fdf4":"#fff5f5", color:job.status==="completed"?"#1d9e75":"#e24b4a", fontWeight:700 }}>
-                    {job.status}
-                  </span>
+                  <div style={{ textAlign:"right" }}>
+                    {job.status==="completed"&&<div style={{ fontFamily:"Syne", fontSize:12, fontWeight:800, color:"#1d9e75" }}>KES {Math.round(mechanic.commission_type==="fixed" ? Number(mechanic.commission_rate||0) : Number(job.provider_earnings||0)*(Number(mechanic.commission_rate||15)/100)).toLocaleString()}</div>}
+                    <span style={{ fontSize:10, padding:"3px 8px", borderRadius:10, background:job.status==="completed"?"#f0fdf4":"#fff5f5", color:job.status==="completed"?"#1d9e75":"#e24b4a", fontWeight:700, display:"block", marginTop:4 }}>
+                      {job.status}
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}
