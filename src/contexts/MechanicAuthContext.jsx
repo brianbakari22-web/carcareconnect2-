@@ -64,7 +64,7 @@ export function MechanicAuthProvider({ children }) {
   }
 
   return (
-    <MechanicAuthContext.Provider value={{ mechanic, loading, loginMechanic, logoutMechanic }}>
+    <MechanicAuthContext.Provider value={{ mechanic, loading, loginMechanic, logoutMechanic, refreshMechanic }}>
       {children}
     </MechanicAuthContext.Provider>
   )
