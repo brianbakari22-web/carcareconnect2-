@@ -55,7 +55,12 @@ export default function MechanicDashboard() {
     loadDocs()
     loadPhotos()
     const sub = supabase.channel("mechanic-jobs-" + mechanic.mechanic_id)
-      .on("postgres_changes", { event:"*", schema:"public", table:"bookings",
+      .on("postgres_changes", { event:"INSERT", schema:"public", table:"bookings",
+        filter:"assigned_mechanic_id=eq." + mechanic.mechanic_id }, payload => {
+        load()
+        toast.success("New job assigned: " + (payload.new.service_name||"Service") + " 🔧", { duration:10000 })
+      })
+      .on("postgres_changes", { event:"UPDATE", schema:"public", table:"bookings",
         filter:"assigned_mechanic_id=eq." + mechanic.mechanic_id }, () => load())
       .subscribe()
     return () => { supabase.removeChannel(sub); stopSharing() }
