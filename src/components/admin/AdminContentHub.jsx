@@ -366,11 +366,17 @@ export default function AdminContentHub() {
       }
 
       // === DOWNLOAD ===
-      const link = document.createElement("a")
-      link.download = `CCC-${(item._label||"content").replace(/\s+/g,"-")}-card.png`
-      link.href = canvas.toDataURL("image/png")
-      link.click()
-      toast.success("Content card downloaded! 🎨")
+      canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement("a")
+        link.download = `CCC-${(item._label||"content").replace(/\s+/g,"-")}-card.png`
+        link.href = url
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        setTimeout(() => URL.revokeObjectURL(url), 1000)
+        toast.success("Content card downloaded! 🎨")
+      }, "image/png")
     } catch(e) { toast.error("Card generation failed: " + e.message) }
     finally { setDownloading(false) }
   }
