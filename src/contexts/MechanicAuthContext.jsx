@@ -33,6 +33,18 @@ export function MechanicAuthProvider({ children }) {
     }
   }, [])
 
+  async function refreshMechanic() {
+    const saved = localStorage.getItem("ccc_mechanic_session")
+    if (!saved) return
+    const session = JSON.parse(saved)
+    const { data } = await supabase.from("mechanics")
+      .select("*, profiles!mechanics_provider_id_fkey(business_name, city)")
+      .eq("id", session.mechanic_id)
+      .eq("is_active", true)
+      .single()
+    if (data) setMechanic({ ...session, ...data })
+  }
+
   async function loginMechanic(phone, pin) {
     const { data, error } = await supabase.rpc("verify_mechanic_pin", {
       p_phone: phone,

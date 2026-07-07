@@ -18,7 +18,7 @@ const STATUS_COLOR = {
 const URGENCY_COLOR = { normal:"#888", urgent:"#e6821e", critical:"#e24b4a" }
 
 export default function MechanicDashboard() {
-  const { mechanic, logoutMechanic } = useMechanicAuth()
+  const { mechanic, logoutMechanic, refreshMechanic } = useMechanicAuth()
   const [tab, setTab] = useState("jobs")
   const [jobs, setJobs] = useState([])
   const [history, setHistory] = useState([])
@@ -48,6 +48,7 @@ export default function MechanicDashboard() {
 
   useEffect(() => {
     if (!mechanic) return
+    refreshMechanic()
     load()
     loadHistory()
     loadEarnings()
