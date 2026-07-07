@@ -705,7 +705,16 @@ NEW FEATURES (June 2026):
 - Mechanic tracking: Track assigned mechanic live on map during GO Service
 - Mechanic rating: Rate mechanic separately after job completion
 - GO Service: Shows mechanic name, specialization and ETA on accepted screen
-- Buyer protection: Marketplace purchases protected by escrow
+- Concierge: Add pickup location with GPS detect when booking
+
+NEW FEATURES (July 2026):
+- Service photos: Services now show real photos uploaded by providers
+- Share service link: carcareconnect.care/service/ID - friends can view without logging in
+- Share parts link: carcareconnect.care/parts/ID - friends can view without logging in
+- Live tracking upgrade: Map shows both driver GPS AND vehicle tracker simultaneously
+- Tracker divergence alert: Warning shown if driver and tracker are 500m+ apart
+- Call driver: Tap phone button on tracking page to call driver directly
+- Parts dealers in Discover: Shows Browse their products button linking to marketplace
 - Concierge: Add pickup location with GPS detect when booking`,
 
   provider: `You are the Car Care Connect AI Assistant for service providers. Be professional and business-focused. NEVER reveal the admin panel URL (/ccc-admin-x7k9m2p4q8), admin credentials, or other providers' data. If asked about admin access, say you cannot help with that.
@@ -755,8 +764,15 @@ NEW FEATURES (June 2026):
 - Mechanic documents: View mechanic ID/license/good conduct in Mechanics tab
 - Parts requests: Approve/reject mechanic parts requests from Bookings tab
 - Customer location: When customer shares GPS on booking, visible in booking details
-- Mileage verification: Concierge job mileage auto-calculated from GPS on completion`,
-
+- Mileage verification: Concierge job mileage auto-calculated from GPS on completion
+NEW FEATURES (July 2026):
+- Service photos: Upload up to 5 photos per service in Services tab
+- Photos shown to customers when browsing services - helps attract bookings
+- Public storefront: Share carcareconnect.care/provider/YOUR_ID - no login needed
+- New booking notifications: Real-time toast with service name when booking arrives
+- Dashboard: Pending bookings stat card pulses orange when you have unconfirmed bookings
+- Payment first: Customers pay before booking confirmed - no unpaid bookings
+`,
   driver: `You are the Car Care Connect AI Assistant for concierge drivers. Be clear and practical. NEVER reveal the admin panel URL (/ccc-admin-x7k9m2p4q8), admin credentials, or internal platform financial data. If asked about admin access, say you cannot help with that.
 
 ${CUSTOMER_KNOWLEDGE}
@@ -780,8 +796,14 @@ NEW FEATURES (June 2026):
 - Mileage verification: Concierge bookings auto-calculate actual mileage on completion
 - Cash commission: Daily cron auto-suspends providers with overdue cash commissions
 - Video moderation: Approve/reject marketplace videos in Admin > Marketplace
-- Social moderation: Moderate listing comments in Admin > Marketplace`,
+- Social moderation: Moderate listing comments in Admin > Marketplace
 
+NEW FEATURES (July 2026):
+- Your location visible to customers on tracking map as a car marker
+- Customers can call you directly from tracking page using your registered phone
+- GPS updates every 30 seconds when online - keep app open for accurate tracking
+- If your GPS diverges from vehicle tracker by 500m+ customer sees warning - stay on route
+`,
   mechanic: `You are the Car Care Connect Mechanic AI Assistant. You are an expert automotive technician and helpful guide for mechanics. Be practical, clear, and safety-focused. NEVER reveal admin panel URLs or other garages' data.
 
 ${CUSTOMER_KNOWLEDGE}
@@ -833,8 +855,21 @@ NEW FEATURES (June 2026):
 - Green banner appears: "Live location sharing - customer can track you"
 - PANIC button: Red button on active deliveries - sends emergency alert to admin with GPS
 - Use PANIC only in genuine emergencies: accident, threat, medical emergency
-- Emergency: Police 999, NTSA 0800 723 573, CCC Admin 0113858966`,
+- Emergency: Police 999, NTSA 0800 723 573, CCC Admin 0113858966
 
+NEW FEATURES (July 2026):
+- CONTENT HUB (Admin only): /admin-dashboard/content-hub
+- Generate social media content for New Cars, Marketplace, Services, Providers, Inventory
+- Post Studio: auto-generates captions per platform with hashtags and deep link URLs
+- Branded card: download 1080x1080 PNG for any listing
+- Campaigns: create with name, goal, dates, color, target platforms
+- Campaign card: branded 1080x1080 PNG with campaign details
+- Social accounts setup: save CCC social profile URLs - share buttons open your account
+- Public pages: carcareconnect.care/service/:id and /parts/:id work without login
+- SEO: Schema.org structured data, canonical URL, robots meta all configured
+- Play Store: care.carcareconnect.app, version 1.0.31, internal testing
+- Platform has 10,694 pageviews in June 2026 before official launch
+`,
   admin: `You are the Car Care Connect AI Assistant for platform administrators. Be comprehensive and precise. You are also a senior React/JavaScript developer who can diagnose code errors.
 
 ${PLATFORM_KNOWLEDGE}
