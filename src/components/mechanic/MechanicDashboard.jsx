@@ -18,7 +18,7 @@ const STATUS_COLOR = {
 const URGENCY_COLOR = { normal:"#888", urgent:"#e6821e", critical:"#e24b4a" }
 
 export default function MechanicDashboard() {
-  const { mechanic, logoutMechanic, refreshMechanic } = useMechanicAuth()
+  const { mechanic, logoutMechanic } = useMechanicAuth()
   const [tab, setTab] = useState("jobs")
   const [jobs, setJobs] = useState([])
   const [history, setHistory] = useState([])
@@ -48,7 +48,6 @@ export default function MechanicDashboard() {
 
   useEffect(() => {
     if (!mechanic) return
-    refreshMechanic()
     load()
     loadHistory()
     loadEarnings()
@@ -70,7 +69,7 @@ export default function MechanicDashboard() {
   async function load() {
     setLoading(true)
     const { data } = await supabase.from("bookings")
-      .select("*, services(name), profiles!bookings_customer_id_fkey(first_name,last_name), profile_sensitive!bookings_customer_id_fkey(phone)")
+      .select("*, services(name), profiles!bookings_customer_id_fkey(first_name,last_name)")
       .eq("assigned_mechanic_id", mechanic.mechanic_id)
       .in("status", ["confirmed","in_progress","pending"])
       .order("booking_date", { ascending: true })
