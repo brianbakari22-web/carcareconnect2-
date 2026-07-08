@@ -594,6 +594,24 @@ ADMIN POLICIES & ENFORCEMENT (June 2026):
 - Platform security: Admin AI has full knowledge, customer AI is restricted
 - Admin panel URL: carcareconnect.care/ccc-admin-x7k9m2p4q8 (NEVER share publicly)
 
+JULY 2026 ADMIN FEATURES:
+- CONTENT HUB: /admin-dashboard/content-hub - generate social media content for all listings
+  * Tabs: New Cars, Marketplace, Services, Providers, Inventory
+  * Post Studio: auto-generates captions per platform with hashtags and deep link URLs
+  * Platforms: WhatsApp, TikTok, Instagram, Facebook, X, YouTube
+  * Branded card: download 1080x1080 PNG for any listing or campaign
+  * Deep link URLs: carcareconnect.care/service/ID, /parts/ID, /provider/ID
+  * Social accounts: save CCC social profile URLs - share buttons open your account
+  * Campaigns: create with name/goal/dates/color/target platforms, track post status
+  * Campaign card: branded 1080x1080 with campaign details
+- PUBLIC PAGES: /service/:id, /parts/:id, /provider/:id accessible without login
+- MECHANIC PAY: Providers set commission per mechanic (percentage or fixed KES per job)
+- SERVICE PHOTOS: Providers upload up to 5 photos per service, shown to customers
+- SEO: Schema.org AutoRepair structured data added, Google logo may appear in 2-4 weeks
+- PLAY STORE: care.carcareconnect.app v1.0.31, internal testing, ~11 days to production
+- PLATFORM STATS: 10694 pageviews June 2026, 68+ users registered
+- PWA DISABLED: beforeinstallprompt blocked, Play Store banner shown to Android visitors
+
 `
 
 const CUSTOMER_KNOWLEDGE = `
@@ -907,6 +925,11 @@ FOR ADMINS specifically:
 - LOYALTY PROGRAM ADMIN: Adjust tier thresholds, set redemption rates, issue bonus points
 - WASH PACKAGES: Monitor car wash service categories (basic_wash, standard_wash, premium_detail)
 - NEW PLATFORM METRICS (June 2026): 22+ registered users, multiple provider types active, C2C marketplace live, parts ordering functional
+- CONTENT HUB (July 2026): Admin-only tool at /admin-dashboard/content-hub. Generate social media content for all platform listings (New Cars, Marketplace, Services, Providers, Inventory). Features: Post Studio with dark theme, auto-generates captions per platform (WhatsApp/TikTok/Instagram/Facebook/X/YouTube) with hashtags and deep link URLs. Branded card generator creates 1080x1080 PNG. Social accounts setup saves CCC profile URLs. Share buttons open saved account pages. Campaigns system: create campaigns with name/goal/dates/color/target platforms, add content to campaigns, track post status (draft/posted), generate campaign branded cards.
+- PUBLIC PAGES (July 2026): /service/:id shows service without login, /parts/:id shows part without login, /provider/:id shows provider storefront. After login redirects back to item.
+- MECHANIC PAY (July 2026): Providers set commission per mechanic (percentage or fixed per job) in ProviderMechanics. Mechanic dashboard shows actual agreed rate.
+- SERVICE PHOTOS (July 2026): Providers upload up to 5 photos per service. Shown on customer service cards and in Content Hub.
+- PLAY STORE: care.carcareconnect.app, version 1.0.31, internal testing phase, ~11 days to production eligibility
 - BRS STATUS: 3 names submitted (NAIRO CAR CONNECT, KEN CAR CONNECT, CARCARE KE CONNECT) — awaiting approval
 - PESAPAL: Contract pending with Rachel Owino (rachel.owino@pesapal.com)
 - TRADEMARK: KIPI application pending — Class 35 (business services), 37 (vehicle repair), 39 (transport)`
