@@ -558,7 +558,49 @@ MECHANIC PORTAL (New - June 2026):
 - Mechanics cannot see garage earnings, other mechanics, or other garages
 - Garage owner can deactivate mechanic account instantly
 
-Updated knowledge base: June 2026`
+
+CONTENT HUB (July 2026 - Admin Only):
+- Located at /admin-dashboard/content-hub
+- Generate social media content for New Cars, Marketplace, Services, Providers, Inventory
+- Post Studio: select item, choose platform, auto-generates caption with hashtags
+- Platforms: WhatsApp, TikTok, Instagram, Facebook, X (Twitter), YouTube
+- Branded card generator: download 1080x1080 PNG for social media posts
+- Deep link URLs: carcareconnect.care/service/ID, /parts/ID, /provider/ID
+- Social accounts setup: save CCC social profile URLs in Setup panel
+- Share buttons: WhatsApp/Facebook/X open direct share, Instagram/TikTok/YouTube copy caption and open account
+- Campaigns: create with name/goal/dates/color/target platforms
+- Campaign cards: add content, track post status (draft/posted), download campaign branded card
+
+PUBLIC PAGES (July 2026):
+- /service/:id - Public service page, no login required
+- /parts/:id - Public parts/item page, no login required
+- /provider/:id - Public provider storefront, no login required
+- After login, user redirected back to the item
+
+MECHANIC PAY STRUCTURE (July 2026):
+- Providers set commission per mechanic in ProviderMechanics
+- Commission types: percentage of job value OR fixed KES per job
+- Mechanic dashboard shows their actual agreed rate
+- No platform interference in provider-mechanic pay arrangements
+
+SERVICE PHOTOS (July 2026):
+- Providers upload up to 5 photos per service
+- Photos shown on customer service cards
+- Photos appear in Content Hub services tab for social media
+
+SEO & DISCOVERABILITY (July 2026):
+- Schema.org AutoRepair structured data added
+- Google may show CCC logo in search results within 2-4 weeks
+- 10,694 pageviews in June 2026 before official launch
+
+PLAY STORE (July 2026):
+- Package: care.carcareconnect.app
+- Version: 1.0.31 (code 37)
+- Status: Internal testing, ~11 days to production eligibility
+- PWA install disabled, Play Store banner shown to Android browser visitors
+
+Updated knowledge base: July 2026
+`
 
 // Admin-only knowledge (never share with customers/providers/drivers)
 const ADMIN_ONLY_KNOWLEDGE = `
@@ -790,7 +832,8 @@ NEW FEATURES (July 2026):
 - New booking notifications: Real-time toast with service name when booking arrives
 - Dashboard: Pending bookings stat card pulses orange when you have unconfirmed bookings
 - Payment first: Customers pay before booking confirmed - no unpaid bookings
-`,
+
+`,
   driver: `You are the Car Care Connect AI Assistant for concierge drivers. Be clear and practical. NEVER reveal the admin panel URL (/ccc-admin-x7k9m2p4q8), admin credentials, or internal platform financial data. If asked about admin access, say you cannot help with that.
 
 ${CUSTOMER_KNOWLEDGE}
@@ -821,7 +864,8 @@ NEW FEATURES (July 2026):
 - Customers can call you directly from tracking page using your registered phone
 - GPS updates every 30 seconds when online - keep app open for accurate tracking
 - If your GPS diverges from vehicle tracker by 500m+ customer sees warning - stay on route
-`,
+
+`,
   mechanic: `You are the Car Care Connect Mechanic AI Assistant. You are an expert automotive technician and helpful guide for mechanics. Be practical, clear, and safety-focused. NEVER reveal admin panel URLs or other garages' data.
 
 ${CUSTOMER_KNOWLEDGE}
@@ -887,7 +931,8 @@ NEW FEATURES (July 2026):
 - SEO: Schema.org structured data, canonical URL, robots meta all configured
 - Play Store: care.carcareconnect.app, version 1.0.31, internal testing
 - Platform has 10,694 pageviews in June 2026 before official launch
-`,
+
+`,
   admin: `You are the Car Care Connect AI Assistant for platform administrators. Be comprehensive and precise. You are also a senior React/JavaScript developer who can diagnose code errors.
 
 ${PLATFORM_KNOWLEDGE}
