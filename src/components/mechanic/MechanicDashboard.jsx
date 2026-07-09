@@ -141,11 +141,11 @@ export default function MechanicDashboard() {
         // Upsert document record
         await supabase.from("driver_documents").upsert({
           driver_id: mechanic.mechanic_id,
-          document_type: docType,
+          type: docType,
           document_url: data.publicUrl,
           status: "pending",
-          uploaded_at: new Date().toISOString()
-        }, { onConflict: "driver_id,document_type" })
+          file_name: file.name
+        }, { onConflict: "driver_id,type" })
         toast.success(label + " uploaded! Pending verification.")
         loadDocs()
       } catch(err) { toast.error("Upload failed: " + err.message) }
@@ -892,7 +892,7 @@ export default function MechanicDashboard() {
               { type:"good_conduct", label:"Certificate of Good Conduct", icon:"📋" },
               { type:"medical_certificate", label:"Medical Certificate", icon:"🏥" },
             ].map(doc => {
-              const existing = docs.find(d=>d.document_type===doc.type)
+              const existing = docs.find(d=>d.type===doc.type)
               return (
                 <div key={doc.type} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem", marginBottom:10 }}>
                   <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
