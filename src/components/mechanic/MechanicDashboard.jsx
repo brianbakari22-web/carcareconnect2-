@@ -39,6 +39,7 @@ export default function MechanicDashboard() {
   const [expandedJob, setExpandedJob] = useState(null)
   const [photos, setPhotos] = useState([])
   const [partsRequests, setPartsRequests] = useState([])
+  const [photoFilter, setPhotoFilter] = useState("all")
   const [viewPhoto, setViewPhoto] = useState(null)
   const [docs, setDocs] = useState([])
   const [uploadingDoc, setUploadingDoc] = useState(null)
@@ -714,15 +715,50 @@ export default function MechanicDashboard() {
         )}
 
         {/* PHOTOS TAB */}
-        {tab==="photos"&&(
           <div>
             <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000", marginBottom:4 }}>📸 Job Photos</div>
-            <div style={{ fontSize:12, color:"#888", marginBottom:"1rem" }}>{photos.length} photo{photos.length!==1?"s":""} from your jobs</div>
+            <div style={{ fontSize:12, color:"#888", marginBottom:"0.75rem" }}>{photos.length} photo{photos.length!==1?"s":""} from your jobs</div>
+            {/* Filter buttons */}
+            <div style={{ display:"flex", gap:6, marginBottom:"1rem" }}>
+              {["all","Before","After"].map(f=>(
+                <button key={f} onClick={()=>setPhotoFilter(f)}
+                  style={{ padding:"6px 14px", borderRadius:8, border:"none", fontSize:11, cursor:"pointer", background:photoFilter===f?"#1d9e75":"#f0f0f0", color:photoFilter===f?"#fff":"#666", fontWeight:photoFilter===f?700:400 }}>
+                  {f==="all"?"All":f+" photos"}
+                </button>
+              ))}
+            </div>
             {photos.length===0&&(
-              <div style={{ textAlign:"center", padding:"3rem 1rem", background:"#fff", borderRadius:12, border:"1px solid #eee" }}>
-                <div style={{ fontSize:40, marginBottom:8 }}>📷</div>
-                <div style={{ fontSize:13, color:"#888" }}>No photos yet. Upload before/after photos on your jobs.</div>
+              <div style={{ textAlign:"center", padding:"3rem 1rem", color:"#888" }}>
+                <div style={{ fontSize:40, marginBottom:12 }}>📷</div>
+                <div style={{ fontSize:14, fontWeight:600, color:"#000" }}>No photos yet</div>
+                <div style={{ fontSize:12, marginTop:4 }}>Photos uploaded during jobs will appear here</div>
               </div>
+            )}
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:8 }}>
+              {photos.filter(p=>photoFilter==="all"||p.type===photoFilter).map((p,i)=>(
+                <div key={i} style={{ position:"relative", borderRadius:10, overflow:"hidden" }}>
+                  <img src={p.url} alt={p.type} style={{ width:"100%", aspectRatio:"1", objectFit:"cover", display:"block", cursor:"pointer" }}
+                    onClick={()=>setViewPhoto(p.url)}/>
+                  <div style={{ position:"absolute", top:6, left:6, background:p.type==="Before"?"#e6821e":"#1d9e75", borderRadius:6, padding:"2px 8px", fontSize:9, color:"#fff", fontWeight:700 }}>{p.type}</div>
+                  <div style={{ position:"absolute", bottom:0, left:0, right:0, background:"linear-gradient(transparent,rgba(0,0,0,0.7))", padding:"8px 6px 6px" }}>
+                    <div style={{ fontSize:9, color:"#fff", fontWeight:600 }}>{p.job?.services?.name||p.job?.service_name}</div>
+                    <div style={{ fontSize:8, color:"rgba(255,255,255,0.7)" }}>{p.job?.booking_date}</div>
+                  </div>
+                  <button onClick={()=>{ const a=document.createElement("a"); a.href=p.url; a.download="CCC-photo.jpg"; a.target="_blank"; a.click() }}
+                    style={{ position:"absolute", top:6, right:6, background:"rgba(0,0,0,0.5)", border:"none", borderRadius:6, color:"#fff", fontSize:11, padding:"3px 6px", cursor:"pointer" }}>
+                    ⬇
+                  </button>
+                </div>
+              ))}
+            </div>
+            {/* Full screen viewer */}
+            {viewPhoto&&(
+              <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.95)", zIndex:999, display:"flex", alignItems:"center", justifyContent:"center" }} onClick={()=>setViewPhoto(null)}>
+                <img src={viewPhoto} alt="" style={{ maxWidth:"95vw", maxHeight:"90vh", objectFit:"contain", borderRadius:8 }}/>
+                <button onClick={()=>setViewPhoto(null)} style={{ position:"absolute", top:16, right:16, background:"rgba(255,255,255,0.2)", border:"none", borderRadius:"50%", width:36, height:36, color:"#fff", fontSize:18, cursor:"pointer" }}>x</button>
+              </div>
+            )}
+          </div>
             )}
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
               {photos.map((p,i)=>(
@@ -958,7 +994,6 @@ export default function MechanicDashboard() {
           </div>
         )}
 
-      </div>
 
         {/* Stats Tab */}
         {tab==="stats"&&(
