@@ -94,21 +94,21 @@ export default function MechanicDashboard() {
 
   async function loadPhotos() {
     const { data, error: photoErr } = await supabase.from("bookings")
-      .select("id, service_name, booking_date, pickup_photo_url, dropoff_photo_url")
+      .select("id, service_name, booking_date, before_photo_url, after_photo_url")
       .eq("assigned_mechanic_id", mechanic.mechanic_id)
-      .not("pickup_photo_url", "is", null)
+      .not("before_photo_url", "is", null)
       .order("created_at", { ascending: false })
       .limit(50)
     if (photoErr) console.error("loadPhotos error:", photoErr.message, photoErr.details, photoErr.hint)
     const { data: data2 } = await supabase.from("bookings")
-      .select("id, service_name, booking_date, pickup_photo_url, dropoff_photo_url")
+      .select("id, service_name, booking_date, before_photo_url, after_photo_url")
       .eq("assigned_mechanic_id", mechanic.mechanic_id)
-      .not("dropoff_photo_url", "is", null)
+      .not("after_photo_url", "is", null)
       .order("created_at", { ascending: false })
       .limit(50)
     const allPhotos = []
-    ;(data||[]).forEach(b => allPhotos.push({ url:b.pickup_photo_url, type:"Before", job:b }))
-    ;(data2||[]).forEach(b => allPhotos.push({ url:b.dropoff_photo_url, type:"After", job:b }))
+    ;(data||[]).forEach(b => allPhotos.push({ url:b.before_photo_url, type:"Before", job:b }))
+    ;(data2||[]).forEach(b => allPhotos.push({ url:b.after_photo_url, type:"After", job:b }))
     setPhotos(allPhotos)
   }
 
@@ -330,7 +330,7 @@ export default function MechanicDashboard() {
         if (error) throw error
         const { data } = supabase.storage.from("provider-photos").getPublicUrl(path)
         await supabase.from("bookings").update({
-          [type === "before" ? "pickup_photo_url" : "dropoff_photo_url"]: data.publicUrl
+          [type === "before" ? "before_photo_url" : "after_photo_url"]: data.publicUrl
         }).eq("id", jobId)
         toast.success(type + " photo uploaded!")
       } catch(err) { toast.error("Upload failed: " + err.message) }
