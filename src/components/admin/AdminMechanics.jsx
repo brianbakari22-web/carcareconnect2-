@@ -229,6 +229,9 @@ export default function AdminMechanics() {
                   <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>🔧 {m.specialization}</div>
                   {m.phone&&<div style={{ fontSize:11, color:"#888", marginBottom:2 }}>📞 {m.phone}</div>}
                   <div style={{ fontSize:11, color:"#378add" }}>🏪 {getProvider(m.provider_id)}</div>
+                  {m.commission_rate>0&&<div style={{ fontSize:10, color:"#1d9e75", marginTop:2 }}>
+                    💰 {m.commission_type==="fixed"?"KES "+Number(m.commission_rate).toLocaleString()+" per job":Math.round(m.commission_rate*100)+"% commission"}
+                  </div>}
                   {m.last_location_update&&<div style={{ fontSize:10, color:"#888", marginTop:2 }}>Last seen: {new Date(m.last_location_update).toLocaleString()}</div>}
                   <div style={{ display:"flex", gap:6, marginTop:6, flexWrap:"wrap" }}>
                     {m.mechanic_code?(
@@ -313,26 +316,30 @@ export default function AdminMechanics() {
             const cat = CATEGORIES[s.category]||CATEGORIES.shop_standard
             const provider = providers.find(p=>p.id===s.provider_id)
             return (
-              <div key={s.id} style={{ background:"#f8f8f8", border:`1px solid ${cat.color}20`, borderRadius:10, padding:"0.9rem", marginBottom:8, opacity:s.is_active?1:0.5 }}>
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10 }}>
-                  <div style={{ flex:1, minWidth:0 }}>
-                    <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
-                      <span>{cat.icon}</span>
-                      <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{s.name}</div>
-                      <span style={{ fontSize:10, padding:"1px 7px", borderRadius:10, background:cat.bg, color:cat.color }}>{cat.label}</span>
-                      {!s.is_active&&<span style={{ fontSize:10, color:"#888" }}>Inactive</span>}
+              <div key={s.id} style={{ background:"#ffffff", border:`1px solid ${cat.color}20`, borderRadius:12, marginBottom:10, overflow:"hidden", opacity:s.is_active?1:0.6 }}>
+                {s.photos?.length>0&&<img src={s.photos[0]} alt={s.name} style={{ width:"100%", height:120, objectFit:"cover", display:"block" }}/>}
+                <div style={{ padding:"0.75rem" }}>
+                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:8 }}>
+                    <div style={{ flex:1, minWidth:0 }}>
+                      <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:4, flexWrap:"wrap" }}>
+                        <span style={{ fontSize:16 }}>{cat.icon}</span>
+                        <div style={{ fontSize:13, fontWeight:700, color:"#000" }}>{s.name}</div>
+                        <span style={{ fontSize:9, padding:"1px 6px", borderRadius:8, background:cat.bg, color:cat.color }}>{cat.label}</span>
+                        {!s.is_active&&<span style={{ fontSize:9, color:"#888", background:"#f0f0f0", padding:"1px 6px", borderRadius:8 }}>Inactive</span>}
+                      </div>
+                      <div style={{ fontSize:11, color:"#555", marginBottom:2 }}>🏪 {provider?.business_name||`${provider?.first_name} ${provider?.last_name}`}</div>
+                      {s.description&&<div style={{ fontSize:10, color:"#888", lineHeight:1.4 }}>{s.description.substring(0,80)}{s.description.length>80?"...":""}</div>}
                     </div>
-                    <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>🏪 {provider?.business_name||`${provider?.first_name} ${provider?.last_name}`}</div>
-                    {s.description&&<div style={{ fontSize:11, color:"#888" }}>{s.description}</div>}
-                  </div>
-                  <div style={{ textAlign:"right", flexShrink:0 }}>
-                    <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>KES {Number(s.price).toLocaleString()}</div>
-                    <div style={{ fontSize:10, color:cat.color, marginTop:2 }}>{Math.round((s.platform_commission_rate||0.1)*100)}% platform</div>
-                    <div style={{ fontSize:10, color:"#888" }}>⏱ {s.duration_minutes||60} min</div>
+                    <div style={{ textAlign:"right", flexShrink:0 }}>
+                      <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(s.price).toLocaleString()}</div>
+                      <div style={{ fontSize:9, color:cat.color, marginTop:1 }}>{Math.round((s.platform_commission_rate||0.1)*100)}% platform</div>
+                      <div style={{ fontSize:9, color:"#888" }}>⏱ {s.duration_minutes||60} min</div>
+                      {s.photos?.length>0&&<div style={{ fontSize:9, color:"#378add", marginTop:2 }}>📷 {s.photos.length} photo{s.photos.length>1?"s":""}</div>}
+                    </div>
                   </div>
                 </div>
               </div>
-            )
+              )
           })}
         </div>
       )}
