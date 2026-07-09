@@ -94,7 +94,7 @@ export default function MechanicDashboard() {
 
   async function loadPhotos() {
     const { data } = await supabase.from("bookings")
-      .select("id, service_name, services(name), booking_date, pickup_photo_url, dropoff_photo_url, profiles!bookings_customer_id_fkey(first_name,last_name)")
+      .select("id, service_name, services(name), booking_date, pickup_photo_url, dropoff_photo_url")
       .eq("assigned_mechanic_id", mechanic.mechanic_id)
       .or("pickup_photo_url.not.is.null,dropoff_photo_url.not.is.null")
       .order("created_at", { ascending: false })
