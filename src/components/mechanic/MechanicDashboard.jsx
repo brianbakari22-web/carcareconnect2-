@@ -93,17 +93,22 @@ export default function MechanicDashboard() {
   }
 
   async function loadPhotos() {
-    const { data } = await supabase.from("bookings")
-      .select("id, service_name, services(name), booking_date, pickup_photo_url, dropoff_photo_url")
+    const { data, error: photoErr } = await supabase.from("bookings")
+      .select("id, service_name, booking_date, pickup_photo_url, dropoff_photo_url")
       .eq("assigned_mechanic_id", mechanic.mechanic_id)
-      .or("pickup_photo_url.not.is.null,dropoff_photo_url.not.is.null")
+      .not("pickup_photo_url", "is", null)
+      .order("created_at", { ascending: false })
+      .limit(50)
+    if (photoErr) console.error("loadPhotos error:", photoErr.message, photoErr.details, photoErr.hint)
+    const { data: data2 } = await supabase.from("bookings")
+      .select("id, service_name, booking_date, pickup_photo_url, dropoff_photo_url")
+      .eq("assigned_mechanic_id", mechanic.mechanic_id)
+      .not("dropoff_photo_url", "is", null)
       .order("created_at", { ascending: false })
       .limit(50)
     const allPhotos = []
-    ;(data||[]).forEach(b => {
-      if (b.pickup_photo_url) allPhotos.push({ url:b.pickup_photo_url, type:"Before", job:b })
-      if (b.dropoff_photo_url) allPhotos.push({ url:b.dropoff_photo_url, type:"After", job:b })
-    })
+    ;(data||[]).forEach(b => allPhotos.push({ url:b.pickup_photo_url, type:"Before", job:b }))
+    ;(data2||[]).forEach(b => allPhotos.push({ url:b.dropoff_photo_url, type:"After", job:b }))
     setPhotos(allPhotos)
   }
 
