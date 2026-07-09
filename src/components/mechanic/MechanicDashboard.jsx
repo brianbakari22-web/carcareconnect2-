@@ -715,6 +715,7 @@ export default function MechanicDashboard() {
         )}
 
         {/* PHOTOS TAB */}
+        {tab==="photos"&&(
           <div>
             <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000", marginBottom:4 }}>📸 Job Photos</div>
             <div style={{ fontSize:12, color:"#888", marginBottom:"0.75rem" }}>{photos.length} photo{photos.length!==1?"s":""} from your jobs</div>
