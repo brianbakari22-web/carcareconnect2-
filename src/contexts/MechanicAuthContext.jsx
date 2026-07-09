@@ -15,10 +15,10 @@ export function MechanicAuthProvider({ children }) {
         const session = JSON.parse(saved)
         // Verify session is still valid
         supabase.from("mechanics")
-          .select("*, profiles!mechanics_provider_id_fkey(business_name, city)")
+          .select("*")
           .eq("id", session.mechanic_id)
           .eq("is_active", true)
-          .single()
+          .maybeSingle()
           .then(({ data }) => {
             if (data) setMechanic({ ...session, ...data })
             else localStorage.removeItem("ccc_mechanic_session")
@@ -41,7 +41,7 @@ export function MechanicAuthProvider({ children }) {
       .select("*, profiles!mechanics_provider_id_fkey(business_name, city)")
       .eq("id", session.mechanic_id)
       .eq("is_active", true)
-      .single()
+      .maybeSingle()
     if (data) setMechanic({ ...session, ...data })
   }
 
