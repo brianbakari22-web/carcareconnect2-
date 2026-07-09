@@ -38,6 +38,7 @@ export default function MechanicDashboard() {
   const [earnings, setEarnings] = useState({ today:0, week:0, month:0, total_jobs:0 })
   const [expandedJob, setExpandedJob] = useState(null)
   const [photos, setPhotos] = useState([])
+  const [partsRequests, setPartsRequests] = useState([])
   const [viewPhoto, setViewPhoto] = useState(null)
   const [docs, setDocs] = useState([])
   const [uploadingDoc, setUploadingDoc] = useState(null)
@@ -49,6 +50,7 @@ export default function MechanicDashboard() {
   useEffect(() => {
     if (!mechanic) return
     load()
+    loadPartsRequests()
     loadHistory()
     loadEarnings()
     loadPerfStats()
@@ -102,6 +104,15 @@ export default function MechanicDashboard() {
       if (b.dropoff_photo_url) allPhotos.push({ url:b.dropoff_photo_url, type:"After", job:b })
     })
     setPhotos(allPhotos)
+  }
+
+  async function loadPartsRequests() {
+    const { data } = await supabase.from("mechanic_parts_requests")
+      .select("*")
+      .eq("mechanic_id", mechanic.mechanic_id)
+      .order("created_at", { ascending: false })
+      .limit(20)
+    setPartsRequests(data||[])
   }
 
   async function loadDocs() {
@@ -785,6 +796,29 @@ export default function MechanicDashboard() {
         {/* PARTS PRICE LIST TAB */}
         {tab==="parts"&&(
           <div>
+            {/* My Parts Requests */}
+            {partsRequests.length>0&&(
+              <div style={{ marginBottom:"1.25rem" }}>
+                <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000", marginBottom:8 }}>📤 My Requests ({partsRequests.length})</div>
+                {partsRequests.map(req=>(
+                  <div key={req.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"0.75rem", marginBottom:8 }}>
+                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+                      <div>
+                        <div style={{ fontSize:13, fontWeight:600, color:"#000" }}>🔩 {req.part_name}</div>
+                        <div style={{ fontSize:11, color:"#888", marginTop:2 }}>Qty: {req.quantity} · {req.urgency} priority</div>
+                        {req.notes&&<div style={{ fontSize:10, color:"#666", marginTop:2 }}>Note: {req.notes}</div>}
+                        <div style={{ fontSize:10, color:"#aaa", marginTop:2 }}>{new Date(req.created_at).toLocaleDateString()}</div>
+                      </div>
+                      <span style={{ fontSize:10, padding:"3px 8px", borderRadius:10, fontWeight:700,
+                        background:req.status==="approved"?"#f0fdf4":req.status==="rejected"?"#fff5f5":"#fff8f0",
+                        color:req.status==="approved"?"#1d9e75":req.status==="rejected"?"#e24b4a":"#e6821e" }}>
+                        {req.status==="approved"?"✓ Approved":req.status==="rejected"?"✗ Rejected":"⏳ Pending"}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
             <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000", marginBottom:4 }}>🔩 Parts Price Guide</div>
             <div style={{ fontSize:12, color:"#888", marginBottom:"1rem" }}>Nairobi market prices (approximate, KES)</div>
             {[
