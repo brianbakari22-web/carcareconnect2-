@@ -266,7 +266,7 @@ export default function AdminMechanics() {
                     {(mechanicDocs[m.id]||[]).map(doc=>(
                       <div key={doc.id} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6, background:"#fff", borderRadius:7, padding:"6px 10px" }}>
                         <div>
-                          <div style={{ fontSize:11, fontWeight:600, color:"#000" }}>{doc.document_type.replace(/_/g," ")}</div>
+                          <div style={{ fontSize:11, fontWeight:600, color:"#000" }}>{doc.type?.replace(/_/g," ")||"Document"}</div>
                           <span style={{ fontSize:10, color:doc.status==="approved"?"#1d9e75":doc.status==="rejected"?"#e24b4a":"#e6821e", fontWeight:700 }}>
                             {doc.status}
                           </span>

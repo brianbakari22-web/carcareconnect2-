@@ -366,7 +366,7 @@ export default function ProviderMechanics() {
                   {(mechanicDocs[m.id]||[]).map(doc=>(
                     <div key={doc.id} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", background:"#fff", borderRadius:8, padding:"8px 10px", marginBottom:6 }}>
                       <div>
-                        <div style={{ fontSize:11, fontWeight:600, color:"#000" }}>{doc.document_type.replace(/_/g," ")}</div>
+                        <div style={{ fontSize:11, fontWeight:600, color:"#000" }}>{doc.type?.replace(/_/g," ")||"Document"}</div>
                         <span style={{ fontSize:10, fontWeight:700, color:doc.status==="approved"?"#1d9e75":doc.status==="rejected"?"#e24b4a":"#e6821e" }}>
                           {doc.status==="approved"?"✓ Verified":doc.status==="rejected"?"✗ Rejected":"⏳ Pending"}
                         </span>
