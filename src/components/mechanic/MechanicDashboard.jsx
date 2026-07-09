@@ -766,38 +766,8 @@ export default function MechanicDashboard() {
             )}
           </div>
             )}
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
-              {photos.map((p,i)=>(
-                <div key={i} onClick={()=>setViewPhoto(p)}
-                  style={{ borderRadius:10, overflow:"hidden", cursor:"pointer", position:"relative", aspectRatio:"1", background:"#f5f5f5" }}>
-                  <img src={p.url} alt={p.type} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
-                  <div style={{ position:"absolute", bottom:0, left:0, right:0, background:"linear-gradient(transparent,rgba(0,0,0,0.7))", padding:"8px 6px 4px" }}>
-                    <div style={{ fontSize:10, color:"#fff", fontWeight:700 }}>{p.type}</div>
-                    <div style={{ fontSize:9, color:"rgba(255,255,255,0.8)" }}>{p.job.services?.name||p.job.service_name}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            {/* Photo lightbox */}
-            {viewPhoto&&(
-              <div onClick={()=>setViewPhoto(null)} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.9)", zIndex:1000, display:"flex", alignItems:"center", justifyContent:"center", padding:"1rem" }}>
-                <div style={{ maxWidth:"100%", maxHeight:"80vh", position:"relative" }}>
-                  <img src={viewPhoto.url} alt="Job photo" style={{ maxWidth:"100%", maxHeight:"80vh", borderRadius:12, objectFit:"contain" }}/>
-                  <div style={{ textAlign:"center", marginTop:12 }}>
-                    <div style={{ fontSize:14, fontWeight:700, color:"#fff" }}>{viewPhoto.type} photo</div>
-                    <div style={{ fontSize:12, color:"rgba(255,255,255,0.7)" }}>{viewPhoto.job.services?.name} · {viewPhoto.job.booking_date}</div>
-                    <div style={{ fontSize:11, color:"rgba(255,255,255,0.6)" }}>{viewPhoto.job.profiles?.first_name} {viewPhoto.job.profiles?.last_name}</div>
-                  </div>
-                  <button onClick={()=>setViewPhoto(null)}
-                    style={{ position:"absolute", top:-12, right:-12, background:"#fff", border:"none", borderRadius:"50%", width:28, height:28, fontSize:14, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>
-                    x
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
 
+        </div>
         {/* SERVICE MANUAL TAB */}
         {tab==="manual"&&(
           <div>
