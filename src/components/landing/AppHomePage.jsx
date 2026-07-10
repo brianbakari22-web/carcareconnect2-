@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react"
 
 const ROLES = [
-  { key:"customer", emoji:"car", title:"Vehicle Owners", tagline:"Book, track, relax.", desc:"Find verified mechanics, order parts, get emergency help from your phone.", color:"#e6821e", bg:"#fff8f0", border:"#e6821e20", img:"https://images.unsplash.com/photo-1611448746128-7c39e03b71e4?w=600&q=80", actions:["Book a mechanic","GO Emergency","Order parts","Track my car"], path:"/auth" },
-  { key:"provider", emoji:"wrench", title:"Garages and Shops", tagline:"List. Earn. Grow.", desc:"Reach more customers, manage bookings, receive payments and grow your business.", color:"#378add", bg:"#eff6ff", border:"#378add20", img:"https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=600&q=80", actions:["Manage bookings","View earnings","Handle GO requests","Manage mechanics"], path:"/auth" },
-  { key:"mechanic", emoji:"gear", title:"Mechanics", tagline:"Get jobs. Get paid.", desc:"Receive job assignments from your garage, track earnings and build your reputation.", color:"#1d9e75", bg:"#f0fdf4", border:"#1d9e7520", img:"https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=600&q=80", actions:["View assigned jobs","Track earnings","Request parts","My photos"], path:"/mechanic-login" },
+  { key:"customer", emoji:"customer", title:"Vehicle Owners", tagline:"Book, track, relax.", desc:"Find verified mechanics, order parts, get emergency help from your phone.", color:"#e6821e", bg:"#fff8f0", border:"#e6821e20", img:"https://images.unsplash.com/photo-1611448746128-7c39e03b71e4?w=600&q=80", actions:["Book a mechanic","GO Emergency","Order parts","Track my car"], path:"/auth" },
+  { key:"provider", emoji:"wrench", title:"Garages and Shops", tagline:"List. Earn. Grow.", desc:"Reach more customers, manage bookings, receive payments and grow your business.", color:"#378add", bg:"#eff6ff", border:"#378add20", img:"https://images.unsplash.com/photo-1615906655593-ad0386982a0f?w=600&q=80", actions:["Manage bookings","View earnings","Handle GO requests","Manage mechanics"], path:"/auth" },
+  { key:"mechanic", emoji:"gear", title:"Mechanics", tagline:"Get jobs. Get paid.", desc:"Receive job assignments from your garage, track earnings and build your reputation.", color:"#1d9e75", bg:"#f0fdf4", border:"#1d9e7520", img:"https://images.unsplash.com/photo-1615906655593-ad0386982a0f?w=600&q=80", actions:["View assigned jobs","Track earnings","Request parts","My photos"], path:"/mechanic-login" },
   { key:"driver", emoji:"truck", title:"Drivers", tagline:"Drive. Deliver. Earn.", desc:"Accept delivery jobs, earn per trip, track your performance and grow your income.", color:"#8b5cf6", bg:"#faf5ff", border:"#8b5cf620", img:"https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=600&q=80", actions:["Available jobs","Active delivery","My earnings","Performance"], path:"/auth" },
-  { key:"dealer", emoji:"box", title:"Parts Dealers", tagline:"List parts. Sell more.", desc:"Sell genuine and aftermarket parts online. Manage inventory and fulfill orders across Kenya.", color:"#f59e0b", bg:"#fefce8", border:"#f59e0b20", img:"https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&q=80", actions:["My inventory","Incoming orders","Sales analytics","Add new parts"], path:"/auth" },
+  { key:"dealer", emoji:"box", title:"Parts Dealers", tagline:"List parts. Sell more.", desc:"Sell genuine and aftermarket parts online. Manage inventory and fulfill orders across Kenya.", color:"#f59e0b", bg:"#fefce8", border:"#f59e0b20", img:"https://images.unsplash.com/photo-1555140713-973b9f36cd1e?w=600&q=80", actions:["My inventory","Incoming orders","Sales analytics","Add new parts"], path:"/auth" },
 ]
 
 const SERVICES = [
@@ -26,7 +26,7 @@ export default function AppHomePage() {
   useEffect(() => {
     const timer = setInterval(() => {
       setActiveRole(prev => (prev + 1) % ROLES.length)
-    }, 4000)
+    }, 5000)
     return () => clearInterval(timer)
   }, [])
 
@@ -72,7 +72,7 @@ export default function AppHomePage() {
               <div key={r.key} className="role-tab"
                 style={{ borderColor:activeRole===i?r.color:"transparent", background:activeRole===i?r.bg:"#fff" }}
                 onClick={()=>setActiveRole(i)}>
-                <span style={{ fontSize:11, fontFamily:"Syne,sans-serif", fontWeight:800, color:r.color }}>{roleEmojis[r.key]}</span>
+                <span style={{ fontSize:11, fontFamily:"Syne,sans-serif", fontWeight:800, color:r.color }}>{r.title.split(" ")[0]}</span>
                 <span style={{ fontSize:10, fontWeight:600, color:activeRole===i?r.color:"#888", whiteSpace:"nowrap" }}>{r.title.split(" ")[0]}</span>
               </div>
             ))}
@@ -115,7 +115,7 @@ export default function AppHomePage() {
 
         <div onClick={()=>nav("/auth")} style={{ borderRadius:18, overflow:"hidden", marginBottom:"1.25rem", cursor:"pointer", boxShadow:"0 4px 20px rgba(226,75,74,0.2)" }}>
           <div style={{ position:"relative", height:160 }}>
-            <img src="https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=800&q=80" alt="GO Emergency Service" style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center 35%", display:"block" }}/>
+            <img src="https://images.unsplash.com/photo-1639927676452-984f8210befc?w=800&q=80" alt="GO Emergency Service" style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center 35%", display:"block" }}/>
             <div style={{ position:"absolute", inset:0, background:"linear-gradient(to right,rgba(226,75,74,0.92) 0%,rgba(226,75,74,0.6) 50%,rgba(0,0,0,0.2) 100%)" }}/>
             <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", padding:"1rem 1.25rem", gap:14 }}>
               <div style={{ width:56, height:56, borderRadius:14, background:"rgba(255,255,255,0.15)", border:"2px solid rgba(255,255,255,0.35)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
@@ -123,9 +123,9 @@ export default function AppHomePage() {
                 <span style={{ fontSize:8, color:"rgba(255,255,255,0.8)", fontWeight:600, marginTop:2 }}>24/7</span>
               </div>
               <div style={{ flex:1 }}>
-                <div style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.8)", textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:4 }}>GO SERVICE EMERGENCY</div>
+                <div style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.8)", textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:4 }}>GO SERVICE · 24/7</div>
                 <div style={{ fontFamily:"Syne,sans-serif", fontSize:17, fontWeight:800, color:"#fff", lineHeight:1.15, marginBottom:4 }}>Broke down? We come to you.</div>
-                <div style={{ fontSize:11, color:"rgba(255,255,255,0.85)" }}>KES 500 callout. Mechanic in under 15 min.</div>
+                <div style={{ fontSize:11, color:"rgba(255,255,255,0.85)" }}>KES 500 · Mechanic in 15 min</div>
               </div>
               <div style={{ background:"#fff", borderRadius:10, padding:"8px 12px", flexShrink:0 }}>
                 <div style={{ fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:800, color:"#e24b4a", lineHeight:1.2 }}>Request</div>
@@ -156,7 +156,7 @@ export default function AppHomePage() {
                 <div style={{ position:"relative", borderRadius:12, overflow:"hidden", height:80, marginBottom:10 }}>
                   <img src={r.img} alt={r.title} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
                   <div style={{ position:"absolute", inset:0, background:r.color+"88" }}/>
-                  <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:800, color:"#fff" }}>{roleEmojis[r.key]}</div>
+                  <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:800, color:"#fff" }}>{r.title.split(" ")[0]}</div>
                 </div>
                 <div style={{ fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, color:"#000", marginBottom:2 }}>{r.title}</div>
                 <div style={{ fontSize:10, color:r.color, fontWeight:600 }}>{r.tagline}</div>
@@ -193,7 +193,7 @@ export default function AppHomePage() {
             <div style={{ fontSize:12, color:"rgba(255,255,255,0.85)", marginBottom:"1.25rem", lineHeight:1.6 }}>Free to join. No subscriptions. Available 24/7 across Kenya.</div>
             <div style={{ display:"flex", gap:8 }}>
               <button onClick={()=>nav("/auth")} style={{ flex:1, background:"#fff", border:"none", borderRadius:12, color:"#e6821e", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px", cursor:"pointer" }}>Get started free</button>
-              <button onClick={()=>window.open("https://wa.me/254113858966","_blank")} style={{ background:"#25d366", border:"none", borderRadius:12, color:"#fff", fontSize:14, fontWeight:700, padding:"12px 16px", cursor:"pointer" }}>Chat</button>
+              
             </div>
           </div>
         </div>
@@ -201,7 +201,7 @@ export default function AppHomePage() {
         <div style={{ textAlign:"center", fontSize:11, color:"#ccc", paddingBottom:"1rem" }}>2026 Car Care Connect Kenya Payments by Pesapal</div>
       </div>
 
-      <a href="https://wa.me/254113858966" target="_blank" rel="noopener noreferrer" className="wa-float">WA</a>
+      
     </div>
   )
 }
