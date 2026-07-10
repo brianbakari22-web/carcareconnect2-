@@ -65,6 +65,7 @@ import { ThemeProvider } from "./contexts/ThemeContext"
 
 import AuthPage from "./components/auth/AuthPage"
 import LandingPage from "./components/landing/LandingPage"
+import AppHomePage from "./components/landing/AppHomePage"
 import PublicProviderStorefront from "./components/customer/PublicProviderStorefront"
 
 import PrivacyPolicy from "./components/legal/PrivacyPolicy"
@@ -477,7 +478,15 @@ export default function App() {
               <Route path="/provider/:id" element={<PublicProviderStorefront />} />
               <Route path="/service/:id" element={<PublicServicePage />} />
               <Route path="/parts/:id" element={<PublicItemPage />} />
-              <Route path="/" element={<LandingPage />} />
+              <Route path="/" element={
+                (() => {
+                  // Show AppHomePage on native Android app (Capacitor)
+                  const isNative = typeof window !== "undefined" &&
+                    (window.Capacitor?.isNativePlatform?.() ||
+                    window.matchMedia("(display-mode: standalone)").matches)
+                  return isNative ? <AppHomePage /> : <LandingPage />
+                })()
+              } />
               <Route path="*" element={<Navigate to="/auth" replace />} />
             </Routes>
           </BrowserRouter>
