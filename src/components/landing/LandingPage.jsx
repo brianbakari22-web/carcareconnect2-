@@ -329,16 +329,19 @@ export default function LandingPage() {
             <h2 style={H2}>Find the right provider</h2>
             <p style={{ fontSize:15,color:"#64748b",marginTop:8 }}>Search verified mechanics, garages, parts dealers and more across Kenya</p>
           </div>
-          <div style={{ background:"#f8fafc",border:"2px solid #f0f0f0",borderRadius:16,padding:"10px 10px 10px 20px",display:"flex",alignItems:"center",gap:12,maxWidth:680,margin:"0 auto 3rem",boxShadow:"0 4px 20px rgba(0,0,0,0.04)" }}>
-            <span style={{ fontSize:18,color:"#cbd5e1" }}>Search</span>
-            <input type="text" placeholder="Search mechanics, parts, garages, services..." style={{ flex:1,border:"none",outline:"none",background:"transparent",fontSize:14,color:"#0f172a",fontFamily:"DM Sans,sans-serif" }} onKeyDown={e=>{ if(e.key==="Enter") nav("/auth") }}/>
-            <div style={{ width:1,height:28,background:"#e2e8f0" }}/>
-            <div style={{ display:"flex",alignItems:"center",gap:6,fontSize:13,color:"#64748b",padding:"0 8px",cursor:"pointer",whiteSpace:"nowrap" }} onClick={()=>nav("/auth")}>Near me</div>
-            <button style={{ ...BP,padding:"10px 20px",fontSize:13,borderRadius:10 }} onClick={()=>nav("/auth")}>Search</button>
+          <div style={{ maxWidth:680,margin:"0 auto 2rem" }}>
+            <div style={{ background:"#f8fafc",border:"2px solid #f0f0f0",borderRadius:16,padding:"10px 10px 10px 16px",display:"flex",alignItems:"center",gap:8,boxShadow:"0 4px 20px rgba(0,0,0,0.04)",marginBottom:10 }}>
+              <span style={{ fontSize:16,color:"#cbd5e1",flexShrink:0 }}>Src</span>
+              <input type="text" placeholder="Search mechanics, parts, services..." style={{ flex:1,border:"none",outline:"none",background:"transparent",fontSize:14,color:"#0f172a",fontFamily:"DM Sans,sans-serif",minWidth:0 }} onKeyDown={e=>{ if(e.key==="Enter") nav("/auth") }}/>
+              <button style={{ ...BP,padding:"10px 16px",fontSize:13,borderRadius:10,flexShrink:0 }} onClick={()=>nav("/auth")}>Search</button>
+            </div>
+            <div style={{ display:"flex",alignItems:"center",gap:6,fontSize:13,color:"#64748b",cursor:"pointer",justifyContent:"center" }} onClick={()=>nav("/auth")}>
+              <span>Pin</span> Use my current location
+            </div>
           </div>
-          <div style={{ display:"flex",gap:8,flexWrap:"wrap",justifyContent:"center",marginBottom:"3rem" }}>
+          <div style={{ display:"flex",gap:8,flexWrap:"wrap",justifyContent:"center",marginBottom:"2rem" }}>
             {["Mechanics","GO Emergency","Parts","Concierge","Car Wash","Tyres","Auto Electrical","Panel Beaters"].map(c=>(
-              <div key={c} onClick={()=>nav("/auth")} style={{ background:"#f8fafc",border:"1.5px solid #f0f0f0",borderRadius:100,padding:"8px 18px",cursor:"pointer",fontFamily:"DM Sans,sans-serif",fontSize:13,fontWeight:600,color:"#475569",transition:"all 0.2s" }}
+              <div key={c} onClick={()=>nav("/auth")} style={{ background:"#f8fafc",border:"1.5px solid #f0f0f0",borderRadius:100,padding:isMobile?"6px 12px":"8px 18px",cursor:"pointer",fontFamily:"DM Sans,sans-serif",fontSize:isMobile?11:13,fontWeight:600,color:"#475569",transition:"all 0.2s" }}
                 onMouseEnter={e=>{e.currentTarget.style.borderColor="#e6821e";e.currentTarget.style.color="#e6821e";e.currentTarget.style.background="#fff8f0"}}
                 onMouseLeave={e=>{e.currentTarget.style.borderColor="#f0f0f0";e.currentTarget.style.color="#475569";e.currentTarget.style.background="#f8fafc"}}>
                 {c}
@@ -361,13 +364,13 @@ export default function LandingPage() {
                 From Nairobi to Mombasa, Kisumu to Eldoret — sign up to discover mechanics,
                 garages, parts dealers, car washes and more near you. Real providers. Real reviews.
               </p>
-              <div style={{ display:"flex",gap:12,justifyContent:"center",flexWrap:"wrap",marginBottom:"2rem" }}>
-                <button style={BP} onClick={()=>nav("/auth")}>Discover providers near me</button>
-                <button style={BO} onClick={()=>nav("/auth")}>List your business free</button>
+              <div style={{ display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap",marginBottom:"2rem",flexDirection:isMobile?"column":"row",alignItems:"center" }}>
+                <button style={{ ...BP,width:isMobile?"100%":"auto" }} onClick={()=>nav("/auth")}>Discover providers near me</button>
+                <button style={{ ...BO,width:isMobile?"100%":"auto" }} onClick={()=>nav("/auth")}>List your business free</button>
               </div>
-              <div style={{ display:"flex",gap:24,justifyContent:"center",flexWrap:"wrap" }}>
+              <div style={{ display:"flex",gap:isMobile?12:24,justifyContent:"center",flexWrap:"wrap" }}>
                 {[["Verified businesses only"],["Real ratings and reviews"],["Live GPS tracking"],["M-Pesa payments"]].map(([l])=>(
-                  <div key={l} style={{ display:"flex",alignItems:"center",gap:6,fontSize:13,color:"#888" }}>
+                  <div key={l} style={{ display:"flex",alignItems:"center",gap:5,fontSize:isMobile?11:13,color:"#888" }}>
                     <span style={{ color:"#16a34a",fontWeight:700 }}>ok</span>{l}
                   </div>
                 ))}
