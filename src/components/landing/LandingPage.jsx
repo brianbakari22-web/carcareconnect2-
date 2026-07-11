@@ -79,8 +79,9 @@ export default function LandingPage() {
       .select("provider_type,provider_rate")
       .in("provider_type", Object.values(RATE_KEYS))
       .then(({ data, error }) => {
+        console.log("commission_rates result:", { data, error })
         if (error) { console.error("commission_rates error:", error); return }
-        if (!data || !data.length) { console.log("No commission_rates data"); return }
+        if (!data || !data.length) { console.log("No commission_rates data returned"); return }
         setProviders(prev => prev.map(p => {
           const dbKey = RATE_KEYS[p.key]
           const row = data.find(r => r.provider_type === dbKey)
