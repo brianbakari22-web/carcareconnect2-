@@ -383,9 +383,9 @@ export default function LandingPage() {
       <section style={{ padding:isMobile?"2.5rem 1.25rem":"5rem 2rem",background:"#f8fafc" }}>
         <div style={{ maxWidth:1200,margin:"0 auto" }}>
           <div style={{ textAlign:"center",marginBottom:"3rem" }}>
-            <span style={EB}>Reviews</span>
-            <h2 style={H2}>Voices from across Kenya</h2>
-            <p style={{ fontSize:14,color:"#64748b",marginTop:8 }}>From vehicle owners to mechanics - everyone loves CCC</p>
+            <span style={EB}>Stories from the road</span>
+            <h2 style={H2}>Built for every Kenyan.</h2>
+            <p style={{ fontSize:14,color:"#64748b",marginTop:8 }}>From vehicle owners to mechanics, garages to parts dealers — this is what Car Care Connect looks like in action.</p>
           </div>
           <div className="lp-test-grid" style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:16 }}>
             {TESTIMONIALS.map(t=>(
