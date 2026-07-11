@@ -557,7 +557,7 @@ export default function AuthPage() {
 
       <div style={{ flex:1, display:"flex", flexDirection:"column" }}>
         <div style={{ position:"relative", height:260, overflow:"hidden" }}>
-          <img src="https://images.unsplash.com/photo-1625047509248-ec889cbff17f?w=800&q=85" alt="Car Care" style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center 30%", display:"block" }}/>
+          <img src="https://images.unsplash.com/photo-ZBi5poOYRhc?w=800&q=85" alt="Car Care" style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center 30%", display:"block" }}/>
           <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.65) 100%)" }}/>
           <div style={{ position:"absolute", bottom:"1.25rem", left:"1.25rem" }}>
             <div style={{ display:"inline-flex", alignItems:"center", gap:6, background:"rgba(255,255,255,0.12)", border:"1px solid rgba(255,255,255,0.25)", backdropFilter:"blur(8px)", borderRadius:100, padding:"5px 14px" }}>
