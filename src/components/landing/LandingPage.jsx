@@ -4,10 +4,10 @@ const NAV_LINKS = ["Services", "Marketplace", "Providers", "GO Service", "FAQ"]
 
 const ROLES = [
   { key:"customer", icon:"Car", title:"Vehicle Owners", tagline:"Book, track, relax.", desc:"Find verified mechanics near you, get 24/7 emergency help, order genuine parts and track every job live.", color:"#e6821e", bg:"#fff8f0", border:"#e6821e25", img:"https://images.unsplash.com/photo-1611448746128-7c39e03b71e4?w=600&q=80", cta:"Book a service", path:"/auth", perks:["Verified mechanics","Live GPS tracking","M-Pesa payments","Service guarantee"] },
-  { key:"provider", icon:"Fix", title:"Garages and Shops", tagline:"List. Earn. Grow.", desc:"Reach thousands of vehicle owners across Kenya. Manage bookings, dispatch mechanics and receive instant payments.", color:"#378add", bg:"#eff6ff", border:"#378add25", img:"https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=600&q=80", cta:"List your business", path:"/auth", perks:["Keep up to 95%","Free to register","Real-time bookings","Mechanic management"] },
-  { key:"mechanic", icon:"Wrn", title:"Mechanics", tagline:"Get jobs. Get paid.", desc:"Receive job assignments from your garage, track your earnings, upload before and after photos and grow your reputation.", color:"#1d9e75", bg:"#f0fdf4", border:"#1d9e7525", img:"https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=600&q=80", cta:"Join as mechanic", path:"/mechanic-login", perks:["Assigned jobs","Earnings dashboard","Photo documentation","Parts requests"] },
+  { key:"provider", icon:"Fix", title:"Garages and Shops", tagline:"List. Earn. Grow.", desc:"Reach thousands of vehicle owners across Kenya. Manage bookings, dispatch mechanics and receive instant payments.", color:"#378add", bg:"#eff6ff", border:"#378add25", img:"https://images.unsplash.com/photo-1551522435-b2347f669045?w=600&q=80", cta:"List your business", path:"/auth", perks:["Keep up to 95%","Free to register","Real-time bookings","Mechanic management"] },
+  { key:"mechanic", icon:"Wrn", title:"Mechanics", tagline:"Get jobs. Get paid.", desc:"Receive job assignments from your garage, track your earnings, upload before and after photos and grow your reputation.", color:"#1d9e75", bg:"#f0fdf4", border:"#1d9e7525", img:"https://images.unsplash.com/photo-1702146713858-8e7d1cc29fe8?w=600&q=80", cta:"Join as mechanic", path:"/mechanic-login", perks:["Assigned jobs","Earnings dashboard","Photo documentation","Parts requests"] },
   { key:"driver", icon:"Drv", title:"Drivers", tagline:"Drive. Deliver. Earn.", desc:"Accept vehicle pickup and parts delivery jobs across Kenya. GPS-guided routes, earnings tracking and a PANIC button for safety.", color:"#8b5cf6", bg:"#faf5ff", border:"#8b5cf625", img:"https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=600&q=80", cta:"Become a driver", path:"/auth", perks:["Earn per delivery","GPS navigation","PANIC button","Performance tracking"] },
-  { key:"dealer", icon:"Pts", title:"Parts Dealers", tagline:"List parts. Sell more.", desc:"Sell genuine and aftermarket parts online. Manage inventory, fulfill orders and reach mechanics and vehicle owners across Kenya.", color:"#f59e0b", bg:"#fefce8", border:"#f59e0b25", img:"https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&q=80", cta:"List your parts", path:"/auth", perks:["Keep 95%","Inventory management","Order fulfillment","Delivery network"] },
+  { key:"dealer", icon:"Pts", title:"Parts Dealers", tagline:"List parts. Sell more.", desc:"Sell genuine and aftermarket parts online. Manage inventory, fulfill orders and reach mechanics and vehicle owners across Kenya.", color:"#f59e0b", bg:"#fefce8", border:"#f59e0b25", img:"https://images.unsplash.com/photo-1487754180451-c456f719a1fc?w=600&q=80", cta:"List your parts", path:"/auth", perks:["Keep 95%","Inventory management","Order fulfillment","Delivery network"] },
 ]
 
 const SERVICES = [
@@ -133,7 +133,7 @@ export default function LandingPage() {
           </div>
           <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gridTemplateRows:"1fr 1fr",gap:12,height:480 }}>
             <div className="role-img-wrap" style={{ borderRadius:20,overflow:"hidden",gridRow:"1 / 3",position:"relative",boxShadow:"0 12px 40px rgba(0,0,0,0.1)" }}>
-              <img className="role-img" src="https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=600&q=80" alt="Mechanic"/>
+              <img className="role-img" src="https://images.unsplash.com/photo-1702146713858-8e7d1cc29fe8?w=600&q=80" alt="Mechanic"/>
               <div style={{ position:"absolute",bottom:0,left:0,right:0,background:"linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 60%)",padding:"1rem" }}>
                 <div style={{ fontSize:10,fontWeight:700,color:"rgba(255,255,255,0.7)",textTransform:"uppercase",letterSpacing:"0.08em" }}>Mechanics</div>
                 <div style={{ fontFamily:"Syne,sans-serif",fontSize:14,fontWeight:700,color:"#fff" }}>Get jobs. Get paid.</div>
@@ -250,7 +250,7 @@ export default function LandingPage() {
       </section>
 
       <section style={{ position:"relative",overflow:"hidden" }}>
-        <img src="https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=1400&q=85" alt="GO Service" style={{ width:"100%",height:460,objectFit:"cover",objectPosition:"center 40%",display:"block" }}/>
+        <img src="https://images.unsplash.com/photo-1639927676452-984f8210befc?w=1400&q=85" alt="GO Service" style={{ width:"100%",height:460,objectFit:"cover",objectPosition:"center 40%",display:"block" }}/>
         <div style={{ position:"absolute",inset:0,background:"linear-gradient(to right,rgba(0,0,0,0.88) 0%,rgba(0,0,0,0.4) 55%,rgba(0,0,0,0) 100%)" }}/>
         <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",padding:"2rem 2rem" }}>
           <div style={{ maxWidth:520 }}>
