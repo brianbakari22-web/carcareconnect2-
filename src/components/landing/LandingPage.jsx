@@ -99,7 +99,13 @@ export default function LandingPage() {
       <nav style={{ position:"fixed",top:0,left:0,right:0,zIndex:100,background:scrolled?"rgba(255,255,255,0.97)":"rgba(255,255,255,0.85)",backdropFilter:"blur(16px)",borderBottom:scrolled?"1px solid #f0f0f0":"1px solid transparent",height:64,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 2rem",transition:"all 0.3s" }}>
         <div style={{ fontFamily:"Syne,sans-serif",fontSize:20,fontWeight:800,letterSpacing:"-0.5px",cursor:"pointer" }} onClick={()=>nav("/")}>Car<span style={{color:"#e6821e"}}>Care</span> Connect</div>
         <div style={{ display:"flex",gap:4 }}>
-          {NAV_LINKS.map(l=><button key={l} style={{ background:"none",border:"none",color:"#475569",fontSize:13,fontWeight:500,padding:"7px 12px",cursor:"pointer",fontFamily:"DM Sans,sans-serif" }}>{l}</button>)}
+          {[["Services","services"],["Marketplace","marketplace"],["Providers","providers"],["GO Service","go-service"],["FAQ","faq"]].map(([label,id])=>(
+          <button key={id} onClick={()=>document.getElementById(id)?.scrollIntoView({behavior:"smooth",block:"start"})}
+            style={{ background:"none",border:"none",color:"#475569",fontSize:13,fontWeight:500,padding:"7px 12px",cursor:"pointer",fontFamily:"DM Sans,sans-serif",transition:"color 0.15s" }}
+            onMouseEnter={e=>e.target.style.color="#e6821e"} onMouseLeave={e=>e.target.style.color="#475569"}>
+            {label}
+          </button>
+        ))}
         </div>
         <div style={{ display:"flex",gap:8 }}>
           <button onClick={()=>nav("/auth")} style={{ background:"none",border:"1.5px solid #e0e0e0",borderRadius:100,color:"#0f172a",fontSize:13,fontWeight:600,padding:"7px 18px",cursor:"pointer",fontFamily:"DM Sans,sans-serif" }}>Sign in</button>
@@ -206,7 +212,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section style={{ padding:"5rem 2rem",background:"#fff" }}>
+      <section id="services" style={{ padding:"5rem 2rem",background:"#fff" }}>
         <div style={{ maxWidth:1200,margin:"0 auto" }}>
           <div style={{ textAlign:"center",marginBottom:"3rem" }}>
             <span style={EB}>Services</span>
@@ -225,7 +231,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section style={{ padding:"5rem 2rem",background:"#f8fafc" }}>
+      <section id="providers" style={{ padding:"5rem 2rem",background:"#f8fafc" }}>
         <div style={{ maxWidth:1200,margin:"0 auto" }}>
           <div style={{ textAlign:"center",marginBottom:"3rem" }}>
             <span style={EB}>For businesses</span>
@@ -249,7 +255,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section style={{ position:"relative",overflow:"hidden" }}>
+      <section id="go-service" style={{ position:"relative",overflow:"hidden" }}>
         <img src="https://images.unsplash.com/photo-1639927676452-984f8210befc?w=1400&q=85" alt="GO Service" style={{ width:"100%",height:460,objectFit:"cover",objectPosition:"center 40%",display:"block" }}/>
         <div style={{ position:"absolute",inset:0,background:"linear-gradient(to right,rgba(0,0,0,0.88) 0%,rgba(0,0,0,0.4) 55%,rgba(0,0,0,0) 100%)" }}/>
         <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",padding:"2rem 2rem" }}>
@@ -267,7 +273,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section style={{ padding:"5rem 2rem",background:"#fff" }}>
+      <section id="marketplace" style={{ padding:"5rem 2rem",background:"#fff" }}>
         <div style={{ maxWidth:1200,margin:"0 auto" }}>
           <div style={{ textAlign:"center",marginBottom:"3rem" }}>
             <span style={EB}>Marketplace</span>
@@ -376,7 +382,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section style={{ padding:"5rem 2rem",background:"#f8fafc" }}>
+      <section id="faq" style={{ padding:"5rem 2rem",background:"#f8fafc" }}>
         <div style={{ maxWidth:720,margin:"0 auto" }}>
           <div style={{ textAlign:"center",marginBottom:"2.5rem" }}>
             <span style={EB}>FAQ</span>
