@@ -331,8 +331,10 @@ export default function LandingPage() {
             <div style={{ position:"absolute",top:-40,right:-40,width:200,height:200,borderRadius:"50%",background:"rgba(230,130,30,0.06)",pointerEvents:"none" }}/>
             <div style={{ position:"absolute",bottom:-60,left:-40,width:240,height:240,borderRadius:"50%",background:"rgba(230,130,30,0.04)",pointerEvents:"none" }}/>
             <div style={{ position:"relative",zIndex:1 }}>
-              <div style={{ width:80,height:80,borderRadius:20,background:"#e6821e",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 1.5rem",boxShadow:"0 8px 24px rgba(230,130,30,0.3)" }}>
-                <span style={{ fontFamily:"Syne,sans-serif",fontSize:32,fontWeight:800,color:"#fff" }}>Find</span>
+              <div style={{ display:"flex",gap:12,justifyContent:"center",marginBottom:"1.5rem" }}>
+                {["Fix","Box","Wsh","Zap"].map((ic,i)=>(
+                  <div key={i} style={{ width:52,height:52,borderRadius:14,background:"#fff",border:"1.5px solid #f0f0f0",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"Syne,sans-serif",fontSize:13,fontWeight:800,color:"#e6821e",boxShadow:"0 4px 12px rgba(0,0,0,0.06)" }}>{ic}</div>
+                ))}
               </div>
               <h3 style={{ fontFamily:"Syne,sans-serif",fontSize:"clamp(22px,3vw,34px)",fontWeight:800,color:"#0f172a",marginBottom:"0.75rem",letterSpacing:"-0.5px" }}>
                 Verified providers across Kenya,<br/>ready to serve you.
