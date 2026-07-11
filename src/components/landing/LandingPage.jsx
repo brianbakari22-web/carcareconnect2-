@@ -293,7 +293,7 @@ export default function LandingPage() {
           <div style={{ maxWidth:520 }}>
             <span style={{ display:"inline-block",background:"#e24b4a",borderRadius:8,padding:"4px 12px",fontSize:10,fontWeight:700,color:"#fff",marginBottom:16,letterSpacing:"0.08em" }}>GO SERVICE 24/7 EMERGENCY</span>
             <h2 style={{ fontFamily:"Syne,sans-serif",fontSize:"clamp(28px,4vw,48px)",fontWeight:800,color:"#fff",marginBottom:16,lineHeight:1.08 }}>Broke down anywhere in Kenya? We come to you.</h2>
-            <p style={{ fontSize:15,color:"rgba(255,255,255,0.8)",lineHeight:1.75,marginBottom:"1.5rem" }}>Our certified mechanics are dispatched to your exact GPS location in under 15 minutes. Highway, town centre, or home. Just KES 500 callout fee.</p>
+            <p style={{ fontSize:15,color:"rgba(255,255,255,0.8)",lineHeight:1.75,marginBottom:"1.5rem" }}>A certified mechanic is dispatched within 15 minutes of your request. Highway, town centre, or home — we come to you across Kenya. Just KES 500 callout fee.</p>
             <div style={{ display:"flex",gap:8,flexWrap:"wrap",marginBottom:"1.75rem" }}>
               {["Flat tyre","Dead battery","Out of fuel","Overheating","Towing"].map(t=>(
                 <span key={t} style={{ background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:100,padding:"6px 14px",fontSize:12,color:"rgba(255,255,255,0.9)" }}>{t}</span>
