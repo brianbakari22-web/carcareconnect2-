@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { supabase } from "../../lib/supabase"
 
 const NAV_LINKS = ["Services", "Marketplace", "Providers", "GO Service", "FAQ"]
 
@@ -45,20 +46,36 @@ const FAQS = [
   { q:"What is the Service Guarantee?", a:"If you are not satisfied with a completed service, file a claim within 7 days. We investigate and issue a full service voucher if the claim is approved." },
 ]
 
-const PROVIDERS = [
-  { icon:"Fix", type:"Garage / Mechanic", keep:"90%", color:"#e6821e", desc:"Shop standard bookings" },
-  { icon:"Pts", type:"Parts Dealer", keep:"95%", color:"#378add", desc:"Lowest platform fee" },
-  { icon:"Tyr", type:"Tyre Shop", keep:"94%", color:"#8b5cf6", desc:"Tyre sales and fitting" },
-  { icon:"Wsh", type:"Car Wash", keep:"90%", color:"#1d9e75", desc:"Wash queue management" },
-  { icon:"Zap", type:"Auto Electrician", keep:"88%", color:"#f59e0b", desc:"Electrical service bookings" },
-  { icon:"Bdy", type:"Panel Beater", keep:"85%", color:"#e24b4a", desc:"Bodywork bookings" },
-]
+// PROVIDERS loaded dynamically from commission_rates table
+const PROVIDER_META = {
+  garage:       { icon:"Fix", type:"Garage / Mechanic", color:"#e6821e", desc:"Shop standard bookings" },
+  parts_dealer: { icon:"Pts", type:"Parts Dealer",      color:"#378add", desc:"Lowest platform fee" },
+  tyre_shop:    { icon:"Tyr", type:"Tyre Shop",          color:"#8b5cf6", desc:"Tyre sales and fitting" },
+  car_wash:     { icon:"Wsh", type:"Car Wash",           color:"#1d9e75", desc:"Wash queue management" },
+  auto_electrician: { icon:"Zap", type:"Auto Electrician", color:"#f59e0b", desc:"Electrical service bookings" },
+  panel_beater: { icon:"Bdy", type:"Panel Beater",       color:"#e24b4a", desc:"Bodywork bookings" },
+}
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false)
   const [openFaq, setOpenFaq] = useState(null)
   const [activeRole, setActiveRole] = useState(0)
+  const [providers, setProviders] = useState(
+    Object.entries(PROVIDER_META).map(([key,m])=>({ ...m, key, keep:"..." }))
+  )
   const nav = (path) => window.location.href = path
+
+  useEffect(() => {
+    supabase.from("commission_rates").select("provider_type,provider_rate")
+      .then(({ data }) => {
+        if (!data) return
+        setProviders(Object.entries(PROVIDER_META).map(([key,m]) => {
+          const row = data.find(r => r.provider_type === key)
+          const rate = row ? Math.round(row.provider_rate * 100) : null
+          return { ...m, key, keep: rate ? rate + "%" : "—" }
+        }))
+      })
+  }, [])
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 20)
@@ -239,7 +256,7 @@ export default function LandingPage() {
             <p style={{ fontSize:15,color:"#64748b",marginTop:8 }}>No monthly fees. You pay only when you earn.</p>
           </div>
           <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:12,marginBottom:"2.5rem" }}>
-            {PROVIDERS.map(p=>(
+            {providers.map(p=>(
               <div key={p.type} className="prov-card">
                 <div style={{ fontSize:13,fontFamily:"Syne,sans-serif",fontWeight:800,color:p.color,marginBottom:12 }}>{p.icon}</div>
                 <div style={{ fontWeight:700,fontSize:14,color:"#0f172a",marginBottom:4 }}>{p.type}</div>
