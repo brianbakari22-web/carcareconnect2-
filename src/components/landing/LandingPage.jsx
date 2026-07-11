@@ -66,22 +66,24 @@ export default function LandingPage() {
   const nav = (path) => window.location.href = path
 
   useEffect(() => {
-    // Keys format: garage_shop_standard, parts_dealer_shop_standard etc.
-    const lookupKeys = [
-      "garage_shop_standard",
-      "parts_dealer_shop_standard",
-      "tyre_shop_shop_standard",
-      "car_wash_shop_standard",
-      "auto_electrician_shop_standard",
-      "panel_beater_shop_standard",
-    ]
-    supabase.from("commission_rates").select("provider_type,provider_rate")
-      .in("provider_type", lookupKeys)
-      .then(({ data }) => {
-        if (!data || !data.length) return
+    // Exact keys from commission_rates table
+    const RATE_KEYS = {
+      garage:            "garage_shop_standard",
+      parts_dealer:      "parts_dealer",
+      tyre_shop:         "tyre_shop",
+      car_wash:          "car_wash_standard_wash",
+      auto_electrician:  "auto_electrician_shop_standard",
+      panel_beater:      "panel_beater_shop_standard",
+    }
+    supabase.from("commission_rates")
+      .select("provider_type,provider_rate")
+      .in("provider_type", Object.values(RATE_KEYS))
+      .then(({ data, error }) => {
+        if (error) { console.error("commission_rates error:", error); return }
+        if (!data || !data.length) { console.log("No commission_rates data"); return }
         setProviders(prev => prev.map(p => {
-          const lookupKey = p.key + "_shop_standard"
-          const row = data.find(r => r.provider_type === lookupKey)
+          const dbKey = RATE_KEYS[p.key]
+          const row = data.find(r => r.provider_type === dbKey)
           const rate = row ? Math.round(row.provider_rate * 100) : null
           return { ...p, keep: rate ? rate + "%" : "—" }
         }))
