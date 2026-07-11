@@ -305,52 +305,54 @@ export default function LandingPage() {
       </section>
 
       <section id="marketplace" style={{ padding:"5rem 2rem",background:"#fff" }}>
-        <div style={{ maxWidth:1200,margin:"0 auto" }}>
+        <div style={{ maxWidth:1000,margin:"0 auto" }}>
           <div style={{ textAlign:"center",marginBottom:"3rem" }}>
             <span style={EB}>Marketplace</span>
             <h2 style={H2}>Find the right provider</h2>
+            <p style={{ fontSize:15,color:"#64748b",marginTop:8 }}>Search verified mechanics, garages, parts dealers and more across Kenya</p>
           </div>
-          <div style={{ background:"#f8fafc",border:"2px solid #f0f0f0",borderRadius:16,padding:"10px 10px 10px 20px",display:"flex",alignItems:"center",gap:12,maxWidth:700,margin:"0 auto 2.5rem",boxShadow:"0 4px 20px rgba(0,0,0,0.04)" }}>
-            <span style={{ fontSize:18,color:"#cbd5e1" }}>Srch</span>
-            <input type="text" placeholder="Search mechanics, parts, garages, services..." style={{ flex:1,border:"none",outline:"none",background:"transparent",fontSize:14,color:"#0f172a",fontFamily:"DM Sans,sans-serif" }}/>
+          <div style={{ background:"#f8fafc",border:"2px solid #f0f0f0",borderRadius:16,padding:"10px 10px 10px 20px",display:"flex",alignItems:"center",gap:12,maxWidth:680,margin:"0 auto 3rem",boxShadow:"0 4px 20px rgba(0,0,0,0.04)" }}>
+            <span style={{ fontSize:18,color:"#cbd5e1" }}>Search</span>
+            <input type="text" placeholder="Search mechanics, parts, garages, services..." style={{ flex:1,border:"none",outline:"none",background:"transparent",fontSize:14,color:"#0f172a",fontFamily:"DM Sans,sans-serif" }} onKeyDown={e=>{ if(e.key==="Enter") nav("/auth") }}/>
             <div style={{ width:1,height:28,background:"#e2e8f0" }}/>
-            <div style={{ display:"flex",alignItems:"center",gap:6,fontSize:13,color:"#64748b",padding:"0 8px",cursor:"pointer",whiteSpace:"nowrap" }}>Loc Detect location</div>
-            <button style={{ ...BP,padding:"10px 20px",fontSize:13,borderRadius:10 }}>Search</button>
+            <div style={{ display:"flex",alignItems:"center",gap:6,fontSize:13,color:"#64748b",padding:"0 8px",cursor:"pointer",whiteSpace:"nowrap" }} onClick={()=>nav("/auth")}>Near me</div>
+            <button style={{ ...BP,padding:"10px 20px",fontSize:13,borderRadius:10 }} onClick={()=>nav("/auth")}>Search</button>
           </div>
-          <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:16 }}>
-            {[
-              {icon:"Fix",name:"Westlands Auto Garage",type:"Garage",rating:4.8,reviews:124,dist:"0.8 km",price:"KES 2,500",tags:["Oil change","Brakes","Diagnostics"],bg:"#fff8f0",bd:"#e6821e20"},
-              {icon:"Pts",name:"Karen Parts and Spares",type:"Parts Dealer",rating:4.6,reviews:89,dist:"1.2 km",price:"KES 450+",tags:["Engine parts","Brake pads","Filters"],bg:"#eff6ff",bd:"#bfdbfe"},
-              {icon:"Wsh",name:"Langata Premium Wash",type:"Car Wash",rating:4.9,reviews:67,dist:"1.8 km",price:"KES 800",tags:["Exterior","Interior","Detailing"],bg:"#f0fdf4",bd:"#bbf7d0"},
-              {icon:"Zap",name:"Gigiri Auto Electricals",type:"Auto Electrician",rating:4.7,reviews:43,dist:"2.1 km",price:"KES 1,800",tags:["Wiring","Battery","Alternator"],bg:"#fefce8",bd:"#fde68a"},
-            ].map(p=>(
-              <div key={p.name} style={{ background:p.bg,border:"1.5px solid "+p.bd,borderRadius:20,padding:"1.25rem",cursor:"pointer",transition:"all 0.2s" }}
-                onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-4px)";e.currentTarget.style.boxShadow="0 12px 32px rgba(0,0,0,0.08)"}}
-                onMouseLeave={e=>{e.currentTarget.style.transform="";e.currentTarget.style.boxShadow=""}}>
-                <div style={{ display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10 }}>
-                  <div style={{ display:"flex",gap:10,alignItems:"center" }}>
-                    <div style={{ width:44,height:44,borderRadius:12,background:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontFamily:"Syne,sans-serif",fontWeight:800,color:"#e6821e",border:"1px solid rgba(0,0,0,0.06)" }}>{p.icon}</div>
-                    <div>
-                      <div style={{ fontWeight:700,fontSize:13,color:"#0f172a" }}>{p.name}</div>
-                      <div style={{ fontSize:11,color:"#64748b",marginTop:1 }}>{p.type}</div>
-                    </div>
-                  </div>
-                  <span style={{ background:"#f0fdf4",border:"1px solid #bbf7d0",borderRadius:6,padding:"2px 8px",fontSize:9,fontWeight:700,color:"#16a34a",flexShrink:0 }}>Verified</span>
-                </div>
-                <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:10 }}>
-                  <div style={{ display:"flex",alignItems:"center",gap:3,fontSize:12,fontWeight:600 }}><span style={{ color:"#f59e0b" }}>star</span>{p.rating} ({p.reviews})</div>
-                  <span style={{ fontSize:11,color:"#94a3b8" }}>{p.dist} away</span>
-                  <span style={{ marginLeft:"auto",fontFamily:"Syne,sans-serif",fontSize:14,fontWeight:800,color:"#e6821e" }}>{p.price}</span>
-                </div>
-                <div style={{ display:"flex",gap:5,flexWrap:"wrap",marginBottom:12 }}>
-                  {p.tags.map(t=><span key={t} style={{ background:"rgba(255,255,255,0.8)",borderRadius:6,padding:"3px 8px",fontSize:10,color:"#475569" }}>{t}</span>)}
-                </div>
-                <button style={{ ...BP,width:"100%",justifyContent:"center",padding:"10px",fontSize:13 }} onClick={()=>nav("/auth")}>Book now</button>
+          <div style={{ display:"flex",gap:8,flexWrap:"wrap",justifyContent:"center",marginBottom:"3rem" }}>
+            {["Mechanics","GO Emergency","Parts","Concierge","Car Wash","Tyres","Auto Electrical","Panel Beaters"].map(c=>(
+              <div key={c} onClick={()=>nav("/auth")} style={{ background:"#f8fafc",border:"1.5px solid #f0f0f0",borderRadius:100,padding:"8px 18px",cursor:"pointer",fontFamily:"DM Sans,sans-serif",fontSize:13,fontWeight:600,color:"#475569",transition:"all 0.2s" }}
+                onMouseEnter={e=>{e.currentTarget.style.borderColor="#e6821e";e.currentTarget.style.color="#e6821e";e.currentTarget.style.background="#fff8f0"}}
+                onMouseLeave={e=>{e.currentTarget.style.borderColor="#f0f0f0";e.currentTarget.style.color="#475569";e.currentTarget.style.background="#f8fafc"}}>
+                {c}
               </div>
             ))}
           </div>
-          <div style={{ textAlign:"center",marginTop:"2rem" }}>
-            <button style={BO} onClick={()=>nav("/auth")}>View all providers</button>
+          <div style={{ background:"linear-gradient(135deg,#fff8f0 0%,#fff 100%)",border:"2px solid #e6821e20",borderRadius:24,padding:"4rem 2rem",textAlign:"center",position:"relative",overflow:"hidden" }}>
+            <div style={{ position:"absolute",top:-40,right:-40,width:200,height:200,borderRadius:"50%",background:"rgba(230,130,30,0.06)",pointerEvents:"none" }}/>
+            <div style={{ position:"absolute",bottom:-60,left:-40,width:240,height:240,borderRadius:"50%",background:"rgba(230,130,30,0.04)",pointerEvents:"none" }}/>
+            <div style={{ position:"relative",zIndex:1 }}>
+              <div style={{ width:80,height:80,borderRadius:20,background:"#e6821e",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 1.5rem",boxShadow:"0 8px 24px rgba(230,130,30,0.3)" }}>
+                <span style={{ fontFamily:"Syne,sans-serif",fontSize:32,fontWeight:800,color:"#fff" }}>Find</span>
+              </div>
+              <h3 style={{ fontFamily:"Syne,sans-serif",fontSize:"clamp(22px,3vw,34px)",fontWeight:800,color:"#0f172a",marginBottom:"0.75rem",letterSpacing:"-0.5px" }}>
+                Verified providers across Kenya,<br/>ready to serve you.
+              </h3>
+              <p style={{ fontSize:15,color:"#64748b",lineHeight:1.75,maxWidth:500,margin:"0 auto 2rem" }}>
+                From Nairobi to Mombasa, Kisumu to Eldoret — sign up to discover mechanics,
+                garages, parts dealers, car washes and more near you. Real providers. Real reviews.
+              </p>
+              <div style={{ display:"flex",gap:12,justifyContent:"center",flexWrap:"wrap",marginBottom:"2rem" }}>
+                <button style={BP} onClick={()=>nav("/auth")}>Discover providers near me</button>
+                <button style={BO} onClick={()=>nav("/auth")}>List your business free</button>
+              </div>
+              <div style={{ display:"flex",gap:24,justifyContent:"center",flexWrap:"wrap" }}>
+                {[["Verified businesses only"],["Real ratings and reviews"],["Live GPS tracking"],["M-Pesa payments"]].map(([l])=>(
+                  <div key={l} style={{ display:"flex",alignItems:"center",gap:6,fontSize:13,color:"#888" }}>
+                    <span style={{ color:"#16a34a",fontWeight:700 }}>ok</span>{l}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
