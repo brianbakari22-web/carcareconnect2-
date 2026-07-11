@@ -58,6 +58,12 @@ const PROVIDER_META = {
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false)
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
+  useEffect(() => {
+    const fn = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener("resize", fn)
+    return () => window.removeEventListener("resize", fn)
+  }, [])
   const [openFaq, setOpenFaq] = useState(null)
   const [activeRole, setActiveRole] = useState(0)
   const [providers, setProviders] = useState(
@@ -109,6 +115,18 @@ export default function LandingPage() {
         @import url("https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap");
         *{box-sizing:border-box;margin:0;padding:0;}
         html{scroll-behavior:smooth;}
+        @media(max-width:768px){
+          .lp-hide-mobile{display:none!important;}
+          .lp-full-mobile{grid-template-columns:1fr!important;}
+          .lp-hero-grid{grid-template-columns:1fr!important;gap:2rem!important;}
+          .lp-stats-grid{grid-template-columns:repeat(2,1fr)!important;}
+          .lp-steps-grid{grid-template-columns:1fr!important;gap:1.5rem!important;}
+          .lp-footer-grid{grid-template-columns:1fr!important;gap:1.5rem!important;}
+          .lp-role-grid{grid-template-columns:1fr!important;}
+          .lp-role-img{height:260px!important;}
+          .lp-role-pad{padding:1.5rem!important;}
+          .lp-test-grid{grid-template-columns:1fr!important;}
+        }
         .lp-card{background:#fff;border-radius:20px;border:1.5px solid #f0f0f0;padding:1.75rem;transition:all 0.25s;}
         .lp-card:hover{border-color:#e6821e30;box-shadow:0 12px 40px rgba(0,0,0,0.08);transform:translateY(-4px);}
         .svc-card{background:#f9f9f9;border-radius:16px;padding:1.5rem 1.25rem;text-align:center;border:1.5px solid transparent;transition:all 0.2s;cursor:pointer;}
@@ -146,7 +164,7 @@ export default function LandingPage() {
 
       <section style={{ paddingTop:64,minHeight:"95vh",display:"flex",alignItems:"center",background:"linear-gradient(160deg,#fff8f0 0%,#fff 55%,#f0f9ff 100%)",position:"relative",overflow:"hidden" }}>
         <div style={{ position:"absolute",top:-100,right:-200,width:700,height:700,borderRadius:"50%",background:"radial-gradient(circle,rgba(230,130,30,0.07) 0%,transparent 70%)",pointerEvents:"none" }}/>
-        <div style={{ maxWidth:1200,margin:"0 auto",padding:"4rem 2rem",width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4rem",alignItems:"center" }}>
+        <div className="lp-hero-grid" style={{ maxWidth:1200,margin:"0 auto",padding:isMobile?"2rem 1.25rem":"4rem 2rem",width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4rem",alignItems:"center" }}>
           <div>
             <div style={{ display:"inline-flex",alignItems:"center",gap:6,background:"#fff",border:"1px solid #e6821e30",borderRadius:100,padding:"5px 14px",marginBottom:"1.5rem",fontSize:11,color:"#e6821e",fontWeight:700,textTransform:"uppercase",letterSpacing:"0.08em",boxShadow:"0 2px 12px rgba(230,130,30,0.1)" }}>
               <span style={{ width:6,height:6,borderRadius:"50%",background:"#4ade80",display:"inline-block" }}/>
@@ -168,7 +186,7 @@ export default function LandingPage() {
               ))}
             </div>
           </div>
-          <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gridTemplateRows:"1fr 1fr",gap:12,height:480 }}>
+          <div className="lp-hide-mobile" style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gridTemplateRows:"1fr 1fr",gap:12,height:480 }}>
             <div className="role-img-wrap" style={{ borderRadius:20,overflow:"hidden",gridRow:"1 / 3",position:"relative",boxShadow:"0 12px 40px rgba(0,0,0,0.1)" }}>
               <img className="role-img" src="https://images.unsplash.com/photo-1702146713858-8e7d1cc29fe8?w=600&q=80" alt="Mechanic"/>
               <div style={{ position:"absolute",bottom:0,left:0,right:0,background:"linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 60%)",padding:"1rem" }}>
@@ -192,7 +210,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <div style={{ background:"#e6821e",display:"grid",gridTemplateColumns:"repeat(5,1fr)" }}>
+      <div className="lp-stats-grid" style={{ background:"#e6821e",display:"grid",gridTemplateColumns:"repeat(5,1fr)" }}>
         {[{v:"5 roles",l:"All served"},{v:"24/7",l:"Emergency"},{v:"100%",l:"Verified"},{v:"KES 500",l:"GO callout"},{v:"15+ towns",l:"Across Kenya"}].map((s,i)=>(
           <div key={s.l} style={{ padding:"1.25rem 1rem",textAlign:"center",borderRight:i<4?"1px solid rgba(255,255,255,0.2)":"none" }}>
             <div style={{ fontFamily:"Syne,sans-serif",fontSize:22,fontWeight:800,color:"#fff" }}>{s.v}</div>
@@ -201,7 +219,7 @@ export default function LandingPage() {
         ))}
       </div>
 
-      <section style={{ padding:"5rem 2rem",background:"#f8fafc" }}>
+      <section style={{ padding:isMobile?"2.5rem 1.25rem":"5rem 2rem",background:"#f8fafc" }}>
         <div style={{ maxWidth:1200,margin:"0 auto" }}>
           <div style={{ textAlign:"center",marginBottom:"3rem" }}>
             <span style={EB}>Built for everyone</span>
@@ -213,11 +231,11 @@ export default function LandingPage() {
               <button key={r.key} className={"role-tab"+(activeRole===i?" on":"")} onClick={()=>setActiveRole(i)}>{r.icon} {r.title}</button>
             ))}
           </div>
-          <div key={activeRole} className="fade-in" style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:"3rem",alignItems:"center",background:"#fff",borderRadius:24,overflow:"hidden",border:"1.5px solid "+role.border,boxShadow:"0 8px 40px rgba(0,0,0,0.06)" }}>
-            <div className="role-img-wrap" style={{ height:400,overflow:"hidden" }}>
+          <div key={activeRole} className="fade-in lp-role-grid" style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:"3rem",alignItems:"center",background:"#fff",borderRadius:24,overflow:"hidden",border:"1.5px solid "+role.border,boxShadow:"0 8px 40px rgba(0,0,0,0.06)" }}>
+            <div className="role-img-wrap lp-role-img" style={{ height:400,overflow:"hidden" }}>
               <img className="role-img" src={role.img} alt={role.title} style={{ width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 30%" }}/>
             </div>
-            <div style={{ padding:"2.5rem 2.5rem 2.5rem 0" }}>
+            <div className="lp-role-pad" style={{ padding:"2.5rem 2.5rem 2.5rem 0" }}>
               <div style={{ display:"inline-flex",alignItems:"center",gap:8,background:role.bg,border:"1px solid "+role.border,borderRadius:100,padding:"5px 14px",marginBottom:"1.25rem" }}>
                 <span style={{ fontSize:16,fontFamily:"Syne,sans-serif",fontWeight:800,color:role.color }}>{role.icon}</span>
                 <span style={{ fontSize:11,fontWeight:700,color:role.color,textTransform:"uppercase",letterSpacing:"0.08em" }}>{role.title}</span>
@@ -243,7 +261,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section id="services" style={{ padding:"5rem 2rem",background:"#fff" }}>
+      <section id="services" style={{ padding:isMobile?"2.5rem 1.25rem":"5rem 2rem",background:"#fff" }}>
         <div style={{ maxWidth:1200,margin:"0 auto" }}>
           <div style={{ textAlign:"center",marginBottom:"3rem" }}>
             <span style={EB}>Services</span>
@@ -262,7 +280,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section id="providers" style={{ padding:"5rem 2rem",background:"#f8fafc" }}>
+      <section id="providers" style={{ padding:isMobile?"2.5rem 1.25rem":"5rem 2rem",background:"#f8fafc" }}>
         <div style={{ maxWidth:1200,margin:"0 auto" }}>
           <div style={{ textAlign:"center",marginBottom:"3rem" }}>
             <span style={EB}>For businesses</span>
@@ -304,7 +322,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section id="marketplace" style={{ padding:"5rem 2rem",background:"#fff" }}>
+      <section id="marketplace" style={{ padding:isMobile?"2.5rem 1.25rem":"5rem 2rem",background:"#fff" }}>
         <div style={{ maxWidth:1000,margin:"0 auto" }}>
           <div style={{ textAlign:"center",marginBottom:"3rem" }}>
             <span style={EB}>Marketplace</span>
@@ -327,7 +345,7 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
-          <div style={{ background:"linear-gradient(135deg,#fff8f0 0%,#fff 100%)",border:"2px solid #e6821e20",borderRadius:24,padding:"4rem 2rem",textAlign:"center",position:"relative",overflow:"hidden" }}>
+          <div style={{ background:"linear-gradient(135deg,#fff8f0 0%,#fff 100%)",border:"2px solid #e6821e20",borderRadius:24,padding:isMobile?"2rem 1.25rem":"4rem 2rem",textAlign:"center",position:"relative",overflow:"hidden" }}>
             <div style={{ position:"absolute",top:-40,right:-40,width:200,height:200,borderRadius:"50%",background:"rgba(230,130,30,0.06)",pointerEvents:"none" }}/>
             <div style={{ position:"absolute",bottom:-60,left:-40,width:240,height:240,borderRadius:"50%",background:"rgba(230,130,30,0.04)",pointerEvents:"none" }}/>
             <div style={{ position:"relative",zIndex:1 }}>
@@ -359,14 +377,14 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section style={{ padding:"5rem 2rem",background:"#f8fafc" }}>
+      <section style={{ padding:isMobile?"2.5rem 1.25rem":"5rem 2rem",background:"#f8fafc" }}>
         <div style={{ maxWidth:1200,margin:"0 auto" }}>
           <div style={{ textAlign:"center",marginBottom:"3rem" }}>
             <span style={EB}>Reviews</span>
             <h2 style={H2}>Voices from across Kenya</h2>
             <p style={{ fontSize:14,color:"#64748b",marginTop:8 }}>From vehicle owners to mechanics - everyone loves CCC</p>
           </div>
-          <div style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:16 }}>
+          <div className="lp-test-grid" style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:16 }}>
             {TESTIMONIALS.map(t=>(
               <div key={t.name} className="lp-card">
                 <div style={{ display:"flex",gap:2,marginBottom:12 }}>{[1,2,3,4,5].map(i=><span key={i} style={{ color:"#f59e0b",fontSize:14 }}>star</span>)}</div>
@@ -384,7 +402,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section style={{ padding:"5rem 2rem",background:"#fff" }}>
+      <section style={{ padding:isMobile?"2.5rem 1.25rem":"5rem 2rem",background:"#fff" }}>
         <div style={{ maxWidth:900,margin:"0 auto" }}>
           <div style={{ textAlign:"center",marginBottom:"3.5rem" }}>
             <span style={EB}>How it works</span>
@@ -404,7 +422,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section style={{ padding:"4rem 2rem",background:"#fff8f0",textAlign:"center" }}>
+      <section style={{ padding:isMobile?"2rem 1.25rem":"4rem 2rem",background:"#fff8f0",textAlign:"center" }}>
         <div style={{ maxWidth:800,margin:"0 auto" }}>
           <span style={EB}>Coverage</span>
           <h2 style={{ ...H2,marginBottom:"0.5rem" }}>Available across Kenya</h2>
@@ -417,7 +435,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section id="faq" style={{ padding:"5rem 2rem",background:"#f8fafc" }}>
+      <section id="faq" style={{ padding:isMobile?"2.5rem 1.25rem":"5rem 2rem",background:"#f8fafc" }}>
         <div style={{ maxWidth:720,margin:"0 auto" }}>
           <div style={{ textAlign:"center",marginBottom:"2.5rem" }}>
             <span style={EB}>FAQ</span>
@@ -435,7 +453,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section style={{ padding:"5rem 2rem",background:"#0f172a" }}>
+      <section style={{ padding:isMobile?"2.5rem 1.25rem":"5rem 2rem",background:"#0f172a" }}>
         <div style={{ maxWidth:600,margin:"0 auto",textAlign:"center" }}>
           <h2 style={{ fontFamily:"Syne,sans-serif",fontSize:"clamp(28px,5vw,44px)",fontWeight:800,color:"#fff",marginBottom:"1rem",lineHeight:1.1 }}>
             Get the CCC app.<br/><span style={{ color:"#e6821e" }}>Kenya marketplace in your pocket.</span>
@@ -462,7 +480,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section style={{ padding:"5rem 2rem",background:"#e6821e",textAlign:"center",position:"relative",overflow:"hidden" }}>
+      <section style={{ padding:isMobile?"2.5rem 1.25rem":"5rem 2rem",background:"#e6821e",textAlign:"center",position:"relative",overflow:"hidden" }}>
         <div style={{ position:"absolute",top:-60,right:-100,width:400,height:400,borderRadius:"50%",background:"rgba(255,255,255,0.05)",pointerEvents:"none" }}/>
         <div style={{ position:"relative",zIndex:1,maxWidth:600,margin:"0 auto" }}>
           <h2 style={{ fontFamily:"Syne,sans-serif",fontSize:"clamp(28px,5vw,48px)",fontWeight:800,color:"#fff",marginBottom:"1rem",lineHeight:1.08 }}>Join Kenya automotive revolution.</h2>
@@ -476,7 +494,7 @@ export default function LandingPage() {
 
       <footer style={{ background:"#0a0a0a",padding:"4rem 2rem 2rem" }}>
         <div style={{ maxWidth:1200,margin:"0 auto" }}>
-          <div style={{ display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr 1fr",gap:"3rem",marginBottom:"3rem",paddingBottom:"3rem",borderBottom:"1px solid #1a1a1a" }}>
+          <div className="lp-footer-grid" style={{ display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr 1fr",gap:"3rem",marginBottom:"3rem",paddingBottom:"3rem",borderBottom:"1px solid #1a1a1a" }}>
             <div>
               <div style={{ fontFamily:"Syne,sans-serif",fontSize:20,fontWeight:800,color:"#fff",marginBottom:10 }}>Car<span style={{ color:"#e6821e" }}>Care</span> Connect</div>
               <p style={{ fontSize:12,color:"#475569",lineHeight:1.75,maxWidth:220,marginBottom:"1.5rem" }}>Kenya most trusted automotive marketplace. Built for Kenyan roads. Scaling across Africa.</p>
