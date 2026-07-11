@@ -66,13 +66,24 @@ export default function LandingPage() {
   const nav = (path) => window.location.href = path
 
   useEffect(() => {
+    // Keys format: garage_shop_standard, parts_dealer_shop_standard etc.
+    const lookupKeys = [
+      "garage_shop_standard",
+      "parts_dealer_shop_standard",
+      "tyre_shop_shop_standard",
+      "car_wash_shop_standard",
+      "auto_electrician_shop_standard",
+      "panel_beater_shop_standard",
+    ]
     supabase.from("commission_rates").select("provider_type,provider_rate")
+      .in("provider_type", lookupKeys)
       .then(({ data }) => {
-        if (!data) return
-        setProviders(Object.entries(PROVIDER_META).map(([key,m]) => {
-          const row = data.find(r => r.provider_type === key)
+        if (!data || !data.length) return
+        setProviders(prev => prev.map(p => {
+          const lookupKey = p.key + "_shop_standard"
+          const row = data.find(r => r.provider_type === lookupKey)
           const rate = row ? Math.round(row.provider_rate * 100) : null
-          return { ...m, key, keep: rate ? rate + "%" : "—" }
+          return { ...p, keep: rate ? rate + "%" : "—" }
         }))
       })
   }, [])
