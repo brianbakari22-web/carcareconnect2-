@@ -101,11 +101,9 @@ export default function ProviderServices() {
           name: form.name,
           description: form.description,
           price: parseFloat(form.price),
-          provider_commission_rate: providerRate,
           photos: form.photos||[],
           service_category_id: form.service_category_id||null,
           platform_commission_rate: platformRate,
-          provider_commission_rate: providerRate,
           is_active: true,
         })
         if (error) throw error
