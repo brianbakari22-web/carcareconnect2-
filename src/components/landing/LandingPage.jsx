@@ -27,7 +27,7 @@ const SERVICES = [
 ]
 
 const TESTIMONIALS = [
-  { initials:"JM", color:"#e6821e", name:"James M.", role:"Vehicle owner Nairobi", text:"Booked a mechanic at 10pm. He arrived in 12 minutes. Car fixed on the spot. This is the future of car care in Kenya." },
+  { initials:"JM", color:"#e6821e", name:"James M.", role:"Vehicle owner · Nairobi", text:"Used CCC to book a mechanic late at night. The process was seamless — found a verified garage, paid via M-Pesa and had my car sorted by morning. Incredible service." },
   { initials:"PK", color:"#378add", name:"Peter K.", role:"Garage owner Nakuru", text:"CCC has tripled my monthly bookings. The dashboard is clean, payments are instant and I can manage all my mechanics from one place." },
   { initials:"AM", color:"#1d9e75", name:"Amina M.", role:"Mechanic Mombasa", text:"I get job notifications instantly. The before and after photo system helps me show my work quality. My reputation has grown massively." },
   { initials:"DK", color:"#8b5cf6", name:"David K.", role:"Driver Kisumu", text:"I earn daily doing vehicle pickups and parts deliveries. The GPS is accurate and the PANIC button gives me confidence on the road." },
