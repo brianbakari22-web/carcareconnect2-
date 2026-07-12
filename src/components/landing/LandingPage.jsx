@@ -66,6 +66,14 @@ export default function LandingPage() {
   }, [])
   const [openFaq, setOpenFaq] = useState(null)
   const [activeRole, setActiveRole] = useState(0)
+  const [roleCycle, setRoleCycle] = useState(true)
+
+  useEffect(() => {
+    if (!roleCycle) return
+    const t = setInterval(() => setActiveRole(prev => (prev + 1) % ROLES.length), 5000)
+    return () => clearInterval(t)
+  }, [roleCycle])
+
   const [providers, setProviders] = useState(
     Object.entries(PROVIDER_META).map(([key,m])=>({ ...m, key, keep:"..." }))
   )
@@ -231,7 +239,7 @@ export default function LandingPage() {
           </div>
           <div style={{ display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap",marginBottom:"2.5rem" }}>
             {ROLES.map((r,i)=>(
-              <button key={r.key} className={"role-tab"+(activeRole===i?" on":"")} onClick={()=>setActiveRole(i)}>{r.icon} {r.title}</button>
+              <button key={r.key} className={"role-tab"+(activeRole===i?" on":"")} onClick={()=>{ setActiveRole(i); setRoleCycle(false) }}>{r.icon} {r.title}</button>
             ))}
           </div>
           <div key={activeRole} className="fade-in lp-role-grid" style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:"3rem",alignItems:"center",background:"#fff",borderRadius:24,overflow:"hidden",border:"1.5px solid "+role.border,boxShadow:"0 8px 40px rgba(0,0,0,0.06)" }}>
