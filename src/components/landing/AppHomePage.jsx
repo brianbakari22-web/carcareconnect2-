@@ -240,7 +240,7 @@ export default function AppHomePage() {
                 <div style={{ position:"relative", borderRadius:12, overflow:"hidden", height:78, marginBottom:10 }}>
                   <img src={r.img} alt={r.title} style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center 30%", display:"block" }}/>
                   <div style={{ position:"absolute", inset:0, background:r.color+"99" }}/>
-                  <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:800, color:"#fff" }}>{ROLE_ICONS[r.key]}</div>
+                  <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:800, color:"#fff" }}>{r.label}</div>
                 </div>
                 <div style={{ fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, color:"#000", marginBottom:3 }}>{r.title}</div>
                 <div style={{ fontSize:10, color:r.color, fontWeight:600 }}>{r.tagline}</div>
@@ -251,9 +251,9 @@ export default function AppHomePage() {
 
         {/* TRUST */}
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
-          {[{e:"ok",t:"Verified providers",d:"Every business manually vetted"},{e:"lk",t:"Secure payments",d:"M-Pesa and card via Pesapal"},{e:"pt",t:"Live tracking",d:"GPS every job, every time"},{e:"sh",t:"Service guarantee",d:"Full refund if unsatisfied"}].map(x=>(
+          {[{t:"Verified providers",d:"Every business manually vetted"},{t:"Secure payments",d:"M-Pesa and card via Pesapal"},{t:"Live tracking",d:"GPS every job, every time"},{t:"Service guarantee",d:"Full refund if unsatisfied"}].map(x=>(
             <div key={x.t} className="trust-item">
-              <span style={{ fontSize:11, fontFamily:"Syne,sans-serif", fontWeight:800, color:"#e6821e", flexShrink:0 }}>{x.e.toUpperCase()}</span>
+              <span style={{ fontSize:14, fontWeight:800, color:"#16a34a", flexShrink:0 }}>ok</span>
               <div>
                 <div style={{ fontSize:12, fontWeight:700, color:"#000" }}>{x.t}</div>
                 <div style={{ fontSize:10, color:"#888", marginTop:2, lineHeight:1.5 }}>{x.d}</div>
@@ -264,10 +264,11 @@ export default function AppHomePage() {
 
         {/* COVERAGE */}
         <div style={{ background:"#fff8f0", borderRadius:18, padding:"1.25rem", border:"1px solid #e6821e18" }}>
-          <div style={{ fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, color:"#e6821e", marginBottom:"0.75rem" }}>KE Available across Kenya</div>
+          <div style={{ fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, color:"#e6821e", marginBottom:"0.75rem" }}>Launching in Nairobi first</div>
+          <div style={{ fontSize:11, color:"#aaa", marginBottom:"0.75rem" }}>Expanding county by county across Kenya</div>
           <div style={{ display:"flex", gap:0, flexWrap:"wrap" }}>
-            {["Nairobi","Mombasa","Kisumu","Nakuru","Eldoret","Thika","Nyeri","Machakos","Meru","Kitale","Malindi","Garissa"].map(t=>(
-              <span key={t} className="town-pill">{t}</span>
+            {[{n:"Nairobi",live:true},{n:"Mombasa",live:false},{n:"Kisumu",live:false},{n:"Nakuru",live:false},{n:"Eldoret",live:false},{n:"Thika",live:false},{n:"Nyeri",live:false},{n:"Machakos",live:false},{n:"Meru",live:false},{n:"Kitale",live:false},{n:"Malindi",live:false},{n:"Garissa",live:false}].map(t=>(
+              <span key={t.n} className="town-pill" style={{ background:t.live?"#e6821e":"#fff", color:t.live?"#fff":"#555", border:t.live?"1px solid #e6821e":"1px solid #e6821e20", fontWeight:t.live?700:500 }}>{t.n}{t.live?" live":""}</span>
             ))}
           </div>
         </div>
