@@ -9,14 +9,14 @@ const ROLES = [
 ]
 
 const SERVICES = [
-  { emoji:"Mechanic", name:"Mechanic" },
-  { emoji:"Emergency", name:"Emergency" },
-  { emoji:"Parts", name:"Parts" },
-  { emoji:"Concierge", name:"Concierge" },
-  { emoji:"Car Wash", name:"Car Wash" },
-  { emoji:"Diagnostics", name:"Diagnostics" },
-  { emoji:"Tyres", name:"Tyres" },
-  { emoji:"Electrical", name:"Electrical" },
+  { emoji:"🔧", name:"Mechanic" },
+  { emoji:"🚨", name:"Emergency" },
+  { emoji:"🛒", name:"Parts" },
+  { emoji:"🚗", name:"Concierge" },
+  { emoji:"🚿", name:"Car Wash" },
+  { emoji:"🔍", name:"Diagnostics" },
+  { emoji:"🛞", name:"Tyres" },
+  { emoji:"⚡", name:"Electrical" },
 ]
 
 const SVC_ICONS = {
@@ -120,7 +120,7 @@ export default function AppHomePage() {
           <button onClick={()=>nav("/auth")} style={{ background:"#e6821e", border:"none", borderRadius:100, color:"#fff", fontFamily:"DM Sans,sans-serif", fontSize:13, fontWeight:700, padding:"9px 20px", cursor:"pointer" }}>Get started</button>
         </div>
         <div onClick={()=>nav("/auth")} style={{ background:"#f5f5f5", border:"1.5px solid #eee", borderRadius:13, padding:"11px 14px", display:"flex", alignItems:"center", gap:8, cursor:"pointer" }}>
-          <span style={{ fontSize:15, color:"#bbb" }}>&#9906;</span>
+          <span style={{ fontSize:13, color:"#bbb", fontWeight:600 }}>Search</span>
           <span style={{ fontSize:13, color:"#bbb" }}>Mechanics, parts, services...</span>
         </div>
       </div>
@@ -225,7 +225,8 @@ export default function AppHomePage() {
           <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8 }}>
             {SERVICES.map(s=>(
               <div key={s.name} className="svc-btn" onClick={()=>nav("/auth")}>
-                <span style={{ fontSize:10, fontFamily:"Syne,sans-serif", fontWeight:700, color:"#e6821e", textAlign:"center", lineHeight:1.3 }}>{s.name}</span>
+                <span style={{ fontSize:20 }}>{s.emoji}</span>
+                <span style={{ fontSize:10, fontFamily:"Syne,sans-serif", fontWeight:600, color:"#555", textAlign:"center", lineHeight:1.3 }}>{s.name}</span>
               </div>
             ))}
           </div>
@@ -269,7 +270,7 @@ export default function AppHomePage() {
           <div style={{ fontSize:11, color:"#aaa", marginBottom:"0.75rem" }}>Expanding county by county across Kenya</div>
           <div style={{ display:"flex", gap:0, flexWrap:"wrap" }}>
             {[{n:"Nairobi",live:true},{n:"Mombasa",live:false},{n:"Kisumu",live:false},{n:"Nakuru",live:false},{n:"Eldoret",live:false},{n:"Thika",live:false},{n:"Nyeri",live:false},{n:"Machakos",live:false},{n:"Meru",live:false},{n:"Kitale",live:false},{n:"Malindi",live:false},{n:"Garissa",live:false}].map(t=>(
-              <span key={t.n} className="town-pill" style={{ background:t.live?"#e6821e":"#fff", color:t.live?"#fff":"#555", border:t.live?"1px solid #e6821e":"1px solid #e6821e20", fontWeight:t.live?700:500 }}>{t.n}{t.live?" live":""}</span>
+              <span key={t.n} className="town-pill" style={{ background:t.live?"#e6821e":"#fff", color:t.live?"#fff":"#555", border:t.live?"1px solid #e6821e":"1px solid #e6821e20", fontWeight:t.live?700:500 }}>{t.n}{t.live?" ✓":""}</span>
             ))}
           </div>
         </div>
