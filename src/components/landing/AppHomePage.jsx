@@ -162,7 +162,7 @@ export default function AppHomePage() {
             style={{ background:"#fff", borderRadius:22, overflow:"hidden", border:"1.5px solid "+role.border, boxShadow:"0 6px 32px rgba(0,0,0,0.08)", userSelect:"none" }}>
             <div style={{ position:"relative" }}>
               <img src={role.img} alt={role.title} style={{ width:"100%", height:220, objectFit:"cover", objectPosition:"center 30%", display:"block" }}/>
-              <div style={{ position:"absolute", inset:0, background:"linear-gradient(to top,"+role.color+"f0 0%,"+role.color+"50 45%,transparent 75%)" }}/>
+              <div style={{ position:"absolute", inset:0, background:"linear-gradient(to top,"+role.color+"cc 0%,"+role.color+"30 50%,transparent 80%)" }}/>
               <div style={{ position:"absolute", bottom:0, left:0, right:0, padding:"1.25rem" }}>
                 <div style={{ display:"inline-flex", alignItems:"center", gap:6, background:"rgba(255,255,255,0.18)", border:"1px solid rgba(255,255,255,0.3)", backdropFilter:"blur(4px)", borderRadius:100, padding:"4px 12px", marginBottom:8 }}>
                   <span style={{ fontSize:10, fontWeight:700, color:"#fff", textTransform:"uppercase", letterSpacing:"0.08em" }}>{role.title}</span>
