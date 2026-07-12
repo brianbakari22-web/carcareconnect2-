@@ -120,7 +120,7 @@ export default function AppHomePage() {
           <button onClick={()=>nav("/auth")} style={{ background:"#e6821e", border:"none", borderRadius:100, color:"#fff", fontFamily:"DM Sans,sans-serif", fontSize:13, fontWeight:700, padding:"9px 20px", cursor:"pointer" }}>Get started</button>
         </div>
         <div onClick={()=>nav("/auth")} style={{ background:"#f5f5f5", border:"1.5px solid #eee", borderRadius:13, padding:"11px 14px", display:"flex", alignItems:"center", gap:8, cursor:"pointer" }}>
-          <span style={{ fontSize:15, color:"#bbb" }}>Srch</span>
+          <span style={{ fontSize:15, color:"#bbb" }}>&#9906;</span>
           <span style={{ fontSize:13, color:"#bbb" }}>Mechanics, parts, services...</span>
         </div>
       </div>
@@ -143,7 +143,7 @@ export default function AppHomePage() {
               <div key={r.key} className={"role-tab"+(activeRole===i?" on":"")}
                 style={{ borderColor:activeRole===i?r.color:"#eee", background:activeRole===i?r.bg:"#fff" }}
                 onClick={()=>goToRole(i)}>
-                <span style={{ fontSize:22, fontFamily:"Syne,sans-serif", fontWeight:800, color:r.color }}>{ROLE_ICONS[r.key]}</span>
+                <span style={{ fontSize:10, fontFamily:"Syne,sans-serif", fontWeight:800, color:r.color }}>{r.emoji}</span>
                 <span style={{ fontSize:10, fontWeight:700, color:activeRole===i?r.color:"#888", whiteSpace:"nowrap" }}>{r.label}</span>
               </div>
             ))}
@@ -194,6 +194,9 @@ export default function AppHomePage() {
               <div key={i} onClick={()=>goToRole(i)} style={{ height:6, borderRadius:100, cursor:"pointer", width:activeRole===i?22:6, background:activeRole===i?r.color:"#ddd", transition:"all 0.35s ease" }}/>
             ))}
           </div>
+          <div style={{ textAlign:"center", marginTop:6, fontSize:10, color:"#bbb" }}>
+            {paused ? "Holding... release to continue" : "Swipe left or right · Hold to pause"}
+          </div>
         </div>
 
         {/* GO EMERGENCY */}
@@ -208,7 +211,7 @@ export default function AppHomePage() {
             <div style={{ flex:1 }}>
               <div style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.75)", textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:4 }}>Emergency Service</div>
               <div style={{ fontFamily:"Syne,sans-serif", fontSize:16, fontWeight:800, color:"#fff", lineHeight:1.15, marginBottom:3 }}>Broke down? We come to you.</div>
-              <div style={{ fontSize:11, color:"rgba(255,255,255,0.85)", fontWeight:500 }}>KES 500 callout · Under 15 min</div>
+              <div style={{ fontSize:11, color:"rgba(255,255,255,0.85)", fontWeight:500 }}>KES 500 callout · Mechanic dispatched within 15 min</div>
             </div>
             <div style={{ background:"#fff", borderRadius:10, padding:"9px 13px", flexShrink:0 }}>
               <div style={{ fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:800, color:"#e24b4a", lineHeight:1.25 }}>Request</div>
@@ -223,8 +226,7 @@ export default function AppHomePage() {
           <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8 }}>
             {SERVICES.map(s=>(
               <div key={s.name} className="svc-btn" onClick={()=>nav("/auth")}>
-                <span style={{ fontSize:11, fontFamily:"Syne,sans-serif", fontWeight:700, color:"#e6821e" }}>{s.name.substring(0,4)}</span>
-                <span style={{ fontSize:10, fontWeight:600, color:"#555", textAlign:"center" }}>{s.name}</span>
+                <span style={{ fontSize:10, fontFamily:"Syne,sans-serif", fontWeight:700, color:"#e6821e", textAlign:"center", lineHeight:1.3 }}>{s.name}</span>
               </div>
             ))}
           </div>
@@ -253,7 +255,7 @@ export default function AppHomePage() {
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
           {[{t:"Verified providers",d:"Every business manually vetted"},{t:"Secure payments",d:"M-Pesa and card via Pesapal"},{t:"Live tracking",d:"GPS every job, every time"},{t:"Service guarantee",d:"Full refund if unsatisfied"}].map(x=>(
             <div key={x.t} className="trust-item">
-              <span style={{ fontSize:14, fontWeight:800, color:"#16a34a", flexShrink:0 }}>ok</span>
+              <span style={{ fontSize:16, fontWeight:800, color:"#16a34a", flexShrink:0 }}>&#10003;</span>
               <div>
                 <div style={{ fontSize:12, fontWeight:700, color:"#000" }}>{x.t}</div>
                 <div style={{ fontSize:10, color:"#888", marginTop:2, lineHeight:1.5 }}>{x.d}</div>
