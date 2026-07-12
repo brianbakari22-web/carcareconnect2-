@@ -162,7 +162,7 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      <section style={{ paddingTop:64,minHeight:"95vh",display:"flex",alignItems:"center",background:"linear-gradient(160deg,#fff8f0 0%,#fff 55%,#f0f9ff 100%)",position:"relative",overflow:"hidden" }}>
+      <section style={{ paddingTop:96,minHeight:"95vh",display:"flex",alignItems:"center",background:"linear-gradient(160deg,#fff8f0 0%,#fff 55%,#f0f9ff 100%)",position:"relative",overflow:"hidden" }}>
         <div style={{ position:"absolute",top:-100,right:-200,width:700,height:700,borderRadius:"50%",background:"radial-gradient(circle,rgba(230,130,30,0.07) 0%,transparent 70%)",pointerEvents:"none" }}/>
         <div className="lp-hero-grid" style={{ maxWidth:1200,margin:"0 auto",padding:isMobile?"2rem 1.25rem":"4rem 2rem",width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4rem",alignItems:"center" }}>
           <div>
