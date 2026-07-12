@@ -589,7 +589,7 @@ export default function AuthPage() {
                 <div key={r.key} className="role-pill"
                   onClick={()=>{ setSelectedRole(r.key); setStep("role"); setMode("signup") }}
                   style={{ background:r.bg, border:"1.5px solid "+r.border, borderRadius:16, padding:"1rem", cursor:"pointer", transition:"all 0.18s" }}>
-                  <div style={{ fontFamily:"Syne,sans-serif", fontSize:24, fontWeight:800, color:r.color, marginBottom:8 }}>{r.emoji.toUpperCase().slice(0,3)}</div>
+                  <div style={{ fontSize:28, marginBottom:8 }}>{r.emoji}</div>
                   <div style={{ fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, color:"#000", marginBottom:3 }}>{r.label}</div>
                   <div style={{ fontSize:11, color:"#888", lineHeight:1.4 }}>{r.desc}</div>
                   <div style={{ marginTop:8, fontSize:11, fontWeight:700, color:r.color }}>Join free</div>
@@ -601,7 +601,7 @@ export default function AuthPage() {
           <div className="au3"
             onClick={()=>{ setSelectedRole("parts_dealer"); setStep("role"); setMode("signup") }}
             style={{ background:"#fefce8", border:"1.5px solid #f59e0b25", borderRadius:14, padding:"0.875rem 1rem", display:"flex", alignItems:"center", gap:12, cursor:"pointer", marginBottom:"1.5rem" }}>
-            <div style={{ fontFamily:"Syne,sans-serif", fontSize:22, fontWeight:800, color:"#f59e0b", flexShrink:0 }}>PTS</div>
+            <div style={{ fontSize:28, flexShrink:0 }}>🛒</div>
             <div style={{ flex:1 }}>
               <div style={{ fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, color:"#000" }}>Parts Dealer</div>
               <div style={{ fontSize:11, color:"#888", marginTop:2 }}>Sell genuine and aftermarket parts online. Keep up to 95%.</div>
