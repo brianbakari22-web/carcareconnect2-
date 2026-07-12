@@ -465,7 +465,7 @@ export default function LandingPage() {
           <div style={{ display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap" }}>
             <a href="https://play.google.com/store/apps/details?id=care.carcareconnect.app" target="_blank" rel="noopener noreferrer"
               style={{ background:"#1a1a1a",border:"1px solid #2a2a2a",borderRadius:14,padding:"12px 20px",display:"flex",alignItems:"center",gap:10,textDecoration:"none" }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M3.18 23.76c.3.17.64.24.99.2l12.99-11.95-2.98-2.98L3.18 23.76zM.54 1.18C.2 1.54 0 2.1 0 2.82v18.36c0 .72.2 1.28.54 1.64l.09.08 10.28-10.28v-.24L.63 1.1l-.09.08zM20.12 10.4l-2.93-1.69-3.27 3.27 3.27 3.27 2.96-1.71c.84-.49.84-1.28-.03-1.14zM4.17.24L17.16 12.19l-2.98-2.98L4.08.15l.09.09z"/></svg>
+              <svg width="22" height="22" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M48 59.49v393a4.33 4.33 0 007.37 3.07L274 256 55.37 56.42A4.33 4.33 0 0048 59.49z" fill="#32bbff"/><path d="M340.43 192.31L288.33 240l-13.87 13.5L274 256l.46.5 13.87 13.5 52.1 47.69 57.75-33.35c16.55-9.56 16.55-25.06 0-34.62z" fill="#ffbc00"/><path d="M288.33 240L55.37 56.42A4.27 4.27 0 0049 57l239 219z" fill="#00e676"/><path d="M49 455a4.27 4.27 0 006.37.58L288.33 272l-39-36z" fill="#ff3d00"/></svg>
               <div style={{ textAlign:"left" }}>
                 <div style={{ fontSize:9,color:"#888" }}>Get it on</div>
                 <div style={{ fontSize:13,color:"#fff",fontWeight:700 }}>Google Play</div>
