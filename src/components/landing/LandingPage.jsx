@@ -145,20 +145,23 @@ export default function LandingPage() {
         .role-img-wrap:hover .role-img{transform:scale(1.03);}
       `}</style>
 
-      <nav style={{ position:"fixed",top:0,left:0,right:0,zIndex:100,background:scrolled?"rgba(255,255,255,0.97)":"rgba(255,255,255,0.85)",backdropFilter:"blur(16px)",borderBottom:scrolled?"1px solid #f0f0f0":"1px solid transparent",height:64,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 2rem",transition:"all 0.3s" }}>
-        <div style={{ fontFamily:"Syne,sans-serif",fontSize:20,fontWeight:800,letterSpacing:"-0.5px",cursor:"pointer" }} onClick={()=>nav("/")}>Car<span style={{color:"#e6821e"}}>Care</span> Connect</div>
-        <div style={{ display:"flex",gap:4 }}>
-          {[["Services","services"],["Marketplace","marketplace"],["Providers","providers"],["GO Service","go-service"],["FAQ","faq"]].map(([label,id])=>(
-          <button key={id} onClick={()=>document.getElementById(id)?.scrollIntoView({behavior:"smooth",block:"start"})}
-            style={{ background:"none",border:"none",color:"#475569",fontSize:13,fontWeight:500,padding:"7px 12px",cursor:"pointer",fontFamily:"DM Sans,sans-serif",transition:"color 0.15s" }}
-            onMouseEnter={e=>e.target.style.color="#e6821e"} onMouseLeave={e=>e.target.style.color="#475569"}>
-            {label}
-          </button>
-        ))}
+      <nav style={{ position:"fixed",top:0,left:0,right:0,zIndex:100,background:scrolled?"rgba(255,255,255,0.97)":"rgba(255,255,255,0.92)",backdropFilter:"blur(16px)",borderBottom:"1px solid #f0f0f0",transition:"all 0.3s" }}>
+        <div style={{ height:52,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 1.25rem" }}>
+          <div style={{ fontFamily:"Syne,sans-serif",fontSize:18,fontWeight:800,letterSpacing:"-0.5px",cursor:"pointer",flexShrink:0 }} onClick={()=>nav("/")}>Car<span style={{color:"#e6821e"}}>Care</span> Connect</div>
+          <div style={{ display:"flex",gap:6,flexShrink:0 }}>
+            <button onClick={()=>nav("/auth")} style={{ background:"none",border:"1.5px solid #e0e0e0",borderRadius:100,color:"#0f172a",fontSize:12,fontWeight:600,padding:"5px 12px",cursor:"pointer",fontFamily:"DM Sans,sans-serif",whiteSpace:"nowrap" }}>Sign in</button>
+            <button onClick={()=>nav("/auth")} style={{ background:"#e6821e",border:"none",borderRadius:100,color:"#fff",fontSize:12,fontWeight:700,padding:"6px 12px",cursor:"pointer",fontFamily:"DM Sans,sans-serif",whiteSpace:"nowrap" }}>Get started</button>
+          </div>
         </div>
-        <div style={{ display:"flex",gap:8 }}>
-          <button onClick={()=>nav("/auth")} style={{ background:"none",border:"1.5px solid #e0e0e0",borderRadius:100,color:"#0f172a",fontSize:13,fontWeight:600,padding:"7px 18px",cursor:"pointer",fontFamily:"DM Sans,sans-serif" }}>Sign in</button>
-          <button onClick={()=>nav("/auth")} style={{ background:"#e6821e",border:"none",borderRadius:100,color:"#fff",fontSize:13,fontWeight:700,padding:"8px 20px",cursor:"pointer",fontFamily:"DM Sans,sans-serif" }}>Get started free</button>
+        <div style={{ display:"flex",overflowX:"auto",WebkitOverflowScrolling:"touch",scrollbarWidth:"none",msOverflowStyle:"none",borderTop:"1px solid #f5f5f5",padding:"0 0.5rem" }}>
+          {[["Services","services"],["Marketplace","marketplace"],["Providers","providers"],["GO Service","go-service"],["FAQ","faq"]].map(([label,id])=>(
+            <button key={id} onClick={()=>document.getElementById(id)?.scrollIntoView({behavior:"smooth",block:"start"})}
+              style={{ background:"none",border:"none",borderBottom:"2px solid transparent",color:"#475569",fontSize:12,fontWeight:600,padding:"7px 14px",cursor:"pointer",fontFamily:"DM Sans,sans-serif",whiteSpace:"nowrap",flexShrink:0,transition:"all 0.15s" }}
+              onMouseEnter={e=>{e.currentTarget.style.color="#e6821e";e.currentTarget.style.borderBottomColor="#e6821e"}}
+              onMouseLeave={e=>{e.currentTarget.style.color="#475569";e.currentTarget.style.borderBottomColor="transparent"}}>
+              {label}
+            </button>
+          ))}
         </div>
       </nav>
 
