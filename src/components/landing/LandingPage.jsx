@@ -428,11 +428,11 @@ export default function LandingPage() {
       <section style={{ padding:isMobile?"2rem 1.25rem":"4rem 2rem",background:"#fff8f0",textAlign:"center" }}>
         <div style={{ maxWidth:800,margin:"0 auto" }}>
           <span style={EB}>Coverage</span>
-          <h2 style={{ ...H2,marginBottom:"0.5rem" }}>Available across Kenya</h2>
-          <p style={{ fontSize:13,color:"#94a3b8",marginBottom:"1.5rem" }}>Expanding town by town. Coming soon to more cities.</p>
+          <h2 style={{ ...H2,marginBottom:"0.5rem" }}>Launching in Nairobi first.</h2>
+          <p style={{ fontSize:13,color:"#94a3b8",marginBottom:"1.5rem" }}>Starting in Nairobi and expanding county by county across Kenya. Coming soon to your town.</p>
           <div style={{ display:"flex",gap:0,flexWrap:"wrap",justifyContent:"center" }}>
-            {["Nairobi","Mombasa","Kisumu","Nakuru","Eldoret","Thika","Nyeri","Machakos","Meru","Kitale","Malindi","Garissa","Kisii","Kakamega","Rongai"].map(t=>(
-              <span key={t} className="town">{t}</span>
+            {[{name:"Nairobi",live:true},{name:"Mombasa",live:false},{name:"Kisumu",live:false},{name:"Nakuru",live:false},{name:"Eldoret",live:false},{name:"Thika",live:false},{name:"Nyeri",live:false},{name:"Machakos",live:false},{name:"Meru",live:false},{name:"Kitale",live:false},{name:"Malindi",live:false},{name:"Garissa",live:false},{name:"Kisii",live:false},{name:"Kakamega",live:false},{name:"Rongai",live:false}].map(t=>(
+              <span key={t.name} className="town" style={{ background:t.live?"#e6821e":undefined, color:t.live?"#fff":undefined, border:t.live?"1px solid #e6821e":undefined, fontWeight:t.live?700:500 }}>{t.name}{t.live?" ✓":""}</span>
             ))}
           </div>
         </div>
