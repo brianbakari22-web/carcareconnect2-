@@ -1,22 +1,22 @@
 import { useState, useEffect, useRef } from "react"
 
 const ROLES = [
-  { key:"customer", emoji:"car", label:"Customers", title:"Vehicle Owners", tagline:"Book, track & relax.", desc:"Find verified mechanics near you, get 24/7 emergency help, order genuine parts all from your phone.", color:"#e6821e", bg:"#fff8f0", border:"#e6821e25", img:"https://images.unsplash.com/photo-1611448746128-7c39e03b71e4?w=700&q=85", actions:["Book a mechanic","GO Emergency","Order parts","Track my car"], path:"/auth" },
-  { key:"provider", emoji:"wrench", label:"Garages", title:"Garages and Shops", tagline:"List. Earn. Grow.", desc:"Reach thousands of vehicle owners across Kenya. Manage bookings, dispatch mechanics and get paid instantly.", color:"#378add", bg:"#eff6ff", border:"#378add25", img:"https://images.unsplash.com/photo-1551522435-b2347f669045?w=700&q=85", actions:["Manage bookings","View earnings","GO requests","Manage mechanics"], path:"/auth" },
-  { key:"mechanic", emoji:"gear", label:"Mechanics", title:"Mechanics", tagline:"Get jobs. Get paid.", desc:"Get job assignments from your garage, track earnings, upload service photos and grow your reputation.", color:"#1d9e75", bg:"#f0fdf4", border:"#1d9e7525", img:"https://images.unsplash.com/photo-1702146713858-8e7d1cc29fe8?w=700&q=85", actions:["View assigned jobs","Track earnings","Request parts","Service photos"], path:"/mechanic-login" },
-  { key:"driver", emoji:"truck", label:"Drivers", title:"Drivers", tagline:"Drive. Deliver. Earn.", desc:"Accept vehicle pickup and parts delivery jobs across Kenya. GPS routes, earnings dashboard and a PANIC button.", color:"#8b5cf6", bg:"#faf5ff", border:"#8b5cf625", img:"https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=700&q=85", actions:["Available jobs","Active delivery","My earnings","Performance"], path:"/auth" },
-  { key:"dealer", emoji:"box", label:"Dealers", title:"Parts Dealers", tagline:"List parts. Sell more.", desc:"Sell genuine and aftermarket parts online. Manage inventory, fulfill orders and reach mechanics across Kenya.", color:"#f59e0b", bg:"#fefce8", border:"#f59e0b25", img:"https://images.unsplash.com/photo-1487754180451-c456f719a1fc?w=700&q=85", actions:["My inventory","Incoming orders","Sales analytics","Add new parts"], path:"/auth" },
+  { key:"customer", emoji:"Customer", label:"Customers", title:"Vehicle Owners", tagline:"Book, track & relax.", desc:"Find verified mechanics near you, get 24/7 emergency help, order genuine parts all from your phone.", color:"#e6821e", bg:"#fff8f0", border:"#e6821e25", img:"https://images.unsplash.com/photo-1611448746128-7c39e03b71e4?w=700&q=85", actions:["Book a mechanic","GO Emergency","Order parts","Track my car"], path:"/auth" },
+  { key:"provider", emoji:"Garage", label:"Garages", title:"Garages and Shops", tagline:"List. Earn. Grow.", desc:"Reach thousands of vehicle owners across Kenya. Manage bookings, dispatch mechanics and get paid instantly.", color:"#378add", bg:"#eff6ff", border:"#378add25", img:"https://images.unsplash.com/photo-1551522435-b2347f669045?w=700&q=85", actions:["Manage bookings","View earnings","GO requests","Manage mechanics"], path:"/auth" },
+  { key:"mechanic", emoji:"Mechanic", label:"Mechanics", title:"Mechanics", tagline:"Get jobs. Get paid.", desc:"Get job assignments from your garage, track earnings, upload service photos and grow your reputation.", color:"#1d9e75", bg:"#f0fdf4", border:"#1d9e7525", img:"https://images.unsplash.com/photo-1702146713858-8e7d1cc29fe8?w=700&q=85", actions:["View assigned jobs","Track earnings","Request parts","Service photos"], path:"/mechanic-login" },
+  { key:"driver", emoji:"Driver", label:"Drivers", title:"Drivers", tagline:"Drive. Deliver. Earn.", desc:"Accept vehicle pickup and parts delivery jobs across Kenya. GPS routes, earnings dashboard and a PANIC button.", color:"#8b5cf6", bg:"#faf5ff", border:"#8b5cf625", img:"https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=700&q=85", actions:["Available jobs","Active delivery","My earnings","Performance"], path:"/auth" },
+  { key:"dealer", emoji:"Dealer", label:"Dealers", title:"Parts Dealers", tagline:"List parts. Sell more.", desc:"Sell genuine and aftermarket parts online. Manage inventory, fulfill orders and reach mechanics across Kenya.", color:"#f59e0b", bg:"#fefce8", border:"#f59e0b25", img:"https://images.unsplash.com/photo-1487754180451-c456f719a1fc?w=700&q=85", actions:["My inventory","Incoming orders","Sales analytics","Add new parts"], path:"/auth" },
 ]
 
 const SERVICES = [
-  { emoji:"mech", name:"Mechanic" },
-  { emoji:"sos", name:"Emergency" },
-  { emoji:"parts", name:"Parts" },
-  { emoji:"🚗", name:"Concierge" },
-  { emoji:"🚿", name:"Car Wash" },
-  { emoji:"🔍", name:"Diagnostics" },
-  { emoji:"🛞", name:"Tyres" },
-  { emoji:"⚡", name:"Electrical" },
+  { emoji:"Mechanic", name:"Mechanic" },
+  { emoji:"Emergency", name:"Emergency" },
+  { emoji:"Parts", name:"Parts" },
+  { emoji:"Concierge", name:"Concierge" },
+  { emoji:"Car Wash", name:"Car Wash" },
+  { emoji:"Diagnostics", name:"Diagnostics" },
+  { emoji:"Tyres", name:"Tyres" },
+  { emoji:"Electrical", name:"Electrical" },
 ]
 
 const SVC_ICONS = {
@@ -223,7 +223,7 @@ export default function AppHomePage() {
           <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8 }}>
             {SERVICES.map(s=>(
               <div key={s.name} className="svc-btn" onClick={()=>nav("/auth")}>
-                <span style={{ fontSize:11, fontFamily:"Syne,sans-serif", fontWeight:800, color:"#e6821e" }}>{SVC_ICONS[s.emoji]}</span>
+                <span style={{ fontSize:11, fontFamily:"Syne,sans-serif", fontWeight:700, color:"#e6821e" }}>{s.name.substring(0,4)}</span>
                 <span style={{ fontSize:10, fontWeight:600, color:"#555", textAlign:"center" }}>{s.name}</span>
               </div>
             ))}
