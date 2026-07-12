@@ -252,7 +252,7 @@ export default function AppHomePage() {
 
         {/* TRUST */}
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
-          {[{t:"Verified providers",d:"Every business manually vetted"},{t:"Secure payments",d:"M-Pesa and card via Pesapal"},{t:"Live tracking",d:"GPS every job, every time"},{t:"Service guarantee",d:"Full refund if unsatisfied"}].map(x=>(
+          {[{t:"Verified providers",d:"Every business manually vetted"},{t:"Secure payments",d:"M-Pesa and card via Pesapal"},{t:"Live tracking",d:"GPS every job, every time"},{t:"Service guarantee",d:"Claims reviewed fairly based on job completion stage"}].map(x=>(
             <div key={x.t} className="trust-item">
               <span style={{ fontSize:16, fontWeight:800, color:"#16a34a", flexShrink:0 }}>&#10003;</span>
               <div>
