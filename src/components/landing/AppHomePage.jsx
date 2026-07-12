@@ -30,7 +30,9 @@ const ROLE_ICONS = {
 export default function AppHomePage() {
   const [activeRole, setActiveRole] = useState(0)
   const [animKey, setAnimKey] = useState(0)
-  const timerRef = typeof window !== "undefined" ? { current: null } : { current: null }
+  const [touchStart, setTouchStart] = useState(null)
+  const [touchEnd, setTouchEnd] = useState(null)
+  const intervalRef = useState(null)
   const nav = (path) => window.location.href = path
 
   const goToRole = (i) => {
@@ -38,14 +40,42 @@ export default function AppHomePage() {
     setAnimKey(k => k + 1)
   }
 
+  const goNext = () => {
+    setActiveRole(prev => {
+      const next = (prev + 1) % ROLES.length
+      setAnimKey(k => k + 1)
+      return next
+    })
+  }
+
+  const goPrev = () => {
+    setActiveRole(prev => {
+      const next = (prev - 1 + ROLES.length) % ROLES.length
+      setAnimKey(k => k + 1)
+      return next
+    })
+  }
+
+  const handleTouchStart = (e) => {
+    setTouchStart(e.targetTouches[0].clientX)
+    setTouchEnd(null)
+  }
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return
+    const distance = touchStart - touchEnd
+    const isLeftSwipe = distance > 50
+    const isRightSwipe = distance < -50
+    if (isLeftSwipe) goNext()
+    if (isRightSwipe) goPrev()
+  }
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveRole(prev => {
-        const next = (prev + 1) % ROLES.length
-        setAnimKey(k => k + 1)
-        return next
-      })
-    }, 5000)
+    const interval = setInterval(goNext, 5000)
     return () => clearInterval(interval)
   }, [])
 
@@ -113,7 +143,11 @@ export default function AppHomePage() {
           </div>
 
           {/* ROLE CARD */}
-          <div key={"card"+animKey} className="slide-up" style={{ background:"#fff", borderRadius:22, overflow:"hidden", border:"1.5px solid "+role.border, boxShadow:"0 6px 32px rgba(0,0,0,0.08)" }}>
+          <div key={"card"+animKey} className="slide-up"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            style={{ background:"#fff", borderRadius:22, overflow:"hidden", border:"1.5px solid "+role.border, boxShadow:"0 6px 32px rgba(0,0,0,0.08)", userSelect:"none" }}>
             <div style={{ position:"relative" }}>
               <img src={role.img} alt={role.title} style={{ width:"100%", height:220, objectFit:"cover", objectPosition:"center 30%", display:"block" }}/>
               <div style={{ position:"absolute", inset:0, background:"linear-gradient(to top,"+role.color+"f0 0%,"+role.color+"50 45%,transparent 75%)" }}/>
