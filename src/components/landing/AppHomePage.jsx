@@ -30,14 +30,16 @@ const ROLE_ICONS = {
 export default function AppHomePage() {
   const [activeRole, setActiveRole] = useState(0)
   const [animKey, setAnimKey] = useState(0)
+  const [paused, setPaused] = useState(false)
   const [touchStart, setTouchStart] = useState(null)
   const [touchEnd, setTouchEnd] = useState(null)
-  const intervalRef = useState(null)
+  const [holdTimer, setHoldTimer] = useState(null)
   const nav = (path) => window.location.href = path
 
   const goToRole = (i) => {
     setActiveRole(i)
     setAnimKey(k => k + 1)
+    setPaused(false)
   }
 
   const goNext = () => {
@@ -46,6 +48,7 @@ export default function AppHomePage() {
       setAnimKey(k => k + 1)
       return next
     })
+    setPaused(false)
   }
 
   const goPrev = () => {
@@ -54,30 +57,38 @@ export default function AppHomePage() {
       setAnimKey(k => k + 1)
       return next
     })
+    setPaused(false)
   }
 
+  // Touch handlers - swipe + hold to pause
   const handleTouchStart = (e) => {
     setTouchStart(e.targetTouches[0].clientX)
     setTouchEnd(null)
+    // Hold to pause after 200ms
+    const t = setTimeout(() => setPaused(true), 200)
+    setHoldTimer(t)
   }
 
   const handleTouchMove = (e) => {
     setTouchEnd(e.targetTouches[0].clientX)
+    // If moving, cancel hold
+    if (holdTimer) { clearTimeout(holdTimer); setHoldTimer(null) }
   }
 
   const handleTouchEnd = () => {
+    if (holdTimer) { clearTimeout(holdTimer); setHoldTimer(null) }
+    setPaused(false)
     if (!touchStart || !touchEnd) return
     const distance = touchStart - touchEnd
-    const isLeftSwipe = distance > 50
-    const isRightSwipe = distance < -50
-    if (isLeftSwipe) goNext()
-    if (isRightSwipe) goPrev()
+    if (distance > 50) goNext()
+    else if (distance < -50) goPrev()
   }
 
   useEffect(() => {
+    if (paused) return
     const interval = setInterval(goNext, 5000)
     return () => clearInterval(interval)
-  }, [])
+  }, [paused, activeRole])
 
   const role = ROLES[activeRole]
 
@@ -94,6 +105,7 @@ export default function AppHomePage() {
         .slide-up{animation:slideUp 0.38s ease forwards;}
         @keyframes prog{from{width:0}to{width:100%}}
         .prog-fill{height:100%;border-radius:100px;animation:prog 5s linear forwards;}
+        .prog-fill[style*="paused"]{animation-play-state:paused;}
         .trust-item{background:#fff;border-radius:14px;padding:12px;display:flex;align-items:flex-start;gap:10px;border:1px solid #f0f0f0;}
         .town-pill{background:#fff;border:1px solid #e6821e20;border-radius:100px;padding:5px 12px;font-size:11px;color:#555;display:inline-block;margin:3px;}
       `}</style>
@@ -139,7 +151,8 @@ export default function AppHomePage() {
 
           {/* PROGRESS BAR */}
           <div style={{ height:3, borderRadius:100, background:"#ebebeb", marginBottom:"0.875rem", overflow:"hidden" }}>
-            <div key={animKey} className="prog-fill" style={{ background:role.color }}/>
+            <div key={paused ? "paused" : animKey} className="prog-fill"
+              style={{ background:role.color, animationPlayState:paused?"paused":"running" }}/>
           </div>
 
           {/* ROLE CARD */}
