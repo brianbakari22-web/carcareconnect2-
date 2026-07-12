@@ -36,6 +36,14 @@ export default function AppHomePage() {
   const [holdTimer, setHoldTimer] = useState(null)
   const nav = (path) => window.location.href = path
 
+  // Preload all role images on mount
+  useEffect(() => {
+    ROLES.forEach(r => {
+      const img = new Image()
+      img.src = r.img
+    })
+  }, [])
+
   const goToRole = (i) => {
     setActiveRole(i)
     setAnimKey(k => k + 1)
@@ -108,6 +116,8 @@ export default function AppHomePage() {
         .prog-fill[style*="paused"]{animation-play-state:paused;}
         .trust-item{background:#fff;border-radius:14px;padding:12px;display:flex;align-items:flex-start;gap:10px;border:1px solid #f0f0f0;}
         .town-pill{background:#fff;border:1px solid #e6821e20;border-radius:100px;padding:5px 12px;font-size:11px;color:#555;display:inline-block;margin:3px;}
+        .role-img{opacity:0;transition:opacity 0.3s ease;}
+        .role-img.loaded{opacity:1;}
       `}</style>
 
       {/* HEADER */}
@@ -161,7 +171,11 @@ export default function AppHomePage() {
             onTouchEnd={handleTouchEnd}
             style={{ background:"#fff", borderRadius:22, overflow:"hidden", border:"1.5px solid "+role.border, boxShadow:"0 6px 32px rgba(0,0,0,0.08)", userSelect:"none" }}>
             <div style={{ position:"relative" }}>
-              <img src={role.img} alt={role.title} style={{ width:"100%", height:220, objectFit:"cover", objectPosition:"center 30%", display:"block" }}/>
+              <img src={role.img} alt={role.title}
+                style={{ width:"100%", height:220, objectFit:"cover", objectPosition:"center 30%", display:"block", transition:"opacity 0.3s ease" }}
+                onLoad={e=>e.target.style.opacity=1}
+                onError={e=>e.target.style.opacity=0}
+              />
               <div style={{ position:"absolute", inset:0, background:"linear-gradient(to top,"+role.color+"cc 0%,"+role.color+"30 50%,transparent 80%)" }}/>
               <div style={{ position:"absolute", bottom:0, left:0, right:0, padding:"1.25rem" }}>
                 <div style={{ display:"inline-flex", alignItems:"center", gap:6, background:"rgba(255,255,255,0.18)", border:"1px solid rgba(255,255,255,0.3)", backdropFilter:"blur(4px)", borderRadius:100, padding:"4px 12px", marginBottom:8 }}>
