@@ -143,8 +143,7 @@ export default function AppHomePage() {
               <div key={r.key} className={"role-tab"+(activeRole===i?" on":"")}
                 style={{ borderColor:activeRole===i?r.color:"#eee", background:activeRole===i?r.bg:"#fff" }}
                 onClick={()=>goToRole(i)}>
-                <span style={{ fontSize:10, fontFamily:"Syne,sans-serif", fontWeight:800, color:r.color }}>{r.emoji}</span>
-                <span style={{ fontSize:10, fontWeight:700, color:activeRole===i?r.color:"#888", whiteSpace:"nowrap" }}>{r.label}</span>
+                <span style={{ fontSize:11, fontWeight:700, color:activeRole===i?r.color:"#888", whiteSpace:"nowrap", fontFamily:"Syne,sans-serif" }}>{r.label}</span>
               </div>
             ))}
           </div>
