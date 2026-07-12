@@ -4,26 +4,26 @@ import { supabase } from "../../lib/supabase"
 const NAV_LINKS = ["Services", "Marketplace", "Providers", "GO Service", "FAQ"]
 
 const ROLES = [
-  { key:"customer", icon:"Car", title:"Vehicle Owners", tagline:"Book, track, relax.", desc:"Find verified mechanics near you, get 24/7 emergency help, order genuine parts and track every job live.", color:"#e6821e", bg:"#fff8f0", border:"#e6821e25", img:"https://images.unsplash.com/photo-1611448746128-7c39e03b71e4?w=600&q=80", cta:"Book a service", path:"/auth", perks:["Verified mechanics","Live GPS tracking","M-Pesa payments","Service guarantee"] },
-  { key:"provider", icon:"Fix", title:"Garages and Shops", tagline:"List. Earn. Grow.", desc:"Reach thousands of vehicle owners across Kenya. Manage bookings, dispatch mechanics and receive instant payments.", color:"#378add", bg:"#eff6ff", border:"#378add25", img:"https://images.unsplash.com/photo-1551522435-b2347f669045?w=600&q=80", cta:"List your business", path:"/auth", perks:["Keep up to 95%","Free to register","Real-time bookings","Mechanic management"] },
-  { key:"mechanic", icon:"Wrn", title:"Mechanics", tagline:"Get jobs. Get paid.", desc:"Receive job assignments from your garage, track your earnings, upload before and after photos and grow your reputation.", color:"#1d9e75", bg:"#f0fdf4", border:"#1d9e7525", img:"https://images.unsplash.com/photo-1702146713858-8e7d1cc29fe8?w=600&q=80", cta:"Join as mechanic", path:"/mechanic-login", perks:["Assigned jobs","Earnings dashboard","Photo documentation","Parts requests"] },
-  { key:"driver", icon:"Drv", title:"Drivers", tagline:"Drive. Deliver. Earn.", desc:"Accept vehicle pickup and parts delivery jobs across Kenya. GPS-guided routes, earnings tracking and a PANIC button for safety.", color:"#8b5cf6", bg:"#faf5ff", border:"#8b5cf625", img:"https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=600&q=80", cta:"Become a driver", path:"/auth", perks:["Earn per delivery","GPS navigation","PANIC button","Performance tracking"] },
-  { key:"dealer", icon:"Pts", title:"Parts Dealers", tagline:"List parts. Sell more.", desc:"Sell genuine and aftermarket parts online. Manage inventory, fulfill orders and reach mechanics and vehicle owners across Kenya.", color:"#f59e0b", bg:"#fefce8", border:"#f59e0b25", img:"https://images.unsplash.com/photo-1487754180451-c456f719a1fc?w=600&q=80", cta:"List your parts", path:"/auth", perks:["Keep 95%","Inventory management","Order fulfillment","Delivery network"] },
+  { key:"customer", icon:"🚗", title:"Vehicle Owners", tagline:"Book, track, relax.", desc:"Find verified mechanics near you, get 24/7 emergency help, order genuine parts and track every job live.", color:"#e6821e", bg:"#fff8f0", border:"#e6821e25", img:"https://images.unsplash.com/photo-1611448746128-7c39e03b71e4?w=600&q=80", cta:"Book a service", path:"/auth", perks:["Verified mechanics","Live GPS tracking","M-Pesa payments","Service guarantee"] },
+  { key:"provider", icon:"🔧", title:"Garages and Shops", tagline:"List. Earn. Grow.", desc:"Reach thousands of vehicle owners across Kenya. Manage bookings, dispatch mechanics and receive instant payments.", color:"#378add", bg:"#eff6ff", border:"#378add25", img:"https://images.unsplash.com/photo-1551522435-b2347f669045?w=600&q=80", cta:"List your business", path:"/auth", perks:["Keep up to 95%","Free to register","Real-time bookings","Mechanic management"] },
+  { key:"mechanic", icon:"⚙️", title:"Mechanics", tagline:"Get jobs. Get paid.", desc:"Receive job assignments from your garage, track your earnings, upload before and after photos and grow your reputation.", color:"#1d9e75", bg:"#f0fdf4", border:"#1d9e7525", img:"https://images.unsplash.com/photo-1702146713858-8e7d1cc29fe8?w=600&q=80", cta:"Join as mechanic", path:"/mechanic-login", perks:["Assigned jobs","Earnings dashboard","Photo documentation","Parts requests"] },
+  { key:"driver", icon:"🚘", title:"Drivers", tagline:"Drive. Deliver. Earn.", desc:"Accept vehicle pickup and parts delivery jobs across Kenya. GPS-guided routes, earnings tracking and a PANIC button for safety.", color:"#8b5cf6", bg:"#faf5ff", border:"#8b5cf625", img:"https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=600&q=80", cta:"Become a driver", path:"/auth", perks:["Earn per delivery","GPS navigation","PANIC button","Performance tracking"] },
+  { key:"dealer", icon:"🛒", title:"Parts Dealers", tagline:"List parts. Sell more.", desc:"Sell genuine and aftermarket parts online. Manage inventory, fulfill orders and reach mechanics and vehicle owners across Kenya.", color:"#f59e0b", bg:"#fefce8", border:"#f59e0b25", img:"https://images.unsplash.com/photo-1487754180451-c456f719a1fc?w=600&q=80", cta:"List your parts", path:"/auth", perks:["Keep 95%","Inventory management","Order fulfillment","Delivery network"] },
 ]
 
 const SERVICES = [
-  { icon:"Fix", name:"Mechanic booking", desc:"Verified garages near you" },
-  { icon:"SOS", name:"GO Emergency", desc:"24/7 roadside help" },
-  { icon:"Car", name:"Concierge", desc:"Car pickup and return" },
-  { icon:"Box", name:"Parts marketplace", desc:"Genuine parts delivered" },
-  { icon:"Wsh", name:"Car wash", desc:"Book a wash near you" },
-  { icon:"Dig", name:"Diagnostics", desc:"OBD scan and fault codes" },
-  { icon:"Tyr", name:"Tyre service", desc:"Supply, fit and balance" },
-  { icon:"Zap", name:"Auto electrical", desc:"Wiring, battery, alternator" },
-  { icon:"Pnt", name:"Painting", desc:"Respray and touch-up" },
-  { icon:"Bdy", name:"Body repair", desc:"Dent removal and panels" },
-  { icon:"Chk", name:"Inspection", desc:"Pre-purchase vehicle check" },
-  { icon:"Rwd", name:"Loyalty rewards", desc:"Earn on every booking" },
+  { icon:"🔧", name:"Mechanic booking", desc:"Verified garages near you" },
+  { icon:"🚨", name:"GO Emergency", desc:"24/7 roadside help" },
+  { icon:"🚗", name:"Concierge", desc:"Car pickup and return" },
+  { icon:"🛒", name:"Parts marketplace", desc:"Genuine parts delivered" },
+  { icon:"🚿", name:"Car wash", desc:"Book a wash near you" },
+  { icon:"🔍", name:"Diagnostics", desc:"OBD scan and fault codes" },
+  { icon:"🛞", name:"Tyre service", desc:"Supply, fit and balance" },
+  { icon:"⚡", name:"Auto electrical", desc:"Wiring, battery, alternator" },
+  { icon:"🎨", name:"Painting", desc:"Respray and touch-up" },
+  { icon:"🔨", name:"Body repair", desc:"Dent removal and panels" },
+  { icon:"✅", name:"Inspection", desc:"Pre-purchase vehicle check" },
+  { icon:"🎁", name:"Loyalty rewards", desc:"Earn on every booking" },
 ]
 
 const TESTIMONIALS = [
@@ -48,12 +48,12 @@ const FAQS = [
 
 // PROVIDERS loaded dynamically from commission_rates table
 const PROVIDER_META = {
-  garage:       { icon:"Fix", type:"Garage / Mechanic", color:"#e6821e", desc:"Shop standard bookings" },
-  parts_dealer: { icon:"Pts", type:"Parts Dealer",      color:"#378add", desc:"Lowest platform fee" },
-  tyre_shop:    { icon:"Tyr", type:"Tyre Shop",          color:"#8b5cf6", desc:"Tyre sales and fitting" },
-  car_wash:     { icon:"Wsh", type:"Car Wash",           color:"#1d9e75", desc:"Wash queue management" },
-  auto_electrician: { icon:"Zap", type:"Auto Electrician", color:"#f59e0b", desc:"Electrical service bookings" },
-  panel_beater: { icon:"Bdy", type:"Panel Beater",       color:"#e24b4a", desc:"Bodywork bookings" },
+  garage:       { icon:"🔧", type:"Garage / Mechanic", color:"#e6821e", desc:"Shop standard bookings" },
+  parts_dealer: { icon:"🛒", type:"Parts Dealer",      color:"#378add", desc:"Lowest platform fee" },
+  tyre_shop:    { icon:"🛞", type:"Tyre Shop",          color:"#8b5cf6", desc:"Tyre sales and fitting" },
+  car_wash:     { icon:"🚿", type:"Car Wash",           color:"#1d9e75", desc:"Wash queue management" },
+  auto_electrician: { icon:"⚡", type:"Auto Electrician", color:"#f59e0b", desc:"Electrical service bookings" },
+  panel_beater: { icon:"🔨", type:"Panel Beater",       color:"#e24b4a", desc:"Bodywork bookings" },
 }
 
 export default function LandingPage() {
@@ -181,7 +181,7 @@ export default function LandingPage() {
             <div style={{ display:"flex",gap:16,flexWrap:"wrap" }}>
               {["Vehicle owners","Garages and shops","Mechanics","Drivers","Parts dealers"].map(l=>(
                 <div key={l} style={{ display:"flex",alignItems:"center",gap:5,fontSize:12,color:"#888" }}>
-                  <span style={{ color:"#16a34a",fontWeight:700 }}>ok</span>{l}
+                  <span style={{ color:"#16a34a",fontWeight:700 }}>✓</span>{l}
                 </div>
               ))}
             </div>
@@ -237,7 +237,7 @@ export default function LandingPage() {
             </div>
             <div className="lp-role-pad" style={{ padding:"2.5rem 2.5rem 2.5rem 0" }}>
               <div style={{ display:"inline-flex",alignItems:"center",gap:8,background:role.bg,border:"1px solid "+role.border,borderRadius:100,padding:"5px 14px",marginBottom:"1.25rem" }}>
-                <span style={{ fontSize:16,fontFamily:"Syne,sans-serif",fontWeight:800,color:role.color }}>{role.icon}</span>
+                <span style={{ fontSize:16 }}>{role.icon}</span>
                 <span style={{ fontSize:11,fontWeight:700,color:role.color,textTransform:"uppercase",letterSpacing:"0.08em" }}>{role.title}</span>
               </div>
               <h3 style={{ fontFamily:"Syne,sans-serif",fontSize:"clamp(24px,3vw,36px)",fontWeight:800,letterSpacing:"-0.5px",marginBottom:"0.75rem",lineHeight:1.1 }}>{role.tagline}</h3>
@@ -271,7 +271,7 @@ export default function LandingPage() {
           <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))",gap:12 }}>
             {SERVICES.map(s=>(
               <div key={s.name} className="svc-card" onClick={()=>nav("/auth")}>
-                <div style={{ fontSize:13,fontFamily:"Syne,sans-serif",fontWeight:800,color:"#e6821e",marginBottom:10 }}>{s.icon}</div>
+                <div style={{ fontSize:28,marginBottom:10 }}>{s.icon}</div>
                 <div style={{ fontWeight:700,fontSize:13,color:"#0f172a",marginBottom:4 }}>{s.name}</div>
                 <div style={{ fontSize:11,color:"#94a3b8",lineHeight:1.5 }}>{s.desc}</div>
               </div>
@@ -290,7 +290,7 @@ export default function LandingPage() {
           <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:12,marginBottom:"2.5rem" }}>
             {providers.map(p=>(
               <div key={p.type} className="prov-card">
-                <div style={{ fontSize:13,fontFamily:"Syne,sans-serif",fontWeight:800,color:p.color,marginBottom:12 }}>{p.icon}</div>
+                <div style={{ fontSize:32,marginBottom:12 }}>{p.icon}</div>
                 <div style={{ fontWeight:700,fontSize:14,color:"#0f172a",marginBottom:4 }}>{p.type}</div>
                 <div style={{ fontFamily:"Syne,sans-serif",fontSize:28,fontWeight:800,color:p.color,marginBottom:4 }}>{p.keep}</div>
                 <div style={{ fontSize:11,color:"#94a3b8",marginBottom:4 }}>you keep</div>
@@ -390,7 +390,7 @@ export default function LandingPage() {
           <div className="lp-test-grid" style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:16 }}>
             {TESTIMONIALS.map(t=>(
               <div key={t.name} className="lp-card">
-                <div style={{ display:"flex",gap:2,marginBottom:12 }}>{[1,2,3,4,5].map(i=><span key={i} style={{ color:"#f59e0b",fontSize:14 }}>star</span>)}</div>
+                <div style={{ display:"flex",gap:2,marginBottom:12 }}>{[1,2,3,4,5].map(i=><span key={i} style={{ color:"#f59e0b",fontSize:14 }}>★</span>)}</div>
                 <p style={{ fontSize:13,color:"#475569",lineHeight:1.75,marginBottom:"1.25rem",fontStyle:"italic" }}>{t.text}</p>
                 <div style={{ display:"flex",alignItems:"center",gap:10 }}>
                   <div style={{ width:40,height:40,borderRadius:"50%",background:t.color,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"Syne,sans-serif",fontSize:13,fontWeight:800,color:"#fff",flexShrink:0 }}>{t.initials}</div>
@@ -413,9 +413,9 @@ export default function LandingPage() {
           </div>
           <div style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:0,position:"relative" }}>
             <div style={{ position:"absolute",top:36,left:"16.66%",right:"16.66%",height:2,background:"#e6821e",zIndex:0,opacity:0.2 }}/>
-            {[{n:"01",icon:"User",title:"Create your account",desc:"Sign up free in under 2 minutes. Choose your role - customer, provider, driver or dealer."},{n:"02",icon:"Gear",title:"Set up your profile",desc:"Add your services, inventory or vehicle details. Our team reviews and verifies your profile before you go live."},{n:"03",icon:"Cash",title:"Start trading",desc:"Book services, receive jobs, sell parts or deliver - and get paid via M-Pesa instantly."}].map((s,i)=>(
+            {[{n:"01",icon:"👤",title:"Create your account",desc:"Sign up free in under 2 minutes. Choose your role - customer, provider, driver or dealer."},{n:"02",icon:"⚙️",title:"Set up your profile",desc:"Add your services, inventory or vehicle details. Our team reviews and verifies your profile before you go live."},{n:"03",icon:"💰",title:"Start trading",desc:"Book services, receive jobs, sell parts or deliver - and get paid via M-Pesa instantly."}].map((s,i)=>(
               <div key={s.n} style={{ textAlign:"center",padding:"0 1.5rem",position:"relative",zIndex:1 }}>
-                <div style={{ width:72,height:72,borderRadius:"50%",background:i===0?"#e6821e":"#fff",border:"2px solid "+(i===0?"#e6821e":"#e0e0e0"),display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 1.5rem",fontFamily:"Syne,sans-serif",fontSize:13,fontWeight:800,color:i===0?"#fff":"#e6821e",boxShadow:i===0?"0 4px 20px rgba(230,130,30,0.3)":"none" }}>{s.icon}</div>
+                <div style={{ width:72,height:72,borderRadius:"50%",background:i===0?"#e6821e":"#fff",border:"2px solid "+(i===0?"#e6821e":"#e0e0e0"),display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 1.5rem",fontSize:28,boxShadow:i===0?"0 4px 20px rgba(230,130,30,0.3)":"none" }}>{s.icon}</div>
                 <div style={{ fontFamily:"Syne,sans-serif",fontSize:11,fontWeight:800,color:"#e6821e",letterSpacing:"0.1em",marginBottom:8 }}>{s.n}</div>
                 <div style={{ fontWeight:700,fontSize:16,color:"#0f172a",marginBottom:8 }}>{s.title}</div>
                 <div style={{ fontSize:13,color:"#64748b",lineHeight:1.7 }}>{s.desc}</div>
