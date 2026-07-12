@@ -39,7 +39,7 @@ const FAQS = [
   { q:"How do I book a service?", a:"Search for a provider near you, select a service, pick a time and confirm. You will receive a notification once the provider confirms your booking." },
   { q:"What is GO Service?", a:"GO Service is 24/7 emergency roadside assistance. A certified mechanic comes to your exact GPS location when your car breaks down anywhere in Kenya. Just KES 500 callout fee." },
   { q:"Is payment secure?", a:"All payments are processed through Pesapal - M-Pesa, Visa and Mastercard - regulated by the Central Bank of Kenya." },
-  { q:"How do I register my business?", a:"Sign up, choose your business type, add your services or inventory and go live immediately. Registration is completely free." },
+  { q:"How do I register my business?", a:"Sign up, choose your business type and add your services or inventory. Our team verifies your profile before you go live. Registration is completely free." },
   { q:"How do mechanics get jobs?", a:"Mechanics are assigned jobs by their garage manager through the CCC platform. They receive real-time notifications and can track earnings from their own dashboard." },
   { q:"Can I track my mechanic?", a:"Yes. Once your booking is confirmed you can track your mechanic or driver live on the map inside the app in real time." },
   { q:"How does parts delivery work?", a:"Browse the parts marketplace, pay via M-Pesa or card, choose pickup or delivery. CCC drivers deliver parts across Kenya." },
@@ -162,7 +162,7 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      <section style={{ paddingTop:96,minHeight:"95vh",display:"flex",alignItems:"center",background:"linear-gradient(160deg,#fff8f0 0%,#fff 55%,#f0f9ff 100%)",position:"relative",overflow:"hidden" }}>
+      <section style={{ paddingTop:100,minHeight:"95vh",display:"flex",alignItems:"center",background:"linear-gradient(160deg,#fff8f0 0%,#fff 55%,#f0f9ff 100%)",position:"relative",overflow:"hidden" }}>
         <div style={{ position:"absolute",top:-100,right:-200,width:700,height:700,borderRadius:"50%",background:"radial-gradient(circle,rgba(230,130,30,0.07) 0%,transparent 70%)",pointerEvents:"none" }}/>
         <div className="lp-hero-grid" style={{ maxWidth:1200,margin:"0 auto",padding:isMobile?"2rem 1.25rem":"4rem 2rem",width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4rem",alignItems:"center" }}>
           <div>
@@ -331,7 +331,7 @@ export default function LandingPage() {
           </div>
           <div style={{ maxWidth:680,margin:"0 auto 2rem" }}>
             <div style={{ background:"#f8fafc",border:"2px solid #f0f0f0",borderRadius:16,padding:"10px 10px 10px 16px",display:"flex",alignItems:"center",gap:8,boxShadow:"0 4px 20px rgba(0,0,0,0.04)",marginBottom:10 }}>
-              <span style={{ fontSize:16,color:"#cbd5e1",flexShrink:0 }}>Src</span>
+              <span style={{ fontSize:16,color:"#cbd5e1",flexShrink:0 }}>🔍</span>
               <input type="text" placeholder="Search mechanics, parts, services..." style={{ flex:1,border:"none",outline:"none",background:"transparent",fontSize:14,color:"#0f172a",fontFamily:"DM Sans,sans-serif",minWidth:0 }} onKeyDown={e=>{ if(e.key==="Enter") nav("/auth") }}/>
               <button style={{ ...BP,padding:"10px 16px",fontSize:13,borderRadius:10,flexShrink:0 }} onClick={()=>nav("/auth")}>Search</button>
             </div>
@@ -353,8 +353,8 @@ export default function LandingPage() {
             <div style={{ position:"absolute",bottom:-60,left:-40,width:240,height:240,borderRadius:"50%",background:"rgba(230,130,30,0.04)",pointerEvents:"none" }}/>
             <div style={{ position:"relative",zIndex:1 }}>
               <div style={{ display:"flex",gap:12,justifyContent:"center",marginBottom:"1.5rem" }}>
-                {["Fix","Box","Wsh","Zap"].map((ic,i)=>(
-                  <div key={i} style={{ width:52,height:52,borderRadius:14,background:"#fff",border:"1.5px solid #f0f0f0",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"Syne,sans-serif",fontSize:13,fontWeight:800,color:"#e6821e",boxShadow:"0 4px 12px rgba(0,0,0,0.06)" }}>{ic}</div>
+                {["🔧","🛒","🚿","⚡"].map((ic,i)=>(
+                  <div key={i} style={{ width:52,height:52,borderRadius:14,background:"#fff",border:"1.5px solid #f0f0f0",display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,boxShadow:"0 4px 12px rgba(0,0,0,0.06)" }}>{ic}</div>
                 ))}
               </div>
               <h3 style={{ fontFamily:"Syne,sans-serif",fontSize:"clamp(22px,3vw,34px)",fontWeight:800,color:"#0f172a",marginBottom:"0.75rem",letterSpacing:"-0.5px" }}>
@@ -502,8 +502,8 @@ export default function LandingPage() {
               <div style={{ fontFamily:"Syne,sans-serif",fontSize:20,fontWeight:800,color:"#fff",marginBottom:10 }}>Car<span style={{ color:"#e6821e" }}>Care</span> Connect</div>
               <p style={{ fontSize:12,color:"#475569",lineHeight:1.75,maxWidth:220,marginBottom:"1.5rem" }}>Kenya most trusted automotive marketplace. Built for Kenyan roads. Scaling across Africa.</p>
               <div style={{ display:"flex",gap:8 }}>
-                {["WA","IG","TW","YT"].map((ic,idx)=>(
-                  <div key={idx} style={{ width:32,height:32,background:"#1a1a1a",borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontFamily:"Syne,sans-serif",fontWeight:700,color:"#e6821e",cursor:"pointer" }}>{ic}</div>
+                {[{ic:"WA",link:"https://wa.me/254113858966"},{ic:"IG",link:"#"},{ic:"TW",link:"#"},{ic:"YT",link:"#"}].map(({ic,link},idx)=>(
+                  <a key={idx} href={link} target="_blank" rel="noopener noreferrer" style={{ width:32,height:32,background:"#1a1a1a",borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontFamily:"Syne,sans-serif",fontWeight:700,color:"#e6821e",cursor:"pointer",textDecoration:"none" }}>{ic}</a>
                 ))}
               </div>
             </div>
