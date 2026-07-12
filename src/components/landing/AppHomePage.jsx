@@ -12,11 +12,11 @@ const SERVICES = [
   { emoji:"mech", name:"Mechanic" },
   { emoji:"sos", name:"Emergency" },
   { emoji:"parts", name:"Parts" },
-  { emoji:"car", name:"Concierge" },
-  { emoji:"wash", name:"Car Wash" },
-  { emoji:"diag", name:"Diagnostics" },
-  { emoji:"tyre", name:"Tyres" },
-  { emoji:"elec", name:"Electrical" },
+  { emoji:"🚗", name:"Concierge" },
+  { emoji:"🚿", name:"Car Wash" },
+  { emoji:"🔍", name:"Diagnostics" },
+  { emoji:"🛞", name:"Tyres" },
+  { emoji:"⚡", name:"Electrical" },
 ]
 
 const SVC_ICONS = {
