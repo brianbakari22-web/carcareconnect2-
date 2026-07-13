@@ -224,9 +224,9 @@ export default function ProviderAvailability() {
                   if (!day) return <div key={i}/>
                   const dateStr = getDateStr(day)
                   const status = getDayStatus(day)
-                  const isSelected = selectedDay===dateStr
-                  const isToday = dateStr===getDateStr(new Date().getDate())
-                  const count = bookingCounts[dateStr]||0
+                  const isSelected = selected===dateStr
+                  const todayStr = getDateStr(new Date().getDate())
+                  const isToday = dateStr===todayStr
                   return (
                     <div key={day} onClick={()=>selectDay(day)}
                       style={{ background:isSelected?"#e6821e":status.color, borderRadius:10, padding:"6px 3px", textAlign:"center", cursor:status.type==="past"?"default":"pointer", border:isToday?"2px solid #e6821e":"1px solid "+(isSelected?"#e6821e":"#eeeeee"), transition:"all 0.15s", boxShadow:isSelected?"0 4px 12px rgba(230,130,30,0.3)":"none", minHeight:48, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center" }}>
