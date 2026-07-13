@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { auditLog, AUDIT_ACTIONS } from "../../lib/auditLog"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
@@ -57,7 +58,9 @@ export default function AdminCommissions() {
     }
     setSaving(true)
     try {
-      const { error } = await supabase.from("commission_rates").update({
+      // Log commission change
+    await auditLog({ action: AUDIT_ACTIONS.COMMISSION_CHANGED, entityType: "commission_rate", entityId: editing, oldData: { platform_rate: rates.find(r=>r.id===editing)?.platform_rate }, newData: { platform_rate: platform, provider_rate: provider } })
+    const { error } = await supabase.from("commission_rates").update({
         platform_rate: platform,
         provider_rate: provider,
         description: form.description,

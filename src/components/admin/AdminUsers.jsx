@@ -1,6 +1,7 @@
 import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { auditLog, AUDIT_ACTIONS } from "../../lib/auditLog"
 import { useAuth } from "../../contexts/AuthContext"
 import AdminUserDetail from "./AdminUserDetail"
 import toast from "react-hot-toast"

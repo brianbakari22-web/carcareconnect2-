@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { supabase } from "../../lib/supabase"
+import { auditLog, AUDIT_ACTIONS } from "../../lib/auditLog"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import ChatWindow from "../shared/ChatWindow"
@@ -33,6 +34,7 @@ export default function ProviderChat() {
     hidePayload[col] = val
     const { error: hideError } = await supabase.from("hidden_conversations").upsert(hidePayload, { onConflict: col==="booking_id"?"user_id,booking_id":"user_id,inventory_id" })
     console.log("HIDE UPSERT result - payload:", JSON.stringify(hidePayload), "error:", JSON.stringify(hideError))
+    await auditLog({ action: AUDIT_ACTIONS.CONVERSATION_DELETED, entityType: col, entityId: val })
     setHidden(prev => [...prev, val])
     setMenuFor(null)
   }
