@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { supabase } from "../../lib/supabase"
+import { sanitizeAmount } from "../../lib/sanitize"
 import { getCurrentPosition } from "../../lib/geolocation"
 import PhotoManager from "../shared/PhotoManager"
 import { useAuth } from "../../contexts/AuthContext"
@@ -217,7 +218,7 @@ export default function CustomerGoService() {
         emergency_location_address: location.address,
         booking_date: new Date().toISOString().split("T")[0],
         booking_time: new Date().toTimeString().slice(0,5),
-        total_amount: selectedService.price,
+        total_amount: Math.min(sanitizeAmount(selectedService.price), 500), // GO service max 500
         go_callout_fee: 500,
         go_callout_paid: false,
         platform_commission: Number(selectedService.price)*0.15,

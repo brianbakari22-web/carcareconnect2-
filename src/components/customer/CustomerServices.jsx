@@ -1,5 +1,6 @@
 ﻿import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { sanitizeAmount } from "../../lib/sanitize"
 import { useSearchParams } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
@@ -131,7 +132,15 @@ export default function CustomerServices() {
       const promoDiscount = promoData?Number(promoData.discount):0
       const finalAmount = Math.max(0, baseAmount - voucherDiscount - promoDiscount)
 
-      const { data, error } = await supabase.from("bookings").insert({
+      // Validate amount against service price from DB
+    const { data: svcCheck } = await supabase.from("services").select("price").eq("id", selectedService?.id).maybeSingle()
+    const validatedAmount = svcCheck ? sanitizeAmount(svcCheck.price) : sanitizeAmount(baseAmount)
+    if (validatedAmount <= 0 || validatedAmount > 500000) {
+      toast.error("Invalid service amount")
+      setLoading(false)
+      return
+    }
+    const { data, error } = await supabase.from("bookings").insert({
         customer_id: user.id,
         provider_id: booking.provider_id,
         bundle_id: booking.bundle_id,
@@ -139,7 +148,7 @@ export default function CustomerServices() {
         service_category: "bundle",
         booking_date: bookForm.date,
         booking_time: bookForm.time,
-        total_amount: baseAmount,
+        total_amount: validatedAmount,
         platform_commission: platformAmount,
         provider_earnings: providerAmount,
         platform_commission_rate: platformRate,
