@@ -19,7 +19,6 @@ export default function CustomerChat() {
     longPressRef.current = setTimeout(() => setMenuFor(key), 500)
   }
   function cancelLongPress() { clearTimeout(longPressRef.current) }
-  function startLongPress(key) {
   async function deleteConversation(c) {
     const col = c.bookingId ? "booking_id" : c.listingId ? "listing_id" : "inventory_id"
     const val = c.bookingId || c.listingId || c.inventoryId
@@ -32,7 +31,6 @@ export default function CustomerChat() {
     const hidePayload = { user_id: user.id }
     hidePayload[col] = val
     supabase.from("hidden_conversations").upsert(hidePayload, { onConflict: "user_id,"+col }).then(({error}) => { if(error) console.error("Hide failed:", error.message) })
-  }
   }
 
   async function markAllRead(c) {
