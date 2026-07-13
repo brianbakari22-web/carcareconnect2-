@@ -34,7 +34,6 @@ export default function ProviderChat() {
     const { error: hideError } = await supabase.from("hidden_conversations").upsert(hidePayload, { onConflict: col==="booking_id"?"user_id,booking_id":"user_id,inventory_id" })
     console.log("HIDE UPSERT result - payload:", JSON.stringify(hidePayload), "error:", JSON.stringify(hideError))
     setHidden(prev => [...prev, val])
-    setHidden(prev => [...prev, val])
     setMenuFor(null)
   }
   async function markAllRead(c) {
@@ -156,7 +155,7 @@ export default function ProviderChat() {
         </div>
       )}
       <div style={{ fontFamily:"Syne", fontSize:isMobile?16:18, fontWeight:800, color:"#000000", marginBottom:4 }}>Customer Messages</div>
-      <div style={{ fontSize:11, color:"#777777", marginBottom:"1rem" }}>{conversations.filter(c=>!hidden.includes(c.bookingId||c.inventoryId)).length} active conversation{conversations.filter(c=>!hidden.includes(c.bookingId||c.inventoryId)).length!==1?"s":""}</div>
+      <div style={{ fontSize:11, color:"#777777", marginBottom:"1rem" }}>{conversations.length} active conversation{conversations.length!==1?"s":""}</div>
       {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&conversations.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}><div style={{ fontSize:32, marginBottom:10 }}>💬</div><div style={{ fontWeight:600, marginBottom:6 }}>No conversations yet</div><div style={{ fontSize:11, color:"#aaa" }}>Conversations appear here when customers book your services</div></div>}
       {/* Context menu overlay */}
@@ -187,7 +186,7 @@ export default function ProviderChat() {
         </div>
       )}
 
-      {conversations.filter(c=>!hidden.includes(c.bookingId||c.inventoryId)).map(c=>({...c})).map(c=>{
+      {conversations.map(c=>{
         const key = c.bookingId||c.inventoryId
         const isSelected = selected?.bookingId===c.bookingId
         const isMenuOpen = menuFor===key
