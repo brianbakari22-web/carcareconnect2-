@@ -11,12 +11,7 @@ export default function ProviderChat() {
   const [selected, setSelected] = useState(null)
   const [loading, setLoading] = useState(true)
   const [menuFor, setMenuFor] = useState(null) // conversation key for context menu
-  const [hidden, setHidden] = useState(() => {
-    try {
-      const stored = localStorage.getItem("provider_hidden_convs_"+user?.id)
-      return stored ? JSON.parse(stored) : []
-    } catch { return [] }
-  })
+  const [hidden, setHidden] = useState([])
   const longPressRef = useRef(null)
   
   function startLongPress(c) {
@@ -34,11 +29,12 @@ export default function ProviderChat() {
       .eq(col, val)
     console.log("delete result:", error)
     if (error) { console.error("Delete failed:", error.message); return }
-    setHidden(prev => {
-      const next = [...prev, val]
-      try { localStorage.setItem("provider_hidden_convs_"+user.id, JSON.stringify(next)) } catch {}
-      return next
-    })
+    // Save to DB so it persists across devices
+    await supabase.from("hidden_conversations").upsert({
+      user_id: user.id,
+      [col === "booking_id" ? "booking_id" : "inventory_id"]: val
+    }, { onConflict: col === "booking_id" ? "user_id,booking_id" : "user_id,inventory_id" })
+    setHidden(prev => [...prev, val])
     setMenuFor(null)
   }
   async function markAllRead(c) {
