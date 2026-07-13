@@ -12,6 +12,32 @@ export default function CustomerChat() {
   const isMobile = useIsMobile()
   const [conversations, setConversations] = useState([])
   const [selected, setSelected] = useState(null)
+  const [menuFor, setMenuFor] = useState(null)
+  const longPressRef = useRef(null)
+
+  function startLongPress(key) {
+    longPressRef.current = setTimeout(() => setMenuFor(key), 500)
+  }
+  function cancelLongPress() { clearTimeout(longPressRef.current) }
+
+  async function deleteConversation(c) {
+    const col = c.bookingId ? "booking_id" : c.listingId ? "listing_id" : "inventory_id"
+    const val = c.bookingId || c.listingId || c.inventoryId
+    await supabase.from("chat_messages").delete()
+      .eq(col, val)
+      .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
+    setConversations(prev => prev.filter(x => (x.bookingId||x.listingId||x.inventoryId) !== val))
+    setMenuFor(null)
+  }
+
+  async function markAllRead(c) {
+    const col = c.bookingId ? "booking_id" : c.listingId ? "listing_id" : "inventory_id"
+    const val = c.bookingId || c.listingId || c.inventoryId
+    await supabase.from("chat_messages").update({ is_read:true })
+      .eq(col, val).eq("receiver_id", user.id)
+    setConversations(prev => prev.map(x => (x.bookingId||x.listingId||x.inventoryId)===val ? {...x, unread:0} : x))
+    setMenuFor(null)
+  }
   const [loading, setLoading] = useState(true)
   const [searchParams] = useSearchParams()
 
