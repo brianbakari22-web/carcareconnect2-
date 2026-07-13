@@ -216,6 +216,33 @@ export default function CustomerChat() {
         </div>
       )}
 
+      {/* Context menu overlay */}
+      {menuFor&&(
+        <div style={{ position:"fixed", inset:0, zIndex:200, background:"rgba(0,0,0,0.5)" }} onClick={()=>setMenuFor(null)}>
+          <div style={{ position:"absolute", bottom:0, left:0, right:0, background:"#fff", borderRadius:"20px 20px 0 0", padding:"1.25rem", boxShadow:"0 -4px 24px rgba(0,0,0,0.15)" }}
+            onClick={e=>e.stopPropagation()}>
+            <div style={{ width:36, height:4, background:"#e0e0e0", borderRadius:2, margin:"0 auto 1.25rem" }}/>
+            <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#000", marginBottom:"1rem", textAlign:"center" }}>
+              {conversations.find(c=>(c.bookingId||c.listingId||c.inventoryId)===menuFor)?.otherUserName}
+            </div>
+            {[
+              { icon:"✓", label:"Mark all as read", color:"#1d9e75", action:()=>{ const c=conversations.find(x=>(x.bookingId||x.listingId||x.inventoryId)===menuFor); if(c) markAllRead(c) } },
+              { icon:"💬", label:"Open chat", color:"#e6821e", action:()=>{ const c=conversations.find(x=>(x.bookingId||x.listingId||x.inventoryId)===menuFor); if(c){ setSelected(c); setMenuFor(null) } } },
+              { icon:"🗑", label:"Delete conversation", color:"#e24b4a", action:()=>{ const c=conversations.find(x=>(x.bookingId||x.listingId||x.inventoryId)===menuFor); if(c) deleteConversation(c) } },
+            ].map(item=>(
+              <div key={item.label} onClick={item.action}
+                style={{ display:"flex", alignItems:"center", gap:14, padding:"1rem", borderRadius:12, cursor:"pointer", marginBottom:6, background:"#f8f8f8" }}>
+                <span style={{ fontSize:20 }}>{item.icon}</span>
+                <span style={{ fontSize:14, fontWeight:600, color:item.color }}>{item.label}</span>
+              </div>
+            ))}
+            <div onClick={()=>setMenuFor(null)}
+              style={{ display:"flex", alignItems:"center", justifyContent:"center", padding:"1rem", borderRadius:12, cursor:"pointer", background:"#f0f0f0", marginTop:4 }}>
+              <span style={{ fontSize:14, fontWeight:600, color:"#555" }}>Cancel</span>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Conversation list */}
       <div style={{ fontFamily:"Syne", fontSize:isMobile?16:18, fontWeight:800, color:"#000000", marginBottom:4 }}>Messages</div>
       <div style={{ fontSize:11, color:"#777777", marginBottom:"1rem" }}>{conversations.length} active booking{conversations.length!==1?"s":""}</div>
