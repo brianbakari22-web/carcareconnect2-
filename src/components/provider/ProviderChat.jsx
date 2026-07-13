@@ -121,13 +121,8 @@ export default function ProviderChat() {
           })
         }
       })
-    // Load hidden conversations from DB
-    const { data: hiddenData } = await supabase.from("hidden_conversations").select("booking_id,inventory_id").eq("user_id", user.id)
-    const hiddenKeys = (hiddenData||[]).map(h => h.booking_id || h.inventory_id)
-    setHidden(hiddenKeys)
     }
-
-    console.log("ProviderChat conversations:", convs.length, "with messages:", convs.filter(c=>c._hasMessages).length)
+    console.log("ProviderChat conversations:", convs.length, "hiddenKeys:", hiddenKeys, "user.id:", user.id)
     setConversations(convs.filter(c => !hiddenKeys.includes(c.bookingId||c.inventoryId)))
     setLoading(false)
   }
