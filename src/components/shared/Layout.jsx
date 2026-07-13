@@ -437,7 +437,7 @@ export default function Layout({ children }) {
   )
 
   return (
-    <div style={{ display:"flex", flexDirection:"row", minHeight:"100vh", background:theme.bg||"#ffffff", fontFamily:"DM Sans,sans-serif", color:theme.text||"#000000" }}>
+    <div style={{ display:"flex", flexDirection:"row", height:"100vh", background:theme.bg||"#ffffff", fontFamily:"DM Sans,sans-serif", color:theme.text||"#000000", overflow:"hidden" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
         .nav-btn { display:flex; align-items:center; gap:9px; padding:8px 1rem; cursor:pointer; font-size:13px; color:${theme.textFaint}; border:none; background:none; width:100%; text-align:left; border-right:2px solid transparent; transition:all 0.12s; white-space:nowrap; overflow:hidden; }
@@ -446,7 +446,7 @@ export default function Layout({ children }) {
         ::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-track { background:transparent; } ::-webkit-scrollbar-thumb { background:${theme.border}; border-radius:2px; }
       `}</style>
 
-      <div style={{ width:collapsed?52:210, background:theme.bgSecondary, borderRight:`1px solid ${theme.border}`, display:"flex", flexDirection:"column", transition:"width 0.2s", flexShrink:0, overflow:"hidden" }}>
+      <div style={{ width:collapsed?52:210, background:theme.bgSecondary, borderRight:`1px solid ${theme.border}`, display:"flex", flexDirection:"column", transition:"width 0.2s", flexShrink:0, overflow:"hidden", height:"100vh", position:"sticky", top:0 }}>
         <div style={{ padding:"1rem", display:"flex", alignItems:"center", gap:8, borderBottom:`1px solid ${theme.border}`, minHeight:52 }}>
           <div style={{ width:28, height:28, background:"#e6821e", borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", fontSize:14, flexShrink:0 }}>🚗</div>
           {!collapsed&&<span style={{ fontFamily:"Syne", fontSize:13, fontWeight:800, color:theme.text, whiteSpace:"nowrap" }}>Car<span style={{color:"#e6821e"}}>Care</span></span>}
@@ -500,14 +500,14 @@ export default function Layout({ children }) {
         </div>
       </div>
 
-      <div style={{ flex:1, display:"flex", flexDirection:"column", minWidth:0, overflow:"hidden" }}>
+      <div style={{ flex:1, display:"flex", flexDirection:"column", minWidth:0, overflow:"hidden", height:"100vh" }}>
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0.9rem 1.5rem", borderBottom:`1px solid ${theme.border}`, flexShrink:0, background:theme.bgSecondary }}>
           <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:700, color:theme.text }}>
             {getLabel(nav.find(n=>isActive(n))||{}) || "Dashboard"}
           </div>
           <div style={{ fontSize:11, color:theme.textFaint }}>{new Date().toDateString()}</div>
         </div>
-        <div style={{ flex:1, padding:"1.5rem", overflowY:"auto", background:theme.bg }}>{children}</div>
+        <div style={{ flex:1, padding:"1.5rem", overflowY:"auto", background:theme.bg, minHeight:0 }}>{children}</div>
         <AIAssistant />
       <EmergencySOS />
       </div>
