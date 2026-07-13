@@ -25,13 +25,13 @@ export default function ProviderChat() {
     if (!c.bookingId && !c.inventoryId) return
     const col = c.bookingId ? "booking_id" : "inventory_id"
     const val = c.bookingId || c.inventoryId
-    await supabase.from("chat_messages").delete()
+    const { error } = await supabase.from("chat_messages").delete()
       .eq(col, val)
-      .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
-    setConversations(prev => prev.filter(x => (x.bookingId||x.inventoryId) !== val))
+    console.log("delete result:", error)
+    if (error) { console.error("Delete failed:", error.message); return }
+    setHidden(prev => [...prev, val])
     setMenuFor(null)
   }
-  
   async function markAllRead(c) {
     const col = c.bookingId ? "booking_id" : "inventory_id"
     const val = c.bookingId || c.inventoryId
