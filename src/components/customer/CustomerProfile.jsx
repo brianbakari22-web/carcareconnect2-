@@ -1,6 +1,7 @@
 import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { sanitizeName, sanitizePhone, sanitizeFreeText } from "../../lib/sanitize"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import { exportUserData, downloadJSON, downloadCSV, downloadPDF } from "../../lib/dataExport"

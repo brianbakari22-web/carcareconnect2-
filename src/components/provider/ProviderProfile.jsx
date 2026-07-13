@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { sanitizeName, sanitizePhone, sanitizeFreeText } from "../../lib/sanitize"
 import { getCurrentPosition } from "../../lib/geolocation"
 import PhotoManager from "../shared/PhotoManager"
 import { useAuth } from "../../contexts/AuthContext"

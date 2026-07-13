@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import { Capacitor } from "@capacitor/core"
 
 import { supabase } from "../../lib/supabase"
+import { sanitizeName, sanitizeEmail, sanitizePhone, sanitizeFreeText } from "../../lib/sanitize"
 import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import toast from "react-hot-toast"

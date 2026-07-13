@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { sanitizeName, sanitizePhone, sanitizeFreeText } from "../../lib/sanitize"
 import { validateFile, sanitizeFilePath } from "../../lib/uploadValidation"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
