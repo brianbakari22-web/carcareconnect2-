@@ -35,21 +35,21 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'
-import { startKeepAlive } from './lib/keepAlive'
-startKeepAlive()
-
-ReactDOM.createRoot(document.getElementById('root')).render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <App />
+    <Sentry.ErrorBoundary fallback={
+      <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", height:"100vh", fontFamily:"DM Sans,sans-serif", padding:"2rem", textAlign:"center" }}>
+        <div style={{ fontSize:48, marginBottom:16 }}>😔</div>
+        <div style={{ fontSize:20, fontWeight:700, marginBottom:8 }}>Something went wrong</div>
+        <div style={{ fontSize:14, color:"#888", marginBottom:24 }}>Our team has been notified. Please refresh the page.</div>
+        <button onClick={()=>window.location.reload()} style={{ background:"#e6821e", color:"#fff", border:"none", borderRadius:12, padding:"12px 24px", fontSize:14, fontWeight:700, cursor:"pointer" }}>Refresh page</button>
+        <div style={{ marginTop:16, fontSize:12, color:"#aaa" }}>Need help? WhatsApp us: <a href="https://wa.me/254113858966" style={{ color:"#e6821e" }}>0113858966</a></div>
+      </div>
+    }>
+      <App />
+    </Sentry.ErrorBoundary>
   </React.StrictMode>
 )
-
-// force deploy 05/27/2026 22:03:27
-// cache bust 2026-05-29 04:16:40
-// cache bust 2026-05-29 04:22
-// force redeploy 05/29/2026 10:42:28
-// cache bust 05/30/2026 16:09:29
-
 // bust 20260530164845
 
 // bust 20260530205021
