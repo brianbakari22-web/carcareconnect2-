@@ -23,10 +23,11 @@ export default function CustomerChat() {
   async function deleteConversation(c) {
     const col = c.bookingId ? "booking_id" : c.listingId ? "listing_id" : "inventory_id"
     const val = c.bookingId || c.listingId || c.inventoryId
-    await supabase.from("chat_messages").delete()
-      .eq(col, val)
-      .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
-    setConversations(prev => prev.filter(x => (x.bookingId||x.listingId||x.inventoryId) !== val))
+    await supabase.from("chat_messages").delete().eq(col, val)
+    const hidePayload = { user_id: user.id }
+    hidePayload[col] = val
+    await supabase.from("hidden_conversations").upsert(hidePayload, { onConflict: "user_id,"+col })
+    setHidden(prev => [...prev, val])
     setMenuFor(null)
   }
 
@@ -51,6 +52,9 @@ export default function CustomerChat() {
   }, [user])
 
   async function load() {
+    const { data: hiddenData } = await supabase.from("hidden_conversations").select("booking_id,inventory_id,listing_id").eq("user_id", user.id)
+    const hiddenKeys = (hiddenData||[]).map(h => h.booking_id || h.inventory_id || h.listing_id)
+    setHidden(hiddenKeys)
     const { data: bookings } = await supabase.from("bookings")
       .select("id,service_name,provider_id,assigned_mechanic_id,driver_id,status,booking_date")
       .eq("customer_id", user.id)
@@ -141,7 +145,7 @@ export default function CustomerChat() {
       })
     }
     const allConvs = [...filtered, ...listingConvs].sort((a,b)=>new Date(b.lastTime||0)-new Date(a.lastTime||0))
-    setConversations(allConvs)
+    setConversations(allConvs.filter(c => !hiddenKeys.includes(c.bookingId||c.listingId||c.inventoryId)))
     setLoading(false)
     // Auto-open from notification redirect
     const bookingId = searchParams.get("booking")

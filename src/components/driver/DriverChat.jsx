@@ -21,10 +21,11 @@ export default function DriverChat() {
   async function deleteConversation(c) {
     const col = c.bookingId ? "booking_id" : "listing_id"
     const val = c.bookingId || c.listingId
-    await supabase.from("chat_messages").delete()
-      .eq(col, val)
-      .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
-    setConversations(prev => prev.filter(x => (x.bookingId||x.listingId) !== val))
+    await supabase.from("chat_messages").delete().eq(col, val)
+    const hidePayload = { user_id: user.id }
+    hidePayload[col] = val
+    await supabase.from("hidden_conversations").upsert(hidePayload, { onConflict: "user_id,"+col })
+    setHidden(prev => [...prev, val])
     setMenuFor(null)
   }
 
@@ -49,6 +50,9 @@ export default function DriverChat() {
   }, [user])
 
   async function load() {
+    const { data: hiddenData } = await supabase.from("hidden_conversations").select("booking_id,listing_id").eq("user_id", user.id)
+    const hiddenKeys = (hiddenData||[]).map(h => h.booking_id || h.listing_id)
+    setHidden(hiddenKeys)
     const convos = []
 
     // Booking conversations
@@ -123,7 +127,7 @@ export default function DriverChat() {
 
     // Sort by latest message
     convos.sort((a,b)=>new Date(b.lastTime)-new Date(a.lastTime))
-    setConversations(convos)
+    setConversations(convos.filter(c => !hiddenKeys.includes(c.bookingId||c.listingId)))
     setLoading(false)
   }
 
