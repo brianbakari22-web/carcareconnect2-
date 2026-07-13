@@ -222,7 +222,7 @@ export default function ChatWindow({ bookingId, listingId, inventoryId, claimId,
         message: hasContactInfo(messageText) ? "New message received" : messageText.length > 80 ? messageText.slice(0, 80) + "..." : messageText,
         type: "info"
       })
-    } catch(_) { /* notification send failed - non-critical */ }
+    } catch(err) { console.warn("Notification send failed (non-critical):", err?.message) }
 
 
 
