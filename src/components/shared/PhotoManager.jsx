@@ -1,11 +1,18 @@
 import { useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { validateFile, sanitizeFilePath } from "../../lib/uploadValidation"
 import toast from "react-hot-toast"
 
 export default function PhotoManager({ photos=[], onUpdate, bucket="provider-photos", userId, label="Photos", maxPhotos=10 }) {
   const [uploading, setUploading] = useState(false)
 
   async function uploadPhoto(file) {
+    // Validate file before upload
+    const validation = validateFile(file, "image")
+    if (!validation.valid) {
+      toast.error(validation.error)
+      return
+    }
     setUploading(true)
     try {
       const ext = file.name.split(".").pop()

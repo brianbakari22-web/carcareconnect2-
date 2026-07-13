@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { validateFile, sanitizeFilePath } from "../../lib/uploadValidation"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
 
@@ -10,6 +11,9 @@ export default function VideoUpload({ listingId, onUploaded }) {
   const [dragOver, setDragOver] = useState(false)
 
   async function uploadVideo(file) {
+    const _v = validateFile(file, "video")
+    if (!_v.valid) { toast.error(_v.error); return }
+
     if (!file) return
     if (!file.type.startsWith("video/")) return toast.error("Please upload a video file")
     if (file.size > 50*1024*1024) return toast.error("Video must be under 50MB")

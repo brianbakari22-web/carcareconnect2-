@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
+import { validateFile, sanitizeFilePath } from "../../lib/uploadValidation"
 import { useAuth } from "../../contexts/AuthContext"
 import ClaimChat from "../shared/ClaimChat"
 import { useLocation } from "react-router-dom"
@@ -86,6 +87,9 @@ export default function CustomerClaims() {
   }
 
   async function uploadEvidencePhoto(file) {
+    const _v = validateFile(file, "image")
+    if (!_v.valid) { toast.error(_v.error); return }
+
     const ext = file.name.split(".").pop()
     const path = `claims/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`
     const { error } = await supabase.storage.from("claim-evidence").upload(path, file)

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { supabase } from "../../lib/supabase"
+import { validateFile, sanitizeFilePath } from "../../lib/uploadValidation"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -97,6 +98,9 @@ export default function ProviderDashboard() {
   }
 
   async function uploadPhoto(e) {
+    const _v = validateFile(file, "image")
+    if (!_v.valid) { toast.error(_v.error); return }
+
     const file = e.target.files[0]
     if (!file) return
     if (file.size > 5*1024*1024) return toast.error("Photo must be under 5MB")

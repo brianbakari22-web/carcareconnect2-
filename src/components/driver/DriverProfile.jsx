@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { validateFile, sanitizeFilePath } from "../../lib/uploadValidation"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -96,6 +97,9 @@ export default function DriverProfile() {
   }
 
   async function uploadDocument(file, type) {
+    const _v = validateFile(file, "document")
+    if (!_v.valid) { toast.error(_v.error); return }
+
     if (!file) return null
     const ext = file.name.split(".").pop()
     const path = `${user.id}/${type}-${Date.now()}.${ext}`
