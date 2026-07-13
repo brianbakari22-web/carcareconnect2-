@@ -19,6 +19,24 @@ export default function DriverChat() {
   }
   function cancelLongPress() { clearTimeout(longPressRef.current) }
 
+  async function markAllRead(c) {
+    const col = c.bookingId ? "booking_id" : "listing_id"
+    const val = c.bookingId || c.listingId
+    if (!val) return
+    await supabase.from("chat_messages").update({ is_read:true }).eq(col, val).eq("receiver_id", user.id)
+    setConversations(prev => prev.map(x => x.id===c.id ? {...x, unread:0} : x))
+    setMenuFor(null)
+  }
+
+  async function markAllRead(c) {
+    const col = c.bookingId ? "booking_id" : "listing_id"
+    const val = c.bookingId || c.listingId
+    if (!val) return
+    await supabase.from("chat_messages").update({ is_read:true }).eq(col, val).eq("receiver_id", user.id)
+    setConversations(prev => prev.map(x => x.id===c.id ? {...x, unread:0} : x))
+    setMenuFor(null)
+  }
+
   async function deleteConversation(c) {
     const col = c.bookingId ? "booking_id" : "listing_id"
     const val = c.bookingId || c.listingId
