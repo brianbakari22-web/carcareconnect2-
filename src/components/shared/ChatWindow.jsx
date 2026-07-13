@@ -3,6 +3,7 @@ import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import toast from "react-hot-toast"
+import { applyRateLimit, RATE_LIMITS } from "../../lib/rateLimit"
 
 export default function ChatWindow({ bookingId, listingId, inventoryId, claimId, mechanicId, otherUserId, otherUserName, overrideUserId, onClose, title }) {
   const { user } = useAuth()

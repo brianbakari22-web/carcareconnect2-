@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { supabase } from "../../lib/supabase"
+import { applyRateLimit, RATE_LIMITS } from "../../lib/rateLimit"
 import { sanitizeAmount } from "../../lib/sanitize"
 import { getCurrentPosition } from "../../lib/geolocation"
 import PhotoManager from "../shared/PhotoManager"
