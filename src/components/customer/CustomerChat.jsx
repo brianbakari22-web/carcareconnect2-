@@ -12,6 +12,8 @@ export default function CustomerChat() {
   const isMobile = useIsMobile()
   const [conversations, setConversations] = useState([])
   const [menuFor, setMenuFor] = useState(null)
+  const [selected, setSelected] = useState(null)
+  const [hidden, setHidden] = useState([])
   const longPressRef = useRef(null)
 
   function startLongPress(key) {
