@@ -77,7 +77,7 @@ export default function CustomerChat() {
         unread,
       }
     })
-    const filtered = convs.filter(c=>c._hasMessages)
+    const filtered = convs // Show all bookings including those without messages yet
     // Load listing messages
     const { data: listingMsgs } = await supabase.from("chat_messages")
       .select("id,listing_id,sender_id,receiver_id,message,created_at,is_read")
@@ -193,7 +193,7 @@ export default function CustomerChat() {
       {!loading&&conversations.length===0&&(
         <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
           <div style={{ fontSize:32, marginBottom:10 }}>💬</div>
-          No active bookings to chat about
+          No conversations yet. Book a service to start chatting with providers.
         </div>
       )}
 
