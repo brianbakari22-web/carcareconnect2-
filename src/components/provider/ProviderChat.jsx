@@ -85,7 +85,8 @@ export default function ProviderChat() {
       })
     }
 
-    setConversations(convs.filter(c=>c._hasMessages))
+    console.log("ProviderChat conversations:", convs.length, "with messages:", convs.filter(c=>c._hasMessages).length)
+    setConversations(convs) // Show all bookings, not just those with messages
     setLoading(false)
   }
 
@@ -113,7 +114,7 @@ export default function ProviderChat() {
       <div style={{ fontFamily:"Syne", fontSize:isMobile?16:18, fontWeight:800, color:"#000000", marginBottom:4 }}>Customer Messages</div>
       <div style={{ fontSize:11, color:"#777777", marginBottom:"1rem" }}>{conversations.length} active conversation{conversations.length!==1?"s":""}</div>
       {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
-      {!loading&&conversations.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}><div style={{ fontSize:32, marginBottom:10 }}>💬</div>No active bookings</div>}
+      {!loading&&conversations.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}><div style={{ fontSize:32, marginBottom:10 }}>💬</div><div style={{ fontWeight:600, marginBottom:6 }}>No conversations yet</div><div style={{ fontSize:11, color:"#aaa" }}>Conversations appear here when customers book your services</div></div>}
       {conversations.map(c=>(
         <div key={c.bookingId} onClick={()=>setSelected(c)}
           style={{ background:"#ffffff", border:`1px solid ${selected?.bookingId===c.bookingId?"#378add40":"#ffffff"}`, borderRadius:10, padding:"0.9rem", marginBottom:8, cursor:"pointer" }}>
