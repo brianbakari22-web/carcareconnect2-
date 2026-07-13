@@ -11,6 +11,7 @@ export default function DriverChat() {
   const [conversations, setConversations] = useState([])
   const [selected, setSelected] = useState(null)
   const [menuFor, setMenuFor] = useState(null)
+  const [hidden, setHidden] = useState([])
   const longPressRef = useRef(null)
 
   function startLongPress(key) {

@@ -11,7 +11,6 @@ export default function CustomerChat() {
   const { t } = useLanguage()
   const isMobile = useIsMobile()
   const [conversations, setConversations] = useState([])
-  const [selected, setSelected] = useState(null)
   const [menuFor, setMenuFor] = useState(null)
   const longPressRef = useRef(null)
 
