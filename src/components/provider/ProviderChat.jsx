@@ -29,11 +29,11 @@ export default function ProviderChat() {
       .eq(col, val)
     console.log("delete result:", error)
     if (error) { console.error("Delete failed:", error.message); return }
-    // Save to DB so it persists across devices
-    await supabase.from("hidden_conversations").upsert({
-      user_id: user.id,
-      [col === "booking_id" ? "booking_id" : "inventory_id"]: val
-    }, { onConflict: col === "booking_id" ? "user_id,booking_id" : "user_id,inventory_id" })
+    const hidePayload = { user_id: user.id }
+    hidePayload[col] = val
+    const { error: hideError } = await supabase.from("hidden_conversations").upsert(hidePayload, { onConflict: col==="booking_id"?"user_id,booking_id":"user_id,inventory_id" })
+    console.log("HIDE UPSERT result - payload:", JSON.stringify(hidePayload), "error:", JSON.stringify(hideError))
+    setHidden(prev => [...prev, val])
     setHidden(prev => [...prev, val])
     setMenuFor(null)
   }
