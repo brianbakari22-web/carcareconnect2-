@@ -173,7 +173,7 @@ export default function ProviderChat() {
         </div>
       )}
 
-      {conversations.map(c=>{
+      {conversations.filter(c=>!hidden.includes(c.bookingId||c.inventoryId)).map(c=>({...c})).map(c=>{
         const key = c.bookingId||c.inventoryId
         const isSelected = selected?.bookingId===c.bookingId
         const isMenuOpen = menuFor===key
