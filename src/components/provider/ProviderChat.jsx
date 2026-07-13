@@ -58,6 +58,10 @@ export default function ProviderChat() {
   async function load() {
     const { data: hiddenData } = await supabase.from("hidden_conversations").select("booking_id,inventory_id").eq("user_id", user.id)
     const hiddenKeys = (hiddenData||[]).map(h => h.booking_id || h.inventory_id)
+    console.log("=== HIDDEN DEBUG ===")
+    console.log("1. hiddenData from DB:", JSON.stringify(hiddenData))
+    console.log("2. user.id used for query:", user.id)
+    console.log("3. hiddenKeys array:", hiddenKeys)
     setHidden(hiddenKeys)
     const { data: bookings } = await supabase.from("bookings")
       .select("id,service_name,customer_id,status,booking_date")
@@ -123,6 +127,9 @@ export default function ProviderChat() {
       })
     }
     console.log("ProviderChat conversations:", convs.length, "hiddenKeys:", hiddenKeys, "user.id:", user.id)
+    console.log("4. booking IDs in convs:", convs.map(c=>c.bookingId))
+    console.log("5. hiddenKeys at filter time:", hiddenKeys)
+    console.log("6. convs after filter:", convs.filter(c => !hiddenKeys.includes(c.bookingId||c.inventoryId)).length)
     setConversations(convs.filter(c => !hiddenKeys.includes(c.bookingId||c.inventoryId)))
     setLoading(false)
   }
