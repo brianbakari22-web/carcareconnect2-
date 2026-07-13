@@ -121,7 +121,7 @@ export default function ProviderChat() {
     }
 
     console.log("ProviderChat conversations:", convs.length, "with messages:", convs.filter(c=>c._hasMessages).length)
-    setConversations(convs) // Show all bookings, not just those with messages
+    setConversations(convs.filter(c => !hiddenKeys.includes(c.bookingId||c.inventoryId)))
     setLoading(false)
   }
 
