@@ -15,7 +15,10 @@ export default function CustomerChat() {
   const [selected, setSelected] = useState(null)
   const [hidden, setHidden] = useState([])
   const longPressRef = useRef(null)
-
+  function startLongPress(key) {
+    longPressRef.current = setTimeout(() => setMenuFor(key), 500)
+  }
+  function cancelLongPress() { clearTimeout(longPressRef.current) }
   function startLongPress(key) {
   async function deleteConversation(c) {
     const col = c.bookingId ? "booking_id" : c.listingId ? "listing_id" : "inventory_id"
