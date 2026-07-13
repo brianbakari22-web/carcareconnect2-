@@ -40,12 +40,15 @@ export default function DriverChat() {
   async function deleteConversation(c) {
     const col = c.bookingId ? "booking_id" : "listing_id"
     const val = c.bookingId || c.listingId
-    await supabase.from("chat_messages").delete().eq(col, val)
-    const hidePayload = { user_id: user.id }
-    hidePayload[col] = val
-    await supabase.from("hidden_conversations").upsert(hidePayload, { onConflict: "user_id,"+col })
+    // Hide instantly from UI
+    setConversations(prev => prev.filter(x => (x.bookingId||x.listingId) !== val))
     setHidden(prev => [...prev, val])
     setMenuFor(null)
+    // Delete from DB in background
+    supabase.from("chat_messages").delete().eq(col, val).then(({error}) => { if(error) console.error("Delete failed:", error.message) })
+    const hidePayload = { user_id: user.id }
+    hidePayload[col] = val
+    supabase.from("hidden_conversations").upsert(hidePayload, { onConflict: "user_id,"+col }).then(({error}) => { if(error) console.error("Hide failed:", error.message) })
   }
 
   async function markAllRead(c) {
