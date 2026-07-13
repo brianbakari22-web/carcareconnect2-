@@ -11,6 +11,7 @@ export default function ProviderChat() {
   const [selected, setSelected] = useState(null)
   const [loading, setLoading] = useState(true)
   const [menuFor, setMenuFor] = useState(null) // conversation key for context menu
+  const [hidden, setHidden] = useState([]) // locally hidden conversation keys
   const longPressRef = useRef(null)
   
   function startLongPress(c) {
@@ -141,7 +142,7 @@ export default function ProviderChat() {
         </div>
       )}
       <div style={{ fontFamily:"Syne", fontSize:isMobile?16:18, fontWeight:800, color:"#000000", marginBottom:4 }}>Customer Messages</div>
-      <div style={{ fontSize:11, color:"#777777", marginBottom:"1rem" }}>{conversations.length} active conversation{conversations.length!==1?"s":""}</div>
+      <div style={{ fontSize:11, color:"#777777", marginBottom:"1rem" }}>{conversations.filter(c=>!hidden.includes(c.bookingId||c.inventoryId)).length} active conversation{conversations.filter(c=>!hidden.includes(c.bookingId||c.inventoryId)).length!==1?"s":""}</div>
       {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&conversations.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}><div style={{ fontSize:32, marginBottom:10 }}>💬</div><div style={{ fontWeight:600, marginBottom:6 }}>No conversations yet</div><div style={{ fontSize:11, color:"#aaa" }}>Conversations appear here when customers book your services</div></div>}
       {/* Context menu overlay */}
