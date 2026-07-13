@@ -180,7 +180,7 @@ import AdminDriverVetting from "./components/admin/AdminDriverVetting"
 import DriverApplication from "./components/driver/DriverApplication"
 import AdminPaymentTracking from "./components/admin/AdminPaymentTracking"
 
-const ADMIN_SECRET = "ccc-admin-x7k9m2p4q8"
+const ADMIN_SECRET = import.meta.env.VITE_ADMIN_SECRET || "ccc-admin-x7k9m2p4q8"
 
 function Loader({ text }) {
   return (
