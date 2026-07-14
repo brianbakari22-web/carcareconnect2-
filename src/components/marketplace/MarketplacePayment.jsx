@@ -40,11 +40,12 @@ export default function MarketplacePayment({ offer, listing, onSuccess, onCancel
       if (txnError) throw txnError
 
       // Call M-Pesa edge function
+      const { data: { session } } = await supabase.auth.getSession()
       const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/daraja-stk-push", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc"
+          "Authorization": "Bearer " + session.access_token
         },
         body: JSON.stringify({
           amount: totalAmount,
@@ -57,17 +58,14 @@ export default function MarketplacePayment({ offer, listing, onSuccess, onCancel
 
       const order = await res.json()
 
-      if (order.redirect_url) {
-        // Update transaction with tracking ID
+      if (order.ResponseCode === "0") {
+        // Update transaction with Daraja checkout request ID
         await supabase.from("marketplace_transactions").update({
-          mpesa_code: order.order_tracking_id,
+          mpesa_code: order.CheckoutRequestID,
           status: "processing"
         }).eq("id", txn.id)
-
-        // Redirect to M-Pesa
-        window.location.href = order.redirect_url
       } else {
-        throw new Error(typeof order.error === "object" ? JSON.stringify(order.error) : order.error || "Payment failed")
+        throw new Error(order.errorMessage || order.ResponseDescription || "Payment failed. Try again.")
       }
     } catch(e) {
       toast.error(e.message || "Payment failed")

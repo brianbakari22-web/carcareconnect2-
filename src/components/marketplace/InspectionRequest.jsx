@@ -37,6 +37,7 @@ export default function InspectionRequest({ listing, onSuccess }) {
 
       if (error) throw error
 
+      const { data: { session } } = await supabase.auth.getSession()
       const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/daraja-stk-push", {
         method: "POST",
         headers: {
