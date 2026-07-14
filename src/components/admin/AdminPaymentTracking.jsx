@@ -7,6 +7,7 @@ export default function AdminPaymentTracking() {
   const isMobile = useIsMobile()
   const [bookings, setBookings] = useState([])
   const [goPayments, setGoPayments] = useState([])
+  const [mpesaTransactions, setMpesaTransactions] = useState([])
   const [marketplace, setMarketplace] = useState([])
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState("overview")
@@ -15,6 +16,12 @@ export default function AdminPaymentTracking() {
   useEffect(() => { load() }, [])
 
   async function load() {
+    // Load M-Pesa Daraja transactions
+    const { data: mpesaTxns } = await supabase.from("payment_transactions")
+      .select("*, profiles(first_name,last_name)")
+      .order("created_at", { ascending:false })
+      .limit(100)
+    setMpesaTransactions(mpesaTxns||[])
     const [{ data: bks }, { data: goPays }, { data: mkt }] = await Promise.all([
       supabase.from("bookings")
         .select("*, profiles!bookings_customer_id_fkey(first_name,last_name), provider:profiles!bookings_provider_id_fkey(first_name,last_name,business_name)")
@@ -62,9 +69,12 @@ export default function AdminPaymentTracking() {
   const partsRevenue = bookings.filter(b=>b.parts_approved).reduce((s,b)=>s+Number(b.parts_commission||0),0)
   const transportAllowanceDue = bookings.filter(b=>b.is_concierge&&!b.transport_allowance_paid&&b.status==="completed").length * 200
   const anticipatedRevenue = bookings.filter(b=>b.status!=="cancelled").reduce((s,b)=>s+Number(b.platform_commission||0),0)
+  const mpesaCollected = mpesaTransactions.filter(t=>t.status==="completed").reduce((s,t)=>s+Number(t.amount_paid||t.amount||0),0)
+  const mpesaPending = mpesaTransactions.filter(t=>t.status==="pending").length
+  const mpesaFailed = mpesaTransactions.filter(t=>t.status==="failed"||t.status==="cancelled").length
 
   const filtered = tab==="bookings" ? (filter==="all"?bookings:bookings.filter(b=>b.payment_status===filter)) :
-                   tab==="go" ? goPayments :
+                   tab==="mpesa" ? mpesaTransactions :
                    tab==="marketplace" ? marketplace : []
 
   const SC = { paid:"#1d9e75", pending:"#e6821e", disputed:"#e24b4a", processing:"#378add", partial:"#8b5cf6" }
