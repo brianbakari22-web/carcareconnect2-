@@ -5,41 +5,32 @@ Sentry.init({
   environment: import.meta.env.MODE,
   release: "carcareconnect@1.0.33",
   integrations: [
-    Sentry.browserTracingIntegration(),
-    Sentry.replayIntegration({
-      maskAllText: true,
-      blockAllMedia: false,
-    }),
+    Sentry.replayIntegration({ maskAllText: true, blockAllMedia: false }),
   ],
-  // Performance monitoring
-  tracesSampleRate: 0.0, // disabled for now
-  // Session replay - only on errors
+  tracesSampleRate: 0.0,
   replaysSessionSampleRate: 0.0,
   replaysOnErrorSampleRate: 1.0,
-  // Filter out noise
   ignoreErrors: [
+    "this.i.at is not a function",
+    "at is not a function",
+    "Non-Error promise rejection",
     "ResizeObserver loop limit exceeded",
-    "Non-Error promise rejection captured",
-    "Load failed",
-    "Failed to fetch",
-    "NetworkError",
+    "Network request failed",
   ],
   beforeSend(event) {
-    // Dont send events in development
     if (import.meta.env.DEV) return null
     return event
   },
 })
-
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App'
-import './index.css'
+import React from "react"
+import ReactDOM from "react-dom/client"
+import App from "./App"
+import "./index.css"
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Sentry.ErrorBoundary fallback={
       <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", height:"100vh", fontFamily:"DM Sans,sans-serif", padding:"2rem", textAlign:"center" }}>
-        <div style={{ fontSize:48, marginBottom:16 }}>😔</div>
+        <div style={{ fontSize:48, marginBottom:16 }}>&#128532;</div>
         <div style={{ fontSize:20, fontWeight:700, marginBottom:8 }}>Something went wrong</div>
         <div style={{ fontSize:14, color:"#888", marginBottom:24 }}>Our team has been notified. Please refresh the page.</div>
         <button onClick={()=>window.location.reload()} style={{ background:"#e6821e", color:"#fff", border:"none", borderRadius:12, padding:"12px 24px", fontSize:14, fontWeight:700, cursor:"pointer" }}>Refresh page</button>
@@ -50,8 +41,3 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     </Sentry.ErrorBoundary>
   </React.StrictMode>
 )
-// bust 20260530164845
-
-// bust 20260530205021
-
-// 20260531194122
