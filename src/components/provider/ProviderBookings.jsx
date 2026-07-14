@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { pushNotify } from "../../lib/pushNotify"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -46,7 +47,9 @@ export default function ProviderBookings() {
         load()
         const status = payload.new.status
         if (status === "cancelled") toast.error("Booking cancelled by customer")
-        else if (status === "confirmed") toast.success("Booking confirmed ✅")
+        else if (status === "confirmed") { toast.success("Booking confirmed ✅"); pushNotify.bookingConfirmed(booking.customer_id, booking.booking_number, booking.service_name) }
+    else if (status === "in-progress") pushNotify.bookingStarted(booking.customer_id, booking.booking_number, booking.service_name)
+    else if (status === "completed") { pushNotify.bookingCompleted(booking.customer_id, booking.booking_number); pushNotify.reviewReminder(booking.customer_id, booking.service_name) }
         else toast("Booking updated", { icon:"📋" })
       })
       .subscribe()

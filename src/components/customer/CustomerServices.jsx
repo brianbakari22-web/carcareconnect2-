@@ -1,5 +1,6 @@
 ﻿import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { pushNotify } from "../../lib/pushNotify"
 import { sanitizeAmount } from "../../lib/sanitize"
 import { useSearchParams } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthContext"
@@ -810,6 +811,9 @@ export default function CustomerServices() {
                   })
                 }
                 toast.success("Payment successful! Booking confirmed 🎉")
+        // Send push notifications
+        if(bk?.provider_id) pushNotify.newBooking(bk.provider_id, profile?.first_name||"Customer", bk.service_name)
+        pushNotify.bookingConfirmed(user.id, bk?.booking_number, bk?.service_name)
               } catch(e) {
                 console.error("onSuccess error:", e)
                 toast.success("Payment received! Your booking is being confirmed.")

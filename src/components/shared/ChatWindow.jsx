@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
+import { pushNotify } from "../../lib/pushNotify"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import toast from "react-hot-toast"
@@ -175,6 +176,8 @@ export default function ChatWindow({ bookingId, listingId, inventoryId, claimId,
     }
     const tempId = `temp-${Date.now()}`
     setText("")
+    // Push notification to receiver
+    pushNotify.newMessage(otherUserId, profile?.first_name||"Someone")
     setSending(true)
 
     const optimistic = {
