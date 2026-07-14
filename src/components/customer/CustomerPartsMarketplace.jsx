@@ -171,8 +171,7 @@ export default function CustomerPartsMarketplace() {
   }
 
   const cartTotal = cart.reduce((s,c)=>s+Number(c.price)*c.qty, 0)
-  const platformFeeDisplay = Math.min(Math.round(cartTotal * 0.02), 200) // shown in cart before DB fetch
-  const deliveryFee = zone ? Number(zone.base_fee) : 0
+  const deliveryFee = selectedZone && zones.length > 0 ? Number(zones.find(z=>z.id===selectedZone)?.base_fee||0) : 0
   const orderTotal = cartTotal + (fulfillment==="delivery"?deliveryFee:0) + platformFeeDisplay
   // Group cart by provider
   const cartByProvider = cart.reduce((acc,item)=>{
