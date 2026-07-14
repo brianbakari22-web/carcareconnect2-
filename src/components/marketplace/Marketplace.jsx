@@ -261,7 +261,14 @@ export default function Marketplace() {
               <div style={{ padding:"0.75rem" }}>
                 <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:4, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{l.title}</div>
                 <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(l.price).toLocaleString()}</div>
-                <div style={{ fontSize:11, color:"#888", marginTop:4 }}>{l.city}</div>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginTop:4 }}>
+                <div style={{ fontSize:11, color:"#888" }}>{l.city}</div>
+                {l.seller?.marketplace_rating > 0 && (
+                  <div style={{ fontSize:10, color:"#e6821e" }}>
+                    ⭐ {Number(l.seller?.marketplace_rating).toFixed(1)} ({l.seller?.marketplace_review_count})
+                  </div>
+                )}
+              </div>
               </div>
             </div>
           ))}

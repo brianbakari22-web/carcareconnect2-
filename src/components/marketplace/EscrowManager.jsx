@@ -11,6 +11,10 @@ export default function EscrowManager() {
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState("buying")
   const [disputing, setDisputing] = useState(null)
+  const [reviewTx, setReviewTx] = useState(null)
+  const [reviewRating, setReviewRating] = useState(5)
+  const [reviewText, setReviewText] = useState("")
+  const [submittingReview, setSubmittingReview] = useState(false)
   const [disputeReason, setDisputeReason] = useState("")
   const [disputeDesc, setDisputeDesc] = useState("")
 
@@ -59,6 +63,9 @@ export default function EscrowManager() {
       })
 
       toast.success("Receipt confirmed — payout requested for seller!")
+      // Prompt buyer to review seller
+      const reviewableTx = transactions.buying.find(t=>t.id===txId)
+      if (reviewableTx) setReviewTx(reviewableTx)
       load()
     } catch(err) { toast.error(err.message) }
   }
@@ -87,6 +94,26 @@ export default function EscrowManager() {
       setDisputeDesc("")
       load()
     } catch(err) { toast.error(err.message) }
+  }
+
+  async function submitReview() {
+    if (!reviewTx) return
+    setSubmittingReview(true)
+    try {
+      await supabase.from("marketplace_reviews").insert({
+        transaction_id: reviewTx.id,
+        listing_id: reviewTx.listing_id,
+        reviewer_id: user.id,
+        seller_id: reviewTx.seller_id,
+        rating: reviewRating,
+        review_text: reviewText.trim()
+      })
+      toast.success("Review submitted! Thank you 🌟")
+      setReviewTx(null)
+      setReviewRating(5)
+      setReviewText("")
+    } catch(err) { toast.error(err.message) }
+    finally { setSubmittingReview(false) }
   }
 
   function daysLeft(deadline) {
