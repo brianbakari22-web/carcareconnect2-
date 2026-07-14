@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { supabase } from "../../lib/supabase"
+import ProviderOnboarding from "./ProviderOnboarding"
 import { validateFile, sanitizeFilePath } from "../../lib/uploadValidation"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
@@ -30,6 +31,7 @@ export default function ProviderDashboard() {
   const [orders, setOrders] = useState([])
   const [orderStats, setOrderStats] = useState({ pending:0, revenue:0, items:0, lowStock:0 })
   const [loading, setLoading] = useState(true)
+  const [showOnboarding, setShowOnboarding] = useState(false)
   const [commissionDisplay, setCommissionDisplay] = useState({ platform:10, provider:90 })
   const [showPolicy, setShowPolicy] = useState(!localStorage.getItem("ccc_policy_acknowledged"))
   const [uploadingPhoto, setUploadingPhoto] = useState(false)
@@ -54,6 +56,10 @@ export default function ProviderDashboard() {
   )
   const config = TYPE_CONFIG[providerType] || TYPE_CONFIG.garage
   const isInventoryFocus = config.focus === "inventory"
+
+  useEffect(() => {
+    if(profile && !profile.onboarding_complete) setShowOnboarding(true)
+  }, [profile])
 
   useEffect(() => {
     if (!user) return
