@@ -58,11 +58,13 @@ export default function CustomerPartsMarketplace() {
   const [customerDetails, setCustomerDetails] = useState({ name:"", phone:"", email:"" })
   const [paymentMethod, setPaymentMethod] = useState("mpesa")
   const [lightbox, setLightbox] = useState({ open:false, photos:[], index:0 })
+  const [favourites, setFavourites] = useState(new Set())
 
   useEffect(() => {
     if (!user) return
     load()
     loadOrders()
+    loadFavourites()
     loadMyReviews()
     // Real-time inventory updates
     const sub = supabase.channel("marketplace-inventory")
@@ -83,6 +85,22 @@ export default function CustomerPartsMarketplace() {
         .then(({ data }) => { if (data) setSelectedItem(data) })
     }
   }, [searchParams, items])
+
+  async function loadFavourites() {
+    const { data } = await supabase.from("marketplace_likes").select("listing_id").eq("user_id", user.id)
+    setFavourites(new Set((data||[]).map(d=>d.listing_id)))
+  }
+
+  async function toggleFavourite(itemId) {
+    if(!user) return toast.error("Sign in to save items")
+    if(favourites.has(itemId)) {
+      await supabase.from("marketplace_likes").delete().eq("user_id",user.id).eq("listing_id",itemId)
+      setFavourites(prev => { const n=new Set(prev); n.delete(itemId); return n })
+    } else {
+      await supabase.from("marketplace_likes").insert({ user_id:user.id, listing_id:itemId })
+      setFavourites(prev => new Set([...prev, itemId]))
+    }
+  }
 
   async function load() {
     const { data: inv } = await supabase.from("inventory")

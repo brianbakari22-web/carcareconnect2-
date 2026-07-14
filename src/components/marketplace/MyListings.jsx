@@ -114,6 +114,11 @@ export default function MyListings() {
     setPhotoListing(photoListing===listing.id?null:listing.id)
   }
 
+  function shareListing(listing) {
+    const msg = encodeURIComponent("Check out this listing on Car Care Connect: " + listing.title + " - KES " + Number(listing.price).toLocaleString() + " https://carcareconnect.care/dashboard/marketplace")
+    window.open("https://wa.me/?text=" + msg, "_blank")
+  }
+
   async function deleteListing(id) {
     if (!confirm("Delete this listing?")) return
     await supabase.from("marketplace_listings").delete().eq("id",id).eq("seller_id",user.id)
