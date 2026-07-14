@@ -1,0 +1,3 @@
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/web-iCUbeYXu.js","assets/index-T0OUiO3b.js","assets/vendor-TTj4DRuz.js","assets/supabase-CwrFKnKJ.js","assets/ui-VlKIP8q1.js","assets/index-C3tPJB2X.css"])))=>i.map(i=>d[i]);
+import{r as t,_ as r}from"./index-T0OUiO3b.js";import{f as e}from"./synapse-akrKn89j.js";import"./vendor-TTj4DRuz.js";import"./supabase-CwrFKnKJ.js";import"./ui-VlKIP8q1.js";const a=t("Geolocation",{web:()=>r(()=>import("./web-iCUbeYXu.js"),__vite__mapDeps([0,1,2,3,4,5])).then(o=>new o.GeolocationWeb)});e();export{a as Geolocation};
+//# sourceMappingURL=index-Cvma94f_.js.map
