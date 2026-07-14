@@ -129,6 +129,7 @@ export default function ProviderDashboard() {
 
   return (
     <div style={{ margin:"-1rem", fontFamily:"DM Sans,sans-serif" }}>
+      {showOnboarding && <ProviderOnboarding onComplete={()=>{ setShowOnboarding(false); window.location.reload() }} />}
 
       {/* STYLE 1 - Colored header */}
       <div style={{ background:config.color, padding:"1.25rem 1.25rem 2.5rem" }}>
