@@ -1,10 +1,15 @@
 import { useState, useEffect } from "react"
 import { supabase } from "../../lib/supabase"
+import CustomerOnboarding from "./CustomerOnboarding"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import { useNavigate } from "react-router-dom"
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
+  useEffect(() => {
+    if(profile && !profile.onboarding_complete) setShowOnboarding(true)
+  }, [profile])
+
   useEffect(() => {
     const h = () => setIsMobile(window.innerWidth < 768)
     window.addEventListener("resize", h)
@@ -20,6 +25,7 @@ export default function CustomerDashboard() {
   const [stats, setStats] = useState({ bookings:0, pending:0, completed:0, points:0 })
   const [recentBookings, setRecentBookings] = useState([])
   const [loading, setLoading] = useState(true)
+  const [showOnboarding, setShowOnboarding] = useState(false)
   useEffect(() => { if (user) load() }, [user])
   async function load() {
     const [{ data: bookings }, { data: loyalty }] = await Promise.all([
@@ -53,6 +59,7 @@ export default function CustomerDashboard() {
   ]
   return (
     <div style={{ margin:"-1rem", fontFamily:"DM Sans,sans-serif" }}>
+      {showOnboarding && <CustomerOnboarding onComplete={()=>{ setShowOnboarding(false); window.location.reload() }} />}
       {/* Orange header */}
       <div style={{ background:"#e6821e", padding:"1.25rem 1.25rem 2.5rem" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>

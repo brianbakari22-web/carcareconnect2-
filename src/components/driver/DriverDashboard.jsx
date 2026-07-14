@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { supabase } from "../../lib/supabase"
+import DriverOnboarding from "./DriverOnboarding"
 import { useAuth } from "../../contexts/AuthContext"
 import { openExternal, openMapsNavigation } from "../../lib/openExternal"
 import toast from "react-hot-toast"
@@ -25,6 +26,7 @@ export default function DriverDashboard() {
   const [myJobs, setMyJobs] = useState([])
   const [customers, setCustomers] = useState({})
   const [stats, setStats] = useState({ today:0, total:0, deliveries:0, hoursOnline:0 })
+  const [showOnboarding, setShowOnboarding] = useState(false)
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState("available")
   const [declining, setDeclining] = useState(null)
@@ -33,6 +35,10 @@ export default function DriverDashboard() {
   const watchRef = useRef(null)
   const inactivityRef = useRef(null)
   const onlineStartRef = useRef(null)
+
+  useEffect(() => {
+    if(profile && !profile.onboarding_complete) setShowOnboarding(true)
+  }, [profile])
 
   useEffect(() => {
     if (!user) return
@@ -154,6 +160,7 @@ export default function DriverDashboard() {
 
   return (
     <div style={{ margin:"-1rem", fontFamily:"DM Sans,sans-serif" }}>
+      {showOnboarding && <DriverOnboarding onComplete={()=>{ setShowOnboarding(false); window.location.reload() }} />}
       {/* Green/dark header */}
       <div style={{ background:isOnline?"#1d9e75":"#000", padding:"1.25rem 1.25rem 2.5rem", transition:"background 0.3s" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
