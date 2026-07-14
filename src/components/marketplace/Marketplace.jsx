@@ -35,6 +35,8 @@ export default function Marketplace() {
   const [userLikes, setUserLikes] = useState(new Set())
   const [viewingSeller, setViewingSeller] = useState(null)
   const [similarListings, setSimilarListings] = useState([])
+  const [activeFilter, setActiveFilter] = useState(null)
+  const featured = listings.filter(l=>l.is_featured&&l.status==="active").slice(0,1)
   const [reportingListing, setReportingListing] = useState(null)
   const [reportReason, setReportReason] = useState("")
   const [submittingReport, setSubmittingReport] = useState(false)
@@ -361,6 +363,30 @@ export default function Marketplace() {
         </div>
       )}
 
+      {/* Filter chips */}
+      <div style={{ display:"flex", gap:8, overflowX:"auto", paddingBottom:4, margin:"0 0 12px", flexShrink:0 }}>
+        {[{label:"✓ Inspected",key:"inspected"},{label:"Negotiable",key:"negotiable"},{label:"Under KES 500K",key:"under500"},{label:"New arrivals",key:"new"},{label:"⭐ Top rated",key:"rated"}].map(f=>(
+          <button key={f.key} onClick={()=>setActiveFilter(prev=>prev===f.key?null:f.key)}
+            style={{ padding:"5px 12px", borderRadius:20, border:"0.5px solid "+(activeFilter===f.key?"#e6821e":"#ddd"), fontSize:12, cursor:"pointer", background:activeFilter===f.key?"#fff8f0":"#f5f5f5", color:activeFilter===f.key?"#e6821e":"#555", whiteSpace:"nowrap", flexShrink:0 }}>
+            {f.label}
+          </button>
+        ))}
+      </div>
+      {/* Featured banner */}
+      {listings.filter(l=>l.is_featured&&l.status==="active").length > 0 && (
+        <div onClick={()=>openListing(listings.filter(l=>l.is_featured&&l.status==="active")[0])}
+          style={{ background:"#fff8f0", border:"0.5px solid #e6821e40", borderRadius:12, padding:"12px 14px", marginBottom:12, display:"flex", alignItems:"center", gap:12, cursor:"pointer" }}>
+          <div style={{ width:52, height:52, borderRadius:8, background:"#f5f5f5", overflow:"hidden", flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
+            {listings.filter(l=>l.is_featured)[0]?.primary_photo ? <img src={listings.filter(l=>l.is_featured)[0].primary_photo} style={{ width:"100%", height:"100%", objectFit:"cover" }}/> : <div style={{ fontSize:24 }}>👑</div>}
+          </div>
+          <div style={{ flex:1, minWidth:0 }}>
+            <div style={{ fontSize:10, color:"#8b5cf6", fontWeight:500, marginBottom:2 }}>👑 FEATURED</div>
+            <div style={{ fontSize:13, fontWeight:500, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{listings.filter(l=>l.is_featured)[0]?.title}</div>
+            <div style={{ fontSize:13, color:"#e6821e", fontWeight:500 }}>KES {Number(listings.filter(l=>l.is_featured)[0]?.price||0).toLocaleString()}</div>
+          </div>
+          <div style={{ fontSize:12, color:"#e6821e" }}>View →</div>
+        </div>
+      )}
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(3,1fr)", gap:12 }}>
         {filtered.map(l=>{
           const badge = getSellerBadge(l.profiles)
@@ -391,6 +417,7 @@ export default function Marketplace() {
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
                   <div style={{ fontFamily:"Syne", fontSize:isMobile?13:15, fontWeight:800, color:"#e6821e" }}>KES {Number(l.price).toLocaleString()}</div>
                   <span style={{ fontSize:10, color:"#e24b4a" }}>❤️ {l.likes_count||0}</span>
+                  {l.seller?.marketplace_rating>0&&<span style={{ fontSize:10, color:"#e6821e" }}>⭐ {Number(l.seller.marketplace_rating).toFixed(1)}</span>}
                   <span style={{ fontSize:10, color:"#e24b4a" }}>❤️ {l.likes_count||0}</span>
                   {l.negotiable&&<span style={{ fontSize:9, color:"#1d9e75" }}>Negotiable</span>}
                   <div style={{ display:"flex", gap:8, marginTop:4 }}>
