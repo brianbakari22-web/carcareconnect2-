@@ -241,6 +241,34 @@ export default function Marketplace() {
   if (tab==="new_cars") return <NewCarMarketplace />
   if (tab==="parts_shop") return <CustomerPartsMarketplace />
   if (tab==="my_listings") return <MyNewCarListings />
+  if (tab==="saved") return (
+    <div>
+      <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, marginBottom:"1rem" }}>❤️ Saved Listings</div>
+      {userLikes.size === 0 ? (
+        <div style={{ textAlign:"center", padding:"3rem", color:"#888" }}>
+          <div style={{ fontSize:48, marginBottom:12 }}>🤍</div>
+          <div style={{ fontWeight:700, marginBottom:6 }}>No saved listings yet</div>
+          <div style={{ fontSize:13 }}>Tap the heart on any listing to save it</div>
+        </div>
+      ) : (
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))", gap:12 }}>
+          {listings.filter(l=>userLikes.has(l.id)).map(l=>(
+            <div key={l.id} onClick={()=>setSelected(l)} style={{ background:"#fff", border:"1px solid #eee", borderRadius:12, overflow:"hidden", cursor:"pointer" }}>
+              <div style={{ height:140, background:"#f5f5f5", display:"flex", alignItems:"center", justifyContent:"center", position:"relative" }}>
+                {l.primary_photo ? <img src={l.primary_photo} alt={l.title} style={{ width:"100%", height:"100%", objectFit:"cover" }}/> : <div style={{ fontSize:40 }}>{l.listing_type==="vehicle"?"🚗":"🔧"}</div>}
+                <button onClick={e=>{ e.stopPropagation(); toggleLike(l.id) }} style={{ position:"absolute", top:8, right:8, background:"rgba(255,255,255,0.9)", border:"none", borderRadius:"50%", width:32, height:32, cursor:"pointer", fontSize:16 }}>❤️</button>
+              </div>
+              <div style={{ padding:"0.75rem" }}>
+                <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:4, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{l.title}</div>
+                <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(l.price).toLocaleString()}</div>
+                <div style={{ fontSize:11, color:"#888", marginTop:4 }}>{l.city}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
 
   return (
     <div>
@@ -256,7 +284,7 @@ export default function Marketplace() {
       </div>
 
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
-        {[{k:"all",l:"All",icon:"🛒"},{k:"vehicle",l:"Vehicles",icon:"🚗"},{k:"new_cars",l:"New Cars",icon:"🆕"},{k:"parts_shop",l:"Parts & Accessories",icon:"⚙️"},{k:"my_listings",l:"My Listings",icon:"🏢"}].map(t=>(
+        {[{k:"all",l:"All",icon:"🛒"},{k:"vehicle",l:"Vehicles",icon:"🚗"},{k:"new_cars",l:"New Cars",icon:"🆕"},{k:"parts_shop",l:"Parts & Accessories",icon:"⚙️"},{k:"my_listings",l:"My Listings",icon:"🏢"},{k:"saved",l:"Saved",icon:"❤️"}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
             style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#f0f0f0", color:tab===t.k?"#fff":"#555", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
             {t.icon} {t.l}
@@ -329,6 +357,14 @@ export default function Marketplace() {
               <div style={{ height:isMobile?120:160, background:"#f5f5f5", position:"relative", display:"flex", alignItems:"center", justifyContent:"center" }}>
                 {l.is_featured&&<div style={{ position:"absolute", top:8, left:8, background:l.featured_tier==="premium"?"#8b5cf6":"#e6821e", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10 }}>{l.featured_tier==="premium"?"👑 PREMIUM":"⭐ FEATURED"}</div>}
                 {l.is_inspected&&<div style={{ position:"absolute", top:8, right:8, background:"#1d9e75", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10 }}>✓ INSPECTED</div>}
+                <button onClick={e=>{ e.stopPropagation(); toggleLike(l.id) }}
+                  style={{ position:"absolute", bottom:8, right:8, background:"rgba(255,255,255,0.9)", border:"none", borderRadius:"50%", width:32, height:32, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, boxShadow:"0 2px 8px rgba(0,0,0,0.15)" }}>
+                  {userLikes.has(l.id) ? "❤️" : "🤍"}
+                </button>
+                <button onClick={e=>{ e.stopPropagation(); toggleLike(l.id) }}
+                  style={{ position:"absolute", bottom:8, right:8, background:"rgba(255,255,255,0.9)", border:"none", borderRadius:"50%", width:32, height:32, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, boxShadow:"0 2px 8px rgba(0,0,0,0.15)" }}>
+                  {userLikes.has(l.id) ? "❤️" : "🤍"}
+                </button>
                 {l.primary_photo ? (
                   <img src={l.primary_photo} alt={l.title} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
                 ) : (
@@ -341,6 +377,8 @@ export default function Marketplace() {
                 {l.listing_type==="part"&&<div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>{l.part_category}</div>}
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
                   <div style={{ fontFamily:"Syne", fontSize:isMobile?13:15, fontWeight:800, color:"#e6821e" }}>KES {Number(l.price).toLocaleString()}</div>
+                  <span style={{ fontSize:10, color:"#e24b4a" }}>❤️ {l.likes_count||0}</span>
+                  <span style={{ fontSize:10, color:"#e24b4a" }}>❤️ {l.likes_count||0}</span>
                   {l.negotiable&&<span style={{ fontSize:9, color:"#1d9e75" }}>Negotiable</span>}
                   <div style={{ display:"flex", gap:8, marginTop:4 }}>
                     {(l.likes_count>0)&&<span style={{ fontSize:9, color:"#e24b4a" }}>❤️ {l.likes_count}</span>}
