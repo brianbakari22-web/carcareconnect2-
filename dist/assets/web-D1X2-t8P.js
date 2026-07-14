@@ -1,0 +1,2 @@
+import{W as a}from"./index-BCKk_C5v.js";import"./vendor-TTj4DRuz.js";import"./supabase-CwrFKnKJ.js";import"./ui-VlKIP8q1.js";class s extends a{async canShare(){return typeof navigator>"u"||!navigator.share?{value:!1}:{value:!0}}async share(e){if(typeof navigator>"u"||!navigator.share)throw this.unavailable("Share API not available in this browser");return await navigator.share({title:e.title,text:e.text,url:e.url}),{}}}export{s as ShareWeb};
+//# sourceMappingURL=web-D1X2-t8P.js.map
