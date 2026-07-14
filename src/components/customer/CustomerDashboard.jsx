@@ -7,10 +7,6 @@ import { useNavigate } from "react-router-dom"
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
   useEffect(() => {
-    if(profile && !profile.onboarding_complete) setShowOnboarding(true)
-  }, [profile])
-
-  useEffect(() => {
     const h = () => setIsMobile(window.innerWidth < 768)
     window.addEventListener("resize", h)
     return () => window.removeEventListener("resize", h)
