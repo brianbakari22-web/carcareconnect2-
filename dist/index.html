@@ -6,15 +6,18 @@
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <link rel="apple-touch-icon" href="/logo.svg" />
     <title>Car Care Connect — Your Car, Our Care, Simplified</title>
-    <meta name="description" content="Nairobi premier automotive service platform. Book car services, emergency roadside assistance, concierge vehicle delivery, and buy/sell vehicles. Available 24/7." />
-    <meta name="keywords" content="car service Nairobi, mechanic Nairobi, car repair Kenya, roadside assistance Nairobi" />
+    <meta name="description" content="Kenya premier automotive service platform. Starting in Nairobi, expanding across Kenya. Book trusted mechanics, emergency roadside assistance, car wash, spare parts marketplace. Pay via M-Pesa. Available 24/7." />
+    <meta name="keywords" content="car service Nairobi, mechanic Nairobi, car repair Kenya, roadside assistance Nairobi, garage Nairobi, auto repair Nairobi, car wash Nairobi, spare parts Nairobi, emergency mechanic Nairobi, car service Westlands, car service Kilimani, car service Karen, mobile mechanic Kenya, car parts marketplace Kenya, car service booking Kenya, mechanic Mombasa, car repair Kisumu, garage Nakuru, roadside assistance Kenya, M-Pesa car service" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://carcareconnect.care/" />
     <meta property="og:title" content="Car Care Connect — Your Car, Our Care, Simplified" />
-    <meta property="og:description" content="Nairobi premier automotive service platform. Book car services, emergency roadside assistance, and more." />
+    <meta property="og:description" content="Kenya automotive services platform. Book mechanics, garages, emergency roadside assistance in Nairobi. Expanding to Mombasa, Kisumu, Nakuru and more cities." />
     <meta property="og:image" content="https://carcareconnect.care/logo.svg" />
     <meta property="og:site_name" content="Car Care Connect" />
     <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:site" content="@carcareconnect" />
+    <meta property="twitter:title" content="Car Care Connect — #1 Car Service Platform in Nairobi" />
+    <meta property="twitter:description" content="Book trusted mechanics, garages and car wash services in Nairobi. Emergency roadside assistance 24/7. M-Pesa payments accepted." />
     <meta property="twitter:image" content="https://carcareconnect.care/logo.svg" />
     <meta name="theme-color" content="#e6821e" />
     <style>html,body,#root{background:#ffffff!important;}</style>
@@ -63,10 +66,11 @@
       "longitude": 36.8219
     },
     "openingHours": "Mo-Su 00:00-24:00",
-    "areaServed": {
-      "@type": "City",
-      "name": "Nairobi"
-    },
+    "areaServed": [
+      { "@type": "City", "name": "Nairobi", "containedInPlace": { "@type": "Country", "name": "Kenya" } },
+      { "@type": "State", "name": "Nairobi County" },
+      { "@type": "Country", "name": "Kenya" }
+    ],
     "sameAs": [],
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
@@ -102,6 +106,7 @@
 
   <!-- Canonical -->
   <link rel="canonical" href="https://carcareconnect.care/" />
+  <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 
   
   <script>
@@ -110,12 +115,41 @@
       e.preventDefault();
     });
   </script>
-    <script type="module" crossorigin src="/assets/index-CQGQ4740.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/vendor-TTj4DRuz.js">
-    <link rel="modulepreload" crossorigin href="/assets/supabase-CwrFKnKJ.js">
-    <link rel="modulepreload" crossorigin href="/assets/ui-VlKIP8q1.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-C3tPJB2X.css">
-  </head>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I book a mechanic in Nairobi?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Download the Car Care Connect app or visit carcareconnect.care. Search for mechanics near you, choose a service, and pay via M-Pesa. A verified mechanic will be at your location." }
+      },
+      {
+        "@type": "Question", 
+        "name": "Is Car Care Connect available outside Nairobi?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Car Care Connect is launching in Nairobi and expanding to Mombasa, Kisumu, Nakuru, Eldoret and other major Kenyan cities. We cover all major Nairobi suburbs including Westlands, Kilimani, Karen, Langata, Eastleigh, Ruaka and more." }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I pay for car services on Car Care Connect?",
+        "acceptedAnswer": { "@type": "Answer", "text": "All payments on Car Care Connect are made via M-Pesa. You receive an STK push on your phone, enter your PIN, and payment is confirmed instantly." }
+      },
+      {
+        "@type": "Question",
+        "name": "What is GO Service?",
+        "acceptedAnswer": { "@type": "Answer", "text": "GO Service is Car Care Connect emergency roadside assistance. A mechanic is dispatched to your location within 15 minutes for breakdowns, flat tyres, battery issues and more. Available 24/7 in Nairobi." }
+      }
+    ]
+  }
+  </script>
+  <script type="module" crossorigin src="/assets/index-znDZ1_Bc.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/vendor-TTj4DRuz.js">
+  <link rel="modulepreload" crossorigin href="/assets/supabase-CwrFKnKJ.js">
+  <link rel="modulepreload" crossorigin href="/assets/ui-VlKIP8q1.js">
+  <link rel="stylesheet" crossorigin href="/assets/index-C3tPJB2X.css">
+</head>
   <body>
     <script>
       try {
