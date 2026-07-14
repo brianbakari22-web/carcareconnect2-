@@ -25,7 +25,7 @@ export default function ProviderProfile() {
   const { t } = useLanguage()
   const isMobile = useIsMobile()
   const [form, setForm] = useState({ first_name:"", last_name:"", business_name:"", city:"", go_service_radius_km:"15" })
-  const [sensitive, setSensitive] = useState({ phone:"", email:"" })
+  const [sensitive, setSensitive] = useState({ phone:"", email:"", mpesa_number:"" })
   const [location, setLocation] = useState({ latitude:null, longitude:null, address:"" })
   const [saving, setSaving] = useState(false)
   const [locating, setLocating] = useState(false)
@@ -58,7 +58,7 @@ export default function ProviderProfile() {
     e.preventDefault()
     setSaving(true)
     try {
-      await supabase.from("profile_sensitive").update({ phone:sensitive.phone }).eq("id", user.id)
+      await supabase.from("profile_sensitive").update({ phone:sensitive.phone, mpesa_number:sensitive.mpesa_number }).eq("id", user.id)
       toast.success(t("saveChanges"))
     } catch(err) { toast.error(err.message) }
     finally { setSaving(false) }
@@ -225,6 +225,9 @@ export default function ProviderProfile() {
             <input style={{ ...inp, color:"#777777", cursor:"not-allowed" }} value={sensitive.email} readOnly/>
             <label style={lbl}>{t("phone")}</label>
             <input style={inp} placeholder="+254 700 000 000" value={sensitive.phone} onChange={e=>setSensitive(s=>({...s,phone:e.target.value}))}/>
+            <label style={{ fontSize:12, color:"#666", marginBottom:4, display:"block", marginTop:12 }}>M-Pesa Number (for payouts)</label>
+            <input style={inp} placeholder="07XX XXX XXX" value={sensitive.mpesa_number} onChange={e=>setSensitive(s=>({...s,mpesa_number:e.target.value}))}/>
+            <div style={{ fontSize:11, color:"#999", marginBottom:8 }}>This number receives your service payments automatically</div>
             <button type="submit" disabled={saving}
               style={{ background:saving?"#555555":"#378add", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
               {saving?t("saving"):t("saveChanges")}

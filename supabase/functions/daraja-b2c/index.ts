@@ -53,8 +53,14 @@ serve(async (req) => {
 
     // Get booking with provider details
     const { data: booking } = await supabase.from("bookings")
-      .select("*, provider:profiles!bookings_provider_id_fkey(id, phone, provider_type, first_name, last_name)")
+      .select("*, provider:profiles!bookings_provider_id_fkey(id, provider_type, first_name, last_name)")
       .eq("id", bookingId)
+      .single()
+
+    // Get provider phone from profile_sensitive
+    const { data: providerSensitive } = await supabase.from("profile_sensitive")
+      .select("phone, mpesa_number")
+      .eq("id", booking?.provider_id)
       .single()
 
     if (!booking) return new Response(JSON.stringify({ error: "Booking not found" }), { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } })
@@ -73,8 +79,9 @@ serve(async (req) => {
     const providerAmount = Math.round(totalAmount * providerRate)
     const platformAmount = Math.round(totalAmount * platformRate)
 
-    // Format provider phone
-    let phone = booking.provider?.phone?.replace(/[^0-9]/g, "") || ""
+    // Format provider phone - use mpesa_number first, fallback to phone
+    const rawPhone = providerSensitive?.mpesa_number || providerSensitive?.phone || ""
+    let phone = rawPhone.replace(/[^0-9]/g, "")
     if (phone.startsWith("0")) phone = "254" + phone.slice(1)
     if (!phone.startsWith("254")) phone = "254" + phone
     if (!phone || phone.length < 12) return new Response(JSON.stringify({ error: "Invalid provider phone" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
