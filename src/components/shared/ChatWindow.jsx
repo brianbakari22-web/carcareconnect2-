@@ -177,7 +177,7 @@ export default function ChatWindow({ bookingId, listingId, inventoryId, claimId,
     const tempId = `temp-${Date.now()}`
     setText("")
     // Push notification to receiver
-    pushNotify.newMessage(otherUserId, profile?.first_name||"Someone")
+    pushNotify.newMessage(otherUserId, user?.user_metadata?.first_name || "Someone")
     setSending(true)
 
     const optimistic = {
