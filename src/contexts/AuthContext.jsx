@@ -92,9 +92,7 @@ export function AuthProvider({ children }) {
   }, [])
 
   async function fetchProfile(userId, retries=0) {
-    try {
-      console.log("fetchProfile attempt", retries, userId)
-      const { data, error } = await supabase
+    try {      const { data, error } = await supabase
         .from("profiles")
         .select("*")
         .eq("id", userId)
