@@ -19,13 +19,16 @@ function useIsMobile() {
 }
 export default function CustomerDashboard() {
   const { user, profile } = useAuth()
+  const [showOnboarding, setShowOnboarding] = useState(false)
+  useEffect(() => {
+    if(profile && !profile.onboarding_complete) setShowOnboarding(true)
+  }, [profile])
   const { t } = useLanguage()
   const navigate = useNavigate()
   const isMobile = useIsMobile()
   const [stats, setStats] = useState({ bookings:0, pending:0, completed:0, points:0 })
   const [recentBookings, setRecentBookings] = useState([])
   const [loading, setLoading] = useState(true)
-  const [showOnboarding, setShowOnboarding] = useState(false)
   useEffect(() => { if (user) load() }, [user])
   async function load() {
     const [{ data: bookings }, { data: loyalty }] = await Promise.all([
