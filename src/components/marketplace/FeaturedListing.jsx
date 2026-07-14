@@ -68,7 +68,7 @@ export default function FeaturedListing({ listingId, onSuccess }) {
       sessionStorage.setItem("featured_tier", tier)
       sessionStorage.setItem("featured_days", days)
 
-      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/pesapal-payment", {
+      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/daraja-stk-push", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -86,7 +86,7 @@ export default function FeaturedListing({ listingId, onSuccess }) {
       const order = await res.json()
       if (order.redirect_url) {
         await supabase.from("featured_payments").update({
-          pesapal_tracking_id: order.order_tracking_id,
+          mpesa_code: order.order_tracking_id,
           status: "processing"
         }).eq("id", payment.id)
         window.location.href = order.redirect_url

@@ -37,7 +37,7 @@ export default function InspectionRequest({ listing, onSuccess }) {
 
       if (error) throw error
 
-      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/pesapal-payment", {
+      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/daraja-stk-push", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -102,7 +102,7 @@ export default function InspectionRequest({ listing, onSuccess }) {
 
       <button onClick={requestInspection} disabled={paying||!scheduled}
         style={{ width:"100%", background:paying||!scheduled?"#e0e0e0":"#e6821e", border:"none", borderRadius:10, color:paying||!scheduled?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:paying||!scheduled?"not-allowed":"pointer" }}>
-        {paying?"Connecting to Pesapal...":"Pay KES "+totalFee.toLocaleString()+" & Request Inspection →"}
+        {paying?"Connecting to M-Pesa...":"Pay KES "+totalFee.toLocaleString()+" & Request Inspection →"}
       </button>
     </div>
   )

@@ -84,7 +84,7 @@ export default function PrivacyPolicy() {
         <Section title="3. How We Use Your Information">
           <Li>To create and manage your account</Li>
           <Li>To connect customers with service providers</Li>
-          <Li>To process bookings and payments via Pesapal</Li>
+          <Li>To process bookings and payments via M-Pesa</Li>
           <Li>To enable live GPS tracking of drivers and mechanics</Li>
           <Li>To dispatch mechanics for GO Service emergency requests</Li>
           <Li>To calculate and process earnings and payouts</Li>
@@ -98,7 +98,7 @@ export default function PrivacyPolicy() {
         <Section title="4. How We Share Your Information">
           <div><strong>With Service Providers:</strong> When you book a service, your name and vehicle details are shared with the relevant provider.</div>
           <div style={{ marginTop:10 }}><strong>With Drivers:</strong> Your pickup/delivery address is shared with the assigned driver.</div>
-          <div style={{ marginTop:10 }}><strong>With Pesapal:</strong> All payments are processed exclusively by Pesapal Limited, regulated by the Central Bank of Kenya. Car Care Connect does not hold, store, or have custody of your funds at any time. We do not store your card details. Marketplace funds are held by Pesapal — not Car Care Connect.</div>
+          <div style={{ marginTop:10 }}><strong>With M-Pesa:</strong> All payments are processed exclusively by M-Pesa Limited, regulated by the Central Bank of Kenya. Car Care Connect does not hold, store, or have custody of your funds at any time. We do not store your card details. Marketplace funds are held by M-Pesa — not Car Care Connect.</div>
           <div style={{ marginTop:10 }}><strong>With Supabase:</strong> Our database and authentication provider stores your account data securely.</div>
           <div style={{ marginTop:12 }}><strong>We do NOT:</strong></div>
           <div style={{ marginTop:8 }}>
@@ -122,7 +122,7 @@ export default function PrivacyPolicy() {
           <Li>All data is transmitted over encrypted HTTPS connections</Li>
           <Li>Passwords are hashed and never stored in plain text</Li>
           <Li>Database access is protected by Row Level Security (RLS)</Li>
-          <Li>Payment processing is handled by Pesapal (PCI DSS compliant)</Li>
+          <Li>Payment processing is handled by M-Pesa (PCI DSS compliant)</Li>
           <Li>We conduct regular security reviews</Li>
           <Li>Access to user data is restricted to authorised staff only</Li>
         </Section>
@@ -195,7 +195,7 @@ export default function PrivacyPolicy() {
           <div>Our platform integrates with:</div>
           <div style={{ marginTop:8 }}>
             <Li>Supabase - database and authentication</Li>
-            <Li>Pesapal - payment processing, regulated by Central Bank of Kenya</Li>
+            <Li>M-Pesa - payment processing, regulated by Central Bank of Kenya</Li>
             <Li>Cloudflare - hosting and CDN</Li>
             <Li>Leaflet - mapping and location services</Li>
             <Li>Anthropic Claude - AI assistant feature</Li>

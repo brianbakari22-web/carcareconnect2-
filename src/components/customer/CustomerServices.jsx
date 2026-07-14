@@ -765,7 +765,7 @@ export default function CustomerServices() {
         )
       })}
 
-      {/* Pesapal Payment Modal */}
+      {/* M-Pesa Payment Modal */}
       {showPayment&&pendingBooking&&(
         <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.8)", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center", padding:"1rem" }}>
           <div style={{ width:"100%", maxWidth:420 }}>

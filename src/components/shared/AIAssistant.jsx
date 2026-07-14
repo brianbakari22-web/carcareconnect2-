@@ -31,11 +31,11 @@ COMMISSION STRUCTURE:
 
 BOOKING FLOW:
 Customer finds service -> Books online -> Provider confirms -> Service performed -> Customer reviews
-Payment via Pesapal (M-Pesa STK push, Visa/Mastercard cards, bank transfers)
+Payment via M-Pesa (M-Pesa STK push, Visa/Mastercard cards, bank transfers)
 
 GO SERVICE (Emergency):
 - Customer requests emergency roadside assistance
-- KES 500 mechanic callout fee paid upfront via Pesapal before request is sent
+- KES 500 mechanic callout fee paid upfront via M-Pesa before request is sent
 - Callout fee split: Mechanic KES 425 (85%), Platform KES 75 (15%)
 - This deters prank calls — only serious emergencies will pay upfront
 - Maximum 2 GO Service requests per day per customer
@@ -46,7 +46,7 @@ GO SERVICE (Emergency):
 - Provider receives loud alarm + browser push notification when new request arrives
 - After provider accepts: customer gets notification with mechanic name, phone, specialization
 - Service fee paid separately after service completion
-- Waiting screen auto-resumes after Pesapal payment redirect
+- Waiting screen auto-resumes after M-Pesa payment redirect
 - Emergency types: flat tire, dead battery, out of fuel, car wont start, overheating, towing, other
 
 CONCIERGE SERVICE:
@@ -162,7 +162,7 @@ DATA & PRIVACY POLICY:
 - All data stored in Supabase PostgreSQL with Row Level Security (RLS)
 - Users can export data as PDF/JSON/CSV from profile settings
 - Data never sold to third parties
-- Payment data handled by Pesapal (regulated by Central Bank of Kenya)
+- Payment data handled by M-Pesa (regulated by Central Bank of Kenya)
 - Driver documents stored in Supabase Storage (encrypted)
 - Data retention: active accounts keep all data, deleted accounts removed after 30 days
 - 2FA available for admin accounts
@@ -174,7 +174,7 @@ SUPPORT:
 - Categories: technical, billing, account, service quality, other
 
 PAYMENTS:
-- Pesapal payment gateway (replaces Flutterwave)
+- M-Pesa payment gateway (replaces Flutterwave)
 - Supports M-Pesa STK push, Visa/Mastercard cards, bank transfers
 - Processing fee: 2.5% on all transactions (split between customer, provider, platform)
 - KES currency only
@@ -259,7 +259,7 @@ INVENTORY & ORDERS SYSTEM:
 MARKETPLACE VEHICLE INSPECTION FLOW:
 - All vehicle listings require CCC inspection before going live
 - Parts and accessories: no inspection required
-- Flow: Seller lists -> Admin requests inspection -> Seller pays KES 500 via Pesapal -> Admin assigns inspector -> Inspector visits -> Pass/Fail decision -> If passed: CCC Inspected badge added -> Admin approves listing -> Goes live
+- Flow: Seller lists -> Admin requests inspection -> Seller pays KES 500 via M-Pesa -> Admin assigns inspector -> Inspector visits -> Pass/Fail decision -> If passed: CCC Inspected badge added -> Admin approves listing -> Goes live
 - Buyers cannot make offers or message seller until vehicle is inspected and approved
 - Inspection status shown on listing: Pending CCC Inspection / CCC Verified
 - Inspection fee: KES 500 (non-refundable)
@@ -275,12 +275,12 @@ VOUCHER SYSTEM:
 - One voucher per booking
 - Visible in Customer Payments -> My Vouchers tab
 
-PESAPAL PAYMENT DETAILS:
+MPESA PAYMENT DETAILS:
 - Live keys integrated (not sandbox)
 - Pending merchant contract signing for full activation
 - Current limit: KES 1,000 per transaction (test mode)
-- Full activation after contract signed with Pesapal
-- Contact: merchant@pesapal.com
+- Full activation after contract signed with M-Pesa
+- Contact: merchant@daraja.com
 - Processing fee split: Customer pays 1%, Provider pays 1%, Platform pays 1% = 3% total
 
 CONTACT BLOCKING:
@@ -322,7 +322,7 @@ PAYMENT TRACKING (Admin):
 - Admin can release payment to provider after service completion
 - Admin can hold/dispute payments
 - Admin can release marketplace escrow to seller
-- Pesapal tracking ID shown for each online payment
+- M-Pesa tracking ID shown for each online payment
 - Filter bookings by payment status: all, pending, paid, disputed
 - Anticipated revenue = all non-cancelled bookings platform commission
 
@@ -608,7 +608,7 @@ ADMIN PANEL: carcareconnect.care/ccc-admin-x7k9m2p4q8 (NEVER share this URL)
 SYSTEM DIAGNOSTICS: /admin-dashboard/diagnostics
 ADMIN INTELLIGENCE: Revenue forecasting, CLV analysis, demand heatmap, provider gap analysis
 FINANCIAL CONTROLS: Payments never released automatically, admin must manually release
-PAYMENT TRACKING: Full visibility of all platform payments, Pesapal tracking IDs
+PAYMENT TRACKING: Full visibility of all platform payments, M-Pesa tracking IDs
 EMPLOYEE MANAGEMENT: Admin can add/manage platform employees with salary structures
 PENALTY SYSTEM INTERNALS: Progressive violation system (warning > suspension > ban)
 COMMISSION BREAKDOWN: exact rates per provider type for admin reference
@@ -976,7 +976,7 @@ FOR ADMINS specifically:
 - SERVICE PHOTOS (July 2026): Providers upload up to 5 photos per service. Shown on customer service cards and in Content Hub.
 - PLAY STORE: care.carcareconnect.app, version 1.0.31, internal testing phase, ~11 days to production eligibility
 - BRS STATUS: 3 names submitted (NAIRO CAR CONNECT, KEN CAR CONNECT, CARCARE KE CONNECT) — awaiting approval
-- PESAPAL: Contract pending with Rachel Owino (rachel.owino@pesapal.com)
+- MPESA: Contract pending with Rachel Owino (rachel.owino@daraja.com)
 - TRADEMARK: KIPI application pending — Class 35 (business services), 37 (vehicle repair), 39 (transport)`
 }
 

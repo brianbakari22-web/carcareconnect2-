@@ -418,7 +418,7 @@ export function downloadPaymentsCSV(payments) {
     p.description||p.service_name||"",
     p.amount||p.total_amount||0,
     p.payment_status||p.status||"",
-    p.payment_method||"Pesapal"
+    p.payment_method||"M-Pesa"
   ])
   const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n")
   const blob = new Blob([csv], { type:"text/csv" })

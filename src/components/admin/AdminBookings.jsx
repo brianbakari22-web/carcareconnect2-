@@ -212,7 +212,7 @@ export default function AdminBookings() {
                   {l:"Platform commission", v:`KES ${Number(b.platform_commission||0).toLocaleString()}`},
                   {l:"Provider earnings", v:`KES ${Number(b.provider_earnings||0).toLocaleString()}`},
                   {l:"Is concierge", v:b.is_concierge?"Yes":"No"},
-                  {l:"Pesapal tracking", v:b.pesapal_tracking_id||"—"},
+                  {l:"M-Pesa tracking", v:b.mpesa_code||"—"},
                   {l:"Notes", v:b.notes||"—"},
                   {l:"Problem", v:b.problem_description||"—"},
                 ].map(f=>(

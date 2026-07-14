@@ -114,18 +114,18 @@ export default function AdminAIMonitor() {
       checks.supabase = { status:"ok", ms:Date.now()-start }
     } catch(e) { checks.supabase = { status:"error", ms:0 } }
 
-    // Check Pesapal - verify edge function is deployed
+    // Check M-Pesa - verify edge function is deployed
     try {
       const start = Date.now()
-      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/pesapal-payment", {
+      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/daraja-stk-push", {
         method:"POST",
         headers:{"Content-Type":"application/json","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc"},
         body:JSON.stringify({ping:true})
       })
       const ms = Date.now()-start
       // Any response means edge function is reachable
-      checks.pesapal = { status:"ok", ms }
-    } catch(e) { checks.pesapal = { status:"error", ms:0 } }
+      checks.daraja = { status:"ok", ms }
+    } catch(e) { checks.daraja = { status:"error", ms:0 } }
 
     // Check AI
     try {
@@ -337,7 +337,7 @@ export default function AdminAIMonitor() {
 
 API HEALTH:
 - Supabase database: ${apiHealth.supabase?.status} (${apiHealth.supabase?.ms}ms)
-- Pesapal payments: ${apiHealth.pesapal?.status} (${apiHealth.pesapal?.ms}ms) NOTE: Merchant contract pending - KES 1000 limit active until contract signed
+- M-Pesa payments: ${apiHealth.daraja?.status} (${apiHealth.daraja?.ms}ms) NOTE: Merchant contract pending - KES 1000 limit active until contract signed
 - AI assistant: ${apiHealth.ai?.status} (${apiHealth.ai?.ms}ms)
 
 PLATFORM STATUS RIGHT NOW:
@@ -535,7 +535,7 @@ Be specific and actionable. Max 300 words. Use bullet points.`
               <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:8, marginBottom:"1rem" }}>
                 {[
                   { l:"Supabase DB", k:"supabase" },
-                  { l:"Pesapal Pay", k:"pesapal" },
+                  { l:"M-Pesa Pay", k:"daraja" },
                   { l:"AI Assistant", k:"ai" },
                 ].map(s=>(
                   <div key={s.k} style={{ background:"#ffffff", borderRadius:8, padding:"0.6rem", textAlign:"center", border:"1px solid "+(report.platformData.api_health?.[s.k]?.status==="ok"?"#1d9e7540":"#e24b4a40") }}>
@@ -590,7 +590,7 @@ Be specific and actionable. Max 300 words. Use bullet points.`
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:6 }}>
                   {[
                     { f:"Customer booking", ok:report.platformData.total_bookings>0 },
-                    { f:"Payments (Pesapal)", ok:report.platformData.api_health?.pesapal?.status==="ok" },
+                    { f:"Payments (M-Pesa)", ok:report.platformData.api_health?.daraja?.status==="ok" },
                     { f:"GO Service", ok:report.platformData.total_go_requests>0 },
                     { f:"Marketplace", ok:report.platformData.total_listings>0 },
                     { f:"Driver verification", ok:report.platformData.verified_drivers>0 },

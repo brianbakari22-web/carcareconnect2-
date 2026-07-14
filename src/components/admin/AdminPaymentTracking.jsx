@@ -192,7 +192,7 @@ export default function AdminPaymentTracking() {
                 {b.is_emergency&&<span style={{ fontSize:10, padding:"2px 8px", borderRadius:8, background:"#fff5f5", color:"#e24b4a" }}>Emergency</span>}
                 {b.promo_code&&<span style={{ fontSize:10, padding:"2px 8px", borderRadius:8, background:"#f5f3ff", color:"#8b5cf6" }}>Promo: {b.promo_code}</span>}
                 {b.parts_needed&&<span style={{ fontSize:10, padding:"2px 8px", borderRadius:8, background:"#fff8f0", color:"#e6821e" }}>Parts needed</span>}
-                {b.pesapal_tracking_id&&<span style={{ fontSize:10, padding:"2px 8px", borderRadius:8, background:"#eff6ff", color:"#378add" }}>Pesapal tracked</span>}
+                {b.mpesa_code&&<span style={{ fontSize:10, padding:"2px 8px", borderRadius:8, background:"#eff6ff", color:"#378add" }}>M-Pesa tracked</span>}
               </div>
               <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
                 {b.status==="completed"&&b.payment_status!=="paid"&&(

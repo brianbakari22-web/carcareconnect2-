@@ -39,8 +39,8 @@ export default function MarketplacePayment({ offer, listing, onSuccess, onCancel
 
       if (txnError) throw txnError
 
-      // Call Pesapal edge function
-      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/pesapal-payment", {
+      // Call M-Pesa edge function
+      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/daraja-stk-push", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,11 +60,11 @@ export default function MarketplacePayment({ offer, listing, onSuccess, onCancel
       if (order.redirect_url) {
         // Update transaction with tracking ID
         await supabase.from("marketplace_transactions").update({
-          pesapal_tracking_id: order.order_tracking_id,
+          mpesa_code: order.order_tracking_id,
           status: "processing"
         }).eq("id", txn.id)
 
-        // Redirect to Pesapal
+        // Redirect to M-Pesa
         window.location.href = order.redirect_url
       } else {
         throw new Error(typeof order.error === "object" ? JSON.stringify(order.error) : order.error || "Payment failed")
@@ -107,7 +107,7 @@ export default function MarketplacePayment({ offer, listing, onSuccess, onCancel
 
       <button onClick={initPayment} disabled={paying||commissionRate==null}
         style={{ width:"100%", background:paying?"#555555":"#e6821e", border:"none", borderRadius:10, color:paying?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:paying?"not-allowed":"pointer", marginBottom:8 }}>
-        {paying ? "Connecting to Pesapal..." : "Pay KES " + totalAmount.toFixed(0) + " →"}
+        {paying ? "Connecting to M-Pesa..." : "Pay KES " + totalAmount.toFixed(0) + " →"}
       </button>
 
       <button onClick={onCancel}

@@ -128,17 +128,17 @@ export default function TermsOfService() {
           <Li>Customers have 24 hours after service completion to raise a vehicle condition dispute</Li>
         </Section>
 
-        <Section title="9. Payments — Processed Exclusively by Pesapal">
+        <Section title="9. Payments — Processed Exclusively by M-Pesa">
           <div style={{ fontWeight:600, color:"#000", marginBottom:8 }}>Car Care Connect does not hold, process, or manage customer funds.</div>
-          <div>All payments are processed exclusively by Pesapal Limited, a licensed payment service provider regulated by the Central Bank of Kenya. Car Care Connect never holds, stores, or has custody of any customer funds at any time.</div>
+          <div>All payments are processed exclusively by M-Pesa Limited, a licensed payment service provider regulated by the Central Bank of Kenya. Car Care Connect never holds, stores, or has custody of any customer funds at any time.</div>
           <div style={{ marginTop:12 }}>
             <Li>Accepted methods: M-Pesa, Visa, and Mastercard</Li>
-            <Li>Payment disputes are subject to Pesapal terms and dispute resolution</Li>
-            <Li>Car Care Connect is not liable for payment processing errors caused by Pesapal or the customer financial institution</Li>
+            <Li>Payment disputes are subject to M-Pesa terms and dispute resolution</Li>
+            <Li>Car Care Connect is not liable for payment processing errors caused by M-Pesa or the customer financial institution</Li>
             <Li>Processing fees are non-refundable in all circumstances</Li>
           </div>
           <Sub title="Marketplace Payments">
-            <Li>Pesapal — not Car Care Connect — is responsible for holding and disbursing marketplace funds</Li>
+            <Li>M-Pesa — not Car Care Connect — is responsible for holding and disbursing marketplace funds</Li>
             <Li>Car Care Connect facilitates order management but does not act as escrow agent or financial intermediary</Li>
             <Li>Buyers have 48 hours after confirmed delivery to raise a dispute</Li>
           </Sub>
@@ -212,7 +212,7 @@ export default function TermsOfService() {
           <Li>Users must first attempt resolution through the platform claims system</Li>
           <Li>Unresolved disputes may be escalated to carcareconnect254@gmail.com</Li>
           <Li>Car Care Connect may mediate at its discretion — mediation does not create legal liability</Li>
-          <Li>Payment disputes involving Pesapal may also be raised directly with Pesapal</Li>
+          <Li>Payment disputes involving M-Pesa may also be raised directly with M-Pesa</Li>
           <Li>These terms are governed by the laws of Kenya. Legal disputes are subject to Kenyan court jurisdiction</Li>
         </Section>
 
