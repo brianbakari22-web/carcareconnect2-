@@ -6,7 +6,7 @@ import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 import ChatWindow from "../shared/ChatWindow"
-import PesapalPayment from "../shared/PesapalPayment"
+import DarajaPayment from "../shared/DarajaPayment"
 import { downloadOrderReceipt, downloadOrdersCSV } from "../../lib/invoice"
 import PhotoLightbox from "../shared/PhotoLightbox"
 
@@ -56,7 +56,7 @@ export default function CustomerPartsMarketplace() {
   const [myReviews, setMyReviews] = useState({})
   const [checkoutStep, setCheckoutStep] = useState("cart") // cart, details, payment
   const [customerDetails, setCustomerDetails] = useState({ name:"", phone:"", email:"" })
-  const [paymentMethod, setPaymentMethod] = useState("pesapal")
+  const [paymentMethod, setPaymentMethod] = useState("mpesa")
   const [lightbox, setLightbox] = useState({ open:false, photos:[], index:0 })
 
   useEffect(() => {
@@ -235,7 +235,7 @@ export default function CustomerPartsMarketplace() {
         await supabase.from("notifications").insert({
           user_id: providerId,
           title: "New order received! 📦",
-          message: `${customerDetails.name} ordered ${items.length} item(s) — KES ${subtotal.toLocaleString()} (Paid online via Pesapal)`,
+          message: `${customerDetails.name} ordered ${items.length} item(s) — KES ${subtotal.toLocaleString()} (Paid online via M-Pesa)`,
           type: "success",
         })
 
@@ -468,7 +468,7 @@ export default function CustomerPartsMarketplace() {
       {showOrderPayment&&pendingOrder&&(
         <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.8)", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center", padding:"1rem" }}>
           <div style={{ width:"100%", maxWidth:420 }}>
-            <PesapalPayment
+            <DarajaPayment
               amount={pendingOrder.amount}
               bookingId={pendingOrder.id}
               customerEmail={user?.email}
@@ -608,7 +608,7 @@ export default function CustomerPartsMarketplace() {
                     style={{ width:"100%", background:ordering?"#ccc":"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:ordering?"not-allowed":"pointer" }}>
                     {ordering?"Placing order...":"Place order →"}
                   </button>
-              <div style={{ fontSize:11, color:"#888888", textAlign:"center", marginTop:8 }}>🔒 Secure payment via Pesapal</div>
+              <div style={{ fontSize:11, color:"#888888", textAlign:"center", marginTop:8 }}>🔒 Secure payment via M-Pesa</div>
                 </div>
               </>
             )}

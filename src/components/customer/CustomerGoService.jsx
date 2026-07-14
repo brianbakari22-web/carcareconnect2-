@@ -234,7 +234,7 @@ export default function CustomerGoService() {
         go_attempt_number: 1,
       }).select().single()
       if (error) throw error
-      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/pesapal-payment",{
+      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/daraja-stk-push",{
         method:"POST",
         headers:{"Content-Type":"application/json","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc"},
         body:JSON.stringify({amount:500,bookingId:bk.id,customerEmail:user.email||"",customerPhone:"",customerName:""})
@@ -606,7 +606,7 @@ export default function CustomerGoService() {
               <div style={{ fontSize:10, color:"#777777", marginTop:4 }}>Service fee paid after completion</div>
             </div>
             <button onClick={payCalloutFee} disabled={payingCallout} style={{ width:"100%", background:payingCallout?"#555555":"#e24b4a", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:payingCallout?"not-allowed":"pointer", marginBottom:8 }}>
-              {payingCallout?"Connecting to Pesapal...":"Pay KES 500 and Request Help"}
+              {payingCallout?"Sending M-Pesa prompt...":"Pay KES 500 and Request Help"}
             </button>
             <button onClick={()=>setShowDepositPayment(false)} style={{ width:"100%", background:"none", border:"1px solid #dddddd", borderRadius:10, color:"#666", fontSize:13, padding:"11px", cursor:"pointer" }}>
               Cancel
@@ -640,7 +640,7 @@ export default function CustomerGoService() {
             </div>
             <button onClick={payCalloutFee} disabled={payingCallout}
               style={{ width:"100%", background:payingCallout?"#555555":"#e24b4a", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:payingCallout?"not-allowed":"pointer", marginBottom:8 }}>
-              {payingCallout?"Connecting to Pesapal...":"Pay KES 500 & Request Help →"}
+              {payingCallout?"Sending M-Pesa prompt...":"Pay KES 500 & Request Help →"}
             </button>
             <button onClick={()=>setShowDepositPayment(false)}
               style={{ width:"100%", background:"none", border:"1px solid #dddddd", borderRadius:10, color:"#666", fontSize:13, padding:"11px", cursor:"pointer" }}>

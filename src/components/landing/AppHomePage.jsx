@@ -267,7 +267,7 @@ export default function AppHomePage() {
 
         {/* TRUST */}
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
-          {[{t:"Verified providers",d:"Every business manually vetted"},{t:"Secure payments",d:"M-Pesa and card via Pesapal"},{t:"Live tracking",d:"GPS every job, every time"},{t:"Service guarantee",d:"Claims reviewed fairly based on job completion stage"}].map(x=>(
+          {[{t:"Verified providers",d:"Every business manually vetted"},{t:"Secure payments",d:"M-Pesa and card via M-Pesa"},{t:"Live tracking",d:"GPS every job, every time"},{t:"Service guarantee",d:"Claims reviewed fairly based on job completion stage"}].map(x=>(
             <div key={x.t} className="trust-item">
               <span style={{ fontSize:16, fontWeight:800, color:"#16a34a", flexShrink:0 }}>&#10003;</span>
               <div>
@@ -300,7 +300,7 @@ export default function AppHomePage() {
           </div>
         </div>
 
-        <div style={{ textAlign:"center", fontSize:11, color:"#bbb", paddingBottom:"0.5rem" }}>2026 Car Care Connect Kenya Payments by Pesapal</div>
+        <div style={{ textAlign:"center", fontSize:11, color:"#bbb", paddingBottom:"0.5rem" }}>2026 Car Care Connect Kenya Payments via M-Pesa</div>
       </div>
     </div>
   )

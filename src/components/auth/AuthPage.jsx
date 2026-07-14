@@ -645,7 +645,7 @@ export default function AuthPage() {
 
       <div style={{ background:"#0a0a0a", padding:"1rem 1.25rem", textAlign:"center" }}>
         <div style={{ fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:800, color:"#fff", marginBottom:4 }}>Car<span style={{ color:"#e6821e" }}>Care</span> Connect</div>
-        <div style={{ fontSize:11, color:"#444" }}>2026 Kenya Payments by Pesapal Regulated by CBK</div>
+        <div style={{ fontSize:11, color:"#444" }}>2026 Kenya · Payments via M-Pesa · CBK Regulated</div>
       </div>
     </div>
   )

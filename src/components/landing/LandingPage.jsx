@@ -38,7 +38,7 @@ const TESTIMONIALS = [
 const FAQS = [
   { q:"How do I book a service?", a:"Search for a provider near you, select a service, pick a time and confirm. You will receive a notification once the provider confirms your booking." },
   { q:"What is GO Service?", a:"GO Service is 24/7 emergency roadside assistance. A certified mechanic comes to your exact GPS location when your car breaks down anywhere in Kenya. Just KES 500 callout fee." },
-  { q:"Is payment secure?", a:"All payments are processed through Pesapal - M-Pesa, Visa and Mastercard - regulated by the Central Bank of Kenya." },
+  { q:"Is payment secure?", a:"All payments are processed securely via M-Pesa (Daraja API) · CBK Regulated - regulated by the Central Bank of Kenya." },
   { q:"How do I register my business?", a:"Sign up, choose your business type and add your services or inventory. Our team verifies your profile before you go live. Registration is completely free." },
   { q:"How do mechanics get jobs?", a:"Mechanics are assigned jobs by their garage manager through the CCC platform. They receive real-time notifications and can track earnings from their own dashboard." },
   { q:"Can I track my mechanic?", a:"Yes. Once your booking is confirmed you can track your mechanic or driver live on the map inside the app in real time." },
@@ -531,7 +531,7 @@ export default function LandingPage() {
             ))}
           </div>
           <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:10 }}>
-            <div style={{ fontSize:11,color:"#1e293b" }}>2026 Car Care Connect Kenya Payments by Pesapal Regulated by CBK</div>
+            <div style={{ fontSize:11,color:"#1e293b" }}>2026 Car Care Connect Kenya Payments via M-Pesa · CBK Regulated</div>
             <div style={{ fontSize:11,color:"#1e293b" }}>Built in Kenya Scaling across Africa</div>
           </div>
         </div>

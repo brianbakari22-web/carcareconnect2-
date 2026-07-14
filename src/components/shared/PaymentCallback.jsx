@@ -24,7 +24,7 @@ export default function PaymentCallback() {
       const goProviderId = sessionStorage.getItem("go_provider_id")
       const isGoPayment = goBookingId === merchantRef
 
-      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/pesapal-verify", {
+      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/daraja-stk-push", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -67,7 +67,7 @@ export default function PaymentCallback() {
           sessionStorage.removeItem("featured_days")
           await Promise.all([
             supabase.from("marketplace_listings").update({ is_featured:true, featured_until:featuredUntil, featured_tier:featuredTier }).eq("id", featPayment.listing_id),
-            supabase.from("featured_payments").update({ status:"paid", pesapal_tracking_id:trackingId }).eq("id", featPayment.id),
+            supabase.from("featured_payments").update({ status:"paid", mpesa_code:trackingId }).eq("id", featPayment.id),
           ])
           setStatus("success")
           toast.success("Listing featured successfully!")
@@ -78,7 +78,7 @@ export default function PaymentCallback() {
         // 3. GO callout payment
         if (isGoPayment) {
           await supabase.from("bookings").update({
-            go_callout_paid: true, pesapal_tracking_id: trackingId, payment_status: "partial"
+            go_callout_paid: true, mpesa_code: trackingId, payment_status: "partial"
           }).eq("id", merchantRef)
           await supabase.from("go_service_requests").insert({
             booking_id: merchantRef, provider_id: goProviderId, status: "pending", attempt_number: 1,
@@ -103,7 +103,7 @@ export default function PaymentCallback() {
           .select("id").eq("id", merchantRef).maybeSingle()
         if (mktTx) {
           await supabase.from("marketplace_transactions").update({
-            payment_status: "paid", pesapal_tracking_id: trackingId
+            payment_status: "paid", mpesa_code: trackingId
           }).eq("id", merchantRef)
           setStatus("success")
           toast.success("Payment successful! Item secured in escrow.")
@@ -117,7 +117,7 @@ export default function PaymentCallback() {
         if (order) {
           await supabase.from("orders").update({
             payment_status: "paid",
-            pesapal_tracking_id: trackingId,
+            mpesa_code: trackingId,
             status: "pending"
           }).eq("id", merchantRef)
           await supabase.from("notifications").insert({
@@ -140,7 +140,7 @@ export default function PaymentCallback() {
 
         // 6. Regular booking payment (default)
         await supabase.from("bookings").update({
-          payment_status: "paid", pesapal_tracking_id: trackingId
+          payment_status: "paid", mpesa_code: trackingId
         }).eq("id", merchantRef)
         setStatus("success")
         toast.success("Payment successful!")
