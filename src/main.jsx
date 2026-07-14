@@ -3,7 +3,7 @@ import * as Sentry from "@sentry/react"
 Sentry.init({
   dsn: "https://bb9b46cfe39fa9487c311d992fb393d8@o4511727971794944.ingest.de.sentry.io/4511727990014032",
   environment: import.meta.env.MODE,
-  release: "carcareconnect@1.0.0",
+  release: "carcareconnect@1.0.33",
   integrations: [
     Sentry.browserTracingIntegration(),
     Sentry.replayIntegration({
@@ -12,7 +12,7 @@ Sentry.init({
     }),
   ],
   // Performance monitoring
-  tracesSampleRate: 0.1, // 10% of transactions
+  tracesSampleRate: 0.0, // disabled for now
   // Session replay - only on errors
   replaysSessionSampleRate: 0.0,
   replaysOnErrorSampleRate: 1.0,
