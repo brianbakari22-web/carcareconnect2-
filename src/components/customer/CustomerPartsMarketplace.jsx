@@ -169,8 +169,8 @@ export default function CustomerPartsMarketplace() {
     if (qty<=0) return removeFromCart(id)
     setCart(prev=>prev.map(c=>c.id===id?{...c,qty}:c))
   }
-
   const cartTotal = cart.reduce((s,c)=>s+Number(c.price)*c.qty, 0)
+  const platformFeeDisplay = Math.min(Math.round(cartTotal * 0.02), 200)
   const deliveryFee = selectedZone && zones.length > 0 ? Number(zones.find(z=>z.id===selectedZone)?.base_fee||0) : 0
   const orderTotal = cartTotal + (fulfillment==="delivery"?deliveryFee:0) + platformFeeDisplay
   // Group cart by provider
