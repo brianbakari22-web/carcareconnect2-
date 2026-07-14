@@ -6,7 +6,6 @@ import toast from "react-hot-toast"
 const STEPS = [
   { id:"welcome", title:"Welcome to CCC!", icon:"welcome" },
   { id:"profile", title:"Complete your profile", icon:"profile" },
-  { id:"services", title:"Add your services", icon:"services" },
   { id:"location", title:"Set your location", icon:"location" },
   { id:"mpesa", title:"Add M-Pesa number", icon:"mpesa" },
   { id:"done", title:"You are ready!", icon:"done" },
@@ -17,9 +16,7 @@ export default function ProviderOnboarding({ onComplete }) {
   const [step, setStep] = useState(0)
   const [form, setForm] = useState({ business_name:profile?.business_name||"", city:profile?.city||"", address:"", mpesa_number:"", latitude:null, longitude:null })
   const [saving, setSaving] = useState(false)
-  const [serviceForm, setServiceForm] = useState({ name:"", price:"", duration_minutes:60 })
-  const [services, setServices] = useState([])
-  const [addingService, setAddingService] = useState(false)
+
 
   const inp = { width:"100%", padding:"12px 14px", borderRadius:10, border:"1px solid #e0e0e0", fontSize:14, outline:"none", marginBottom:12, boxSizing:"border-box", fontFamily:"DM Sans,sans-serif" }
 
@@ -33,17 +30,7 @@ export default function ProviderOnboarding({ onComplete }) {
     finally { setSaving(false) }
   }
 
-  async function addService() {
-    if(!serviceForm.name||!serviceForm.price) return toast.error("Name and price required")
-    setAddingService(true)
-    try {
-      await supabase.from("services").insert({ provider_id:user.id, name:serviceForm.name, price:Number(serviceForm.price), duration_minutes:Number(serviceForm.duration_minutes), is_active:true })
-      setServices(prev=>[...prev, serviceForm])
-      setServiceForm({ name:"", price:"", duration_minutes:60 })
-      toast.success("Service added!")
-    } catch(e) { toast.error(e.message) }
-    finally { setAddingService(false) }
-  }
+
 
   async function saveLocation() {
     setSaving(true)
@@ -80,7 +67,7 @@ export default function ProviderOnboarding({ onComplete }) {
         
         {/* Progress bar */}
         <div style={{ height:4, background:"#f0f0f0", borderRadius:"20px 20px 0 0", overflow:"hidden" }}>
-          <div style={{ height:"100%", background:"#e6821e", width:((step/5)*100)+"%", transition:"width 0.3s" }}/>
+          <div style={{ height:"100%", background:"#e6821e", width:((step/4)*100)+"%", transition:"width 0.3s" }}/>
         </div>
 
         {/* Step indicator */}
@@ -135,28 +122,6 @@ export default function ProviderOnboarding({ onComplete }) {
 
           {step===2&&(
             <div>
-              <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, marginBottom:4 }}>Add your services</div>
-              <div style={{ fontSize:13, color:"#888", marginBottom:"1.25rem" }}>What do you offer? Add more later from your dashboard.</div>
-              {services.map((s,i)=>(
-                <div key={i} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:8, padding:"8px 12px", marginBottom:6, display:"flex", justifyContent:"space-between", fontSize:13 }}>
-                  <span style={{ fontWeight:600 }}>{s.name}</span>
-                  <span style={{ color:"#e6821e" }}>KES {Number(s.price).toLocaleString()}</span>
-                </div>
-              ))}
-              <input style={inp} placeholder="Service name (e.g. Oil Change)" value={serviceForm.name} onChange={e=>setServiceForm(f=>({...f,name:e.target.value}))}/>
-              <input style={inp} type="number" placeholder="Price in KES" value={serviceForm.price} onChange={e=>setServiceForm(f=>({...f,price:e.target.value}))}/>
-              <button onClick={addService} disabled={addingService||!serviceForm.name||!serviceForm.price}
-                style={{ width:"100%", background:"#f0fdf4", border:"1px solid #1d9e75", borderRadius:10, color:"#1d9e75", fontSize:14, fontWeight:600, padding:"10px", cursor:"pointer", marginBottom:12 }}>
-                {addingService?"Adding...":"Add service"}
-              </button>
-              <button onClick={()=>setStep(3)} style={{ width:"100%", background:services.length>0?"#e6821e":"#f5f5f5", border:"none", borderRadius:10, color:services.length>0?"#fff":"#555", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px", cursor:"pointer" }}>
-                {services.length>0?"Continue":"Skip for now"}
-              </button>
-            </div>
-          )}
-
-          {step===3&&(
-            <div>
               <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, marginBottom:4 }}>Your location</div>
               <div style={{ fontSize:13, color:"#888", marginBottom:"1.25rem" }}>Help customers find your garage on the map.</div>
               <button onClick={detectLocation} style={{ width:"100%", background:"#eff6ff", border:"1px solid #378add40", borderRadius:10, color:"#378add", fontSize:14, fontWeight:600, padding:"11px", cursor:"pointer", marginBottom:12 }}>
@@ -165,7 +130,7 @@ export default function ProviderOnboarding({ onComplete }) {
               {form.latitude&&<div style={{ fontSize:12, color:"#1d9e75", marginBottom:8 }}>Location detected: {form.latitude.toFixed(4)}, {form.longitude.toFixed(4)}</div>}
               <input style={inp} placeholder="Or enter address: e.g. Westlands, Nairobi" value={form.address} onChange={e=>setForm(f=>({...f,address:e.target.value}))}/>
               <div style={{ display:"flex", gap:8 }}>
-                <button onClick={()=>setStep(4)} style={{ flex:1, background:"#f5f5f5", border:"none", borderRadius:10, color:"#555", fontSize:13, padding:"12px", cursor:"pointer" }}>Skip</button>
+                <button onClick={()=>setStep(3)} style={{ flex:1, background:"#f5f5f5", border:"none", borderRadius:10, color:"#555", fontSize:13, padding:"12px", cursor:"pointer" }}>Skip</button>
                 <button onClick={saveLocation} disabled={saving} style={{ flex:2, background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px", cursor:"pointer" }}>
                   {saving?"Saving...":"Save and continue"}
                 </button>
@@ -173,7 +138,7 @@ export default function ProviderOnboarding({ onComplete }) {
             </div>
           )}
 
-          {step===4&&(
+          {step===3&&(
             <div>
               <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, marginBottom:4 }}>M-Pesa number</div>
               <div style={{ fontSize:13, color:"#888", marginBottom:"1.25rem" }}>Where you receive payments from bookings.</div>
@@ -182,7 +147,7 @@ export default function ProviderOnboarding({ onComplete }) {
               </div>
               <input style={inp} type="tel" placeholder="07XX XXX XXX" value={form.mpesa_number} onChange={e=>setForm(f=>({...f,mpesa_number:e.target.value}))}/>
               <div style={{ display:"flex", gap:8 }}>
-                <button onClick={()=>setStep(5)} style={{ flex:1, background:"#f5f5f5", border:"none", borderRadius:10, color:"#555", fontSize:13, padding:"12px", cursor:"pointer" }}>Skip</button>
+                <button onClick={()=>setStep(4)} style={{ flex:1, background:"#f5f5f5", border:"none", borderRadius:10, color:"#555", fontSize:13, padding:"12px", cursor:"pointer" }}>Skip</button>
                 <button onClick={saveMpesa} disabled={saving||!form.mpesa_number} style={{ flex:2, background:form.mpesa_number?"#e6821e":"#ccc", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px", cursor:form.mpesa_number?"pointer":"not-allowed" }}>
                   {saving?"Saving...":"Save and continue"}
                 </button>
@@ -190,14 +155,14 @@ export default function ProviderOnboarding({ onComplete }) {
             </div>
           )}
 
-          {step===5&&(
+          {step===4&&(
             <div style={{ textAlign:"center" }}>
               <div style={{ fontSize:56, marginBottom:12 }}>&#128640;</div>
               <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, marginBottom:8 }}>You are all set!</div>
               <div style={{ fontSize:13, color:"#666", marginBottom:20, lineHeight:1.6 }}>Your business is now live. Customers in Nairobi can find and book your services.</div>
               <div style={{ background:"#f0fdf4", borderRadius:12, padding:"1rem", marginBottom:20, textAlign:"left" }}>
                 {[
-                  services.length>0 ? services.length+" service(s) added" : "Add services from your dashboard",
+                  "Add your services from the Services section in your dashboard (requires admin approval)",
                   form.business_name ? "Business profile complete" : "Complete your profile for more visibility",
                   form.mpesa_number ? "M-Pesa number set" : "Add M-Pesa number to receive payments",
                   form.latitude ? "Location set" : "Set location to appear on map",
