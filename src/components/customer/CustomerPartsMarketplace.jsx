@@ -153,10 +153,9 @@ export default function CustomerPartsMarketplace() {
   }
 
   const cartTotal = cart.reduce((s,c)=>s+Number(c.price)*c.qty, 0)
-  const zone = zones.find(z=>z.id===selectedZone)
+  const platformFeeDisplay = Math.min(Math.round(cartTotal * 0.02), 200) // shown in cart before DB fetch
   const deliveryFee = zone ? Number(zone.base_fee) : 0
-  const orderTotal = cartTotal + (fulfillment==="delivery"?deliveryFee:0)
-
+  const orderTotal = cartTotal + (fulfillment==="delivery"?deliveryFee:0) + platformFeeDisplay
   // Group cart by provider
   const cartByProvider = cart.reduce((acc,item)=>{
     const pid = item.provider_id
@@ -181,9 +180,9 @@ export default function CustomerPartsMarketplace() {
     try {
       const zone = zones.find(z => z.id === selectedZone)
       const deliveryFee = fulfillment === "delivery" && zone ? Number(zone.base_fee) : 0
-
-      const { data: rateRow } = await supabase.from("commission_rates").select("platform_rate").eq("provider_type","parts_dealer").maybeSingle()
+      const { data: rateRow } = await supabase.from("commission_rates").select("platform_rate,platform_fee_rate,platform_fee_cap").eq("provider_type","parts_dealer").maybeSingle()
       const commissionRate = rateRow ? Number(rateRow.platform_rate) : 0.05
+      const platformFeeRate = rateRow ? Number(rateRow.platform_fee_rate) : 0.02
 
       const byProvider = {}
       cart.forEach(item => {
@@ -197,6 +196,7 @@ export default function CustomerPartsMarketplace() {
       for (const [providerId, items] of Object.entries(byProvider)) {
         const subtotal = items.reduce((s, i) => s + Number(i.price) * i.qty, 0)
         const commission = subtotal * commissionRate
+        const platformFee = Math.min(Math.round(subtotal * platformFeeRate), platformFeeCap)
         const providerEarnings = subtotal - commission
         const orderDeliveryFee = Object.keys(byProvider).length === 1 ? deliveryFee : 0
 
@@ -206,6 +206,7 @@ export default function CustomerPartsMarketplace() {
           subtotal,
           delivery_fee: orderDeliveryFee,
           platform_commission: commission,
+          platform_fee: platformFee,
           provider_earnings: providerEarnings,
           fulfillment_type: fulfillment,
           delivery_zone: zone?.name || null,
@@ -243,7 +244,7 @@ export default function CustomerPartsMarketplace() {
 
         if (!firstOrderId) {
           firstOrderId = order.id
-          firstOrderTotal = subtotal + orderDeliveryFee
+        firstOrderTotal = subtotal + orderDeliveryFee + platformFee
         }
       }
 
@@ -601,6 +602,18 @@ export default function CustomerPartsMarketplace() {
                       <span>Delivery fee</span><span>KES {deliveryFee.toLocaleString()}</span>
                     </div>
                   )}
+                  <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#888", marginBottom:4 }}>
+                    <span>Subtotal</span><span>KES {cartTotal.toLocaleString()}</span>
+                  </div>
+                  {fulfillment==="delivery"&&deliveryFee>0&&(
+                  <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#888", marginBottom:4 }}>
+                    <span>Delivery fee</span><span>KES {deliveryFee.toLocaleString()}</span>
+                  </div>
+                  )}
+                  <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#888", marginBottom:8, paddingBottom:8, borderBottom:"1px dashed #eee" }}>
+                    <span>Platform fee <span style={{ fontSize:10, color:"#bbb" }}>(2%, max KES 200)</span></span>
+                    <span>KES {platformFeeDisplay.toLocaleString()}</span>
+                  </div>
                   <div style={{ display:"flex", justifyContent:"space-between", fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e", marginBottom:"1rem" }}>
                     <span>Total</span><span>KES {orderTotal.toLocaleString()}</span>
                   </div>
