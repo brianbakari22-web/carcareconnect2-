@@ -85,6 +85,13 @@ serve(async (req) => {
       }
 
       console.log("B2C payout failed:", resultDesc)
+    // Log failed payout
+    await supabase.from("failed_jobs").insert({
+      job_type: "b2c_payout",
+      payload: { bookingId, resultCode, resultDesc },
+      error_message: resultDesc,
+      status: "failed"
+    })
     }
 
     return new Response("OK", { status: 200 })

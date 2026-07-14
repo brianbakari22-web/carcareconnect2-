@@ -108,6 +108,13 @@ serve(async (req) => {
       }
 
       console.log("Payment failed/cancelled:", resultDesc)
+    // Log failed payment
+    await supabase.from("failed_jobs").insert({
+      job_type: "payment_callback",
+      payload: { checkoutRequestId, resultCode, resultDesc },
+      error_message: resultDesc,
+      status: "failed"
+    })
     }
 
     return new Response("OK", { status: 200 })

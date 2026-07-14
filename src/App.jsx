@@ -179,6 +179,7 @@ import MyNewCarListings from "./components/customer/MyNewCarListings"
 import AdminDriverVetting from "./components/admin/AdminDriverVetting"
 import DriverApplication from "./components/driver/DriverApplication"
 import AdminPaymentTracking from "./components/admin/AdminPaymentTracking"
+import AdminFailedJobs from "./components/admin/AdminFailedJobs"
 
 const ADMIN_SECRET = import.meta.env.VITE_ADMIN_SECRET || "ccc-admin-x7k9m2p4q8"
 
@@ -376,6 +377,7 @@ function AdminDashboardRouter() {
               <Route path="new-cars" element={<AdminNewCars />} />
           <Route path="driver-vetting" element={<AdminDriverVetting />} />
           <Route path="payment-tracking" element={<AdminPaymentTracking />} />
+              <Route path="failed-jobs" element={<AdminFailedJobs />} />
           <Route path="providers" element={<AdminProviders />} />
           <Route path="drivers" element={<AdminDrivers />} />
           <Route path="drivers" element={<AdminDrivers />} />
