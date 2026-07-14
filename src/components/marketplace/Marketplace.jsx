@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import SellerProfile from "./SellerProfile"
 import NewCarMarketplace from "../customer/NewCarMarketplace"
 import MyNewCarListings from "../customer/MyNewCarListings"
 import CustomerPartsMarketplace from "../customer/CustomerPartsMarketplace"
@@ -32,6 +33,7 @@ export default function Marketplace() {
   const [comments, setComments] = useState([])
   const [newComment, setNewComment] = useState("")
   const [userLikes, setUserLikes] = useState(new Set())
+  const [viewingSeller, setViewingSeller] = useState(null)
   const [submittingComment, setSubmittingComment] = useState(false)
   const [replyingTo, setReplyingTo] = useState(null)
   const [replyText, setReplyText] = useState("")
