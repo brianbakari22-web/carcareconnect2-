@@ -1,6 +1,7 @@
 import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { pushNotify } from "../../lib/pushNotify"
 import { sanitizeName, sanitizePhone, sanitizeFreeText } from "../../lib/sanitize"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
@@ -144,6 +145,7 @@ export default function CustomerProfile() {
           data:{ user_id:user.id }
         })))
       }
+        admins.forEach(a => pushNotify.accountDeletionRequest(a.id, profile?.first_name||"A user", user.id))
       toast.success("Deletion scheduled. Your account will be removed in 24 hours.")
       setTimeout(() => supabase.auth.signOut(), 3000)
     } catch(e) { toast.error(e.message) }

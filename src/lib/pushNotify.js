@@ -67,6 +67,10 @@ export const pushNotify = {
   reviewReminder: (userId, serviceName) =>
     sendPush(userId, "How was your service? ⭐", `Please rate your ${serviceName} experience.`, { type: "review" }),
 
+  // Admin notifications
+  accountDeletionRequest: (adminUserId, userName, userId) =>
+    sendPush(adminUserId, "Account deletion request ⚠️", userName + " ("+userId.slice(0,8)+") has requested account deletion. Review in admin dashboard.", { type: "account_deletion", user_id: userId }),
+
   // Marketplace
   offerReceived: (userId, amount, listingTitle) =>
     sendPush(userId, "New offer! 💰", `Someone offered KES ${Number(amount).toLocaleString()} for ${listingTitle}`, { type: "offer" }),
