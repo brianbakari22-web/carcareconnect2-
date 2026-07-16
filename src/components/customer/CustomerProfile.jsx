@@ -281,48 +281,24 @@ export default function CustomerProfile() {
             )}
           </div>
       )}
+      {tab==="account"&&(
+        <div>
+          <div style={{ background:"#fff", border:"1px solid #eee", borderRadius:12, padding:"1.25rem", marginBottom:12 }}>
+            <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:700, marginBottom:4 }}>Account information</div>
+            <div style={{ fontSize:13, color:"#888" }}>Account ID: {user?.id?.slice(0,8)}...</div>
+          </div>
+          <div style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:12, padding:"1.25rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:700, color:"#e24b4a", marginBottom:6 }}>Danger Zone</div>
+            <div style={{ fontSize:13, color:"#666", marginBottom:12, lineHeight:1.6 }}>
+              Deleting your account permanently removes all your personal data within 7 days. Active bookings must be resolved first.
+            </div>
+            <button onClick={requestDeleteAccount} disabled={deletingAccount}
+              style={{ background:"#fff", border:"1px solid #e24b4a", borderRadius:8, color:"#e24b4a", fontSize:13, fontWeight:600, padding:"10px 20px", cursor:"pointer" }}>
+              {deletingAccount?"Processing...":"Request Account Deletion"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
-
-      {tab==="account"&&(
-        <div>
-          <div style={{ background:"#fff", border:"1px solid #eee", borderRadius:12, padding:"1.25rem", marginBottom:12 }}>
-            <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:700, marginBottom:4 }}>Account information</div>
-            <div style={{ fontSize:13, color:"#888" }}>Account ID: {user?.id?.slice(0,8)}...</div>
-          </div>
-          <div style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:12, padding:"1.25rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:700, color:"#e24b4a", marginBottom:6 }}>Danger Zone</div>
-            <div style={{ fontSize:13, color:"#666", marginBottom:12, lineHeight:1.6 }}>
-              Deleting your account permanently removes all your personal data within 7 days. Active bookings must be resolved first.
-            </div>
-            <button onClick={requestDeleteAccount} disabled={deletingAccount}
-              style={{ background:"#fff", border:"1px solid #e24b4a", borderRadius:8, color:"#e24b4a", fontSize:13, fontWeight:600, padding:"10px 20px", cursor:"pointer" }}>
-              {deletingAccount?"Processing...":"Request Account Deletion"}
-            </button>
-          </div>
-        </div>
-      )}
-      {tab==="account"&&(
-        <div>
-          <div style={{ background:"#fff", border:"1px solid #eee", borderRadius:12, padding:"1.25rem", marginBottom:12 }}>
-            <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:700, marginBottom:4 }}>Account information</div>
-            <div style={{ fontSize:13, color:"#888" }}>Account ID: {user?.id?.slice(0,8)}...</div>
-          </div>
-          <div style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:12, padding:"1.25rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:700, color:"#e24b4a", marginBottom:6 }}>Danger Zone</div>
-            <div style={{ fontSize:13, color:"#666", marginBottom:12, lineHeight:1.6 }}>
-              Deleting your account permanently removes all your personal data within 7 days. Active bookings must be resolved first.
-            </div>
-            <button onClick={requestDeleteAccount} disabled={deletingAccount}
-              style={{ background:"#fff", border:"1px solid #e24b4a", borderRadius:8, color:"#e24b4a", fontSize:13, fontWeight:600, padding:"10px 20px", cursor:"pointer" }}>
-              {deletingAccount?"Processing...":"Request Account Deletion"}
-            </button>
-          </div>
-        </div>
-      )}
-
-
-
-
-
