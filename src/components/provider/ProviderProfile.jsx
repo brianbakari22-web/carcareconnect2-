@@ -326,19 +326,24 @@ export default function ProviderProfile() {
           </div>
         </div>
       )}
+
+      {/* Danger Zone */}
+      <div style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:12, padding:"1.25rem", marginTop:"1.5rem" }}>
+        <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:700, color:"#e24b4a", marginBottom:6 }}>Danger Zone</div>
+        <div style={{ fontSize:13, color:"#666", marginBottom:12, lineHeight:1.6 }}>
+          Deleting your account permanently removes all your data within 7 days. Active bookings must be resolved first.
+        </div>
+        <button onClick={async()=>{
+          const{data:ab}=await supabase.from("bookings").select("id").eq("provider_id",user.id).in("status",["pending","confirmed","in-progress"])
+          if(ab?.length>0)return toast.error("Resolve active bookings first.")
+          if(!window.confirm("Delete your account? This cannot be undone."))return
+          await supabase.from("deletion_requests").insert({ user_id:user.id, requested_at:new Date().toISOString(), scheduled_for:new Date(Date.now()+7*24*60*60*1000).toISOString(), status:"pending", reason:"User requested deletion from app" })
+          toast.success("Deletion requested. You will be signed out.")
+          setTimeout(()=>supabase.auth.signOut(),2000)
+        }} style={{ background:"#fff", border:"1px solid #e24b4a", borderRadius:8, color:"#e24b4a", fontSize:13, fontWeight:600, padding:"10px 20px", cursor:"pointer" }}>
+          Request Account Deletion
+        </button>
+      </div>
     </div>
   )
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
