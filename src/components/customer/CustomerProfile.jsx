@@ -122,7 +122,6 @@ export default function CustomerProfile() {
   const initials = `${profile?.first_name?.[0]||""}${profile?.last_name?.[0]||""}`.toUpperCase()
   const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"11px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:12 }
   const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
-
   async function requestDeleteAccount() {
     const { data: activeBookings } = await supabase.from("bookings")
       .select("id").eq("customer_id", user.id).in("status",["pending","confirmed","in-progress"])
@@ -130,13 +129,23 @@ export default function CustomerProfile() {
     const { data: activeTxns } = await supabase.from("marketplace_transactions")
       .select("id").eq("buyer_id", user.id).eq("buyer_confirmed", false).in("payment_status",["paid","processing"])
     if(activeTxns?.length > 0) return toast.error("You have pending marketplace transactions. Complete them first.")
-    if(!window.confirm("Delete your account? All data will be permanently removed within 7 days. This cannot be undone.")) return
+    if(!window.confirm("Delete your account? All data will be permanently removed within 24 hours. This cannot be undone.")) return
     setDeletingAccount(true)
     try {
-      await supabase.from("profiles").update({ deletion_requested:true, deletion_requested_at:new Date().toISOString() }).eq("id", user.id)
-      await supabase.from("notifications").insert({ user_id:user.id, type:"account_deletion", title:"Account deletion requested", message:"Your account will be deleted within 7 days. Contact us if this was a mistake." })
-      toast.success("Account deletion requested. You will be signed out now.")
-      setTimeout(() => supabase.auth.signOut(), 2000)
+      const { data: existing } = await supabase.from("deletion_requests").select("*").eq("user_id", user.id).eq("status","pending").maybeSingle()
+      if(existing) { toast("Deletion already scheduled.", { duration:5000 }); setDeletingAccount(false); return }
+      await supabase.from("deletion_requests").insert({ user_id:user.id, scheduled_for:new Date(Date.now()+24*60*60*1000).toISOString(), status:"pending", reason:"User requested deletion from app" })
+      await supabase.from("notifications").insert({ user_id:user.id, type:"account_deletion", title:"Account deletion scheduled ⚠️", message:"Your account will be deleted in 24 hours. Log in to cancel." })
+      const { data: admins } = await supabase.from("profiles").select("id").eq("role","admin")
+      if(admins?.length > 0) {
+        await supabase.from("notifications").insert(admins.map(a=>({
+          user_id:a.id, type:"account_deletion", title:"Account deletion request ⚠️",
+          message:(profile?.first_name||"A user")+" ("+user.id.slice(0,8)+") requested account deletion. Scheduled in 24 hours.",
+          data:{ user_id:user.id }
+        })))
+      }
+      toast.success("Deletion scheduled. Your account will be removed in 24 hours.")
+      setTimeout(() => supabase.auth.signOut(), 3000)
     } catch(e) { toast.error(e.message) }
     finally { setDeletingAccount(false) }
   }
