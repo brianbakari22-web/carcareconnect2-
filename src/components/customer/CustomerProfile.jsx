@@ -288,13 +288,13 @@ export default function CustomerProfile() {
                 </div>
                 <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#555", marginBottom:8, textTransform:"uppercase", letterSpacing:"0.05em" }}>Download formats</div>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr", gap:8, marginBottom:"1rem" }}>
-                  <button onClick={()=>downloadJSON(exportData)} style={{ background:"#fff", border:"1px solid #378add", borderRadius:10, color:"#378add", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer", display:"flex", alignItems:"center", gap:8 }}>
+                  <button onClick={()=>downloadJSON(exportData, "ccc-my-data-"+new Date().toLocaleDateString()+".json")} style={{ background:"#fff", border:"1px solid #378add", borderRadius:10, color:"#378add", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer", display:"flex", alignItems:"center", gap:8 }}>
                     <span>📦</span><span>Download as JSON</span><span style={{ marginLeft:"auto", fontSize:10, color:"#aaa" }}>Full data export</span>
                   </button>
-                  <button onClick={()=>downloadCSV(exportData)} style={{ background:"#fff", border:"1px solid #1d9e75", borderRadius:10, color:"#1d9e75", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer", display:"flex", alignItems:"center", gap:8 }}>
+                  <button onClick={()=>downloadCSV(exportData.bookings||[], "ccc-bookings-"+new Date().toLocaleDateString()+".csv")} style={{ background:"#fff", border:"1px solid #1d9e75", borderRadius:10, color:"#1d9e75", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer", display:"flex", alignItems:"center", gap:8 }}>
                     <span>📊</span><span>Download as CSV</span><span style={{ marginLeft:"auto", fontSize:10, color:"#aaa" }}>Spreadsheet format</span>
                   </button>
-                  <button onClick={()=>downloadPDF(exportData)} style={{ background:"#fff", border:"1px solid #e6821e", borderRadius:10, color:"#e6821e", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer", display:"flex", alignItems:"center", gap:8 }}>
+                  <button onClick={()=>downloadPDF(exportData, "ccc-my-data-"+new Date().toLocaleDateString()+".pdf")} style={{ background:"#fff", border:"1px solid #e6821e", borderRadius:10, color:"#e6821e", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer", display:"flex", alignItems:"center", gap:8 }}>
                     <span>📄</span><span>Download as PDF</span><span style={{ marginLeft:"auto", fontSize:10, color:"#aaa" }}>Printable report</span>
                   </button>
                 </div>
