@@ -112,6 +112,24 @@ export default function CustomerProfile() {
   const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"11px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:12 }
   const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
 
+  async function requestDeleteAccount() {
+    const { data: activeBookings } = await supabase.from("bookings")
+      .select("id").eq("customer_id", user.id).in("status",["pending","confirmed","in-progress"])
+    if(activeBookings?.length > 0) return toast.error("You have active bookings. Resolve them before deleting your account.")
+    const { data: activeTxns } = await supabase.from("marketplace_transactions")
+      .select("id").eq("buyer_id", user.id).eq("buyer_confirmed", false).in("payment_status",["paid","processing"])
+    if(activeTxns?.length > 0) return toast.error("You have pending marketplace transactions. Complete them first.")
+    if(!window.confirm("Delete your account? All data will be permanently removed within 7 days. This cannot be undone.")) return
+    setDeletingAccount(true)
+    try {
+      await supabase.from("profiles").update({ deletion_requested:true, deletion_requested_at:new Date().toISOString() }).eq("id", user.id)
+      await supabase.from("notifications").insert({ user_id:user.id, type:"account_deletion", title:"Account deletion requested", message:"Your account will be deleted within 7 days. Contact us if this was a mistake." })
+      toast.success("Account deletion requested. You will be signed out now.")
+      setTimeout(() => supabase.auth.signOut(), 2000)
+    } catch(e) { toast.error(e.message) }
+    finally { setDeletingAccount(false) }
+  }
+
   return (
     <div style={{ maxWidth:isMobile?"100%":520 }}>
       <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:"1.5rem" }}>
@@ -130,6 +148,7 @@ export default function CustomerProfile() {
           {k:"contact",l:t("contactDetails")},
           {k:"security",l:t("security")},
           {k:"data",l:"My Data"},
+          {k:"account",l:"Account"},
         ].map(tab2=>(
           <button key={tab2.k} onClick={()=>{ setTab(tab2.k); if(tab2.k==="data"&&!exportData) loadExportData() }}
             style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===tab2.k?"#e6821e":"#555555", color:tab===tab2.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===tab2.k?700:400 }}>

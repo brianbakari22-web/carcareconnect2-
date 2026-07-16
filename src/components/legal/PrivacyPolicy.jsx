@@ -166,7 +166,7 @@ export default function PrivacyPolicy() {
             <strong>How to delete your account and data:</strong>
           </div>
           <div style={{ marginBottom:8 }}>You can request deletion of your account and all associated personal data by:</div>
-          <Li>Emailing carcareconnect254@gmail.com with subject "Delete My Account"</Li>
+          <Li>Using the Delete Account button in your Profile settings (fastest method)</Li>
           <Li>Including your registered email address in the request</Li>
           <Li>We will process your request within 30 days</Li>
           <div style={{ marginTop:12 }}><strong>What gets deleted:</strong></div>
