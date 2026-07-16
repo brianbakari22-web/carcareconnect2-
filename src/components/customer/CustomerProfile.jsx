@@ -73,7 +73,8 @@ export default function CustomerProfile() {
   async function handleDeleteAccount() {
     setDeletingAccount(true)
     try {
-      const { data: check } = await supabase.rpc("check_account_deletable", { user_id: user.id })
+      const { data: check, error: checkError } = await supabase.rpc("check_account_deletable", { user_id: user.id })
+      if (checkError || !check) { toast.error("Could not verify account status. Please try again."); setDeletingAccount(false); return }
       if (!check.can_delete) {
         let blockers = []
         if (check.active_bookings > 0) blockers.push(check.active_bookings + " active booking(s)")
