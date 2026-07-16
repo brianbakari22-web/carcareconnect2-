@@ -115,6 +115,7 @@ export default function CustomerProfile() {
           message: (profile?.first_name||"A user")+" ("+user.id.slice(0,8)+") requested deletion. Scheduled in 24 hours.",
           data: { user_id: user.id }
         })))
+        admins.forEach(a => pushNotify.accountDeletionRequest(a.id, profile?.first_name||"A user", user.id))
       }
     } catch(err) { toast.error(err.message) }
     setDeletingAccount(false)
@@ -314,7 +315,7 @@ export default function CustomerProfile() {
             <div style={{ fontSize:13, color:"#666", marginBottom:12, lineHeight:1.6 }}>
               Deleting your account permanently removes all your personal data within 7 days. Active bookings must be resolved first.
             </div>
-            <button onClick={requestDeleteAccount} disabled={deletingAccount}
+            <button onClick={handleDeleteAccount} disabled={deletingAccount}
               style={{ background:"#fff", border:"1px solid #e24b4a", borderRadius:8, color:"#e24b4a", fontSize:13, fontWeight:600, padding:"10px 20px", cursor:"pointer" }}>
               {deletingAccount?"Processing...":"Request Account Deletion"}
             </button>
@@ -324,3 +325,4 @@ export default function CustomerProfile() {
     </div>
   )
 }
+
