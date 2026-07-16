@@ -104,6 +104,17 @@ export default function CustomerProfile() {
       })
       toast.success("Account deletion scheduled. You have 24 hours to cancel by logging in.", { duration:8000 })
       setPendingDeletion({ scheduled_for: new Date(Date.now() + 24*60*60*1000).toISOString() })
+      // Notify admin
+      const { data: admins } = await supabase.from("profiles").select("id").eq("role","admin")
+      if(admins?.length > 0) {
+        await supabase.from("notifications").insert(admins.map(a=>({
+          user_id: a.id,
+          type: "account_deletion",
+          title: "Account deletion request",
+          message: (profile?.first_name||"A user")+" ("+user.id.slice(0,8)+") requested deletion. Scheduled in 24 hours.",
+          data: { user_id: user.id }
+        })))
+      }
     } catch(err) { toast.error(err.message) }
     setDeletingAccount(false)
   }

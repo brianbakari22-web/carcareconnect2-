@@ -486,7 +486,27 @@ export default function DriverProfile() {
           if(ab?.length>0)return toast.error("Resolve active bookings first.")
           if(!window.confirm("Delete your account? This cannot be undone."))return
           await supabase.from("deletion_requests").insert({ user_id:user.id, requested_at:new Date().toISOString(), scheduled_for:new Date(Date.now()+7*24*60*60*1000).toISOString(), status:"pending", reason:"User requested deletion from app" })
+          // Notify admin
+          const { data: admins } = await supabase.from("profiles").select("id").eq("role","admin")
+          if(admins?.length > 0) {
+            await supabase.from("notifications").insert(admins.map(a=>({
+              user_id: a.id,
+              type: "account_deletion",
+              title: "Account deletion request",
+              message: (profile?.first_name||"A user") + " ("+user.id.slice(0,8)+") has requested account deletion. Scheduled for " + new Date(Date.now()+7*24*60*60*1000).toLocaleDateString(),
+              data: { user_id: user.id }
+            })))
+          }
           toast.success("Deletion requested. You will be signed out.")
+          // Notify admin
+          supabase.from("profiles").select("id").eq("role","admin").then(({data:admins})=>{
+            if(admins?.length>0) supabase.from("notifications").insert(admins.map(a=>({
+              user_id:a.id, type:"account_deletion",
+              title:"Account deletion request ⚠️",
+              message:"A "+user?.user_metadata?.role+" has requested account deletion.",
+              data:{ user_id:user.id }
+            })))
+          })
           setTimeout(()=>supabase.auth.signOut(),2000)
         }} style={{ background:"#fff", border:"1px solid #e24b4a", borderRadius:8, color:"#e24b4a", fontSize:13, fontWeight:600, padding:"10px 20px", cursor:"pointer" }}>
           Request Account Deletion

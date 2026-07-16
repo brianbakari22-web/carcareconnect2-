@@ -94,6 +94,7 @@ const NAV = {
     { path:"/admin-dashboard/inventory", label:"Inventory", icon:"📦" },
     { path:"/admin-dashboard/payment-tracking", label:"Payment Tracking", icon:"💹" },
     { path:"/admin-dashboard/failed-jobs", label:"Failed Jobs", icon:"⚠️" },
+    { path:"/admin-dashboard/deletion-requests", label:"Deletion Requests", icon:"🗑️" },
 
   ],
 }
