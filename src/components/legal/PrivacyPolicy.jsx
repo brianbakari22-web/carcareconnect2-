@@ -161,7 +161,7 @@ export default function PrivacyPolicy() {
           </div>
           <div style={{ marginTop:12 }}>To exercise any of these rights, contact us at carcareconnect254@gmail.com.</div>
         </Section>
-        <Section title="9. Account Deletion">
+        <Section title="9. Account Deletion" id="account-deletion">
           <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:10, padding:"1rem", marginBottom:12 }}>
             <strong>How to delete your account and data:</strong>
           </div>
