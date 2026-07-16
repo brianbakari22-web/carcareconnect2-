@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { pushNotify } from "../../lib/pushNotify"
 import { sanitizeName, sanitizePhone, sanitizeFreeText } from "../../lib/sanitize"
 import { getCurrentPosition } from "../../lib/geolocation"
 import PhotoManager from "../shared/PhotoManager"
@@ -352,12 +353,16 @@ export default function ProviderProfile() {
           toast.success("Deletion requested. You will be signed out.")
           // Notify admin
           supabase.from("profiles").select("id").eq("role","admin").then(({data:admins})=>{
-            if(admins?.length>0) supabase.from("notifications").insert(admins.map(a=>({
-              user_id:a.id, type:"account_deletion",
-              title:"Account deletion request ⚠️",
-              message:"A "+user?.user_metadata?.role+" has requested account deletion.",
-              data:{ user_id:user.id }
-            })))
+            if(admins?.length>0) {
+              supabase.from("notifications").insert(admins.map(a=>({
+                user_id:a.id, type:"account_deletion",
+                title:"Account deletion request ⚠️",
+                message:"A "+user?.user_metadata?.role+" has requested account deletion.",
+                data:{ user_id:user.id }
+              })))
+              // Send push to all admins
+              admins.forEach(a => pushNotify.accountDeletionRequest(a.id, user?.user_metadata?.first_name||"A user", user.id))
+            }
           })
           setTimeout(()=>supabase.auth.signOut(),2000)
         }} style={{ background:"#fff", border:"1px solid #e24b4a", borderRadius:8, color:"#e24b4a", fontSize:13, fontWeight:600, padding:"10px 20px", cursor:"pointer" }}>
