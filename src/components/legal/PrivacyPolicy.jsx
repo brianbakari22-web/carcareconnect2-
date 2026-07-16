@@ -202,6 +202,21 @@ export default function PrivacyPolicy() {
             <Li>OneSignal - push notification delivery</Li>
           </div>
         </Section>
+        <Section title="12b. AI Assistant">
+          <div>Car Care Connect includes an AI-powered assistant to help users navigate the platform, answer questions about services, and provide guidance on bookings and payments. Please note:</div>
+          <Li>The AI assistant is powered by Anthropic Claude. Conversations with the AI may be processed to generate responses.</Li>
+          <Li>Do not share sensitive personal information such as passwords, M-Pesa PINs, or national ID numbers with the AI assistant.</Li>
+          <Li>AI conversations are not stored permanently and are not used to train AI models without your consent.</Li>
+          <Li>The AI assistant does not have access to your payment details, booking history, or personal profile unless you explicitly share this information in the conversation.</Li>
+        </Section>
+
+        <Section title="12c. Error Monitoring and Analytics">
+          <div>We use third-party services to monitor app performance and detect errors:</div>
+          <Li><strong>Sentry:</strong> We use Sentry (sentry.io) to automatically detect and report technical errors in the app. Sentry may collect device information, browser type, operating system, and page URLs when an error occurs. Sentry is hosted in the European Union and complies with GDPR. Text content on screen is masked and never sent to Sentry.</Li>
+          <Li><strong>OneSignal:</strong> We use OneSignal to send push notifications to your device. OneSignal may collect your device token and notification interaction data. You can opt out of push notifications at any time through your device settings.</Li>
+          <Li>These services do not receive your M-Pesa details, passwords, or financial information.</Li>
+        </Section>
+
         <Section title="13. Changes to This Policy">
           <div>We may update this Privacy Policy from time to time. We will notify you of any significant changes by:</div>
           <div style={{ marginTop:8 }}>
