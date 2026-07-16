@@ -1,6 +1,65 @@
 import { supabase } from "./supabase"
 import jsPDF from "jspdf"
 
+function isNativePlatform() {
+  return !!(window.Capacitor && window.Capacitor.isNativePlatform())
+}
+
+function browserDownload(blob, filename) {
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement("a")
+  a.href = url
+  a.download = filename
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
+}
+
+async function exportFile(content, filename, mimeType) {
+  if (isNativePlatform()) {
+    try {
+      const { Filesystem, Directory } = await import("@capacitor/filesystem")
+      const { Share } = await import("@capacitor/share")
+      let base64
+      if (typeof content === "string") {
+        base64 = btoa(unescape(encodeURIComponent(content)))
+      } else if (content instanceof ArrayBuffer) {
+        const bytes = new Uint8Array(content)
+        let binary = ""
+        bytes.forEach(b => binary += String.fromCharCode(b))
+        base64 = btoa(binary)
+      } else {
+        base64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onload = () => resolve(reader.result.split(",")[1])
+          reader.onerror = reject
+          reader.readAsDataURL(content)
+        })
+      }
+      const result = await Filesystem.writeFile({
+        path: filename,
+        data: base64,
+        directory: Directory.Cache,
+        recursive: true
+      })
+      await Share.share({
+        title: "Car Care Connect Export",
+        text: "Your personal data from Car Care Connect",
+        url: result.uri,
+        dialogTitle: "Save or share your data"
+      })
+    } catch(err) {
+      console.error("Native export error:", err)
+      const blob = content instanceof Blob ? content : new Blob([content], { type: mimeType })
+      browserDownload(blob, filename)
+    }
+  } else {
+    const blob = content instanceof Blob ? content : new Blob([content], { type: mimeType })
+    browserDownload(blob, filename)
+  }
+}
+
 export async function exportUserData(userId) {
   const [
     { data: profile },
@@ -29,7 +88,6 @@ export async function exportUserData(userId) {
     supabase.from("vehicles").select("*").eq("user_id", userId),
     supabase.from("payout_requests").select("*").eq("user_id", userId),
   ])
-
   return {
     exported_at: new Date().toISOString(),
     profile: { ...profile, ...sensitive },
@@ -46,62 +104,12 @@ export async function exportUserData(userId) {
   }
 }
 
-async function mobileDownload(blob, filename) {
-  const isCapacitor = window.Capacitor !== undefined
-
-  if (isCapacitor) {
-    // Capacitor native - use Filesystem + Share
-    try {
-      const { Filesystem, Directory } = await import("@capacitor/filesystem")
-      const { Share } = await import("@capacitor/share")
-      
-      const reader = new FileReader()
-      reader.onload = async () => {
-        const base64 = reader.result.split(",")[1]
-        try {
-          const result = await Filesystem.writeFile({
-            path: filename,
-            data: base64,
-            directory: Directory.Documents
-          })
-          await Share.share({
-            title: filename,
-            text: "Car Care Connect — " + filename,
-            url: result.uri,
-            dialogTitle: "Save or share file"
-          })
-        } catch(err) {
-          console.error("Capacitor save error:", err)
-          browserDownload(blob, filename)
-        }
-      }
-      reader.readAsDataURL(blob)
-    } catch(err) {
-      console.error("Capacitor import error:", err)
-      browserDownload(blob, filename)
-    }
-  } else {
-    browserDownload(blob, filename)
-  }
+export async function downloadJSON(data, filename) {
+  const json = JSON.stringify(data, null, 2)
+  await exportFile(json, filename || "ccc-my-data.json", "application/json")
 }
 
-function browserDownload(blob, filename) {
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement("a")
-  a.href = url
-  a.download = filename
-  document.body.appendChild(a)
-  a.click()
-  document.body.removeChild(a)
-  setTimeout(() => URL.revokeObjectURL(url), 1000)
-}
-
-export function downloadJSON(data, filename) {
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type:"application/json" })
-  mobileDownload(blob, filename)
-}
-
-export function downloadCSV(rows, filename) {
+export async function downloadCSV(rows, filename) {
   if (!rows || !rows.length) return
   const headers = Object.keys(rows[0])
   const csv = [
@@ -113,221 +121,73 @@ export function downloadCSV(rows, filename) {
       return str.includes(",") || str.includes("\n") ? `"${str}"` : str
     }).join(","))
   ].join("\n")
-  const blob = new Blob([csv], { type:"text/csv;charset=utf-8;" })
-  mobileDownload(blob, filename)
+  await exportFile(csv, filename || "ccc-bookings.csv", "text/csv")
 }
 
-export function downloadPDF(data, filename) {
+export async function downloadPDF(data, filename) {
   const doc = new jsPDF()
   const pageW = doc.internal.pageSize.getWidth()
   let y = 20
-
-  function checkPage() {
-    if (y > 270) { doc.addPage(); y = 20 }
-  }
-
-  function heading(text, size=16, color=[230,130,30]) {
+  function checkPage() { if (y > 270) { doc.addPage(); y = 20 } }
+  function heading(text, size=16) {
     checkPage()
-    doc.setFontSize(size)
-    doc.setTextColor(...color)
-    doc.setFont("helvetica", "bold")
-    doc.text(text, 14, y)
-    y += size * 0.6
+    doc.setFontSize(size); doc.setTextColor(230,130,30); doc.setFont("helvetica","bold")
+    doc.text(text, 14, y); y += size * 0.6
   }
-
-  function subheading(text) {
-    checkPage()
-    doc.setFontSize(12)
-    doc.setTextColor(80, 80, 80)
-    doc.setFont("helvetica", "bold")
-    doc.text(text, 14, y)
-    y += 7
-  }
-
   function row(label, value) {
     checkPage()
-    doc.setFontSize(10)
-    doc.setFont("helvetica", "bold")
-    doc.setTextColor(100, 100, 100)
+    doc.setFontSize(10); doc.setFont("helvetica","bold"); doc.setTextColor(100,100,100)
     doc.text(String(label), 14, y)
-    doc.setFont("helvetica", "normal")
-    doc.setTextColor(30, 30, 30)
-    const val = String(value || "—")
-    const lines = doc.splitTextToSize(val, pageW - 80)
-    doc.text(lines, 80, y)
-    y += Math.max(6, lines.length * 5)
+    doc.setFont("helvetica","normal"); doc.setTextColor(30,30,30)
+    const lines = doc.splitTextToSize(String(value||"—"), pageW-80)
+    doc.text(lines, 80, y); y += Math.max(6, lines.length*5)
   }
-
   function divider() {
-    checkPage()
-    doc.setDrawColor(220, 220, 220)
-    doc.line(14, y, pageW - 14, y)
-    y += 6
+    checkPage(); doc.setDrawColor(220,220,220)
+    doc.line(14, y, pageW-14, y); y += 6
   }
-
-  function tableHeader(cols, widths) {
-    checkPage()
-    doc.setFontSize(9)
-    doc.setFont("helvetica", "bold")
-    doc.setTextColor(255, 255, 255)
-    doc.setFillColor(230, 130, 30)
-    doc.rect(14, y - 4, pageW - 28, 8, "F")
-    let x = 16
-    cols.forEach((col, i) => { doc.text(col, x, y); x += widths[i] })
-    y += 6
-  }
-
-  function tableRow(vals, widths, even) {
-    checkPage()
-    if (even) {
-      doc.setFillColor(248, 248, 248)
-      doc.rect(14, y - 4, pageW - 28, 7, "F")
-    }
-    doc.setFontSize(8)
-    doc.setFont("helvetica", "normal")
-    doc.setTextColor(50, 50, 50)
-    let x = 16
-    vals.forEach((val, i) => {
-      const text = String(val || "—").slice(0, 30)
-      doc.text(text, x, y)
-      x += widths[i]
-    })
-    y += 7
-  }
-
-  // Header
-  doc.setFillColor(17, 17, 17)
-  doc.rect(0, 0, pageW, 30, "F")
-  doc.setFontSize(20)
-  doc.setFont("helvetica", "bold")
-  doc.setTextColor(230, 130, 30)
-  doc.text("CarCare Connect", 14, 18)
-  doc.setFontSize(10)
-  doc.setTextColor(150, 150, 150)
-  doc.text("Personal Data Export Report", 14, 26)
-  doc.setTextColor(150, 150, 150)
-  doc.text(`Generated: ${new Date().toLocaleString()}`, pageW - 14, 26, { align:"right" })
+  doc.setFillColor(17,17,17); doc.rect(0,0,pageW,30,"F")
+  doc.setFontSize(20); doc.setFont("helvetica","bold"); doc.setTextColor(230,130,30)
+  doc.text("Car Care Connect", 14, 18)
+  doc.setFontSize(10); doc.setTextColor(150,150,150)
+  doc.text("Personal Data Export", 14, 26)
+  doc.text("Generated: "+new Date().toLocaleString(), pageW-14, 26, { align:"right" })
   y = 45
-
-  // Profile section
+  const p = data.profile
   heading("Personal Information")
   divider()
-  const p = data.profile
-  row("Full name", `${p.first_name||""} ${p.last_name||""}`)
+  row("Full name", (p.first_name||"")+" "+(p.last_name||""))
   row("Email", p.email||"—")
   row("Phone", p.phone||"—")
   row("City", p.city||"—")
   row("Role", p.role||"—")
-  row("Account status", p.is_active?"Active":"Suspended")
-  row("Verified", p.is_verified?"Yes":"No")
   row("Member since", p.created_at ? new Date(p.created_at).toLocaleDateString() : "—")
-  row("Referral code", p.referral_code||"—")
-  if (p.business_name) row("Business name", p.business_name)
   y += 8
-
-  // Bookings section
   if (data.bookings?.length > 0) {
-    heading("Bookings History")
+    heading("Bookings ("+data.bookings.length+")")
     divider()
-    doc.setFontSize(10)
-    doc.setTextColor(100,100,100)
-    doc.text(`Total: ${data.bookings.length} bookings`, 14, y)
-    y += 8
-    tableHeader(["Service", "Date", "Status", "Amount", "Payment"], [55, 28, 28, 25, 30])
-    data.bookings.slice(0, 30).forEach((b, i) => {
-      tableRow([
-        (b.service_name||"").slice(0,20),
-        b.booking_date||"",
-        b.status||"",
-        `KES ${Number(b.total_amount||0).toLocaleString()}`,
-        b.payment_status||""
-      ], [55, 28, 28, 25, 30], i%2===0)
-    })
-    if (data.bookings.length > 30) {
-      doc.setFontSize(8)
-      doc.setTextColor(150,150,150)
-      doc.text(`... and ${data.bookings.length - 30} more bookings`, 14, y)
-      y += 6
-    }
-    y += 8
-  }
-
-  // Payments section
-  if (data.payments?.length > 0) {
-    checkPage()
-    heading("Payment History")
-    divider()
-    doc.setFontSize(10)
-    doc.setTextColor(100,100,100)
-    const totalPaid = data.payments.reduce((s,p)=>s+Number(p.amount||0),0)
-    doc.text(`Total: ${data.payments.length} payments · Total paid: KES ${totalPaid.toFixed(2)}`, 14, y)
-    y += 8
-    tableHeader(["Method", "Amount", "Status", "Date"], [50, 35, 35, 50])
-    data.payments.slice(0, 20).forEach((p, i) => {
-      tableRow([
-        p.payment_method||"",
-        `KES ${Number(p.amount||0).toFixed(2)}`,
-        p.status||"",
-        p.created_at ? new Date(p.created_at).toLocaleDateString() : ""
-      ], [50, 35, 35, 50], i%2===0)
+    data.bookings.slice(0,20).forEach(b => {
+      row(b.booking_number||b.id?.slice(0,8)||"", (b.service_name||"")+" | "+(b.status||"")+" | KES "+(b.total_amount||0))
     })
     y += 8
   }
-
-  // Loyalty section
-  if (data.loyalty?.points !== undefined) {
-    checkPage()
-    heading("Loyalty Points")
-    divider()
-    row("Current points", data.loyalty.points?.toLocaleString()||"0")
-    row("Lifetime earned", data.loyalty.lifetime_points?.toLocaleString()||"0")
-    y += 8
-  }
-
-  // Support tickets
-  if (data.support_tickets?.length > 0) {
-    checkPage()
-    heading("Support Tickets")
-    divider()
-    tableHeader(["Ticket #", "Subject", "Category", "Status"], [30, 70, 35, 30])
-    data.support_tickets.forEach((t, i) => {
-      tableRow([
-        t.ticket_number||"",
-        (t.subject||"").slice(0,30),
-        t.category||"",
-        t.status||""
-      ], [30, 70, 35, 30], i%2===0)
-    })
-    y += 8
-  }
-
-  // Vehicles
   if (data.vehicles?.length > 0) {
-    checkPage()
     heading("Vehicles")
     divider()
-    data.vehicles.forEach((v, i) => {
-      subheading(`Vehicle ${i+1}`)
-      row("Make/Model", `${v.make||""} ${v.model||""}`)
-      row("Year", v.year||"")
-      row("License plate", v.license_plate||"")
-      row("Color", v.color||"")
-      y += 4
-    })
+    data.vehicles.forEach(v => row((v.make||"")+" "+(v.model||""), v.license_plate||""))
+    y += 8
   }
-
-  // Footer
   const pageCount = doc.internal.getNumberOfPages()
-  for (let i = 1; i <= pageCount; i++) {
+  for (let i=1; i<=pageCount; i++) {
     doc.setPage(i)
-    doc.setFontSize(8)
-    doc.setTextColor(180,180,180)
-    doc.text(`Car Care Connect · Personal Data Export · Page ${i} of ${pageCount}`, pageW/2, 290, { align:"center" })
-    doc.text("Generated under Kenya Data Protection Act 2019", pageW/2, 295, { align:"center" })
+    doc.setFontSize(8); doc.setTextColor(180,180,180)
+    doc.text("Car Care Connect · Data Export · Page "+i+" of "+pageCount, pageW/2, 290, { align:"center" })
   }
-
-  // Mobile-compatible download
-  const pdfBlob = doc.output("blob")
-  mobileDownload(pdfBlob, filename)
+  if (isNativePlatform()) {
+    const buffer = doc.output("arraybuffer")
+    await exportFile(buffer, filename || "ccc-my-data.pdf", "application/pdf")
+  } else {
+    const blob = doc.output("blob")
+    browserDownload(blob, filename || "ccc-my-data.pdf")
+  }
 }
-
