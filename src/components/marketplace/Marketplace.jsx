@@ -66,20 +66,53 @@ export default function Marketplace() {
 
   async function load() {
     setLoading(true)
-    let query = supabase.from("marketplace_listings")
-      .select("*, profiles(first_name,last_name,role,business_name), marketplace_photos(photo_url,is_primary), video_url")
-      .eq("status","active")
-      .order("featured_tier",{ascending:true, nullsFirst:false})
-      .order("is_featured",{ascending:false})
-      .order("created_at",{ascending:false})
-    if (tab==="vehicle") query = query.eq("listing_type","vehicle")
-    else if (tab==="part") query = query.eq("listing_type","part")
-    else if (tab==="accessory") query = query.eq("listing_type","accessory")
-    const { data } = await query
-    setListings((data||[]).map(l=>({...l, primary_photo:l.marketplace_photos?.find(p=>p.is_primary)?.photo_url||l.marketplace_photos?.[0]?.photo_url})))
+    try {
+      let usedListings = []
+      let newCarListings = []
+      if(tab==="all" || tab==="vehicle" || tab==="part" || tab==="accessory") {
+        let query = supabase.from("marketplace_listings")
+          .select("*, profiles(first_name,last_name,role,business_name), marketplace_photos(photo_url,is_primary), video_url")
+          .eq("status","active")
+          .order("is_featured",{ascending:false})
+          .order("created_at",{ascending:false})
+        if(tab==="vehicle") query = query.eq("listing_type","vehicle")
+        else if(tab==="part") query = query.eq("listing_type","part")
+        else if(tab==="accessory") query = query.eq("listing_type","accessory")
+        const { data } = await query
+        usedListings = (data||[]).map(l=>({
+          ...l,
+          _type: l.listing_type==="vehicle" ? "used_car" : "part",
+          primary_photo: l.marketplace_photos?.find(p=>p.is_primary)?.photo_url||l.marketplace_photos?.[0]?.photo_url
+        }))
+      }
+      if(tab==="all" || tab==="new_cars") {
+        const { data: newCars } = await supabase.from("new_car_listings")
+          .select("*")
+          .eq("is_active", true)
+          .eq("listing_fee_paid", true)
+          .order("is_featured",{ascending:false})
+          .order("created_at",{ascending:false})
+        newCarListings = (newCars||[]).map(l=>({
+          ...l,
+          _type: "new_car",
+          title: (l.brand||"")+" "+(l.model||"")+" "+(l.year||""),
+          price: l.price,
+          city: l.showroom_location,
+          primary_photo: l.photos?.[0]||null,
+          profiles: { first_name: l.showroom_name, business_name: l.showroom_name },
+          listing_type: "new_car",
+        }))
+      }
+      const merged = [...usedListings, ...newCarListings]
+        .sort((a,b) => {
+          if(a.is_featured && !b.is_featured) return -1
+          if(!a.is_featured && b.is_featured) return 1
+          return new Date(b.created_at) - new Date(a.created_at)
+        })
+      setListings(merged)
+    } catch(e) { console.error(e) }
     setLoading(false)
   }
-
   async function loadComments(listingId) {
     setLoadingComments(true)
     const { data } = await supabase.from("marketplace_comments")
@@ -246,9 +279,9 @@ export default function Marketplace() {
     />
   )
 
-  if (tab==="new_cars") return <NewCarMarketplace />
-  if (tab==="parts_shop") return <CustomerPartsMarketplace />
-  if (tab==="my_listings") return <MyNewCarListings />
+  // new_cars now handled inline
+  // parts_shop now handled inline
+  // my_listings handled below
   if (tab==="saved") return (
     <div>
       <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, marginBottom:"1rem" }}>❤️ Saved Listings</div>
@@ -403,6 +436,7 @@ export default function Marketplace() {
                 <button onClick={e=>{ e.stopPropagation(); toggleLike(l.id) }}
                   style={{ position:"absolute", bottom:8, right:8, background:"rgba(255,255,255,0.9)", border:"none", borderRadius:"50%", width:32, height:32, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, boxShadow:"0 2px 8px rgba(0,0,0,0.15)" }}>
                   {userLikes.has(l.id) ? "❤️" : "🤍"}
+                {l._type&&<div style={{ position:"absolute", top:8, left:8, background:l._type==="new_car"?"#378add":l._type==="part"?"#8b5cf6":"#1d9e75", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:4 }}>{l._type==="new_car"?"NEW CAR":l._type==="part"?"PART":"USED CAR"}</div>}
                 </button>
                 {l.primary_photo ? (
                   <img src={l.primary_photo} alt={l.title} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
