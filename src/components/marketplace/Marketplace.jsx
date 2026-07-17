@@ -529,7 +529,9 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
 
   if (!listing) return null
 
-  if(_listingType === "new_car" || listing._type === "new_car") return (
+  const _listingType = listing._type ?? listing.listing_type ?? listing.type
+
+  if(_listingType === "new_car") return (
     <div>
       <button onClick={onBack} style={{ background:"none", border:"none", color:"#e6821e", cursor:"pointer", fontSize:13, marginBottom:"1rem", padding:0 }}>← Back to listings</button>
       {listing.photos?.length>0&&(<div style={{ marginBottom:"1rem" }}>
@@ -557,7 +559,6 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
     </div>
   )
 
-  const _listingType = listing._type ?? listing.listing_type ?? listing.type;
   if(_listingType === "part" || _listingType === "accessory") return (
     <div>
       <button onClick={onBack} style={{ background:"none", border:"none", color:"#e6821e", cursor:"pointer", fontSize:13, marginBottom:"1rem", padding:0, fontFamily:"DM Sans,sans-serif" }}>← Back to listings</button>
