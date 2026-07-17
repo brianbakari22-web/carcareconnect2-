@@ -215,6 +215,7 @@ export default function Marketplace() {
   }
 
   async function openListing(listing) {
+    console.log("Opening listing _type:", listing._type, "listing_type:", listing.listing_type)
     setSelected(listing)
     setActivePhoto(0)
     setComments([])
