@@ -528,6 +528,34 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
 
   if (!listing) return null
 
+  if(listing._type === "new_car") return (
+    <div>
+      <button onClick={onBack} style={{ background:"none", border:"none", color:"#e6821e", cursor:"pointer", fontSize:13, marginBottom:"1rem", padding:0 }}>← Back to listings</button>
+      {listing.photos?.length>0&&(<div style={{ marginBottom:"1rem" }}>
+        <img src={listing.photos[activePhoto||0]} alt={listing.title} style={{ width:"100%", height:isMobile?220:380, objectFit:"cover", borderRadius:12, marginBottom:8 }}/>
+        {listing.photos.length>1&&(<div style={{ display:"flex", gap:6, overflowX:"auto" }}>{listing.photos.map((p,i)=>(<img key={i} src={p} alt="" onClick={()=>setActivePhoto(i)} style={{ width:70, height:52, objectFit:"cover", borderRadius:8, flexShrink:0, cursor:"pointer", border:(activePhoto||0)===i?"2px solid #e6821e":"2px solid transparent" }}/>))}</div>)}
+      </div>)}
+      {listing.video_url&&(<div style={{ marginBottom:"1rem" }}><video src={listing.video_url} controls style={{ width:"100%", borderRadius:12, maxHeight:260, background:"#000" }}/></div>)}
+      <div style={{ background:"#fff", border:"1px solid #eee", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
+        <div style={{ fontFamily:"Syne", fontSize:isMobile?18:22, fontWeight:800, marginBottom:4 }}>{listing.brand} {listing.model} {listing.year}</div>
+        <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#e6821e", marginBottom:12 }}>KES {Number(listing.price).toLocaleString()}</div>
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:12 }}>
+          {[{label:"Engine",value:listing.engine_cc?listing.engine_cc+"cc":"—"},{label:"Transmission",value:listing.transmission||"—"},{label:"Fuel",value:listing.fuel_type||"—"},{label:"Drive",value:listing.drive_type||"—"},{label:"Seats",value:listing.seats||"—"},{label:"Doors",value:listing.doors||"—"},{label:"Color",value:listing.exterior_color||"—"},{label:"Interior",value:listing.interior_color||"—"}].map(s=>(<div key={s.label} style={{ background:"#f8f8f8", borderRadius:8, padding:"0.5rem 0.75rem" }}><div style={{ fontSize:10, color:"#888", marginBottom:2 }}>{s.label}</div><div style={{ fontSize:12, fontWeight:600 }}>{s.value}</div></div>))}
+        </div>
+        {listing.description&&<div style={{ fontSize:12, color:"#555", lineHeight:1.6, marginTop:8 }}>{listing.description}</div>}
+      </div>
+      <div style={{ background:"#fff", border:"1px solid #eee", borderRadius:12, padding:"1rem" }}>
+        <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8 }}>🏢 Showroom</div>
+        <div style={{ fontSize:13, fontWeight:600, marginBottom:4 }}>{listing.showroom_name}</div>
+        <div style={{ fontSize:12, color:"#888", marginBottom:8 }}>📍 {listing.showroom_location}</div>
+        <div style={{ display:"flex", gap:8 }}>
+          {listing.showroom_phone&&<a href={"tel:"+listing.showroom_phone} style={{ flex:1, background:"#378add", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"10px", textAlign:"center", textDecoration:"none" }}>📞 Call</a>}
+          {listing.showroom_phone&&<a href={"https://wa.me/254"+listing.showroom_phone.replace(/^0/,"")} target="_blank" rel="noreferrer" style={{ flex:1, background:"#25D366", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"10px", textAlign:"center", textDecoration:"none" }}>💚 WhatsApp</a>}
+        </div>
+      </div>
+    </div>
+  )
+
   const badge = sellerInfo?.role==="provider"
     ? { label:"🏪 Verified Seller", color:"#378add", bg:"#eff6ff" }
     : { label:"👤 Private Seller", color:"#555555", bg:"#f5f5f5" }
