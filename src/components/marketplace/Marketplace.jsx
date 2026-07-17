@@ -784,7 +784,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
                 {sellerInfo?.first_name?.[0]}{sellerInfo?.last_name?.[0]}
               </div>
               <div>
-                <div style={{ fontSize:13, color:"#000000", fontWeight:600 }}>{sellerInfo?.business_name||`${sellerInfo?.first_name} ${sellerInfo?.last_name}`}</div>
+                <div style={{ fontSize:13, color:"#000000", fontWeight:600 }}>{sellerInfo?.business_name||`${sellerInfo?.first_name} ${sellerInfo?.last_name||""}`}</div>
                 <span style={{ fontSize:10, padding:"2px 7px", borderRadius:6, background:badge.bg, color:badge.color }}>{badge.label}</span>
               </div>
             </div>
@@ -818,11 +818,11 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
               </div>
 
               {/* Status banner */}
-              {!listing.is_inspected&&(
+              {!listing.is_inspected&&listing.listing_type==="vehicle"&&(
                 <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.9rem" }}>
                   <div style={{ fontSize:12, color:"#e6821e", fontWeight:600, marginBottom:4 }}>⏳ Pending CCC Inspection</div>
                   <div style={{ fontSize:11, color:"#555555", lineHeight:1.6 }}>
-                    This listing is awaiting Car Care Connect vehicle inspection before offers and messages are enabled. This ensures all vehicles on our platform are verified and trustworthy.
+                    This listing is awaiting CCC inspection. This ensures all listings on our platform are verified.
                   </div>
                 </div>
               )}
@@ -865,7 +865,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
                 <ChatWindow
                   listingId={listing.id}
                   otherUserId={listing.seller_id}
-                  otherUserName={sellerInfo?.business_name||`${sellerInfo?.first_name} ${sellerInfo?.last_name}`}
+                  otherUserName={sellerInfo?.business_name||`${sellerInfo?.first_name} ${sellerInfo?.last_name||""}`}
                   onClose={()=>setShowChat(false)}
                 />
               </div>
@@ -917,6 +917,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
     </div>
   )
 }
+
 
 
 
