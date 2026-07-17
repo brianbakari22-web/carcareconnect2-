@@ -278,7 +278,7 @@ export default function MyNewCarListings() {
             {t.l}
           </button>
         ))}
-        <button onClick={()=>{ if(!isDealer){ toast.error("You need an approved dealer account to list cars. Apply from the New Car Marketplace."); return } setShowForm(true); setEditing(null); setForm(EMPTY) }}
+        <button onClick={()=>{ if(!isDealer){ setShowDealerForm(true); return } setShowForm(true); setEditing(null); setForm(EMPTY) }}
           style={{ marginLeft:"auto", background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>
           + Add listing
         </button>
