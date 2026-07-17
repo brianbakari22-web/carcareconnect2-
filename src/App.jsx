@@ -264,6 +264,7 @@ function DashboardRouter() {
           <Route path="tracking" element={<CustomerTracking />} />
           <Route path="tracking" element={<CustomerTracking />} />
 <Route path="trip-reports" element={<CustomerTripReports />} />
+          <Route path="my-car-listings" element={<MyNewCarListings />} />
           <Route path="loyalty" element={<CustomerLoyalty />} />
           <Route path="payments" element={<CustomerPayments />} />
           <Route path="reviews" element={<CustomerReviews />} />
@@ -293,7 +294,6 @@ function DashboardRouter() {
           <Route path="analytics" element={<ProviderAnalytics />} />
               <Route path="qrcode" element={<ProviderQRCode />} />
               <Route path="new-cars" element={<NewCarMarketplace />} />
-              <Route path="my-car-listings" element={<MyNewCarListings />} />
           <Route path="reviews" element={<ProviderReviews />} />
           <Route path="hours" element={<ProviderBusinessHours />} />
           <Route path="availability" element={<ProviderAvailability />} />
