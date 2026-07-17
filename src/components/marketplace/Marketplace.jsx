@@ -102,7 +102,32 @@ export default function Marketplace() {
           listing_type: "new_car",
         }))
       }
-      const merged = [...usedListings, ...newCarListings]
+      // Load provider inventory (parts & accessories)
+      let inventoryListings = []
+      if(tab==="all" || tab==="part" || tab==="parts_shop" || tab==="accessory") {
+        const { data: inv } = await supabase.from("inventory")
+          .select("*, profiles!inventory_provider_id_fkey(first_name,last_name,business_name,role)")
+          .eq("is_active", true)
+          .order("created_at", { ascending:false })
+        inventoryListings = (inv||[]).map(l=>({
+          ...l,
+          _type: l.category==="accessories" ? "accessory" : "part",
+          listing_type: l.category==="accessories" ? "accessory" : "part",
+          title: l.name,
+          city: l.profiles?.business_name||"Kenya",
+          primary_photo: l.photos?.[0]||null,
+          profiles: l.profiles,
+          seller_id: l.provider_id,
+          part_category: l.category,
+          compatible_makes: l.compatible_cars?.join(", ")||"",
+          quantity: l.stock_quantity,
+          condition: "New",
+          negotiable: false,
+          status: "active",
+          _source: "inventory"
+        }))
+      }
+      const merged = [...usedListings, ...newCarListings, ...inventoryListings]
         .sort((a,b) => {
           if(a.is_featured && !b.is_featured) return -1
           if(!a.is_featured && b.is_featured) return 1
