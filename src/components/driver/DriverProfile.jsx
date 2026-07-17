@@ -24,7 +24,7 @@ export default function DriverProfile() {
   const [tab, setTab] = useState("personal")
   const [saving, setSaving] = useState(false)
   const [stats, setStats] = useState({ total:0, completed:0, rating:0, earnings:0 })
-  const [sensitive, setSensitive] = useState({ phone:"", email:"" })
+  const [sensitive, setSensitive] = useState({ phone:"", email:"", mpesa_number:"", pochi_number:"", preferred_payment_method:"mpesa" })
 
   const [vehicleType, setVehicleType] = useState("car")
   const [personalForm, setPersonalForm] = useState({
@@ -73,8 +73,8 @@ export default function DriverProfile() {
   }, [profile, user])
 
   async function loadSensitive() {
-    const { data } = await supabase.from("profile_sensitive").select("phone,email").eq("id", user.id).maybeSingle()
-    if (data) setSensitive({ phone:data.phone||"", email:data.email||"" })
+    const { data } = await supabase.from("profile_sensitive").select("phone,email,mpesa_number,pochi_number,preferred_payment_method").eq("id", user.id).maybeSingle()
+    if (data) setSensitive({ phone:data.phone||"", email:data.email||"", mpesa_number:data.mpesa_number||"", pochi_number:data.pochi_number||"", preferred_payment_method:data.preferred_payment_method||"mpesa" })
   }
 
   async function loadStats() {
@@ -189,7 +189,7 @@ export default function DriverProfile() {
     e.preventDefault()
     setSaving(true)
     try {
-      await supabase.from("profile_sensitive").update({ phone:sensitive.phone }).eq("id", user.id)
+      await supabase.from("profile_sensitive").update({ phone:sensitive.phone, mpesa_number:sensitive.mpesa_number||null, pochi_number:sensitive.pochi_number||null, preferred_payment_method:sensitive.preferred_payment_method||"mpesa" }).eq("id", user.id)
       toast.success("Contact saved")
     } catch(err) { toast.error(err.message) }
     finally { setSaving(false) }
@@ -451,6 +451,21 @@ export default function DriverProfile() {
             <input style={{ ...inp, color:"#777777", cursor:"not-allowed" }} value={sensitive.email} readOnly/>
             <label style={lbl}>Phone number</label>
             <input style={inp} placeholder="+254 700 000 000" value={sensitive.phone} onChange={e=>setSensitive(s=>({...s,phone:e.target.value}))}/>
+            <label style={{ fontSize:12, color:"#666", marginBottom:4, display:"block", marginTop:12 }}>Preferred payment method</label>
+            <select style={{ ...inp, marginBottom:8 }} value={sensitive.preferred_payment_method||"mpesa"} onChange={e=>setSensitive(s=>({...s,preferred_payment_method:e.target.value}))}>
+              <option value="mpesa">M-Pesa Number</option>
+              <option value="pochi">Pochi la Biashara</option>
+            </select>
+            <label style={{ fontSize:12, color:"#666", marginBottom:4, display:"block" }}>
+              {sensitive.preferred_payment_method==="pochi" ? "Pochi la Biashara number" : "M-Pesa number (for payouts)"}
+            </label>
+            {sensitive.preferred_payment_method==="mpesa"&&(
+              <input style={inp} placeholder="07XX XXX XXX" value={sensitive.mpesa_number||""} onChange={e=>setSensitive(s=>({...s,mpesa_number:e.target.value}))}/>
+            )}
+            {sensitive.preferred_payment_method==="pochi"&&(
+              <input style={inp} placeholder="07XX XXX XXX" value={sensitive.pochi_number||""} onChange={e=>setSensitive(s=>({...s,pochi_number:e.target.value}))}/>
+            )}
+            <div style={{ fontSize:11, color:"#999", marginBottom:8 }}>This number receives your earnings automatically</div>
             <button type="submit" disabled={saving}
               style={{ background:saving?"#555555":"#1d9e75", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
               {saving?"Saving...":"Save contact"}

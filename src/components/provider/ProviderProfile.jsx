@@ -26,7 +26,7 @@ export default function ProviderProfile() {
   const { t } = useLanguage()
   const isMobile = useIsMobile()
   const [form, setForm] = useState({ first_name:"", last_name:"", business_name:"", city:"", go_service_radius_km:"15" })
-  const [sensitive, setSensitive] = useState({ phone:"", email:"", mpesa_number:"" })
+  const [sensitive, setSensitive] = useState({ phone:"", email:"", mpesa_number:"", till_number:"", paybill_number:"", paybill_account:"", pochi_number:"", preferred_payment_method:"mpesa" })
   const [location, setLocation] = useState({ latitude:null, longitude:null, address:"" })
   const [saving, setSaving] = useState(false)
   const [locating, setLocating] = useState(false)
@@ -43,8 +43,8 @@ export default function ProviderProfile() {
   }, [profile, user])
 
   async function loadSensitive() {
-    const { data } = await supabase.from("profile_sensitive").select("phone,email").eq("id", user.id).single()
-    if (data) setSensitive({ phone:data.phone||"", email:data.email||"" })
+    const { data } = await supabase.from("profile_sensitive").select("phone,email,mpesa_number,till_number,paybill_number,paybill_account,pochi_number,preferred_payment_method").eq("id", user.id).single()
+    if (data) setSensitive({ phone:data.phone||"", email:data.email||"", mpesa_number:data.mpesa_number||"", till_number:data.till_number||"", paybill_number:data.paybill_number||"", paybill_account:data.paybill_account||"", pochi_number:data.pochi_number||"", preferred_payment_method:data.preferred_payment_method||"mpesa" })
   }
 
   async function saveProfile(e) {
@@ -59,7 +59,15 @@ export default function ProviderProfile() {
     e.preventDefault()
     setSaving(true)
     try {
-      await supabase.from("profile_sensitive").update({ phone:sensitive.phone, mpesa_number:sensitive.mpesa_number }).eq("id", user.id)
+      await supabase.from("profile_sensitive").update({ 
+        phone:sensitive.phone, 
+        mpesa_number:sensitive.mpesa_number,
+        till_number:sensitive.till_number||null,
+        paybill_number:sensitive.paybill_number||null,
+        paybill_account:sensitive.paybill_account||null,
+        pochi_number:sensitive.pochi_number||null,
+        preferred_payment_method:sensitive.preferred_payment_method||"mpesa"
+      }).eq("id", user.id)
       toast.success(t("saveChanges"))
     } catch(err) { toast.error(err.message) }
     finally { setSaving(false) }
@@ -229,6 +237,25 @@ export default function ProviderProfile() {
             <label style={{ fontSize:12, color:"#666", marginBottom:4, display:"block", marginTop:12 }}>M-Pesa Number (for payouts)</label>
             <input style={inp} placeholder="07XX XXX XXX" value={sensitive.mpesa_number} onChange={e=>setSensitive(s=>({...s,mpesa_number:e.target.value}))}/>
             <div style={{ fontSize:11, color:"#999", marginBottom:8 }}>This number receives your service payments automatically</div>
+            <label style={{ fontSize:12, color:"#666", marginBottom:4, display:"block", marginTop:12 }}>Preferred payment method</label>
+            <select style={{ ...inp, marginBottom:8 }} value={sensitive.preferred_payment_method||"mpesa"} onChange={e=>setSensitive(s=>({...s,preferred_payment_method:e.target.value}))}>
+              <option value="mpesa">M-Pesa Number</option>
+              <option value="till">Buy Goods Till</option>
+              <option value="paybill">Paybill</option>
+              <option value="pochi">Pochi la Biashara</option>
+            </select>
+            {(sensitive.preferred_payment_method==="till")&&(
+              <input style={inp} placeholder="Till number e.g 123456" value={sensitive.till_number||""} onChange={e=>setSensitive(s=>({...s,till_number:e.target.value}))}/>
+            )}
+            {(sensitive.preferred_payment_method==="paybill")&&(
+              <div>
+                <input style={{ ...inp, marginBottom:6 }} placeholder="Paybill number e.g 123456" value={sensitive.paybill_number||""} onChange={e=>setSensitive(s=>({...s,paybill_number:e.target.value}))}/>
+                <input style={inp} placeholder="Account name/number" value={sensitive.paybill_account||""} onChange={e=>setSensitive(s=>({...s,paybill_account:e.target.value}))}/>
+              </div>
+            )}
+            {(sensitive.preferred_payment_method==="pochi")&&(
+              <input style={inp} placeholder="Pochi la Biashara number" value={sensitive.pochi_number||""} onChange={e=>setSensitive(s=>({...s,pochi_number:e.target.value}))}/>
+            )}
             <button type="submit" disabled={saving}
               style={{ background:saving?"#555555":"#378add", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:saving?"not-allowed":"pointer" }}>
               {saving?t("saving"):t("saveChanges")}
