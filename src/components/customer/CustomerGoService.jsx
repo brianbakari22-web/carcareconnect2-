@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { supabase } from "../../lib/supabase"
+import IntaSendPayment from "../shared/IntaSendPayment"
 import { applyRateLimit, RATE_LIMITS } from "../../lib/rateLimit"
 import { sanitizeAmount } from "../../lib/sanitize"
 import { getCurrentPosition } from "../../lib/geolocation"
@@ -41,6 +42,7 @@ export default function CustomerGoService() {
 
   const [showDepositPayment, setShowDepositPayment] = useState(false)
   const [payingCallout, setPayingCallout] = useState(false)
+  const [calloutFee, setCalloutFee] = useState(500)
   useEffect(() => {
     if (user) {
       loadVehicles()
@@ -219,8 +221,8 @@ export default function CustomerGoService() {
         emergency_location_address: location.address,
         booking_date: new Date().toISOString().split("T")[0],
         booking_time: new Date().toTimeString().slice(0,5),
-        total_amount: Math.min(sanitizeAmount(selectedService.price), 500), // GO service max 500
-        go_callout_fee: 500,
+        total_amount: Math.min(sanitizeAmount(selectedService.price), calloutFee), // GO service max 500
+        go_callout_fee: calloutFee,
         go_callout_paid: false,
         platform_commission: Number(selectedService.price)*0.15,
         provider_earnings: Number(selectedService.price)*0.85,
@@ -234,10 +236,10 @@ export default function CustomerGoService() {
         go_attempt_number: 1,
       }).select().single()
       if (error) throw error
-      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/daraja-stk-push",{
+      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/intasend-stk-push",{
         method:"POST",
         headers:{"Content-Type":"application/json","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc"},
-        body:JSON.stringify({amount:500,bookingId:bk.id,customerEmail:user.email||"",customerPhone:"",customerName:""})
+        body:JSON.stringify({amount:calloutFee,bookingId:bk.id,customerEmail:user.email||"",customerPhone:"",customerName:""})
       })
       const order = await res.json()
       if (order.redirect_url) {
@@ -596,17 +598,17 @@ export default function CustomerGoService() {
         <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.85)", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center", padding:"1rem" }}>
           <div style={{ width:"100%", maxWidth:400, background:"#ffffff", border:"1px solid #e24b4a40", borderRadius:16, padding:"1.5rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#e24b4a", marginBottom:4 }}>🚨 Confirm Emergency Request</div>
-            <div style={{ fontSize:12, color:"#555555", marginBottom:16, lineHeight:1.6 }}>A KES 500 mechanic callout fee covers transport costs to your location.</div>
+            <div style={{ fontSize:12, color:"#555555", marginBottom:16, lineHeight:1.6 }}>A KES {calloutFee} mechanic callout fee covers transport costs to your location.</div>
             <div style={{ background:"#ffffff", borderRadius:10, padding:"1rem", marginBottom:16 }}>
               <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#555555", marginBottom:6 }}><span>Emergency</span><span style={{ color:"#000000", textTransform:"capitalize" }}>{emergencyType.replace(/_/g," ")}</span></div>
               <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#555555", marginBottom:6 }}><span>Provider</span><span style={{ color:"#000000" }}>{selectedService?.profiles?.business_name||selectedService?.profiles?.first_name}</span></div>
               <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#555555", marginBottom:6 }}><span>Service fee</span><span style={{ color:"#000000" }}>KES {Number(selectedService?.price||0).toLocaleString()}</span></div>
               <div style={{ height:1, background:"#f0f0f0", margin:"8px 0" }}/>
-              <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, color:"#e6821e", fontWeight:700 }}><span>Callout fee (pay now)</span><span>KES 500</span></div>
+              <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, color:"#e6821e", fontWeight:700 }}><span>Callout fee (pay now)</span><span>KES {calloutFee}</span></div>
               <div style={{ fontSize:10, color:"#777777", marginTop:4 }}>Service fee paid after completion</div>
             </div>
             <button onClick={payCalloutFee} disabled={payingCallout} style={{ width:"100%", background:payingCallout?"#555555":"#e24b4a", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:payingCallout?"not-allowed":"pointer", marginBottom:8 }}>
-              {payingCallout?"Sending M-Pesa prompt...":"Pay KES 500 and Request Help"}
+              {payingCallout?"Sending M-Pesa prompt...":"Pay KES {calloutFee} and Request Help"}
             </button>
             <button onClick={()=>setShowDepositPayment(false)} style={{ width:"100%", background:"none", border:"1px solid #dddddd", borderRadius:10, color:"#666", fontSize:13, padding:"11px", cursor:"pointer" }}>
               Cancel
@@ -620,7 +622,7 @@ export default function CustomerGoService() {
           <div style={{ width:"100%", maxWidth:400, background:"#ffffff", border:"1px solid #e24b4a40", borderRadius:16, padding:"1.5rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#e24b4a", marginBottom:4 }}>🚨 Confirm Emergency Request</div>
             <div style={{ fontSize:12, color:"#555555", marginBottom:16, lineHeight:1.6 }}>
-              A KES 500 mechanic callout fee is required to dispatch a mechanic to your location. This covers transport costs.
+              A KES {calloutFee} mechanic callout fee is required to dispatch a mechanic to your location. This covers transport costs.
             </div>
             <div style={{ background:"#ffffff", borderRadius:10, padding:"1rem", marginBottom:16 }}>
               <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#555555", marginBottom:6 }}>
@@ -634,13 +636,13 @@ export default function CustomerGoService() {
               </div>
               <div style={{ height:1, background:"#f0f0f0", margin:"8px 0" }}/>
               <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, color:"#e6821e", fontWeight:700 }}>
-                <span>Callout fee (pay now)</span><span>KES 500</span>
+                <span>Callout fee (pay now)</span><span>{calloutFee}</span>
               </div>
               <div style={{ fontSize:10, color:"#777777", marginTop:4 }}>Service fee paid after completion</div>
             </div>
             <button onClick={payCalloutFee} disabled={payingCallout}
               style={{ width:"100%", background:payingCallout?"#555555":"#e24b4a", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:payingCallout?"not-allowed":"pointer", marginBottom:8 }}>
-              {payingCallout?"Sending M-Pesa prompt...":"Pay KES 500 & Request Help →"}
+              {payingCallout?"Sending M-Pesa prompt...":"Pay KES {calloutFee} & Request Help →"}
             </button>
             <button onClick={()=>setShowDepositPayment(false)}
               style={{ width:"100%", background:"none", border:"1px solid #dddddd", borderRadius:10, color:"#666", fontSize:13, padding:"11px", cursor:"pointer" }}>
