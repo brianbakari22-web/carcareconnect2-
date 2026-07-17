@@ -95,37 +95,10 @@ export default function AdminSettings() {
           { label:"Categories", value:Object.keys(grouped).length, color:"#8b5cf6" },
         ].map(s=>(
           <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"0.75rem", border:"1px solid #eee", textAlign:"center" }}>
-            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:s.color }}>{s.value}</div>
+            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:s.color }}><span style={{ wordBreak:"break-all", fontSize:12 }}>{s.value||"—"}</span></div>
             <div style={{ fontSize:10, color:"#888", marginTop:2 }}>{s.label}</div>
           </div>
         ))}
-      </div>
-      {/* Branding */}
-      <div style={{ background:"linear-gradient(135deg,#fff8f0,#fff)", border:"1px solid #e6821e20", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
-        <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:"1rem" }}>
-          <span style={{ fontSize:20 }}>🎨</span>
-          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800 }}>Platform Branding</div>
-        </div>
-        <div style={{ display:"flex", alignItems:"center", gap:"1rem", flexWrap:"wrap" }}>
-          <div style={{ width:80, height:80, borderRadius:12, border:"2px solid #e6821e30", overflow:"hidden", background:"#fff", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-            <img src={logoUrl} alt="Logo" style={{ width:"100%", height:"100%", objectFit:"contain" }} onError={e=>e.target.src="/logo_c.svg"}/>
-          </div>
-          <div style={{ flex:1 }}>
-            <div style={{ fontSize:13, fontWeight:600, color:"#000", marginBottom:4 }}>Platform Logo</div>
-            <div style={{ fontSize:11, color:"#888", marginBottom:8 }}>Shows on login and landing page. SVG or PNG recommended.</div>
-            <div style={{ display:"flex", gap:8 }}>
-              <input ref={logoInputRef} type="file" accept="image/*,.svg" style={{ display:"none" }} onChange={uploadLogo}/>
-              <button onClick={()=>logoInputRef.current?.click()} disabled={uploadingLogo}
-                style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:uploadingLogo?"not-allowed":"pointer" }}>
-                {uploadingLogo?"Uploading...":"Upload logo"}
-              </button>
-              <button onClick={()=>{ setLogoUrl("/logo_c.svg"); localStorage.setItem("ccc_logo_url","/logo_c.svg"); supabase.from("platform_settings").upsert({ key:"logo_url", value:"/logo_c.svg" },{ onConflict:"key" }); toast.success("Reset to default") }}
-                style={{ background:"#f5f5f5", border:"1px solid #ddd", borderRadius:8, color:"#555", fontSize:12, padding:"8px 12px", cursor:"pointer" }}>
-                Reset
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
       {/* Settings Categories */}
       {loading&&<div style={{ color:"#888", fontSize:13 }}>Loading settings...</div>}
