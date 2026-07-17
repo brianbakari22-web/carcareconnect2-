@@ -12,6 +12,7 @@ export default function DriverPayouts() {
   const [earnings, setEarnings] = useState(0)
   const [paid, setPaid] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [autoPayouts, setAutoPayouts] = useState([])
   const [bankInfo, setBankInfo] = useState({ bank_name:"", bank_account_name:"", bank_account_number:"", mpesa_number:"", id_number:"", kra_pin:"" })
   const [bankSaved, setBankSaved] = useState(false)
   const [amount, setAmount] = useState("")
@@ -151,6 +152,34 @@ export default function DriverPayouts() {
         </div>
       )}
 
+      {tab==="auto"&&(
+        <div>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:12 }}>Automatic Payouts from IntaSend</div>
+          {autoPayouts.length===0&&(
+            <div style={{ textAlign:"center", padding:"2rem", color:"#888" }}>
+              <div style={{ fontSize:32, marginBottom:8 }}>💸</div>
+              <div>No automatic payouts yet. They appear here after trips are completed.</div>
+            </div>
+          )}
+          {autoPayouts.map(p=>(
+            <div key={p.id} style={{ background:"#f8f8f8", borderRadius:10, padding:"1rem", marginBottom:8, border:"1px solid #eee" }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                <div>
+                  <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:700 }}>KES {Number(p.amount).toLocaleString()}</div>
+                  <div style={{ fontSize:12, color:"#888" }}>{new Date(p.created_at).toLocaleString()}</div>
+                  <div style={{ fontSize:11, color:"#aaa" }}>Ref: {p.intasend_ref||p.id?.slice(0,8)}</div>
+                </div>
+                <span style={{ fontSize:11, padding:"3px 10px", borderRadius:8,
+                  background:p.status==="completed"?"#f0fdf4":p.status==="failed"?"#fff5f5":"#fff8f0",
+                  color:p.status==="completed"?"#1d9e75":p.status==="failed"?"#e24b4a":"#e6821e",
+                  fontWeight:600 }}>
+                  {p.status}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
       {tab==="payouts"&&(
         <div>
           {!bankSaved&&(

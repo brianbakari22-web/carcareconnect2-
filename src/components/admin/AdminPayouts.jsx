@@ -11,6 +11,61 @@ export default function AdminPayouts() {
   const [loading, setLoading] = useState(true)
   const [note, setNote] = useState({})
   const [selected, setSelected] = useState([])
+  const [walletBalance, setWalletBalance] = useState(null)
+  const [failedPayouts, setFailedPayouts] = useState([])
+  const [totalCommission, setTotalCommission] = useState(0)
+  const [withdrawing, setWithdrawing] = useState(false)
+
+  useEffect(() => {
+    loadWalletData()
+  }, [])
+
+  async function loadWalletData() {
+    try {
+      // Get total commission from completed transactions
+      const { data: txns } = await supabase
+        .from("payment_transactions")
+        .select("amount, processing_fee")
+        .eq("status", "completed")
+        .eq("type", "collection")
+      
+      if(txns) {
+        const total = txns.reduce((sum, t) => {
+          const commission = Number(t.amount) * 0.10 // 10% commission
+          return sum + commission
+        }, 0)
+        setTotalCommission(Math.floor(total))
+      }
+
+      // Get failed payouts
+      const { data: failed } = await supabase
+        .from("payment_transactions")
+        .select("*, profiles!payment_transactions_provider_id_fkey(first_name,last_name)")
+        .eq("status", "failed")
+        .eq("type", "payout")
+        .order("created_at", { ascending:false })
+      
+      setFailedPayouts(failed||[])
+    } catch(e) { console.error(e) }
+  }
+
+  async function retryPayout(txn) {
+    try {
+      const { data } = await supabase.functions.invoke("intasend-payout", {
+        body: {
+          booking_id: txn.booking_id,
+          provider_id: txn.provider_id,
+          amount: txn.amount,
+          phone: txn.phone,
+          narrative: "Retry payout - CCC"
+        }
+      })
+      if(data?.success) {
+        toast.success("Payout retry initiated!")
+        loadWalletData()
+      }
+    } catch(e) { toast.error(e.message) }
+  }
 
   useEffect(() => {
     load()
@@ -109,6 +164,46 @@ export default function AdminPayouts() {
 
   return (
     <div>
+      {/* IntaSend Commission Wallet */}
+      <div style={{ background:"linear-gradient(135deg,#e6821e15,#fff8f0)", border:"1px solid #e6821e30", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
+          <div>
+            <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:700 }}>IntaSend Commission Wallet</div>
+            <div style={{ fontSize:12, color:"#888" }}>CCC earnings from completed bookings</div>
+          </div>
+          <a href="https://payment.intasend.com" target="_blank" rel="noreferrer"
+            style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"8px 14px", textDecoration:"none", cursor:"pointer" }}>
+            Open IntaSend
+          </a>
+        </div>
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+          <div style={{ background:"#fff", borderRadius:8, padding:"0.75rem", border:"1px solid #e6821e20" }}>
+            <div style={{ fontSize:11, color:"#888", marginBottom:4 }}>Total Commission Earned</div>
+            <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#e6821e" }}>KES {totalCommission.toLocaleString()}</div>
+          </div>
+          <div style={{ background:"#fff", borderRadius:8, padding:"0.75rem", border:"1px solid #e6821e20" }}>
+            <div style={{ fontSize:11, color:"#888", marginBottom:4 }}>Failed Payouts</div>
+            <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:failedPayouts.length>0?"#e24b4a":"#1d9e75" }}>{failedPayouts.length}</div>
+          </div>
+        </div>
+        {failedPayouts.length>0&&(
+          <div style={{ marginTop:12 }}>
+            <div style={{ fontSize:12, fontWeight:700, color:"#e24b4a", marginBottom:8 }}>Failed Payouts — Retry Required</div>
+            {failedPayouts.map(f=>(
+              <div key={f.id} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", background:"#fff5f5", border:"1px solid #e24b4a20", borderRadius:8, padding:"8px 12px", marginBottom:6 }}>
+                <div>
+                  <div style={{ fontSize:13, fontWeight:600 }}>{f.profiles?.first_name} {f.profiles?.last_name}</div>
+                  <div style={{ fontSize:11, color:"#888" }}>KES {Number(f.amount).toLocaleString()} · {f.phone}</div>
+                </div>
+                <button onClick={()=>retryPayout(f)}
+                  style={{ background:"#e6821e", border:"none", borderRadius:6, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>
+                  Retry
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {[
           { label:"Pending", value:payouts.filter(p=>p.status==="pending").length, color:"#e6821e" },
