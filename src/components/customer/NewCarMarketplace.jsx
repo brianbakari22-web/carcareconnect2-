@@ -151,17 +151,24 @@ export default function NewCarMarketplace() {
       <div style={{ marginBottom:"1.5rem" }}>
         {selected.photos?.[0] ? (
           <div>
-            <img src={selected.photos[0]} alt={selected.brand+" "+selected.model} style={{ width:"100%", height:isMobile?220:380, objectFit:"cover", borderRadius:12, marginBottom:8 }}/>
+            <div style={{ position:"relative" }}>
+              <img src={selected.photos[activePhoto||0]} alt={selected.brand+" "+selected.model}
+                onClick={()=>setLightbox({ open:true, photos:selected.photos, index:activePhoto||0 })}
+                style={{ width:"100%", height:isMobile?220:380, objectFit:"cover", borderRadius:12, marginBottom:8, cursor:"zoom-in" }}/>
+              <div style={{ position:"absolute", bottom:16, right:16, background:"rgba(0,0,0,0.5)", color:"#fff", fontSize:11, padding:"3px 8px", borderRadius:8 }}>tap to zoom</div>
+              {selected.photos.length>1&&<div style={{ position:"absolute", bottom:16, left:16, background:"rgba(0,0,0,0.5)", color:"#fff", fontSize:11, padding:"3px 8px", borderRadius:8 }}>{(activePhoto||0)+1}/{selected.photos.length}</div>}
+            </div>
             {selected.photos.length>1&&(
-              <div style={{ display:"flex", gap:6, overflowX:"auto" }}>
-                {selected.photos.slice(1).map((p,i)=>(
-                  <img key={i} src={p} alt="" style={{ width:80, height:60, objectFit:"cover", borderRadius:8, flexShrink:0 }}/>
+              <div style={{ display:"flex", gap:6, overflowX:"auto", paddingBottom:4 }}>
+                {selected.photos.map((p,i)=>(
+                  <img key={i} src={p} alt="" onClick={()=>setActivePhoto(i)}
+                    style={{ width:80, height:60, objectFit:"cover", borderRadius:8, flexShrink:0, cursor:"pointer", border:(activePhoto||0)===i?"2px solid #e6821e":"2px solid transparent" }}/>
                 ))}
               </div>
             )}
           </div>
         ):(
-          <div style={{ height:220, background:"#f5f5f5", borderRadius:12, display:"flex", alignItems:"center", justifyContent:"center", fontSize:48 }}>🚗</div>
+          <div style={{ height:220, background:"#f5f5f5", borderRadius:12, display:"flex", alignItems:"center", justifyContent:"center", fontSize:48 }}>&#128663;</div>
         )}
       </div>
 
