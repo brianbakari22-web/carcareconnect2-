@@ -15,6 +15,7 @@ const NAV = {
     { path:"/dashboard/services", key:"findServices", icon:"🔍" },
     { path:"/dashboard/vehicles", key:"myVehicles", icon:"🚗" },
     { path:"/dashboard/discover", key:"discover", icon:"🌍" },
+    { path:"/dashboard/my-car-listings", label:"My Car Listings", icon:"🚗" },
     { path:"/dashboard/tracking", key:"trackDriver", icon:"📍" },
     { path:"/dashboard/trip-reports", label:"Trip Reports", icon:"🗺️" },
     { path:"/dashboard/loyalty", key:"loyalty", icon:"⭐" },
