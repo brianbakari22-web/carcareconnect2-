@@ -69,20 +69,15 @@ export default function FeaturedListing({ listingId, onSuccess }) {
       sessionStorage.setItem("featured_days", days)
 
       const { data: { session } } = await supabase.auth.getSession()
-      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/daraja-stk-push", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc"
-        },
-        body: JSON.stringify({
+      const { data: res, error: resErr } = await supabase.functions.invoke("intasend-stk-push", {
+        body: {
           amount,
           bookingId: payment.id,
           customerEmail: user.email,
           customerPhone: profile?.phone || "",
           customerName: (profile?.first_name||"") + " " + (profile?.last_name||""),
           description: `${tier==="premium"?"⭐ PREMIUM":"Standard"} Featured listing for ${days} day(s): "${listing.title}"`
-        })
+        }
       })
       const order = await res.json()
       if (order.redirect_url) {

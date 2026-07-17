@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { supabase } from "../../lib/supabase"
+import IntaSendPayment from "../shared/IntaSendPayment"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
@@ -41,7 +42,7 @@ export default function MarketplacePayment({ offer, listing, onSuccess, onCancel
 
       // Call M-Pesa edge function
       const { data: { session } } = await supabase.auth.getSession()
-      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/daraja-stk-push", {
+      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/intasend-stk-push", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

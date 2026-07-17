@@ -24,13 +24,8 @@ export default function PaymentCallback() {
       const goProviderId = sessionStorage.getItem("go_provider_id")
       const isGoPayment = goBookingId === merchantRef
 
-      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/daraja-stk-push", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc"
-        },
-        body: JSON.stringify({ trackingId, merchantRef })
+      const { data: res, error: resErr } = await supabase.functions.invoke("intasend-stk-push", {
+        body: { trackingId, merchantRef }
       })
       const data = await res.json()
 

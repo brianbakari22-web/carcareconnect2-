@@ -15,10 +15,8 @@ export default function DarajaPayment({ amount, bookingId, orderId, customerPhon
     setLoading(true)
     try {
       const { data: { session } } = await supabase.auth.getSession()
-      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/daraja-stk-push", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + session.access_token },
-        body: JSON.stringify({ phone, amount, bookingId, orderId, description: description || "Car Care Connect Payment" })
+      const { data: res, error: resErr } = await supabase.functions.invoke("intasend-stk-push", {
+        body: { phone, amount, bookingId, orderId, description: description || "Car Care Connect Payment" }
       })
       const data = await res.json()
       if (data.ResponseCode === "0") {

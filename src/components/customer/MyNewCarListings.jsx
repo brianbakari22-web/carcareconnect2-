@@ -154,30 +154,22 @@ export default function MyNewCarListings() {
       setShowForm(false); setEditing(null); setForm(EMPTY); load()
     } catch(e) { toast.error(e.message) }
     finally { setSaving(false) }
-  }
-
   async function payListingFee(listing) {
     try {
-      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/daraja-stk-push", {
-        method:"POST",
-        headers:{ "Content-Type":"application/json", "Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc" },
-        body: JSON.stringify({
+      const { data, error } = await supabase.functions.invoke("intasend-stk-push", {
+        body: {
           amount: fees.listing_fee,
-          bookingId: listing.id,
-          customerEmail: profile?.email||user.email||"",
-          customerPhone: listing.showroom_phone||"",
-          customerName: listing.showroom_name,
-          description: `New car listing fee - ${listing.brand} ${listing.model}`
-        })
+          booking_id: listing.id,
+          customer_id: user.id,
+          phone: listing.showroom_phone||profile?.phone||"",
+          service_name: `New car listing fee - ${listing.brand} ${listing.model}`
+        }
       })
-      const data = await res.json()
-      if (data.redirect_url) window.location.href = data.redirect_url
-      else toast.error("Payment initiation failed")
+      if(error) throw error
+      if(data?.success) toast.success("STK Push sent! Check your phone for M-Pesa prompt.")
+      else toast.error("Payment initiation failed. Please try again.")
     } catch(e) { toast.error(e.message) }
   }
-
-  async function updateEnquiryStatus(id, status) {
-    await supabase.from("car_enquiries").update({ status, contacted_at: status==="contacted"?new Date().toISOString():undefined }).eq("id",id)
     toast.success("Status updated")
     load()
   }
