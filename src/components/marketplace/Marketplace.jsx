@@ -219,6 +219,12 @@ export default function Marketplace() {
     setActivePhoto(0)
     setComments([])
     setNewComment("")
+    if(listing._type === "new_car") {
+      setPhotos([])
+      setOffers([])
+      setSellerInfo({ first_name: listing.showroom_name, business_name: listing.showroom_name })
+      return
+    }
     loadComments(listing.id)
     await supabase.from("marketplace_listings").update({ views:(listing.views||0)+1 }).eq("id",listing.id)
     const { data: pics } = await supabase.from("marketplace_photos").select("*").eq("listing_id",listing.id).order("display_order")
