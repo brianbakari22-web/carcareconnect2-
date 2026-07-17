@@ -176,6 +176,53 @@ export default function MyNewCarListings() {
     <div>
       <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#000", marginBottom:4 }}>My Car Listings</div>
       <div style={{ fontSize:12, color:"#777", marginBottom:"1.25rem" }}>Manage your new car listings and enquiries</div>
+      {/* Dealer gate */}
+      {!isDealer&&(
+        <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:12, padding:"1.5rem", marginBottom:"1.25rem", textAlign:"center" }}>
+          <div style={{ fontSize:32, marginBottom:8 }}>&#127962;</div>
+          {dealerStatus==="pending"&&<div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:6 }}>Application Under Review</div>}
+          {dealerStatus==="pending"&&<div style={{ fontSize:13, color:"#888" }}>Your dealer application is under review. We will notify you within 24 hours.</div>}
+          {dealerStatus==="rejected"&&<div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#e24b4a", marginBottom:6 }}>Application Not Approved</div>}
+          {dealerStatus==="rejected"&&<div style={{ fontSize:13, color:"#888" }}>Contact us at carcareconnect254@gmail.com for more information.</div>}
+          {!dealerStatus&&!showDealerForm&&(
+            <div>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:6 }}>Become a CCC Dealer</div>
+              <div style={{ fontSize:13, color:"#666", marginBottom:12 }}>Register your showroom to list vehicles on Car Care Connect.</div>
+              <button onClick={()=>setShowDealerForm(true)}
+                style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:"pointer" }}>
+                Apply as Dealer
+              </button>
+            </div>
+          )}
+          {showDealerForm&&(
+            <div style={{ textAlign:"left", marginTop:12 }}>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:12 }}>Register as a Car Dealer</div>
+              <input placeholder="Showroom name *" value={dealerForm.showroom_name} onChange={e=>setDealerForm(f=>({...f,showroom_name:e.target.value}))}
+                style={{ width:"100%", padding:"10px 12px", borderRadius:8, border:"1px solid #ddd", fontSize:13, marginBottom:8, boxSizing:"border-box" }}/>
+              <input placeholder="Location *" value={dealerForm.showroom_location} onChange={e=>setDealerForm(f=>({...f,showroom_location:e.target.value}))}
+                style={{ width:"100%", padding:"10px 12px", borderRadius:8, border:"1px solid #ddd", fontSize:13, marginBottom:8, boxSizing:"border-box" }}/>
+              <input placeholder="Phone number *" value={dealerForm.showroom_phone} onChange={e=>setDealerForm(f=>({...f,showroom_phone:e.target.value}))}
+                style={{ width:"100%", padding:"10px 12px", borderRadius:8, border:"1px solid #ddd", fontSize:13, marginBottom:8, boxSizing:"border-box" }}/>
+              <input placeholder="Email" value={dealerForm.showroom_email} onChange={e=>setDealerForm(f=>({...f,showroom_email:e.target.value}))}
+                style={{ width:"100%", padding:"10px 12px", borderRadius:8, border:"1px solid #ddd", fontSize:13, marginBottom:8, boxSizing:"border-box" }}/>
+              <input placeholder="Brands you sell e.g Toyota, Mazda" value={dealerForm.brands_sold} onChange={e=>setDealerForm(f=>({...f,brands_sold:e.target.value}))}
+                style={{ width:"100%", padding:"10px 12px", borderRadius:8, border:"1px solid #ddd", fontSize:13, marginBottom:8, boxSizing:"border-box" }}/>
+              <input placeholder="Average monthly stock" value={dealerForm.monthly_stock} onChange={e=>setDealerForm(f=>({...f,monthly_stock:e.target.value}))}
+                style={{ width:"100%", padding:"10px 12px", borderRadius:8, border:"1px solid #ddd", fontSize:13, marginBottom:12, boxSizing:"border-box" }}/>
+              <div style={{ display:"flex", gap:8 }}>
+                <button onClick={submitDealerApplication} disabled={submittingDealer}
+                  style={{ flex:1, background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:13, fontWeight:700, padding:"11px", cursor:"pointer" }}>
+                  {submittingDealer?"Submitting...":"Submit Application"}
+                </button>
+                <button onClick={()=>setShowDealerForm(false)}
+                  style={{ background:"#f5f5f5", border:"none", borderRadius:8, color:"#555", fontSize:13, padding:"11px 16px", cursor:"pointer" }}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Stats */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8, marginBottom:"1.25rem" }}>
