@@ -43,6 +43,11 @@ export default function MyNewCarListings() {
   useEffect(() => {
     if (!user) return
     load()
+    // Load dealer status
+    supabase.from("profiles").select("is_dealer").eq("id", user.id).single()
+      .then(({data}) => setIsDealer(data?.is_dealer||false))
+    supabase.from("dealer_applications").select("status").eq("user_id", user.id).maybeSingle()
+      .then(({data}) => setDealerStatus(data?.status||null))
     supabase.from("app_settings").select("key,value").in("key",["new_car_listing_fee","new_car_listing_duration_days"])
       .then(({ data }) => {
         const map = {}
