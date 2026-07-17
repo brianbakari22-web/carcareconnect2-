@@ -6,6 +6,7 @@ import toast from "react-hot-toast"
 const SETTING_CATEGORIES = {
   "Commissions & Fees": { icon:"💰", color:"#1d9e75", keys:["inspection_fee","go_service_callout_fee","shop_standard_commission","shop_premium_commission","go_service_commission","concierge_surcharge_rate","marketplace_processing_fee_rate"] },
   "New Car Marketplace": { icon:"🚗", color:"#378add", keys:["new_car_listing_fee","new_car_lead_fee","new_car_featured_fee_day","new_car_featured_fee_week","new_car_featured_fee_month","new_car_listing_duration_days"] },
+  "Payment & Banking": { icon:"🏦", color:"#8b5cf6", keys:["go_callout_fee","min_payout_amount","platform_bank_name","platform_bank_account","platform_bank_account_name","intasend_wallet_id"] },
 }
 
 export default function AdminSettings() {
