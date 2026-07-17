@@ -44,7 +44,7 @@ export default function NewCarMarketplace() {
 
   async function load() {
     const [{ data: carData }, { data: brandData }] = await Promise.all([
-      supabase.from("new_car_listings").select("*, dealer:profiles!new_car_listings_dealer_id_fkey(first_name,last_name,avatar_url)").order("is_featured", { ascending:false }).order("created_at", { ascending:false }),
+      supabase.from("new_car_listings").select("*, dealer:profiles!new_car_listings_dealer_id_fkey(first_name,last_name,avatar_url)").eq("is_active", true).eq("listing_fee_paid", true).order("is_featured", { ascending:false }).order("created_at", { ascending:false }),
       supabase.from("car_brands").select("*").order("display_order")
     ])
     setCars(carData||[])
