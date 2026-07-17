@@ -69,15 +69,15 @@ export default function Marketplace() {
     try {
       let usedListings = []
       let newCarListings = []
-      if(tab==="all" || tab==="vehicle" || tab==="part" || tab==="accessory") {
+      if(tab==="all" || tab==="vehicle" || tab==="part" || tab==="accessory" || tab==="parts_shop") {
         let query = supabase.from("marketplace_listings")
           .select("*, profiles(first_name,last_name,role,business_name), marketplace_photos(photo_url,is_primary), video_url")
           .eq("status","active")
           .order("is_featured",{ascending:false})
           .order("created_at",{ascending:false})
         if(tab==="vehicle") query = query.eq("listing_type","vehicle")
-        else if(tab==="part") query = query.eq("listing_type","part")
-        else if(tab==="accessory") query = query.eq("listing_type","accessory")
+        else if(tab==="part" || tab==="parts_shop") query = query.eq("listing_type","part")
+        else if(tab==="accessory" || tab==="parts_shop") { /* parts includes accessories */ }
         const { data } = await query
         usedListings = (data||[]).map(l=>({
           ...l,
