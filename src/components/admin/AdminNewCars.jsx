@@ -106,6 +106,7 @@ export default function AdminNewCars() {
 
   async function approveApplication(app) {
     await supabase.from("dealer_applications").update({ status:"approved", reviewed_by:user.id, reviewed_at:new Date().toISOString() }).eq("id",app.id)
+    await supabase.from("profiles").update({ is_dealer:true }).eq("id", app.user_id)
     await supabase.from("notifications").insert({ user_id:app.user_id, title:"Dealer Application Approved! 🏢", message:`Welcome to CCC! Your dealership ${app.showroom_name} has been approved. You can now list vehicles.`, type:"success" })
     toast.success("Application approved!")
     load()
