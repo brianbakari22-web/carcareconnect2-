@@ -144,6 +144,32 @@ export default function NewCarMarketplace() {
   if (selected) return (
     <div>
       <button onClick={()=>{ setSelected(null); setShowEnquiry(false) }} style={{ background:"none", border:"none", color:"#e6821e", cursor:"pointer", fontSize:13, marginBottom:"1rem", padding:0, fontFamily:"DM Sans,sans-serif" }}>
+      {/* Lightbox */}
+      {lightbox.open&&(
+        <div onClick={()=>setLightbox({open:false,photos:[],index:0})}
+          style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.95)", zIndex:1000, display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column" }}>
+          <button onClick={()=>setLightbox({open:false,photos:[],index:0})}
+            style={{ position:"absolute", top:16, right:16, background:"rgba(255,255,255,0.2)", border:"none", borderRadius:"50%", width:40, height:40, color:"#fff", fontSize:20, cursor:"pointer" }}>x</button>
+          <img src={lightbox.photos[lightbox.index]} alt=""
+            onClick={e=>e.stopPropagation()}
+            style={{ maxWidth:"95vw", maxHeight:"80vh", objectFit:"contain", borderRadius:8 }}/>
+          {lightbox.photos.length>1&&(
+            <div style={{ display:"flex", gap:8, marginTop:12 }}>
+              <button onClick={e=>{e.stopPropagation();setLightbox(l=>({...l,index:Math.max(0,l.index-1)}))}}
+                style={{ background:"rgba(255,255,255,0.2)", border:"none", borderRadius:8, color:"#fff", padding:"8px 16px", cursor:"pointer", fontSize:18 }}>prev</button>
+              <span style={{ color:"#fff", fontSize:13, alignSelf:"center" }}>{lightbox.index+1}/{lightbox.photos.length}</span>
+              <button onClick={e=>{e.stopPropagation();setLightbox(l=>({...l,index:Math.min(l.photos.length-1,l.index+1)}))}}
+                style={{ background:"rgba(255,255,255,0.2)", border:"none", borderRadius:8, color:"#fff", padding:"8px 16px", cursor:"pointer", fontSize:18 }}>next</button>
+            </div>
+          )}
+          <div style={{ display:"flex", gap:6, marginTop:12, overflowX:"auto", maxWidth:"95vw" }}>
+            {lightbox.photos.map((p,i)=>(
+              <img key={i} src={p} alt="" onClick={e=>{e.stopPropagation();setLightbox(l=>({...l,index:i}))}}
+                style={{ width:60, height:45, objectFit:"cover", borderRadius:6, cursor:"pointer", border:lightbox.index===i?"2px solid #e6821e":"2px solid transparent", flexShrink:0 }}/>
+            ))}
+          </div>
+        </div>
+      )}
         ← Back to listings
       </button>
 
