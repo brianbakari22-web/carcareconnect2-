@@ -75,6 +75,32 @@ export default function MyNewCarListings() {
     finally { setUploadingPhoto(false) }
   }
 
+  async function submitDealerApplication() {
+    if(!dealerForm.showroom_name||!dealerForm.showroom_location||!dealerForm.showroom_phone) return toast.error("Please fill in all required fields")
+    setSubmittingDealer(true)
+    try {
+      await supabase.from("dealer_applications").insert({
+        user_id: user.id,
+        showroom_name: dealerForm.showroom_name,
+        showroom_location: dealerForm.showroom_location,
+        showroom_phone: dealerForm.showroom_phone,
+        showroom_email: dealerForm.showroom_email||null,
+        brands_sold: dealerForm.brands_sold ? dealerForm.brands_sold.split(",").map(b=>b.trim()).filter(Boolean) : [],
+        monthly_stock: dealerForm.monthly_stock ? Number(dealerForm.monthly_stock) : null,
+        status: "pending"
+      })
+      const {data:admins} = await supabase.from("profiles").select("id").eq("role","admin")
+      if(admins?.length>0) await supabase.from("notifications").insert(admins.map(a=>({
+        user_id:a.id, type:"dealer_application", title:"New Dealer Application",
+        message:dealerForm.showroom_name+" has applied to list cars on CCC."
+      })))
+      toast.success("Application submitted! We will contact you within 24 hours.")
+      setDealerStatus("pending")
+      setShowDealerForm(false)
+    } catch(e) { toast.error(e.message) }
+    finally { setSubmittingDealer(false) }
+  }
+
   async function save(e) {
     e.preventDefault()
     if (!form.brand||!form.model||!form.price||!form.showroom_name||!form.showroom_location) {
