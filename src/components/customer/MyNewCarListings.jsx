@@ -33,6 +33,11 @@ export default function MyNewCarListings() {
   const [uploadingPhoto, setUploadingPhoto] = useState(false)
   const [uploadingVideo, setUploadingVideo] = useState(false)
   const [fees, setFees] = useState({ listing_fee:2000, duration_days:30 })
+  const [isDealer, setIsDealer] = useState(false)
+  const [dealerStatus, setDealerStatus] = useState(null)
+  const [showDealerForm, setShowDealerForm] = useState(false)
+  const [dealerForm, setDealerForm] = useState({ showroom_name:"", showroom_location:"", showroom_phone:"", showroom_email:"", brands_sold:"", monthly_stock:"" })
+  const [submittingDealer, setSubmittingDealer] = useState(false)
   const photoRef = useRef(null)
 
   useEffect(() => {
