@@ -76,9 +76,8 @@ export default function Marketplace() {
           .order("is_featured",{ascending:false})
           .order("created_at",{ascending:false})
         if(tab==="vehicle") query = query.eq("listing_type","vehicle")
-        if(tab==="vehicle") query = query.eq("listing_type","vehicle")
         else if(tab==="part" || tab==="parts_shop") query = query.in("listing_type",["part","accessory"])
-        // accessories included in parts_shop tab
+        const { data } = await query
         usedListings = (data||[]).map(l=>({
           ...l,
           _type: l.listing_type==="vehicle" ? "used_car" : l.listing_type==="part" ? "part" : l.listing_type==="accessory" ? "accessory" : "part",
@@ -110,7 +109,7 @@ export default function Marketplace() {
           return new Date(b.created_at) - new Date(a.created_at)
         })
       setListings(merged)
-    } catch(e) { console.error(e) }
+    } catch(e) { console.error("Load error:", e) }
     setLoading(false)
   }
   async function loadComments(listingId) {
