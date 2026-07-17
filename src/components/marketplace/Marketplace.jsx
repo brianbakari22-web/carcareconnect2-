@@ -556,6 +556,40 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
     </div>
   )
 
+  if(listing._type === "part" || listing._type === "accessory") return (
+    <div>
+      <button onClick={onBack} style={{ background:"none", border:"none", color:"#e6821e", cursor:"pointer", fontSize:13, marginBottom:"1rem", padding:0, fontFamily:"DM Sans,sans-serif" }}>← Back to listings</button>
+      {listing.primary_photo&&(<div style={{ marginBottom:"1rem" }}><img src={listing.primary_photo} alt={listing.title} style={{ width:"100%", height:isMobile?220:320, objectFit:"cover", borderRadius:12 }}/></div>)}
+      <div style={{ background:"#fff", border:"1px solid #eee", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
+        <div style={{ fontFamily:"Syne", fontSize:isMobile?18:22, fontWeight:800, marginBottom:4 }}>{listing.title}</div>
+        <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#e6821e", marginBottom:4 }}>KES {Number(listing.price).toLocaleString()}</div>
+        {listing.negotiable&&<div style={{ fontSize:11, color:"#1d9e75", marginBottom:12 }}>✓ Price negotiable</div>}
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:12 }}>
+          {[{label:"Category",value:listing.part_category||"—"},{label:"Condition",value:listing.condition||"—"},{label:"Qty",value:listing.quantity||"—"},{label:"Compatible with",value:listing.compatible_makes||listing.make||"—"}].map(s=>(<div key={s.label} style={{ background:"#f8f8f8", borderRadius:8, padding:"0.5rem 0.75rem" }}><div style={{ fontSize:10, color:"#888", marginBottom:2 }}>{s.label}</div><div style={{ fontSize:12, fontWeight:600 }}>{s.value}</div></div>))}
+        </div>
+        {listing.description&&<div><div style={{ fontSize:12, fontWeight:700, marginBottom:4 }}>Description</div><div style={{ fontSize:12, color:"#555", lineHeight:1.6 }}>{listing.description}</div></div>}
+      </div>
+      <div style={{ background:"#fff", border:"1px solid #eee", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
+        <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8 }}>Seller</div>
+        <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:12 }}>
+          <div style={{ width:40, height:40, borderRadius:"50%", background:"#e6821e20", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#e6821e" }}>{(sellerInfo?.first_name||"S")[0]}</div>
+          <div>
+            <div style={{ fontSize:13, fontWeight:600 }}>{sellerInfo?.business_name||((sellerInfo?.first_name||"")+" "+(sellerInfo?.last_name||"")).trim()}</div>
+            <div style={{ fontSize:11, color:"#888" }}>📍 {listing.city}</div>
+          </div>
+        </div>
+        <div style={{ display:"flex", gap:8 }}>
+          <button onClick={()=>toggleLike(listing.id)} style={{ flex:1, background:"#f8f8f8", border:"1px solid #eee", borderRadius:8, fontSize:12, padding:"10px", cursor:"pointer" }}>
+            {userLikes?.has(listing.id)?"❤️":"🤍"} {listing.likes_count||0}
+          </button>
+          <button onClick={()=>{}} style={{ flex:2, background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"10px", cursor:"pointer" }}>
+            💬 Message seller
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+
   const badge = sellerInfo?.role==="provider"
     ? { label:"🏪 Verified Seller", color:"#378add", bg:"#eff6ff" }
     : { label:"👤 Private Seller", color:"#555555", bg:"#f5f5f5" }
