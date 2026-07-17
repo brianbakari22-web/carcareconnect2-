@@ -76,12 +76,12 @@ export default function Marketplace() {
           .order("is_featured",{ascending:false})
           .order("created_at",{ascending:false})
         if(tab==="vehicle") query = query.eq("listing_type","vehicle")
-        else if(tab==="part" || tab==="parts_shop") query = query.eq("listing_type","part")
-        else if(tab==="accessory" || tab==="parts_shop") { /* parts includes accessories */ }
-        const { data } = await query
+        if(tab==="vehicle") query = query.eq("listing_type","vehicle")
+        else if(tab==="part" || tab==="parts_shop") query = query.in("listing_type",["part","accessory"])
+        // accessories included in parts_shop tab
         usedListings = (data||[]).map(l=>({
           ...l,
-          _type: l.listing_type==="vehicle" ? "used_car" : "part",
+          _type: l.listing_type==="vehicle" ? "used_car" : l.listing_type==="part" ? "part" : l.listing_type==="accessory" ? "accessory" : "part",
           primary_photo: l.marketplace_photos?.find(p=>p.is_primary)?.photo_url||l.marketplace_photos?.[0]?.photo_url
         }))
       }
@@ -281,6 +281,40 @@ export default function Marketplace() {
 
   // new_cars now handled inline
   // parts_shop now handled inline
+  if (tab==="my_listings") {
+    // Filter listings belonging to current user
+    const myListings = listings.filter(l => l.user_id === user?.id || l.dealer_id === user?.id)
+    return (
+      <div>
+        <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, marginBottom:"1rem" }}>🏢 My Listings</div>
+        {myListings.length===0 ? (
+          <div style={{ textAlign:"center", padding:"3rem", color:"#888" }}>
+            <div style={{ fontSize:48, marginBottom:12 }}>📋</div>
+            <div style={{ fontWeight:700, marginBottom:6 }}>No listings yet</div>
+            <div style={{ fontSize:13, marginBottom:16 }}>Start selling by listing a vehicle or part</div>
+            <button onClick={()=>setTab("all")} style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:"pointer" }}>
+              Browse Marketplace
+            </button>
+          </div>
+        ) : (
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(3,1fr)", gap:10 }}>
+            {myListings.map(l=>(
+              <div key={l.id} onClick={()=>setSelected(l)} style={{ background:"#fff", border:"1px solid #eee", borderRadius:12, overflow:"hidden", cursor:"pointer" }}>
+                <div style={{ height:130, background:"#f5f5f5", position:"relative", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                  {l.primary_photo ? <img src={l.primary_photo} alt={l.title} style={{ width:"100%", height:"100%", objectFit:"cover" }}/> : <div style={{ fontSize:36 }}>{l._type==="new_car"?"🚗":l._type==="part"?"⚙️":"🚗"}</div>}
+                  <div style={{ position:"absolute", top:6, left:6, background:l._type==="new_car"?"#378add":l._type==="part"?"#8b5cf6":"#1d9e75", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 6px", borderRadius:4 }}>{l._type==="new_car"?"NEW CAR":l._type==="part"?"PART":"USED CAR"}</div>
+                </div>
+                <div style={{ padding:"0.75rem" }}>
+                  <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, marginBottom:4, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{l.title}</div>
+                  <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>KES {Number(l.price).toLocaleString()}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    )
+  }
   // my_listings handled below
   if (tab==="saved") return (
     <div>
@@ -436,7 +470,7 @@ export default function Marketplace() {
                 <button onClick={e=>{ e.stopPropagation(); toggleLike(l.id) }}
                   style={{ position:"absolute", bottom:8, right:8, background:"rgba(255,255,255,0.9)", border:"none", borderRadius:"50%", width:32, height:32, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, boxShadow:"0 2px 8px rgba(0,0,0,0.15)" }}>
                   {userLikes.has(l.id) ? "❤️" : "🤍"}
-                {l._type&&<div style={{ position:"absolute", top:8, left:8, background:l._type==="new_car"?"#378add":l._type==="part"?"#8b5cf6":"#1d9e75", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:4 }}>{l._type==="new_car"?"NEW CAR":l._type==="part"?"PART":"USED CAR"}</div>}
+                {l._type&&<div style={{ position:"absolute", top:8, left:8, background:l._type==="new_car"?"#378add":l._type==="part"||l._type==="accessory"?"#8b5cf6":"#1d9e75", color:"#fff", fontSize:10, fontWeight:700, padding:"3px 8px", borderRadius:6, letterSpacing:"0.03em" }}>{l._type==="new_car"?"🆕 NEW CAR":l._type==="part"?"⚙️ PART":l._type==="accessory"?"🔩 ACCESSORY":"🚗 USED CAR"}</div>}
                 </button>
                 {l.primary_photo ? (
                   <img src={l.primary_photo} alt={l.title} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
