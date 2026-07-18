@@ -925,9 +925,9 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
             {showChat&&(
               <div style={{ marginTop:8, height:400 }}>
                 <ChatWindow
-                  listingId={listing.id}
-                  otherUserId={listing.seller_id}
-                  otherUserName={sellerInfo?.business_name||`${sellerInfo?.first_name} ${sellerInfo?.last_name||""}`}
+                  listingId={listing._source==="inventory" ? undefined : listing.id}
+                  inventoryId={listing._source==="inventory" ? listing.id : undefined}
+                  otherUserId={listing.seller_id||listing.provider_id}
                   onClose={()=>setShowChat(false)}
                 />
               </div>
