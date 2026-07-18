@@ -75,7 +75,7 @@ export default function CustomerBookings() {
   }, [user])
 
   async function load() {
-    const { data } = await supabase.from("bookings").select("*,profiles!bookings_driver_id_fkey(first_name,last_name)").eq("customer_id", user.id).eq("hidden_from_customer", false).eq("is_archived", false).order("created_at",{ascending:false})
+    const { data } = await supabase.from("bookings").select("*,profiles!bookings_driver_id_fkey(first_name,last_name)").eq("customer_id", user.id).eq("hidden_from_customer", false).order("created_at",{ascending:false})
     setBookings(data||[])
     setLoading(false)
   }
