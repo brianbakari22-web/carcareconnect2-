@@ -9,6 +9,16 @@ import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
+const EMERGENCY_SERVICE_MAP = {
+  flat_tire: ["tyre","tire","puncture","wheel","flat"],
+  dead_battery: ["battery","jump","start","electrical"],
+  out_of_fuel: ["fuel","petrol","diesel","gas"],
+  car_wont_start: ["battery","electrical","ignition","start","mechanical"],
+  overheating: ["cooling","overheat","radiator","water","temperature","diagnosis"],
+  towing: ["tow","towing","recovery","transport"],
+  other: []
+}
+
 const EMERGENCY_TYPES = [
   { key:"flat_tire", label:"Flat tire", icon:"🛞" },
   { key:"dead_battery", label:"Dead battery", icon:"🔋" },
