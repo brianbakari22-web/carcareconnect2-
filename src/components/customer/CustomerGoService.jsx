@@ -129,7 +129,7 @@ export default function CustomerGoService() {
   }
   async function loadGoServices() {
     const { data } = await supabase.from("services")
-      .select("*, profiles(business_name,first_name,last_name,city,latitude,longitude,go_service_radius_km)")
+      .select("*, profiles(business_name,first_name,last_name,city,latitude,longitude,go_service_radius_km,marketplace_rating,marketplace_review_count,is_online,is_available)")
       .eq("category", "go_service")
       .eq("is_active", true).eq("profiles.is_active", true)
     let services = data||[]
@@ -552,10 +552,11 @@ export default function CustomerGoService() {
             style={{ background:selectedService?.id===s.id?"#fff5f5":"#f5f5f5", border:`1px solid ${selectedService?.id===s.id?"#e24b4a":"#eeeeee"}`, borderRadius:10, padding:"0.9rem", cursor:"pointer", marginBottom:8, opacity:s._dimmed?0.5:1 }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
               <div>
+                {s.profiles?.is_online&&<span style={{ fontSize:9, background:"#f0fdf4", color:"#1d9e75", border:"1px solid #1d9e7540", borderRadius:4, padding:"1px 6px", fontWeight:700, marginBottom:4, display:"inline-block" }}>🟢 Online</span>}
                 <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:2 }}>{s.name}</div>
                 <div style={{ fontSize:11, color:"#777777" }}>🏪 {s.profiles?.business_name||`${s.profiles?.first_name} ${s.profiles?.last_name}`}{s._distance!=null&&` · ${s._distance.toFixed(1)}km away`}</div>
-                {s.description&&<div style={{ fontSize:11, color:"#888888", marginTop:2 }}>{s.description}</div>}
               </div>
+                {s.profiles?.marketplace_rating>0&&<div style={{ fontSize:10, color:"#e6821e" }}>⭐ {Number(s.profiles.marketplace_rating).toFixed(1)} ({s.profiles.marketplace_review_count||0} reviews)</div>}
               <div style={{ textAlign:"right" }}>
                 <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(s.price).toLocaleString()}</div>
                 {selectedService?.id===s.id&&<div style={{ fontSize:12, color:"#e24b4a", marginTop:2 }}>✓ Selected</div>}
