@@ -404,8 +404,6 @@ export function downloadBookingsCSV(bookings) {
   const filename = "CCC-Bookings-" + new Date().toISOString().slice(0,10) + ".csv"
   const isNative = typeof window !== "undefined" && window.Capacitor?.isNativePlatform?.()
   if(!isNative) { const blob = new Blob([csv], { type:"text/csv" }); const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url); return }
-  import("@capacitor/filesystem").then(({Filesystem,Directory})=>import("@capacitor/share").then(({Share})=>{ const base64 = btoa(unescape(encodeURIComponent(csv))); Filesystem.writeFile({path:filename,data:base64,directory:Directory.Cache}).then(()=>Filesystem.getUri({path:filename,directory:Directory.Cache})).then(r=>Share.share({title:filename,url:r.uri,dialogTitle:"Export Bookings"})) }))
-  a.click(); URL.revokeObjectURL(url)
 }
 
 // ============ PAYMENT CSV EXPORT ============
@@ -425,7 +423,6 @@ export function downloadPaymentsCSV(payments) {
   const url = URL.createObjectURL(blob)
   const a = document.createElement("a")
   a.href = url; a.download = "CCC-Payments-" + new Date().toISOString().slice(0,10) + ".csv"
-  a.click(); URL.revokeObjectURL(url)
 }
 
 // ============ ORDERS CSV EXPORT ============
@@ -447,5 +444,4 @@ export function downloadOrdersCSV(orders) {
   const url = URL.createObjectURL(blob)
   const a = document.createElement("a")
   a.href = url; a.download = "CCC-Orders-" + new Date().toISOString().slice(0,10) + ".csv"
-  a.click(); URL.revokeObjectURL(url)
 }
