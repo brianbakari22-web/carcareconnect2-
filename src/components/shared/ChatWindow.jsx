@@ -139,6 +139,10 @@ export default function ChatWindow({ bookingId, listingId, inventoryId, claimId,
     filtered = filtered.replace(/(?:\+?254|0)[17]\d{8}/g, "[contact removed]")
     // International phone numbers
     filtered = filtered.replace(/(?:\+?\d{1,3}[\s.-]?)?(?:\(?\d{2,4}\)?[\s.-]?)\d{3,4}[\s.-]?\d{3,4}/g, "[contact removed]")
+    // Spelled out numbers e.g. "zero one one six six seven"
+    const numberWords = ["zero","one","two","three","four","five","six","seven","eight","nine","oh","eleven","twelve"];
+    const wordPattern = new RegExp("(\\b(" + numberWords.join("|") + ")\\b[\\s,]*){6,}", "gi");
+    filtered = filtered.replace(wordPattern, "[contact removed]");
     // Any 10+ consecutive digits
     filtered = filtered.replace(/\d{7,}/g, "[contact removed]")
     // Email addresses (including obfuscated)
