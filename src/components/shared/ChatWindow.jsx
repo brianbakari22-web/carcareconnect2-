@@ -136,7 +136,7 @@ export default function ChatWindow({ bookingId, listingId, inventoryId, claimId,
   function filterContactInfo(text) {
     let filtered = normalizeText(text)
     // Phone numbers - Kenyan formats (07xx, 01xx, +2547xx, +2541xx)
-    filtered = filtered.replace(/(?:\+?254|0)[17]\d{8}/g, "[contact removed]")
+    filtered = filtered.replace(/(?:\+?254|0)[\s]?[17][\s\d]{7,}/g, "[contact removed]")
     // International phone numbers
     filtered = filtered.replace(/(?:\+?\d{1,3}[\s.-]?)?(?:\(?\d{2,4}\)?[\s.-]?)\d{3,4}[\s.-]?\d{3,4}/g, "[contact removed]")
     // Spelled out numbers e.g. "zero one one six six seven"
