@@ -333,7 +333,7 @@ export default function Marketplace() {
               <div key={l.id} onClick={()=>setSelected(l)} style={{ background:"#fff", border:"1px solid #eee", borderRadius:12, overflow:"hidden", cursor:"pointer" }}>
                 <div style={{ height:130, background:"#f5f5f5", position:"relative", display:"flex", alignItems:"center", justifyContent:"center" }}>
                   {l.primary_photo ? <img src={l.primary_photo} alt={l.title} style={{ width:"100%", height:"100%", objectFit:"cover" }}/> : <div style={{ fontSize:36 }}>{l._type==="new_car"?"🚗":l._type==="part"?"⚙️":"🚗"}</div>}
-                  <div style={{ position:"absolute", top:6, left:6, background:l._type==="new_car"?"#378add":l._type==="part"?"#8b5cf6":"#1d9e75", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 6px", borderRadius:4 }}>{l._type==="new_car"?"NEW CAR":l._type==="part"?"PART":"USED CAR"}</div>
+                  <div style={{ position:"absolute", top:6, left:6, background:l._type==="new_car"?"#378add":l._type==="part"?"#8b5cf6":"#1d9e75", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 6px", borderRadius:4, whiteSpace:"nowrap" }}>{l._type==="new_car"?"NEW":l._type==="part"?"PART":"USED"}</div>
                 </div>
                 <div style={{ padding:"0.75rem" }}>
                   <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, marginBottom:4, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{l.title}</div>
@@ -501,7 +501,7 @@ export default function Marketplace() {
                 <button onClick={e=>{ e.stopPropagation(); toggleLike(l.id) }}
                   style={{ position:"absolute", bottom:8, right:8, background:"rgba(255,255,255,0.9)", border:"none", borderRadius:"50%", width:32, height:32, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, boxShadow:"0 2px 8px rgba(0,0,0,0.15)" }}>
                   {userLikes.has(l.id) ? "❤️" : "🤍"}
-                {l._type&&<div style={{ position:"absolute", top:8, left:8, background:l._type==="new_car"?"#378add":l._type==="part"||l._type==="accessory"?"#8b5cf6":"#1d9e75", color:"#fff", fontSize:10, fontWeight:700, padding:"3px 8px", borderRadius:6, letterSpacing:"0.03em" }}>{l._type==="new_car"?"🆕 NEW CAR":l._type==="part"?"⚙️ PART":l._type==="accessory"?"🔩 ACCESSORY":"🚗 USED CAR"}</div>}
+                {l._type&&<div style={{ position:"absolute", top:6, left:6, background:l._type==="new_car"?"#378add":l._type==="part"||l._type==="accessory"?"#8b5cf6":"#1d9e75", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 6px", borderRadius:4, whiteSpace:"nowrap" }}>{l._type==="new_car"?"NEW":l._type==="part"?"PART":l._type==="accessory"?"ACC":"USED"}</div>}
                 </button>
                 {l.primary_photo ? (
                   <img src={l.primary_photo} alt={l.title} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
