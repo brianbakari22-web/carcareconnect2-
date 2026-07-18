@@ -621,7 +621,8 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
   if(_listingType === "part" || _listingType === "accessory") return (
     <div>
       <button onClick={onBack} style={{ background:"none", border:"none", color:"#e6821e", cursor:"pointer", fontSize:13, marginBottom:"1rem", padding:0, fontFamily:"DM Sans,sans-serif" }}>← Back to listings</button>
-      {listing.primary_photo&&(<div style={{ marginBottom:"1rem" }}><img src={listing.primary_photo} alt={listing.title} style={{ width:"100%", height:isMobile?220:320, objectFit:"cover", borderRadius:12 }}/></div>)}
+      {(photos?.length>0||listing.primary_photo)&&(<div style={{ marginBottom:"1rem" }}><img src={photos?.[activePhoto||0]?.photo_url||listing.primary_photo} alt={listing.title} style={{ width:"100%", height:isMobile?220:320, objectFit:"cover", borderRadius:12 }}/></div>)}
+      {listing.video_url&&(<div style={{ marginBottom:"1rem" }}><div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, marginBottom:6 }}>🎥 Video</div><video src={listing.video_url} controls style={{ width:"100%", borderRadius:12, maxHeight:260, background:"#000" }}/></div>)}
       <div style={{ background:"#fff", border:"1px solid #eee", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
         <div style={{ fontFamily:"Syne", fontSize:isMobile?18:22, fontWeight:800, marginBottom:4 }}>{listing.title}</div>
         <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#e6821e", marginBottom:4 }}>KES {Number(listing.price).toLocaleString()}</div>
