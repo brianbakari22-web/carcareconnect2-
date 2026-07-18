@@ -123,7 +123,7 @@ export default function ChatWindow({ bookingId, listingId, inventoryId, claimId,
       .replace(/\bzero\b/gi,"0").replace(/\bone\b/gi,"1").replace(/\btwo\b/gi,"2")
       .replace(/\bthree\b/gi,"3").replace(/\bfour\b/gi,"4").replace(/\bfive\b/gi,"5")
       .replace(/\bsix\b/gi,"6").replace(/\bseven\b/gi,"7").replace(/\beight\b/gi,"8")
-      .replace(/\bnine\b/gi,"9").replace(/\boh\b/gi,"0")
+      .replace(/\bnine\b/gi,"9").replace(/\beleven\b/gi,"11").replace(/\btwelve\b/gi,"12").replace(/\boh\b/gi,"0")
       // Normalize obfuscated email
       .replace(/\[at\]/gi,"@").replace(/\(at\)/gi,"@").replace(/\bat\b/gi,"@")
       .replace(/\[dot\]/gi,".").replace(/\(dot\)/gi,".").replace(/\bdot\b/gi,".")
@@ -242,8 +242,8 @@ export default function ChatWindow({ bookingId, listingId, inventoryId, claimId,
 
   async function deleteMessage(id) {
     if (!confirm("Delete this message?")) return
+    if(String(id).startsWith("temp-")) { setMessages(prev => prev.filter(m => m.id!==id)); return }
     await supabase.from("chat_messages").delete().eq("id", id).eq("sender_id", effectiveUserId)
-    setMessages(prev => prev.filter(m => m.id!==id))
   }
 
   function handleKeyDown(e) {
