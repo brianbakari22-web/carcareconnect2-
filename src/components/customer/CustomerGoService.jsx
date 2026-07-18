@@ -38,6 +38,7 @@ export default function CustomerGoService() {
   const [timeLeft, setTimeLeft] = useState(null)
   const [activeGoBookings, setActiveGoBookings] = useState([])
   const [goServices, setGoServices] = useState([])
+  const filteredGoServices = emergencyType && EMERGENCY_SERVICE_MAP[emergencyType]?.length ? goServices.filter(s=>EMERGENCY_SERVICE_MAP[emergencyType].some(k=>s.name?.toLowerCase().includes(k)||s.description?.toLowerCase().includes(k))).concat(goServices.filter(s=>!EMERGENCY_SERVICE_MAP[emergencyType].some(k=>s.name?.toLowerCase().includes(k)||s.description?.toLowerCase().includes(k))).map(s=>({...s,_dimmed:true}))) : goServices
   const [selectedService, setSelectedService] = useState(null)
 
   const [showDepositPayment, setShowDepositPayment] = useState(false)
@@ -545,10 +546,10 @@ export default function CustomerGoService() {
         <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000", marginBottom:"1rem" }}>
           3. Select service
         </div>
-        {goServices.length===0&&<div style={{ fontSize:12, color:"#777777" }}>No GO services available in your area right now</div>}
-        {goServices.map(s=>(
+        {filteredGoServices.length===0&&<div style={{ fontSize:12, color:"#777777" }}>No GO services available in your area right now</div>}
+        {filteredGoServices.map(s=>(
           <div key={s.id} onClick={()=>setSelectedService(s)}
-            style={{ background:selectedService?.id===s.id?"#fff5f5":"#f5f5f5", border:`1px solid ${selectedService?.id===s.id?"#e24b4a":"#eeeeee"}`, borderRadius:10, padding:"0.9rem", cursor:"pointer", marginBottom:8 }}>
+            style={{ background:selectedService?.id===s.id?"#fff5f5":"#f5f5f5", border:`1px solid ${selectedService?.id===s.id?"#e24b4a":"#eeeeee"}`, borderRadius:10, padding:"0.9rem", cursor:"pointer", marginBottom:8, opacity:s._dimmed?0.5:1 }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
               <div>
                 <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:2 }}>{s.name}</div>
@@ -595,29 +596,6 @@ export default function CustomerGoService() {
       </div>
 
       {showDepositPayment&&(
-        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.85)", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center", padding:"1rem" }}>
-          <div style={{ width:"100%", maxWidth:400, background:"#ffffff", border:"1px solid #e24b4a40", borderRadius:16, padding:"1.5rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#e24b4a", marginBottom:4 }}>🚨 Confirm Emergency Request</div>
-            <div style={{ fontSize:12, color:"#555555", marginBottom:16, lineHeight:1.6 }}>A KES {calloutFee} mechanic callout fee covers transport costs to your location.</div>
-            <div style={{ background:"#ffffff", borderRadius:10, padding:"1rem", marginBottom:16 }}>
-              <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#555555", marginBottom:6 }}><span>Emergency</span><span style={{ color:"#000000", textTransform:"capitalize" }}>{emergencyType.replace(/_/g," ")}</span></div>
-              <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#555555", marginBottom:6 }}><span>Provider</span><span style={{ color:"#000000" }}>{selectedService?.profiles?.business_name||selectedService?.profiles?.first_name}</span></div>
-              <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#555555", marginBottom:6 }}><span>Service fee</span><span style={{ color:"#000000" }}>KES {Number(selectedService?.price||0).toLocaleString()}</span></div>
-              <div style={{ height:1, background:"#f0f0f0", margin:"8px 0" }}/>
-              <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, color:"#e6821e", fontWeight:700 }}><span>Callout fee (pay now)</span><span>KES {calloutFee}</span></div>
-              <div style={{ fontSize:10, color:"#777777", marginTop:4 }}>Service fee paid after completion</div>
-            </div>
-            <button onClick={payCalloutFee} disabled={payingCallout} style={{ width:"100%", background:payingCallout?"#555555":"#e24b4a", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:payingCallout?"not-allowed":"pointer", marginBottom:8 }}>
-              {payingCallout?"Sending M-Pesa prompt...":"Pay KES {calloutFee} and Request Help"}
-            </button>
-            <button onClick={()=>setShowDepositPayment(false)} style={{ width:"100%", background:"none", border:"1px solid #dddddd", borderRadius:10, color:"#666", fontSize:13, padding:"11px", cursor:"pointer" }}>
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
-
-      {showDepositPayment&&(
         <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.8)", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center", padding:"1rem" }}>
           <div style={{ width:"100%", maxWidth:400, background:"#ffffff", border:"1px solid #e24b4a40", borderRadius:16, padding:"1.5rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#e24b4a", marginBottom:4 }}>🚨 Confirm Emergency Request</div>
@@ -642,7 +620,7 @@ export default function CustomerGoService() {
             </div>
             <button onClick={payCalloutFee} disabled={payingCallout}
               style={{ width:"100%", background:payingCallout?"#555555":"#e24b4a", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:payingCallout?"not-allowed":"pointer", marginBottom:8 }}>
-              {payingCallout?"Sending M-Pesa prompt...":"Pay KES {calloutFee} & Request Help →"}
+              {payingCallout?"Sending M-Pesa prompt...":`Pay KES ${calloutFee} & Request Help →`}
             </button>
             <button onClick={()=>setShowDepositPayment(false)}
               style={{ width:"100%", background:"none", border:"1px solid #dddddd", borderRadius:10, color:"#666", fontSize:13, padding:"11px", cursor:"pointer" }}>
