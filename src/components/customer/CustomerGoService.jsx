@@ -139,7 +139,7 @@ export default function CustomerGoService() {
   }
   async function loadGoServices() {
     const { data } = await supabase.from("services")
-      .select("*, profiles(business_name,first_name,last_name,city,latitude,longitude,go_service_radius_km,marketplace_rating,marketplace_review_count,is_online,is_available)")
+      .select("*, profiles(business_name,first_name,last_name,city,latitude,longitude,go_service_radius_km,marketplace_rating,marketplace_review_count,is_online)")
       .eq("category", "go_service")
       .eq("is_active", true).eq("profiles.is_active", true)
     let services = data||[]
