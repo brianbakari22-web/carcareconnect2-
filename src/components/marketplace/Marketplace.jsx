@@ -584,6 +584,40 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
     </div>
   )
 
+  if(showChat) return (
+    <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.5)", zIndex:200, display:"flex", flexDirection:"column", justifyContent:"flex-end" }} onClick={()=>setShowChat(false)}>
+      <div style={{ width:"100%", background:"#fff", borderRadius:"20px 20px 0 0", height:"85vh", display:"flex", flexDirection:"column", overflow:"hidden" }} onClick={e=>e.stopPropagation()}>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0.75rem 1rem", borderBottom:"1px solid #f0f0f0" }}>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800 }}>{sellerInfo?.business_name||sellerInfo?.first_name||"Seller"}</div>
+          <button onClick={()=>setShowChat(false)} style={{ background:"#f5f5f5", border:"none", borderRadius:"50%", width:34, height:34, cursor:"pointer", fontSize:18 }}>x</button>
+        </div>
+        <ChatWindow
+          listingId={listing._source==="inventory" ? undefined : listing.id}
+          inventoryId={listing._source==="inventory" ? listing.id : undefined}
+          otherUserId={listing.seller_id||listing.provider_id}
+          otherUserName={sellerInfo?.business_name||(sellerInfo?.first_name||"")}
+          onClose={()=>setShowChat(false)}
+        />
+      </div>
+    </div>
+  )
+  if(showChat) return (
+    <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.5)", zIndex:200, display:"flex", flexDirection:"column", justifyContent:"flex-end" }} onClick={()=>setShowChat(false)}>
+      <div style={{ width:"100%", background:"#fff", borderRadius:"20px 20px 0 0", height:"85vh", display:"flex", flexDirection:"column", overflow:"hidden" }} onClick={e=>e.stopPropagation()}>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0.75rem 1rem", borderBottom:"1px solid #f0f0f0" }}>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800 }}>{sellerInfo?.business_name||sellerInfo?.first_name||"Seller"}</div>
+          <button onClick={()=>setShowChat(false)} style={{ background:"#f5f5f5", border:"none", borderRadius:"50%", width:34, height:34, cursor:"pointer", fontSize:18 }}>x</button>
+        </div>
+        <ChatWindow
+          listingId={listing._source==="inventory" ? undefined : listing.id}
+          inventoryId={listing._source==="inventory" ? listing.id : undefined}
+          otherUserId={listing.seller_id||listing.provider_id}
+          otherUserName={sellerInfo?.business_name||(sellerInfo?.first_name||"")}
+          onClose={()=>setShowChat(false)}
+        />
+      </div>
+    </div>
+  )
   if(_listingType === "part" || _listingType === "accessory") return (
     <div>
       <button onClick={onBack} style={{ background:"none", border:"none", color:"#e6821e", cursor:"pointer", fontSize:13, marginBottom:"1rem", padding:0, fontFamily:"DM Sans,sans-serif" }}>← Back to listings</button>
