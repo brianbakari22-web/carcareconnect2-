@@ -625,7 +625,7 @@ export default function CustomerGoService() {
               </div>
               <div style={{ height:1, background:"#f0f0f0", margin:"8px 0" }}/>
               <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, color:"#e6821e", fontWeight:700 }}>
-                <span>Callout fee (pay now)</span><span>{calloutFee}</span>
+              <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, color:"#e6821e", fontWeight:700 }}><span>Callout fee (pay now)</span><span>KES {calloutFee.toLocaleString()}</span></div>
               </div>
               <div style={{ fontSize:10, color:"#777777", marginTop:4 }}>Service fee paid after completion</div>
             </div>
