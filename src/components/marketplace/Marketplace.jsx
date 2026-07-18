@@ -71,7 +71,7 @@ export default function Marketplace() {
       let newCarListings = []
       if(tab==="all" || tab==="vehicle" || tab==="part" || tab==="accessory" || tab==="parts_shop") {
         let query = supabase.from("marketplace_listings")
-          .select("*, profiles(first_name,last_name,role,business_name), marketplace_photos(photo_url,is_primary), video_url")
+          .select("*, profiles(first_name,last_name,role,business_name), marketplace_photos(photo_url,is_primary), video_url, video_status")
           .eq("status","active")
           .order("is_featured",{ascending:false})
           .order("created_at",{ascending:false})
