@@ -32,6 +32,11 @@ export default function MechanicDashboard() {
   const [jobNotes, setJobNotes] = useState({})
   const [savingNotes, setSavingNotes] = useState(null)
   const [partsRequest, setPartsRequest] = useState(null)
+  const [showCCCParts, setShowCCCParts] = useState(null)
+  const [cccInventory, setCCCInventory] = useState([])
+  const [cccSelectedPart, setCCCSelectedPart] = useState(null)
+  const [cccPartQty, setCCCPartQty] = useState(1)
+  const [requestingCCCPart, setRequestingCCCPart] = useState(false)
   const [partForm, setPartForm] = useState({ part_name:"", quantity:1, urgency:"normal", notes:"" })
   const [jobTimers, setJobTimers] = useState({})
   const [timerRef, setTimerRef] = useState(null)
@@ -69,6 +74,37 @@ export default function MechanicDashboard() {
     return () => { supabase.removeChannel(sub); stopSharing() }
   }, [mechanic])
 
+  async function loadCCCInventory(lat, lng) {
+    const { data } = await supabase.from("inventory").select("*, profiles!inventory_provider_id_fkey(first_name,last_name,business_name,latitude,longitude)").eq("is_active",true).gt("stock_quantity",0)
+    if(lat && lng && data) {
+      data.forEach(i=>{ const p=i.profiles; if(p?.latitude&&p?.longitude){const dLat=(p.latitude-lat)*Math.PI/180;const dLng=(p.longitude-lng)*Math.PI/180;const a=Math.sin(dLat/2)**2+Math.cos(lat*Math.PI/180)*Math.cos(p.latitude*Math.PI/180)*Math.sin(dLng/2)**2;i._distance=6371*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))}else{i._distance=999}})
+      data.sort((a,b)=>a._distance-b._distance)
+    }
+    setCCCInventory(data||[])
+  }
+  async function requestCCCPart(job) {
+    if(!cccSelectedPart) return toast.error("Select a part")
+    setRequestingCCCPart(true)
+    try {
+      const part = cccInventory.find(i=>i.id===cccSelectedPart)
+      if(!part) throw new Error("Part not found")
+      const total = part.price * cccPartQty
+      await supabase.from("go_parts_requests").insert({
+        booking_id: job.id, mechanic_id: mechanic.id, inventory_id: part.id,
+        provider_id: part.provider_id, quantity: cccPartQty, unit_price: part.price,
+        total_amount: total, customer_id: job.customer_id,
+        delivery_location_address: job.emergency_location_address,
+        delivery_location_lat: job.emergency_location_lat, delivery_location_lng: job.emergency_location_lng, status: "pending"
+      })
+      await supabase.from("notifications").insert([
+        { user_id: part.provider_id, title: "Part request!", message: "Mechanic needs "+part.name+" x"+cccPartQty+" at "+job.emergency_location_address, type: "info" },
+        { user_id: job.customer_id, title: "Mechanic needs a part", message: "Your mechanic needs "+part.name+" — KES "+total, type: "info" }
+      ])
+      toast.success("Part request sent!")
+      setShowCCCParts(null); setCCCSelectedPart(null); setCCCPartQty(1)
+    } catch(e) { toast.error(e.message) }
+    finally { setRequestingCCCPart(false) }
+  }
   async function load() {
     setLoading(true)
     const { data } = await supabase.from("bookings")
@@ -563,6 +599,7 @@ export default function MechanicDashboard() {
                           <button onClick={()=>setPartsRequest(partsRequest===job.id?null:job.id)}
                             style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:8, color:"#e6821e", fontSize:11, fontWeight:700, padding:"7px 12px", cursor:"pointer" }}>
                             🔩 Parts
+                          {job.category==="go_service"&&<button onClick={()=>{ setShowCCCParts(job.id); loadCCCInventory(job.emergency_location_lat, job.emergency_location_lng) }} style={{ background:"#f3f0ff", border:"1px solid #8b5cf640", borderRadius:8, color:"#8b5cf6", fontSize:11, fontWeight:700, padding:"7px 12px", cursor:"pointer" }}>🔧 CCC Parts</button>}
                           </button>
                           <button onClick={()=>setChatJob(chatJob===job.id?null:job.id)}
                             style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:8, color:"#8b5cf6", fontSize:11, fontWeight:700, padding:"7px 12px", cursor:"pointer" }}>
@@ -1019,6 +1056,35 @@ export default function MechanicDashboard() {
         </div>
       )}
 
+      {showCCCParts&&(
+        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.7)", zIndex:300, display:"flex", flexDirection:"column", justifyContent:"flex-end" }} onClick={()=>setShowCCCParts(null)}>
+          <div style={{ background:"#fff", borderRadius:"20px 20px 0 0", padding:"1.5rem", maxHeight:"80vh", overflowY:"auto" }} onClick={e=>e.stopPropagation()}>
+            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, marginBottom:4 }}>🔧 Request Part from CCC</div>
+            <div style={{ fontSize:12, color:"#888", marginBottom:"1rem" }}>Select from nearby suppliers</div>
+            {cccInventory.length===0&&<div style={{ fontSize:12, color:"#888", textAlign:"center", padding:"1rem" }}>No parts available nearby</div>}
+            {cccInventory.map(item=>(
+              <div key={item.id} onClick={()=>setCCCSelectedPart(item.id)} style={{ background:cccSelectedPart===item.id?"#f3f0ff":"#f8f8f8", border:"1px solid "+(cccSelectedPart===item.id?"#8b5cf6":"#eee"), borderRadius:10, padding:"0.75rem", marginBottom:8, cursor:"pointer" }}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                  <div><div style={{ fontSize:13, fontWeight:600 }}>{item.name}</div><div style={{ fontSize:11, color:"#888" }}>{item.profiles?.business_name||item.profiles?.first_name}{item._distance<999?" · "+item._distance.toFixed(1)+"km":""}</div><div style={{ fontSize:11, color:"#555" }}>Stock: {item.stock_quantity}</div></div>
+                  <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#8b5cf6" }}>KES {Number(item.price).toLocaleString()}</div>
+                </div>
+              </div>
+            ))}
+            {cccSelectedPart&&(
+              <div style={{ marginTop:12 }}>
+                <div style={{ display:"flex", gap:8, alignItems:"center", marginBottom:12 }}>
+                  <button onClick={()=>setCCCPartQty(q=>Math.max(1,q-1))} style={{ width:36, height:36, borderRadius:8, border:"1px solid #ddd", background:"#f5f5f5", fontSize:18, cursor:"pointer" }}>-</button>
+                  <span style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, minWidth:30, textAlign:"center" }}>{cccPartQty}</span>
+                  <button onClick={()=>setCCCPartQty(q=>q+1)} style={{ width:36, height:36, borderRadius:8, border:"1px solid #ddd", background:"#f5f5f5", fontSize:18, cursor:"pointer" }}>+</button>
+                  <span style={{ fontSize:12, color:"#888" }}>KES {((cccInventory.find(i=>i.id===cccSelectedPart)?.price||0)*cccPartQty).toLocaleString()}</span>
+                </div>
+                <button onClick={()=>{ const job=jobs.find(j=>j.id===showCCCParts); if(job) requestCCCPart(job) }} disabled={requestingCCCPart} style={{ width:"100%", background:requestingCCCPart?"#ccc":"#8b5cf6", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne", fontSize:14, fontWeight:700, padding:"13px", cursor:requestingCCCPart?"not-allowed":"pointer" }}>{requestingCCCPart?"Sending...":"Send Part Request"}</button>
+              </div>
+            )}
+            <button onClick={()=>setShowCCCParts(null)} style={{ width:"100%", background:"none", border:"1px solid #ddd", borderRadius:10, color:"#666", fontSize:13, padding:"11px", cursor:"pointer", marginTop:8 }}>Cancel</button>
+          </div>
+        </div>
+      )}
       <AIAssistant forcedRole="mechanic" bottomOffset={140}/>
     </div>
   )
