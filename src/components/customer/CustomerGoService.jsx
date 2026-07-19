@@ -217,6 +217,35 @@ export default function CustomerGoService() {
     return count||0
   }
 
+  async function testBypassPayment() {
+    if (!emergencyType) return toast.error("Please select emergency type")
+    if (!location.lat) return toast.error("Please share your location")
+    if (!selectedService) return toast.error("Please select a GO service")
+    try {
+      const { data: bk, error } = await supabase.from("bookings").insert({
+        customer_id: user.id, provider_id: selectedService.provider_id,
+        service_id: selectedService.id, service_name: selectedService.name,
+        service_category: "go_service", is_emergency: true,
+        emergency_type: emergencyType,
+        emergency_location_lat: location.lat, emergency_location_lng: location.lng,
+        emergency_location_address: location.address,
+        booking_date: new Date().toISOString().split("T")[0],
+        booking_time: new Date().toTimeString().slice(0,5),
+        total_amount: calloutFee, go_callout_fee: calloutFee,
+        go_callout_paid: true, payment_status: "paid", status: "pending",
+        platform_commission: Number(selectedService.price)*0.15,
+        provider_earnings: Number(selectedService.price)*0.85,
+        platform_commission_rate: 0.15, provider_commission_rate: 0.85,
+        payment_method: "test", notes: details, vehicle_id: vehicle||null, go_attempt_number: 1,
+      }).select().single()
+      if(error) throw error
+      // Create go_service_request
+      await supabase.from("go_service_requests").insert({ booking_id: bk.id, provider_id: selectedService.provider_id, status: "pending", attempt_number: 1 })
+      await supabase.from("notifications").insert({ user_id: selectedService.provider_id, title: "🚨 Emergency GO Service request!", message: "Test request: "+emergencyType.replace(/_/g," ")+" at "+location.address.slice(0,60), type: "error" })
+      setBooking(bk); setStep("waiting"); startCountdown(15*60)
+      toast.success("Test booking created! (No payment charged)")
+    } catch(e) { toast.error(e.message) }
+  }
   async function initiateCalloutPayment() {
     if (!emergencyType) return toast.error("Please select emergency type")
     if (!location.lat) return toast.error("Please share your location")
@@ -634,6 +663,11 @@ export default function CustomerGoService() {
       <div style={{ fontSize:11, color:"#888888", textAlign:"center", marginTop:8 }}>
         Online payment only · Provider has 15 min to accept · Max 5 attempts
       </div>
+      {profile?.is_test_account&&(
+        <button onClick={testBypassPayment} style={{ width:"100%", background:"#f8f8f8", border:"1px dashed #ccc", borderRadius:12, color:"#888", fontSize:12, padding:"10px", cursor:"pointer", marginTop:8 }}>
+          🧪 Test Mode — Skip Payment
+        </button>
+      )}
 
       {showDepositPayment&&(
         <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.8)", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center", padding:"1rem" }}>
