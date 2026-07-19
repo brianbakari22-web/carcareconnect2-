@@ -55,6 +55,7 @@ export default function CustomerGoService() {
 
   const [showDepositPayment, setShowDepositPayment] = useState(false)
   const [pendingGoBooking, setPendingGoBooking] = useState(null)
+  const [showServiceFeePayment, setShowServiceFeePayment] = useState(false)
   const [payingCallout, setPayingCallout] = useState(false)
   const [calloutFee, setCalloutFee] = useState(500)
   const [goPartsRequests, setGoPartsRequests] = useState([])
@@ -80,6 +81,10 @@ export default function CustomerGoService() {
       .on("postgres_changes", { event:"UPDATE", schema:"public", table:"bookings", filter:`id=eq.${booking.id}` },
         payload => {
           setBooking(b=>({...b,...payload.new}))
+          if (payload.new.status==="completed") {
+            setShowServiceFeePayment(true)
+            toast.success("Service complete! Please pay the service fee 💳")
+          }
           if (payload.new.status==="confirmed"||payload.new.status==="in-progress") {
             setStep("accepted")
             setTimeLeft(null) // Stop the countdown timer

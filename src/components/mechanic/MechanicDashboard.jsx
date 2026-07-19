@@ -264,12 +264,16 @@ export default function MechanicDashboard() {
     if (status === "completed") {
       const job = jobs.find(j=>j.id===jobId)
       if(job?.customer_id) {
-        await supabase.from("notifications").insert({
-          user_id: job.customer_id,
-          title: "Service complete! Pay now 💳",
-          message: `Your ${job.service_name} is complete. Please pay KES ${Number(job.total_amount||0).toLocaleString()} service fee in the app.`,
-          type: "success"
-        })
+        if(job.service_category==="go_service") {
+          await supabase.functions.invoke("go-request-service-payment", { body: { booking_id: jobId } })
+        } else {
+          await supabase.from("notifications").insert({
+            user_id: job.customer_id,
+            title: "Service complete! Pay now 💳",
+            message: `Your ${job.service_name} is complete. Please pay KES ${Number(job.total_amount||0).toLocaleString()} service fee in the app.`,
+            type: "success"
+          })
+        }
       }
       setActiveJob(null)
       stopSharing()
