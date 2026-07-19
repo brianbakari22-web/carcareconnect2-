@@ -67,6 +67,13 @@ export default function CustomerGoService() {
     if (!booking) return
     supabase.from("go_parts_requests").select("*, inventory(name,price)").eq("booking_id", booking.id).then(({data})=>setGoPartsRequests(data||[]))
     const sub = supabase.channel(`go-booking-${booking.id}`)
+      .on("postgres_changes", { event:"INSERT", schema:"public", table:"go_parts_requests", filter:`booking_id=eq.${booking.id}` },
+        payload => {
+          setGoPartsRequests(prev=>[...prev, payload.new])
+          toast("🔧 Mechanic has requested a part", { icon:"🔧" })
+        })
+      .on("postgres_changes", { event:"UPDATE", schema:"public", table:"go_parts_requests", filter:`booking_id=eq.${booking.id}` },
+        payload => { setGoPartsRequests(prev=>prev.map(r=>r.id===payload.new.id?{...r,...payload.new}:r)) })
       .on("postgres_changes", { event:"UPDATE", schema:"public", table:"bookings", filter:`id=eq.${booking.id}` },
         payload => {
           setBooking(b=>({...b,...payload.new}))
