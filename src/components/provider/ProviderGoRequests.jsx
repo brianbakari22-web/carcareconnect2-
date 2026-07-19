@@ -1,4 +1,4 @@
-﻿import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import { openExternal, openMapsNavigation } from "../../lib/openExternal"
 import { useAuth } from "../../contexts/AuthContext"
@@ -385,8 +385,9 @@ export default function ProviderGoRequests() {
                 </a>
               )}
               <div style={{ fontSize:10, color:"#888888", marginTop:2 }}>{new Date(r.sent_at).toLocaleString()}</div>
-              {r.status==="accepted"&&<button onClick={()=>{ setShowPartsRequest(r.booking_id); loadNearbyInventory(r.bookings?.emergency_location_lat, r.bookings?.emergency_location_lng) }} style={{ marginTop:8, background:"#8b5cf6", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 14px", cursor:"pointer" }}>🔧 Request Part</button>}
-            </div>
+              {r.bookings?.status==="in-progress"&&<button onClick={()=>{ setShowPartsRequest(r.booking_id); loadNearbyInventory(r.bookings?.emergency_location_lat, r.bookings?.emergency_location_lng) }} style={{ marginTop:8, background:"#8b5cf6", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 14px", cursor:"pointer" }}>🔧 Request Part</button>}
+              {r.status==="accepted"&&r.bookings?.status!=="in-progress"&&<button onClick={()=>setAssigning(r.id)} style={{ marginTop:8, background:"#378add", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 14px", cursor:"pointer" }}>👨‍🔧 Reassign Mechanic</button>}
+              </div>
             <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e" }}>
               KES {Number(r.bookings?.total_amount||0).toLocaleString()}
             </div>
