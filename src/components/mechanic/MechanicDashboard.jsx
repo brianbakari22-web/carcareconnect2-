@@ -607,6 +607,14 @@ export default function MechanicDashboard() {
                     <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:12 }}>
                       {job.status==="confirmed"&&(
                         <>
+                          {job.service_category==="go_service"&&job.emergency_location_lat&&(
+                            <a href={`https://www.google.com/maps/dir/?api=1&destination=${job.emergency_location_lat},${job.emergency_location_lng}`} target="_blank" rel="noopener noreferrer" style={{ display:"inline-flex", alignItems:"center", gap:6, background:"#4285f4", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"7px 12px", textDecoration:"none" }}>
+                              🗺️ Navigate to customer
+                            </a>
+                          )}
+                          {job.service_category==="go_service"&&job.emergency_location_address&&(
+                            <div style={{ width:"100%", fontSize:11, color:"#e6821e", background:"#fff8f0", borderRadius:8, padding:"6px 10px", marginBottom:4 }}>📍 {job.emergency_location_address}</div>
+                          )}
                           <button onClick={()=>uploadJobPhoto(job.id,"before")} disabled={uploadingPhoto===job.id+"before"}
                             style={{ background:"#f8f8f8", border:"1px solid #dddddd", borderRadius:8, color:"#555", fontSize:11, fontWeight:600, padding:"7px 12px", cursor:"pointer" }}>
                             {uploadingPhoto===job.id+"before"?"⏳":"📷 Before photo"}
