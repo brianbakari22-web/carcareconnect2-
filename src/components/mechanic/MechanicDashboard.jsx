@@ -145,12 +145,7 @@ export default function MechanicDashboard() {
   }
 
   async function loadHistory() {
-    const { data } = await supabase.from("bookings")
-      .select("*, services(name)")
-      .eq("assigned_mechanic_id", mechanic.mechanic_id)
-      .in("status", ["completed","cancelled"])
-      .order("updated_at", { ascending: false })
-      .limit(30)
+    const { data } = await supabase.rpc("get_mechanic_history", { p_mechanic_id: mechanic.mechanic_id })
     setHistory(data||[])
   }
 

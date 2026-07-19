@@ -514,7 +514,7 @@ export default function CustomerGoService() {
             <button onClick={async()=>{ await supabase.from("go_provider_strikes").insert({ provider_id:booking?.provider_id, booking_id:booking?.id, reason:"no_show" }); await supabase.functions.invoke("go-refund-callout",{body:{booking_id:booking?.id, customer_id:user.id}}); toast.error("No-show reported. Refund initiated. 💸") }} style={{ flex:1, background:"#fff5f5", border:"1px solid #fecaca", borderRadius:8, color:"#e24b4a", fontSize:12, fontWeight:700, padding:"10px", cursor:"pointer" }}>❌ No show</button>
           </div>
         </div>
-        <button onClick={()=>{ setStep("select"); setBooking(null); loadActiveGoBookings() }}
+        <button onClick={()=>{ navigate("/dashboard/tracking?bookingId="+(booking?.id||activeGoBookings[0]?.id)) }}
           style={{ background:"#1d9e75", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:"pointer" }}>
           Track mechanic →
         </button>
@@ -553,7 +553,7 @@ export default function CustomerGoService() {
                 <div style={{ fontSize:12, color:"#000000" }}>{b.service_name}</div>
                 <div style={{ fontSize:10, color:"#777777" }}>#{b.booking_number} · {b.status}</div>
               </div>
-              <button onClick={()=>{ setBooking(b); setStep("waiting") }}
+              <button onClick={()=>{ setBooking(b); setStep(b.status==="confirmed"||b.status==="in-progress"?"accepted":"waiting"); if(b.assigned_mechanic_id) fetchMechanicAndETA(b.id) }}
                 style={{ background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                 Track
               </button>
