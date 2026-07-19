@@ -68,7 +68,7 @@ export default function CustomerGoService() {
 
   useEffect(() => {
     if (!booking) return
-    supabase.from("go_parts_requests").select("*, inventory(name,price)").eq("booking_id", booking.id).then(({data})=>setGoPartsRequests(data||[]))
+    supabase.from("go_parts_requests").select("*, inventory(name,price)").eq("booking_id", booking.id).then(({data,error})=>{ if(!error) setGoPartsRequests(data||[]) })
     const sub = supabase.channel(`go-booking-${booking.id}`)
       .on("postgres_changes", { event:"INSERT", schema:"public", table:"go_parts_requests", filter:`booking_id=eq.${booking.id}` },
         payload => {
