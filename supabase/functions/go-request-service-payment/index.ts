@@ -16,10 +16,9 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     )
 
-    // Get booking details
     const { data: booking } = await supabase
       .from("bookings")
-      .select("*, profiles!bookings_customer_id_fkey(first_name)")
+      .select("*")
       .eq("id", booking_id)
       .single()
 
@@ -27,7 +26,6 @@ serve(async (req) => {
 
     // Skip for test bookings
     if (booking.payment_method === "test") {
-      console.log("Test booking - skipping STK push")
       await supabase.from("notifications").insert({
         user_id: booking.customer_id,
         title: "🧪 Test: Service complete!",
@@ -49,32 +47,28 @@ serve(async (req) => {
     const phone = sensitive?.mpesa_number || sensitive?.phone
     if (!phone) throw new Error("Customer has no phone number set")
 
-    // Get GO service rates
-    const { data: settings } = await supabase
-      .from("app_settings")
-      .select("key, value")
-      .in("key", ["go_service_provider_rate", "go_service_platform_rate"])
-
-    const rates: Record<string, number> = {}
-    settings?.forEach((s: any) => { rates[s.key] = Number(s.value) / 100 })
-
     const serviceAmount = Number(booking.total_amount || 0)
-    const providerRate = rates.go_service_provider_rate || 0.85
 
-    // Send STK Push to customer
-    const { data: stkData, error: stkError } = await supabase.functions.invoke("intasend-stk-push", {
-      body: {
+    // Send STK Push using fetch with proper auth headers
+    const stkRes = await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/intasend-stk-push`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
+        "apikey": Deno.env.get("SUPABASE_ANON_KEY")!,
+      },
+      body: JSON.stringify({
         amount: serviceAmount,
         booking_id,
         customer_id: booking.customer_id,
         provider_id: booking.provider_id,
         phone,
         service_name: booking.service_name
-      }
+      })
     })
 
-    if (stkError) throw stkError
-    if (stkData?.error) throw new Error(stkData.error)
+    const stkData = await stkRes.json()
+    if (!stkRes.ok) throw new Error(stkData.error || "STK push failed")
 
     // Notify customer
     await supabase.from("notifications").insert({
@@ -84,15 +78,13 @@ serve(async (req) => {
       type: "info"
     })
 
-    // Notify mechanic
+    // Notify provider
     await supabase.from("notifications").insert({
       user_id: booking.provider_id,
-      title: "Payment requested from customer",
-      message: `STK push sent to customer for KES ${serviceAmount.toLocaleString()}. Waiting for payment.`,
+      title: "Payment requested from customer 💰",
+      message: `STK push sent to customer for KES ${serviceAmount.toLocaleString()}.`,
       type: "info"
     })
-
-    console.log("STK push sent for service fee:", booking_id, "Amount:", serviceAmount)
 
     return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" }
