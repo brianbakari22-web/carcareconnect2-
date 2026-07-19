@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom"
 import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
+import IntaSendPayment from "../shared/IntaSendPayment"
 import { downloadInvoice, downloadBookingsCSV } from "../../lib/invoice"
 import ChatWindow from "../shared/ChatWindow"
 
@@ -22,6 +23,7 @@ export default function CustomerBookings() {
   const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState(null)
   const [rebooking, setRebooking] = useState(null)
+  const [serviceFeeBooking, setServiceFeeBooking] = useState(null)
   const [search, setSearch] = useState("")
   const [invoiceLoading, setInvoiceLoading] = useState(null)
   const [driverInfo, setDriverInfo] = useState({})
@@ -245,6 +247,12 @@ export default function CustomerBookings() {
                 </button>
               </>
               )}
+              {b.service_category==="go_service"&&b.status==="completed"&&!b.service_fee_paid&&(
+                <button onClick={()=>setServiceFeeBooking(b)}
+                  style={{ background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"5px 10px", cursor:"pointer" }}>
+                  💳 Pay Service Fee
+                </button>
+              )}
               {(b.status==="completed"||b.status==="cancelled")&&(
                 <button onClick={()=>hideBooking(b.id)}
                   style={{ background:"none", border:"1px solid #55540", borderRadius:7, color:"#777777", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
@@ -406,6 +414,16 @@ export default function CustomerBookings() {
           )}
         </div>
       ))}
+    {serviceFeeBooking&&(
+      <IntaSendPayment
+        amount={Number(serviceFeeBooking.total_amount||0)}
+        bookingId={serviceFeeBooking.id}
+        providerId={serviceFeeBooking.provider_id}
+        description={`Service fee - ${serviceFeeBooking.service_name}`}
+        onSuccess={async()=>{ await supabase.from("bookings").update({service_fee_paid:true,service_fee_paid_at:new Date().toISOString()}).eq("id",serviceFeeBooking.id); setServiceFeeBooking(null); load(); toast.success("Service fee paid! Thank you.") }}
+        onClose={()=>setServiceFeeBooking(null)}
+      />
+    )}
     </div>
   )
 }

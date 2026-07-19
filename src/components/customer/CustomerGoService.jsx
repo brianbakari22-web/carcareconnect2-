@@ -469,6 +469,10 @@ export default function CustomerGoService() {
             ))}
           </div>
         )}
+        <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.75rem", marginBottom:"1rem" }}>
+          <div style={{ fontSize:12, fontWeight:700, color:"#e6821e", marginBottom:4 }}>⚠️ Payment Protection</div>
+          <div style={{ fontSize:11, color:"#555", lineHeight:1.6 }}>Never pay the mechanic directly. All payments go through CCC for your protection. Direct payments void your warranty and refund rights.</div>
+        </div>
         <div style={{ background:"#fff", border:"1px solid #eee", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
           <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8 }}>Has the provider arrived?</div>
           <div style={{ fontSize:11, color:"#888", marginBottom:12 }}>Confirming arrival releases KES {Math.round(calloutFee*0.7)} to the provider. CCC retains KES {Math.round(calloutFee*0.3)}.</div>

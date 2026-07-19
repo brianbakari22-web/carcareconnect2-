@@ -33,6 +33,9 @@ export default function MechanicDashboard() {
   const [savingNotes, setSavingNotes] = useState(null)
   const [partsRequest, setPartsRequest] = useState(null)
   const [showCCCParts, setShowCCCParts] = useState(null)
+  const [otpInput, setOtpInput] = useState({})
+  const [otpVerifying, setOtpVerifying] = useState(null)
+  const [arrivedJob, setArrivedJob] = useState(null)
   const [cccInventory, setCCCInventory] = useState([])
   const [cccSelectedPart, setCCCSelectedPart] = useState(null)
   const [cccPartQty, setCCCPartQty] = useState(1)
@@ -74,6 +77,32 @@ export default function MechanicDashboard() {
     return () => { supabase.removeChannel(sub); stopSharing() }
   }, [mechanic])
 
+  async function generateArrivalOTP(jobId) {
+    try {
+      await supabase.functions.invoke("go-generate-otp", { body: { booking_id: jobId } })
+      setArrivedJob(jobId)
+      toast.success("OTP sent to customer! Ask them for the code.")
+    } catch(e) { toast.error(e.message) }
+  }
+  async function verifyArrivalOTP(job) {
+    const entered = otpInput[job.id]
+    if(!entered || entered.length !== 4) return toast.error("Enter 4-digit OTP")
+    setOtpVerifying(job.id)
+    try {
+      const { data: bk } = await supabase.from("bookings").select("go_arrival_otp, go_otp_expires_at").eq("id", job.id).single()
+      if(!bk?.go_arrival_otp) throw new Error("No OTP found. Generate one first.")
+      if(new Date(bk.go_otp_expires_at) < new Date()) throw new Error("OTP expired. Generate a new one.")
+      if(bk.go_arrival_otp !== entered) throw new Error("Wrong OTP. Ask customer again.")
+      // OTP correct - verify and release escrow
+      await supabase.from("bookings").update({ go_otp_verified:true, go_provider_arrived:true, go_arrival_confirmed_at:new Date().toISOString() }).eq("id", job.id)
+      await supabase.functions.invoke("go-release-escrow", { body: { booking_id: job.id } })
+      await updateJobStatus(job.id, "in_progress")
+      setArrivedJob(null)
+      setOtpInput(prev=>({...prev,[job.id]:""}))
+      toast.success("OTP verified! Callout fee released. Start the job.")
+    } catch(e) { toast.error(e.message) }
+    finally { setOtpVerifying(null) }
+  }
   async function loadCCCInventory(lat, lng) {
     const { data } = await supabase.from("inventory").select("*, profiles!inventory_provider_id_fkey(first_name,last_name,business_name,latitude,longitude)").eq("is_active",true).gt("stock_quantity",0)
     if(lat && lng && data) {
@@ -243,6 +272,16 @@ export default function MechanicDashboard() {
     }
     if (status === "completed") {
       await supabase.from("bookings").update({ mechanic_completed_at: new Date().toISOString() }).eq("id", jobId)
+      // Notify customer to pay service fee
+      const { data: bk } = await supabase.from("bookings").select("customer_id, total_amount, service_name, booking_number").eq("id", jobId).single()
+      if(bk?.customer_id) {
+        await supabase.from("notifications").insert({
+          user_id: bk.customer_id,
+          title: "Service complete! Pay now 💳",
+          message: `Your ${bk.service_name} is complete. Please pay KES ${Number(bk.total_amount||0).toLocaleString()} service fee in the app to complete the job.`,
+          type: "success"
+        })
+      }
       setActiveJob(null)
       stopSharing()
       if (timerRef) { clearInterval(timerRef); setTimerRef(null) }
