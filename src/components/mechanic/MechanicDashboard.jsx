@@ -93,7 +93,7 @@ export default function MechanicDashboard() {
       if(error) throw error
       if(!data?.success) throw new Error(data?.error||"Verification failed")
       await supabase.functions.invoke("go-release-escrow", { body: { booking_id: job.id } })
-      await updateJobStatus(job.id, "in_progress")
+      await updateJobStatus(job.id, "in-progress")
       setArrivedJob(null)
       setOtpInput(prev=>({...prev,[job.id]:""}))
       toast.success("OTP verified! Job started. 🚀")
@@ -139,7 +139,7 @@ export default function MechanicDashboard() {
 
 
     setJobs(data||[])
-    const active = (data||[]).find(j=>j.status==="in_progress")
+    const active = (data||[]).find(j=>j.status==="in-progress")
     if (active) { setActiveJob(active); if (!timerRef) startJobTimer(active.id, active.mechanic_started_at||active.updated_at) }
     setLoading(false)
   }
@@ -260,7 +260,7 @@ export default function MechanicDashboard() {
 
   async function updateJobStatus(jobId, status) {
     await supabase.rpc("mechanic_update_job_status", { p_booking_id: jobId, p_status: status, p_mechanic_id: mechanic.mechanic_id })
-    if (status === "in_progress") {
+    if (status === "in-progress") {
       const startedAt = new Date().toISOString()
       setActiveJob(jobs.find(j=>j.id===jobId))
       startSharing()
@@ -622,11 +622,11 @@ export default function MechanicDashboard() {
                               <button onClick={()=>generateArrivalOTP(job.id)} style={{background:"#e6821e",border:"none",borderRadius:8,color:"#fff",fontSize:11,fontWeight:700,padding:"7px 14px",cursor:"pointer"}}>📍 I have Arrived</button>
                             )
                           ) : (
-                            <button onClick={()=>updateJobStatus(job.id,"in_progress")} style={{background:"#8b5cf6",border:"none",borderRadius:8,color:"#fff",fontSize:11,fontWeight:700,padding:"7px 14px",cursor:"pointer"}}>🔧 Start job</button>
+                            <button onClick={()=>updateJobStatus(job.id,"in-progress")} style={{background:"#8b5cf6",border:"none",borderRadius:8,color:"#fff",fontSize:11,fontWeight:700,padding:"7px 14px",cursor:"pointer"}}>🔧 Start job</button>
                           )}
                         </>
                       )}
-                      {job.status==="in_progress"&&(
+                      {job.status==="in-progress"&&(
                         <>
                           <button onClick={()=>navigateToCustomer(job)}
                             style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:8, color:"#378add", fontSize:11, fontWeight:700, padding:"7px 12px", cursor:"pointer" }}>
