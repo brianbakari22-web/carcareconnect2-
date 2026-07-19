@@ -15,6 +15,8 @@ export default function ProviderOrders() {
   const isMobile = useIsMobile()
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
+  const [goPartsRequests, setGoPartsRequests] = useState([])
+  const [goPartsTab, setGoPartsTab] = useState(false)
   const [filter, setFilter] = useState("pending")
   const [search, setSearch] = useState("")
   const [selectedIds, setSelectedIds] = useState([])
@@ -44,6 +46,26 @@ export default function ProviderOrders() {
     } catch(e) {}
   }
 
+  async function acceptGoPartsRequest(id) {
+    await supabase.from("go_parts_requests").update({ status:"accepted" }).eq("id", id)
+    const req = goPartsRequests.find(r=>r.id===id)
+    if(req) await supabase.from("notifications").insert({ user_id: req.mechanic_id, title: "Part accepted!", message: "Supplier accepted your part request. Delivery in progress.", type: "success" })
+    setGoPartsRequests(prev=>prev.map(r=>r.id===id?{...r,status:"accepted"}:r))
+    toast.success("Part request accepted!")
+  }
+  async function markGoPartsDelivered(id) {
+    await supabase.from("go_parts_requests").update({ status:"delivered" }).eq("id", id)
+    const req = goPartsRequests.find(r=>r.id===id)
+    if(req) {
+      await supabase.from("inventory").update({ stock_quantity: supabase.rpc("decrement_stock", {inv_id: req.inventory_id, qty: req.quantity}) }).eq("id", req.inventory_id)
+      await supabase.from("notifications").insert([
+        { user_id: req.mechanic_id, title: "Part delivered!", message: "Your part has been delivered. Fit it and complete the job.", type: "success" },
+        { user_id: req.customer_id, title: "Part delivered to mechanic!", message: "The part has been delivered. Your mechanic is fitting it now.", type: "success" }
+      ])
+    }
+    setGoPartsRequests(prev=>prev.map(r=>r.id===id?{...r,status:"delivered"}:r))
+    toast.success("Marked as delivered!")
+  }
   async function load() {
     const { data } = await supabase.from("orders")
       .select("*, order_items(*, inventory(name,unit,category)), profiles!orders_customer_id_fkey(first_name,last_name,city)")
@@ -139,6 +161,29 @@ export default function ProviderOrders() {
         <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#000" }}>Orders</div>
         <div style={{ fontSize:12, color:"#777" }}>Manage parts and accessories orders</div>
       </div>
+      {/* GO Parts Requests */}
+      {goPartsRequests.filter(r=>r.status==="pending"||r.status==="accepted").length>0&&(
+        <div style={{ background:"#f3f0ff", border:"1px solid #8b5cf640", borderRadius:12, padding:"1rem", marginBottom:"1.25rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#8b5cf6", marginBottom:8 }}>🔧 GO Service Part Requests</div>
+          {goPartsRequests.filter(r=>r.status==="pending"||r.status==="accepted").map(r=>(
+            <div key={r.id} style={{ background:"#fff", borderRadius:10, padding:"0.75rem", marginBottom:8 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                <div>
+                  <div style={{ fontSize:13, fontWeight:600 }}>{r.inventory?.name}</div>
+                  <div style={{ fontSize:11, color:"#888" }}>Qty: {r.quantity} · KES {Number(r.total_amount).toLocaleString()}</div>
+                  <div style={{ fontSize:11, color:"#555" }}>📍 {r.delivery_location_address}</div>
+                  <div style={{ fontSize:11, color:"#888" }}>Mechanic: {r.mechanic?.business_name||r.mechanic?.first_name}</div>
+                </div>
+                <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+                  {r.status==="pending"&&<button onClick={()=>acceptGoPartsRequest(r.id)} style={{ background:"#8b5cf6", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>Accept</button>}
+                  {r.status==="accepted"&&<button onClick={()=>markGoPartsDelivered(r.id)} style={{ background:"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>Mark Delivered</button>}
+                  <span style={{ fontSize:10, color:r.status==="pending"?"#e6821e":"#1d9e75", fontWeight:600, textAlign:"center" }}>{r.status}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Gradient stats header */}
       <div style={{ background: newOrderAlert ? "linear-gradient(135deg,#1d9e75,#22c98f)" : "linear-gradient(135deg,#e6821e,#f09840)", borderRadius:14, padding:"1rem 1.25rem", marginBottom:"1.25rem", display:"flex", justifyContent:"space-between", alignItems:"center", transition:"background 0.5s" }}>

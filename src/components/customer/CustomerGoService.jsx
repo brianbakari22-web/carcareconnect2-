@@ -54,6 +54,7 @@ export default function CustomerGoService() {
   const [showDepositPayment, setShowDepositPayment] = useState(false)
   const [payingCallout, setPayingCallout] = useState(false)
   const [calloutFee, setCalloutFee] = useState(500)
+  const [goPartsRequests, setGoPartsRequests] = useState([])
   useEffect(() => {
     if (user) {
       loadVehicles()
@@ -64,6 +65,7 @@ export default function CustomerGoService() {
 
   useEffect(() => {
     if (!booking) return
+    supabase.from("go_parts_requests").select("*, inventory(name,price)").eq("booking_id", booking.id).then(({data})=>setGoPartsRequests(data||[]))
     const sub = supabase.channel(`go-booking-${booking.id}`)
       .on("postgres_changes", { event:"UPDATE", schema:"public", table:"bookings", filter:`id=eq.${booking.id}` },
         payload => {
@@ -452,6 +454,20 @@ export default function CustomerGoService() {
           <div style={{ fontSize:11, color:"#777777", marginBottom:6 }}>Booking reference</div>
           <div style={{ fontSize:13, color:"#000000", fontFamily:"monospace" }}>#{booking?.booking_number}</div>
         </div>
+        {goPartsRequests.length>0&&(
+          <div style={{ background:"#f3f0ff", border:"1px solid #8b5cf640", borderRadius:12, padding:"1rem", marginBottom:"1rem", textAlign:"left" }}>
+            <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#8b5cf6", marginBottom:8 }}>🔧 Parts Request</div>
+            {goPartsRequests.map(r=>(
+              <div key={r.id} style={{ background:"#fff", borderRadius:8, padding:"0.75rem", marginBottom:6 }}>
+                <div style={{ fontSize:13, fontWeight:600 }}>{r.inventory?.name}</div>
+                <div style={{ fontSize:11, color:"#888" }}>Qty: {r.quantity} · KES {Number(r.total_amount).toLocaleString()}</div>
+                <div style={{ fontSize:11, fontWeight:600, color:r.status==="delivered"?"#1d9e75":r.status==="accepted"?"#378add":"#e6821e", marginTop:4 }}>
+                  {r.status==="pending"?"⏳ Awaiting supplier":r.status==="accepted"?"🚚 Part on the way":"✅ Part delivered"}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
         <button onClick={()=>{ setStep("select"); setBooking(null); loadActiveGoBookings() }}
           style={{ background:"#1d9e75", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:"pointer" }}>
           Track mechanic →

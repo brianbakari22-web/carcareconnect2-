@@ -9,6 +9,7 @@ export default function AdminPayouts() {
   const [payouts, setPayouts] = useState([])
   const [filter, setFilter] = useState("pending")
   const [loading, setLoading] = useState(true)
+  const [goPartsRequests, setGoPartsRequests] = useState([])
   const [note, setNote] = useState({})
   const [selected, setSelected] = useState([])
   const [walletBalance, setWalletBalance] = useState(null)
@@ -18,6 +19,7 @@ export default function AdminPayouts() {
 
   useEffect(() => {
     loadWalletData()
+    supabase.from("go_parts_requests").select("*, inventory(name,price), mechanic:profiles!go_parts_requests_mechanic_id_fkey(first_name,last_name), parts_provider:profiles!go_parts_requests_provider_id_fkey(first_name,last_name,business_name)").order("created_at",{ascending:false}).limit(20).then(({data})=>setGoPartsRequests(data||[]))
   }, [])
 
   async function loadWalletData() {
@@ -203,6 +205,22 @@ export default function AdminPayouts() {
             ))}
           </div>
         )}
+      {goPartsRequests.length>0&&(
+        <div style={{ background:"#f3f0ff", border:"1px solid #8b5cf640", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#8b5cf6", marginBottom:10 }}>🔧 GO Service Parts Requests</div>
+          {goPartsRequests.map(r=>(
+            <div key={r.id} style={{ background:"#fff", borderRadius:10, padding:"0.75rem", marginBottom:8, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+              <div>
+                <div style={{ fontSize:12, fontWeight:600 }}>{r.inventory?.name} x{r.quantity}</div>
+                <div style={{ fontSize:11, color:"#888" }}>Mechanic: {r.mechanic?.first_name} {r.mechanic?.last_name}</div>
+                <div style={{ fontSize:11, color:"#888" }}>Supplier: {r.parts_provider?.business_name||r.parts_provider?.first_name}</div>
+                <div style={{ fontSize:11, color:"#e6821e", fontWeight:600 }}>KES {Number(r.total_amount).toLocaleString()}</div>
+              </div>
+              <span style={{ fontSize:10, padding:"3px 10px", borderRadius:8, background:r.status==="delivered"?"#f0fdf4":r.status==="accepted"?"#eff6ff":"#fff8f0", color:r.status==="delivered"?"#1d9e75":r.status==="accepted"?"#378add":"#e6821e", fontWeight:600 }}>{r.status}</span>
+            </div>
+          ))}
+        </div>
+      )}
       </div>
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {[

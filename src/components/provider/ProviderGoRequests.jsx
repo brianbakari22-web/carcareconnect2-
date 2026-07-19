@@ -15,6 +15,11 @@ export default function ProviderGoRequests() {
   const [assigning, setAssigning] = useState(null)
   const [selectedMechanic, setSelectedMechanic] = useState("")
   const [timers, setTimers] = useState({})
+  const [showPartsRequest, setShowPartsRequest] = useState(null)
+  const [nearbyInventory, setNearbyInventory] = useState([])
+  const [selectedPart, setSelectedPart] = useState(null)
+  const [partQty, setPartQty] = useState(1)
+  const [requestingPart, setRequestingPart] = useState(false)
 
   useEffect(() => {
     if (!user) return
@@ -118,6 +123,44 @@ export default function ProviderGoRequests() {
     }
   }
 
+  async function loadNearbyInventory(lat, lng) {
+    const { data } = await supabase.from("inventory").select("*, profiles!inventory_provider_id_fkey(first_name,last_name,business_name,latitude,longitude)").eq("is_active", true).gt("stock_quantity", 0)
+    if(lat && lng && data) {
+      data.forEach(item => {
+        const p = item.profiles
+        if(p?.latitude && p?.longitude) {
+          const dLat = (p.latitude-lat)*Math.PI/180
+          const dLng = (p.longitude-lng)*Math.PI/180
+          const a = Math.sin(dLat/2)**2+Math.cos(lat*Math.PI/180)*Math.cos(p.latitude*Math.PI/180)*Math.sin(dLng/2)**2
+          item._distance = 6371*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))
+        } else { item._distance = 999 }
+      })
+      data.sort((a,b)=>a._distance-b._distance)
+    }
+    setNearbyInventory(data||[])
+  }
+  async function requestPart(bookingId, customerId, address, lat, lng) {
+    if(!selectedPart) return
+    setRequestingPart(true)
+    try {
+      const part = nearbyInventory.find(i=>i.id===selectedPart)
+      if(!part) throw new Error("Part not found")
+      const total = part.price * partQty
+      await supabase.from("go_parts_requests").insert({
+        booking_id: bookingId, mechanic_id: user.id, inventory_id: part.id,
+        provider_id: part.provider_id, quantity: partQty, unit_price: part.price,
+        total_amount: total, customer_id: customerId,
+        delivery_location_address: address, delivery_location_lat: lat, delivery_location_lng: lng, status: "pending"
+      })
+      await supabase.from("notifications").insert([
+        { user_id: part.provider_id, title: "Part delivery request!", message: "Mechanic needs "+part.name+" x"+partQty+" at "+address+". KES "+total, type: "info" },
+        { user_id: customerId, title: "Mechanic needs a part", message: "Your mechanic needs "+part.name+" — KES "+total+". Supplier being contacted.", type: "info" }
+      ])
+      toast.success("Part request sent!")
+      setShowPartsRequest(null); setSelectedPart(null); setPartQty(1)
+    } catch(e) { toast.error(e.message) }
+    finally { setRequestingPart(false) }
+  }
   async function load() {
     const [{ data: reqs }, { data: mechs }] = await Promise.all([
       supabase.from("go_service_requests").select("*, bookings(*)").eq("provider_id", user.id).order("sent_at", { ascending:false }).limit(20),
@@ -247,6 +290,35 @@ export default function ProviderGoRequests() {
                       {selectedMechanic===m.id&&<div style={{ marginLeft:"auto", color:"#8b5cf6", fontSize:14 }}>✓</div>}
                     </div>
                   ))}
+      {showPartsRequest&&(
+        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.7)", zIndex:200, display:"flex", flexDirection:"column", justifyContent:"flex-end" }} onClick={()=>setShowPartsRequest(null)}>
+          <div style={{ background:"#fff", borderRadius:"20px 20px 0 0", padding:"1.5rem", maxHeight:"80vh", overflowY:"auto" }} onClick={e=>e.stopPropagation()}>
+            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, marginBottom:4 }}>🔧 Request a Part</div>
+            <div style={{ fontSize:12, color:"#888", marginBottom:"1rem" }}>Select part from nearby suppliers</div>
+            {nearbyInventory.length===0&&<div style={{ fontSize:12, color:"#888", textAlign:"center", padding:"1rem" }}>No parts available nearby</div>}
+            {nearbyInventory.map(item=>(
+              <div key={item.id} onClick={()=>setSelectedPart(item.id)} style={{ background:selectedPart===item.id?"#f3f0ff":"#f8f8f8", border:"1px solid "+(selectedPart===item.id?"#8b5cf6":"#eee"), borderRadius:10, padding:"0.75rem", marginBottom:8, cursor:"pointer" }}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                  <div><div style={{ fontSize:13, fontWeight:600 }}>{item.name}</div><div style={{ fontSize:11, color:"#888" }}>{item.profiles?.business_name||item.profiles?.first_name} · {item._distance<999?item._distance.toFixed(1)+"km":""}</div><div style={{ fontSize:11, color:"#555" }}>Stock: {item.stock_quantity}</div></div>
+                  <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#8b5cf6" }}>KES {Number(item.price).toLocaleString()}</div>
+                </div>
+              </div>
+            ))}
+            {selectedPart&&(
+              <div style={{ marginTop:12 }}>
+                <div style={{ display:"flex", gap:8, alignItems:"center", marginBottom:12 }}>
+                  <button onClick={()=>setPartQty(q=>Math.max(1,q-1))} style={{ width:36, height:36, borderRadius:8, border:"1px solid #ddd", background:"#f5f5f5", fontSize:18, cursor:"pointer" }}>-</button>
+                  <span style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, minWidth:30, textAlign:"center" }}>{partQty}</span>
+                  <button onClick={()=>setPartQty(q=>q+1)} style={{ width:36, height:36, borderRadius:8, border:"1px solid #ddd", background:"#f5f5f5", fontSize:18, cursor:"pointer" }}>+</button>
+                  <span style={{ fontSize:12, color:"#888" }}>KES {((nearbyInventory.find(i=>i.id===selectedPart)?.price||0)*partQty).toLocaleString()}</span>
+                </div>
+                <button onClick={()=>{ const r=requests.find(x=>x.booking_id===showPartsRequest); requestPart(showPartsRequest, r?.bookings?.customer_id, r?.bookings?.emergency_location_address, r?.bookings?.emergency_location_lat, r?.bookings?.emergency_location_lng) }} disabled={requestingPart} style={{ width:"100%", background:requestingPart?"#ccc":"#8b5cf6", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne", fontSize:14, fontWeight:700, padding:"13px", cursor:requestingPart?"not-allowed":"pointer" }}>{requestingPart?"Sending...":"Send Part Request"}</button>
+              </div>
+            )}
+            <button onClick={()=>setShowPartsRequest(null)} style={{ width:"100%", background:"none", border:"1px solid #ddd", borderRadius:10, color:"#666", fontSize:13, padding:"11px", cursor:"pointer", marginTop:8 }}>Cancel</button>
+          </div>
+        </div>
+      )}
                 </div>
               )}
 
@@ -301,6 +373,7 @@ export default function ProviderGoRequests() {
                 </a>
               )}
               <div style={{ fontSize:10, color:"#888888", marginTop:2 }}>{new Date(r.sent_at).toLocaleString()}</div>
+              {r.status==="accepted"&&<button onClick={()=>{ setShowPartsRequest(r.booking_id); loadNearbyInventory(r.bookings?.emergency_location_lat, r.bookings?.emergency_location_lng) }} style={{ marginTop:8, background:"#8b5cf6", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 14px", cursor:"pointer" }}>🔧 Request Part</button>}
             </div>
             <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e" }}>
               KES {Number(r.bookings?.total_amount||0).toLocaleString()}
