@@ -516,9 +516,9 @@ export default function CustomerGoService() {
             <button onClick={async()=>{ await supabase.from("go_provider_strikes").insert({ provider_id:booking?.provider_id, booking_id:booking?.id, reason:"no_show" }); await supabase.functions.invoke("go-refund-callout",{body:{booking_id:booking?.id, customer_id:user.id}}); toast.error("No-show reported. Refund initiated. 💸") }} style={{ flex:1, background:"#fff5f5", border:"1px solid #fecaca", borderRadius:8, color:"#e24b4a", fontSize:12, fontWeight:700, padding:"10px", cursor:"pointer" }}>❌ No show</button>
           </div>
         </div>
-        <button onClick={()=>{ navigate("/dashboard/tracking?bookingId="+(booking?.id||activeGoBookings[0]?.id)) }}
-          style={{ background:"#1d9e75", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:"pointer" }}>
-          Track mechanic →
+        <button onClick={()=>{ setStep("select"); setBooking(null); loadActiveGoBookings() }}
+          style={{ background:"#f8f8f8", border:"1px solid #eee", borderRadius:10, color:"#555", fontFamily:"Syne,sans-serif", fontSize:13, padding:"11px 24px", cursor:"pointer" }}>
+          Back to GO Service
         </button>
       </div>
     </div>
