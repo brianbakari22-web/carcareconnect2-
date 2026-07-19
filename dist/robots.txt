@@ -1,9 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /admin-dashboard/
-Disallow: /dashboard/
-Disallow: /auth
-Disallow: /reset-password
-Disallow: /payment/
-
-Sitemap: https://carcareconnect.care/sitemap.xml
