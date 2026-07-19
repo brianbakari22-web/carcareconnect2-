@@ -1064,11 +1064,22 @@ export default function AIAssistant({ bottomOffset = 88, forcedRole = null }) {
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState("")
   const [loading, setLoading] = useState(false)
+  const [keyboardOpen, setKeyboardOpen] = useState(false)
   const [greeted, setGreeted] = useState(false)
   const bottomRef = useRef(null)
   const inputRef = useRef(null)
 
   const role = forcedRole || profile?.role || "customer"
+  useEffect(() => {
+    const handleResize = () => {
+      if(window.visualViewport) {
+        const keyboardHeight = window.screen.height - window.visualViewport.height
+        setKeyboardOpen(keyboardHeight > 150)
+      }
+    }
+    window.visualViewport?.addEventListener("resize", handleResize)
+    return () => window.visualViewport?.removeEventListener("resize", handleResize)
+  }, [])
   const color = ROLE_COLORS[role] || "#e6821e"
 
   useEffect(() => {
@@ -1123,7 +1134,7 @@ export default function AIAssistant({ bottomOffset = 88, forcedRole = null }) {
         @keyframes ai-spark4 { 0%,100%{opacity:0;transform:translate(0,0) scale(0)} 50%{opacity:1;transform:translate(10px,8px) scale(1)} }
       `}</style>
 
-      {!open&&(
+      {!open&&!keyboardOpen&&(
         <div onClick={()=>setOpen(true)} style={{ position:"fixed", bottom:bottomOffset, right:20, zIndex:999, cursor:"pointer", width:56, height:56 }}>
           <div style={{ position:"absolute", inset:-6, borderRadius:"50%", border:"2px solid "+color, animation:"ai-pulse 2s ease-out infinite" }}/>
           <div style={{ position:"absolute", inset:-6, borderRadius:"50%", border:"2px solid "+color, animation:"ai-pulse 2s ease-out infinite 1s" }}/>
