@@ -72,7 +72,7 @@ export default function MechanicDashboard() {
         toast.success("New job assigned: " + (payload.new.service_name||"Service") + " 🔧", { duration:10000 })
       })
       .on("postgres_changes", { event:"UPDATE", schema:"public", table:"bookings",
-        filter:"assigned_mechanic_id=eq." + mechanic.mechanic_id }, () => load())
+        filter:"assigned_mechanic_id=eq." + mechanic.mechanic_id }, payload => { load(); if(payload.new.status==="confirmed"&&payload.new.assigned_mechanic_id) toast.success("🚨 GO Service job assigned! Check your jobs.", { duration:10000 }) })
       .subscribe()
     return () => { supabase.removeChannel(sub); stopSharing() }
   }, [mechanic])
