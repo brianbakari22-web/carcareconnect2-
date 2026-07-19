@@ -13,6 +13,8 @@ export default function ProviderGoRequests() {
   const [mechanics, setMechanics] = useState([])
   const [loading, setLoading] = useState(true)
   const [assigning, setAssigning] = useState(null)
+  const [reassigning, setReassigning] = useState(null)
+  const [newMechanic, setNewMechanic] = useState("")
   const [selectedMechanic, setSelectedMechanic] = useState("")
   const [timers, setTimers] = useState({})
   const [showPartsRequest, setShowPartsRequest] = useState(null)
@@ -177,6 +179,20 @@ export default function ProviderGoRequests() {
     load()
   }
 
+  async function reassignMechanic(bookingId) {
+    if(!newMechanic) return toast.error("Please select a mechanic")
+    try {
+      await supabase.from("bookings").update({ assigned_mechanic_id: newMechanic }).eq("id", bookingId)
+      await supabase.from("mechanics").update({ is_available:false, current_booking_id:bookingId }).eq("id", newMechanic)
+      const mech = mechanics.find(m=>m.id===newMechanic)
+      if(mech?.user_id) {
+        await supabase.from("notifications").insert({ user_id:mech.user_id, title:"🚨 GO Service job assigned!", message:"You have been assigned a new emergency GO service job. Check your dashboard.", type:"error" })
+      }
+      toast.success("Mechanic reassigned!")
+      setReassigning(null); setNewMechanic("")
+      load()
+    } catch(e) { toast.error(e.message) }
+  }
   async function acceptRequest(request) {
     if (!selectedMechanic && mechanics.length > 0) return toast.error("Please select a mechanic to dispatch")
     try {
@@ -386,7 +402,22 @@ export default function ProviderGoRequests() {
               )}
               <div style={{ fontSize:10, color:"#888888", marginTop:2 }}>{new Date(r.sent_at).toLocaleString()}</div>
               {r.bookings?.status==="in-progress"&&<button onClick={()=>{ setShowPartsRequest(r.booking_id); loadNearbyInventory(r.bookings?.emergency_location_lat, r.bookings?.emergency_location_lng) }} style={{ marginTop:8, background:"#8b5cf6", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 14px", cursor:"pointer" }}>🔧 Request Part</button>}
-              {r.status==="accepted"&&r.bookings?.status!=="in-progress"&&<button onClick={()=>setAssigning(r.id)} style={{ marginTop:8, background:"#378add", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 14px", cursor:"pointer" }}>👨‍🔧 Reassign Mechanic</button>}
+              {r.status==="accepted"&&r.bookings?.status!=="in-progress"&&(
+                reassigning===r.booking_id ? (
+                  <div style={{ marginTop:8 }}>
+                    <select value={newMechanic} onChange={e=>setNewMechanic(e.target.value)} style={{ width:"100%", padding:"6px 10px", borderRadius:8, border:"1px solid #ddd", fontSize:12, marginBottom:6 }}>
+                      <option value="">Select mechanic</option>
+                      {mechanics.map(m=><option key={m.id} value={m.id}>{m.first_name} {m.last_name} · {m.specialization}</option>)}
+                    </select>
+                    <div style={{ display:"flex", gap:6 }}>
+                      <button onClick={()=>reassignMechanic(r.booking_id)} style={{ flex:1, background:"#378add", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 10px", cursor:"pointer" }}>✓ Confirm</button>
+                      <button onClick={()=>{ setReassigning(null); setNewMechanic("") }} style={{ flex:1, background:"#f0f0f0", border:"none", borderRadius:8, color:"#555", fontSize:11, padding:"6px 10px", cursor:"pointer" }}>Cancel</button>
+                    </div>
+                  </div>
+                ) : (
+                  <button onClick={()=>setReassigning(r.booking_id)} style={{ marginTop:8, background:"#378add", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 14px", cursor:"pointer" }}>👨‍🔧 Reassign Mechanic</button>
+                )
+              )}
               </div>
             <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e" }}>
               KES {Number(r.bookings?.total_amount||0).toLocaleString()}
