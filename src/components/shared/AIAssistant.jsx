@@ -4,7 +4,7 @@ import { useAuth } from "../../contexts/AuthContext"
 const ROLE_COLORS = { customer:"#e6821e", provider:"#378add", driver:"#1d9e75", admin:"#8b5cf6", mechanic:"#1d9e75" }
 
 const PLATFORM_KNOWLEDGE = `
-CAR CARE CONNECT PLATFORM - COMPLETE KNOWLEDGE BASE (Updated June 2026)
+CAR CARE CONNECT PLATFORM - COMPLETE KNOWLEDGE BASE (Updated July 2026)
 
 ABOUT THE PLATFORM:
 Car Care Connect (CCC) is a full-stack automotive service platform based in Nairobi, Kenya.
@@ -614,6 +614,25 @@ PENALTY SYSTEM INTERNALS: Progressive violation system (warning > suspension > b
 COMMISSION BREAKDOWN: exact rates per provider type for admin reference
 PROVIDER VERIFICATION: Admin approves/rejects from Admin > Providers
 SYSTEM HEALTH MONITOR: 11 checks including stuck bookings, GO timeouts, pending claims
+GO SERVICE ADMIN:
+- GO Parts Requests visible in Admin > Payouts
+- GO Provider Strikes tracked — 3 strikes = auto suspension
+- All GO commission rates editable in Admin > Settings > GO Service Rates
+- go_callout_fee: KES 500 (editable)
+- go_callout_provider_rate: provider % of callout fee (editable)
+- go_callout_platform_rate: CCC % of callout fee (editable)
+- go_service_provider_rate: provider % of service fee (editable)
+- go_parts_provider_rate: parts provider % of parts order (editable)
+- go_provider_strike_limit: strikes before suspension (editable)
+PAYMENT FLOW:
+- Callout fee held in escrow until OTP verified
+- Service fee auto-requested via STK push when mechanic marks complete
+- Parts payment tracked separately in go_parts_requests table
+INTASEND PAYMENT:
+- Webhook: intasend-webhook Edge Function
+- STK Push: intasend-stk-push Edge Function
+- Payout: intasend-payout Edge Function
+- All transactions in payment_transactions table
 BULK BOOKING DETECTION: Admin sees bulk badge on multi-vehicle bookings
 SIGNUP METHOD: Admin sees Google vs email signup badges on user cards
 REFERRAL LEADERBOARD: Admin sees top referrers in Admin > Loyalty
