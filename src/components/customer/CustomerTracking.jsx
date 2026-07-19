@@ -95,7 +95,7 @@ export default function CustomerTracking() {
     if (mapInstanceRef.current) { mapInstanceRef.current.remove(); mapInstanceRef.current = null }
 
     function initGoogleMap() {
-      if (!mapRef.current || !window.google) return
+      if (!mapRef.current || !window.google?.maps?.Map) return
       const lat = driver?.current_lat || mechanic?.current_latitude || -1.2921
       const lng = driver?.current_lng || mechanic?.current_longitude || 36.8219
       const map = new window.google.maps.Map(mapRef.current, {
