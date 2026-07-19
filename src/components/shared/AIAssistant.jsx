@@ -957,6 +957,19 @@ NEW FEATURES (July 2026):
 - Public pages: carcareconnect.care/service/:id and /parts/:id work without login
 - SEO: Schema.org structured data, canonical URL, robots meta all configured
 - Play Store: care.carcareconnect.app, version 1.0.31, internal testing
+NEW FEATURES (July 2026) - GO SERVICE COMPLETE SYSTEM:
+- GO Service OTP arrival verification: Mechanic taps I have Arrived → OTP sent to customer → customer gives code to mechanic → verified → escrow released
+- GO Service escrow: Callout fee held until OTP verified, then split between provider and platform
+- GO Service no-show: Customer reports no-show → full refund + provider strike → 3 strikes = suspended
+- GO Parts: Mechanics can request inventory parts during GO jobs, parts provider delivers to breakdown location
+- GO Service completion: Mechanic marks complete → auto STK push sent to customer for service fee
+- All GO rates editable: Admin Settings → GO Service Rates (go_callout_fee, go_callout_provider_rate, go_service_provider_rate, go_parts_provider_rate, go_provider_strike_limit)
+- GO Parts visible in Admin Payouts section
+- Mechanic availability: Auto-resets when job completed/cancelled
+- IntaSend webhook rebuilt: Flexible challenge verification, handles CANCELLED state
+- Test accounts: is_test_account flag bypasses payment for testing (GO Service shows Skip Payment button)
+- Play Store: care.carcareconnect.app, version 1.0.34, closed testing (14-day requirement)
+- Google Play production access: under review since July 17 2026
 - Platform has 10,694 pageviews in June 2026 before official launch
 
 `,
