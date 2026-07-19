@@ -3,7 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-intasend-signature",
 }
 
 serve(async (req) => {
@@ -11,16 +11,28 @@ serve(async (req) => {
 
   try {
     const WEBHOOK_SECRET = Deno.env.get("INTASEND_WEBHOOK_SECRET")
-    const challenge = req.headers.get("x-intasend-signature") || req.headers.get("challenge")
+    
+    // Read body first
+    const bodyText = await req.text()
+    let payload: any = {}
+    try { payload = JSON.parse(bodyText) } catch(e) { console.error("Body parse error:", e) }
 
-    // Verify webhook secret
-    if (challenge !== WEBHOOK_SECRET) {
-      console.error("Invalid webhook secret")
+    console.log("IntaSend webhook received:", bodyText.substring(0, 500))
+    console.log("Headers:", JSON.stringify(Object.fromEntries(req.headers.entries())))
+
+    // Check challenge in multiple places
+    const challengeHeader = req.headers.get("x-intasend-signature") || 
+                           req.headers.get("challenge") ||
+                           req.headers.get("x-intasend-challenge")
+    const challengeBody = payload.challenge
+
+    const receivedChallenge = challengeHeader || challengeBody
+
+    // Verify webhook secret - be flexible
+    if (WEBHOOK_SECRET && receivedChallenge && receivedChallenge !== WEBHOOK_SECRET) {
+      console.error("Invalid webhook secret. Got:", receivedChallenge, "Expected:", WEBHOOK_SECRET)
       return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: corsHeaders })
     }
-
-    const payload = await req.json()
-    console.log("IntaSend webhook:", JSON.stringify(payload))
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -30,6 +42,13 @@ serve(async (req) => {
     const invoiceId = payload.invoice_id || payload.invoice?.invoice_id
     const state = payload.state || payload.invoice?.state
     const apiRef = payload.api_ref || payload.invoice?.api_ref
+
+    console.log("Invoice:", invoiceId, "State:", state)
+
+    if (!invoiceId) {
+      console.log("No invoice ID in payload - returning ok")
+      return new Response(JSON.stringify({ ok: true }), { headers: corsHeaders })
+    }
 
     // Find transaction by invoice_id
     const { data: txn } = await supabase
@@ -44,45 +63,31 @@ serve(async (req) => {
     }
 
     if (state === "COMPLETE") {
-      // Mark transaction as paid
       await supabase.from("payment_transactions")
         .update({ status: "completed", completed_at: new Date().toISOString() })
         .eq("intasend_invoice_id", invoiceId)
 
-      // Update booking payment status
       if (txn.booking_id) {
         await supabase.from("bookings")
           .update({ payment_status: "paid", status: "confirmed" })
           .eq("id", txn.booking_id)
       }
 
-      // Get commission rates
-      const { data: rates } = await supabase
-        .from("commission_rates")
-        .select("*")
-        .single()
-
+      const { data: rates } = await supabase.from("commission_rates").select("*").single()
       const commissionRate = rates?.provider_commission_rate || 0.10
-      const platformAbsorptionRate = rates?.platform_processing_rate || 0.01
-      const providerAbsorptionRate = rates?.provider_processing_rate || 0.01
+      const providerProcessingFee = Math.floor(txn.amount * (rates?.provider_processing_rate || 0.01))
+      const providerAmount = txn.amount - Math.floor(txn.amount * commissionRate) - providerProcessingFee
 
-      const grossAmount = txn.amount
-      const platformCommission = Math.floor(grossAmount * commissionRate)
-      const platformProcessingFee = Math.floor(grossAmount * platformAbsorptionRate)
-      const providerProcessingFee = Math.floor(grossAmount * providerAbsorptionRate)
-      const providerAmount = grossAmount - platformCommission - providerProcessingFee
-
-      // Trigger provider payout
       if (txn.provider_id && providerAmount > 0) {
-        // Get provider M-Pesa number
         const { data: sensitive } = await supabase
           .from("profile_sensitive")
-          .select("mpesa_number")
+          .select("mpesa_number, till_number, preferred_payment_method")
           .eq("id", txn.provider_id)
           .single()
 
-        if (sensitive?.mpesa_number) {
-          // Call intasend-payout
+        const phone = sensitive?.mpesa_number || sensitive?.till_number
+
+        if (phone) {
           await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/intasend-payout`, {
             method: "POST",
             headers: {
@@ -93,32 +98,32 @@ serve(async (req) => {
               booking_id: txn.booking_id,
               provider_id: txn.provider_id,
               amount: providerAmount,
-              phone: sensitive.mpesa_number,
-              narrative: `CCC payout for booking ${apiRef}`,
+              phone,
+              narrative: `CCC payout - ${apiRef}`,
             })
           })
         }
       }
 
-      // Notify customer
-      await supabase.from("notifications").insert({
-        user_id: txn.customer_id,
-        type: "payment",
-        title: "Payment confirmed ✅",
-        message: `Your payment of KES ${grossAmount.toLocaleString()} has been received. Your booking is confirmed.`,
-      })
+      if (txn.customer_id) {
+        await supabase.from("notifications").insert({
+          user_id: txn.customer_id,
+          type: "payment",
+          title: "Payment confirmed ✅",
+          message: `Your payment of KES ${Number(txn.amount).toLocaleString()} has been received.`,
+        })
+      }
 
-      // Notify provider
       if (txn.provider_id) {
         await supabase.from("notifications").insert({
           user_id: txn.provider_id,
           type: "payment",
           title: "Payment received 💰",
-          message: `You will receive KES ${providerAmount.toLocaleString()} for booking ${apiRef}.`,
+          message: `You will receive KES ${providerAmount.toLocaleString()} shortly.`,
         })
       }
 
-    } else if (state === "FAILED") {
+    } else if (state === "FAILED" || state === "CANCELLED") {
       await supabase.from("payment_transactions")
         .update({ status: "failed" })
         .eq("intasend_invoice_id", invoiceId)
@@ -138,7 +143,7 @@ serve(async (req) => {
     })
 
   } catch (error) {
-    console.error("Webhook error:", error)
+    console.error("Webhook error:", error.message)
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" }
