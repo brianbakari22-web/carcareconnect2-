@@ -52,6 +52,7 @@ export default function CustomerGoService() {
   const [selectedService, setSelectedService] = useState(null)
 
   const [showDepositPayment, setShowDepositPayment] = useState(false)
+  const [pendingGoBooking, setPendingGoBooking] = useState(null)
   const [payingCallout, setPayingCallout] = useState(false)
   const [calloutFee, setCalloutFee] = useState(500)
   const [goPartsRequests, setGoPartsRequests] = useState([])
@@ -241,7 +242,7 @@ export default function CustomerGoService() {
         emergency_location_address: location.address,
         booking_date: new Date().toISOString().split("T")[0],
         booking_time: new Date().toTimeString().slice(0,5),
-        total_amount: Math.min(sanitizeAmount(selectedService.price), calloutFee), // GO service max 500
+        total_amount: calloutFee,
         go_callout_fee: calloutFee,
         go_callout_paid: false,
         platform_commission: Number(selectedService.price)*0.15,
@@ -256,18 +257,10 @@ export default function CustomerGoService() {
         go_attempt_number: 1,
       }).select().single()
       if (error) throw error
-      const { data: sens } = await supabase.from("profile_sensitive").select("phone").eq("id", user.id).single()
-      const phone = sens?.phone || ""
-      if(!phone) throw new Error("Please add your phone number in your profile first")
-      const { data: stkData, error: stkError } = await supabase.functions.invoke("intasend-stk-push", {
-        body: { amount: calloutFee, booking_id: bk.id, customer_id: user.id, provider_id: selectedService.provider_id, phone, service_name: selectedService.name }
-      })
-      if(stkError) throw stkError
-      if(stkData?.error) throw new Error(stkData.error)
-      toast.success("Check your phone for M-Pesa prompt! 📱")
-      setBooking(bk)
-      setStep("waiting")
-    } catch(e) { toast.error(e.message||"Payment failed") }
+      // Show IntaSend payment modal
+      setPendingGoBooking({ id: bk.id, amount: calloutFee, provider_id: selectedService.provider_id })
+      setShowDepositPayment(false)
+    } catch(e) { toast.error(e.message||"Failed to create booking") }
     finally { setPayingCallout(false) }
   }
   async function submitEmergency() {
@@ -664,6 +657,16 @@ export default function CustomerGoService() {
           </div>
         </div>
       )}
+    {pendingGoBooking&&(
+      <IntaSendPayment
+        amount={pendingGoBooking.amount}
+        bookingId={pendingGoBooking.id}
+        providerId={pendingGoBooking.provider_id}
+        description={"GO Service callout fee"}
+        onSuccess={()=>{ setPendingGoBooking(null); const bk = {id:pendingGoBooking.id}; setBooking(bk); setStep("waiting"); startCountdown(15*60) }}
+        onClose={()=>{ setPendingGoBooking(null); supabase.from("bookings").delete().eq("id",pendingGoBooking.id) }}
+      />
+    )}
     </div>
   )
 }
