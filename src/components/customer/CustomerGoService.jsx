@@ -30,7 +30,7 @@ const EMERGENCY_TYPES = [
 ]
 
 export default function CustomerGoService() {
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const isMobile = useIsMobile()
   const [step, setStep] = useState("select")
   const [emergencyType, setEmergencyType] = useState("")
