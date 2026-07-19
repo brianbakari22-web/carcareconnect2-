@@ -1,4 +1,4 @@
-﻿import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 
 const ROLE_COLORS = { customer:"#e6821e", provider:"#378add", driver:"#1d9e75", admin:"#8b5cf6", mechanic:"#1d9e75" }
@@ -24,12 +24,12 @@ Terms of Service: carcareconnect.care/terms
 COMMISSION STRUCTURE:
 - Shop Standard: Provider 90%, Platform 10%
 - Shop Premium: Provider 80%, Platform 20%
-- GO Service Emergency: Provider 85%, Platform 15%
-- Concierge Service: Provider 70%, Platform 15%, Driver 15%
-- Marketplace Vehicles: Seller 98%, Platform 2%
-- Marketplace Parts/Accessories: Seller 92%, Platform 8%
-
-BOOKING FLOW:
+- GO Service Callout Fee: Split between provider and platform (admin-configurable rates)
+- GO Service Service Fee: Split between provider and platform (admin-configurable rates)
+- GO Parts: Split between parts provider and platform (admin-configurable rates)
+- Concierge Service: Split between provider, platform and driver (admin-configurable)
+- Marketplace Vehicles: Seller gets majority, platform takes small commission (admin-configurable)
+- Marketplace Parts/Accessories: Seller gets majority, platform takes small commission (admin-configurable)
 Customer finds service -> Books online -> Provider confirms -> Service performed -> Customer reviews
 Payment via M-Pesa (M-Pesa STK push, Visa/Mastercard cards, bank transfers)
 
@@ -756,13 +756,13 @@ FOR CUSTOMERS specifically:
 - Recommend appropriate CCC services
 - Explain how to book, track, and review services
 - Help with loyalty points, referrals, and vouchers
-- Guide through GO Service emergency process
+- Guide through GO Service emergency process (OTP verification, escrow, parts requests, no-show reporting)
 - Explain Service Guarantee claims
 - Help navigate marketplace for buying/selling
 
 NEW FEATURES (June 2026):
 - Share my location: tap "Share my location" in booking form to share GPS with provider
-- Mechanic tracking: Track assigned mechanic live on map during GO Service
+- Mechanic tracking: Call mechanic directly from accepted screen
 - Mechanic rating: Rate mechanic separately after job completion
 - GO Service: Shows mechanic name, specialization and ETA on accepted screen
 - Concierge: Add pickup location with GPS detect when booking
@@ -784,9 +784,9 @@ ${CUSTOMER_KNOWLEDGE}
 FOR PROVIDERS specifically:
 
 PROVIDER TYPES AND THEIR FOCUS:
-- Garage/Mechanic: manages bookings, confirms/starts/completes services, assigns mechanics, handles GO Service requests, earns 90% commission
+- Garage/Mechanic: manages bookings, confirms/starts/completes services, assigns mechanics, handles GO Service requests, can reassign mechanics, request CCC inventory parts during GO jobs
 - Mobile Mechanic: travels to customer, premium service, earns 80% commission
-- Parts Dealer: manages inventory (add/edit/delete items), confirms orders, packs and dispatches, earns 95% commission (lowest platform rate)
+- Parts Dealer: manages inventory (add/edit/delete items), confirms orders, packs and dispatches, receives GO Parts delivery requests from mechanics in the field
 - Accessories Shop: manages accessories inventory, confirms orders, earns 92% commission
 - Tyre Shop: manages tyre inventory + fitting appointments, earns 94% commission
 - Auto Electrician: manages electrical service bookings, earns 88% commission
@@ -871,10 +871,10 @@ NEW FEATURES (July 2026):
 ${CUSTOMER_KNOWLEDGE}
 
 MECHANIC PORTAL FEATURES:
-- Jobs tab: view assigned jobs, start/complete jobs, navigate to customer, call customer
+- Jobs tab: view assigned jobs, tap I have Arrived for OTP verification, navigate to customer, call customer, request CCC parts for GO service jobs, start/complete jobs
 - Earnings tab: view today/week/month earnings (15% of job value)
 - Stats tab: view average rating, completion rate, total jobs
-- History tab: view completed and cancelled jobs
+- History tab: view completed and cancelled jobs (auto-updates when job completed)
 - Photos tab: view all before/after photos taken on jobs
 - Manual tab: quick reference guides for common repairs
 - Parts tab: Nairobi market parts price guide
@@ -939,9 +939,9 @@ ${PLATFORM_KNOWLEDGE}
 
 ${ADMIN_ONLY_KNOWLEDGE}
 
-FOR ADMINS specifically:
+FOR ADMINS specifically (full platform access — all knowledge available):
 - Full platform policy knowledge
-- Commission and revenue management
+- Commission and revenue management (all rates editable in Admin Settings → GO Service Rates)
 - Driver verification process (use documents_verified column)
 - Service Guarantee claim resolution
 - System health monitoring and fixes
