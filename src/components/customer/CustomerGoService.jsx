@@ -59,6 +59,7 @@ export default function CustomerGoService() {
   const [payingCallout, setPayingCallout] = useState(false)
   const [calloutFee, setCalloutFee] = useState(500)
   const [calloutProviderRate, setCalloutProviderRate] = useState(0.70)
+  const [serviceProviderRate, setServiceProviderRate] = useState(0.85)
   const [goPartsRequests, setGoPartsRequests] = useState([])
   useEffect(() => {
     if (user) {
@@ -66,8 +67,8 @@ export default function CustomerGoService() {
       loadActiveGoBookings()
       loadGoServices()
       // Load GO commission rates
-      supabase.from("app_settings").select("key,value").in("key",["go_callout_fee","go_callout_provider_rate"]).then(({data})=>{
-        data?.forEach(s=>{ if(s.key==="go_callout_fee") setCalloutFee(Number(s.value)); if(s.key==="go_callout_provider_rate") setCalloutProviderRate(Number(s.value)/100) })
+      supabase.from("app_settings").select("key,value").in("key",["go_callout_fee","go_callout_provider_rate","go_service_provider_rate"]).then(({data})=>{
+        data?.forEach(s=>{ if(s.key==="go_callout_fee") setCalloutFee(Number(s.value)); if(s.key==="go_callout_provider_rate") setCalloutProviderRate(Number(s.value)/100); if(s.key==="go_service_provider_rate") setServiceProviderRate(Number(s.value)/100) })
       })
     }
   }, [user])
@@ -249,9 +250,9 @@ export default function CustomerGoService() {
         booking_time: new Date().toTimeString().slice(0,5),
         total_amount: calloutFee, go_callout_fee: calloutFee,
         go_callout_paid: true, payment_status: "paid", status: "pending",
-        platform_commission: Number(selectedService.price)*0.15,
-        provider_earnings: Number(selectedService.price)*0.85,
-        platform_commission_rate: 0.15, provider_commission_rate: 0.85,
+        platform_commission: Number(selectedService.price)*(1-serviceProviderRate),
+        provider_earnings: Number(selectedService.price)*serviceProviderRate,
+        platform_commission_rate: (1-serviceProviderRate), provider_commission_rate: serviceProviderRate,
         payment_method: "test", notes: details, vehicle_id: vehicle||null, go_attempt_number: 1,
       }).select().single()
       if(error) throw error
@@ -290,8 +291,8 @@ export default function CustomerGoService() {
         total_amount: calloutFee,
         go_callout_fee: calloutFee,
         go_callout_paid: false,
-        platform_commission: Number(selectedService.price)*0.15,
-        provider_earnings: Number(selectedService.price)*0.85,
+        platform_commission: Number(selectedService.price)*(1-serviceProviderRate),
+        provider_earnings: Number(selectedService.price)*serviceProviderRate,
         platform_commission_rate: 0.15,
         provider_commission_rate: 0.85,
         payment_method: "mpesa",
@@ -328,8 +329,8 @@ export default function CustomerGoService() {
         booking_date: new Date().toISOString().split("T")[0],
         booking_time: new Date().toTimeString().slice(0,5),
         total_amount: selectedService.price,
-        platform_commission: Number(selectedService.price) * 0.15,
-        provider_earnings: Number(selectedService.price) * 0.85,
+        platform_commission: Number(selectedService.price)*(1-serviceProviderRate),
+        provider_earnings: Number(selectedService.price)*serviceProviderRate,
         platform_commission_rate: 0.15,
         provider_commission_rate: 0.85,
         payment_method: "mpesa",

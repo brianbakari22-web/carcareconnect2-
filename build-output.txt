@@ -21,28 +21,28 @@ rendering chunks...
 computing gzip size...
 [2mdist/[22m[32mindex.html                          [39m[1m[2m   11.73 kB[22m[1m[22m[2m Γöé gzip:   3.75 kB[22m
 [2mdist/[22m[35massets/index-C3tPJB2X.css           [39m[1m[2m    0.70 kB[22m[1m[22m[2m Γöé gzip:   0.42 kB[22m
-[2mdist/[22m[36massets/web-WQvqiF_G.js              [39m[1m[2m    0.25 kB[22m[1m[22m[2m Γöé gzip:   0.21 kB[22m[2m Γöé map:     0.56 kB[22m
-[2mdist/[22m[36massets/web-Bvp-V4kL.js              [39m[1m[2m    0.49 kB[22m[1m[22m[2m Γöé gzip:   0.33 kB[22m[2m Γöé map:     1.21 kB[22m
-[2mdist/[22m[36massets/web-BEj4-Hcm.js              [39m[1m[2m    0.51 kB[22m[1m[22m[2m Γöé gzip:   0.33 kB[22m[2m Γöé map:     1.30 kB[22m
-[2mdist/[22m[36massets/index-COPPKPH8.js            [39m[1m[2m    0.54 kB[22m[1m[22m[2m Γöé gzip:   0.33 kB[22m[2m Γöé map:     0.57 kB[22m
-[2mdist/[22m[36massets/index-C3ALrIYL.js            [39m[1m[2m    0.55 kB[22m[1m[22m[2m Γöé gzip:   0.33 kB[22m[2m Γöé map:     0.58 kB[22m
-[2mdist/[22m[36massets/index-BwmC6u--.js            [39m[1m[2m    0.56 kB[22m[1m[22m[2m Γöé gzip:   0.33 kB[22m[2m Γöé map:     0.59 kB[22m
-[2mdist/[22m[36massets/index-Cjq9Atup.js            [39m[1m[2m    0.62 kB[22m[1m[22m[2m Γöé gzip:   0.36 kB[22m[2m Γöé map:     0.71 kB[22m
+[2mdist/[22m[36massets/web-B3aULeiK.js              [39m[1m[2m    0.25 kB[22m[1m[22m[2m Γöé gzip:   0.21 kB[22m[2m Γöé map:     0.56 kB[22m
+[2mdist/[22m[36massets/web-cqqB1AjH.js              [39m[1m[2m    0.49 kB[22m[1m[22m[2m Γöé gzip:   0.33 kB[22m[2m Γöé map:     1.21 kB[22m
+[2mdist/[22m[36massets/web-BU3DmhBo.js              [39m[1m[2m    0.51 kB[22m[1m[22m[2m Γöé gzip:   0.34 kB[22m[2m Γöé map:     1.30 kB[22m
+[2mdist/[22m[36massets/index-DQTRCG4N.js            [39m[1m[2m    0.54 kB[22m[1m[22m[2m Γöé gzip:   0.33 kB[22m[2m Γöé map:     0.57 kB[22m
+[2mdist/[22m[36massets/index-D1v60xvS.js            [39m[1m[2m    0.55 kB[22m[1m[22m[2m Γöé gzip:   0.34 kB[22m[2m Γöé map:     0.58 kB[22m
+[2mdist/[22m[36massets/index-nVd4UDN-.js            [39m[1m[2m    0.56 kB[22m[1m[22m[2m Γöé gzip:   0.34 kB[22m[2m Γöé map:     0.59 kB[22m
+[2mdist/[22m[36massets/index-B-W1Hh9u.js            [39m[1m[2m    0.62 kB[22m[1m[22m[2m Γöé gzip:   0.36 kB[22m[2m Γöé map:     0.71 kB[22m
 [2mdist/[22m[36massets/synapse-akrKn89j.js          [39m[1m[2m    0.69 kB[22m[1m[22m[2m Γöé gzip:   0.36 kB[22m[2m Γöé map:     2.28 kB[22m
-[2mdist/[22m[36massets/web-KHsECK6A.js              [39m[1m[2m    0.97 kB[22m[1m[22m[2m Γöé gzip:   0.48 kB[22m[2m Γöé map:     2.18 kB[22m
-[2mdist/[22m[36massets/index-DrZgMxN6.js            [39m[1m[2m    1.07 kB[22m[1m[22m[2m Γöé gzip:   0.59 kB[22m[2m Γöé map:     5.45 kB[22m
-[2mdist/[22m[36massets/web-CxV47VvW.js              [39m[1m[2m    2.49 kB[22m[1m[22m[2m Γöé gzip:   1.02 kB[22m[2m Γöé map:     7.40 kB[22m
-[2mdist/[22m[36massets/web-sSsUJIdE.js              [39m[1m[2m    8.93 kB[22m[1m[22m[2m Γöé gzip:   3.09 kB[22m[2m Γöé map:    35.75 kB[22m
+[2mdist/[22m[36massets/web-CeiZC-hP.js              [39m[1m[2m    0.97 kB[22m[1m[22m[2m Γöé gzip:   0.48 kB[22m[2m Γöé map:     2.18 kB[22m
+[2mdist/[22m[36massets/index-DFpPxbxs.js            [39m[1m[2m    1.07 kB[22m[1m[22m[2m Γöé gzip:   0.59 kB[22m[2m Γöé map:     5.45 kB[22m
+[2mdist/[22m[36massets/web-DO_euSIk.js              [39m[1m[2m    2.49 kB[22m[1m[22m[2m Γöé gzip:   1.02 kB[22m[2m Γöé map:     7.40 kB[22m
+[2mdist/[22m[36massets/web-DAlz5uJt.js              [39m[1m[2m    8.93 kB[22m[1m[22m[2m Γöé gzip:   3.09 kB[22m[2m Γöé map:    35.75 kB[22m
 [2mdist/[22m[36massets/ui-VlKIP8q1.js               [39m[1m[2m   12.19 kB[22m[1m[22m[2m Γöé gzip:   4.89 kB[22m[2m Γöé map:    28.09 kB[22m
 [2mdist/[22m[36massets/purify.es-Jn2rvFN8.js        [39m[1m[2m   28.96 kB[22m[1m[22m[2m Γöé gzip:  10.93 kB[22m[2m Γöé map:   158.93 kB[22m
-[2mdist/[22m[36massets/index.es-BvO0A6fL.js         [39m[1m[2m  150.83 kB[22m[1m[22m[2m Γöé gzip:  51.64 kB[22m[2m Γöé map:   637.73 kB[22m
+[2mdist/[22m[36massets/index.es-g2uaRaGm.js         [39m[1m[2m  150.83 kB[22m[1m[22m[2m Γöé gzip:  51.64 kB[22m[2m Γöé map:   637.73 kB[22m
 [2mdist/[22m[36massets/vendor-TTj4DRuz.js           [39m[1m[2m  160.85 kB[22m[1m[22m[2m Γöé gzip:  52.59 kB[22m[2m Γöé map:   701.61 kB[22m
 [2mdist/[22m[36massets/html2canvas.esm-CBrSDip1.js  [39m[1m[2m  201.48 kB[22m[1m[22m[2m Γöé gzip:  48.08 kB[22m[2m Γöé map:   602.27 kB[22m
 [2mdist/[22m[36massets/supabase-CwrFKnKJ.js         [39m[1m[2m  210.54 kB[22m[1m[22m[2m Γöé gzip:  54.59 kB[22m[2m Γöé map: 1,138.78 kB[22m
-[2mdist/[22m[36massets/index-BTTghs0C.js            [39m[1m[33m2,525.76 kB[39m[22m[2m Γöé gzip: 626.57 kB[22m[2m Γöé map: 7,031.86 kB[22m
+[2mdist/[22m[36massets/index-BYx60hHj.js            [39m[1m[33m2,525.88 kB[39m[22m[2m Γöé gzip: 626.60 kB[22m[2m Γöé map: 7,032.36 kB[22m
 
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-[32mΓ£ô built in 5.65s[39m
+[32mΓ£ô built in 7.62s[39m
