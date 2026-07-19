@@ -259,23 +259,20 @@ export default function MechanicDashboard() {
   }
 
   async function updateJobStatus(jobId, status) {
-    await supabase.from("bookings").update({ status, updated_at: new Date().toISOString() }).eq("id", jobId)
+    await supabase.rpc("mechanic_update_job_status", { p_booking_id: jobId, p_status: status, p_mechanic_id: mechanic.mechanic_id })
     if (status === "in_progress") {
       const startedAt = new Date().toISOString()
-      await supabase.from("bookings").update({ mechanic_started_at: startedAt }).eq("id", jobId)
       setActiveJob(jobs.find(j=>j.id===jobId))
       startSharing()
       startJobTimer(jobId, startedAt)
     }
     if (status === "completed") {
-      await supabase.from("bookings").update({ mechanic_completed_at: new Date().toISOString() }).eq("id", jobId)
-      // Notify customer to pay service fee
-      const { data: bk } = await supabase.from("bookings").select("customer_id, total_amount, service_name, booking_number").eq("id", jobId).single()
-      if(bk?.customer_id) {
+      const job = jobs.find(j=>j.id===jobId)
+      if(job?.customer_id) {
         await supabase.from("notifications").insert({
-          user_id: bk.customer_id,
+          user_id: job.customer_id,
           title: "Service complete! Pay now 💳",
-          message: `Your ${bk.service_name} is complete. Please pay KES ${Number(bk.total_amount||0).toLocaleString()} service fee in the app to complete the job.`,
+          message: `Your ${job.service_name} is complete. Please pay KES ${Number(job.total_amount||0).toLocaleString()} service fee in the app.`,
           type: "success"
         })
       }
@@ -288,7 +285,6 @@ export default function MechanicDashboard() {
     toast.success("Job " + status.replace("_"," "))
     load()
   }
-
   async function toggleAvailability() {
     const newVal = !available
     await supabase.from("mechanics").update({ is_available: newVal }).eq("id", mechanic.mechanic_id)
