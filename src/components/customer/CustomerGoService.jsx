@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import { supabase } from "../../lib/supabase"
 import IntaSendPayment from "../shared/IntaSendPayment"
 import { applyRateLimit, RATE_LIMITS } from "../../lib/rateLimit"
@@ -31,6 +32,7 @@ const EMERGENCY_TYPES = [
 
 export default function CustomerGoService() {
   const { user, profile } = useAuth()
+  const navigate = useNavigate()
   const isMobile = useIsMobile()
   const [step, setStep] = useState("select")
   const [emergencyType, setEmergencyType] = useState("")
