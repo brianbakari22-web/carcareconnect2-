@@ -80,7 +80,10 @@ export default function CustomerGoService() {
           setBooking(b=>({...b,...payload.new}))
           if (payload.new.status==="confirmed"||payload.new.status==="in-progress") {
             setStep("accepted")
+            setTimeLeft(null) // Stop the countdown timer
             toast.success("Provider found! Help is on the way 🚨")
+            // Load mechanic details
+            if(payload.new.assigned_mechanic_id) fetchMechanicAndETA(payload.new.id||booking?.id)
           }
         })
       .on("postgres_changes", { event:"INSERT", schema:"public", table:"go_service_requests", filter:`booking_id=eq.${booking.id}` },
@@ -99,6 +102,7 @@ export default function CustomerGoService() {
               toast.error("No providers available at this time")
             } else {
               toast("Looking for next provider...", { icon:"🔍" })
+              startCountdown(15 * 60) // Reset timer for next provider
               startCountdown(15 * 60)
             }
           }

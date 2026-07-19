@@ -205,6 +205,18 @@ export default function ProviderGoRequests() {
           type: "success"
         })
       }
+      // Notify assigned mechanic
+      if (selectedMechanic) {
+        const { data: mechData } = await supabase.from("mechanics").select("user_id").eq("id", selectedMechanic).single()
+        if (mechData?.user_id) {
+          await supabase.from("notifications").insert({
+            user_id: mechData.user_id,
+            title: "🚨 New GO Service job assigned!", 
+            message: "Emergency: "+request.bookings?.emergency_type?.replace(/_/g," ")+" at "+request.bookings?.emergency_location_address+". Check your dashboard now!",
+            type: "error"
+          })
+        }
+      }
       setAssigning(null)
       setSelectedMechanic("")
       load()
