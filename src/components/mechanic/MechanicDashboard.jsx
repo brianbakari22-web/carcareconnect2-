@@ -86,20 +86,17 @@ export default function MechanicDashboard() {
   }
   async function verifyArrivalOTP(job) {
     const entered = otpInput[job.id]
-    if(!entered || entered.length !== 4) return toast.error("Enter 4-digit OTP")
+    if(!entered||entered.length!==4) return toast.error("Enter 4-digit OTP")
     setOtpVerifying(job.id)
     try {
-      const { data: bk } = await supabase.from("bookings").select("go_arrival_otp, go_otp_expires_at").eq("id", job.id).single()
-      if(!bk?.go_arrival_otp) throw new Error("No OTP found. Generate one first.")
-      if(new Date(bk.go_otp_expires_at) < new Date()) throw new Error("OTP expired. Generate a new one.")
-      if(bk.go_arrival_otp !== entered) throw new Error("Wrong OTP. Ask customer again.")
-      // OTP correct - verify and release escrow
-      await supabase.from("bookings").update({ go_otp_verified:true, go_provider_arrived:true, go_arrival_confirmed_at:new Date().toISOString() }).eq("id", job.id)
+      const { data, error } = await supabase.rpc("verify_mechanic_arrival_otp", { p_booking_id: job.id, p_otp: entered })
+      if(error) throw error
+      if(!data?.success) throw new Error(data?.error||"Verification failed")
       await supabase.functions.invoke("go-release-escrow", { body: { booking_id: job.id } })
       await updateJobStatus(job.id, "in_progress")
       setArrivedJob(null)
       setOtpInput(prev=>({...prev,[job.id]:""}))
-      toast.success("OTP verified! Callout fee released. Start the job.")
+      toast.success("OTP verified! Job started. 🚀")
     } catch(e) { toast.error(e.message) }
     finally { setOtpVerifying(null) }
   }
