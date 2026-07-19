@@ -256,18 +256,19 @@ export default function CustomerGoService() {
         go_attempt_number: 1,
       }).select().single()
       if (error) throw error
-      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/intasend-stk-push",{
-        method:"POST",
-        headers:{"Content-Type":"application/json","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc"},
-        body:JSON.stringify({amount:calloutFee,bookingId:bk.id,customerEmail:user.email||"",customerPhone:"",customerName:""})
+      const { data: sens } = await supabase.from("profile_sensitive").select("phone").eq("id", user.id).single()
+      const phone = sens?.phone || ""
+      if(!phone) throw new Error("Please add your phone number in your profile first")
+      const { data: stkData, error: stkError } = await supabase.functions.invoke("intasend-stk-push", {
+        body: { amount: calloutFee, booking_id: bk.id, customer_id: user.id, provider_id: selectedService.provider_id, phone, service_name: selectedService.name }
       })
-      const order = await res.json()
-      if (order.redirect_url) {
-        sessionStorage.setItem("go_booking_id", bk.id)
-        sessionStorage.setItem("go_provider_id", selectedService.provider_id)
-        window.location.href = order.redirect_url
-      } else { throw new Error(order.error||"Payment failed") }
-    } catch(e) { toast.error(e.message||"Payment failed"); setPayingCallout(false) }
+      if(stkError) throw stkError
+      if(stkData?.error) throw new Error(stkData.error)
+      toast.success("Check your phone for M-Pesa prompt! 📱")
+      setBooking(bk)
+      setStep("waiting")
+    } catch(e) { toast.error(e.message||"Payment failed") }
+    finally { setPayingCallout(false) }
   }
   async function submitEmergency() {
     if (!emergencyType) return toast.error("Please select emergency type")
