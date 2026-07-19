@@ -136,11 +136,11 @@ export default function MechanicDashboard() {
   }
   async function load() {
     setLoading(true)
-    const { data } = await supabase.from("bookings")
-      .select("*, services(name)")
-      .eq("assigned_mechanic_id", mechanic.mechanic_id)
-      .in("status", ["confirmed","in_progress","pending"])
-      .order("booking_date", { ascending: true })
+    const { data } = await supabase.rpc("get_mechanic_jobs", { p_mechanic_id: mechanic.mechanic_id })
+    // RPC bypasses RLS since mechanics use PIN auth not Supabase auth
+
+
+
     setJobs(data||[])
     const active = (data||[]).find(j=>j.status==="in_progress")
     if (active) { setActiveJob(active); if (!timerRef) startJobTimer(active.id, active.mechanic_started_at||active.updated_at) }
