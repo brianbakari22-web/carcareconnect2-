@@ -32,10 +32,10 @@ export default function MechanicDashboard() {
   const [jobNotes, setJobNotes] = useState({})
   const [savingNotes, setSavingNotes] = useState(null)
   const [partsRequest, setPartsRequest] = useState(null)
-  const [showCCCParts, setShowCCCParts] = useState(null)
+  const [arrivedJob, setArrivedJob] = useState(null)
   const [otpInput, setOtpInput] = useState({})
   const [otpVerifying, setOtpVerifying] = useState(null)
-  const [arrivedJob, setArrivedJob] = useState(null)
+  const [showCCCParts, setShowCCCParts] = useState(null)
   const [cccInventory, setCCCInventory] = useState([])
   const [cccSelectedPart, setCCCSelectedPart] = useState(null)
   const [cccPartQty, setCCCPartQty] = useState(1)
@@ -619,10 +619,18 @@ export default function MechanicDashboard() {
                             style={{ background:"#f8f8f8", border:"1px solid #dddddd", borderRadius:8, color:"#555", fontSize:11, fontWeight:600, padding:"7px 12px", cursor:"pointer" }}>
                             {uploadingPhoto===job.id+"before"?"⏳":"📷 Before photo"}
                           </button>
-                          <button onClick={()=>updateJobStatus(job.id,"in_progress")}
-                            style={{ background:"#8b5cf6", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"7px 14px", cursor:"pointer" }}>
-                            🔧 Start job
-                          </button>
+                          {job.service_category==="go_service" ? (
+                            arrivedJob===job.id ? (
+                              <div style={{display:"flex",gap:6,alignItems:"center"}}>
+                                <input value={otpInput[job.id]||""} onChange={e=>setOtpInput(p=>({...p,[job.id]:e.target.value}))} maxLength={4} placeholder="OTP" style={{width:80,padding:"6px 8px",borderRadius:8,border:"1px solid #ddd",fontSize:14,textAlign:"center",letterSpacing:4}}/>
+                                <button onClick={()=>verifyArrivalOTP(job)} disabled={otpVerifying===job.id} style={{background:"#1d9e75",border:"none",borderRadius:8,color:"#fff",fontSize:11,fontWeight:700,padding:"7px 12px",cursor:"pointer"}}>{otpVerifying===job.id?"...":"Verify OTP"}</button>
+                              </div>
+                            ) : (
+                              <button onClick={()=>generateArrivalOTP(job.id)} style={{background:"#e6821e",border:"none",borderRadius:8,color:"#fff",fontSize:11,fontWeight:700,padding:"7px 14px",cursor:"pointer"}}>📍 I have Arrived</button>
+                            )
+                          ) : (
+                            <button onClick={()=>updateJobStatus(job.id,"in_progress")} style={{background:"#8b5cf6",border:"none",borderRadius:8,color:"#fff",fontSize:11,fontWeight:700,padding:"7px 14px",cursor:"pointer"}}>🔧 Start job</button>
+                          )}
                         </>
                       )}
                       {job.status==="in_progress"&&(
