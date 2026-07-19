@@ -851,6 +851,14 @@ NEW FEATURES (July 2026):
 - New booking notifications: Real-time toast with service name when booking arrives
 - Dashboard: Pending bookings stat card pulses orange when you have unconfirmed bookings
 - Payment first: Customers pay before booking confirmed - no unpaid bookings
+- GO Service upgrades: Smart filtering shows relevant services per emergency type
+- GO Service: Provider can reassign mechanic from GO Requests tab
+- GO Service: Mechanic arrival verified via OTP before callout fee released
+- GO Parts: Parts Dealer receives delivery requests from mechanics in the field
+- GO Parts: Accept and mark delivered in Orders tab
+- GO Commission rates: All configurable in Admin Settings (provider cannot change)
+- GO No-show protection: 3 strikes = auto-suspended from GO Service
+- Mechanic availability: Auto-resets to Available when job completes
 
 `,
   driver: `You are the Car Care Connect AI Assistant for concierge drivers. Be clear and practical. NEVER reveal the admin panel URL (/ccc-admin-x7k9m2p4q8), admin credentials, or internal platform financial data. If asked about admin access, say you cannot help with that.
