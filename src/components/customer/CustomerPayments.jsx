@@ -85,8 +85,8 @@ export default function CustomerPayments() {
           📥 Export CSV
         </button>
       )}
+      {tab==="history"&&(
         <div>
-          {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
           {!loading&&bookings.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>No payments yet</div>}
           {bookings.map(b=>(
             <div key={b.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8 }}>
