@@ -18,7 +18,7 @@ const STATUS_COLOR = {
 const URGENCY_COLOR = { normal:"#888", urgent:"#e6821e", critical:"#e24b4a" }
 
 export default function MechanicDashboard() {
-  const { mechanic, logoutMechanic } = useMechanicAuth()
+  const { mechanic, setMechanic, logoutMechanic } = useMechanicAuth()
   const [tab, setTab] = useState("jobs")
   const [jobs, setJobs] = useState([])
   const [history, setHistory] = useState([])
@@ -987,7 +987,7 @@ export default function MechanicDashboard() {
               <div style={{ fontSize:11, color:"#888", marginBottom:12 }}>Customers see this badge when booking GO Service.</div>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12, background:"#fff", borderRadius:8, padding:"10px 12px" }}>
                 <span style={{ fontSize:13, color:"#555", fontWeight:600 }}>I carry spare parts</span>
-                <div onClick={async()=>{ const v=!(mechanic?.carries_parts||false); await supabase.from("mechanics").update({ carries_parts:v }).eq("id",mechanic.mechanic_id); await supabase.from("profiles").update({ carries_parts_for_go:v }).eq("id",mechanic.provider_id); setMechanic(m=>({...m,carries_parts:v})); toast.success(v?"✅ Badge enabled! Customers will see 🔧":"Badge disabled") }} style={{ width:48, height:26, borderRadius:13, background:mechanic?.carries_parts?"#8b5cf6":"#ddd", position:"relative", cursor:"pointer" }}>
+                <div onClick={async()=>{ const v=!(mechanic?.carries_parts||false); await supabase.rpc("update_mechanic_parts",{ p_mechanic_id:mechanic.mechanic_id, p_carries_parts:v, p_parts_carried:mechanic?.parts_carried||[], p_provider_id:mechanic.provider_id }); setMechanic(m=>({...m,carries_parts:v})); toast.success(v?"✅ Customers will see 🔧 Carries parts badge!":"Badge disabled") }} style={{ width:48, height:26, borderRadius:13, background:mechanic?.carries_parts?"#8b5cf6":"#ddd", position:"relative", cursor:"pointer" }}>
                   <div style={{ width:22, height:22, borderRadius:"50%", background:"#fff", position:"absolute", top:2, left:mechanic?.carries_parts?24:2, transition:"left 0.2s", boxShadow:"0 1px 3px rgba(0,0,0,0.2)" }}/>
                 </div>
               </div>
@@ -995,7 +995,7 @@ export default function MechanicDashboard() {
                 <div>
                   <div style={{ fontSize:11, color:"#888", marginBottom:8 }}>Tap to select parts you carry:</div>
                   <div style={{ display:"flex", flexWrap:"wrap", gap:8 }}>
-                    {[{k:"battery",l:"🔋 Battery"},{k:"tyre_tools",l:"🛞 Tyre Tools"},{k:"fuel",l:"⛽ Fuel"},{k:"jumper_cables",l:"⚡ Jumper Cables"},{k:"fuses",l:"🔌 Fuses"},{k:"engine_oil",l:"🛢️ Engine Oil"}].map(p=>{ const sel=(mechanic?.parts_carried||[]).includes(p.k); return <div key={p.k} onClick={async()=>{ const cur=mechanic?.parts_carried||[]; const upd=sel?cur.filter(x=>x!==p.k):[...cur,p.k]; await supabase.from("mechanics").update({ parts_carried:upd }).eq("id",mechanic.mechanic_id); await supabase.from("profiles").update({ go_parts_carried:upd }).eq("id",mechanic.provider_id); setMechanic(m=>({...m,parts_carried:upd})); toast.success("Updated!") }} style={{ padding:"6px 14px", borderRadius:20, border:"1px solid "+(sel?"#8b5cf6":"#ddd"), background:sel?"#8b5cf6":"#f8f8f8", color:sel?"#fff":"#555", fontSize:12, cursor:"pointer", fontWeight:sel?700:400 }}>{p.l}</div> })}
+                    {[{k:"battery",l:"🔋 Battery"},{k:"tyre_tools",l:"🛞 Tyre Tools"},{k:"fuel",l:"⛽ Fuel"},{k:"jumper_cables",l:"⚡ Jumper Cables"},{k:"fuses",l:"🔌 Fuses"},{k:"engine_oil",l:"🛢️ Engine Oil"}].map(p=>{ const sel=(mechanic?.parts_carried||[]).includes(p.k); return <div key={p.k} onClick={async()=>{ const cur=mechanic?.parts_carried||[]; const upd=sel?cur.filter(x=>x!==p.k):[...cur,p.k]; await supabase.rpc("update_mechanic_parts",{ p_mechanic_id:mechanic.mechanic_id, p_carries_parts:mechanic?.carries_parts||false, p_parts_carried:upd, p_provider_id:mechanic.provider_id }); setMechanic(m=>({...m,parts_carried:upd})); toast.success("Updated!") }} style={{ padding:"6px 14px", borderRadius:20, border:"1px solid "+(sel?"#8b5cf6":"#ddd"), background:sel?"#8b5cf6":"#f8f8f8", color:sel?"#fff":"#555", fontSize:12, cursor:"pointer", fontWeight:sel?700:400 }}>{p.l}</div> })}
                   </div>
                 </div>
               )}
