@@ -63,8 +63,10 @@ serve(async (req) => {
         .from("app_settings").select("key,value")
         .in("key", [
           "driver_commission_rate",
-          "driver_transport_allowance", 
-          "concierge_surcharge_rate"
+          "driver_transport_allowance",
+          "concierge_surcharge_rate",
+          "ccc_processing_fee_rate",
+          "provider_processing_fee_rate"
         ])
       const S: Record<string, number> = {}
       settingsRows?.forEach((s: any) => { S[s.key] = Number(s.value) })
@@ -72,7 +74,10 @@ serve(async (req) => {
       // Fetch commission rates
       const { data: rates } = await supabase.from("commission_rates").select("*").single()
       const platformCommissionRate = rates?.provider_commission_rate || 0.10
-      const providerProcessingFee = Math.floor(txn.amount * (rates?.provider_processing_rate || 0.01))
+      // 3% IntaSend fee split: customer already paid 1%, CCC absorbs 1%, provider absorbs 1%
+      const cccProcessingFee = Math.floor(txn.amount * ((S.ccc_processing_fee_rate || 1) / 100))
+      const providerProcessingFee = Math.floor(txn.amount * ((S.provider_processing_fee_rate || 1) / 100))
+      const totalProcessingFee = cccProcessingFee + providerProcessingFee
 
       // Fetch booking for concierge check
       let booking: any = null
@@ -115,7 +120,7 @@ serve(async (req) => {
       }
 
       // Provider gets remainder
-      const providerAmount = grossAmount - platformCommission - providerProcessingFee - driverAmount
+      const providerAmount = grossAmount - platformCommission - providerProcessingFee - cccProcessingFee - driverAmount
 
       console.log(`Split: gross=${grossAmount}, platform=${platformCommission}, driver=${driverAmount}, provider=${providerAmount}`)
 
