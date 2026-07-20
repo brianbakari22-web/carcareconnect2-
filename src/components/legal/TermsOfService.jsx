@@ -104,19 +104,21 @@ export default function TermsOfService() {
         </Section>
 
         <Section title="6. Service Categories and Commission Structure">
-          <Sub title="Shop Standard">Customer brings vehicle to provider shop. Platform commission: 10%. Provider receives: 90%.</Sub>
-          <Sub title="Shop Premium">Provider mechanic travels to customer. Platform commission: 20%. Provider receives: 80%.</Sub>
-          <Sub title="GO Service">Emergency roadside mechanic dispatch. Platform commission: 15%. Non-refundable KES 500 callout fee required upfront.</Sub>
-          <Sub title="Concierge Driver Services">Independent vetted driver picks up and delivers customer vehicle. Platform: 15%, provider: 70%, driver: 15%.</Sub>
-          <Sub title="Parts Marketplace">Platform commission: 2-8% depending on provider type. Dealers receive the remainder.</Sub>
-          <div style={{ marginTop:12, background:"#f8f8f8", borderRadius:8, padding:"0.75rem", fontSize:13, color:"#666" }}>Commission rates are subject to change with 30 days notice to registered providers.</div>
+          <Sub title="Standard Service Booking">Customer brings vehicle to provider. Platform commission: 10% of service fee. Provider receives: 90% minus 1% processing fee share. Processing fee (3% IntaSend M-Pesa fee) is split equally: 1% charged to customer, 1% absorbed by provider, 1% absorbed by CCC.</Sub>
+          <Sub title="GO Service — Callout Fee">Emergency roadside mechanic dispatch. Non-refundable KES 500 callout fee required upfront. Fee held in escrow until mechanic arrival is verified via OTP. On verification: provider receives 70%, CCC retains 30%. No-show results in full refund to customer.</Sub>
+          <Sub title="GO Service — Service Fee">Charged separately after job completion via automatic M-Pesa STK push. Provider receives 85%, CCC retains 15%.</Sub>
+          <Sub title="GO Parts">Parts requested by mechanic during GO Service. Customer pays upfront (held in escrow). Payment released to parts provider only after customer confirms receipt. Provider receives 90%, CCC retains 10%.</Sub>
+          <Sub title="Concierge Driver Services">CCC vetted driver picks up and delivers customer vehicle. Concierge surcharge (15% of service fee) added to booking. Driver receives 15% of surcharge plus KES 200 transport allowance. Provider receives service fee minus platform commission. CCC retains platform commission plus majority of surcharge.</Sub>
+          <Sub title="Parts & Inventory Marketplace">Platform commission: 5-10% depending on provider type. Parts dealers: 5%, accessories: 8%, tyres: 6%. Sellers receive remainder directly to their registered M-Pesa/Till/Paybill/Pochi account.</Sub>
+          <Sub title="Marketplace Escrow">High-value marketplace transactions (vehicles, parts) use escrow protection. Buyer payment held until buyer confirms receipt. Dispute window: 48 hours after delivery confirmation. Seller paid directly to registered account after confirmation.</Sub>
+          <div style={{ marginTop:12, background:"#f8f8f8", borderRadius:8, padding:"0.75rem", fontSize:13, color:"#666" }}>All commission rates are admin-configurable and subject to change with 30 days written notice to registered providers. Current rates are displayed in your provider dashboard.</div>
         </Section>
 
         <Section title="7. GO Service Terms">
           <Li>GO Service requires online payment only (M-Pesa or card)</Li>
-          <Li>Non-refundable KES 500 callout fee required before dispatch</Li>
-          <Li>Requests sent to providers in sequence — each has 10 minutes to accept</Li>
-          <Li>After 6 unsuccessful attempts, customer is notified and callout fee is refunded</Li>
+          <Li>KES 500 callout fee required before dispatch — held in escrow until mechanic arrival verified via OTP</Li>
+          <Li>Requests sent to nearest available providers — each has 15 minutes to accept</Li>
+          <Li>After 6 unsuccessful attempts, customer is notified and full callout fee is refunded</Li>
           <Li>Response times are estimates only — Car Care Connect does not guarantee any specific response time</Li>
           <Li>Car Care Connect is not a substitute for emergency services. In life-threatening situations, contact Police (999) or Ambulance (0800 722 203)</Li>
         </Section>
@@ -129,29 +131,37 @@ export default function TermsOfService() {
         </Section>
 
         <Section title="9. Payments — Processed Exclusively by M-Pesa">
-          <div style={{ fontWeight:600, color:"#000", marginBottom:8 }}>Car Care Connect does not hold, process, or manage customer funds.</div>
-          <div>All payments are processed exclusively by M-Pesa Limited, a licensed payment service provider regulated by the Central Bank of Kenya. Car Care Connect never holds, stores, or has custody of any customer funds at any time.</div>
-          <div style={{ marginTop:12 }}>
-            <Li>Accepted methods: M-Pesa, Visa, and Mastercard</Li>
-            <Li>Payment disputes are subject to M-Pesa terms and dispute resolution</Li>
-            <Li>Car Care Connect is not liable for payment processing errors caused by M-Pesa or the customer financial institution</Li>
+          <div style={{ fontWeight:600, color:"#000", marginBottom:8 }}>All payments on Car Care Connect are processed via IntaSend, a licensed payment service provider regulated by the Central Bank of Kenya.</div>
+          <Sub title="Payment Processing Fee">
+            <Li>IntaSend charges a 3% processing fee on all M-Pesa transactions</Li>
+            <Li>This fee is shared equally: 1% added to customer total, 1% deducted from provider payout, 1% absorbed by Car Care Connect</Li>
             <Li>Processing fees are non-refundable in all circumstances</Li>
-          </div>
-          <Sub title="Marketplace Payments">
-            <Li>M-Pesa — not Car Care Connect — is responsible for holding and disbursing marketplace funds</Li>
-            <Li>Car Care Connect facilitates order management but does not act as escrow agent or financial intermediary</Li>
-            <Li>Buyers have 48 hours after confirmed delivery to raise a dispute</Li>
+            <Li>Accepted payment methods: M-Pesa STK Push</Li>
+          </Sub>
+          <Sub title="Automatic Payouts">
+            <Li>Providers and drivers are paid automatically and instantly upon payment confirmation</Li>
+            <Li>Payouts sent directly to registered M-Pesa number, Till Number, Paybill, or Pochi la Biashara</Li>
+            <Li>Car Care Connect platform commission is retained by IntaSend for up to 72 hours (regulatory requirement) before withdrawal</Li>
+            <Li>Providers can register their preferred payout method in Profile → Contact Details</Li>
+            <Li>KRA withholding tax applies for payments above KES 24,999 per transaction</Li>
+          </Sub>
+          <Sub title="Escrow Protection">
+            <Li>GO Service callout fee (KES 500) held in escrow until mechanic arrival verified via OTP — refunded in full on no-show</Li>
+            <Li>GO Parts payments held in escrow until customer confirms receipt — refunded if part not delivered</Li>
+            <Li>Marketplace high-value transactions held until buyer confirms receipt — 48 hour dispute window</Li>
           </Sub>
           <Sub title="Refunds">
             <Li>Refund requests must be submitted within 7 days via the Service Claims feature</Li>
-            <Li>Approved refunds processed within 7 business days</Li>
-            <Li>Refund amounts determined on a case-by-case basis at Car Care Connect discretion</Li>
-            <Li>GO Service KES 500 callout fee non-refundable unless no provider found after 6 attempts</Li>
+            <Li>Approved refunds processed within 7 business days to original payment method</Li>
+            <Li>GO Service callout fee automatically refunded if no provider found after 6 attempts</Li>
+            <Li>GO Parts payment automatically refunded if customer reports non-delivery</Li>
           </Sub>
-          <Sub title="Payouts to Providers and Drivers">
-            <Li>Minimum payout: KES 500</Li>
-            <Li>Processed within 2-3 business days</Li>
-            <Li>KRA withholding tax applies for payments above KES 24,999</Li>
+          <Sub title="Provider Commission Structure">
+            <Li>CCC charges providers a platform commission on every completed booking (rates vary by provider type — see Section 6)</Li>
+            <Li>Commission covers: customer acquisition, payment processing infrastructure, trust verification, dispute resolution, and platform maintenance</Li>
+            <Li>Providers are independent contractors — commission is NOT charged on bookings sourced outside the platform</Li>
+            <Li>Commission rates displayed in provider dashboard and subject to 30 days notice before changes</Li>
+            <Li>By listing services on CCC, providers agree to the current commission structure</Li>
           </Sub>
         </Section>
 

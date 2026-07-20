@@ -57,12 +57,12 @@ export default function PrivacyPolicy() {
           <div><strong>Transaction Data:</strong></div>
           <div style={{ marginTop:8, marginBottom:12 }}>
             <Li>Booking details, service history, payment amounts</Li>
-            <Li>Payment method type (M-Pesa, card) - we do not store card numbers</Li>
+            <Li>Payment method type (M-Pesa, Till Number, Paybill, Pochi la Biashara) — we do not store card numbers or full M-Pesa PINs</Li>
             <Li>Commission and earnings records for providers and drivers</Li>
           </div>
           <div><strong>Financial &amp; Tax Information (Providers and Drivers only):</strong></div>
           <div style={{ marginTop:8, marginBottom:12 }}>
-            <Li>Bank name, account holder name, and account number (for payout processing)</Li>
+            <Li>M-Pesa number, Till Number, Paybill Number, or Pochi la Biashara number (for automatic payout processing)</Li>
             <Li>M-Pesa number (for mobile money payouts)</Li>
             <Li>National ID number (for identity verification and KRA compliance)</Li>
             <Li>KRA PIN (required for payments above KES 24,999 per Kenya Revenue Authority regulations)</Li>
