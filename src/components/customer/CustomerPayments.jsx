@@ -25,7 +25,7 @@ export default function CustomerPayments() {
     const [{ data: bks }, { data: rfs }, { data: txns }] = await Promise.all([
       supabase.from("bookings").select("*").eq("customer_id", user.id).order("created_at", { ascending:false }),
       supabase.from("refunds").select("*").eq("customer_id", user.id).order("created_at", { ascending:false }),
-      supabase.from("payment_transactions").select("*").eq("customer_id", user.id).order("created_at", { ascending:false })
+      supabase.from("payment_transactions").select("*, bookings(service_name,booking_number,status)").eq("customer_id", user.id).order("created_at", { ascending:false })
     ])
     setBookings(bks||[]); setRefunds(rfs||[]); setTransactions(txns||[]); setLoading(false)
   }
@@ -71,7 +71,7 @@ export default function CustomerPayments() {
       </div>
 
       <div style={{ display:"flex", gap:6, marginBottom:"1.25rem" }}>
-        {[{k:"history",l:"Payment history"},{k:"refunds",l:"Refund requests"},{k:"vouchers",l:"My Vouchers"}].map(t=>(
+      {[{k:"history",l:"Payment history"},{k:"transactions",l:"M-Pesa Transactions"},{k:"refunds",l:"Refund requests"},{k:"vouchers",l:"My Vouchers"}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)} style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#555555", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
             {t.l}
           </button>
@@ -124,6 +124,31 @@ export default function CustomerPayments() {
         </div>
       )}
 
+      {tab==="transactions"&&(
+        <div>
+          {transactions.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No M-Pesa transactions yet</div>}
+          {transactions.map(t=>(
+            <div key={t.id} style={{ background:"#fff", border:"1px solid #eee", borderRadius:10, padding:"1rem", marginBottom:8 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+                <div>
+                  <div style={{ fontSize:13, fontWeight:600 }}>{t.bookings?.service_name||"GO Service Callout"}</div>
+                  <div style={{ fontSize:10, color:"#888", marginTop:2 }}>{t.bookings?.booking_number||"—"} · {new Date(t.created_at).toLocaleDateString()}</div>
+                  <div style={{ fontSize:10, color:"#888" }}>M-Pesa Ref: {t.intasend_invoice_id||"—"}</div>
+                </div>
+                <div style={{ textAlign:"right" }}>
+                  <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(t.total_amount||t.amount).toLocaleString()}</div>
+                  <span style={{ fontSize:10, padding:"2px 8px", borderRadius:20, background:t.status==="completed"?"#f0fdf4":t.status==="failed"?"#fff5f5":"#fff8f0", color:t.status==="completed"?"#1d9e75":t.status==="failed"?"#e24b4a":"#e6821e" }}>{t.status}</span>
+                </div>
+              </div>
+              <div style={{ display:"flex", gap:12, marginTop:8 }}>
+                <div><div style={{ fontSize:9, color:"#888", textTransform:"uppercase" }}>Service amount</div><div style={{ fontSize:12 }}>KES {Number(t.amount).toLocaleString()}</div></div>
+                <div><div style={{ fontSize:9, color:"#888", textTransform:"uppercase" }}>Processing fee</div><div style={{ fontSize:12 }}>KES {Number(t.processing_fee||0).toLocaleString()}</div></div>
+                <div><div style={{ fontSize:9, color:"#888", textTransform:"uppercase" }}>Total paid</div><div style={{ fontSize:12, fontWeight:700 }}>KES {Number(t.total_amount||t.amount).toLocaleString()}</div></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
       {tab==="vouchers"&&(
         <div>
           {vouchers.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>No vouchers yet</div>}

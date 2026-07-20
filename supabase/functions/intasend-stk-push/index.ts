@@ -63,7 +63,8 @@ serve(async (req) => {
 
     // Save transaction with full fee breakdown
     await supabase.from("payment_transactions").insert({
-      booking_id,
+      user_id: customer_id,
+      booking_id: booking_id || null,
       customer_id,
       provider_id,
       amount,
