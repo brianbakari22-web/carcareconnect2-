@@ -192,9 +192,9 @@ export function generateInvoice(booking, provider, customer, mechanic, driver) {
 
   const commRate = booking.platform_commission_rate||0.10
   const rows = [{ label:"Service total", value:"KES " + Number(booking.total_amount||0).toLocaleString() }]
-  if (booking.is_concierge) rows.push({ label:"Concierge fee (15%)", value:"KES " + (Number(booking.total_amount)*0.15).toFixed(0) })
-  rows.push({ label:"Platform fee (" + Math.round(commRate*100) + "%)", value:"KES " + Number(booking.platform_commission||0).toFixed(0) })
-  rows.push({ label:"Provider earnings (" + Math.round((1-commRate)*100) + "%)", value:"KES " + Number(booking.provider_earnings||0).toFixed(0) })
+  if (booking.is_concierge) { const surcharge = Number(booking.concierge_surcharge||0); if(surcharge>0) rows.push({ label:"Concierge surcharge", value:"KES " + surcharge.toLocaleString() }) }
+  rows.push({ label:"Platform commission ("+Math.round(commRate*100)+"%)", value:"KES " + Number(booking.platform_commission||0).toFixed(0) }); if(Number(booking.processing_fee||0)>0) rows.push({ label:"Processing fee (1% your share)", value:"KES " + Number(booking.processing_fee||0).toFixed(0) })
+  if(Number(booking.driver_earnings||0)>0) rows.push({ label:"Driver earnings", value:"KES "+Number(booking.driver_earnings).toFixed(0) }); rows.push({ label:"Provider earnings ("+Math.round((1-commRate)*100)+"%)", value:"KES " + Number(booking.provider_earnings||0).toFixed(0) })
 
   let ry = y + 16
   rows.forEach(r => {

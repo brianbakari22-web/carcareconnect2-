@@ -23,7 +23,7 @@ export default function CustomerPayments() {
 
   async function load() {
     const [{ data: bks }, { data: rfs }, { data: txns }] = await Promise.all([
-      supabase.from("bookings").select("*").eq("customer_id", user.id).order("created_at", { ascending:false }),
+      supabase.from("bookings").select("*, provider:profiles!bookings_provider_id_fkey(first_name,last_name,business_name,phone,city,address)").eq("customer_id", user.id).order("created_at", { ascending:false }),
       supabase.from("refunds").select("*").eq("customer_id", user.id).order("created_at", { ascending:false }),
       supabase.from("payment_transactions").select("*, bookings(service_name,booking_number,status)").eq("customer_id", user.id).order("created_at", { ascending:false })
     ])
@@ -115,7 +115,7 @@ export default function CustomerPayments() {
                   </div>
                 ))}
               </div>
-              <button onClick={()=>generateInvoice(b, profile, "customer")}
+              <button onClick={()=>generateInvoice(b, b.provider, profile)}
                 style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
                 Download Invoice
               </button>
