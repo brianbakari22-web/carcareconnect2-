@@ -74,12 +74,12 @@ serve(async (req) => {
       // Fetch commission rates
       const { data: rates } = await supabase.from("commission_rates").select("*").single()
       const platformCommissionRate = rates?.provider_commission_rate || 0.10
-      // 3% IntaSend fee split: customer already paid 1%, CCC absorbs 1%, provider absorbs 1%
-      const cccProcessingFee = Math.floor(txn.amount * ((S.ccc_processing_fee_rate || 1) / 100))
-      const providerProcessingFee = Math.floor(txn.amount * ((S.provider_processing_fee_rate || 1) / 100))
+      const platformCommissionRate = rates?.provider_commission_rate || 0.10
+      // Calculate all fees on GROSS service amount (before IntaSend fee)
+      const grossServiceAmount = txn.amount // Original service price, not including customer processing fee
+      const cccProcessingFee = Math.floor(grossServiceAmount * ((S.ccc_processing_fee_rate || 1) / 100))
+      const providerProcessingFee = Math.floor(grossServiceAmount * ((S.provider_processing_fee_rate || 1) / 100))
       const totalProcessingFee = cccProcessingFee + providerProcessingFee
-
-      // Fetch booking for concierge check
       let booking: any = null
       if (txn.booking_id) {
         const { data: bk } = await supabase.from("bookings").select("*").eq("id", txn.booking_id).single()
@@ -87,13 +87,13 @@ serve(async (req) => {
       }
 
       const grossAmount = txn.amount
-
+      const grossAmount = grossServiceAmount // Use gross service amount for all calculations
       // ============================
       // COMMISSION CALCULATION
       // ============================
       // Platform commission on total
       const platformCommission = Math.floor(grossAmount * platformCommissionRate)
-      
+      const platformCommission = Math.floor(grossServiceAmount * platformCommissionRate)
       // Driver earnings (only for concierge bookings)
       let driverAmount = 0
       let driverPhone = null
