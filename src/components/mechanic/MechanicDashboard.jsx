@@ -1010,6 +1010,21 @@ export default function MechanicDashboard() {
         {tab==="docs"&&(
           <div>
             <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000", marginBottom:4 }}>📄 My Documents</div>
+            {/* Carries Parts Section */}
+            <div style={{ background:"#f3f0ff", border:"1px solid #8b5cf640", borderRadius:12, padding:"1rem", marginBottom:"1.25rem" }}>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#8b5cf6", marginBottom:4 }}>🔧 Parts I Carry</div>
+              <div style={{ fontSize:11, color:"#888", marginBottom:10 }}>Let customers know you carry spare parts for GO Service emergencies.</div>
+              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:10 }}>
+                <input type="checkbox" checked={mechanic?.carries_parts||false} onChange={async e=>{ await supabase.from("mechanics").update({ carries_parts:e.target.checked }).eq("id",mechanic.mechanic_id); toast.success(e.target.checked?"Badge enabled!":"Badge disabled") }} style={{ width:18, height:18, cursor:"pointer" }}/>
+                <span style={{ fontSize:12, color:"#555" }}>I carry spare parts in my vehicle for GO Service jobs</span>
+              </div>
+              {[{key:"battery",label:"🔋 Battery"},{key:"tyre_tools",label:"🛞 Tyre Tools"},{key:"fuel",label:"⛽ Emergency Fuel"},{key:"jumper_cables",label:"⚡ Jumper Cables"},{key:"fuses",label:"🔌 Fuses"},{key:"engine_oil",label:"🛢️ Engine Oil"}].map(p=>(
+                <label key={p.key} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6, cursor:"pointer" }}>
+                  <input type="checkbox" checked={(mechanic?.parts_carried||[]).includes(p.key)} onChange={async e=>{ const cur=mechanic?.parts_carried||[]; const upd=e.target.checked?[...cur,p.key]:cur.filter(x=>x!==p.key); await supabase.from("mechanics").update({ parts_carried:upd }).eq("id",mechanic.mechanic_id); toast.success("Updated!") }} style={{ cursor:"pointer" }}/>
+                  <span style={{ fontSize:12, color:"#555" }}>{p.label}</span>
+                </label>
+              ))}
+            </div>
             <div style={{ fontSize:12, color:"#888", marginBottom:"1rem" }}>Upload your documents for verification. All documents are reviewed by admin.</div>
             {[
               { type:"national_id_front", label:"National ID (Front)", icon:"🪪" },
