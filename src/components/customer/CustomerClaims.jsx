@@ -32,7 +32,7 @@ export default function CustomerClaims() {
   const [loading, setLoading] = useState(true)
   const [adminId, setAdminId] = useState(null)
   const [showForm, setShowForm] = useState(!!preselectedBooking)
-  const [form, setForm] = useState({ booking_id:preselectedBooking||"", order_id:"", reason:"", description:"" })
+  const [form, setForm] = useState({ booking_id:preselectedBooking||"", order_id:"", reason:"", description:"", refund_preference:"voucher" })
   const [submitting, setSubmitting] = useState(false)
   const [evidencePhotos, setEvidencePhotos] = useState([])
   const [uploadingEvidence, setUploadingEvidence] = useState(false)
@@ -126,6 +126,7 @@ export default function CustomerClaims() {
         reason: form.reason,
         description: form.description,
         status: "pending",
+        refund_preference: form.refund_preference||"voucher",
         evidence_urls: evidencePhotos,
       })
       if (error) throw error
@@ -147,7 +148,7 @@ export default function CustomerClaims() {
       }
       toast.success("Claim submitted — we will review within 24 hours")
       setShowForm(false)
-      setForm({ booking_id:"", order_id:"", reason:"", description:"" })
+      setForm({ booking_id:"", order_id:"", reason:"", description:"", refund_preference:"voucher" })
       setEvidencePhotos([])
       load()
     } catch(err) { toast.error(err.message) }
@@ -331,7 +332,15 @@ export default function CustomerClaims() {
                 style={{ background:submitting?"#555555":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:submitting?"not-allowed":"pointer" }}>
                 {submitting?"Submitting...":"Submit claim"}
               </button>
-              <button type="button" onClick={()=>{ setShowForm(false); setForm({ booking_id:"", order_id:"", reason:"", description:"" }) }}
+              <div style={{ marginBottom:12 }}>
+              <label style={lbl}>Preferred Resolution *</label>
+              <select style={inp} value={form.refund_preference} onChange={e=>setForm(f=>({...f,refund_preference:e.target.value}))}>
+                <option value="voucher">🎟️ Service Voucher (rebook with any provider)</option>
+                <option value="cash">💰 Cash Refund (M-Pesa)</option>
+                <option value="redo">🔧 Redo the service (same provider)</option>
+              </select>
+            </div>
+            <button type="button" onClick={()=>{ setShowForm(false); setForm({ booking_id:"", order_id:"", reason:"", description:"", refund_preference:"voucher" }) }}
                 style={{ background:"none", border:"1px solid #dddddd", borderRadius:9, color:"#666", fontSize:13, padding:"11px 16px", cursor:"pointer" }}>
                 Cancel
               </button>

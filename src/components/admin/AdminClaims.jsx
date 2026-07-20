@@ -313,6 +313,7 @@ export default function AdminClaims() {
                     <div style={{ fontSize:11, color:"#888" }}>• KES {Number(c.bookings?.total_amount||0).toLocaleString()} deducted from provider earnings</div>
                     <div style={{ fontSize:11, color:"#888" }}>• Penalty recorded against provider account</div>
                     <div style={{ fontSize:11, color:"#888" }}>• Provider notified immediately</div>
+                    {c.refund_preference&&<div style={{ fontSize:11, color:"#378add", fontWeight:600, marginTop:4 }}>• Customer requested: {c.refund_preference==="cash"?"💰 Cash Refund":c.refund_preference==="redo"?"🔧 Redo the service":"🎟️ Service Voucher"}</div>}
                     <div style={{ fontSize:11, color:"#1d9e75", marginTop:4 }}>• Customer receives voucher worth KES {Number(c.bookings?.total_amount||0).toLocaleString()} valid 30 days</div>
                   </div>
 
