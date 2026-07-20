@@ -70,11 +70,14 @@ export default function CustomerPayments() {
         ))}
       </div>
 
-      <div style={{ display:"flex", gap:6, marginBottom:"1.25rem" }}>
-      {[{k:"history",l:"Payment history"},{k:"transactions",l:"M-Pesa Transactions"},{k:"refunds",l:"Refund requests"},{k:"vouchers",l:"My Vouchers"}].map(t=>(
-          <button key={t.k} onClick={()=>setTab(t.k)} style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#555555", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
-            {t.l}
-          </button>
+      <div style={{ overflowX:"auto", marginBottom:"1.25rem", paddingBottom:4, WebkitOverflowScrolling:"touch" }}>
+        <div style={{ display:"flex", gap:6, minWidth:"max-content" }}>
+          {[{k:"history",l:"💳 History"},{k:"transactions",l:"📱 M-Pesa"},{k:"refunds",l:"↩️ Refunds"},{k:"vouchers",l:"🎟️ Vouchers"}].map(t=>(
+            <button key={t.k} onClick={()=>setTab(t.k)} style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#f0f0f0", color:tab===t.k?"#fff":"#555", whiteSpace:"nowrap", fontWeight:tab===t.k?700:400 }}>
+              {t.l}
+            </button>
+          ))}
+      </div>
         ))}
       {tab==="history"&&bookings.length>0&&(
         <button onClick={()=>downloadPaymentsCSV(bookings.map(b=>({...b,type:"Service",description:b.service_name,amount:b.total_amount})))}
