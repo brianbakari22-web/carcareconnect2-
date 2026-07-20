@@ -17,15 +17,17 @@ export default function CustomerPayments() {
   const [refundForm, setRefundForm] = useState({ bookingId:"", reason:"" })
   const [submitting, setSubmitting] = useState(false)
   const [vouchers, setVouchers] = useState([])
+  const [transactions, setTransactions] = useState([])
 
   useEffect(() => { if (user) load() }, [user])
 
   async function load() {
-    const [{ data: bks }, { data: rfs }] = await Promise.all([
+    const [{ data: bks }, { data: rfs }, { data: txns }] = await Promise.all([
       supabase.from("bookings").select("*").eq("customer_id", user.id).order("created_at", { ascending:false }),
-      supabase.from("refunds").select("*").eq("customer_id", user.id).order("created_at", { ascending:false })
+      supabase.from("refunds").select("*").eq("customer_id", user.id).order("created_at", { ascending:false }),
+      supabase.from("payment_transactions").select("*").eq("customer_id", user.id).order("created_at", { ascending:false })
     ])
-    setBookings(bks||[]); setRefunds(rfs||[]); setLoading(false)
+    setBookings(bks||[]); setRefunds(rfs||[]); setTransactions(txns||[]); setLoading(false)
   }
 
   async function submitRefund(e) {
@@ -103,9 +105,9 @@ export default function CustomerPayments() {
               <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8, marginBottom:10 }}>
                 {[
                   { l:"Status", v:b.status },
-                  { l:"Platform 15%", v:`KES ${(Number(b.total_amount)*0.15).toLocaleString()}` },
-                    { l:"Provider 70%", v:"KES " + Number(b.provider_earnings||0).toLocaleString() },
-                    { l:"Driver 15%", v:"KES " + Number(b.driver_earnings||0).toLocaleString() },
+                  { l:"Paid", v:`KES ${Number(b.total_amount||0).toLocaleString()}` },
+                    { l:"Provider earned", v:"KES " + Number(b.provider_earnings||0).toLocaleString() },
+                    { l:"Driver earned", v:Number(b.driver_earnings||0)>0?"KES "+Number(b.driver_earnings).toLocaleString():"N/A" },
                 ].map(f=>(
                   <div key={f.l}>
                     <div style={{ fontSize:10, color:"#777777", textTransform:"uppercase" }}>{f.l}</div>
