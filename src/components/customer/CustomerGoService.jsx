@@ -527,6 +527,23 @@ export default function CustomerGoService() {
                     {r.rider_phone&&<a href={"tel:"+r.rider_phone} style={{ marginLeft:6, color:"#1d9e75", fontWeight:600 }}>{r.rider_phone}</a>}
                   </div>
                 )}
+                {r.delivery_status==="delivered"&&!r.payment_released&&(
+                  <div style={{ display:"flex", gap:6, marginTop:8 }}>
+                    <button onClick={async()=>{
+                      await supabase.from("go_parts_requests").update({ payment_released:true, customer_approved:true, customer_approved_at:new Date().toISOString() }).eq("id",r.id)
+                      await supabase.functions.invoke("intasend-stk-push",{ body:{ amount:r.total_amount, booking_id:r.booking_id, customer_id:user.id, provider_id:r.provider_id, service_name:"GO Parts: "+(r.inventory?.name||"Part") } })
+                      setGoPartsRequests(prev=>prev.map(x=>x.id===r.id?{...x,payment_released:true}:x))
+                      toast.success("Payment released to supplier! 💰")
+                    }} style={{ flex:1, background:"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"8px 10px", cursor:"pointer" }}>✅ Part Received — Pay</button>
+                    <button onClick={async()=>{
+                      await supabase.from("go_parts_requests").update({ status:"cancelled", delivery_status:"cancelled" }).eq("id",r.id)
+                      await supabase.from("notifications").insert({ user_id:r.provider_id, title:"Part not received ❌", message:"Customer reported part was not received. Please investigate.", type:"error" })
+                      setGoPartsRequests(prev=>prev.map(x=>x.id===r.id?{...x,status:"cancelled"}:x))
+                      toast.error("Reported — refund will be initiated")
+                    }} style={{ flex:1, background:"#fff5f5", border:"1px solid #fecaca", borderRadius:8, color:"#e24b4a", fontSize:11, fontWeight:700, padding:"8px 10px", cursor:"pointer" }}>❌ Not Received</button>
+                  </div>
+                )}
+                {r.payment_released&&<div style={{ fontSize:11, color:"#1d9e75", fontWeight:600, marginTop:6 }}>✅ Payment released to supplier</div>}
               </div>
             ))}
             ))}

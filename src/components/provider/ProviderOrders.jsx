@@ -95,12 +95,9 @@ export default function ProviderOrders() {
       { user_id: req.mechanic_id, title: "Part delivered! ✅", message: "Your part has been delivered. Fit it and complete the job.", type: "success" },
       { user_id: req.customer_id, title: "Part delivered! 💳 Pay now", message: `Your mechanic received the ${req.inventory?.name}. Please pay KES ${Number(req.total_amount).toLocaleString()} for the part.`, type: "info" }
     ])
-    // Send STK push to customer for parts payment
-    await supabase.functions.invoke("intasend-stk-push", {
-      body: { amount: req.total_amount, booking_id: req.booking_id, customer_id: req.customer_id, provider_id: req.provider_id, service_name: req.inventory?.name||"GO Parts" }
-    }).catch(e=>console.warn("STK push failed:", e.message))
+    // Payment released by customer when they confirm receipt
     setGoPartsRequests(prev=>prev.map(r=>r.id===id?{...r,status:"delivered",delivery_status:"delivered"}:r))
-    toast.success("Marked as delivered! Customer STK push sent.")
+    toast.success("Marked as delivered! Customer will be prompted to confirm receipt.")
   }
   async function load() {
     const { data } = await supabase.from("orders")
