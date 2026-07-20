@@ -153,7 +153,7 @@ export default function AdminPenalties() {
       </div>
 
       {/* Stats */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:12, marginBottom:"1.5rem" }}>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))", gap:12, marginBottom:"1.5rem" }}>
         {[
           { label:"Total violations", value:violations.length, color:"#e6821e", icon:"⚠️", bg:"#fff8f0" },
           { label:"Active penalties", value:activePenalties.length, color:"#e24b4a", icon:"🚫", bg:"#fff5f5" },
@@ -193,7 +193,7 @@ export default function AdminPenalties() {
                     onMouseEnter={e=>e.currentTarget.style.background="#f8f8f8"}
                     onMouseLeave={e=>e.currentTarget.style.background="#fff"}>
                     <div>
-                      <div style={{ fontSize:13, fontWeight:600, color:"#ffffff" }}>{u.first_name} {u.last_name}</div>
+                      <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{u.first_name} {u.last_name}</div>
                       <div style={{ fontSize:11, color:"#888" }}>{u.violation_count||0} violations · {u.warning_count||0} warnings</div>
                     </div>
                     <Badge label={u.role} color={ROLE_COLORS[u.role]||"#888"}/>
@@ -229,7 +229,7 @@ export default function AdminPenalties() {
             </div>
           )}
 
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:14 }}>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))", gap:12, marginBottom:14 }}>
             <div>
               <label style={{ fontSize:12, color:"#888", display:"block", marginBottom:4, fontWeight:600 }}>Violation Type *</label>
               <select value={form.violation_type} onChange={e=>setForm(f=>({...f,violation_type:e.target.value}))} style={inp}>
@@ -270,7 +270,7 @@ export default function AdminPenalties() {
       )}
 
       {/* Tabs */}
-      <div style={{ display:"flex", gap:8, marginBottom:"1.25rem" }}>
+      <div style={{ display:"flex", gap:8, marginBottom:"1.25rem", overflowX:"auto", paddingBottom:4, WebkitOverflowScrolling:"touch" }}>
         {[
           { k:"overview", l:"Overview" },
           { k:"violations", l:`Violations (${violations.length})` },
@@ -279,7 +279,7 @@ export default function AdminPenalties() {
           { k:"restricted", l:`Restricted Users (${suspendedUsers.length})` },
         ].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"8px 18px", borderRadius:20, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e24b4a":"#f0f0f0", color:tab===t.k?"#fff":"#555", fontWeight:tab===t.k?700:400 }}>
+            style={{ padding:"8px 14px", borderRadius:20, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e24b4a":"#f0f0f0", color:tab===t.k?"#fff":"#555", fontWeight:tab===t.k?700:400, whiteSpace:"nowrap", flexShrink:0 }}>
             {t.l}
           </button>
         ))}
