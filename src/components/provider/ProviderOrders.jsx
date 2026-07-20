@@ -209,6 +209,7 @@ export default function ProviderOrders() {
                 {r.delivery_location_lat&&r.delivery_location_lng&&<a href={`https://www.google.com/maps/dir/?api=1&destination=${r.delivery_location_lat},${r.delivery_location_lng}`} target="_blank" rel="noopener noreferrer" style={{ fontSize:11, color:"#4285f4", fontWeight:600 }}>🗺️ Navigate to customer</a>}
                 <div style={{ fontSize:11, color:"#888" }}>Mechanic: {r.mechanic?.first_name}</div>
                 {r.rider_name&&<div style={{ fontSize:11, color:"#555" }}>🚴 Rider: {r.rider_name} {r.rider_phone&&<a href={"tel:"+r.rider_phone} style={{ color:"#1d9e75" }}>{r.rider_phone}</a>}</div>}
+                <div style={{ display:"flex", gap:4, marginTop:6, marginBottom:4 }}>{["accepted","picked_up","on_the_way","delivered"].map((s,i)=>(<div key={s} style={{ flex:1, height:3, borderRadius:3, background:["accepted","picked_up","on_the_way","delivered"].indexOf(r.delivery_status||"accepted")>=i?"#8b5cf6":"#eee" }}/>))}</div>
                 <div style={{ fontSize:10, padding:"2px 8px", borderRadius:8, display:"inline-block", marginTop:4, background:r.delivery_status==="delivered"?"#f0fdf4":r.delivery_status==="on_the_way"?"#eff6ff":r.delivery_status==="picked_up"?"#fff8f0":"#f3f0ff", color:r.delivery_status==="delivered"?"#1d9e75":r.delivery_status==="on_the_way"?"#378add":r.delivery_status==="picked_up"?"#e6821e":"#8b5cf6", fontWeight:600 }}>{r.delivery_status?.replace(/_/g," ")||"pending"}</div>
               </div>
               {/* Pending - show accept with optional rider info */}
