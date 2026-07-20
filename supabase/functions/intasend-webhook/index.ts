@@ -109,10 +109,10 @@ serve(async (req) => {
 
         // Get driver M-Pesa
         const { data: dSens } = await supabase
-          .from("profile_sensitive").select("phone,mpesa_number")
+          .from("profile_sensitive").select("phone,mpesa_number,till_number,pochi_number,preferred_payment_method")
           .eq("id", booking.driver_id).single()
-        driverPhone = dSens?.mpesa_number || dSens?.phone
-
+        const driverPrefMethod = dSens?.preferred_payment_method || "mpesa"
+        driverPhone = driverPrefMethod==="till" ? dSens?.till_number : driverPrefMethod==="pochi" ? dSens?.pochi_number : (dSens?.mpesa_number || dSens?.phone)
         // Update booking with driver earnings
         await supabase.from("bookings")
           .update({ driver_earnings: driverAmount, driver_payout: driverAmount })
@@ -130,10 +130,10 @@ serve(async (req) => {
       // 1. Provider payout
       if (txn.provider_id && providerAmount > 0) {
         const { data: pSens } = await supabase
-          .from("profile_sensitive").select("mpesa_number,till_number")
+          .from("profile_sensitive").select("mpesa_number,till_number,paybill_number,paybill_account,pochi_number,preferred_payment_method")
           .eq("id", txn.provider_id).single()
-        const providerPhone = pSens?.mpesa_number || pSens?.till_number
-
+        const prefMethod = pSens?.preferred_payment_method || "mpesa"
+        const providerPhone = prefMethod==="till" ? pSens?.till_number : prefMethod==="paybill" ? pSens?.paybill_number : prefMethod==="pochi" ? pSens?.pochi_number : (pSens?.mpesa_number || pSens?.till_number || pSens?.pochi_number || pSens?.paybill_number)
         if (providerPhone) {
           await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/intasend-payout`, {
             method: "POST",
