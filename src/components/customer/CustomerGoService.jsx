@@ -506,12 +506,29 @@ export default function CustomerGoService() {
             <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#8b5cf6", marginBottom:8 }}>🔧 Parts Request</div>
             {goPartsRequests.map(r=>(
               <div key={r.id} style={{ background:"#fff", borderRadius:8, padding:"0.75rem", marginBottom:6 }}>
-                <div style={{ fontSize:13, fontWeight:600 }}>{r.inventory?.name}</div>
-                <div style={{ fontSize:11, color:"#888" }}>Qty: {r.quantity} · KES {Number(r.total_amount).toLocaleString()}</div>
-                <div style={{ fontSize:11, fontWeight:600, color:r.status==="delivered"?"#1d9e75":r.status==="accepted"?"#378add":"#e6821e", marginTop:4 }}>
-                  {r.status==="pending"?"⏳ Awaiting supplier":r.status==="accepted"?"🚚 Part on the way":"✅ Part delivered"}
+                <div style={{ fontSize:13, fontWeight:600 }}>{r.inventory?.name} x{r.quantity}</div>
+                <div style={{ fontSize:11, color:"#888" }}>KES {Number(r.total_amount).toLocaleString()}</div>
+                {/* Delivery progress bar */}
+                <div style={{ display:"flex", gap:4, marginTop:8, marginBottom:6 }}>
+                  {["accepted","picked_up","on_the_way","delivered"].map((s,i)=>(
+                    <div key={s} style={{ flex:1, height:3, borderRadius:3, background:["accepted","picked_up","on_the_way","delivered"].indexOf(r.delivery_status||r.status)>=i?"#8b5cf6":"#eee" }}/>
+                  ))}
                 </div>
+                <div style={{ fontSize:11, fontWeight:600, color:r.delivery_status==="delivered"?"#1d9e75":r.delivery_status==="on_the_way"?"#378add":r.delivery_status==="picked_up"?"#e6821e":"#8b5cf6", marginTop:2 }}>
+                  {r.delivery_status==="pending"||r.status==="pending"?"⏳ Awaiting supplier":
+                   r.delivery_status==="accepted"?"✅ Supplier confirmed — preparing":
+                   r.delivery_status==="picked_up"?"📦 Part picked up by rider":
+                   r.delivery_status==="on_the_way"?"🚚 Rider on the way to you":
+                   "✅ Part delivered — mechanic fitting it"}
+                </div>
+                {(r.delivery_status==="on_the_way"||r.delivery_status==="picked_up")&&r.rider_name&&(
+                  <div style={{ fontSize:11, color:"#555", marginTop:4 }}>
+                    🚴 Rider: {r.rider_name}
+                    {r.rider_phone&&<a href={"tel:"+r.rider_phone} style={{ marginLeft:6, color:"#1d9e75", fontWeight:600 }}>{r.rider_phone}</a>}
+                  </div>
+                )}
               </div>
+            ))}
             ))}
           </div>
         )}

@@ -16,6 +16,8 @@ export default function ProviderOrders() {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
   const [goPartsRequests, setGoPartsRequests] = useState([])
+  const [riderInfo, setRiderInfo] = useState({}) // {id: {name, phone}}
+  const [showRiderForm, setShowRiderForm] = useState(null)
   const [goPartsTab, setGoPartsTab] = useState(false)
   const [filter, setFilter] = useState("pending")
   const [search, setSearch] = useState("")
@@ -47,24 +49,58 @@ export default function ProviderOrders() {
   }
 
   async function acceptGoPartsRequest(id) {
-    await supabase.from("go_parts_requests").update({ status:"accepted" }).eq("id", id)
     const req = goPartsRequests.find(r=>r.id===id)
-    if(req) await supabase.from("notifications").insert({ user_id: req.mechanic_id, title: "Part accepted!", message: "Supplier accepted your part request. Delivery in progress.", type: "success" })
-    setGoPartsRequests(prev=>prev.map(r=>r.id===id?{...r,status:"accepted"}:r))
-    toast.success("Part request accepted!")
+    if(!req) return
+    const rider = riderInfo[id] || {}
+    // Calculate payouts
+    const partsCut = await supabase.from("app_settings").select("value").eq("key","go_parts_provider_rate").single()
+    const provRate = Number(partsCut.data?.value||90)/100
+    const provPayout = Math.round(req.total_amount * provRate)
+    const platformComm = req.total_amount - provPayout
+    await supabase.from("go_parts_requests").update({
+      status:"accepted", delivery_status:"accepted",
+      rider_name: rider.name||null, rider_phone: rider.phone||null,
+      provider_payout: provPayout, platform_commission: platformComm
+    }).eq("id", id)
+    // Notify mechanic
+    await supabase.from("notifications").insert({ user_id: req.mechanic_id, title: "Part accepted! 📦", message: "Supplier accepted. Rider: "+(rider.name||"on the way")+" "+( rider.phone||""), type: "success" })
+    // Notify customer - request payment
+    await supabase.from("notifications").insert({ user_id: req.customer_id, title: "Part approved — pay now 💳", message: "Your mechanic needs a "+req.inventory?.name+" — KES "+Number(req.total_amount).toLocaleString()+". Check app to approve payment.", type: "info" })
+    setGoPartsRequests(prev=>prev.map(r=>r.id===id?{...r,status:"accepted",delivery_status:"accepted",rider_name:rider.name,rider_phone:rider.phone}:r))
+    setShowRiderForm(null)
+    toast.success("Part request accepted! Customer notified to pay.")
   }
-  async function markGoPartsDelivered(id) {
-    await supabase.from("go_parts_requests").update({ status:"delivered" }).eq("id", id)
+  async function updatePartsDeliveryStatus(id, newStatus) {
+    await supabase.from("go_parts_requests").update({ delivery_status: newStatus, status: newStatus==="delivered"?"delivered":"accepted" }).eq("id", id)
+    setGoPartsRequests(prev=>prev.map(r=>r.id===id?{...r,delivery_status:newStatus,status:newStatus==="delivered"?"delivered":"accepted"}:r))
     const req = goPartsRequests.find(r=>r.id===id)
     if(req) {
-      await supabase.from("inventory").update({ stock_quantity: supabase.rpc("decrement_stock", {inv_id: req.inventory_id, qty: req.quantity}) }).eq("id", req.inventory_id)
+      const msgs = { picked_up:"Rider has picked up the part and is heading to you.", on_the_way:"Your part is on the way! Rider: "+(req.rider_name||"")+" "+(req.rider_phone||""), delivered:"Part has been delivered to your mechanic!" }
       await supabase.from("notifications").insert([
-        { user_id: req.mechanic_id, title: "Part delivered!", message: "Your part has been delivered. Fit it and complete the job.", type: "success" },
-        { user_id: req.customer_id, title: "Part delivered to mechanic!", message: "The part has been delivered. Your mechanic is fitting it now.", type: "success" }
+        { user_id: req.mechanic_id, title: newStatus.replace(/_/g," ")+" ✅", message: msgs[newStatus]||newStatus, type: "info" },
+        { user_id: req.customer_id, title: newStatus.replace(/_/g," ")+" ✅", message: msgs[newStatus]||newStatus, type: "info" }
       ])
     }
-    setGoPartsRequests(prev=>prev.map(r=>r.id===id?{...r,status:"delivered"}:r))
-    toast.success("Marked as delivered!")
+    toast.success("Status updated: "+newStatus.replace(/_/g," "))
+  }
+  async function markGoPartsDelivered(id) {
+    const req = goPartsRequests.find(r=>r.id===id)
+    if(!req) return
+    // Update status
+    await supabase.from("go_parts_requests").update({ status:"delivered", delivery_status:"delivered", payment_released:false }).eq("id", id)
+    // Decrement stock
+    await supabase.rpc("decrement_stock", { inv_id: req.inventory_id, qty: req.quantity })
+    // Notify mechanic + customer
+    await supabase.from("notifications").insert([
+      { user_id: req.mechanic_id, title: "Part delivered! ✅", message: "Your part has been delivered. Fit it and complete the job.", type: "success" },
+      { user_id: req.customer_id, title: "Part delivered! 💳 Pay now", message: `Your mechanic received the ${req.inventory?.name}. Please pay KES ${Number(req.total_amount).toLocaleString()} for the part.`, type: "info" }
+    ])
+    // Send STK push to customer for parts payment
+    await supabase.functions.invoke("intasend-stk-push", {
+      body: { amount: req.total_amount, booking_id: req.booking_id, customer_id: req.customer_id, provider_id: req.provider_id, service_name: req.inventory?.name||"GO Parts" }
+    }).catch(e=>console.warn("STK push failed:", e.message))
+    setGoPartsRequests(prev=>prev.map(r=>r.id===id?{...r,status:"delivered",delivery_status:"delivered"}:r))
+    toast.success("Marked as delivered! Customer STK push sent.")
   }
   async function load() {
     const { data } = await supabase.from("orders")
@@ -162,27 +198,46 @@ export default function ProviderOrders() {
         <div style={{ fontSize:12, color:"#777" }}>Manage parts and accessories orders</div>
       </div>
       {/* GO Parts Requests */}
-      {goPartsRequests.filter(r=>r.status==="pending"||r.status==="accepted").length>0&&(
         <div style={{ background:"#f3f0ff", border:"1px solid #8b5cf640", borderRadius:12, padding:"1rem", marginBottom:"1.25rem" }}>
           <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#8b5cf6", marginBottom:8 }}>🔧 GO Service Part Requests</div>
           {goPartsRequests.filter(r=>r.status==="pending"||r.status==="accepted").map(r=>(
             <div key={r.id} style={{ background:"#fff", borderRadius:10, padding:"0.75rem", marginBottom:8 }}>
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                <div>
-                  <div style={{ fontSize:13, fontWeight:600 }}>{r.inventory?.name}</div>
-                  <div style={{ fontSize:11, color:"#888" }}>Qty: {r.quantity} · KES {Number(r.total_amount).toLocaleString()}</div>
-                  <div style={{ fontSize:11, color:"#555" }}>📍 {r.delivery_location_address}</div>
-                  <div style={{ fontSize:11, color:"#888" }}>Mechanic: {r.mechanic?.business_name||r.mechanic?.first_name}</div>
-                </div>
-                <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
-                  {r.status==="pending"&&<button onClick={()=>acceptGoPartsRequest(r.id)} style={{ background:"#8b5cf6", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>Accept</button>}
-                  {r.status==="accepted"&&<button onClick={()=>markGoPartsDelivered(r.id)} style={{ background:"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>Mark Delivered</button>}
-                  <span style={{ fontSize:10, color:r.status==="pending"?"#e6821e":"#1d9e75", fontWeight:600, textAlign:"center" }}>{r.status}</span>
-                </div>
+              <div style={{ marginBottom:8 }}>
+                <div style={{ fontSize:13, fontWeight:600 }}>{r.inventory?.name} x{r.quantity}</div>
+                <div style={{ fontSize:11, color:"#888" }}>KES {Number(r.total_amount).toLocaleString()} · Your cut: KES {Number(r.provider_payout||r.total_amount*0.9).toLocaleString()}</div>
+                <div style={{ fontSize:11, color:"#555", marginTop:2 }}>📍 {r.delivery_location_address}</div>
+                {r.delivery_location_lat&&r.delivery_location_lng&&<a href={`https://www.google.com/maps/dir/?api=1&destination=${r.delivery_location_lat},${r.delivery_location_lng}`} target="_blank" rel="noopener noreferrer" style={{ fontSize:11, color:"#4285f4", fontWeight:600 }}>🗺️ Navigate to customer</a>}
+                <div style={{ fontSize:11, color:"#888" }}>Mechanic: {r.mechanic?.first_name}</div>
+                {r.rider_name&&<div style={{ fontSize:11, color:"#555" }}>🚴 Rider: {r.rider_name} {r.rider_phone&&<a href={"tel:"+r.rider_phone} style={{ color:"#1d9e75" }}>{r.rider_phone}</a>}</div>}
+                <div style={{ fontSize:10, padding:"2px 8px", borderRadius:8, display:"inline-block", marginTop:4, background:r.delivery_status==="delivered"?"#f0fdf4":r.delivery_status==="on_the_way"?"#eff6ff":r.delivery_status==="picked_up"?"#fff8f0":"#f3f0ff", color:r.delivery_status==="delivered"?"#1d9e75":r.delivery_status==="on_the_way"?"#378add":r.delivery_status==="picked_up"?"#e6821e":"#8b5cf6", fontWeight:600 }}>{r.delivery_status?.replace(/_/g," ")||"pending"}</div>
               </div>
+              {/* Pending - show accept with optional rider info */}
+              {r.status==="pending"&&(
+                <div>
+                  {showRiderForm===r.id&&(
+                    <div style={{ marginBottom:8 }}>
+                      <input placeholder="Rider name (optional)" value={riderInfo[r.id]?.name||""} onChange={e=>setRiderInfo(p=>({...p,[r.id]:{...p[r.id],name:e.target.value}}))} style={{ width:"100%", padding:"6px 8px", borderRadius:7, border:"1px solid #ddd", fontSize:11, marginBottom:4, boxSizing:"border-box" }}/>
+                      <input placeholder="Rider phone (optional)" value={riderInfo[r.id]?.phone||""} onChange={e=>setRiderInfo(p=>({...p,[r.id]:{...p[r.id],phone:e.target.value}}))} style={{ width:"100%", padding:"6px 8px", borderRadius:7, border:"1px solid #ddd", fontSize:11, boxSizing:"border-box" }}/>
+                    </div>
+                  )}
+                  <div style={{ display:"flex", gap:6 }}>
+                    <button onClick={()=>setShowRiderForm(showRiderForm===r.id?null:r.id)} style={{ flex:1, background:"#f3f0ff", border:"1px solid #8b5cf640", borderRadius:8, color:"#8b5cf6", fontSize:11, padding:"6px 10px", cursor:"pointer" }}>🚴 {showRiderForm===r.id?"Hide":"Add rider"}</button>
+                    <button onClick={()=>acceptGoPartsRequest(r.id)} style={{ flex:1, background:"#8b5cf6", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 10px", cursor:"pointer" }}>✓ Accept</button>
+                  </div>
+                </div>
+              )}
+              {/* Accepted - show delivery status buttons */}
+              {r.status==="accepted"&&(
+                <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                  {r.delivery_status==="accepted"&&<button onClick={()=>updatePartsDeliveryStatus(r.id,"picked_up")} style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:10, fontWeight:700, padding:"5px 10px", cursor:"pointer" }}>📦 Picked Up</button>}
+                  {r.delivery_status==="picked_up"&&<button onClick={()=>updatePartsDeliveryStatus(r.id,"on_the_way")} style={{ background:"#378add", border:"none", borderRadius:8, color:"#fff", fontSize:10, fontWeight:700, padding:"5px 10px", cursor:"pointer" }}>🚚 On the Way</button>}
+                  {r.delivery_status==="on_the_way"&&<button onClick={()=>markGoPartsDelivered(r.id)} style={{ background:"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontSize:10, fontWeight:700, padding:"5px 10px", cursor:"pointer" }}>✅ Mark Delivered</button>}
+                </div>
+              )}
             </div>
           ))}
         </div>
+      )}
       )}
 
       {/* Gradient stats header */}
