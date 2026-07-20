@@ -193,10 +193,20 @@ export default function AdminContentHub() {
     try {
       const res = await fetch(url)
       const blob = await res.blob()
-      const a = document.createElement("a")
-      a.href = URL.createObjectURL(blob)
-      a.download = filename || "ccc-content.jpg"
-      a.click()
+      const isNative = typeof window !== "undefined" && window.Capacitor?.isNativePlatform?.()
+      if(isNative) {
+        import("@capacitor/filesystem").then(({Filesystem,Directory})=>import("@capacitor/share").then(({Share})=>{
+          const base64 = btoa(String.fromCharCode(...new Uint8Array(await blob.arrayBuffer())))
+          return Filesystem.writeFile({path:filename||"ccc-content.jpg",data:base64,directory:Directory.Cache})
+            .then(()=>Filesystem.getUri({path:filename||"ccc-content.jpg",directory:Directory.Cache}))
+            .then(r=>Share.share({title:filename||"ccc-content.jpg",url:r.uri}))
+        }))
+      } else {
+        const a = document.createElement("a")
+        a.href = URL.createObjectURL(blob)
+        a.download = filename || "ccc-content.jpg"
+        a.click()
+      }
       toast.success("Photo downloaded!")
     } catch(e) { toast.error("Download failed") }
     finally { setDownloading(false) }
