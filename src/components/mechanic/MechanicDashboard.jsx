@@ -977,53 +977,28 @@ export default function MechanicDashboard() {
         )}
 
         {/* DOCS TAB */}
-          {/* Carries Parts Section */}
-          <div style={{ background:"#f3f0ff", border:"1px solid #8b5cf640", borderRadius:12, padding:"1rem", marginBottom:"1.25rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#8b5cf6", marginBottom:4 }}>🔧 Parts I Carry</div>
-            <div style={{ fontSize:11, color:"#888", marginBottom:10 }}>Let customers know you carry spare parts for GO Service emergencies.</div>
-            <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:10 }}>
-              <input type="checkbox" checked={mechanic?.carries_parts||false} onChange={async e=>{
-                await supabase.from("mechanics").update({ carries_parts:e.target.checked }).eq("id",mechanic.mechanic_id)
-                toast.success(e.target.checked?"Parts carrier badge enabled!":"Badge disabled")
-              }} style={{ width:18, height:18, cursor:"pointer" }}/>
-              <span style={{ fontSize:12, color:"#555" }}>I carry spare parts in my vehicle for GO Service jobs</span>
-            </div>
-            {[
-              {key:"battery", label:"🔋 Battery"},
-              {key:"tyre_tools", label:"🛞 Tyre Tools"},
-              {key:"fuel", label:"⛽ Emergency Fuel"},
-              {key:"jumper_cables", label:"⚡ Jumper Cables"},
-              {key:"fuses", label:"🔌 Fuses"},
-              {key:"engine_oil", label:"🛢️ Engine Oil"},
-            ].map(p=>(
-              <label key={p.key} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6, cursor:"pointer" }}>
-                <input type="checkbox" checked={(mechanic?.parts_carried||[]).includes(p.key)} onChange={async e=>{
-                  const current = mechanic?.parts_carried||[]
-                  const updated = e.target.checked ? [...current,p.key] : current.filter(x=>x!==p.key)
-                  await supabase.from("mechanics").update({ parts_carried:updated }).eq("id",mechanic.mechanic_id)
-                  toast.success("Updated!")
-                }} style={{ cursor:"pointer" }}/>
-                <span style={{ fontSize:12, color:"#555" }}>{p.label}</span>
-              </label>
-            ))}
-          </div>
+
         {tab==="docs"&&(
           <div>
             <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000", marginBottom:4 }}>📄 My Documents</div>
             {/* Carries Parts Section */}
             <div style={{ background:"#f3f0ff", border:"1px solid #8b5cf640", borderRadius:12, padding:"1rem", marginBottom:"1.25rem" }}>
               <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#8b5cf6", marginBottom:4 }}>🔧 Parts I Carry</div>
-              <div style={{ fontSize:11, color:"#888", marginBottom:10 }}>Let customers know you carry spare parts for GO Service emergencies.</div>
-              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:10 }}>
-                <input type="checkbox" checked={mechanic?.carries_parts||false} onChange={async e=>{ await supabase.from("mechanics").update({ carries_parts:e.target.checked }).eq("id",mechanic.mechanic_id); toast.success(e.target.checked?"Badge enabled!":"Badge disabled") }} style={{ width:18, height:18, cursor:"pointer" }}/>
-                <span style={{ fontSize:12, color:"#555" }}>I carry spare parts in my vehicle for GO Service jobs</span>
+              <div style={{ fontSize:11, color:"#888", marginBottom:12 }}>Customers see this badge when booking GO Service.</div>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12, background:"#fff", borderRadius:8, padding:"10px 12px" }}>
+                <span style={{ fontSize:13, color:"#555", fontWeight:600 }}>I carry spare parts</span>
+                <div onClick={async()=>{ const v=!(mechanic?.carries_parts||false); await supabase.from("mechanics").update({ carries_parts:v }).eq("id",mechanic.mechanic_id); await supabase.from("profiles").update({ carries_parts_for_go:v }).eq("id",mechanic.provider_id); toast.success(v?"✅ Badge enabled!":"Badge disabled") }} style={{ width:48, height:26, borderRadius:13, background:mechanic?.carries_parts?"#8b5cf6":"#ddd", position:"relative", cursor:"pointer" }}>
+                  <div style={{ width:22, height:22, borderRadius:"50%", background:"#fff", position:"absolute", top:2, left:mechanic?.carries_parts?24:2, transition:"left 0.2s", boxShadow:"0 1px 3px rgba(0,0,0,0.2)" }}/>
+                </div>
               </div>
-              {[{key:"battery",label:"🔋 Battery"},{key:"tyre_tools",label:"🛞 Tyre Tools"},{key:"fuel",label:"⛽ Emergency Fuel"},{key:"jumper_cables",label:"⚡ Jumper Cables"},{key:"fuses",label:"🔌 Fuses"},{key:"engine_oil",label:"🛢️ Engine Oil"}].map(p=>(
-                <label key={p.key} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6, cursor:"pointer" }}>
-                  <input type="checkbox" checked={(mechanic?.parts_carried||[]).includes(p.key)} onChange={async e=>{ const cur=mechanic?.parts_carried||[]; const upd=e.target.checked?[...cur,p.key]:cur.filter(x=>x!==p.key); await supabase.from("mechanics").update({ parts_carried:upd }).eq("id",mechanic.mechanic_id); toast.success("Updated!") }} style={{ cursor:"pointer" }}/>
-                  <span style={{ fontSize:12, color:"#555" }}>{p.label}</span>
-                </label>
-              ))}
+              {mechanic?.carries_parts&&(
+                <div>
+                  <div style={{ fontSize:11, color:"#888", marginBottom:8 }}>Tap to select parts you carry:</div>
+                  <div style={{ display:"flex", flexWrap:"wrap", gap:8 }}>
+                    {[{k:"battery",l:"🔋 Battery"},{k:"tyre_tools",l:"🛞 Tyre Tools"},{k:"fuel",l:"⛽ Fuel"},{k:"jumper_cables",l:"⚡ Jumper Cables"},{k:"fuses",l:"🔌 Fuses"},{k:"engine_oil",l:"🛢️ Engine Oil"}].map(p=>{ const sel=(mechanic?.parts_carried||[]).includes(p.k); return <div key={p.k} onClick={async()=>{ const cur=mechanic?.parts_carried||[]; const upd=sel?cur.filter(x=>x!==p.k):[...cur,p.k]; await supabase.from("mechanics").update({ parts_carried:upd }).eq("id",mechanic.mechanic_id); await supabase.from("profiles").update({ go_parts_carried:upd }).eq("id",mechanic.provider_id); toast.success("Updated!") }} style={{ padding:"6px 14px", borderRadius:20, border:"1px solid "+(sel?"#8b5cf6":"#ddd"), background:sel?"#8b5cf6":"#f8f8f8", color:sel?"#fff":"#555", fontSize:12, cursor:"pointer", fontWeight:sel?700:400 }}>{p.l}</div> })}
+                  </div>
+                </div>
+              )}
             </div>
             <div style={{ fontSize:12, color:"#888", marginBottom:"1rem" }}>Upload your documents for verification. All documents are reviewed by admin.</div>
             {[
