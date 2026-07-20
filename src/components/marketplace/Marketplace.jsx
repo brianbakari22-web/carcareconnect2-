@@ -492,17 +492,12 @@ export default function Marketplace() {
             <div key={l.id} onClick={()=>openListing(l)}
               style={{ background:"#ffffff", border:`1px solid ${l.featured_tier==="premium"?"#8b5cf6":l.is_featured?"#e6821e":"#eeeeee"}`, borderRadius:12, overflow:"hidden", cursor:"pointer" }}>
               <div style={{ height:isMobile?120:160, background:"#f5f5f5", position:"relative", display:"flex", alignItems:"center", justifyContent:"center" }}>
-                {l.is_featured&&<div style={{ position:"absolute", top:8, left:8, background:l.featured_tier==="premium"?"#8b5cf6":"#e6821e", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10 }}>{l.featured_tier==="premium"?"👑 PREMIUM":"⭐ FEATURED"}</div>}
-                {l.is_inspected&&<div style={{ position:"absolute", top:8, right:8, background:"#1d9e75", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10 }}>✓ INSPECTED</div>}
-                <button onClick={e=>{ e.stopPropagation(); toggleLike(l.id) }}
-                  style={{ position:"absolute", bottom:8, right:8, background:"rgba(255,255,255,0.9)", border:"none", borderRadius:"50%", width:32, height:32, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, boxShadow:"0 2px 8px rgba(0,0,0,0.15)" }}>
+                {l.is_featured&&<div style={{ position:"absolute", top:8, left:8, background:l.featured_tier==="premium"?"#8b5cf6":"#e6821e", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10, zIndex:2 }}>{l.featured_tier==="premium"?"👑 PREMIUM":"⭐ FEATURED"}</div>}
+                {l.is_inspected&&<div style={{ position:"absolute", top:8, right:8, background:"#1d9e75", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10, zIndex:2 }}>✓ INSPECTED</div>}
+                <button onClick={e=>{ e.stopPropagation(); toggleLike(l.id) }} style={{ position:"absolute", bottom:8, right:8, background:"rgba(255,255,255,0.9)", border:"none", borderRadius:"50%", width:32, height:32, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, boxShadow:"0 2px 8px rgba(0,0,0,0.15)", zIndex:2 }}>
                   {userLikes.has(l.id) ? "❤️" : "🤍"}
                 </button>
-                <button onClick={e=>{ e.stopPropagation(); toggleLike(l.id) }}
-                  style={{ position:"absolute", bottom:8, right:8, background:"rgba(255,255,255,0.9)", border:"none", borderRadius:"50%", width:32, height:32, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, boxShadow:"0 2px 8px rgba(0,0,0,0.15)" }}>
-                  {userLikes.has(l.id) ? "❤️" : "🤍"}
-                {l._type&&<div style={{ position:"absolute", top:6, left:6, background:l._type==="new_car"?"#378add":l._type==="part"||l._type==="accessory"?"#8b5cf6":"#1d9e75", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 6px", borderRadius:4, whiteSpace:"nowrap" }}>{l._type==="new_car"?"NEW":l._type==="part"?"PART":l._type==="accessory"?"ACC":"USED"}</div>}
-                </button>
+                {l._type&&<div style={{ position:"absolute", bottom:8, left:8, background:l._type==="new_car"?"#378add":l._type==="part"||l._type==="accessory"?"#8b5cf6":"#1d9e75", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 6px", borderRadius:4, whiteSpace:"nowrap", zIndex:2 }}>{l._type==="new_car"?"🆕 NEW":l._type==="part"?"🔧 PART":l._type==="accessory"?"✨ ACC":"🚗 USED"}</div>}
                 {l.primary_photo ? (
                   <img src={l.primary_photo} alt={l.title} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
                 ) : (
