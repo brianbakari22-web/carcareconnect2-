@@ -77,17 +77,14 @@ export default function CustomerPayments() {
               {t.l}
             </button>
           ))}
+        </div>
       </div>
-        ))}
       {tab==="history"&&bookings.length>0&&(
         <button onClick={()=>downloadPaymentsCSV(bookings.map(b=>({...b,type:"Service",description:b.service_name,amount:b.total_amount})))}
           style={{ marginBottom:8, background:"#f8f8f8", border:"1px solid #ddd", borderRadius:8, color:"#555", fontSize:11, padding:"6px 14px", cursor:"pointer", display:"block", marginLeft:"auto" }}>
           📥 Export CSV
         </button>
       )}
-      </div>
-
-      {tab==="history"&&(
         <div>
           {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
           {!loading&&bookings.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>No payments yet</div>}
