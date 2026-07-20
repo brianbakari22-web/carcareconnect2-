@@ -266,7 +266,22 @@ export function generateInvoice(booking, provider, customer, mechanic, driver) {
 
 export function downloadInvoice(booking, provider, customer, mechanic, driver) {
   const doc = generateInvoice(booking, provider, customer, mechanic, driver)
-  doc.save("CCC-Invoice-" + (booking.booking_number||booking.id?.slice(0,8)) + ".pdf")
+  const filename = "CCC-Invoice-" + (booking.booking_number||booking.id?.slice(0,8)) + ".pdf"
+  const isNative = typeof window !== "undefined" && window.Capacitor?.isNativePlatform?.()
+  if(isNative) {
+    const pdfData = doc.output("datauristring")
+    const base64 = pdfData.split(",")[1]
+    import("@capacitor/filesystem").then(async ({ Filesystem, Directory }) => {
+      try {
+        await Filesystem.writeFile({ path: filename, data: base64, directory: Directory.Cache })
+        const { uri } = await Filesystem.getUri({ path: filename, directory: Directory.Cache })
+        const { Share } = await import("@capacitor/share")
+        await Share.share({ title: filename, url: uri })
+      } catch(e) { console.error("Invoice save error:", e) }
+    })
+  } else {
+    doc.save(filename)
+  }
 }
 
 
