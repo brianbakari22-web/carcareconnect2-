@@ -166,7 +166,7 @@ export default function CustomerGoService() {
   }
   async function loadGoServices() {
     const { data } = await supabase.from("services")
-      .select("*, profiles(business_name,first_name,last_name,city,latitude,longitude,go_service_radius_km,marketplace_rating,marketplace_review_count,is_online)")
+      .select("*, profiles(business_name,first_name,last_name,city,latitude,longitude,go_service_radius_km,marketplace_rating,marketplace_review_count,is_online,carries_parts_for_go,go_parts_carried)")
       .eq("category", "go_service")
       .eq("is_active", true).eq("profiles.is_active", true)
     let services = data||[]
@@ -655,7 +655,7 @@ export default function CustomerGoService() {
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
               <div>
                 {s.profiles?.is_online&&<span style={{ fontSize:9, background:"#f0fdf4", color:"#1d9e75", border:"1px solid #1d9e7540", borderRadius:4, padding:"1px 6px", fontWeight:700, marginBottom:4, display:"inline-block" }}>🟢 Online</span>}
-                <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:2 }}>{s.name}</div>
+                {s.profiles?.carries_parts_for_go&&<span style={{ fontSize:9, background:"#fff8f0", color:"#e6821e", border:"1px solid #e6821e40", borderRadius:4, padding:"1px 6px", fontWeight:700, marginBottom:4, display:"inline-block", marginLeft:4 }}>🔧 Carries parts</span>}
                 <div style={{ fontSize:11, color:"#777777" }}>🏪 {s.profiles?.business_name||`${s.profiles?.first_name} ${s.profiles?.last_name}`}{s._distance!=null&&` · ${s._distance.toFixed(1)}km away`}</div>
               </div>
                 {s.profiles?.marketplace_rating>0&&<div style={{ fontSize:10, color:"#e6821e" }}>⭐ {Number(s.profiles.marketplace_rating).toFixed(1)} ({s.profiles.marketplace_review_count||0} reviews)</div>}

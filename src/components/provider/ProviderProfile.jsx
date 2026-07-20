@@ -36,7 +36,7 @@ export default function ProviderProfile() {
 
   useEffect(() => {
     if (profile) {
-      setForm({ first_name:profile?.first_name||"", last_name:profile?.last_name||"", business_name:profile?.business_name||"", city:profile?.city||"", go_service_radius_km:profile?.go_service_radius_km?String(profile.go_service_radius_km):"15" })
+      setForm({ first_name:profile?.first_name||"", last_name:profile?.last_name||"", carries_parts_for_go:profile?.carries_parts_for_go||false, business_name:profile?.business_name||"", city:profile?.city||"", go_service_radius_km:profile?.go_service_radius_km?String(profile.go_service_radius_km):"15" })
       setLocation({ latitude:profile?.latitude||null, longitude:profile?.longitude||null, address:"" })
     }
     if (user) loadSensitive()
@@ -50,7 +50,7 @@ export default function ProviderProfile() {
   async function saveProfile(e) {
     e.preventDefault()
     setSaving(true)
-    try { await updateProfile({...form, go_service_radius_km: form.go_service_radius_km?Number(form.go_service_radius_km):15}); toast.success(t("saveChanges")) }
+    try { await updateProfile({...form, carries_parts_for_go: form.carries_parts_for_go, go_service_radius_km: form.go_service_radius_km?Number(form.go_service_radius_km):15}); toast.success(t("saveChanges")) }
     catch(err) { toast.error(err.message) }
     finally { setSaving(false) }
   }
@@ -201,6 +201,14 @@ export default function ProviderProfile() {
                 <label style={lbl}>🚨 GO Service radius (km)</label>
                 <div style={{ fontSize:11, color:"#888", marginBottom:6 }}>Maximum distance you&apos;re willing to travel for emergency roadside assistance</div>
                 <input type="number" min="1" max="100" style={inp} placeholder="15" value={form.go_service_radius_km} onChange={e=>setForm(f=>({...f,go_service_radius_km:e.target.value}))}/>
+              <div style={{ marginBottom:12 }}>
+                <label style={lbl}>🔧 Carries parts for GO Service</label>
+                <div style={{ fontSize:11, color:"#888", marginBottom:6 }}>Let customers know your mechanics carry spare parts for emergency jobs</div>
+                <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                  <input type="checkbox" checked={form.carries_parts_for_go||false} onChange={e=>setForm(f=>({...f,carries_parts_for_go:e.target.checked}))} style={{ width:18, height:18, cursor:"pointer" }}/>
+                  <span style={{ fontSize:12, color:"#555" }}>Yes, our mechanics carry common spare parts</span>
+                </div>
+              </div>
               </div>
             )}
             {["garage","garage_premium","auto_electrician","mobile_mechanic"].includes(profile?.provider_type)&&(
