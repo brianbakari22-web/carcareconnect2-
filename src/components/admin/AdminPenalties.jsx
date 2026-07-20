@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { supabase } from "../../lib/supabase"
 import toast from "react-hot-toast"
 
@@ -31,6 +31,7 @@ export default function AdminPenalties() {
   const [users, setUsers] = useState([])
   const [violations, setViolations] = useState([])
   const [penalties, setPenalties] = useState([])
+  const [claimPenalties, setClaimPenalties] = useState([])
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState("overview")
   const [showForm, setShowForm] = useState(false)
@@ -52,13 +53,16 @@ export default function AdminPenalties() {
 
   async function load() {
     setLoading(true)
-    const [{ data: v }, { data: p }, { data: u }] = await Promise.all([
+    const [{ data: v }, { data: p }, { data: cp }, { data: u }] = await Promise.all([
       supabase.from("user_violations").select("*, profiles!user_id(first_name,last_name,role)").order("created_at",{ascending:false}),
+      supabase.from("provider_penalties").select("*, profiles!provider_id(first_name,last_name,business_name), service_claims(reason,booking_id)").order("created_at",{ascending:false}),
+      supabase.from("provider_penalties").select("*, provider:profiles!provider_id(first_name,last_name,business_name), claim:service_claims(reason,booking_id)").order("created_at",{ascending:false}),
       supabase.from("user_penalties").select("*, profiles!user_id(first_name,last_name,role)").order("created_at",{ascending:false}),
       supabase.from("profiles").select("id,first_name,last_name,role,is_suspended,is_banned,violation_count,warning_count,suspension_expires_at").neq("role","admin").order("first_name"),
     ])
     setViolations(v||[])
     setPenalties(p||[])
+    setClaimPenalties(cp||[])
     setUsers(u||[])
     setLoading(false)
   }
@@ -271,6 +275,7 @@ export default function AdminPenalties() {
           { k:"overview", l:"Overview" },
           { k:"violations", l:`Violations (${violations.length})` },
           { k:"penalties", l:`Active Penalties (${activePenalties.length})` },
+    { k:"claim_penalties", l:`Claim Penalties (${claimPenalties.length})` },
           { k:"restricted", l:`Restricted Users (${suspendedUsers.length})` },
         ].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
@@ -381,6 +386,29 @@ export default function AdminPenalties() {
                   </button>
                 </div>
               </div>
+            </div>
+          ))}
+        </div>
+      )}
+      {/* CLAIM PENALTIES TAB */}
+      {tab==="claim_penalties"&&!loading&&(
+        <div>
+          {claimPenalties.length===0&&<div style={{ color:"#888", textAlign:"center", padding:"2rem", background:"#f8f8f8", borderRadius:12 }}>No claim-based penalties yet</div>}
+          {claimPenalties.map(p=>(
+            <div key={p.id} style={{ background:"#fff", border:"1px solid #e24b4a20", borderRadius:12, padding:"1rem", marginBottom:8 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
+                <div>
+                  <div style={{ fontSize:13, fontWeight:700 }}>{p.profiles?.business_name||p.profiles?.first_name} {p.profiles?.last_name}</div>
+                  <div style={{ fontSize:11, color:"#888", marginTop:2 }}>Claim reason: {p.service_claims?.reason||"—"}</div>
+                  <div style={{ fontSize:11, color:"#888" }}>{new Date(p.created_at).toLocaleDateString()}</div>
+                </div>
+                <div style={{ textAlign:"right" }}>
+                  <span style={{ fontSize:11, padding:"3px 10px", borderRadius:20, background:p.penalty_type==="permanent_ban"?"#fff5f5":p.penalty_type==="suspension_7d"?"#eff6ff":"#fff8f0", color:p.penalty_type==="permanent_ban"?"#e24b4a":p.penalty_type==="suspension_7d"?"#378add":"#e6821e", fontWeight:600 }}>{p.penalty_type?.replace(/_/g," ")}</span>
+                  <div style={{ fontSize:12, color:"#e24b4a", fontWeight:700, marginTop:4 }}>KES {Number(p.amount_deducted||0).toLocaleString()} deducted</div>
+                </div>
+              </div>
+              <div style={{ fontSize:11, color:"#555", background:"#f8f8f8", borderRadius:8, padding:"8px 10px" }}>{p.reason}</div>
+              <div style={{ fontSize:10, color:p.is_active?"#e24b4a":"#1d9e75", marginTop:6, fontWeight:600 }}>{p.is_active?"🔴 Active":"✅ Resolved"}{p.expires_at?" · Expires: "+new Date(p.expires_at).toLocaleDateString():""}</div>
             </div>
           ))}
         </div>
