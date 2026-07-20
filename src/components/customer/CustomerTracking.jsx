@@ -201,7 +201,7 @@ export default function CustomerTracking() {
     const [{ data: bks }, { data: ords }] = await Promise.all([
       supabase.from("bookings").select("*")
         .eq("customer_id", user.id)
-        .not("status", "in", "(\"completed\",\"cancelled\")").eq("is_archived", false)
+        .not("status", "in", "(\"completed\",\"cancelled\")")
         .order("created_at", { ascending:false }),
       supabase.from("orders")
         .select("*, delivery_driver:profiles!orders_delivery_driver_id_fkey(first_name,last_name), provider:profiles!orders_provider_id_fkey(first_name,last_name,business_name,latitude,longitude,address,city)")
