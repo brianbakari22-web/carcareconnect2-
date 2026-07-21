@@ -57,6 +57,17 @@ export default function AdminClaims() {
     setLoading(false)
   }
 
+  async function requestEvidence(claim) {
+    try {
+      await supabase.from("notifications").insert([
+        { user_id:claim.customer_id, title:"Evidence requested 📸", message:"Admin has requested additional evidence for your claim #"+claim.id?.slice(0,8).toUpperCase()+". Please add photos or details in the claim chat.", type:"warning" },
+        { user_id:claim.provider_id, title:"Evidence requested 📸", message:"Admin has requested your response and evidence for claim #"+claim.id?.slice(0,8).toUpperCase()+". Please respond in the claim chat.", type:"warning" }
+      ])
+      await supabase.from("service_claims").update({ status:"under_review" }).eq("id",claim.id)
+      toast.success("Evidence requested from both parties")
+      load()
+    } catch(e) { toast.error(e.message) }
+  }
   async function approveClaim(claim) {
     setProcessing(true)
     try {
@@ -329,7 +340,11 @@ export default function AdminClaims() {
                   <div style={{ marginBottom:12 }}>
                     <div style={{ fontSize:11, color:"#888", marginBottom:6, fontWeight:600 }}>📋 Investigation — Message parties</div>
                     <div style={{ display:"flex", gap:6, marginBottom:8 }}>
-                      <button onClick={()=>setChattingWith(chattingWith?.claimId===c.id&&chattingWith?.userId===c.provider_id?null:{ claimId:c.id, userId:c.provider_id, name:c.provider?.business_name||`${c.provider?.first_name} ${c.provider?.last_name}`, role:"provider" })}
+                      <button onClick={()=>requestEvidence(c)}
+        style={{ background:"#f5f3ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+        📸 Request Evidence from Both
+      </button>
+      <button onClick={()=>setChattingWith(chattingWith?.claimId===c.id&&chattingWith?.userId===c.provider_id?null:{ claimId:c.id, userId:c.provider_id, name:c.provider?.business_name||`${c.provider?.first_name} ${c.provider?.last_name}`, role:"provider" })}
                         style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
                         💬 Message provider
                       </button>
@@ -346,6 +361,10 @@ export default function AdminClaims() {
                   </div>
 
                   <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
+                    <button onClick={async()=>{ await supabase.from("service_claims").update({status:"under_review"}).eq("id",c.id); load(); toast.success("Marked as under review") }} disabled={processing}
+                      style={{ background:"#f5f3ff", border:"1px solid #8b5cf640", borderRadius:8, color:"#8b5cf6", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>
+                      🔍 Mark Under Review
+                    </button>
                     <button onClick={()=>approveClaim(c)} disabled={processing}
                       style={{ background:processing?"#e0e0e0":"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 18px", cursor:processing?"not-allowed":"pointer" }}>
                       ✓ Approve & issue voucher
