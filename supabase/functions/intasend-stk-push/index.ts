@@ -7,42 +7,45 @@ const corsHeaders = {
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders })
   try {
-    const { booking_id, amount, phone, customer_id, provider_id, service_name } = await req.json()
+    const body = await req.json()
+    const { booking_id, amount, phone, customer_id, provider_id, service_name } = body
+    
+    console.log("STK Push request:", JSON.stringify({ booking_id, amount, phone: phone?.substring(0,6)+"***", customer_id, provider_id, service_name }))
+    
+    if (!phone) throw new Error("Phone number is required")
+    if (!amount || amount <= 0) throw new Error("Valid amount is required")
+    
     const INTASEND_SECRET_KEY = Deno.env.get("INTASEND_SECRET_KEY")
+    if (!INTASEND_SECRET_KEY) throw new Error("INTASEND_SECRET_KEY not configured")
+    
     const INTASEND_ENV = Deno.env.get("INTASEND_ENV") || "sandbox"
     const BASE_URL = INTASEND_ENV === "production" 
       ? "https://payment.intasend.com" 
       : "https://sandbox.intasend.com"
+
     // Format phone
-    let formattedPhone = phone.replace(/\s/g, "")
+    let formattedPhone = String(phone).replace(/\s/g, "")
     if (formattedPhone.startsWith("0")) formattedPhone = "254" + formattedPhone.slice(1)
     if (formattedPhone.startsWith("+")) formattedPhone = formattedPhone.slice(1)
+    if (!formattedPhone.startsWith("254")) formattedPhone = "254" + formattedPhone
+
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     )
-    // Fetch rates from app_settings
+
+    // Fetch processing fee rates
     const { data: settings } = await supabase
       .from("app_settings").select("key,value")
       .in("key", ["customer_processing_fee_rate", "ccc_processing_fee_rate", "provider_processing_fee_rate"])
     const S: Record<string, number> = {}
     settings?.forEach((s: any) => { S[s.key] = Number(s.value) / 100 })
 
-    // 3% split: customer pays 1%, CCC absorbs 1%, provider absorbs 1%
-    // Customer only pays their 1% share on top of amount
     const customerFeeRate = S.customer_processing_fee_rate || 0.01
-    const cccFeeRate = S.ccc_processing_fee_rate || 0.01
-    const providerFeeRate = S.provider_processing_fee_rate || 0.01
+    const customerFee = Math.ceil(Number(amount) * customerFeeRate)
+    const totalAmount = Number(amount) + customerFee
 
-    // Customer pays amount + their 1% share
-    const customerFee = Math.ceil(amount * customerFeeRate)
-    const totalAmount = amount + customerFee
-
-    // IntaSend will take 3% of totalAmount
-    // The remaining cccFeeRate + providerFeeRate is deducted from provider payout in webhook
-
-    console.log(`STK: amount=${amount}, customerFee=${customerFee}, total=${totalAmount}`)
-    console.log(`Processing split: customer=${customerFeeRate*100}%, ccc=${cccFeeRate*100}%, provider=${providerFeeRate*100}%`)
+    console.log(`Amount: ${amount}, Fee: ${customerFee}, Total: ${totalAmount}, Phone: ${formattedPhone}`)
 
     // Initiate STK Push
     const response = await fetch(`${BASE_URL}/api/v1/payment/mpesa-stk-push/`, {
@@ -54,20 +57,23 @@ serve(async (req) => {
       body: JSON.stringify({
         amount: totalAmount,
         phone_number: formattedPhone,
-        api_ref: `CCC-${booking_id}`,
+        api_ref: `CCC-${booking_id || Date.now()}`,
         narrative: `Payment for ${service_name || "Car Care Connect service"}`,
       })
     })
-    const data = await response.json()
-    if (!response.ok) throw new Error(data.detail || "STK Push failed")
 
-    // Save transaction with full fee breakdown
+    const data = await response.json()
+    console.log("IntaSend response:", JSON.stringify(data))
+    
+    if (!response.ok) throw new Error(data.detail || data.message || "STK Push failed")
+
+    // Save transaction
     await supabase.from("payment_transactions").insert({
       user_id: customer_id,
       booking_id: booking_id || null,
       customer_id,
       provider_id,
-      amount,
+      amount: Number(amount),
       processing_fee: customerFee,
       total_amount: totalAmount,
       phone: formattedPhone,
@@ -78,8 +84,6 @@ serve(async (req) => {
       raw_response: data,
       metadata: {
         customer_fee_rate: customerFeeRate,
-        ccc_fee_rate: cccFeeRate,
-        provider_fee_rate: providerFeeRate,
         intasend_total_fee_rate: 0.03
       }
     })
@@ -90,10 +94,10 @@ serve(async (req) => {
       message: "STK Push sent. Please check your phone.",
       total_amount: totalAmount,
       processing_fee: customerFee,
-      fee_note: "Processing fee: 1% customer + 1% CCC + 1% provider = 3% IntaSend fee"
     }), { headers: { ...corsHeaders, "Content-Type": "application/json" } })
 
   } catch (error) {
+    console.error("STK Push error:", error.message)
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" }
