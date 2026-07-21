@@ -353,11 +353,10 @@ export default function AdminClaims() {
                         💬 Message customer
                       </button>
                     </div>
-                    {chattingWith?.claimId===c.id&&(
-                      <div style={{ marginBottom:8 }}>
-                        <ClaimChat claimId={c.id} claim={c} onClose={()=>setChattingWith(null)}/>
-                      </div>
-                    )}
+                    {/* Always show chat history when claim is expanded */}
+                    <div style={{ marginBottom:8 }}>
+                      <ClaimChat claimId={c.id} claim={c} onClose={()=>setChattingWith(null)}/>
+                    </div>
                   </div>
 
                   <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
