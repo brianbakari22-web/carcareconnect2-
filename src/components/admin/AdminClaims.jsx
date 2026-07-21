@@ -29,7 +29,7 @@ export default function AdminClaims() {
     load()
     const sub = supabase.channel("admin-claims-live")
       .on("postgres_changes", { event:"*", schema:"public", table:"service_claims" }, () => load())
-      .on("postgres_changes", { event:"INSERT", schema:"public", table:"chat_messages", filter:`receiver_id=eq.${user.id}` }, () => { loadClaimMessages(); toast("New message on a claim 💬", { icon:"📋" }) })
+
       .subscribe()
   }, [])
 
