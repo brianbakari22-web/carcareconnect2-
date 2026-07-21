@@ -90,6 +90,8 @@ import CustomerChat from "./components/customer/CustomerChat"
 import CustomerFavorites from "./components/customer/CustomerFavorites"
 import CustomerReferral from "./components/customer/CustomerReferral"
 import CustomerSupport from "./components/customer/CustomerSupport"
+import ProviderSupport from "./components/provider/ProviderSupport"
+import DriverSupport from "./components/driver/DriverSupport"
 import CustomerClaims from "./components/customer/CustomerClaims"
 import CustomerPartsMarketplace from "./components/customer/CustomerPartsMarketplace"
 import Marketplace from "./components/marketplace/Marketplace"
@@ -304,6 +306,7 @@ function DashboardRouter() {
           <Route path="mechanics" element={<ProviderMechanics />} />
           <Route path="go-requests" element={<ProviderGoRequests />} />
           <Route path="claims" element={<ProviderClaims />} />
+          <Route path="support" element={<ProviderSupport />} />
           <Route path="marketplace" element={<Marketplace />} />
           <Route path="marketplace/new" element={<CreateListing />} />
           <Route path="marketplace/my-listings" element={<MyListings />} />
@@ -332,6 +335,7 @@ function DashboardRouter() {
           <Route path="performance" element={<DriverPerformance />} />
           <Route path="notifications" element={<DriverNotifications />} />
           <Route path="chat" element={<DriverChat />} />
+          <Route path="support" element={<DriverSupport />} />
               <Route path="claims" element={<DriverClaims />} />
           <Route path="profile" element={<DriverProfile />} />
           <Route path="marketplace" element={<Marketplace />} />

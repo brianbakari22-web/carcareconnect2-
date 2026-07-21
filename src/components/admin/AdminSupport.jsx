@@ -44,7 +44,7 @@ export default function AdminSupport() {
 
   async function load() {
     const { data } = await supabase.from("support_tickets")
-      .select("*, customer:profiles!support_tickets_customer_id_fkey(first_name,last_name,role)")
+      .select("*, customer:profiles!support_tickets_customer_id_fkey(first_name,last_name,role), user:profiles!support_tickets_user_id_fkey(first_name,last_name,role)")
       .order("created_at", { ascending:false })
     setTickets(data||[])
     setLoading(false)

@@ -252,6 +252,7 @@ export default function Layout({ children }) {
       { path:"/dashboard/go-requests", label:"GO Requests", icon:"🚨" },
     ] : []),
     { path:"/dashboard/claims", label:"Service Claims", icon:"🛡️" },
+    { path:"/dashboard/support", label:"Support", icon:"🎫" },
     ...( ["car_wash"].includes(providerType) ? [
       { path:"/dashboard/wash-queue", label:"Wash Queue", icon:"🚿" },
       { path:"/dashboard/wash-packages", label:"Wash Packages", icon:"✨" },
@@ -274,6 +275,7 @@ export default function Layout({ children }) {
     { path:"/dashboard/performance", label:"Performance", icon:"📊" },
     { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
+    { path:"/dashboard/support", label:"Support", icon:"🎫" },
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
   ] : [
     { path:"/dashboard", key:"overview", icon:"🏠" },
