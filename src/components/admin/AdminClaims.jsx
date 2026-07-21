@@ -255,8 +255,8 @@ export default function AdminClaims() {
         <div>
           {loading&&<div style={{ color:"#888", fontSize:13 }}>Loading...</div>}
           {!loading&&claims.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No claims yet</div>}
-          {claims.map(c=>(
-            <div key={c.id} style={{ background:"#f8f8f8", border:`1px solid ${SC[c.status]||"#eeeeee"}30`, borderRadius:12, padding:"1rem", marginBottom:10 }}>
+          {claims.filter(c=> claimDirection==="all" ? true : claimDirection==="against_provider" ? (!c.claimant_type||c.claimant_type==="customer") : c.claimant_type==="provider").map(c=>(
+            <div key={c.id} onClick={()=>setSelected(selected===c.id?null:c.id)} style={{ background:"#f8f8f8", border:`1px solid ${SC[c.status]||"#eeeeee"}30`, borderRadius:12, padding:"1rem", marginBottom:10, cursor:"pointer" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
@@ -291,10 +291,10 @@ export default function AdminClaims() {
                         Review
                       </button>
                     )}
-                    {(c.status==="approved"||c.status==="rejected")&&(
+                    {(
                       <button onClick={()=>{ setSelected(selected===c.id?null:c.id); setAdminNotes(c.admin_notes||"") }}
                         style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                        {selected===c.id?"Close":"View details"}
+                        {selected===c.id?"✕ Close":"📋 Review"}
                       </button>
                     )}
                     {c.status==="approved"&&(
