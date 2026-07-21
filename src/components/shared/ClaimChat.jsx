@@ -13,19 +13,34 @@ export default function ClaimChat({ claimId, claim, onClose }) {
   const [sending, setSending] = useState(false)
   const [messageType, setMessageType] = useState("message")
   const messagesEndRef = useRef(null)
-  const fileInputRef = useRef(null)
-
   useEffect(() => {
     if (!claimId) return
-    loadMessages()
-    const sub = supabase.channel("claim-chat-"+claimId)
-      .on("postgres_changes", { event:"INSERT", schema:"public", table:"chat_messages", filter:`claim_id=eq.${claimId}` },
-        payload => {
-          setMessages(m => [...m, payload.new])
-          setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior:"smooth" }), 100)
-        })
-      .subscribe()
-    return () => supabase.removeChannel(sub)
+    let active = true
+    let channel
+    const setup = async () => {
+      loadMessages()
+      const channelName = `claim-chat-${claimId}`
+      // Remove any stale channel with same name
+      for (const ch of supabase.getChannels()) {
+        if (ch.topic === `realtime:${channelName}`) {
+          await supabase.removeChannel(ch)
+        }
+      }
+      if (!active) return
+      channel = supabase
+        .channel(channelName)
+        .on("postgres_changes", { event:"INSERT", schema:"public", table:"chat_messages", filter:`claim_id=eq.${claimId}` },
+          payload => {
+            setMessages(m => [...m, payload.new])
+            setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior:"smooth" }), 100)
+          })
+        .subscribe()
+    }
+    setup()
+    return () => {
+      active = false
+      if (channel) supabase.removeChannel(channel)
+    }
   }, [claimId])
 
   async function loadMessages() {
