@@ -366,7 +366,16 @@ export default function AdminClaims() {
                     {/* Only render ClaimChat when selected to avoid multiple realtime subscriptions */}
                     {selected===c.id&&(
                       <div style={{ marginBottom:8 }}>
-                        <ClaimChat claimId={c.id} claim={c} onClose={()=>setChattingWith(null)}/>
+                        {!chattingWith&&<ClaimChat claimId={c.id} claim={c} onClose={()=>setChattingWith(null)} threadLabel="🛡️ Full Claim Thread"/>}
+                      {chattingWith?.claimId===c.id&&(
+                        <ClaimChat
+                          claimId={c.id}
+                          claim={c}
+                          receiverId={chattingWith.userId}
+                          threadLabel={"💬 Private: Admin ↔ "+chattingWith.name}
+                          onClose={()=>setChattingWith(null)}
+                        />
+                      )}
                       </div>
                     )}
                   </div>

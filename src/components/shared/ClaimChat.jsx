@@ -3,7 +3,7 @@ import { supabase } from "../../lib/supabase"
 import { validateFile, sanitizeFilePath } from "../../lib/uploadValidation"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
-export default function ClaimChat({ claimId, claim, onClose }) {
+export default function ClaimChat({ claimId, claim, onClose, receiverId, threadLabel }) {
   const { user, profile } = useAuth()
   const [messages, setMessages] = useState([])
   const [newMessage, setNewMessage] = useState("")
@@ -19,7 +19,7 @@ export default function ClaimChat({ claimId, claim, onClose }) {
     let channel
     const setup = async () => {
       loadMessages()
-      const channelName = "claim-chat-" + claimId
+      const channelName = receiverId ? "claim-chat-"+claimId+"-"+receiverId : "claim-chat-"+claimId
       for (const ch of supabase.getChannels()) {
         if (ch.topic === "realtime:" + channelName) {
           await supabase.removeChannel(ch)
@@ -27,7 +27,7 @@ export default function ClaimChat({ claimId, claim, onClose }) {
       }
       if (!active) return
       channel = supabase.channel(channelName)
-        .on("postgres_changes", { event:"INSERT", schema:"public", table:"chat_messages", filter:"claim_id=eq."+claimId },
+        .on("postgres_changes", { event:"INSERT", schema:"public", table:"chat_messages", filter:receiverId ? "claim_id=eq."+claimId+"&receiver_id=eq."+receiverId : "claim_id=eq."+claimId },
           payload => {
             setMessages(m => [...m, payload.new])
             setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior:"smooth" }), 100)
@@ -38,10 +38,11 @@ export default function ClaimChat({ claimId, claim, onClose }) {
     return () => { active = false; if (channel) supabase.removeChannel(channel) }
   }, [claimId])
   async function loadMessages() {
-    const { data } = await supabase.from("chat_messages")
+    let q = supabase.from("chat_messages")
       .select("*, sender:profiles!chat_messages_sender_id_fkey(first_name,last_name,role)")
       .eq("claim_id", claimId)
-      .order("created_at", { ascending:true })
+    if(receiverId) q = q.or("receiver_id.eq."+receiverId+",sender_id.eq."+receiverId)
+    const { data } = await q.order("created_at", { ascending:true })
     setMessages(data||[])
     setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior:"smooth" }), 100)
   }
@@ -74,7 +75,7 @@ export default function ClaimChat({ claimId, claim, onClose }) {
         message: newMessage.trim(),
         photo_urls: photos,
         message_type: messageType,
-        receiver_id: profile?.role === "admin" ? claim?.customer_id : null
+        receiver_id: receiverId || (profile?.role === "admin" ? claim?.customer_id : null)
       })
       const notifyUsers = []
       if (profile?.role === "customer") {
@@ -103,7 +104,7 @@ export default function ClaimChat({ claimId, claim, onClose }) {
   return (
     <div style={{ display:"flex", flexDirection:"column", height:400, background:"#f8f8f8", borderRadius:12, overflow:"hidden", border:"1px solid #eee" }}>
       <div style={{ background:"#fff", padding:"0.75rem 1rem", borderBottom:"1px solid #eee", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-        <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700 }}>🛡️ Claim Discussion</div>
+        <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700 }}>{threadLabel||"🛡️ Claim Discussion"}</div>
         <div style={{ fontSize:10, color:"#888" }}>All parties can view this conversation</div>
       </div>
       <div style={{ flex:1, overflowY:"auto", padding:"0.75rem", display:"flex", flexDirection:"column", gap:8 }}>
