@@ -47,7 +47,7 @@ export default function AdminClaims() {
   async function load() {
     const [{ data: cls }, { data: pens }] = await Promise.all([
       supabase.from("service_claims")
-        .select("*, bookings(service_name,booking_number,booking_date,total_amount,provider_id), orders(order_number,subtotal,created_at,provider_id), customer:profiles!service_claims_customer_id_fkey(first_name,last_name), provider:profiles!service_claims_provider_id_fkey(first_name,last_name,business_name), claimant:profiles!service_claims_claimant_id_fkey(first_name,last_name,role), against:profiles!service_claims_against_id_fkey(first_name,last_name,role)")
+        .select("*, bookings(service_name,booking_number,booking_date,total_amount,provider_id), orders(order_number,subtotal,created_at,provider_id), customer:profiles!service_claims_customer_id_fkey(first_name,last_name), provider:profiles!service_claims_provider_id_fkey(first_name,last_name,business_name), driver:profiles!service_claims_driver_id_fkey(first_name,last_name), claimant:profiles!service_claims_claimant_id_fkey(first_name,last_name,role), against:profiles!service_claims_against_id_fkey(first_name,last_name,role)")
         .order("created_at",{ascending:false}),
       supabase.from("provider_penalties").select("*, profiles(first_name,last_name,business_name)").order("created_at",{ascending:false}),
     ])
@@ -361,6 +361,12 @@ export default function AdminClaims() {
                       <button onClick={()=>setChattingWith(chattingWith?.claimId===c.id&&chattingWith?.userId===c.customer_id?null:{ claimId:c.id, userId:c.customer_id, name:`${c.customer?.first_name} ${c.customer?.last_name}`, role:"customer" })}
                         style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
                         💬 Message customer
+                    {c.driver_id&&(
+                      <button onClick={()=>setChattingWith(chattingWith?.claimId===c.id&&chattingWith?.userId===c.driver_id?null:{ claimId:c.id, userId:c.driver_id, name:(c.driver?.first_name||"Driver")+" "+(c.driver?.last_name||""), role:"driver" })}
+                        style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+                        💬 Message driver
+                      </button>
+                    )}
                       </button>
                     </div>
                     {/* Only render ClaimChat when selected to avoid multiple realtime subscriptions */}
