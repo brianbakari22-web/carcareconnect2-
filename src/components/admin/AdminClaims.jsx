@@ -313,7 +313,6 @@ export default function AdminClaims() {
                 </div>
               </div>
 
-              {selected===c.id&&(
                 <div style={{ borderTop:"1px solid #eeeeee", paddingTop:12 }}>
                   <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000", marginBottom:8 }}>Review this claim</div>
 
