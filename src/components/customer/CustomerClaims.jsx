@@ -118,6 +118,17 @@ export default function CustomerClaims() {
     try {
       const booking = bookings.find(b=>b.id===form.booking_id)
       const order = orders.find(o=>o.id===form.order_id)
+      // Check for existing active claim
+      const checkId = claimType==="booking" ? form.booking_id : form.order_id
+      const checkCol = claimType==="booking" ? "booking_id" : "order_id"
+      const { data: existing } = await supabase.from("service_claims")
+        .select("id,status").eq(checkCol, checkId).eq("customer_id", user.id)
+        .not("status","eq","rejected").maybeSingle()
+      if(existing) {
+        toast.error("You already have an active claim for this "+(claimType==="booking"?"booking":"order")+". Status: "+existing.status)
+        setSubmitting(false)
+        return
+      }
       const { error } = await supabase.from("service_claims").insert({
         booking_id: claimType==="booking" ? form.booking_id : null,
         order_id: claimType==="order" ? form.order_id : null,
