@@ -67,17 +67,6 @@ export default function AdminClaims() {
       load()
     } catch(e) { toast.error(e.message) }
   }
-  async function requestEvidence(claim) {
-    try {
-      await supabase.from("notifications").insert([
-        { user_id:claim.customer_id, title:"Evidence requested 📸", message:"Admin has requested additional evidence for your claim. Please add photos or details in the claim chat.", type:"warning" },
-        { user_id:claim.provider_id, title:"Evidence requested 📸", message:"Admin has requested your response and evidence for a claim against you. Please respond in the claim chat.", type:"warning" }
-      ])
-      await supabase.from("service_claims").update({ status:"under_review" }).eq("id",claim.id)
-      toast.success("Evidence requested from both parties")
-      load()
-    } catch(e) { toast.error(e.message) }
-  }
   async function approveClaim(claim) {
     setProcessing(true)
     try {
@@ -266,8 +255,8 @@ export default function AdminClaims() {
         <div>
           {loading&&<div style={{ color:"#888", fontSize:13 }}>Loading...</div>}
           {!loading&&claims.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No claims yet</div>}
-          {claims.filter(c=> claimDirection==="all" ? true : claimDirection==="against_provider" ? (!c.claimant_type||c.claimant_type==="customer") : c.claimant_type==="provider").map(c=>(
-            <div key={c.id} onClick={()=>setSelected(selected===c.id?null:c.id)} style={{ background:"#f8f8f8", border:`1px solid ${SC[c.status]||"#eeeeee"}30`, borderRadius:12, padding:"1rem", marginBottom:10 }}>
+          {claims.map(c=>(
+            <div key={c.id} style={{ background:"#f8f8f8", border:`1px solid ${SC[c.status]||"#eeeeee"}30`, borderRadius:12, padding:"1rem", marginBottom:10 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
@@ -325,7 +314,7 @@ export default function AdminClaims() {
               </div>
 
               {selected===c.id&&(
-                <div onClick={e=>e.stopPropagation()} style={{ borderTop:"1px solid #eeeeee", paddingTop:12, display:selected===c.id?"block":"none" }}>
+                <div style={{ borderTop:"1px solid #eeeeee", paddingTop:12 }}>
                   <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000", marginBottom:8 }}>Review this claim</div>
 
                   {/* Provider penalty preview */}
@@ -369,20 +358,11 @@ export default function AdminClaims() {
                     </div>
                   </div>
 
-                  <div style={{ marginBottom:12 }}>
-                    <div style={{ fontSize:11, color:"#888", marginBottom:6, fontWeight:600 }}>📋 Investigation Chat</div>
-                    <ClaimChat claimId={c.id} claim={c} onClose={()=>{}}/>
-                  </div>
                   <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
                     <button onClick={async()=>{ await supabase.from("service_claims").update({status:"under_review"}).eq("id",c.id); load(); toast.success("Marked as under review") }} disabled={processing}
                       style={{ background:"#f5f3ff", border:"1px solid #8b5cf640", borderRadius:8, color:"#8b5cf6", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>
                       🔍 Mark Under Review
                     </button>
-                    <button onClick={async()=>{ await supabase.from("service_claims").update({status:"under_review"}).eq("id",c.id); load(); toast.success("Marked as under review") }} disabled={processing}
-                      style={{ background:"#f5f3ff", border:"1px solid #8b5cf640", borderRadius:8, color:"#8b5cf6", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>
-                      🔍 Mark Under Review
-                    </button>
-                    <button onClick={()=>requestEvidence(c)} style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:8, color:"#e6821e", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>📸 Request Evidence</button>
                     <button onClick={()=>approveClaim(c)} disabled={processing}
                       style={{ background:processing?"#e0e0e0":"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 18px", cursor:processing?"not-allowed":"pointer" }}>
                       ✓ Approve & issue voucher
