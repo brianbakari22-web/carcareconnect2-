@@ -363,10 +363,12 @@ export default function AdminClaims() {
                         💬 Message customer
                       </button>
                     </div>
-                    {/* Always show chat history when claim is expanded */}
-                    <div style={{ marginBottom:8 }}>
-                      <ClaimChat claimId={c.id} claim={c} onClose={()=>setChattingWith(null)}/>
-                    </div>
+                    {/* Only render ClaimChat when selected to avoid multiple realtime subscriptions */}
+                    {selected===c.id&&(
+                      <div style={{ marginBottom:8 }}>
+                        <ClaimChat claimId={c.id} claim={c} onClose={()=>setChattingWith(null)}/>
+                      </div>
+                    )}
                   </div>
 
                   <div style={{ marginBottom:12 }}>
