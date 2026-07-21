@@ -285,18 +285,10 @@ export default function AdminClaims() {
                 <div style={{ textAlign:"right", flexShrink:0 }}>
                   <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>KES {Number(c.bookings?.total_amount||0).toLocaleString()}</div>
                   <div style={{ display:"flex", flexDirection:"column", gap:4, marginTop:6 }}>
-                    {c.status==="pending"&&(
-                      <button onClick={()=>{ setSelected(selected===c.id?null:c.id); setAdminNotes("") }}
-                        style={{ background:"#f5f3ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                        Review
-                      </button>
-                    )}
-                    {(
-                      <button onClick={()=>{ setSelected(selected===c.id?null:c.id); setAdminNotes(c.admin_notes||"") }}
-                        style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                        {selected===c.id?"✕ Close":"📋 Review"}
-                      </button>
-                    )}
+                    <button onClick={()=>{ setSelected(selected===c.id?null:c.id); setAdminNotes(c.admin_notes||"") }}
+                      style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+                      {selected===c.id?"✕ Close":"📋 Review"}
+                    </button>
                     {c.status==="approved"&&(
                       <button onClick={()=>setChattingWith({claimId:c.id, userId:c.customer_id, name:c.customer?.first_name+" "+c.customer?.last_name, role:"customer"})}
                         style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
@@ -313,7 +305,7 @@ export default function AdminClaims() {
                 </div>
               </div>
 
-                <div style={{ borderTop:"1px solid #eeeeee", paddingTop:12 }}>
+                <div style={{ borderTop:"1px solid #eeeeee", paddingTop:12, display:selected===c.id?"block":"none" }} onClick={e=>e.stopPropagation()}>
                   <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000", marginBottom:8 }}>Review this claim</div>
 
                   {/* Provider penalty preview */}
