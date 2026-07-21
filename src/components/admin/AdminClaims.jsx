@@ -370,16 +370,7 @@ export default function AdminClaims() {
                       </div>
                     )}
                   </div>
-
-                  <div style={{ marginBottom:12 }}>
-                    <div style={{ fontSize:11, color:"#888", marginBottom:6, fontWeight:600 }}>📋 Investigation Chat</div>
-                    <ClaimChat claimId={c.id} claim={c} onClose={()=>{}}/>
-                  </div>
                   <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
-                    <button onClick={async()=>{ await supabase.from("service_claims").update({status:"under_review"}).eq("id",c.id); load(); toast.success("Marked as under review") }} disabled={processing}
-                      style={{ background:"#f5f3ff", border:"1px solid #8b5cf640", borderRadius:8, color:"#8b5cf6", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>
-                      🔍 Mark Under Review
-                    </button>
                     <button onClick={async()=>{ await supabase.from("service_claims").update({status:"under_review"}).eq("id",c.id); load(); toast.success("Marked as under review") }} disabled={processing}
                       style={{ background:"#f5f3ff", border:"1px solid #8b5cf640", borderRadius:8, color:"#8b5cf6", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>
                       🔍 Mark Under Review
