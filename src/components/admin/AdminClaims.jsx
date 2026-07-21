@@ -92,7 +92,7 @@ export default function AdminClaims() {
 
         // Record provider penalty
         supabase.from("provider_penalties").insert({
-          provider_id: claim.provider_id,
+          provider_id: penalizedId,
           claim_id: claim.id,
           penalty_type: penaltyType,
           amount_deducted: amount,
@@ -119,11 +119,11 @@ export default function AdminClaims() {
           type: "success",
         }),
 
-        // Notify provider
+        // Notify penalized party
         supabase.from("notifications").insert({
-          user_id: claim.provider_id,
-          title: "Service claim against you ⚠️",
-          message: `A service claim has been filed and approved against booking #${claim.bookings?.booking_number}. Penalty: ${penaltyType.replace(/_/g," ")}. Amount deducted: KES ${amount.toLocaleString()}. Reason: ${claim.reason}.`,
+          user_id: penalizedId,
+          title: isProviderClaim ? "Service claim against you ⚠️" : "Claim filed against you by provider ⚠️",
+          message: `A service claim has been approved regarding booking #${claim.bookings?.booking_number}. Penalty: ${penaltyType.replace(/_/g," ")}. Reason: ${claim.reason}.`,
           type: "error",
         }),
       ])
@@ -135,7 +135,7 @@ export default function AdminClaims() {
           is_suspended: penaltyType==="suspension_7d" || penaltyType==="suspension_30d",
           is_banned: penaltyType==="permanent_ban",
           suspension_expires_at: suspendUntil
-        }).eq("id",claim.provider_id)
+        }).eq("id",penalizedId)
       }
 
       toast.success(`Claim approved — voucher ${voucherCode} issued to customer`)
