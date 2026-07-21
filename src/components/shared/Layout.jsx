@@ -152,6 +152,24 @@ export default function Layout({ children }) {
   }, [])
 
   const role = profile?.role || "customer"
+  // Block suspended/banned providers from all dashboard features
+  if(role==="provider" && profile?.is_banned) return (
+    <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", padding:"2rem", textAlign:"center" }}>
+      <div><div style={{ fontSize:48, marginBottom:16 }}>🚫</div>
+      <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#e24b4a", marginBottom:8 }}>Account Permanently Banned</div>
+      <div style={{ fontSize:13, color:"#666", maxWidth:320 }}>Your account has been permanently banned due to repeated service violations. Contact support if you believe this is an error.</div>
+      <div style={{ marginTop:16, fontSize:12, color:"#888" }}>support: carcareconnect254@gmail.com</div></div>
+    </div>
+  )
+  if(role==="provider" && profile?.is_suspended) return (
+    <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", padding:"2rem", textAlign:"center" }}>
+      <div><div style={{ fontSize:48, marginBottom:16 }}>⏸️</div>
+      <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, color:"#e6821e", marginBottom:8 }}>Account Suspended</div>
+      <div style={{ fontSize:13, color:"#666", maxWidth:320 }}>Your account has been temporarily suspended due to a service claim violation.</div>
+      {profile?.suspension_expires_at&&<div style={{ fontSize:12, color:"#e6821e", marginTop:8 }}>Suspension lifts: {new Date(profile.suspension_expires_at).toLocaleString("en-KE")}</div>}
+      <div style={{ marginTop:16, fontSize:12, color:"#888" }}>Contact: carcareconnect254@gmail.com</div></div>
+    </div>
+  )
 
   useEffect(() => {
     if (!user) return
