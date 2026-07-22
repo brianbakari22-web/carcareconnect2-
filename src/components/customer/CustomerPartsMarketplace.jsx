@@ -6,7 +6,6 @@ import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 import ChatWindow from "../shared/ChatWindow"
-import DarajaPayment from "../shared/DarajaPayment"
 import { downloadOrderReceipt, downloadOrdersCSV } from "../../lib/invoice"
 import PhotoLightbox from "../shared/PhotoLightbox"
 
@@ -49,6 +48,7 @@ export default function CustomerPartsMarketplace() {
   const [chatItem, setChatItem] = useState(null)
   const [pendingOrder, setPendingOrder] = useState(null)
   const [showOrderPayment, setShowOrderPayment] = useState(false)
+  const [paying, setPaying] = useState(false)
   const [reviewOrder, setReviewOrder] = useState(null)
   const [reviewRating, setReviewRating] = useState(5)
   const [reviewText, setReviewText] = useState("")
@@ -493,16 +493,36 @@ export default function CustomerPartsMarketplace() {
 
       {showOrderPayment&&pendingOrder&&(
         <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.8)", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center", padding:"1rem" }}>
-          <div style={{ width:"100%", maxWidth:420 }}>
-            <DarajaPayment
-              amount={pendingOrder.amount}
-              bookingId={pendingOrder.id}
-              customerEmail={user?.email}
-              customerPhone={profile?.phone}
-              customerName={profile?.first_name+" "+profile?.last_name}
-              onSuccess={()=>{ setShowOrderPayment(false); setPendingOrder(null); setTab("orders"); loadOrders(); toast.success("Payment successful! 🎉") }}
-              onCancel={()=>{ setShowOrderPayment(false); setPendingOrder(null) }}
-            />
+          <div style={{ width:"100%", maxWidth:420, background:"#fff", borderRadius:16, padding:"1.5rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, marginBottom:4 }}>Complete Payment</div>
+            <div style={{ fontSize:13, color:"#888", marginBottom:"1.25rem" }}>Order #{pendingOrder.order_number}</div>
+            <div style={{ background:"#f8f8f8", borderRadius:10, padding:"1rem", marginBottom:"1.25rem" }}>
+              <div style={{ fontSize:12, color:"#888", marginBottom:4 }}>Amount to pay</div>
+              <div style={{ fontFamily:"Syne", fontSize:24, fontWeight:800, color:"#e6821e" }}>KES {Number(pendingOrder.amount||pendingOrder.subtotal||0).toLocaleString()}</div>
+            </div>
+            <button disabled={paying} onClick={async()=>{
+              setPaying(true)
+              try {
+                const { data: sens } = await supabase.from("profile_sensitive").select("mpesa_number").eq("id", user.id).maybeSingle()
+                const phone = sens?.mpesa_number || profile?.phone
+                if(!phone) { toast.error("Please add your M-Pesa number in Profile settings"); setPaying(false); return }
+                const resp = await fetch(import.meta.env.VITE_SUPABASE_URL+"/functions/v1/intasend-stk-push", {
+                  method:"POST",
+                  headers:{"Content-Type":"application/json","Authorization":"Bearer "+import.meta.env.VITE_SUPABASE_ANON_KEY},
+                  body:JSON.stringify({ booking_id:pendingOrder.id, amount:Number(pendingOrder.amount||pendingOrder.subtotal||0), phone, customer_id:user.id, provider_id:pendingOrder.provider_id, service_name:"Order #"+pendingOrder.order_number })
+                })
+                const data = await resp.json()
+                if(data.error) throw new Error(data.error)
+                toast.success("Check your phone for M-Pesa payment prompt 📱")
+                setShowOrderPayment(false); setPendingOrder(null); setTab("orders"); loadOrders()
+              } catch(err) { toast.error(err.message) }
+              finally { setPaying(false) }
+            }} style={{ width:"100%", background:paying?"#ccc":"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:15, fontWeight:700, padding:"14px", cursor:paying?"not-allowed":"pointer", marginBottom:10 }}>
+              {paying?"Sending payment request...":"Pay via M-Pesa 📱"}
+            </button>
+            <button onClick={()=>{ setShowOrderPayment(false); setPendingOrder(null) }} style={{ width:"100%", background:"none", border:"1px solid #eee", borderRadius:10, color:"#888", fontSize:13, padding:"12px", cursor:"pointer" }}>
+              Cancel
+            </button>
           </div>
         </div>
       )}

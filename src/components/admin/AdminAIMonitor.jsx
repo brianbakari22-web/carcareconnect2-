@@ -124,8 +124,8 @@ export default function AdminAIMonitor() {
       })
       const ms = Date.now()-start
       // Any response means edge function is reachable
-      checks.daraja = { status:"ok", ms }
-    } catch(e) { checks.daraja = { status:"error", ms:0 } }
+      checks.intasend = { status:"ok", ms }
+    } catch(e) { checks.intasend = { status:"error", ms:0 } }
 
     // Check AI
     try {
@@ -337,7 +337,7 @@ export default function AdminAIMonitor() {
 
 API HEALTH:
 - Supabase database: ${apiHealth.supabase?.status} (${apiHealth.supabase?.ms}ms)
-- M-Pesa payments: ${apiHealth.daraja?.status} (${apiHealth.daraja?.ms}ms) NOTE: Merchant contract pending - KES 1000 limit active until contract signed
+- M-Pesa payments: ${apiHealth.intasend?.status} (${apiHealth.intasend?.ms}ms) NOTE: Merchant contract pending - KES 1000 limit active until contract signed
 - AI assistant: ${apiHealth.ai?.status} (${apiHealth.ai?.ms}ms)
 
 PLATFORM STATUS RIGHT NOW:
@@ -535,7 +535,7 @@ Be specific and actionable. Max 300 words. Use bullet points.`
               <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:8, marginBottom:"1rem" }}>
                 {[
                   { l:"Supabase DB", k:"supabase" },
-                  { l:"M-Pesa Pay", k:"daraja" },
+                  { l:"M-Pesa Pay", k:"intasend" },
                   { l:"AI Assistant", k:"ai" },
                 ].map(s=>(
                   <div key={s.k} style={{ background:"#ffffff", borderRadius:8, padding:"0.6rem", textAlign:"center", border:"1px solid "+(report.platformData.api_health?.[s.k]?.status==="ok"?"#1d9e7540":"#e24b4a40") }}>
@@ -590,7 +590,7 @@ Be specific and actionable. Max 300 words. Use bullet points.`
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:6 }}>
                   {[
                     { f:"Customer booking", ok:report.platformData.total_bookings>0 },
-                    { f:"Payments (M-Pesa)", ok:report.platformData.api_health?.daraja?.status==="ok" },
+                    { f:"Payments (M-Pesa)", ok:report.platformData.api_health?.intasend?.status==="ok" },
                     { f:"GO Service", ok:report.platformData.total_go_requests>0 },
                     { f:"Marketplace", ok:report.platformData.total_listings>0 },
                     { f:"Driver verification", ok:report.platformData.verified_drivers>0 },

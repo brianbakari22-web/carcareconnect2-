@@ -280,7 +280,7 @@ MPESA PAYMENT DETAILS:
 - Pending merchant contract signing for full activation
 - Current limit: KES 1,000 per transaction (test mode)
 - Full activation after contract signed with M-Pesa
-- Contact: merchant@daraja.com
+- Contact: support@intasend.com
 - Processing fee split: Customer pays 1%, Provider pays 1%, Platform pays 1% = 3% total
 
 CONTACT BLOCKING:
@@ -1016,7 +1016,7 @@ FOR ADMINS specifically (full platform access — all knowledge available):
 - SERVICE PHOTOS (July 2026): Providers upload up to 5 photos per service. Shown on customer service cards and in Content Hub.
 - PLAY STORE: care.carcareconnect.app, version 1.0.31, internal testing phase, ~11 days to production eligibility
 - BRS STATUS: 3 names submitted (NAIRO CAR CONNECT, KEN CAR CONNECT, CARCARE KE CONNECT) — awaiting approval
-- MPESA: Contract pending with Rachel Owino (rachel.owino@daraja.com)
+- MPESA: IntaSend Tier 2 active - KES 300,000 daily limit with Rachel Owino (support@intasend.com)
 - TRADEMARK: KIPI application pending — Class 35 (business services), 37 (vehicle repair), 39 (transport)`
 }
 
