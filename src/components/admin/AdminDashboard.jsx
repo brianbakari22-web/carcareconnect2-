@@ -1,4 +1,4 @@
-﻿import useIsMobile from "../../lib/useIsMobile"
+import useIsMobile from "../../lib/useIsMobile"
 import AdminAIMonitor from "./AdminAIMonitor"
 import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
@@ -56,6 +56,9 @@ export default function AdminDashboard() {
   const [sosAlerts, setSosAlerts] = useState([])
   const [activity, setActivity] = useState([])
   const [bookingTrend, setBookingTrend] = useState([])
+  const [revenueTrend, setRevenueTrend] = useState([])
+  const [topServices, setTopServices] = useState([])
+  const [topProviders, setTopProviders] = useState([])
   const [userGrowth, setUserGrowth] = useState([])
   const [loading, setLoading] = useState(true)
   const [time, setTime] = useState(new Date())
@@ -89,7 +92,7 @@ export default function AdminDashboard() {
     ] = await Promise.all([
       supabase.from("profiles").select("role,created_at,is_active"),
       supabase.from("emergency_alerts").select("*").eq("status","active").order("created_at",{ascending:false}),
-      supabase.from("bookings").select("status,total_amount,created_at,booking_date,service_name,customer_id"),
+      supabase.from("bookings").select("status,total_amount,platform_commission,created_at,booking_date,service_name,customer_id,provider_id").limit(5000),
       supabase.from("driver_status").select("is_online").eq("is_online", true),
       supabase.from("bookings").select("id,service_name,status,total_amount,created_at").order("created_at",{ascending:false}).limit(8),
       supabase.from("profiles").select("id,first_name,last_name,role,created_at").order("created_at",{ascending:false}).limit(5),
@@ -143,6 +146,25 @@ export default function AdminDashboard() {
       return acc
     }, {})
     setBookingTrend(Object.values(byMonth).sort((a,b)=>a.month.localeCompare(b.month)).slice(-6))
+    // Revenue trend
+    const byRevMonth = bks.filter(b=>b.status==="completed").reduce((acc,b) => {
+      const m = b.created_at?.slice(0,7)
+      if (!m) return acc
+      if (!acc[m]) acc[m] = { month:m, revenue:0, commission:0 }
+      acc[m].revenue += Number(b.total_amount||0)
+      acc[m].commission += Number(b.platform_commission||0)
+      return acc
+    }, {})
+    setRevenueTrend(Object.values(byRevMonth).sort((a,b)=>a.month.localeCompare(b.month)).slice(-6))
+    // Top services
+    const bySvc = bks.reduce((acc,b) => {
+      if(!b.service_name) return acc
+      if(!acc[b.service_name]) acc[b.service_name] = { name:b.service_name, count:0, revenue:0 }
+      acc[b.service_name].count++
+      acc[b.service_name].revenue += Number(b.total_amount||0)
+      return acc
+    }, {})
+    setTopServices(Object.values(bySvc).sort((a,b)=>b.count-a.count).slice(0,5))
 
     const byUserMonth = ps.reduce((acc,p) => {
       const m = p.created_at?.slice(0,7)
@@ -341,6 +363,42 @@ export default function AdminDashboard() {
         </div>
       </div>
 
+      {/* Revenue Trend */}
+      <div style={{ background:"#f8f8f8", border:"0.5px solid #eee", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
+        <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:2, color:"#000000" }}>Revenue trend</div>
+        <div style={{ fontSize:10, color:"#888", marginBottom:"0.75rem" }}>Platform commission per month</div>
+        {revenueTrend.length===0&&<div style={{ color:"#aaa", fontSize:12 }}>No data yet</div>}
+        <div style={{ display:"flex", gap:6, alignItems:"flex-end" }}>
+          {revenueTrend.map(m=>{
+            const maxRev = Math.max(...revenueTrend.map(r=>r.revenue), 1)
+            return (
+              <div key={m.month} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", gap:2 }}>
+                <div style={{ fontSize:8, color:"#888", fontWeight:600 }}>KES {(m.commission/1000).toFixed(0)}k</div>
+                <div style={{ width:"100%", background:"#e6821e", borderRadius:"3px 3px 0 0", height:`${Math.max(4,(m.revenue/maxRev)*60)}px` }}/>
+                <div style={{ fontSize:7, color:"#888", textAlign:"center" }}>{shortMonth(m.month)}</div>
+              </div>
+            )
+          })}
+        </div>
+        <div style={{ display:"flex", gap:12, marginTop:8 }}>
+          <div style={{ fontSize:11, color:"#888" }}>Total revenue: <span style={{ color:"#e6821e", fontWeight:700 }}>KES {revenueTrend.reduce((s,m)=>s+m.revenue,0).toLocaleString()}</span></div>
+          <div style={{ fontSize:11, color:"#888" }}>CCC earned: <span style={{ color:"#1d9e75", fontWeight:700 }}>KES {revenueTrend.reduce((s,m)=>s+m.commission,0).toLocaleString()}</span></div>
+        </div>
+      </div>
+      {/* Top Services */}
+      {topServices.length>0&&(
+        <div style={{ background:"#f8f8f8", border:"0.5px solid #eee", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:"0.75rem", color:"#000000" }}>Top services</div>
+          {topServices.map((s,i)=>(
+            <div key={s.name} style={{ display:"flex", alignItems:"center", gap:10, padding:"6px 0", borderBottom:"1px solid #f0f0f0" }}>
+              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:800, color:"#e6821e", width:20 }}>#{i+1}</div>
+              <div style={{ flex:1, fontSize:12, color:"#000", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{s.name}</div>
+              <div style={{ fontSize:11, color:"#888" }}>{s.count} bookings</div>
+              <div style={{ fontSize:11, color:"#1d9e75", fontWeight:700 }}>KES {s.revenue.toLocaleString()}</div>
+            </div>
+          ))}
+        </div>
+      )}
       {/* Activity feed */}
       <div style={{ background:"#f8f8f8", border:"0.5px solid #eee", borderRadius:12, padding:"1rem" }}>
         <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:"0.75rem", color:"#000000", display:"flex", alignItems:"center", gap:6 }}>
