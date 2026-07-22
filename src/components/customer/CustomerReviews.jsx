@@ -82,6 +82,30 @@ export default function CustomerReviews() {
       })
       if (error) throw error
 
+      // Send push notification to provider
+      try {
+        await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-push`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}` },
+          body: JSON.stringify({
+            user_id: reviewing.provider_id,
+            title: "New Review Received! ⭐",
+            message: `${form.provider_rating} star review: ${form.provider_review||"No comment"}`.substring(0,100)
+          })
+        })
+        // Also notify driver if rated
+        if(reviewing.driver_id && form.driver_rating>0) {
+          await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-push`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}` },
+            body: JSON.stringify({
+              user_id: reviewing.driver_id,
+              title: "New Driver Review! ⭐",
+              message: `${form.driver_rating} star rating: ${form.driver_review||"No comment"}`.substring(0,100)
+            })
+          })
+        }
+      } catch(pushErr) { console.log("Push notification failed:", pushErr.message) }
       // Award 50 bonus points for leaving a review (loyalty_points is the real table CustomerLoyalty.jsx reads from)
       const { data: lp } = await supabase.from("loyalty_points").select("points,lifetime_points").eq("user_id", user.id).maybeSingle()
       await supabase.from("loyalty_points").upsert({

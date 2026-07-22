@@ -4,38 +4,6 @@
 
 [36mvite v5.4.21 [32mbuilding for production...[36m[39m
 transforming...
-[plugin:vite:esbuild] [plugin vite:esbuild] src/components/driver/DriverReviews.jsx: The character "}" is not valid inside a JSX element
-121|              </div>
-122|            </div>
-123|            {r.driver_review&&<div style={{ fontSize:12, color:"#555", lineHeight:1.5, marginBottom:8, fontStyle:"italic" }}>"{"}{r.driver_review}{"}"}"</div>}
-   |                                                                                                                                                      ^
-124|            {r.driver_response?(
-125|              <div style={{ background:"#eff6ff", border:"1px solid #378add20", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
-
-[plugin:vite:esbuild] [plugin vite:esbuild] src/components/customer/CustomerGoService.jsx: The character "}" is not valid inside a JSX element
-547|                </div>
-548|              ))}
-549|              ))}
-   |                ^
-550|            </div>
-551|          )}
-
-[plugin:vite:esbuild] [plugin vite:esbuild] src/components/provider/ProviderOrders.jsx: The character "}" is not valid inside a JSX element
-238|            ))}
-239|          </div>
-240|        )}
-   |         ^
-241|        )}
-242|  
-
-[plugin:vite:esbuild] [plugin vite:esbuild] src/components/provider/ProviderOrders.jsx: The character "}" is not valid inside a JSX element
-239|          </div>
-240|        )}
-241|        )}
-   |         ^
-242|  
-243|        {/* Gradient stats header */}
-
 [plugin:vite:esbuild] [plugin vite:esbuild] src/components/admin/AdminReviews.jsx: The character "}" is not valid inside a JSX element
 118|              </div>
 119|            </div>
@@ -60,6 +28,38 @@ transforming...
 123|            {r.provider_response&&<div style={{ background:"#fff8f0", border:"1px solid #e6821e20", borderRadius:8, padding:"0.5rem 0.75rem", fontSize:11, color:"#555", marginBottom:6 }}>Provider reply: {r.provider_response}</div>}
 124|            {r.driver_response&&<div style={{ background:"#eff6ff", border:"1px solid #378add20", borderRadius:8, padding:"0.5rem 0.75rem", fontSize:11, color:"#555", marginBottom:6 }}>Driver reply: {r.driver_response}</div>}
 
+[plugin:vite:esbuild] [plugin vite:esbuild] src/components/provider/ProviderOrders.jsx: The character "}" is not valid inside a JSX element
+238|            ))}
+239|          </div>
+240|        )}
+   |         ^
+241|        )}
+242|  
+
+[plugin:vite:esbuild] [plugin vite:esbuild] src/components/provider/ProviderOrders.jsx: The character "}" is not valid inside a JSX element
+239|          </div>
+240|        )}
+241|        )}
+   |         ^
+242|  
+243|        {/* Gradient stats header */}
+
+[plugin:vite:esbuild] [plugin vite:esbuild] src/components/driver/DriverReviews.jsx: The character "}" is not valid inside a JSX element
+132|              </div>
+133|            </div>
+134|            {r.driver_review&&<div style={{ fontSize:12, color:"#555", lineHeight:1.5, marginBottom:8, fontStyle:"italic" }}>"{"}{r.driver_review}{"}"}"</div>}
+   |                                                                                                                                                      ^
+135|            {r.driver_response?(
+136|              <div style={{ background:"#eff6ff", border:"1px solid #378add20", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
+
+[plugin:vite:esbuild] [plugin vite:esbuild] src/components/customer/CustomerGoService.jsx: The character "}" is not valid inside a JSX element
+547|                </div>
+548|              ))}
+549|              ))}
+   |                ^
+550|            </div>
+551|          )}
+
 [32mΓ£ô[39m 1062 modules transformed.
 rendering chunks...
 [plugin:vite:reporter] [plugin vite:reporter] 
@@ -77,28 +77,28 @@ rendering chunks...
 computing gzip size...
 [2mdist/[22m[32mindex.html                          [39m[1m[2m   11.73 kB[22m[1m[22m[2m Γöé gzip:   3.75 kB[22m
 [2mdist/[22m[35massets/index-C3tPJB2X.css           [39m[1m[2m    0.70 kB[22m[1m[22m[2m Γöé gzip:   0.42 kB[22m
-[2mdist/[22m[36massets/web-CGX1rlm4.js              [39m[1m[2m    0.25 kB[22m[1m[22m[2m Γöé gzip:   0.21 kB[22m[2m Γöé map:     0.56 kB[22m
-[2mdist/[22m[36massets/web-O4Uxm9ps.js              [39m[1m[2m    0.49 kB[22m[1m[22m[2m Γöé gzip:   0.33 kB[22m[2m Γöé map:     1.21 kB[22m
-[2mdist/[22m[36massets/web-Bz7IRvDi.js              [39m[1m[2m    0.51 kB[22m[1m[22m[2m Γöé gzip:   0.33 kB[22m[2m Γöé map:     1.30 kB[22m
-[2mdist/[22m[36massets/index-DJyWGg4b.js            [39m[1m[2m    0.54 kB[22m[1m[22m[2m Γöé gzip:   0.33 kB[22m[2m Γöé map:     0.57 kB[22m
-[2mdist/[22m[36massets/index-DkOR56W1.js            [39m[1m[2m    0.55 kB[22m[1m[22m[2m Γöé gzip:   0.33 kB[22m[2m Γöé map:     0.58 kB[22m
-[2mdist/[22m[36massets/index-2UkjsO7v.js            [39m[1m[2m    0.56 kB[22m[1m[22m[2m Γöé gzip:   0.34 kB[22m[2m Γöé map:     0.59 kB[22m
-[2mdist/[22m[36massets/index-BXrC5Yai.js            [39m[1m[2m    0.62 kB[22m[1m[22m[2m Γöé gzip:   0.36 kB[22m[2m Γöé map:     0.71 kB[22m
+[2mdist/[22m[36massets/web-B2vGYWP2.js              [39m[1m[2m    0.25 kB[22m[1m[22m[2m Γöé gzip:   0.21 kB[22m[2m Γöé map:     0.56 kB[22m
+[2mdist/[22m[36massets/web-DC8E-BdG.js              [39m[1m[2m    0.49 kB[22m[1m[22m[2m Γöé gzip:   0.33 kB[22m[2m Γöé map:     1.21 kB[22m
+[2mdist/[22m[36massets/web-C4ezZSQ-.js              [39m[1m[2m    0.51 kB[22m[1m[22m[2m Γöé gzip:   0.34 kB[22m[2m Γöé map:     1.30 kB[22m
+[2mdist/[22m[36massets/index-C0Txqtcr.js            [39m[1m[2m    0.54 kB[22m[1m[22m[2m Γöé gzip:   0.33 kB[22m[2m Γöé map:     0.57 kB[22m
+[2mdist/[22m[36massets/index-D635J4I4.js            [39m[1m[2m    0.55 kB[22m[1m[22m[2m Γöé gzip:   0.33 kB[22m[2m Γöé map:     0.58 kB[22m
+[2mdist/[22m[36massets/index-CjL2Pe17.js            [39m[1m[2m    0.56 kB[22m[1m[22m[2m Γöé gzip:   0.33 kB[22m[2m Γöé map:     0.59 kB[22m
+[2mdist/[22m[36massets/index-CoLlWtXY.js            [39m[1m[2m    0.62 kB[22m[1m[22m[2m Γöé gzip:   0.36 kB[22m[2m Γöé map:     0.71 kB[22m
 [2mdist/[22m[36massets/synapse-akrKn89j.js          [39m[1m[2m    0.69 kB[22m[1m[22m[2m Γöé gzip:   0.36 kB[22m[2m Γöé map:     2.28 kB[22m
-[2mdist/[22m[36massets/web-BbTwsoTA.js              [39m[1m[2m    0.97 kB[22m[1m[22m[2m Γöé gzip:   0.48 kB[22m[2m Γöé map:     2.18 kB[22m
-[2mdist/[22m[36massets/index-BI3XjJOl.js            [39m[1m[2m    1.07 kB[22m[1m[22m[2m Γöé gzip:   0.59 kB[22m[2m Γöé map:     5.45 kB[22m
-[2mdist/[22m[36massets/web-U1uAHqdN.js              [39m[1m[2m    2.49 kB[22m[1m[22m[2m Γöé gzip:   1.02 kB[22m[2m Γöé map:     7.40 kB[22m
-[2mdist/[22m[36massets/web-CizpjTMj.js              [39m[1m[2m    8.93 kB[22m[1m[22m[2m Γöé gzip:   3.09 kB[22m[2m Γöé map:    35.75 kB[22m
+[2mdist/[22m[36massets/web-CEoKcdVO.js              [39m[1m[2m    0.97 kB[22m[1m[22m[2m Γöé gzip:   0.48 kB[22m[2m Γöé map:     2.18 kB[22m
+[2mdist/[22m[36massets/index-YfJCvak9.js            [39m[1m[2m    1.07 kB[22m[1m[22m[2m Γöé gzip:   0.59 kB[22m[2m Γöé map:     5.45 kB[22m
+[2mdist/[22m[36massets/web-CMrYDEHQ.js              [39m[1m[2m    2.49 kB[22m[1m[22m[2m Γöé gzip:   1.02 kB[22m[2m Γöé map:     7.40 kB[22m
+[2mdist/[22m[36massets/web-DiKK-iy6.js              [39m[1m[2m    8.93 kB[22m[1m[22m[2m Γöé gzip:   3.09 kB[22m[2m Γöé map:    35.75 kB[22m
 [2mdist/[22m[36massets/ui-VlKIP8q1.js               [39m[1m[2m   12.19 kB[22m[1m[22m[2m Γöé gzip:   4.89 kB[22m[2m Γöé map:    28.09 kB[22m
 [2mdist/[22m[36massets/purify.es-Jn2rvFN8.js        [39m[1m[2m   28.96 kB[22m[1m[22m[2m Γöé gzip:  10.93 kB[22m[2m Γöé map:   158.93 kB[22m
-[2mdist/[22m[36massets/index.es-DKt7adO3.js         [39m[1m[2m  150.83 kB[22m[1m[22m[2m Γöé gzip:  51.64 kB[22m[2m Γöé map:   637.73 kB[22m
+[2mdist/[22m[36massets/index.es-9bHSwcXf.js         [39m[1m[2m  150.83 kB[22m[1m[22m[2m Γöé gzip:  51.64 kB[22m[2m Γöé map:   637.73 kB[22m
 [2mdist/[22m[36massets/vendor-TTj4DRuz.js           [39m[1m[2m  160.85 kB[22m[1m[22m[2m Γöé gzip:  52.59 kB[22m[2m Γöé map:   701.61 kB[22m
 [2mdist/[22m[36massets/html2canvas.esm-CBrSDip1.js  [39m[1m[2m  201.48 kB[22m[1m[22m[2m Γöé gzip:  48.08 kB[22m[2m Γöé map:   602.27 kB[22m
 [2mdist/[22m[36massets/supabase-CwrFKnKJ.js         [39m[1m[2m  210.54 kB[22m[1m[22m[2m Γöé gzip:  54.59 kB[22m[2m Γöé map: 1,138.78 kB[22m
-[2mdist/[22m[36massets/index-Bfy9_sJz.js            [39m[1m[33m2,580.14 kB[39m[22m[2m Γöé gzip: 638.13 kB[22m[2m Γöé map: 7,149.89 kB[22m
+[2mdist/[22m[36massets/index-CqxD40_K.js            [39m[1m[33m2,582.11 kB[39m[22m[2m Γöé gzip: 638.76 kB[22m[2m Γöé map: 7,154.27 kB[22m
 
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-[32mΓ£ô built in 5.55s[39m
+[32mΓ£ô built in 5.50s[39m

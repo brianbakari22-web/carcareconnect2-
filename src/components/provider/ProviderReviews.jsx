@@ -44,6 +44,18 @@ export default function ProviderReviews() {
       .eq("provider_id", user.id)
     if (error) { toast.error(error.message); setSubmitting(false); return }
     toast.success("Reply posted")
+    // Notify customer of provider reply
+    try {
+      const review = reviews.find(r=>r.id===id)
+      if(review?.customer_id) {
+        await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-push`, {
+          method:"POST",
+          headers:{"Content-Type":"application/json","Authorization":`Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`},
+          body:JSON.stringify({ user_id:review.customer_id, title:"Provider replied to your review 💬", message:`${profile?.business_name||profile?.first_name||"Your provider"} has responded to your review.` })
+        })
+        await supabase.from("notifications").insert({ user_id:review.customer_id, title:"Provider replied to your review 💬", message:`${profile?.business_name||profile?.first_name||"Your provider"} has responded to your review.`, type:"info" })
+      }
+    } catch(e) { console.log("Push failed:",e.message) }
     setReplying(null); setReplyText(""); setSubmitting(false); load()
   }
 
