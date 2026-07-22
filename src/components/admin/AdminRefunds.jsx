@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom"
 import useIsMobile from "../../lib/useIsMobile"
 
 export default function AdminRefunds() {
+  const { user, profile } = useAuth()
+  if(!user || profile?.role !== "admin") return null
   const navigate = useNavigate()
   const isMobile = useIsMobile()
 

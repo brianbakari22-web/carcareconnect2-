@@ -20,6 +20,22 @@ transforming...
 135|            {r.driver_response?(
 136|              <div style={{ background:"#eff6ff", border:"1px solid #378add20", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
 
+[plugin:vite:esbuild] [plugin vite:esbuild] src/components/provider/ProviderOrders.jsx: The character "}" is not valid inside a JSX element
+238|            ))}
+239|          </div>
+240|        )}
+   |         ^
+241|        )}
+242|  
+
+[plugin:vite:esbuild] [plugin vite:esbuild] src/components/provider/ProviderOrders.jsx: The character "}" is not valid inside a JSX element
+239|          </div>
+240|        )}
+241|        )}
+   |         ^
+242|  
+243|        {/* Gradient stats header */}
+
 [plugin:vite:esbuild] [plugin vite:esbuild] src/components/admin/AdminReviews.jsx: The character "}" is not valid inside a JSX element
 119|              </div>
 120|            </div>
@@ -52,22 +68,6 @@ transforming...
 550|            </div>
 551|          )}
 
-[plugin:vite:esbuild] [plugin vite:esbuild] src/components/provider/ProviderOrders.jsx: The character "}" is not valid inside a JSX element
-238|            ))}
-239|          </div>
-240|        )}
-   |         ^
-241|        )}
-242|  
-
-[plugin:vite:esbuild] [plugin vite:esbuild] src/components/provider/ProviderOrders.jsx: The character "}" is not valid inside a JSX element
-239|          </div>
-240|        )}
-241|        )}
-   |         ^
-242|  
-243|        {/* Gradient stats header */}
-
 [plugin:vite:esbuild] [plugin vite:esbuild] src/components/customer/ProviderStorefront.jsx: The character "}" is not valid inside a JSX element
 275|                        ) : (
 276|                          <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(s.price||0).toLocaleString()}</div>
@@ -93,28 +93,28 @@ rendering chunks...
 computing gzip size...
 [2mdist/[22m[32mindex.html                          [39m[1m[2m   11.73 kB[22m[1m[22m[2m Γöé gzip:   3.75 kB[22m
 [2mdist/[22m[35massets/index-C3tPJB2X.css           [39m[1m[2m    0.70 kB[22m[1m[22m[2m Γöé gzip:   0.42 kB[22m
-[2mdist/[22m[36massets/web-Bp1m13z9.js              [39m[1m[2m    0.25 kB[22m[1m[22m[2m Γöé gzip:   0.21 kB[22m[2m Γöé map:     0.56 kB[22m
-[2mdist/[22m[36massets/web-BjXOmyYX.js              [39m[1m[2m    0.49 kB[22m[1m[22m[2m Γöé gzip:   0.33 kB[22m[2m Γöé map:     1.21 kB[22m
-[2mdist/[22m[36massets/web-CuNZ93cI.js              [39m[1m[2m    0.51 kB[22m[1m[22m[2m Γöé gzip:   0.34 kB[22m[2m Γöé map:     1.30 kB[22m
-[2mdist/[22m[36massets/index-Ze3nvdEN.js            [39m[1m[2m    0.54 kB[22m[1m[22m[2m Γöé gzip:   0.33 kB[22m[2m Γöé map:     0.57 kB[22m
-[2mdist/[22m[36massets/index-CEfGlkUK.js            [39m[1m[2m    0.55 kB[22m[1m[22m[2m Γöé gzip:   0.34 kB[22m[2m Γöé map:     0.58 kB[22m
-[2mdist/[22m[36massets/index-CFvdrlWi.js            [39m[1m[2m    0.56 kB[22m[1m[22m[2m Γöé gzip:   0.34 kB[22m[2m Γöé map:     0.59 kB[22m
-[2mdist/[22m[36massets/index-DOENjXQM.js            [39m[1m[2m    0.62 kB[22m[1m[22m[2m Γöé gzip:   0.36 kB[22m[2m Γöé map:     0.71 kB[22m
+[2mdist/[22m[36massets/web-DxE9neaW.js              [39m[1m[2m    0.25 kB[22m[1m[22m[2m Γöé gzip:   0.21 kB[22m[2m Γöé map:     0.56 kB[22m
+[2mdist/[22m[36massets/web-DYDxoNqf.js              [39m[1m[2m    0.49 kB[22m[1m[22m[2m Γöé gzip:   0.33 kB[22m[2m Γöé map:     1.21 kB[22m
+[2mdist/[22m[36massets/web-DnrAdKtF.js              [39m[1m[2m    0.51 kB[22m[1m[22m[2m Γöé gzip:   0.33 kB[22m[2m Γöé map:     1.30 kB[22m
+[2mdist/[22m[36massets/index-C1GvQxxY.js            [39m[1m[2m    0.54 kB[22m[1m[22m[2m Γöé gzip:   0.33 kB[22m[2m Γöé map:     0.57 kB[22m
+[2mdist/[22m[36massets/index-QFQ6iToC.js            [39m[1m[2m    0.55 kB[22m[1m[22m[2m Γöé gzip:   0.34 kB[22m[2m Γöé map:     0.58 kB[22m
+[2mdist/[22m[36massets/index-DRFvKPEA.js            [39m[1m[2m    0.56 kB[22m[1m[22m[2m Γöé gzip:   0.34 kB[22m[2m Γöé map:     0.59 kB[22m
+[2mdist/[22m[36massets/index-sv29AL0t.js            [39m[1m[2m    0.62 kB[22m[1m[22m[2m Γöé gzip:   0.36 kB[22m[2m Γöé map:     0.71 kB[22m
+[2mdist/[22m[36massets/synapse-akrKn89j.js          [39m[1m[2m    0.69 kB[22m[1m[22m[2m Γöé gzip:   0.36 kB[22m[2m Γöé map:     2.28 kB[22m
+[2mdist/[22m[36massets/web-CE_b2ECG.js              [39m[1m[2m    0.97 kB[22m[1m[22m[2m Γöé gzip:   0.48 kB[22m[2m Γöé map:     2.18 kB[22m
+[2mdist/[22m[36massets/index-BHsrNIcQ.js            [39m[1m[2m    1.07 kB[22m[1m[22m[2m Γöé gzip:   0.59 kB[22m[2m Γöé map:     5.45 kB[22m
+[2mdist/[22m[36massets/web-BxVgQZgx.js              [39m[1m[2m    2.49 kB[22m[1m[22m[2m Γöé gzip:   1.02 kB[22m[2m Γöé map:     7.40 kB[22m
+[2mdist/[22m[36massets/web-C57j1hr7.js              [39m[1m[2m    8.93 kB[22m[1m[22m[2m Γöé gzip:   3.09 kB[22m[2m Γöé map:    35.75 kB[22m
+[2mdist/[22m[36massets/ui-VlKIP8q1.js               [39m[1m[2m   12.19 kB[22m[1m[22m[2m Γöé gzip:   4.89 kB[22m[2m Γöé map:    28.09 kB[22m
+[2mdist/[22m[36massets/purify.es-Jn2rvFN8.js        [39m[1m[2m   28.96 kB[22m[1m[22m[2m Γöé gzip:  10.93 kB[22m[2m Γöé map:   158.93 kB[22m
+[2mdist/[22m[36massets/index.es-AlCtIt6q.js         [39m[1m[2m  150.83 kB[22m[1m[22m[2m Γöé gzip:  51.64 kB[22m[2m Γöé map:   637.73 kB[22m
+[2mdist/[22m[36massets/vendor-TTj4DRuz.js           [39m[1m[2m  160.85 kB[22m[1m[22m[2m Γöé gzip:  52.59 kB[22m[2m Γöé map:   701.61 kB[22m
+[2mdist/[22m[36massets/html2canvas.esm-CBrSDip1.js  [39m[1m[2m  201.48 kB[22m[1m[22m[2m Γöé gzip:  48.08 kB[22m[2m Γöé map:   602.27 kB[22m
+[2mdist/[22m[36massets/supabase-CwrFKnKJ.js         [39m[1m[2m  210.54 kB[22m[1m[22m[2m Γöé gzip:  54.59 kB[22m[2m Γöé map: 1,138.78 kB[22m
+[2mdist/[22m[36massets/index-BtczBnHp.js            [39m[1m[33m2,600.39 kB[39m[22m[2m Γöé gzip: 643.02 kB[22m[2m Γöé map: 7,197.50 kB[22m
 
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-[2mdist/[22m[36massets/synapse-akrKn89j.js          [39m[1m[2m    0.69 kB[22m[1m[22m[2m Γöé gzip:   0.36 kB[22m[2m Γöé map:     2.28 kB[22m
-[2mdist/[22m[36massets/web-BlvQMm8M.js              [39m[1m[2m    0.97 kB[22m[1m[22m[2m Γöé gzip:   0.48 kB[22m[2m Γöé map:     2.18 kB[22m
-[2mdist/[22m[36massets/index-BxwScsoW.js            [39m[1m[2m    1.07 kB[22m[1m[22m[2m Γöé gzip:   0.59 kB[22m[2m Γöé map:     5.45 kB[22m
-[2mdist/[22m[36massets/web-DmnhWDTr.js              [39m[1m[2m    2.49 kB[22m[1m[22m[2m Γöé gzip:   1.01 kB[22m[2m Γöé map:     7.40 kB[22m
-[2mdist/[22m[36massets/web-Dw0E9pA4.js              [39m[1m[2m    8.93 kB[22m[1m[22m[2m Γöé gzip:   3.09 kB[22m[2m Γöé map:    35.75 kB[22m
-[2mdist/[22m[36massets/ui-VlKIP8q1.js               [39m[1m[2m   12.19 kB[22m[1m[22m[2m Γöé gzip:   4.89 kB[22m[2m Γöé map:    28.09 kB[22m
-[2mdist/[22m[36massets/purify.es-Jn2rvFN8.js        [39m[1m[2m   28.96 kB[22m[1m[22m[2m Γöé gzip:  10.93 kB[22m[2m Γöé map:   158.93 kB[22m
-[2mdist/[22m[36massets/index.es-BDRRg_G4.js         [39m[1m[2m  150.83 kB[22m[1m[22m[2m Γöé gzip:  51.64 kB[22m[2m Γöé map:   637.73 kB[22m
-[2mdist/[22m[36massets/vendor-TTj4DRuz.js           [39m[1m[2m  160.85 kB[22m[1m[22m[2m Γöé gzip:  52.59 kB[22m[2m Γöé map:   701.61 kB[22m
-[2mdist/[22m[36massets/html2canvas.esm-CBrSDip1.js  [39m[1m[2m  201.48 kB[22m[1m[22m[2m Γöé gzip:  48.08 kB[22m[2m Γöé map:   602.27 kB[22m
-[2mdist/[22m[36massets/supabase-CwrFKnKJ.js         [39m[1m[2m  210.54 kB[22m[1m[22m[2m Γöé gzip:  54.59 kB[22m[2m Γöé map: 1,138.78 kB[22m
-[2mdist/[22m[36massets/index-BtwQkvir.js            [39m[1m[33m2,600.08 kB[39m[22m[2m Γöé gzip: 642.79 kB[22m[2m Γöé map: 7,196.19 kB[22m
-[32mΓ£ô built in 5.79s[39m
+[32mΓ£ô built in 5.72s[39m

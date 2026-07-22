@@ -2,6 +2,8 @@ import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
+import { validateFile } from "../../lib/uploadValidation"
+import { useAuth } from "../../contexts/AuthContext"
 
 const SETTING_CATEGORIES = {
   "Commissions & Fees": { icon:"💰", color:"#1d9e75", keys:["inspection_fee","go_service_callout_fee","shop_standard_commission","shop_premium_commission","go_service_commission","concierge_surcharge_rate","marketplace_processing_fee_rate"] },
@@ -11,6 +13,8 @@ const SETTING_CATEGORIES = {
 }
 
 export default function AdminSettings() {
+  const { user, profile } = useAuth()
+  if(!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [settings, setSettings] = useState([])
   const [loading, setLoading] = useState(true)

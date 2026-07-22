@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
+import { validateFile } from "../../lib/uploadValidation"
 
 export default function AdminDrivers() {
   const isMobile = useIsMobile()

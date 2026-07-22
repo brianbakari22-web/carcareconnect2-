@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
+import { validateFile } from "../../lib/uploadValidation"
 import ChatWindow from "../shared/ChatWindow"
 
 const SPECIALIZATIONS = [

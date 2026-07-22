@@ -7,6 +7,7 @@ import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import { exportUserData, downloadJSON, downloadCSV, downloadPDF } from "../../lib/dataExport"
 import toast from "react-hot-toast"
+import { validateFile } from "../../lib/uploadValidation"
 
 export default function CustomerProfile() {
   const isMobile = useIsMobile()

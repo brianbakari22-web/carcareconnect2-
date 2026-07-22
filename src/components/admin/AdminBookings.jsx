@@ -3,12 +3,15 @@ import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { auditLog, AUDIT_ACTIONS } from "../../lib/auditLog"
 import toast from "react-hot-toast"
+import { useAuth } from "../../contexts/AuthContext"
 
 const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", completed:"#1d9e75", cancelled:"#e24b4a" }
 const SB = { pending:"#fff8f0", confirmed:"#eff6ff", "in-progress":"#f5f3ff", completed:"#f0fdf4", cancelled:"#fff5f5" }
 const PC = { paid:"#1d9e75", pending:"#e6821e", partial:"#378add", refunded:"#8b5cf6" }
 
 export default function AdminBookings() {
+  const { user, profile } = useAuth()
+  if(!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [bookings, setBookings] = useState([])
   const [filter, setFilter] = useState("all")

@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import toast from "react-hot-toast"
+import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 
 export default function AdminServices() {
+  const { user, profile } = useAuth()
+  if(!user || profile?.role !== "admin") return null
   const [services, setServices] = useState([])
   const [loading, setLoading] = useState(true)
   const isMobile = useIsMobile()
