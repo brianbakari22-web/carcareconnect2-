@@ -95,6 +95,20 @@ export default function CustomerBookings() {
     load()
   }
 
+  async function confirmPayment(booking) {
+    if(!confirm("Confirm you are satisfied with the service and release payment to the provider?")) return
+    try {
+      const resp = await fetch(import.meta.env.VITE_SUPABASE_URL+"/functions/v1/release-payment", {
+        method:"POST",
+        headers:{"Content-Type":"application/json","Authorization":"Bearer "+import.meta.env.VITE_SUPABASE_ANON_KEY},
+        body:JSON.stringify({ booking_id:booking.id, confirmed_by:"customer" })
+      })
+      const data = await resp.json()
+      if(data.error) throw new Error(data.error)
+      toast.success("Payment released! Thank you for confirming. ✅")
+      load()
+    } catch(err) { toast.error(err.message) }
+  }
   async function hideBooking(id) {
     if (!confirm("Remove this booking from your list?")) return
     const { error } = await supabase.from("bookings").update({ hidden_from_customer:true }).eq("id",id).eq("customer_id",user.id)
@@ -219,6 +233,15 @@ export default function CustomerBookings() {
                 style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                 {t("cancelBooking")}
               </button>
+            )}
+            {b.payment_held&&!b.payment_released&&["in-progress","completed"].includes(b.status)&&(
+              <button onClick={()=>confirmPayment(b)}
+                style={{ background:"#1d9e75", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"5px 12px", cursor:"pointer" }}>
+                ✅ Confirm & Release Payment
+              </button>
+            )}
+            {b.payment_held&&!b.payment_released&&["in-progress","completed"].includes(b.status)&&(
+              <div style={{ fontSize:10, color:"#888", padding:"4px 8px", background:"#f8f8f8", borderRadius:6 }}>💰 Payment held · auto-releases in 24hrs</div>
             )}
             {b.status==="completed"&&(
               <>
