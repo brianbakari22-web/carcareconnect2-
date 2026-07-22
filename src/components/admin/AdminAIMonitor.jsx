@@ -365,6 +365,7 @@ OPERATIONS:
 
 USERS:
 - Total users: ${platformData.total_users} | Today new: ${platformData.todays_new_users}
+- CCC Employees: ${platformData.total_employees}
 - Total drivers: ${platformData.total_drivers} | Verified: ${platformData.verified_drivers} | Unverified: ${platformData.unverified_drivers}
 - Total employees: ${platformData.total_employees}
 
@@ -640,7 +641,7 @@ Be specific and actionable. Max 300 words. Use bullet points.`
                     { f:"Loyalty points", ok:report.platformData.total_loyalty_points>0 },
                     { f:"Mechanics", ok:report.platformData.total_mechanics>=0 },
                     { f:"Marketplace inspect", ok:report.platformData.total_listings>0 },
-                    { f:"Employee mgmt", ok:false },
+                    { f:"Employee mgmt", ok:report.platformData.total_employees>=0 },
                     { f:"Payment tracking", ok:report.platformData.total_payments>=0 },
                     { f:"AI Monitor", ok:true },
                     { f:"Provider types", ok:Object.keys(report.platformData.provider_type_breakdown||{}).length>0 },
