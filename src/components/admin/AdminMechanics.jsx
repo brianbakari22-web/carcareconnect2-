@@ -42,7 +42,7 @@ export default function AdminMechanics() {
   }, [])
 
   useEffect(() => {
-    if (tab==="map" && mapRef.current) initMap()
+    return () => { mapInstanceRef.current = null; Object.values(markersRef.current||{}).forEach(m=>{try{m.setMap(null)}catch(e){}}); markersRef.current = {} }
     return () => { if (mapInstanceRef.current) { mapInstanceRef.current.remove(); mapInstanceRef.current = null } }
   }, [tab])
 
