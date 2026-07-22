@@ -587,6 +587,17 @@ export default function CustomerDiscover() {
               <div style={{ fontSize:11, color:"#777777" }}>
                 {s.profile_public?.business_name||`${s.profile_public?.first_name||""} ${s.profile_public?.last_name||""}`.trim()}
               </div>
+              {s.photos?.length>0&&(
+                <div style={{ display:"flex", gap:4, marginTop:6, marginBottom:6, overflowX:"auto" }}>
+                  {s.photos.slice(0,3).map((url,i)=>(
+                    <img key={i} src={url} alt="" style={{ width:56, height:56, objectFit:"cover", borderRadius:8, border:"1px solid #eee", flexShrink:0 }}/>
+                  ))}
+                </div>
+              )}
+              <button onClick={()=>{ const p = providers.find(pr=>pr.id===s.provider_id); if(p) setSelectedProvider(p) }}
+                style={{ width:"100%", background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px", cursor:"pointer", marginTop:6 }}>
+                Book this service
+              </button>
             </div>
           ))}
         </div>
