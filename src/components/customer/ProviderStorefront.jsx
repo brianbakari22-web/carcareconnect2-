@@ -15,6 +15,10 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
   const [loading, setLoading] = useState(true)
   const [activePhoto, setActivePhoto] = useState(0)
   const [tab, setTab] = useState("about")
+  const [bundles, setBundles] = useState([])
+  const [bookingBundle, setBookingBundle] = useState(null)
+  const [bundleForm, setBundleForm] = useState({ date:"", time:"", notes:"", payment_method:"mpesa" })
+  const [bundleLoading, setBundleLoading] = useState(false)
   const [bookingService, setBookingService] = useState(null)
   const [bookForm, setBookForm] = useState({ date:"", time:"", notes:"", payment_method:"mpesa" })
   const [bookingLoading, setBookingLoading] = useState(false)
@@ -72,13 +76,62 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
     finally { setBookingLoading(false) }
   }
 
+  async function bookBundle(e) {
+    e.preventDefault()
+    if(!bookingBundle) return
+    setBundleLoading(true)
+    try {
+      const amount = Number(bookingBundle.bundle_price)
+      const { data: feeRow } = await supabase.from("app_settings").select("value").eq("key","customer_processing_fee_rate").maybeSingle()
+      const custFeeRate = feeRow ? Number(feeRow.value)/100 : 0.01
+      const processingFee = Math.ceil(amount * custFeeRate)
+      const totalAmount = amount + processingFee
+      const bookingNumber = "BK-"+Math.random().toString(36).substring(2,10).toUpperCase()
+      const commRate = Number(bookingBundle.platform_commission_rate||0.10)
+      const { data: booking, error } = await supabase.from("bookings").insert({
+        customer_id: user.id, provider_id: provider.id,
+        bundle_id: bookingBundle.id,
+        service_name: bookingBundle.name+" (Bundle)",
+        booking_date: bundleForm.date, booking_time: bundleForm.time,
+        booking_number: bookingNumber,
+        amount, processing_fee: processingFee, total_amount: totalAmount,
+        platform_commission: amount*commRate,
+        provider_earnings: amount*(1-commRate),
+        platform_commission_rate: commRate,
+        provider_commission_rate: 1-commRate,
+        payment_method: bundleForm.payment_method,
+        payment_status: "pending", status: "pending",
+        notes: bundleForm.notes,
+      }).select().single()
+      if(error) throw error
+      if(bundleForm.payment_method==="mpesa") {
+        const { data: cp } = await supabase.from("profile_sensitive").select("mpesa_number").eq("id", user.id).maybeSingle()
+        if(cp?.mpesa_number) {
+          try {
+            await fetch(import.meta.env.VITE_SUPABASE_URL+"/functions/v1/intasend-stk-push", {
+              method:"POST",
+              headers:{"Content-Type":"application/json","Authorization":"Bearer "+import.meta.env.VITE_SUPABASE_ANON_KEY},
+              body:JSON.stringify({ booking_id:booking.id, amount, phone:cp.mpesa_number, customer_id:user.id, provider_id:provider.id, service_name:bookingBundle.name+" Bundle" })
+            })
+          } catch(e) {}
+        }
+      }
+      await supabase.from("notifications").insert({ user_id:provider.id, title:"New bundle booking! 📦", message:"New bundle booking: "+bookingBundle.name+" on "+bundleForm.date+" #"+bookingNumber, type:"success" })
+      toast.success("Bundle booked! Check your M-Pesa 📱")
+      setBookingBundle(null)
+      setBundleForm({ date:"", time:"", notes:"", payment_method:"mpesa" })
+    } catch(err) { toast.error(err.message) }
+    finally { setBundleLoading(false) }
+  }
   async function load() {
-    const [{ data: svcs }, { data: inv }, { data: revs }] = await Promise.all([
+    const [{ data: svcs }, { data: bds }, { data: inv }, { data: revs }] = await Promise.all([
       supabase.from("services").select("*").eq("provider_id", provider.id).eq("is_active", true),
+      supabase.from("service_bundles").select("*").eq("provider_id", provider.id).eq("is_active", true).order("created_at",{ascending:false}),
       supabase.from("inventory").select("*").eq("provider_id", provider.id).eq("is_active", true).gt("stock_quantity", 0),
       supabase.from("reviews").select("*, profiles!reviews_customer_id_fkey(first_name,last_name)").eq("provider_id", provider.id).order("created_at",{ascending:false}).limit(5),
     ])
     setServices(svcs||[])
+    setBundles(bds||[])
     setInventory(inv||[])
     setReviews(revs||[])
     setLoading(false)
@@ -169,6 +222,7 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
               { k:"about", l:"About" },
               { k:"services", l:`Services (${services.length})` },
               ...(isInventoryProvider?[{ k:"inventory", l:`Products (${inventory.length})` }]:[]),
+              ...(!isInventoryProvider&&bundles.length>0?[{ k:"bundles", l:`Bundles (${bundles.length})` }]:[]),
               { k:"reviews", l:`Reviews (${reviews.length})` },
             ].map(t=>(
               <button key={t.k} onClick={()=>setTab(t.k)}
@@ -251,7 +305,68 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
             </div>
           )}
 
-          {/* Reviews */}
+          {/* Bundles */}
+          {tab==="bundles"&&(
+            <div>
+              {bundles.map(b=>{
+                const savings = Number(b.original_price)-Number(b.bundle_price)
+                const savingsPct = Math.round(savings/Number(b.original_price)*100)
+                const bundleServices = services.filter(s=>b.service_ids?.includes(s.id))
+                return (
+                  <div key={b.id} style={{ background:"#fff", border:"1px solid #eee", borderRadius:12, padding:"1rem", marginBottom:10 }}>
+                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
+                      <div style={{ flex:1 }}>
+                        <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800 }}>{b.name}</div>
+                        {b.description&&<div style={{ fontSize:11, color:"#666", marginTop:2, lineHeight:1.5 }}>{b.description}</div>}
+                      </div>
+                      <span style={{ fontSize:11, background:"#f0fdf4", color:"#1d9e75", padding:"2px 8px", borderRadius:10, fontWeight:700, flexShrink:0, marginLeft:8 }}>Save {savingsPct}%</span>
+                    </div>
+                    <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:10 }}>
+                      {bundleServices.map(s=>(
+                        <span key={s.id} style={{ fontSize:11, background:"#f8f8f8", border:"1px solid #eee", borderRadius:6, padding:"3px 8px", color:"#555" }}>✓ {s.name}</span>
+                      ))}
+                    </div>
+                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                      <div>
+                        <span style={{ fontSize:12, color:"#888", textDecoration:"line-through", marginRight:6 }}>KES {Number(b.original_price).toLocaleString()}</span>
+                        <span style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#1d9e75" }}>KES {Number(b.bundle_price).toLocaleString()}</span>
+                      </div>
+                      <button onClick={()=>setBookingBundle(b)} style={{ background:"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>Book Bundle</button>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+          {/* Bundle booking modal */}
+      {bookingBundle&&(
+        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.6)", zIndex:300, display:"flex", alignItems:"flex-end", justifyContent:"center" }}>
+          <div style={{ background:"#fff", borderRadius:"20px 20px 0 0", padding:"1.5rem", width:"100%", maxWidth:480, maxHeight:"80vh", overflowY:"auto" }}>
+            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, marginBottom:4 }}>{bookingBundle.name}</div>
+            <div style={{ display:"flex", gap:8, alignItems:"center", marginBottom:"1.25rem" }}>
+              <span style={{ fontSize:13, color:"#888", textDecoration:"line-through" }}>KES {Number(bookingBundle.original_price).toLocaleString()}</span>
+              <span style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#1d9e75" }}>KES {Number(bookingBundle.bundle_price).toLocaleString()}</span>
+              <span style={{ fontSize:11, background:"#f0fdf4", color:"#1d9e75", padding:"2px 8px", borderRadius:10 }}>Save {Math.round((1-bookingBundle.bundle_price/bookingBundle.original_price)*100)}%</span>
+            </div>
+            <form onSubmit={bookBundle}>
+              <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>Date *</label>
+              <input type="date" required value={bundleForm.date} onChange={e=>setBundleForm(f=>({...f,date:e.target.value}))} min={new Date().toISOString().split("T")[0]}
+                style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eee", borderRadius:8, padding:"10px 12px", fontSize:13, outline:"none", marginBottom:10, boxSizing:"border-box" }}/>
+              <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>Time *</label>
+              <input type="time" required value={bundleForm.time} onChange={e=>setBundleForm(f=>({...f,time:e.target.value}))}
+                style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eee", borderRadius:8, padding:"10px 12px", fontSize:13, outline:"none", marginBottom:10, boxSizing:"border-box" }}/>
+              <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>Notes (optional)</label>
+              <textarea value={bundleForm.notes} onChange={e=>setBundleForm(f=>({...f,notes:e.target.value}))} rows={2}
+                style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eee", borderRadius:8, padding:"10px 12px", fontSize:13, outline:"none", resize:"none", marginBottom:10, boxSizing:"border-box" }}/>
+              <div style={{ display:"flex", gap:8 }}>
+                <button type="submit" disabled={bundleLoading} style={{ flex:1, background:"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px", cursor:"pointer" }}>{bundleLoading?"Booking...":"Confirm Bundle Booking"}</button>
+                <button type="button" onClick={()=>setBookingBundle(null)} style={{ background:"#f0f0f0", border:"none", borderRadius:8, color:"#555", fontSize:13, padding:"12px 16px", cursor:"pointer" }}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      {/* Reviews */}
           {tab==="reviews"&&(
             <div>
               {reviews.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>No reviews yet</div>}
