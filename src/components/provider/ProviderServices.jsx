@@ -211,6 +211,7 @@ export default function ProviderServices() {
         ))}
       </div>
 
+      <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search your services..." style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eee", borderRadius:8, padding:"9px 12px", fontSize:13, outline:"none", marginBottom:"1rem", boxSizing:"border-box" }}/>
       {/* Header */}
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem", flexWrap:"wrap", gap:10 }}>
         <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
@@ -272,6 +273,10 @@ export default function ProviderServices() {
               <div>
                 <label style={lbl}>Price (KES)</label>
                 <input style={inp} type="number" placeholder="e.g. 2500" value={form.price} onChange={e=>setForm(f=>({...f,price:e.target.value}))} required min="0" step="0.01"/>
+              </div>
+              <div>
+                <label style={lbl}>Discounted price (KES) — optional</label>
+                <input style={inp} type="number" placeholder="Leave empty if no discount" value={form.discounted_price} onChange={e=>setForm(f=>({...f,discounted_price:e.target.value}))} min="0" step="0.01"/>
               </div>
             </div>
             <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:12, marginBottom:12 }}>
