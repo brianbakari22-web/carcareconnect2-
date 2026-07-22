@@ -10,6 +10,7 @@ export default function AdminPaymentTracking() {
   const [mpesaTransactions, setMpesaTransactions] = useState([])
   const [marketplace, setMarketplace] = useState([])
   const [loading, setLoading] = useState(true)
+  const [escrowBookings, setEscrowBookings] = useState([])
   const [tab, setTab] = useState("overview")
   const [filter, setFilter] = useState("all")
 
@@ -36,6 +37,13 @@ export default function AdminPaymentTracking() {
         .order("created_at", { ascending:false })
     ])
     setBookings(bks||[])
+    // Load escrow bookings
+    const { data: escrow } = await supabase.from("bookings")
+      .select("*, profiles!bookings_customer_id_fkey(first_name,last_name), provider:profiles!bookings_provider_id_fkey(first_name,last_name,business_name)")
+      .eq("payment_held", true)
+      .eq("payment_released", false)
+      .order("created_at", { ascending:false })
+    setEscrowBookings(escrow||[])
     setGoPayments(goPays||[])
     setMarketplace(mkt||[])
     setLoading(false)
@@ -48,6 +56,20 @@ export default function AdminPaymentTracking() {
     load()
   }
 
+  async function adminReleaseEscrow(booking) {
+    if(!confirm("Release escrow payment to provider? KES "+Number(booking.provider_earnings||0).toLocaleString())) return
+    try {
+      const resp = await fetch(import.meta.env.VITE_SUPABASE_URL+"/functions/v1/release-payment", {
+        method:"POST",
+        headers:{"Content-Type":"application/json","Authorization":"Bearer "+import.meta.env.VITE_SUPABASE_ANON_KEY},
+        body:JSON.stringify({ booking_id:booking.id, confirmed_by:"admin" })
+      })
+      const data = await resp.json()
+      if(data.error) throw new Error(data.error)
+      toast.success("Escrow released! KES "+Number(booking.provider_earnings||0).toLocaleString()+" sent to provider")
+      load()
+    } catch(err) { toast.error(err.message) }
+  }
   async function holdPayment(bookingId) {
     await supabase.from("bookings").update({ payment_status:"disputed" }).eq("id", bookingId)
     toast.success("Payment held — dispute flagged")
@@ -66,6 +88,8 @@ export default function AdminPaymentTracking() {
   const pendingRevenue = bookings.filter(b=>b.status==="completed"&&b.payment_status!=="paid").reduce((s,b)=>s+Number(b.platform_commission||0),0)
   const goRevenue = goPayments.filter(b=>b.go_callout_paid).length * 75
   const escrowTotal = marketplace.filter(m=>m.status==="pending"||m.status==="processing").reduce((s,m)=>s+Number(m.amount||0),0)
+  const bookingEscrowTotal = escrowBookings.reduce((s,b)=>s+Number(b.provider_earnings||0),0)
+  const autoReleaseToday = escrowBookings.filter(b=>b.auto_release_at&&new Date(b.auto_release_at)<new Date(Date.now()+24*60*60*1000)).length
   const partsRevenue = bookings.filter(b=>b.parts_approved).reduce((s,b)=>s+Number(b.parts_commission||0),0)
   const transportAllowanceDue = bookings.filter(b=>b.is_concierge&&!b.transport_allowance_paid&&b.status==="completed").length * 200
   const anticipatedRevenue = bookings.filter(b=>b.status!=="cancelled").reduce((s,b)=>s+Number(b.platform_commission||0),0)
@@ -96,6 +120,8 @@ export default function AdminPaymentTracking() {
           { label:"Parts revenue", value:"KES "+partsRevenue.toLocaleString(), color:"#8b5cf6" },
           { label:"Transport allowance due", value:"KES "+transportAllowanceDue.toLocaleString(), color:"#e6821e" },
           { label:"Marketplace commission", value:"KES "+marketplace.reduce((s,m)=>s+Number(m.commission||0),0).toLocaleString(), color:"#1d9e75" },
+          { label:"Booking escrow held", value:"KES "+bookingEscrowTotal.toLocaleString(), color:"#8b5cf6" },
+          { label:"Auto-release today", value:autoReleaseToday, color:"#e24b4a" },
         ].map(s=>(
           <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
             <div style={{ fontSize:10, color:"#888", marginBottom:4, textTransform:"uppercase" }}>{s.label}</div>
@@ -105,7 +131,7 @@ export default function AdminPaymentTracking() {
       </div>
 
       <div style={{ display:"flex", gap:6, marginBottom:"1.25rem", flexWrap:"wrap" }}>
-        {[{k:"overview",l:"Overview"},{k:"bookings",l:"Bookings"},{k:"go",l:"GO Service"},{k:"marketplace",l:"Marketplace"}].map(t=>(
+        {[{k:"overview",l:"Overview"},{k:"bookings",l:"Bookings"},{k:"go",l:"GO Service"},{k:"marketplace",l:"Marketplace"},{k:"escrow",l:"Escrow ("+escrowBookings.length+")"}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
             style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#f8f8f8", color:tab===t.k?"#fff":"#666", fontFamily:"DM Sans,sans-serif", fontWeight:tab===t.k?700:400 }}>
             {t.l}
