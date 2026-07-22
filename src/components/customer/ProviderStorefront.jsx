@@ -194,7 +194,14 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
                       <div style={{ fontSize:11, color:"#777777" }}>⏱ {s.duration_minutes||60} min</div>
                     </div>
                     <div style={{ textAlign:"right" }}>
-                      <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(s.price||0).toLocaleString()}</div>
+                        <div>
+                          <span style={{ fontFamily:"Syne", fontSize:12, color:"#888", textDecoration:"line-through", marginRight:6 }}>KES {Number(s.price||0).toLocaleString()}</span>
+                          <span style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#1d9e75" }}>KES {Number(s.discounted_price).toLocaleString()}</span>
+                          <span style={{ fontSize:10, color:"#1d9e75", background:"#f0fdf4", padding:"1px 6px", borderRadius:10, marginLeft:4 }}>{Math.round((1-s.discounted_price/s.price)*100)}% OFF</span>
+                        </div>
+                      ) : (
+                        <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(s.price||0).toLocaleString()}</div>
+                      )}
                       <button onClick={()=>setBookingService(s)}
                         style={{ marginTop:6, background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"5px 12px", cursor:"pointer" }}>
                         Book
