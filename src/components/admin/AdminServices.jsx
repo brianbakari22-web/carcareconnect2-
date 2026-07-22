@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import toast from "react-hot-toast"
+import useIsMobile from "../../lib/useIsMobile"
 
 export default function AdminServices() {
   const [services, setServices] = useState([])
   const [loading, setLoading] = useState(true)
+  const isMobile = useIsMobile()
   const [search, setSearch] = useState("")
+  const [statusFilter, setStatusFilter] = useState("active")
+  const [providerFilter, setProviderFilter] = useState("all")
   const [tab, setTab] = useState("services")
   const [bundles, setBundles] = useState([])
 
@@ -55,10 +59,11 @@ export default function AdminServices() {
     load()
   }
 
-  const filtered = services.filter(s =>
-    s.name.toLowerCase().includes(search.toLowerCase()) ||
-    s.category.toLowerCase().includes(search.toLowerCase())
-  )
+  const filtered = services.filter(s => {
+    const matchSearch = s.name?.toLowerCase().includes(search.toLowerCase()) || s.category?.toLowerCase().includes(search.toLowerCase())
+    const matchStatus = statusFilter==="all" || (statusFilter==="active" ? s.is_active : !s.is_active)
+    return matchSearch && matchStatus
+  })
 
   return (
     <div>
@@ -71,6 +76,25 @@ export default function AdminServices() {
         </button>
       </div>
       {tab==="services"&&(<>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))", gap:10, marginBottom:"1.5rem" }}>
+        {[
+          { label:"Total", value:services.length, color:"#000" },
+          { label:"Active", value:services.filter(s=>s.is_active).length, color:"#1d9e75" },
+          { label:"Inactive", value:services.filter(s=>!s.is_active).length, color:"#888" },
+          { label:"With photos", value:services.filter(s=>s.photos?.length>0).length, color:"#378add" },
+          { label:"Discounted", value:services.filter(s=>s.discounted_price).length, color:"#8b5cf6" },
+        ].map(s=>(
+          <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"0.75rem", border:"1px solid #eee", textAlign:"center" }}>
+            <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:s.color }}>{s.value}</div>
+            <div style={{ fontSize:10, color:"#888", marginTop:2 }}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
+        {[{k:"active",l:"Active"},{k:"inactive",l:"Inactive"},{k:"all",l:"All"}].map(t=>(
+          <button key={t.k} onClick={()=>setStatusFilter(t.k)} style={{ padding:"6px 14px", borderRadius:6, border:"none", fontSize:12, cursor:"pointer", background:statusFilter===t.k?"#e6821e":"#f0f0f0", color:statusFilter===t.k?"#fff":"#555" }}>{t.l}</button>
+        ))}
+      </div>
       <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search services..."
         style={{ width:"100%", background:"#f8f8f8", border:"1px solid #f0f0f0", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:13, outline:"none", marginBottom:"1rem", fontFamily:"'DM Sans',sans-serif" }} />
       <div style={{ fontSize:12, color:"#888", marginBottom:10 }}>{filtered.length} service{filtered.length!==1?"s":""}</div>

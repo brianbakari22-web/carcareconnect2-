@@ -26,7 +26,7 @@ function getCategories(providerType) {
   return GARAGE_CATEGORIES
 }
 
-const EMPTY = { name:"", description:"", price:"", duration_minutes:"", category:"shop_standard", service_category_id:"", photos:[] }
+const EMPTY = { name:"", description:"", price:"", discounted_price:"", duration_minutes:"", category:"shop_standard", service_category_id:"", photos:[] }
 
 export default function ProviderServices() {
   const { user, profile } = useAuth()
@@ -44,6 +44,7 @@ export default function ProviderServices() {
   const [saving, setSaving] = useState(false)
   const [activeCategory, setActiveCategory] = useState("all")
   const [serviceCategories, setServiceCategories] = useState([])
+  const [search, setSearch] = useState("")
 
   useEffect(() => {
     if (!user) return
@@ -163,11 +164,10 @@ export default function ProviderServices() {
 
   function startEdit(s) {
     setEditing(s.id)
-    setForm({ name:s.name, description:s.description||"", price:s.price, duration_minutes:s.duration_minutes||60, category:s.category||"shop_standard", service_category_id:s.service_category_id||"" })
+    setForm({ name:s.name, description:s.description||"", price:s.price, discounted_price:s.discounted_price||"", duration_minutes:s.duration_minutes||60, category:s.category||"shop_standard", service_category_id:s.service_category_id||"" })
     setShowForm(true)
   }
-
-  const filtered = activeCategory==="all" ? services : services.filter(s=>s.category===activeCategory)
+  const filtered = services.filter(s=> (activeCategory==="all" || s.category===activeCategory) && (!search || s.name.toLowerCase().includes(search.toLowerCase()) || (s.description||"").toLowerCase().includes(search.toLowerCase())))
   const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"11px 12px", color:"#000000", fontSize:13, outline:"none", fontFamily:"'DM Sans',sans-serif" }
   const lbl = { fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }
 
@@ -344,9 +344,27 @@ export default function ProviderServices() {
                   <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:cat.bg, color:cat.color, border:`1px solid ${cat.border}` }}>{cat.label}</span>
                   {!s.is_active&&<span style={{ fontSize:10, color:"#777777", background:"#f5f5f5", padding:"2px 8px", borderRadius:10 }}>Inactive</span>}
                 </div>
+                {s.photos?.length>0&&(
+                  <div style={{ display:"flex", gap:6, marginBottom:6, flexWrap:"wrap" }}>
+                    {s.photos.slice(0,3).map((url,i)=>(
+                      <img key={i} src={url} alt="" style={{ width:56, height:56, objectFit:"cover", borderRadius:8, border:"1px solid #eee" }}/>
+                    ))}
+                    {s.photos.length>3&&<div style={{ width:56, height:56, borderRadius:8, background:"#f0f0f0", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, color:"#888" }}>+{s.photos.length-3}</div>}
+                  </div>
+                )}
                 {s.description&&<div style={{ fontSize:11, color:"#666", marginBottom:4, lineHeight:1.5 }}>{s.description}</div>}
                 <div style={{ display:"flex", gap:12, flexWrap:"wrap" }}>
-                  <span style={{ fontSize:12, color:"#e6821e", fontFamily:"Syne", fontWeight:700 }}>KES {Number(s.price).toLocaleString()}</span>
+                  {s.discounted_price ? (
+                    <span>
+                      <span style={{ fontSize:12, color:"#888", textDecoration:"line-through", marginRight:4 }}>KES {Number(s.price).toLocaleString()}</span>
+                      <span style={{ fontSize:12, color:"#1d9e75", fontFamily:"Syne", fontWeight:700 }}>KES {Number(s.discounted_price).toLocaleString()}</span>
+                      <span style={{ fontSize:10, color:"#1d9e75", background:"#f0fdf4", padding:"1px 6px", borderRadius:10, marginLeft:4 }}>
+                        {Math.round((1-s.discounted_price/s.price)*100)}% OFF
+                      </span>
+                    </span>
+                  ) : (
+                    <span style={{ fontSize:12, color:"#e6821e", fontFamily:"Syne", fontWeight:700 }}>KES {Number(s.price).toLocaleString()}</span>
+                  )}
                   <span style={{ fontSize:11, color:"#777777" }}>⏱ {s.duration_minutes||60} min</span>
                   <span style={{ fontSize:11, color:cat.color }}>{tierRates[cat.key]?`You keep ${Math.round(tierRates[cat.key].provider*100)}% · Platform ${Math.round(tierRates[cat.key].platform*100)}%`:"Loading rate..."}</span>
                 </div>
