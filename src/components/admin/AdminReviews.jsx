@@ -15,16 +15,17 @@ export default function AdminReviews() {
   const [notingId, setNotingId] = useState(null)
 
   useEffect(() => {
+    if (!user) return
     load()
     const sub = supabase.channel("admin-reviews-live")
       .on("postgres_changes", { event:"*", schema:"public", table:"reviews" }, () => load())
       .subscribe()
     return () => supabase.removeChannel(sub)
-  }, [])
+  }, [user])
 
   async function load() {
     const { data } = await supabase.from("reviews")
-      .select("*, customer:profile_public!reviews_customer_id_fkey(first_name,last_name), provider:profile_public!reviews_provider_id_fkey(first_name,last_name,business_name), driver:profile_public!reviews_driver_id_fkey(first_name,last_name), mechanic:mechanics!reviews_mechanic_id_fkey(first_name,last_name)")
+      .select("*, customer:profile_public!customer_id(first_name,last_name), provider:profile_public!provider_id(first_name,last_name,business_name)")
       .order("created_at", { ascending:false })
     setReviews(data||[])
     setLoading(false)
