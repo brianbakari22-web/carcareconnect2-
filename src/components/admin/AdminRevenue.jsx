@@ -21,9 +21,9 @@ export default function AdminRevenue() {
 
   async function load() {
     const [{ data }, { data: allBookings }, { data: allDemandBookings }] = await Promise.all([
-      supabase.from("bookings").select("*").eq("status","completed").eq("is_archived", false).order("created_at",{ascending:false}),
-      supabase.from("bookings").select("customer_id, total_amount, booking_date, status").eq("status","completed").eq("is_archived", false),
-      supabase.from("bookings").select("booking_date, booking_time, service_name, service_category").eq("is_archived", false)
+      supabase.from("bookings").select("*").eq("status","completed").order("created_at",{ascending:false}),
+      supabase.from("bookings").select("customer_id, total_amount, booking_date, status").eq("status","completed"),
+      supabase.from("bookings").select("booking_date, booking_time, service_name, service_category")
     ])
     setBookings(data||[])
     const clvMap = {}
@@ -95,6 +95,7 @@ export default function AdminRevenue() {
   }
 
   const total = bookings.reduce((s,b)=>s+Number(b.total_amount),0)
+  const heldEscrow = bookings.filter(b=>b.payment_held&&!b.payment_released).reduce((s,b)=>s+Number(b.provider_earnings||0),0)
   const commission = bookings.reduce((s,b)=>s+Number(b.platform_commission||0),0)
   const providerPaid = bookings.reduce((s,b)=>s+Number(b.provider_earnings||0),0)
   const driverPaid = bookings.reduce((s,b)=>s+Number(b.driver_earnings||0),0)
