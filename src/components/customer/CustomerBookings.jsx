@@ -222,7 +222,7 @@ export default function CustomerBookings() {
             )}
             {b.status==="completed"&&(
               <>
-                <button onClick={()=>navigate("/dashboard/reviews")}
+                <button onClick={()=>navigate("/dashboard/reviews?booking="+b.id)}
                   style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                   ⭐ Review
                 </button>

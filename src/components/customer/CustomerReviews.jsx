@@ -3,6 +3,7 @@ import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import toast from "react-hot-toast"
+import { useLocation } from "react-router-dom"
 
 function StarRating({ value, onChange, label }) {
   return (
@@ -32,7 +33,15 @@ export default function CustomerReviews() {
   const [photos, setPhotos] = useState([])
   const [uploading, setUploading] = useState(false)
 
+  const location = useLocation()
+  const preselectedBooking = new URLSearchParams(location.search).get("booking")
   useEffect(() => { if (user) load() }, [user])
+  useEffect(() => {
+    if (preselectedBooking && completedBookings.length > 0) {
+      const b = completedBookings.find(b=>b.id===preselectedBooking)
+      if(b) { setReviewing(b); setTab("pending") }
+    }
+  }, [preselectedBooking, completedBookings])
 
   async function load() {
     const [{ data: bookings }, { data: reviews }] = await Promise.all([
