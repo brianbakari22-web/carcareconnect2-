@@ -165,6 +165,33 @@ export function AuthProvider({ children }) {
           localStorage.setItem(themeKey, "light")
         }
       } catch(_) { /* handled */ }
+      // Save referral if exists
+      if (referrerId && data.user) {
+        try {
+          await supabase.from("referrals").insert({
+            referrer_id: referrerId,
+            referred_id: data.user.id,
+            referral_code: referralCode?.toUpperCase(),
+            status: "completed",
+            points_awarded: 100,
+            completed_at: new Date().toISOString(),
+            created_at: new Date().toISOString()
+          })
+          const { data: lp } = await supabase.from("loyalty_points").select("points,lifetime_points").eq("user_id", referrerId).maybeSingle()
+          await supabase.from("loyalty_points").upsert({
+            user_id: referrerId,
+            points: (lp?.points||0) + 100,
+            lifetime_points: (lp?.lifetime_points||0) + 100
+          }, { onConflict: "user_id" })
+          // Notify referrer
+          await supabase.from("notifications").insert({
+            user_id: referrerId,
+            title: "Referral reward! 🎉",
+            message: firstName+" "+lastName+" joined CCC using your referral link. You earned 100 loyalty points!",
+            type: "success"
+          })
+        } catch(refErr) { console.log("Referral save error:", refErr.message) }
+      }
       const { error: profileError } = await supabase.from("profiles").upsert({
         id: data.user.id,
         first_name: firstName,
