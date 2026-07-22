@@ -127,6 +127,8 @@ export default function AdminLiveMap() {
   const onlineCount = drivers.filter(d=>d.is_online).length
   const conciergeCount = drivers.filter(d=>d.driver?.driver_category==="concierge").length
   const marketplaceCount = drivers.filter(d=>d.driver?.driver_category==="marketplace").length
+  const activeGoRequests = goRequests.filter(g=>g.status==="pending"||g.status==="accepted").length
+  const activeSOS = sosAlerts.length
 
   return (
     <div>
