@@ -91,6 +91,7 @@ import CustomerFavorites from "./components/customer/CustomerFavorites"
 import CustomerReferral from "./components/customer/CustomerReferral"
 import CustomerSupport from "./components/customer/CustomerSupport"
 import ProviderSupport from "./components/provider/ProviderSupport"
+import ProviderCustomerReviews from "./components/provider/ProviderCustomerReviews"
 import DriverSupport from "./components/driver/DriverSupport"
 import CustomerClaims from "./components/customer/CustomerClaims"
 import CustomerPartsMarketplace from "./components/customer/CustomerPartsMarketplace"
@@ -307,6 +308,7 @@ function DashboardRouter() {
           <Route path="go-requests" element={<ProviderGoRequests />} />
           <Route path="claims" element={<ProviderClaims />} />
           <Route path="support" element={<ProviderSupport />} />
+          <Route path="customer-reviews" element={<ProviderCustomerReviews />} />
           <Route path="marketplace" element={<Marketplace />} />
           <Route path="marketplace/new" element={<CreateListing />} />
           <Route path="marketplace/my-listings" element={<MyListings />} />

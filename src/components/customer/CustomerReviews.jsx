@@ -3,6 +3,7 @@ import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import toast from "react-hot-toast"
+import { filterReviewContent } from "../../lib/reviewFilter"
 import { useLocation } from "react-router-dom"
 
 function StarRating({ value, onChange, label }) {
@@ -25,6 +26,10 @@ export default function CustomerReviews() {
   const { t } = useLanguage()
   const [completedBookings, setCompletedBookings] = useState([])
   const [myReviews, setMyReviews] = useState([])
+  const [receivedReviews, setReceivedReviews] = useState([])
+  const [respondingTo, setRespondingTo] = useState(null)
+  const [responseText, setResponseText] = useState("")
+  const [submittingResponse, setSubmittingResponse] = useState(false)
   const [tab, setTab] = useState("pending")
   const [loading, setLoading] = useState(true)
   const [reviewing, setReviewing] = useState(null)
@@ -44,18 +49,29 @@ export default function CustomerReviews() {
   }, [preselectedBooking, completedBookings])
 
   async function load() {
-    const [{ data: bookings }, { data: reviews }] = await Promise.all([
+    const [{ data: bookings }, { data: reviews }, { data: received }] = await Promise.all([
       supabase.from("bookings").select("*").eq("customer_id",user.id).eq("status","completed").order("created_at",{ascending:false}),
-      supabase.from("reviews").select("*, profile_public!reviews_provider_id_fkey(first_name,last_name,business_name)").eq("customer_id",user.id).order("created_at",{ascending:false})
+      supabase.from("reviews").select("*, profile_public!reviews_provider_id_fkey(first_name,last_name,business_name)").eq("customer_id",user.id).order("created_at",{ascending:false}),
+      supabase.from("reviews").select("*, provider:profile_public!reviews_provider_id_fkey(first_name,last_name,business_name)").eq("customer_id",user.id).not("customer_rating","is",null).order("created_at",{ascending:false})
     ])
     setCompletedBookings(bookings||[])
     setMyReviews(reviews||[])
+    setReceivedReviews(received||[])
     setLoading(false)
   }
 
   const reviewedBookingIds = new Set(myReviews.map(r=>r.booking_id))
   const pendingReview = completedBookings.filter(b=>!reviewedBookingIds.has(b.id))
 
+  async function submitResponse(reviewId) {
+    if(!responseText.trim()) return toast.error("Please write a response")
+    const check = filterReviewContent(responseText)
+    if(check.hasContactInfo || check.hasBadWords) return toast.error("Please keep your response professional")
+    setSubmittingResponse(true)
+    await supabase.from("reviews").update({ customer_response: responseText }).eq("id", reviewId).eq("customer_id", user.id)
+    toast.success("Response submitted!")
+    setRespondingTo(null); setResponseText(""); setSubmittingResponse(false); load()
+  }
   async function uploadPhoto(file) {
     const ext = file.name.split(".").pop()
     const path = "reviews/"+user.id+"/"+Date.now()+"."+ext
@@ -76,6 +92,12 @@ export default function CustomerReviews() {
   async function submitReview(e) {
     e.preventDefault()
     if (form.provider_rating===0) return toast.error(t("error"))
+    // Filter review content
+    const reviewCheck = filterReviewContent(form.provider_review)
+    if (reviewCheck.hasContactInfo) return toast.error("Reviews cannot contain contact details (phone/email). Please keep all communication on the platform.")
+    if (reviewCheck.hasBadWords) return toast.error("Your review contains inappropriate language. Please keep it professional.")
+    const driverCheck = filterReviewContent(form.driver_review)
+    if (driverCheck.hasContactInfo || driverCheck.hasBadWords) return toast.error("Driver review contains inappropriate content. Please keep it professional.")
     setSubmitting(true)
     try {
       const { error } = await supabase.from("reviews").insert({
@@ -171,6 +193,7 @@ export default function CustomerReviews() {
         {[
           { k:"pending", l:`${pendingLabel} (${pendingReview.length})` },
           { k:"submitted", l:`${submittedLabel} (${myReviews.length})` },
+          { k:"received", l:`Reviews about me (${receivedReviews.length})` },
         ].map(t2=>(
           <button key={t2.k} onClick={()=>setTab(t2.k)}
             style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t2.k?"#e6821e":"#555555", color:tab===t2.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t2.k?700:400 }}>
@@ -259,6 +282,40 @@ export default function CustomerReviews() {
         </div>
       )}
 
+      {tab==="received"&&(
+        <div>
+          {receivedReviews.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No reviews about you yet</div>}
+          {receivedReviews.map(r=>(
+            <div key={r.id} style={{ background:"#fff", border:"1px solid #eee", borderRadius:10, padding:"1rem", marginBottom:8 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
+                <div>
+                  <div style={{ fontSize:13, fontWeight:600 }}>{r.provider?.business_name||r.provider?.first_name} {r.provider?.last_name}</div>
+                  <div style={{ fontSize:10, color:"#888", marginTop:2 }}>{new Date(r.created_at).toLocaleDateString()}</div>
+                </div>
+                <div style={{ display:"flex", gap:1 }}>{[1,2,3,4,5].map(s=><span key={s} style={{ color:s<=r.customer_rating?"#378add":"#ddd", fontSize:16 }}>★</span>)}</div>
+              </div>
+              {r.customer_review&&<div style={{ fontSize:12, color:"#555", fontStyle:"italic", marginBottom:8 }}>"{"}{"}r.customer_review{"}"}"</div>}
+              {r.customer_response?(
+                <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7520", borderRadius:8, padding:"0.5rem 0.75rem" }}>
+                  <div style={{ fontSize:10, color:"#1d9e75", fontWeight:600, marginBottom:2 }}>Your response</div>
+                  <div style={{ fontSize:12, color:"#333" }}>{r.customer_response}</div>
+                </div>
+              ):respondingTo===r.id?(
+                <div>
+                  <textarea value={responseText} onChange={e=>setResponseText(e.target.value)} rows={3} placeholder="Write a professional response..."
+                    style={{ width:"100%", background:"#f8f8f8", border:"1px solid #ddd", borderRadius:8, padding:"10px 12px", fontSize:12, outline:"none", resize:"none", boxSizing:"border-box" }}/>
+                  <div style={{ display:"flex", gap:8, marginTop:6 }}>
+                    <button onClick={()=>submitResponse(r.id)} disabled={submittingResponse} style={{ background:"#378add", border:"none", borderRadius:7, color:"#fff", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>{submittingResponse?"Posting...":"Post Response"}</button>
+                    <button onClick={()=>{ setRespondingTo(null); setResponseText("") }} style={{ background:"#f0f0f0", border:"none", borderRadius:7, color:"#555", fontSize:12, padding:"8px 14px", cursor:"pointer" }}>Cancel</button>
+                  </div>
+                </div>
+              ):(
+                <button onClick={()=>{ setRespondingTo(r.id); setResponseText("") }} style={{ background:"#eff6ff", border:"1px solid #378add30", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>💬 Respond</button>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
       {tab==="submitted"&&(
         <div>
           {myReviews.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>{t("noDataYet")}</div>}

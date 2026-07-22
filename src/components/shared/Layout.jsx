@@ -242,6 +242,7 @@ export default function Layout({ children }) {
     { path:"/dashboard/analytics", key:"analytics", icon:"📊" },
     { path:"/dashboard/qrcode", label:"My QR Code", icon:"📱" },
     { path:"/dashboard/reviews", key:"reviews", icon:"⭐" },
+    { path:"/dashboard/customer-reviews", label:"Rate Customers", icon:"👤" },
     { path:"/dashboard/business-hours", label:"Business Hours", icon:"🕐" },
     { path:"/dashboard/availability", key:"availability", icon:"🗓️" },
     { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
