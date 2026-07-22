@@ -23,6 +23,8 @@ export default function AdminDriverVetting() {
   const [rescheduling, setRescheduling] = useState(null)
   const [rescheduleForm, setRescheduleForm] = useState({ date:"", time:"" })
   const [search, setSearch] = useState("")
+  const [unverifiedDrivers, setUnverifiedDrivers] = useState([])
+  const [bulkVerifying, setBulkVerifying] = useState(false)
 
   useEffect(() => { load() }, [])
 
@@ -31,6 +33,13 @@ export default function AdminDriverVetting() {
       .select("*, driver:profiles!driver_vetting_appointments_driver_id_fkey(id,first_name,last_name,driver_vehicle_type,vetting_status,is_verified,driver_category)")
       .order("appointment_date", { ascending:true })
     setAppointments(data||[])
+    // Load unverified drivers
+    const { data: unverified } = await supabase.from("profiles")
+      .select("id,first_name,last_name,driver_vehicle_type,created_at")
+      .eq("role","driver")
+      .eq("is_verified",false)
+      .order("created_at",{ascending:false})
+    setUnverifiedDrivers(unverified||[])
     setLoading(false)
   }
 
@@ -46,6 +55,24 @@ export default function AdminDriverVetting() {
     await loadDocuments(appt.driver_id)
   }
 
+  async function verifySingleDriver(driverId, name) {
+    if(!confirm("Verify "+name+"? Make sure you have reviewed their documents.")) return
+    await supabase.from("profiles").update({
+      is_verified: true,
+      documents_verified: true,
+      vetting_status: "approved",
+      verified_by: user.id,
+      verified_at: new Date().toISOString(),
+    }).eq("id", driverId)
+    await supabase.from("notifications").insert({
+      user_id: driverId,
+      title: "Account Verified! ✅",
+      message: "Congratulations! Your driver account has been verified. You can now accept delivery and concierge jobs.",
+      type: "success"
+    })
+    toast.success(name+" verified!")
+    load()
+  }
   async function verifyDocument(docId, verified) {
     await supabase.from("driver_documents").update({ is_verified: verified }).eq("id", docId)
     await loadDocuments(selected.driver_id)
@@ -274,6 +301,26 @@ export default function AdminDriverVetting() {
       )}
 
       {/* Search */}
+      {/* Unverified drivers quick panel */}
+      {unverifiedDrivers.length>0&&(
+        <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:12, padding:"1rem", marginBottom:"1.25rem" }}>
+          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e6821e", marginBottom:8 }}>⚠️ {unverifiedDrivers.length} drivers awaiting verification</div>
+          <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+            {unverifiedDrivers.map(d=>(
+              <div key={d.id} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", background:"#fff", borderRadius:8, padding:"8px 12px" }}>
+                <div>
+                  <div style={{ fontSize:12, fontWeight:600 }}>{d.first_name} {d.last_name}</div>
+                  <div style={{ fontSize:10, color:"#888" }}>{d.driver_vehicle_type} · Joined {new Date(d.created_at).toLocaleDateString()}</div>
+                </div>
+                <button onClick={()=>verifySingleDriver(d.id, d.first_name+" "+d.last_name)}
+                  style={{ background:"#1d9e75", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"5px 12px", cursor:"pointer" }}>
+                  ✅ Verify
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search by driver name..."
         style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:8, padding:"9px 12px", fontSize:12, outline:"none", marginBottom:10, fontFamily:"DM Sans,sans-serif" }}/>
 
