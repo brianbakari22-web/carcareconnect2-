@@ -112,7 +112,12 @@ export default function AdminServices() {
               </span>
             </div>
             <div style={{ fontSize:11, color:"#888" }}>
-              {s.category} · {s.duration}min · KES {Number(s.price).toLocaleString()}
+              {s.category} · {s.duration_minutes||s.duration||60}min ·
+              {s.discounted_price ? (
+                <span><span style={{ textDecoration:"line-through", color:"#aaa" }}>KES {Number(s.price).toLocaleString()}</span> <span style={{ color:"#1d9e75", fontWeight:700 }}>KES {Number(s.discounted_price).toLocaleString()}</span> <span style={{ color:"#1d9e75", fontSize:10 }}>({Math.round((1-s.discounted_price/s.price)*100)}% OFF)</span></span>
+              ) : (
+                <span>KES {Number(s.price).toLocaleString()}</span>
+              )}
               <span style={{ marginLeft:8 }}>{s.profile_public?.business_name||`${s.profile_public?.first_name||""} ${s.profile_public?.last_name||""}`}</span>
             </div>
           </div>
