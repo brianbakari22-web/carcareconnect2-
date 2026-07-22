@@ -29,6 +29,8 @@ export default function CustomerReviews() {
   const [reviewing, setReviewing] = useState(null)
   const [form, setForm] = useState({ provider_rating:0, provider_review:"", driver_rating:0, driver_review:"", mechanic_rating:0, mechanic_review:"" })
   const [submitting, setSubmitting] = useState(false)
+  const [photos, setPhotos] = useState([])
+  const [uploading, setUploading] = useState(false)
 
   useEffect(() => { if (user) load() }, [user])
 
@@ -45,6 +47,23 @@ export default function CustomerReviews() {
   const reviewedBookingIds = new Set(myReviews.map(r=>r.booking_id))
   const pendingReview = completedBookings.filter(b=>!reviewedBookingIds.has(b.id))
 
+  async function uploadPhoto(file) {
+    const ext = file.name.split(".").pop()
+    const path = "reviews/"+user.id+"/"+Date.now()+"."+ext
+    const { error } = await supabase.storage.from("review-photos").upload(path, file)
+    if (error) throw error
+    const { data } = supabase.storage.from("review-photos").getPublicUrl(path)
+    return data.publicUrl
+  }
+  async function handlePhotoSelect(e) {
+    const files = Array.from(e.target.files).slice(0,3)
+    setUploading(true)
+    try {
+      const urls = await Promise.all(files.map(uploadPhoto))
+      setPhotos(prev=>[...prev,...urls].slice(0,3))
+    } catch(err) { toast.error("Photo upload failed: "+err.message) }
+    setUploading(false)
+  }
   async function submitReview(e) {
     e.preventDefault()
     if (form.provider_rating===0) return toast.error(t("error"))
@@ -59,6 +78,7 @@ export default function CustomerReviews() {
         provider_review:form.provider_review||null,
         driver_rating:reviewing.is_concierge&&form.driver_rating>0?form.driver_rating:null,
         driver_review:reviewing.is_concierge&&form.driver_review?form.driver_review:null,
+        photo_urls: photos.length>0 ? photos : null,
       })
       if (error) throw error
 
@@ -98,6 +118,7 @@ export default function CustomerReviews() {
 
       toast.success(t("success") + " +50 points!")
       setReviewing(null)
+      setPhotos([])
       setForm({ provider_rating:0, provider_review:"", driver_rating:0, driver_review:"", mechanic_rating:0, mechanic_review:"" })
       load()
     } catch(err) {
@@ -178,7 +199,25 @@ export default function CustomerReviews() {
                   )}
                 </>
               )}
-              <button type="submit" disabled={submitting||form.provider_rating===0}
+              {/* Photo upload */}
+              <div style={{ marginBottom:"1rem" }}>
+                <div style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>Add photos (optional)</div>
+                <input type="file" accept="image/*" multiple onChange={handlePhotoSelect} style={{ display:"none" }} id="review-photos"/>
+                <label htmlFor="review-photos" style={{ display:"inline-block", background:"#f8f8f8", border:"1px solid #eee", borderRadius:8, padding:"8px 14px", fontSize:12, cursor:"pointer", color:"#555" }}>
+                  {uploading?"Uploading...":"📷 Add photos"}
+                </label>
+                {photos.length>0&&(
+                  <div style={{ display:"flex", gap:6, marginTop:8, flexWrap:"wrap" }}>
+                    {photos.map((url,i)=>(
+                      <div key={i} style={{ position:"relative" }}>
+                        <img src={url} alt="" style={{ width:60, height:60, objectFit:"cover", borderRadius:8, border:"1px solid #eee" }}/>
+                        <button type="button" onClick={()=>setPhotos(p=>p.filter((_,j)=>j!==i))} style={{ position:"absolute", top:-4, right:-4, background:"#e24b4a", border:"none", borderRadius:"50%", width:16, height:16, color:"#fff", fontSize:10, cursor:"pointer" }}>×</button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <button type="submit" disabled={submitting||form.provider_rating===0||uploading}
                 style={{ width:"100%", background:form.provider_rating>0?"#e6821e":"#555555", border:"none", borderRadius:9, color:form.provider_rating>0?"#fff":"#666", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:form.provider_rating>0?"pointer":"not-allowed" }}>
                 {submitting?t("loading"):t("submit")}
               </button>
@@ -204,6 +243,14 @@ export default function CustomerReviews() {
                 </div>
               </div>
               {r.provider_review&&<div style={{ fontSize:12, color:"#555555", lineHeight:1.5, marginBottom:8 }}>&quot;{r.provider_review}&quot;</div>}
+              {r.photo_urls?.length>0&&(
+                <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:8 }}>
+                  {r.photo_urls.map((url,i)=>(
+                    <img key={i} src={url} alt="" onClick={()=>window.open(url,"_blank")}
+                      style={{ width:70, height:70, objectFit:"cover", borderRadius:8, cursor:"pointer", border:"1px solid #eee" }}/>
+                  ))}
+                </div>
+              )}
               {r.provider_response&&(
                 <div style={{ background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"0.75rem", marginTop:8 }}>
                   <div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>{t("language")==="sw"?"Jibu la mtoa huduma":"Provider reply"}</div>
