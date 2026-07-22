@@ -29,6 +29,7 @@ export default function AdminMechanics() {
   const [categoryFilter, setCategoryFilter] = useState("all")
   const mapRef = useRef(null)
   const mapInstanceRef = useRef(null)
+  const markersRef = useRef({})
 
   useEffect(() => {
     load()
@@ -102,21 +103,38 @@ export default function AdminMechanics() {
   }
 
   function initMap() {
-    setTimeout(() => {
-      if (!mapRef.current || !window.L) return
-      if (mapInstanceRef.current) { mapInstanceRef.current.remove(); mapInstanceRef.current = null }
-      const L = window.L
-      const map = L.map(mapRef.current).setView([-1.2921, 36.8219], 11)
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map)
-      mechanics.filter(m=>m.current_latitude).forEach(m => {
-        const provider = providers.find(p=>p.id===m.provider_id)
-        const icon = L.divIcon({ className:"", html:`<div style="background:${m.is_available?"#1d9e75":"#e6821e"};width:32px;height:32px;border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:14px;">👨‍🔧</div>`, iconSize:[32,32], iconAnchor:[16,16] })
-        L.marker([m.current_latitude, m.current_longitude], { icon })
-          .addTo(map)
-          .bindPopup(`<b>${m.first_name} ${m.last_name}</b><br>${m.specialization}<br>${provider?.business_name||"Unknown"}<br>${m.is_available?"Available":"On job"}`)
+    const liveMechanics = mechanics.filter(m=>m.current_latitude&&m.current_longitude&&m.is_active)
+    function buildMap() {
+      if (!window.google?.maps?.Map || !mapRef.current) return
+      const center = liveMechanics.length>0 ? { lat:liveMechanics[0].current_latitude, lng:liveMechanics[0].current_longitude } : { lat:-1.2921, lng:36.8219 }
+      if (!mapInstanceRef.current) {
+        mapInstanceRef.current = new window.google.maps.Map(mapRef.current, { center, zoom:12, mapTypeControl:false, streetViewControl:false, fullscreenControl:true, zoomControl:true, gestureHandling:"greedy" })
+      }
+      Object.values(markersRef.current).forEach(m=>m.setMap(null))
+      markersRef.current = {}
+      liveMechanics.forEach(m=>{
+        const color = m.is_available?"#1d9e75":"#e6821e"
+        const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="'+color+'" stroke="white" stroke-width="3"/><text x="24" y="32" font-size="20" text-anchor="middle">\u{1F527}</text></svg>'
+        const icon = { url:"data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(svg), scaledSize:new window.google.maps.Size(48,48), anchor:new window.google.maps.Point(24,24) }
+        const marker = new window.google.maps.Marker({ position:{lat:m.current_latitude,lng:m.current_longitude}, map:mapInstanceRef.current, title:m.first_name+" "+m.last_name, icon })
+        const info = new window.google.maps.InfoWindow({ content:'<div style="font-family:sans-serif;padding:6px"><b>'+m.first_name+' '+m.last_name+'</b><br/>'+( m.specialization||'General mechanic')+'<br/><span style="color:'+color+'">'+(m.is_available?'Available':'On job')+'</span></div>' })
+        marker.addListener("click", ()=>info.open(mapInstanceRef.current, marker))
+        markersRef.current[m.id] = marker
       })
-      mapInstanceRef.current = map
-    }, 200)
+    }
+    if (window.google?.maps?.Map) {
+      buildMap()
+    } else {
+      const ex = document.getElementById("google-maps-sdk")||document.getElementById("google-maps-admin")
+      if(ex) { ex.addEventListener("load", buildMap) }
+      else {
+        const s = document.createElement("script")
+        s.id = "google-maps-mechanic"
+        s.src = "https://maps.googleapis.com/maps/api/js?key="+import.meta.env.VITE_GOOGLE_MAPS_KEY+"&libraries=marker,places&loading=async"
+        s.onload = ()=>setTimeout(buildMap, 100)
+        document.head.appendChild(s)
+      }
+    }
   }
 
   function getProvider(id) {
@@ -147,8 +165,8 @@ export default function AdminMechanics() {
 
   return (
     <div>
-      <style>{`@import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');`}</style>
-      <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"/>
+      
+      
 
       {/* Overview stats */}
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)", gap:10, marginBottom:"1.5rem" }}>
