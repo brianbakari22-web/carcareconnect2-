@@ -219,6 +219,16 @@ export default function AdminAIMonitor() {
         .select("provider_id, status")
         .gte("created_at", new Date(Date.now()-30*24*60*60*1000).toISOString())
 
+      // Escrow stats
+      const { count: heldPayments } = await supabase.from("bookings").select("id",{count:"exact",head:true}).eq("payment_held",true).eq("payment_released",false)
+      const { count: releasedPayments } = await supabase.from("bookings").select("id",{count:"exact",head:true}).eq("payment_released",true)
+      // Bundle stats
+      const { count: totalBundles } = await supabase.from("service_bundles").select("id",{count:"exact",head:true}).eq("is_active",true)
+      // Support tickets by role
+      const { count: providerTickets } = await supabase.from("support_tickets").select("id",{count:"exact",head:true}).eq("user_role","provider")
+      const { count: driverTickets } = await supabase.from("support_tickets").select("id",{count:"exact",head:true}).eq("user_role","driver")
+      // Two-sided reviews
+      const { count: customerRatings } = await supabase.from("reviews").select("id",{count:"exact",head:true}).not("customer_rating","is",null)
       // High review providers
       const { data: topReviews } = await supabase.from("reviews")
         .select("provider_id, provider_rating")
@@ -305,6 +315,12 @@ export default function AdminAIMonitor() {
         total_chat_messages: totalChatMessages||0,
         total_loyalty_points: totalLoyaltyPoints||0,
         total_mechanics: totalMechanics||0,
+        held_payments: heldPayments||0,
+        released_payments: releasedPayments||0,
+        total_bundles: totalBundles||0,
+        provider_tickets: providerTickets||0,
+        driver_tickets: driverTickets||0,
+        customer_ratings_given: customerRatings||0,
         total_payments: totalPayments||0,
         total_promo_codes: totalPromoCodes||0,
         total_vouchers_issued: totalVouchersIssued||0,
@@ -337,7 +353,7 @@ export default function AdminAIMonitor() {
 
 API HEALTH:
 - Supabase database: ${apiHealth.supabase?.status} (${apiHealth.supabase?.ms}ms)
-- M-Pesa payments: ${apiHealth.intasend?.status} (${apiHealth.intasend?.ms}ms) NOTE: Merchant contract pending - KES 1000 limit active until contract signed
+- M-Pesa payments: ${apiHealth.intasend?.status} (${apiHealth.intasend?.ms}ms) IntaSend Tier 2 VERIFIED - KES 300,000 daily limit ACTIVE
 - AI assistant: ${apiHealth.ai?.status} (${apiHealth.ai?.ms}ms)
 
 PLATFORM STATUS RIGHT NOW:
@@ -401,6 +417,16 @@ ENGAGEMENT & COMMUNICATION:
 - Total chat messages exchanged: ${platformData.total_chat_messages}
 - Total loyalty point transactions: ${platformData.total_loyalty_points}
   - Active mechanics: ${platformData.total_mechanics}
+ESCROW SYSTEM:
+- Payments currently held in escrow: ${platformData.held_payments}
+- Payments released to providers: ${platformData.released_payments}
+SERVICE BUNDLES:
+- Active service bundles: ${platformData.total_bundles}
+SUPPORT TICKETS:
+- Provider tickets: ${platformData.provider_tickets}
+- Driver tickets: ${platformData.driver_tickets}
+TWO-SIDED REVIEWS:
+- Provider-to-customer ratings given: ${platformData.customer_ratings_given}
 - Push notification tokens registered: ${platformData.total_device_tokens}
 - Support messages exchanged: ${platformData.total_support_messages}
 
@@ -418,8 +444,17 @@ PLATFORM CONTEXT:
 Provider types: garage, parts_dealer, accessories_shop, tyre_shop, auto_electrician, car_wash, panel_beater, auto_glass
 Driver vehicle types: car, motorcycle (boda boda), tuktuk, van
 Commission rates: parts_dealer=5%, tyre_shop=6%, accessories_shop=8%, garage=10%, auto_electrician=12%, auto_glass=12%, car_wash=10%, panel_beater=15%
-New tables: inventory, orders, order_items, commission_rates
+New tables: inventory, orders, order_items, commission_rates, service_bundles, reviews, support_tickets, provider_penalties, service_vouchers, payment_transactions
 
+NEW FEATURES ADDED (Jul 2026):
+- Escrow payment system: payment held after customer pays, released after 24hr or customer confirms
+- Two-sided reviews: providers rate customers, content filter for bad words/contact info
+- Service bundles: providers create discounted service packages, customers can book bundles
+- Support system: all roles (customer/provider/driver) can file support tickets
+- Claims investigation: private chat threads between admin and each party
+- IntaSend Tier 2 LIVE: KES 300,000 daily limit, real M-Pesa transactions
+- ProviderCustomerReviews: providers can rate customer behavior after bookings
+- Auto-release-payments cron: runs hourly to release held payments after 24hrs
 Give a comprehensive report with these sections:
 
 1. 🔴 CRITICAL (needs action NOW - blocking operations)
@@ -595,6 +630,10 @@ Be specific and actionable. Max 300 words. Use bullet points.`
                     { f:"Marketplace", ok:report.platformData.total_listings>0 },
                     { f:"Driver verification", ok:report.platformData.verified_drivers>0 },
                     { f:"Reviews", ok:report.platformData.total_reviews>0 },
+          { f:"Escrow payments", ok:report.platformData.released_payments>0 },
+          { f:"Service bundles", ok:report.platformData.total_bundles>0 },
+          { f:"Provider support", ok:report.platformData.provider_tickets>=0 },
+          { f:"Two-sided reviews", ok:report.platformData.customer_ratings_given>=0 },
                     { f:"Service claims", ok:report.platformData.total_claims>=0 },
                     { f:"Notifications", ok:report.platformData.total_notifications>0 },
                     { f:"Chat system", ok:report.platformData.total_chat_messages>0 },
