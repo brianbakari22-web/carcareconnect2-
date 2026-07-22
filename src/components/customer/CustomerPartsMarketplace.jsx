@@ -138,6 +138,14 @@ export default function CustomerPartsMarketplace() {
         message: reviewRating+" star review for order #"+reviewOrder.order_number+(reviewText?": \""+reviewText+"\"":""),
         type: "info"
       })
+      // Send push notification to provider
+      try {
+        await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-push`, {
+          method:"POST",
+          headers:{"Content-Type":"application/json","Authorization":`Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`},
+          body:JSON.stringify({ user_id:reviewOrder.provider_id, title:"New Order Review! ⭐", message:`${reviewRating} star review for order #${reviewOrder.order_number}` })
+        })
+      } catch(e) { console.log("Push failed:",e.message) }
       toast.success("Thank you for your review!")
       setReviewOrder(null)
       setReviewRating(5)
