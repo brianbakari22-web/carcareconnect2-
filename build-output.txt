@@ -20,30 +20,6 @@ transforming...
 135|            {r.driver_response?(
 136|              <div style={{ background:"#eff6ff", border:"1px solid #378add20", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
 
-[plugin:vite:esbuild] [plugin vite:esbuild] src/components/customer/CustomerGoService.jsx: The character "}" is not valid inside a JSX element
-547|                </div>
-548|              ))}
-549|              ))}
-   |                ^
-550|            </div>
-551|          )}
-
-[plugin:vite:esbuild] [plugin vite:esbuild] src/components/provider/ProviderOrders.jsx: The character "}" is not valid inside a JSX element
-238|            ))}
-239|          </div>
-240|        )}
-   |         ^
-241|        )}
-242|  
-
-[plugin:vite:esbuild] [plugin vite:esbuild] src/components/provider/ProviderOrders.jsx: The character "}" is not valid inside a JSX element
-239|          </div>
-240|        )}
-241|        )}
-   |         ^
-242|  
-243|        {/* Gradient stats header */}
-
 [plugin:vite:esbuild] [plugin vite:esbuild] src/components/admin/AdminReviews.jsx: The character "}" is not valid inside a JSX element
 119|              </div>
 120|            </div>
@@ -68,13 +44,37 @@ transforming...
 124|            {r.provider_response&&<div style={{ background:"#fff8f0", border:"1px solid #e6821e20", borderRadius:8, padding:"0.5rem 0.75rem", fontSize:11, color:"#555", marginBottom:6 }}>Provider reply: {r.provider_response}</div>}
 125|            {r.driver_response&&<div style={{ background:"#eff6ff", border:"1px solid #378add20", borderRadius:8, padding:"0.5rem 0.75rem", fontSize:11, color:"#555", marginBottom:6 }}>Driver reply: {r.driver_response}</div>}
 
+[plugin:vite:esbuild] [plugin vite:esbuild] src/components/provider/ProviderOrders.jsx: The character "}" is not valid inside a JSX element
+238|            ))}
+239|          </div>
+240|        )}
+   |         ^
+241|        )}
+242|  
+
+[plugin:vite:esbuild] [plugin vite:esbuild] src/components/provider/ProviderOrders.jsx: The character "}" is not valid inside a JSX element
+239|          </div>
+240|        )}
+241|        )}
+   |         ^
+242|  
+243|        {/* Gradient stats header */}
+
+[plugin:vite:esbuild] [plugin vite:esbuild] src/components/customer/CustomerGoService.jsx: The character "}" is not valid inside a JSX element
+547|                </div>
+548|              ))}
+549|              ))}
+   |                ^
+550|            </div>
+551|          )}
+
 [plugin:vite:esbuild] [plugin vite:esbuild] src/components/customer/ProviderStorefront.jsx: The character "}" is not valid inside a JSX element
-202|                        ) : (
-203|                          <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(s.price||0).toLocaleString()}</div>
-204|                        )}
+221|                        ) : (
+222|                          <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(s.price||0).toLocaleString()}</div>
+223|                        )}
    |                         ^
-205|                        <button onClick={()=>setBookingService(s)}
-206|                          style={{ marginTop:6, background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"5px 12px", cursor:"pointer" }}>
+224|                        <button onClick={()=>setBookingService(s)}
+225|                          style={{ marginTop:6, background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"5px 12px", cursor:"pointer" }}>
 
 [32mΓ£ô[39m 1064 modules transformed.
 rendering chunks...
@@ -117,4 +117,4 @@ computing gzip size...
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-[32mΓ£ô built in 5.65s[39m
+[32mΓ£ô built in 5.51s[39m

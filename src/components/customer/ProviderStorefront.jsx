@@ -26,27 +26,46 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
     if (!bookingService) return
     setBookingLoading(true)
     try {
-      const platformRate = 0.10
-      const providerRate = 0.90
-      await supabase.from("bookings").insert({
-        customer_id: user.id,
-        provider_id: provider.id,
-        service_id: bookingService.id,
-        service_name: bookingService.name,
+      const serviceAmount = Number(bookingService.discounted_price||bookingService.price||0)
+      const { data: rateRow } = await supabase.from("commission_rates")
+        .select("platform_rate,provider_rate")
+        .eq("provider_type", (provider.provider_type||"garage")+"_"+(bookingService.category||"shop_standard"))
+        .maybeSingle()
+      const platformRate = rateRow ? Number(rateRow.platform_rate) : 0.10
+      const providerRate = rateRow ? Number(rateRow.provider_rate) : 0.90
+      const { data: feeRow } = await supabase.from("app_settings").select("value").eq("key","customer_processing_fee_rate").maybeSingle()
+      const custFeeRate = feeRow ? Number(feeRow.value)/100 : 0.01
+      const processingFee = Math.ceil(serviceAmount * custFeeRate)
+      const totalAmount = serviceAmount + processingFee
+      const bookingNumber = "BK-"+Math.random().toString(36).substring(2,10).toUpperCase()
+      const { data: booking, error } = await supabase.from("bookings").insert({
+        customer_id: user.id, provider_id: provider.id,
+        service_id: bookingService.id, service_name: bookingService.name,
         service_category: bookingService.category||"shop_standard",
-        booking_date: bookForm.date,
-        booking_time: bookForm.time,
-        total_amount: Number(bookingService.price),
-        platform_commission: Number(bookingService.price)*platformRate,
-        provider_earnings: Number(bookingService.price)*providerRate,
-        platform_commission_rate: platformRate,
-        provider_commission_rate: providerRate,
-        payment_method: bookForm.payment_method,
-        payment_status: "pending",
-        status: "pending",
+        booking_date: bookForm.date, booking_time: bookForm.time,
+        booking_number: bookingNumber,
+        amount: serviceAmount, processing_fee: processingFee, total_amount: totalAmount,
+        platform_commission: serviceAmount*platformRate, provider_earnings: serviceAmount*providerRate,
+        platform_commission_rate: platformRate, provider_commission_rate: providerRate,
+        payment_method: bookForm.payment_method, payment_status: "pending", status: "pending",
         notes: bookForm.notes,
-      })
-      toast.success("Booking submitted! 🎉")
+      }).select().single()
+      if (error) throw error
+      if(bookForm.payment_method==="mpesa") {
+        const { data: cp } = await supabase.from("profile_sensitive").select("mpesa_number").eq("id", user.id).maybeSingle()
+        if(cp?.mpesa_number) {
+          try {
+            await fetch(import.meta.env.VITE_SUPABASE_URL+"/functions/v1/intasend-stk-push", {
+              method:"POST",
+              headers:{"Content-Type":"application/json","Authorization":"Bearer "+import.meta.env.VITE_SUPABASE_ANON_KEY},
+              body:JSON.stringify({ booking_id:booking.id, amount:serviceAmount, phone:cp.mpesa_number, customer_id:user.id, provider_id:provider.id, service_name:bookingService.name })
+            })
+          } catch(e) {}
+        }
+      }
+      await supabase.from("notifications").insert({ user_id:provider.id, title:"New booking! 📅", message:"New booking for "+bookingService.name+" on "+bookForm.date+" #"+bookingNumber, type:"success" })
+      try { await fetch(import.meta.env.VITE_SUPABASE_URL+"/functions/v1/send-push", { method:"POST", headers:{"Content-Type":"application/json","Authorization":"Bearer "+import.meta.env.VITE_SUPABASE_ANON_KEY}, body:JSON.stringify({ user_id:provider.id, title:"New Booking! 📅", message:"New booking for "+bookingService.name }) }) } catch(e) {}
+      toast.success("Booking submitted! Check your M-Pesa for payment prompt 📱")
       setBookingService(null)
       setBookForm({ date:"", time:"", notes:"", payment_method:"mpesa" })
     } catch(err) { toast.error(err.message) }
