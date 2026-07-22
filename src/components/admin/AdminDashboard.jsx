@@ -120,8 +120,8 @@ export default function AdminDashboard() {
       providers: ps.filter(p=>p.role==="provider").length,
       drivers: ps.filter(p=>p.role==="driver").length,
       bookings: bks.length,
-      revenue: completed.reduce((s,b)=>s+Number(b.platform_commission||0),0),
-      pending: bks.filter(b=>b.status==="pending").length,
+      revenue: bks.reduce((s,b)=>s+Number(b.platform_commission||0),0),
+      total_revenue: bks.reduce((s,b)=>s+Number(b.total_amount||0),0),
       completed: completed.length,
     })
     setOnlineDrivers(driverStatus?.length||0)
@@ -277,9 +277,9 @@ export default function AdminDashboard() {
         {/* Stat strip */}
         <div style={{ position:"relative", zIndex:1, display:"grid", gridTemplateColumns:"repeat(2,1fr)", borderTop:"1px solid #eeeeee" }}>
           {[
-            { label:"Platform revenue", value:`KES ${stats.revenue.toFixed(2)}`, color:"#e6821e" },
-            { label:"Total bookings", value:stats.bookings, color:"#000000" },
-            { label:"Pending now", value:stats.pending, color:stats.pending>0?"#e6821e":"#ffffff" },
+            { label:"CCC Commission", value:`KES ${Number(stats.revenue).toLocaleString()}`, color:"#e6821e" },
+            { label:"Gross revenue", value:`KES ${Number(stats.total_revenue||0).toLocaleString()}`, color:"#1d9e75" },
+            { label:"Pending bookings", value:stats.pending, color:stats.pending>0?"#e6821e":"#888" },
             { label:"Total users", value:stats.users, color:"#000000" },
           ].map((s,i)=>(
             <div key={s.label} style={{ padding:isMobile?"0.6rem 0.9rem":"0.9rem 1.25rem", borderRight:i%2===0?"1px solid rgba(255,255,255,0.2)":"none", borderBottom:i<2?"1px solid rgba(255,255,255,0.2)":"none" }}>
