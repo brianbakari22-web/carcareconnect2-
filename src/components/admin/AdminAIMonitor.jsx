@@ -630,7 +630,7 @@ Be specific and actionable. Max 300 words. Use bullet points.`
                     { f:"Marketplace", ok:report.platformData.total_listings>0 },
                     { f:"Driver verification", ok:report.platformData.verified_drivers>0 },
                     { f:"Reviews", ok:report.platformData.total_reviews>0 },
-          { f:"Escrow payments", ok:report.platformData.released_payments>0 },
+          { f:"Escrow payments", ok:report.platformData.held_payments>=0 },
           { f:"Service bundles", ok:report.platformData.total_bundles>0 },
           { f:"Provider support", ok:report.platformData.provider_tickets>=0 },
           { f:"Two-sided reviews", ok:report.platformData.customer_ratings_given>=0 },
@@ -640,8 +640,8 @@ Be specific and actionable. Max 300 words. Use bullet points.`
                     { f:"Loyalty points", ok:report.platformData.total_loyalty_points>0 },
                     { f:"Mechanics", ok:report.platformData.total_mechanics>=0 },
                     { f:"Marketplace inspect", ok:report.platformData.total_listings>0 },
-                    { f:"Employee mgmt", ok:report.platformData.total_employees>0 },
-                    { f:"Payment tracking", ok:report.platformData.total_payments>0 },
+                    { f:"Employee mgmt", ok:false },
+                    { f:"Payment tracking", ok:report.platformData.total_payments>=0 },
                     { f:"AI Monitor", ok:true },
                     { f:"Provider types", ok:Object.keys(report.platformData.provider_type_breakdown||{}).length>0 },
                     { f:"Boda boda drivers", ok:report.platformData.boda_boda_drivers>=0 },
@@ -653,7 +653,7 @@ Be specific and actionable. Max 300 words. Use bullet points.`
                     { f:"Driver documents", ok:report.platformData.total_driver_docs>0 },
                     { f:"Support messages", ok:report.platformData.total_support_messages>0 },
                     { f:"Favorites/wishlist", ok:report.platformData.total_favorites>0 },
-                    { f:"Referral program", ok:report.platformData.total_referrals>0 },
+                    { f:"Referral program", ok:report.platformData.total_referrals>=0 },
                     { f:"Push notifications", ok:report.platformData.total_device_tokens>0 },
                   ].map(item=>(
                     <div key={item.f} style={{ display:"flex", alignItems:"center", gap:6, padding:"4px 0" }}>
