@@ -10,7 +10,8 @@ export async function initPushNotifications(userId) {
 
   try {
     OneSignal.initialize("8722cee5-c2e2-431c-a15d-2af78773b404")
-    const permission = await OneSignal.Notifications.requestPermission(true)
+    let permission = false
+        try { permission = await OneSignal.Notifications.requestPermission(true) } catch(e) { return }
     
     if (permission) {
       OneSignal.login(String(userId))
