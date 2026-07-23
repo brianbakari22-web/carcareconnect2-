@@ -188,19 +188,6 @@ import AdminDeletionRequests from "./components/admin/AdminDeletionRequests"
 const ADMIN_SECRET = import.meta.env.VITE_ADMIN_SECRET || "ccc-admin-x7k9m2p4q8"
 
 function Loader({ text }) {
-  if (forceUpdate) return (
-    <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", padding:"2rem", background:"#f8f8f8", fontFamily:"DM Sans,sans-serif" }}>
-      <div style={{ background:"#fff", borderRadius:16, padding:"2rem", maxWidth:360, width:"100%", textAlign:"center", boxShadow:"0 4px 24px rgba(0,0,0,0.08)" }}>
-        <div style={{ fontSize:48, marginBottom:16 }}>🚗</div>
-        <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, marginBottom:8 }}>Update Required</div>
-        <div style={{ fontSize:14, color:"#666", lineHeight:1.6, marginBottom:24 }}>{updateMessage}</div>
-        <a href="https://play.google.com/store/apps/details?id=care.carcareconnect.app"
-          style={{ display:"block", background:"#e6821e", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:15, fontWeight:700, padding:"14px", textDecoration:"none" }}>
-          Update Now 🚀
-        </a>
-      </div>
-    </div>
-  )
   return (
     <div style={{ minHeight:"100vh", background:"#ffffff", display:"flex", alignItems:"center", justifyContent:"center" }}>
       <div style={{ color:"#e6821e", fontFamily:"Syne,sans-serif", fontSize:16 }}>{text}</div>
@@ -498,6 +485,20 @@ export default function App() {
       }
     })()
   }, [])
+  if (forceUpdate) return (
+    <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", padding:"2rem", background:"#f8f8f8", fontFamily:"DM Sans,sans-serif" }}>
+      <div style={{ background:"#fff", borderRadius:16, padding:"2rem", maxWidth:360, width:"100%", textAlign:"center", boxShadow:"0 4px 24px rgba(0,0,0,0.08)" }}>
+        <div style={{ fontSize:48, marginBottom:16 }}>🚗</div>
+        <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, marginBottom:8 }}>Update Required</div>
+        <div style={{ fontSize:14, color:"#666", lineHeight:1.6, marginBottom:24 }}>{updateMessage}</div>
+        <a href="https://play.google.com/store/apps/details?id=care.carcareconnect.app"
+          style={{ display:"block", background:"#e6821e", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:15, fontWeight:700, padding:"14px", textDecoration:"none" }}>
+          Update Now 🚀
+        </a>
+      </div>
+    </div>
+  )
+
   return (
     <ThemeProvider>
       <LanguageProvider>
