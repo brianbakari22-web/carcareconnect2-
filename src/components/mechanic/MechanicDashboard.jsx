@@ -26,6 +26,8 @@ export default function MechanicDashboard() {
   const [activeJob, setActiveJob] = useState(null)
   const [sharing, setSharing] = useState(false)
   const [available, setAvailable] = useState(mechanic?.is_available ?? true)
+  const [partsCarried, setPartsCarried] = useState(mechanic?.parts_carried||[])
+  const [carriesParts, setCarriesParts] = useState(mechanic?.carries_parts||false)
   const [locationInterval, setLocationInterval] = useState(null)
   const [uploadingPhoto, setUploadingPhoto] = useState(null)
   const [sosLoading, setSosLoading] = useState(false)
