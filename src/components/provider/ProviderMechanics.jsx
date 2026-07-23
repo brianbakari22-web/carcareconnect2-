@@ -334,13 +334,8 @@ export default function ProviderMechanics() {
                 <div style={{ background:"#eff6ff", borderRadius:10, padding:"0.75rem", marginBottom:10 }}>
                   <div style={{ fontSize:12, fontWeight:700, color:"#378add", marginBottom:8 }}>🔑 {m.mechanic_code?"Reset":"Set"} PIN for {m.first_name}</div>
                   <div style={{ display:"flex", gap:8 }}>
-                    <input type="password" value={pin} onChange={e=>setPin(e.target.value.replace(/D/g,"").slice(0,6))}
-                      placeholder="Enter 4-6 digit PIN" maxLength={6}
-                      style={{ flex:1, background:"#fff", border:"1px solid #378add40", borderRadius:8, padding:"8px 12px", fontSize:14, letterSpacing:4, color:"#000", outline:"none" }}/>
-                    <button onClick={()=>setMechanicPin(m.id)} disabled={settingPin||pin.length<4}
-                      style={{ background:pin.length>=4?"#378add":"#ccc", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>
-                      {settingPin?"...":"Save"}
-                    </button>
+                    <input type="password" value={pin} onChange={e=>setPin(e.target.value.replace(/\D/g,"").slice(0,6))} placeholder="e.g. 1234" maxLength={6} style={{ flex:1, background:"#fff", border:"1px solid #378add40", borderRadius:8, padding:"8px 12px", fontSize:14, letterSpacing:4, color:"#000", outline:"none" }}/>
+                    <button onClick={()=>setMechanicPin(m.id)} disabled={settingPin||pin.length<4} style={{ background:pin.length>=4?"#378add":"#ccc", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer", whiteSpace:"nowrap", flexShrink:0 }}>{settingPin?"Saving...":"Save PIN"}</button>
                   </div>
                   <div style={{ fontSize:10, color:"#666", marginTop:6 }}>
                     Login URL: carcareconnect.care/mechanic-login
