@@ -173,12 +173,9 @@ export default function AuthPage() {
 
 
 
-                // Check if email confirmation required
-        const { data: { user: newUser } } = await supabase.auth.getUser()
-        if (!newUser?.confirmed_at) {
-          setStep("verify_email")
-          return
-        }
+                // Always show verify email screen after signup
+        setStep("verify_email")
+        return
         let tries = 0
         const checkProfile = async () => {
           const { data: { user: u } } = await supabase.auth.getUser()
