@@ -126,8 +126,7 @@ export default function AdminAIMonitor() {
         body:JSON.stringify({ping:true})
       })
       const ms = Date.now()-start
-      // Any response means edge function is reachable
-      checks.intasend = { status:"ok", ms }
+      checks.intasend = { status: res.status < 503 ? "ok" : "error", ms }
     } catch(e) { checks.intasend = { status:"error", ms:0 } }
 
     // Check AI
