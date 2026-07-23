@@ -45,10 +45,11 @@ export async function initWebPushForAdmin(userId) {
   if (Capacitor.isNativePlatform()) return
   if (!userId) return
   if (typeof window === "undefined" || !window.OneSignalDeferred) return
+  if (typeof Notification !== "undefined" && Notification.permission === "denied") return
   try {
     window.OneSignalDeferred.push(async function(OneSignal) {
       try {
-        const permission = await OneSignal.Notifications.requestPermission(true)
+        let permission = false; try { permission = await OneSignal.Notifications.requestPermission(true) } catch(e) { return }
         if (!permission) return
         await OneSignal.login(String(userId))
         let attempts = 0
