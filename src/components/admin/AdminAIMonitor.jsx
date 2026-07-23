@@ -505,15 +505,16 @@ Be specific and actionable. Max 300 words. Use bullet points.`
     setChatMessages(msgs)
     setChatLoading(true)
     try {
-      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/ai-chat", {
+      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/ai-admin-execute", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc"
         },
         body: JSON.stringify({
-          system: "You are the Car Care Connect AI Admin Monitor with full platform knowledge. Platform data: " + JSON.stringify(report?.platformData||{}),
-          messages: msgs.map(m=>({ role:m.role, content:m.content }))
+          system: `You are the Car Care Connect AI Admin. You have REAL-TIME database access. Platform snapshot: ${JSON.stringify(report?.platformData||{})}. Admin ID: ${user?.id}`,
+          messages: msgs.map(m=>({ role:m.role, content:m.content })),
+          platform_data: report?.platformData||{}
         })
       })
       const data = await res.json()
