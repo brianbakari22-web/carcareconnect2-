@@ -193,8 +193,8 @@ export function AuthProvider({ children }) {
         } catch(refErr) { console.log("Referral save error:", refErr.message) }
       }
       // Profile created by webhook after email confirmation
+      console.log("Signup complete - awaiting email verification")
     }
-      console.log("Signup complete - awaiting email verification for:", data.user.email)
     return data
   }
 
