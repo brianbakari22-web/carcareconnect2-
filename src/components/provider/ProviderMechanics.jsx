@@ -203,8 +203,8 @@ export default function ProviderMechanics() {
             </div>
             <div style={{ fontSize:10, color:"#888", marginTop:4 }}>
               {form.commission_type==="percentage"
-                ? "Mechanic earns "+form.commission_rate+"% of each completed job value"
-                : "Mechanic earns KES "+form.commission_rate+" per completed job"}
+                ? `Your private arrangement: mechanic earns ${form.commission_rate}% per completed job`
+                : `Your private arrangement: mechanic earns KES ${form.commission_rate} per completed job`}
             </div>
           </div>
           <button onClick={addMechanic} disabled={submitting}
