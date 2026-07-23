@@ -33,8 +33,6 @@ export default function AdminClaims() {
     const sub = supabase.channel("admin-claims-live")
       .on("postgres_changes", { event:"*", schema:"public", table:"service_claims" }, () => load())
       .subscribe()
-    return () => supabase.removeChannel(sub)
-      .subscribe()
   }, [])
 
   async function loadClaimMessages() {
