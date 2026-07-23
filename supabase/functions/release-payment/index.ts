@@ -41,7 +41,7 @@ serve(async (req) => {
     const payoutResp = await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/intasend-payout`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}` },
-      body: JSON.stringify({ phone: providerPhone, amount: providerAmount, narrative: `CCC Payment - ${booking.service_name} #${booking.booking_number}` })
+      body: JSON.stringify({ phone: providerPhone, amount: providerAmount, narrative: `CCC Payment - ${booking.service_name} #${booking.booking_number}`, payment_method: prefMethod, paybill_account: pSens?.paybill_account, booking_id: booking.id, provider_id: booking.provider_id })
     })
 
     const payoutData = await payoutResp.json()
@@ -89,3 +89,4 @@ serve(async (req) => {
     return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
   }
 })
+

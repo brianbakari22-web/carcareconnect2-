@@ -77,7 +77,7 @@ serve(async (req) => {
           await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/intasend-payout`, {
             method: "POST",
             headers: { "Content-Type": "application/json", "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}` },
-            body: JSON.stringify({ phone: driverPhone, amount: driverAmount, narrative: "CCC Driver earnings" })
+            body: JSON.stringify({ phone: driverPhone, amount: driverAmount, narrative: "CCC Driver earnings", payment_method: driverPrefMethod, booking_id: booking?.id, provider_id: booking?.driver_id })
           })
         }
         await supabase.from("bookings").update({ driver_earnings: driverAmount, driver_payout: driverAmount }).eq("id", txn.booking_id)
@@ -132,3 +132,4 @@ serve(async (req) => {
     return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: corsHeaders })
   }
 })
+
