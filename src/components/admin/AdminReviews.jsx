@@ -118,9 +118,9 @@ export default function AdminReviews() {
               {r.mechanic_rating&&<div style={{ fontSize:12, color:"#1d9e75" }}>Mechanic: {"★".repeat(r.mechanic_rating)}</div>}
             </div>
           </div>
-          {r.provider_review&&<div style={{ fontSize:12, color:"#555", fontStyle:"italic", marginBottom:6 }}>"{"}{r.provider_review}{"}"}"</div>}
-          {r.driver_review&&<div style={{ fontSize:12, color:"#378add", fontStyle:"italic", marginBottom:6 }}>Driver: "{"}{r.driver_review}{"}"}"</div>}
-          {r.mechanic_review&&<div style={{ fontSize:12, color:"#1d9e75", fontStyle:"italic", marginBottom:6 }}>Mechanic: "{"}{r.mechanic_review}{"}"}"</div>}
+          {r.provider_review&&<div style={{ fontSize:12, color:"#555", fontStyle:"italic", marginBottom:6 }}>"{r.provider_review}"</div>}
+          {r.driver_review&&<div style={{ fontSize:12, color:"#378add", fontStyle:"italic", marginBottom:6 }}>Driver: "{r.driver_review}"</div>}
+          {r.mechanic_review&&<div style={{ fontSize:12, color:"#1d9e75", fontStyle:"italic", marginBottom:6 }}>Mechanic: "{r.mechanic_review}"</div>}
           {r.provider_response&&<div style={{ background:"#fff8f0", border:"1px solid #e6821e20", borderRadius:8, padding:"0.5rem 0.75rem", fontSize:11, color:"#555", marginBottom:6 }}>Provider reply: {r.provider_response}</div>}
           {r.driver_response&&<div style={{ background:"#eff6ff", border:"1px solid #378add20", borderRadius:8, padding:"0.5rem 0.75rem", fontSize:11, color:"#555", marginBottom:6 }}>Driver reply: {r.driver_response}</div>}
           {r.admin_notes&&<div style={{ background:"#f5f3ff", border:"1px solid #8b5cf620", borderRadius:8, padding:"0.5rem 0.75rem", fontSize:11, color:"#8b5cf6", marginBottom:6 }}>Admin note: {r.admin_notes}</div>}

@@ -131,7 +131,7 @@ export default function DriverReviews() {
               {[1,2,3,4,5].map(s=><span key={s} style={{ color:s<=r.driver_rating?"#378add":"#ddd", fontSize:16 }}>★</span>)}
             </div>
           </div>
-          {r.driver_review&&<div style={{ fontSize:12, color:"#555", lineHeight:1.5, marginBottom:8, fontStyle:"italic" }}>"{"}{r.driver_review}{"}"}"</div>}
+          {r.driver_review&&<div style={{ fontSize:12, color:"#555", lineHeight:1.5, marginBottom:8, fontStyle:"italic" }}>"{r.driver_review}"</div>}
           {r.driver_response?(
             <div style={{ background:"#eff6ff", border:"1px solid #378add20", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
               <div style={{ fontSize:10, color:"#378add", fontWeight:600, marginBottom:4 }}>Your reply</div>

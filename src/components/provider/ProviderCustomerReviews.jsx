@@ -175,7 +175,7 @@ export default function ProviderCustomerReviews() {
                 </div>
                 <StarRating value={r.customer_rating||0} color="#378add"/>
               </div>
-              {r.customer_review&&<div style={{ fontSize:12, color:"#555", fontStyle:"italic" }}>"{"}{r.customer_review}{"}"}"</div>}
+              {r.customer_review&&<div style={{ fontSize:12, color:"#555", fontStyle:"italic" }}>"{r.customer_review}"</div>}
               {r.customer_response&&(
                 <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7520", borderRadius:8, padding:"0.5rem 0.75rem", marginTop:6 }}>
                   <div style={{ fontSize:10, color:"#1d9e75", fontWeight:600, marginBottom:2 }}>Customer response</div>
