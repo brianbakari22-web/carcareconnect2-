@@ -33,7 +33,7 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
       const serviceAmount = Number(bookingService.discounted_price||bookingService.price||0)
       const { data: rateRow } = await supabase.from("commission_rates")
         .select("platform_rate,provider_rate")
-        .eq("provider_type", (provider.provider_type||"garage")+"_"+(bookingService.category||"shop_standard"))
+        .eq("provider_type", ({"garage":"garage_shop_standard","garage_premium":"garage_shop_premium","panel_beater":"panel_beater_shop_standard","auto_electrician":"auto_electrician_shop_standard","auto_glass":"auto_glass_shop_standard","car_wash":"car_wash_standard_wash"}[provider.provider_type] || (provider.provider_type||"garage_shop_standard")+"_"+(bookingService.category||"shop_standard")))
         .maybeSingle()
       const platformRate = rateRow ? Number(rateRow.platform_rate) : 0.10
       const providerRate = rateRow ? Number(rateRow.provider_rate) : 0.90
