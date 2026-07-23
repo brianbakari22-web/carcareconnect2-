@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
 import toast from "react-hot-toast"
 
@@ -28,6 +29,8 @@ function Badge({ label, color, bg, icon }) {
 }
 
 export default function AdminPenalties() {
+  const { user, profile } = useAuth()
+  if (!user || profile?.role !== "admin") return null
   const [users, setUsers] = useState([])
   const [violations, setViolations] = useState([])
   const [penalties, setPenalties] = useState([])

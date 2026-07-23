@@ -1,10 +1,13 @@
 import { useEffect, useState, useRef } from "react"
+import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 import { validateFile } from "../../lib/uploadValidation"
 
 export default function AdminDrivers() {
+  const { user, profile } = useAuth()
+  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [drivers, setDrivers] = useState([])
   const [driverDocs, setDriverDocs] = useState({})

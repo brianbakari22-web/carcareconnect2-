@@ -1,7 +1,10 @@
 import QRCodeCard from "../shared/QRCodeCard"
+import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 
 export default function AdminQRCode() {
+  const { user, profile } = useAuth()
+  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const platformUrl = "https://carcareconnect.care"
 

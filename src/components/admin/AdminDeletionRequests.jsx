@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react"
+import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
 import toast from "react-hot-toast"
 
 export default function AdminDeletionRequests() {
+  const { user, profile } = useAuth()
+  if (!user || profile?.role !== "admin") return null
   const [requests, setRequests] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState("pending")

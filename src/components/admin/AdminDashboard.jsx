@@ -1,4 +1,5 @@
 import useIsMobile from "../../lib/useIsMobile"
+import { useAuth } from "../../contexts/AuthContext"
 import AdminAIMonitor from "./AdminAIMonitor"
 import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
@@ -50,6 +51,8 @@ function NetworkCanvas() {
 }
 
 export default function AdminDashboard() {
+  const { user, profile } = useAuth()
+  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [stats, setStats] = useState({ users:0, providers:0, drivers:0, customers:0, bookings:0, revenue:0, pending:0, completed:0 })
   const [onlineDrivers, setOnlineDrivers] = useState(0)

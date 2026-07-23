@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react"
+import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
 
 export default function AdminTripReports() {
+  const { user, profile } = useAuth()
+  if (!user || profile?.role !== "admin") return null
   const [bookings, setBookings] = useState([])
   const [selected, setSelected] = useState(null)
   const [logs, setLogs] = useState([])

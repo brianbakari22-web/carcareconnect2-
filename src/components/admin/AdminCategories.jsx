@@ -1,4 +1,5 @@
 import useIsMobile from "../../lib/useIsMobile"
+import { useAuth } from "../../contexts/AuthContext"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import toast from "react-hot-toast"
@@ -17,6 +18,8 @@ const DEFAULT_CATEGORIES = [
 ]
 
 export default function AdminCategories() {
+  const { user, profile } = useAuth()
+  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [categories, setCategories] = useState([])
   const [form, setForm] = useState({ name:"", icon:"🔧", description:"" })

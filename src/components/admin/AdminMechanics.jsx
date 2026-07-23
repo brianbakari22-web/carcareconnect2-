@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react"
+import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
@@ -14,6 +15,8 @@ const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", co
 const GC = { pending:"#e6821e", accepted:"#1d9e75", declined:"#e24b4a", timeout:"#555" }
 
 export default function AdminMechanics() {
+  const { user, profile } = useAuth()
+  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [mechanics, setMechanics] = useState([])
   const [providers, setProviders] = useState([])

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
@@ -207,6 +208,8 @@ function DiagnosticPanel({ checkKey, onResolved }) {
 }
 
 export default function AdminHealth() {
+  const { user, profile } = useAuth()
+  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [results, setResults] = useState({})
   const [loading, setLoading] = useState(true)

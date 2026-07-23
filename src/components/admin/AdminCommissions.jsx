@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
 import { auditLog, AUDIT_ACTIONS } from "../../lib/auditLog"
 import useIsMobile from "../../lib/useIsMobile"
@@ -25,6 +26,8 @@ const PROVIDER_TYPES = [
 ]
 
 export default function AdminCommissions() {
+  const { user, profile } = useAuth()
+  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [rates, setRates] = useState([])
   const [loading, setLoading] = useState(true)

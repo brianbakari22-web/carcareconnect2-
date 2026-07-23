@@ -1,8 +1,11 @@
 import useIsMobile from "../../lib/useIsMobile"
+import { useAuth } from "../../contexts/AuthContext"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 
 export default function AdminRevenue() {
+  const { user, profile } = useAuth()
+  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [bookings, setBookings] = useState([])
   const [clvData, setClvData] = useState([])

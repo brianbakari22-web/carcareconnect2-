@@ -3,7 +3,10 @@ import { supabase } from "../../lib/supabase"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
+import { useAuth } from "../../contexts/AuthContext"
 export default function AdminPaymentTracking() {
+  const { user, profile } = useAuth()
+  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [bookings, setBookings] = useState([])
   const [goPayments, setGoPayments] = useState([])

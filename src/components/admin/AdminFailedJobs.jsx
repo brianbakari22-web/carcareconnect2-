@@ -3,6 +3,8 @@ import { supabase } from "../../lib/supabase"
 import toast from "react-hot-toast"
 
 export default function AdminFailedJobs() {
+  const { user, profile } = useAuth()
+  if (!user || profile?.role !== "admin") return null
   const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState("failed")
@@ -107,3 +109,4 @@ export default function AdminFailedJobs() {
     </div>
   )
 }
+import { useAuth } from "../../contexts/AuthContext"

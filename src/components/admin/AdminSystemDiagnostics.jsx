@@ -17,6 +17,8 @@ const ROUTES = [
 ]
 
 export default function AdminSystemDiagnostics() {
+  const { user, profile } = useAuth()
+  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [running, setRunning] = useState(false)
   const [results, setResults] = useState(null)
@@ -240,4 +242,5 @@ export default function AdminSystemDiagnostics() {
     </div>
   )
 }
+import { useAuth } from "../../contexts/AuthContext"
 

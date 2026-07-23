@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react"
+import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
 import toast from "react-hot-toast"
 
 export default function AdminAIMonitor() {
+  const { user, profile } = useAuth()
+  if (!user || profile?.role !== "admin") return null
   const [report, setReport] = useState(null)
   const [codeScan, setCodeScan] = useState(null)
   const [scanning, setScanning] = useState(false)

@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react"
+import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
 import useIsMobile from "../../lib/useIsMobile"
 
 export default function AdminInventory() {
+  const { user, profile } = useAuth()
+  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)

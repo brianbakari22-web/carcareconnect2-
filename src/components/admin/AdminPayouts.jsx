@@ -1,10 +1,13 @@
 import useIsMobile from "../../lib/useIsMobile"
+import { useAuth } from "../../contexts/AuthContext"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import toast from "react-hot-toast"
 import { sendPayoutProcessed } from "../../lib/email"
 
 export default function AdminPayouts() {
+  const { user, profile } = useAuth()
+  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [payouts, setPayouts] = useState([])
   const [filter, setFilter] = useState("pending")

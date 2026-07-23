@@ -4,6 +4,14 @@
 
 [36mvite v5.4.21 [32mbuilding for production...[36m[39m
 transforming...
+[plugin:vite:esbuild] [plugin vite:esbuild] src/components/driver/DriverReviews.jsx: The character "}" is not valid inside a JSX element
+132|              </div>
+133|            </div>
+134|            {r.driver_review&&<div style={{ fontSize:12, color:"#555", lineHeight:1.5, marginBottom:8, fontStyle:"italic" }}>"{"}{r.driver_review}{"}"}"</div>}
+   |                                                                                                                                                      ^
+135|            {r.driver_response?(
+136|              <div style={{ background:"#eff6ff", border:"1px solid #378add20", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
+
 [plugin:vite:esbuild] [plugin vite:esbuild] src/components/provider/ProviderOrders.jsx: The character "}" is not valid inside a JSX element
 238|            ))}
 239|          </div>
@@ -20,14 +28,6 @@ transforming...
 242|  
 243|        {/* Gradient stats header */}
 
-[plugin:vite:esbuild] [plugin vite:esbuild] src/components/provider/ProviderCustomerReviews.jsx: The character "}" is not valid inside a JSX element
-176|                  <StarRating value={r.customer_rating||0} color="#378add"/>
-177|                </div>
-178|                {r.customer_review&&<div style={{ fontSize:12, color:"#555", fontStyle:"italic" }}>"{"}{r.customer_review}{"}"}"</div>}
-   |                                                                                                                              ^
-179|                {r.customer_response&&(
-180|                  <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7520", borderRadius:8, padding:"0.5rem 0.75rem", marginTop:6 }}>
-
 [plugin:vite:esbuild] [plugin vite:esbuild] src/components/customer/CustomerGoService.jsx: The character "}" is not valid inside a JSX element
 547|                </div>
 548|              ))}
@@ -36,13 +36,13 @@ transforming...
 550|            </div>
 551|          )}
 
-[plugin:vite:esbuild] [plugin vite:esbuild] src/components/driver/DriverReviews.jsx: The character "}" is not valid inside a JSX element
-132|              </div>
-133|            </div>
-134|            {r.driver_review&&<div style={{ fontSize:12, color:"#555", lineHeight:1.5, marginBottom:8, fontStyle:"italic" }}>"{"}{r.driver_review}{"}"}"</div>}
-   |                                                                                                                                                      ^
-135|            {r.driver_response?(
-136|              <div style={{ background:"#eff6ff", border:"1px solid #378add20", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
+[plugin:vite:esbuild] [plugin vite:esbuild] src/components/provider/ProviderCustomerReviews.jsx: The character "}" is not valid inside a JSX element
+176|                  <StarRating value={r.customer_rating||0} color="#378add"/>
+177|                </div>
+178|                {r.customer_review&&<div style={{ fontSize:12, color:"#555", fontStyle:"italic" }}>"{"}{r.customer_review}{"}"}"</div>}
+   |                                                                                                                              ^
+179|                {r.customer_response&&(
+180|                  <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7520", borderRadius:8, padding:"0.5rem 0.75rem", marginTop:6 }}>
 
 [plugin:vite:esbuild] [plugin vite:esbuild] src/components/admin/AdminReviews.jsx: The character "}" is not valid inside a JSX element
 119|              </div>
@@ -102,15 +102,15 @@ computing gzip size...
 [2mdist/[22m[36massets/capacitor-DSb_wEom.js        [39m[1m[2m   11.24 kB[22m[1m[22m[2m Γöé gzip:   4.59 kB[22m[2m Γöé map:    44.89 kB[22m
 [2mdist/[22m[36massets/ui-Bp5GKSYf.js               [39m[1m[2m   12.19 kB[22m[1m[22m[2m Γöé gzip:   4.89 kB[22m[2m Γöé map:    28.09 kB[22m
 [2mdist/[22m[36massets/purify.es-Jn2rvFN8.js        [39m[1m[2m   28.96 kB[22m[1m[22m[2m Γöé gzip:  10.93 kB[22m[2m Γöé map:   158.93 kB[22m
-[2mdist/[22m[36massets/index.es-BT5hdWeQ.js         [39m[1m[2m  150.89 kB[22m[1m[22m[2m Γöé gzip:  51.66 kB[22m[2m Γöé map:   637.73 kB[22m
+[2mdist/[22m[36massets/index.es-Snt80kXB.js         [39m[1m[2m  150.89 kB[22m[1m[22m[2m Γöé gzip:  51.67 kB[22m[2m Γöé map:   637.73 kB[22m
 [2mdist/[22m[36massets/vendor-Deq17Bv5.js           [39m[1m[2m  153.41 kB[22m[1m[22m[2m Γöé gzip:  50.37 kB[22m[2m Γöé map:   685.66 kB[22m
 [2mdist/[22m[36massets/html2canvas.esm-CBrSDip1.js  [39m[1m[2m  201.48 kB[22m[1m[22m[2m Γöé gzip:  48.08 kB[22m[2m Γöé map:   602.27 kB[22m
 [2mdist/[22m[36massets/supabase-CwrFKnKJ.js         [39m[1m[2m  210.54 kB[22m[1m[22m[2m Γöé gzip:  54.59 kB[22m[2m Γöé map: 1,138.78 kB[22m
 [2mdist/[22m[36massets/sentry-DxRH3Bix.js           [39m[1m[2m  236.32 kB[22m[1m[22m[2m Γöé gzip:  77.37 kB[22m[2m Γöé map: 1,260.61 kB[22m
-[2mdist/[22m[36massets/index-Do5dctth.js            [39m[1m[33m2,383.05 kB[39m[22m[2m Γöé gzip: 568.77 kB[22m[2m Γöé map: 5,941.06 kB[22m
+[2mdist/[22m[36massets/index-BrLBBFb9.js            [39m[1m[33m2,385.35 kB[39m[22m[2m Γöé gzip: 568.94 kB[22m[2m Γöé map: 5,949.41 kB[22m
 
 (!) Some chunks are larger than 2000 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-[32mΓ£ô built in 6.13s[39m
+[32mΓ£ô built in 5.88s[39m

@@ -1,9 +1,12 @@
 import useIsMobile from "../../lib/useIsMobile"
+import { useAuth } from "../../contexts/AuthContext"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import toast from "react-hot-toast"
 
 export default function AdminPromos() {
+  const { user, profile } = useAuth()
+  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [promos, setPromos] = useState([])
   const [form, setForm] = useState({ code:"", description:"", discount_type:"percentage", discount_value:"", min_purchase:"0", usage_limit:"100", valid_until:"" })

@@ -8,6 +8,8 @@ const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", co
 const RC = { customer:"#e6821e", provider:"#378add", driver:"#1d9e75", admin:"#8b5cf6" }
 
 export default function AdminUserDetail({ userId, onBack }) {
+  const { user, profile: adminProfile } = useAuth()
+  if (!user || adminProfile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [profile, setProfile] = useState(null)
   const [sensitive, setSensitive] = useState(null)
@@ -284,6 +286,7 @@ export default function AdminUserDetail({ userId, onBack }) {
     </div>
   )
 }
+import { useAuth } from "../../contexts/AuthContext"
 
 
 
