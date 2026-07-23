@@ -173,6 +173,12 @@ export default function AuthPage() {
 
 
 
+                // Check if email confirmation required
+        const { data: { user: newUser } } = await supabase.auth.getUser()
+        if (!newUser?.confirmed_at) {
+          setStep("verify_email")
+          return
+        }
         let tries = 0
         const checkProfile = async () => {
           const { data: { user: u } } = await supabase.auth.getUser()
@@ -243,6 +249,20 @@ export default function AuthPage() {
             </button>
           </form>
         )}
+      </div>
+    </div>
+  )
+
+  // Email verification step
+  if (step === "verify_email") return (
+    <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", padding:"2rem", background:"#f8f8f8", fontFamily:"'DM Sans',sans-serif" }}>
+      <div style={{ background:"#fff", borderRadius:16, padding:"2rem", maxWidth:400, width:"100%", textAlign:"center", boxShadow:"0 4px 24px rgba(0,0,0,0.08)" }}>
+        <div style={{ fontSize:48, marginBottom:16 }}>📧</div>
+        <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, marginBottom:8, color:"#000" }}>Check your email</div>
+        <div style={{ fontSize:14, color:"#666", lineHeight:1.6, marginBottom:24 }}>We sent a verification link to <strong>{form.email}</strong>. Click the link to activate your CCC account.</div>
+        <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7530", borderRadius:10, padding:"1rem", marginBottom:16, fontSize:13, color:"#1d9e75" }}>✅ Check spam folder if you don't see it in 2 minutes</div>
+        <div style={{ background:"#eff6ff", border:"1px solid #378add30", borderRadius:10, padding:"1rem", marginBottom:20, fontSize:13, color:"#378add" }}>After verifying, come back and sign in.</div>
+        <button onClick={()=>setStep("role")} style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 24px", cursor:"pointer" }}>← Back to login</button>
       </div>
     </div>
   )
