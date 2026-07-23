@@ -26,10 +26,14 @@ export default function AdminClaims() {
   const [claimMessages, setClaimMessages] = useState([])
   useEffect(() => {
     if(!user) return
-    load()
+    // Remove stale channels first
+    supabase.getChannels().forEach(ch => {
+      if(ch.topic === "realtime:admin-claims-live") supabase.removeChannel(ch)
+    })
     const sub = supabase.channel("admin-claims-live")
       .on("postgres_changes", { event:"*", schema:"public", table:"service_claims" }, () => load())
-
+      .subscribe()
+    return () => supabase.removeChannel(sub)
       .subscribe()
   }, [])
 

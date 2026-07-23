@@ -69,7 +69,7 @@ export default function AdminLiveMap() {
       .select("*, driver:profiles!driver_status_driver_id_fkey(first_name,last_name,driver_vehicle_type,driver_category,documents_verified)")
       .not("current_lat","is",null)
     setDrivers(data||[])
-    const { data: go } = await supabase.from("go_service_requests").select("*, customer:profiles!go_service_requests_customer_id_fkey(first_name,last_name)").in("status",["pending","accepted","en_route"]).order("created_at",{ascending:false})
+    const { data: go } = await supabase.from("go_service_requests").select("*, booking:bookings!go_service_requests_booking_id_fkey(id,service_name,customer_id), provider:profiles!go_service_requests_provider_id_fkey(first_name,last_name,business_name)").in("status",["pending","accepted","en_route"]).order("created_at",{ascending:false})
     setGoRequests(go||[])
     const { data: sos } = await supabase.from("emergency_alerts").select("*, user:profiles!emergency_alerts_user_id_fkey(first_name,last_name)").eq("status","active").order("created_at",{ascending:false})
     setSosAlerts(sos||[])
