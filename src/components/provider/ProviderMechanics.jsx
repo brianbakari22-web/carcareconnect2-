@@ -284,9 +284,9 @@ export default function ProviderMechanics() {
                   style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:8, color:"#378add", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>
                   🔑 {m.mechanic_code?"Reset PIN":"Set PIN"}
                 </button>
-                <button onClick={()=>loadDocs(m.id)}
+              <button onClick={()=>loadDocs(m.user_id||m.id)}
                   style={{ background:"#f5f3ff", border:"1px solid #8b5cf640", borderRadius:8, color:"#8b5cf6", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>
-                  📄 {docsPanel===m.id?"Hide Docs":"View Docs"}
+              📄 {docsPanel===m.user_id?"Hide Docs":"View Docs"}
                 </button>
                 {m.user_id&&(
                   <>
@@ -344,10 +344,10 @@ export default function ProviderMechanics() {
               )}
 
               {/* Documents panel */}
-              {docsPanel===m.id&&(
+            {docsPanel===m.user_id&&(
                 <div style={{ background:"#faf5ff", borderRadius:10, padding:"0.75rem" }}>
                   <div style={{ fontSize:12, fontWeight:700, color:"#8b5cf6", marginBottom:8 }}>📄 {m.first_name}&apos;s Documents</div>
-                  {(!mechanicDocs[m.id]||mechanicDocs[m.id].length===0)&&(
+            {(!mechanicDocs[m.user_id]||mechanicDocs[m.user_id].length===0)&&(
                     <div style={{ fontSize:11, color:"#888", padding:"0.5rem 0" }}>No documents uploaded yet. Mechanic needs to upload from their portal.</div>
                   )}
                   {(mechanicDocs[m.id]||[]).map(doc=>(
