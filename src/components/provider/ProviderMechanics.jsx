@@ -26,7 +26,7 @@ export default function ProviderMechanics() {
   const [mechanicDocs, setMechanicDocs] = useState({})
   const [pin, setPin] = useState("")
   const [settingPin, setSettingPin] = useState(false)
-  const [form, setForm] = useState({ first_name:"", last_name:"", phone:"", email:"", specialization:"General Mechanic", hourly_rate:"", commission_rate:"15", commission_type:"percentage" })
+  const [form, setForm] = useState({ first_name:"", last_name:"", phone:"", email:"", specialization:"General Mechanic", commission_rate:"15", commission_type:"percentage" })
   const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => { if (user) load() }, [user])
@@ -83,7 +83,7 @@ export default function ProviderMechanics() {
       if (mechError) throw mechError
 
       toast.success("Mechanic added! Set their PIN so they can login.")
-      setForm({ first_name:"", last_name:"", phone:"", email:"", specialization:"General Mechanic", hourly_rate:"", commission_rate:"15", commission_type:"percentage" })
+      setForm({ first_name:"", last_name:"", phone:"", email:"", specialization:"General Mechanic", commission_rate:"15", commission_type:"percentage" })
       setShowAdd(false)
       load()
     } catch(err) { toast.error(err.message) }
@@ -184,11 +184,6 @@ export default function ProviderMechanics() {
             </select>
           </div>
           <div style={{ marginBottom:"1rem" }}>
-            <div style={{ fontSize:11, color:"#555", marginBottom:4, fontWeight:600 }}>Hourly rate (KES)</div>
-            <input type="number" value={form.hourly_rate} onChange={e=>setForm(f=>({...f,hourly_rate:e.target.value}))}
-              placeholder="500" style={{ width:"100%", background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:8, padding:"9px 12px", fontSize:13, color:"#000", outline:"none", boxSizing:"border-box" }}/>
-          </div>
-          <div style={{ marginBottom:"1rem" }}>
             <div style={{ fontSize:11, color:"#555", marginBottom:6, fontWeight:600 }}>Pay structure (your agreement with mechanic)</div>
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
               <div>
@@ -264,10 +259,6 @@ export default function ProviderMechanics() {
                 {m.phone&&<div style={{ background:"#f8f8f8", borderRadius:8, padding:"8px 10px" }}>
                   <div style={{ fontSize:10, color:"#888", marginBottom:2 }}>Phone</div>
                   <div style={{ fontSize:12, fontWeight:600, color:"#000" }}>{m.phone}</div>
-                </div>}
-                {m.hourly_rate>0&&<div style={{ background:"#f8f8f8", borderRadius:8, padding:"8px 10px" }}>
-                  <div style={{ fontSize:10, color:"#888", marginBottom:2 }}>Rate</div>
-                  <div style={{ fontSize:12, fontWeight:600, color:"#000" }}>KES {m.hourly_rate}/hr</div>
                 </div>}
               {m.commission_rate>0&&<div style={{ background:"#f0fdf4", borderRadius:8, padding:"8px 10px" }}>
                 <div style={{ fontSize:10, color:"#888", marginBottom:2 }}>Pay structure</div>
