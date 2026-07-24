@@ -20,6 +20,7 @@ export default function CustomerChat() {
   }
   function cancelLongPress() { clearTimeout(longPressRef.current) }
   async function deleteConversation(c) {
+    try {
     const col = c.bookingId ? "booking_id" : c.listingId ? "listing_id" : "inventory_id"
     const val = c.bookingId || c.listingId || c.inventoryId
     // Hide instantly from UI
@@ -30,6 +31,7 @@ export default function CustomerChat() {
     supabase.from("chat_messages").delete().eq(col, val).then(({error}) => { if(error) console.error("Delete failed:", error.message) })
     const hidePayload = { user_id: user.id }
     hidePayload[col] = val
+    } catch(e) { toast.error("Failed: "+e.message) }
     supabase.from("hidden_conversations").upsert(hidePayload, { onConflict: "user_id,"+col }).then(({error}) => { if(error) console.error("Hide failed:", error.message) })
   }
 
