@@ -48,6 +48,7 @@ export default function DriverDeliveries() {
   }
 
   async function acceptDelivery(orderId) {
+    try {
     await supabase.from("orders").update({
       delivery_driver_id: user.id,
       delivery_status: "driver_assigned"
@@ -63,10 +64,12 @@ export default function DriverDeliveries() {
     }
     toast.success("Delivery accepted!")
     load()
+    } catch(e) { toast.error("Failed to accept delivery") }
   }
 
   async function declineDelivery(orderId) {
     if (!confirm("Decline this delivery? It will be reassigned to another driver.")) return
+    try {
     const order = deliveries.find(d=>d.id===orderId)
     await supabase.from("orders").update({
       delivery_driver_id: null,
@@ -76,6 +79,7 @@ export default function DriverDeliveries() {
     }).eq("id", orderId)
     toast.success("Delivery declined")
     load()
+    } catch(e) { toast.error("Failed to decline delivery") }
   }
 
   function formatCountdown(expiresAt) {
@@ -88,6 +92,7 @@ export default function DriverDeliveries() {
   }
 
   async function updateDeliveryStatus(orderId, status, customerId) {
+    try {
     await supabase.from("orders").update({
       delivery_status: status,
       ...(status==="picked_up"?{ pickup_confirmed_at:new Date().toISOString(), delivery_attempt_expires_at:null }:{}),
@@ -107,6 +112,7 @@ export default function DriverDeliveries() {
     }
     toast.success("Status updated")
     load()
+    } catch(e) { toast.error("Failed to update status: "+e.message) }
   }
 
   const SC = { driver_assigned:"#378add", picked_up:"#8b5cf6", delivered:"#1d9e75" }
