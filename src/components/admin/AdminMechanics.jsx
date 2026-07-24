@@ -268,9 +268,9 @@ export default function AdminMechanics() {
                       style={{ fontSize:10, background:"#eff6ff", border:"1px solid #378add30", borderRadius:6, color:"#378add", padding:"2px 8px", cursor:"pointer", fontWeight:700 }}>
                       🔑 {m.mechanic_code?"Reset PIN":"Set PIN"}
                     </button>
-                    <button onClick={()=>loadMechanicDocs(m.id)}
+              <button onClick={()=>loadMechanicDocs(m.user_id||m.id)}
                       style={{ fontSize:10, background:"#f0fdf4", border:"1px solid #1d9e7530", borderRadius:6, color:"#1d9e75", padding:"2px 8px", cursor:"pointer", fontWeight:700 }}>
-                      📄 {showDocs===m.id?"Hide":"View Docs"}
+              📄 {showDocs===(m.user_id||m.id)?"Hide":"View Docs"}
                     </button>
                   </div>
                 </div>
@@ -281,13 +281,13 @@ export default function AdminMechanics() {
                   </div>
                 )}
                 {/* Document verification */}
-                {showDocs===m.id&&(
+            {showDocs===(m.user_id||m.id)&&(
                   <div style={{ marginTop:8, background:"#f8f8f8", borderRadius:10, padding:"0.75rem" }}>
                     <div style={{ fontSize:12, fontWeight:700, color:"#555", marginBottom:8 }}>📄 Documents</div>
-                    {(!mechanicDocs[m.id]||mechanicDocs[m.id].length===0)&&(
+                    {(!mechanicDocs[m.user_id||m.id]||mechanicDocs[m.user_id||m.id].length===0)&&(
                       <div style={{ fontSize:11, color:"#888" }}>No documents uploaded yet</div>
                     )}
-                    {(mechanicDocs[m.id]||[]).map(doc=>(
+                    {(mechanicDocs[m.user_id||m.id]||[]).map(doc=>(
                       <div key={doc.id} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6, background:"#fff", borderRadius:7, padding:"6px 10px" }}>
                         <div>
                           <div style={{ fontSize:11, fontWeight:600, color:"#000" }}>{doc.type?.replace(/_/g," ")||"Document"}</div>
@@ -298,14 +298,8 @@ export default function AdminMechanics() {
                         <div style={{ display:"flex", gap:4, alignItems:"center" }}>
                           <a href={doc.document_url} target="_blank" rel="noopener noreferrer"
                             style={{ fontSize:10, color:"#378add", textDecoration:"none" }}>View</a>
-                          {doc.status!=="approved"&&(
-                            <button onClick={()=>verifyDoc(doc.id, m.id, "approved")}
-                              style={{ background:"#f0fdf4", border:"1px solid #1d9e7530", borderRadius:5, color:"#1d9e75", fontSize:9, fontWeight:700, padding:"2px 6px", cursor:"pointer" }}>
-                              ✓
-                            </button>
-                          )}
-                          {doc.status!=="rejected"&&(
-                            <button onClick={()=>verifyDoc(doc.id, m.id, "rejected")}
+                          {doc.status!=="approved"&&(<button onClick={()=>verifyDoc(doc.id, m.user_id||m.id, "approved")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7530", borderRadius:5, color:"#1d9e75", fontSize:9, fontWeight:700, padding:"2px 6px", cursor:"pointer" }}>✓</button>)}
+                            <button onClick={()=>verifyDoc(doc.id, m.user_id||m.id, "rejected")}
                               style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:5, color:"#e24b4a", fontSize:9, fontWeight:700, padding:"2px 6px", cursor:"pointer" }}>
                               ✗
                             </button>
