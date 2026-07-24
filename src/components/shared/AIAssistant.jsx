@@ -599,6 +599,19 @@ PLAY STORE (July 2026):
 - Status: Internal testing, ~11 days to production eligibility
 - PWA install disabled, Play Store banner shown to Android browser visitors
 
+VEHICLE CONDITION REPORTS SYSTEM:
+- Every concierge booking generates pickup and dropoff condition reports
+- Driver files PICKUP report before taking vehicle: odometer, fuel level, scratches, dents, broken lights, missing parts, dirty interior/exterior, condition notes, photos
+- Driver files DROPOFF report after returning vehicle with same fields
+- System auto-compares pickup vs dropoff odometer readings
+- If mileage difference exceeds customer threshold → mileage alert created
+- Customer sees alerts in Customer Dashboard > Vehicle Reports
+- Customer can dispute within 24 hours of dropoff report
+- Dispute types: excessive mileage, vehicle condition, fuel discrepancy, other
+- Admin reviews and resolves disputes in Admin > Disputes
+- Reports stored in: vehicle_condition_reports, mileage_alerts, vehicle_disputes tables
+- Customer sees pickup vs dropoff side by side with all condition details
+
 Updated knowledge base: July 2026
 `
 
