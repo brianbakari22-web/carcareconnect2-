@@ -148,7 +148,7 @@ export default function AdminLiveMap() {
   return (
     <div>
       <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000", marginBottom:"1rem" }}>🗺️ Live Driver Map</div>
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(110px,1fr))", gap:8, marginBottom:"1rem" }}>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:6, marginBottom:"1rem" }}>
         {[
           { label:"Total drivers", value:drivers.length, color:"#000" },
           { label:"Online now", value:onlineCount, color:"#1d9e75" },
@@ -165,7 +165,7 @@ export default function AdminLiveMap() {
         ))}
       </div>
       {/* Tab buttons */}
-      <div style={{ display:"flex", gap:6, marginBottom:"1rem", overflowX:"auto", paddingBottom:4 }}>
+      <div style={{ display:"flex", gap:4, marginBottom:"1rem", overflowX:"auto", paddingBottom:4, WebkitOverflowScrolling:"touch" }}>
         {[
           {k:"map",l:"🗺️ Live Map"},
           {k:"go",l:"🚨 GO ("+goRequests.length+")"},
@@ -179,7 +179,7 @@ export default function AdminLiveMap() {
       {/* Map Tab */}
       {tab==="map"&&(
         <>
-          <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
+          <div style={{ display:"flex", gap:4, marginBottom:"0.75rem", overflowX:"auto", paddingBottom:2 }}>
             {[["all","All"],["online","🟢 Online"],["concierge","🧑‍✈️ Concierge"],["marketplace","🚗 Marketplace"]].map(([k,l])=>(
               <button key={k} onClick={()=>setFilter(k)} style={{ padding:"6px 14px", borderRadius:7, border:"none", fontSize:12, cursor:"pointer", background:filter===k?"#e6821e":"#f8f8f8", color:filter===k?"#fff":"#666" }}>{l}</button>
             ))}
