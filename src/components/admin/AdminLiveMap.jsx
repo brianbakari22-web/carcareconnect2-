@@ -67,6 +67,8 @@ export default function AdminLiveMap() {
     }, 300)
   }, [selected?.driver_id])
 
+  if (!user || profile?.role !== "admin") return null
+
   async function load() {
     const { data } = await supabase.from("driver_status")
       .select("*, driver:profiles!driver_status_driver_id_fkey(first_name,last_name,driver_vehicle_type,driver_category,documents_verified)")
