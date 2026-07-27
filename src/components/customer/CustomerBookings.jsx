@@ -98,9 +98,9 @@ export default function CustomerBookings() {
   async function confirmPayment(booking) {
     if(!confirm("Confirm you are satisfied with the service and release payment to the provider?")) return
     try {
-      const resp = await fetch(import.meta.env.VITE_SUPABASE_URL+"/functions/v1/release-payment", {
+      const resp = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/release-payment", {
         method:"POST",
-        headers:{"Content-Type":"application/json","Authorization":"Bearer "+import.meta.env.VITE_SUPABASE_ANON_KEY},
+        headers:{"Content-Type":"application/json","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc"},
         body:JSON.stringify({ booking_id:booking.id, confirmed_by:"customer" })
       })
       const data = await resp.json()
