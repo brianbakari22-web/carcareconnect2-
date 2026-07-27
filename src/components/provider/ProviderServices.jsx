@@ -102,8 +102,9 @@ export default function ProviderServices() {
           name: form.name,
           description: form.description,
           price: parseFloat(form.price),
+          category: form.category||"shop_standard",
+          duration_minutes: parseInt(form.duration_minutes)||60,
           photos: form.photos||[],
-          service_category_id: form.service_category_id||null,
           platform_commission_rate: platformRate,
           is_active: true,
         })
