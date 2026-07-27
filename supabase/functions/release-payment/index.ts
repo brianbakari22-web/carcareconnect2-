@@ -25,14 +25,20 @@ serve(async (req) => {
       : prefMethod==="paybill" ? pSens?.paybill_number
       : prefMethod==="pochi" ? pSens?.pochi_number
       : (pSens?.mpesa_number || pSens?.till_number || pSens?.pochi_number)
-    if (!providerPhone) throw new Error("Provider payment details not found")
+    console.log("pSens data:", JSON.stringify(pSens))
+    console.log("prefMethod:", prefMethod)
+    console.log("providerPhone:", providerPhone)
+    // Use mpesa_number as fallback regardless of preferred method
+    const finalPhone = providerPhone || pSens?.mpesa_number || pSens?.till_number || pSens?.pochi_number
+    console.log("Final phone:", finalPhone, "pSens:", JSON.stringify(pSens))
+    if (!finalPhone) throw new Error("Provider has no payment number configured")
     // Release payment to provider - wrapped in try-catch so booking still completes
     let payoutData: any = {}
     try {
       const payoutResp = await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/intasend-payout`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}` },
-        body: JSON.stringify({ phone: providerPhone, amount: providerAmount, narrative: `CCC Payment - ${booking.service_name} #${booking.booking_number}`, payment_method: prefMethod, paybill_account: pSens?.paybill_account, booking_id: booking.id, provider_id: booking.provider_id })
+        body: JSON.stringify({ phone: finalPhone, amount: providerAmount, narrative: `CCC Payment - ${booking.service_name} #${booking.booking_number}`, payment_method: prefMethod, paybill_account: pSens?.paybill_account, booking_id: booking.id, provider_id: booking.provider_id })
       })
       const text = await payoutResp.text()
       payoutData = text ? JSON.parse(text) : {}
@@ -74,3 +80,4 @@ serve(async (req) => {
     return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
   }
 })
+

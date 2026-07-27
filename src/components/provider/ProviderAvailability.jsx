@@ -232,7 +232,7 @@ export default function ProviderAvailability() {
                       style={{ background:isSelected?"#e6821e":status.color, borderRadius:10, padding:"6px 3px", textAlign:"center", cursor:status.type==="past"?"default":"pointer", border:isToday?"2px solid #e6821e":"1px solid "+(isSelected?"#e6821e":"#eeeeee"), transition:"all 0.15s", boxShadow:isSelected?"0 4px 12px rgba(230,130,30,0.3)":"none", minHeight:48, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center" }}>
                       <div style={{ fontSize:13, fontWeight:isToday?800:500, color:isSelected?"#fff":status.textColor }}>{day}</div>
                       {status.type==="blocked"&&!isSelected&&<div style={{ fontSize:9, color:"#e24b4a", marginTop:1 }}>🚫</div>}
-                      {status.type==="partial"&&!isSelected&&<div style={{ fontSize:8, color:"#1d9e75", marginTop:1, fontWeight:600 }}>{count}</div>}
+                      {status.type==="partial"&&!isSelected&&<div style={{ fontSize:8, color:"#1d9e75", marginTop:1, fontWeight:600 }}>{status.label}</div>}
                       {status.type==="full"&&!isSelected&&<div style={{ fontSize:8, color:"#e6821e", marginTop:1, fontWeight:600 }}>Full</div>}
                     </div>
                   )

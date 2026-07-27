@@ -33,8 +33,8 @@ export default function AdminClaims() {
     const sub = supabase.channel("admin-claims-live")
       .on("postgres_changes", { event:"*", schema:"public", table:"service_claims" }, () => load())
       .subscribe()
+    return () => supabase.removeChannel(sub)
   }, [])
-
   async function loadClaimMessages() {
     const { data } = await supabase.from("chat_messages")
       .select("*, profiles!chat_messages_sender_id_fkey(first_name,last_name,role)")
