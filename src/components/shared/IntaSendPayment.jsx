@@ -25,21 +25,38 @@ export default function IntaSendPayment({ amount, bookingId, orderId, providerId
       })
       if (error) throw error
       if (data.error) throw new Error(data.error)
+      const checkoutRequestId = data.checkout_request_id
       setStep("waiting")
       toast.success("Check your phone for M-Pesa prompt!")
       // Poll for payment status every 5 seconds
       const interval = setInterval(async () => {
-        const { data: txn } = await supabase
-          .from("payment_transactions")
-          .select("status, mpesa_code")
-          .eq("booking_id", bookingId)
-          .eq("status", "completed")
-          .maybeSingle()
-        if (txn) {
-          clearInterval(interval)
-          setStep("success")
-          setTimeout(() => onSuccess && onSuccess(), 2000)
-        }
+        try {
+          // First check DB
+          const { data: txn } = await supabase
+            .from("payment_transactions")
+            .select("status, mpesa_code")
+            .eq("checkout_request_id", checkoutRequestId)
+            .eq("status", "completed")
+            .maybeSingle()
+          if (txn) {
+            clearInterval(interval)
+            setStep("success")
+            setTimeout(() => onSuccess && onSuccess(), 2000)
+            return
+          }
+          // Also query Daraja directly
+          const { data: queryData } = await supabase.functions.invoke("daraja-stk-query", {
+            body: { checkout_request_id: checkoutRequestId, booking_id: bookingId }
+          })
+          if (queryData?.status === "completed") {
+            clearInterval(interval)
+            setStep("success")
+            setTimeout(() => onSuccess && onSuccess(), 2000)
+          } else if (queryData?.status === "cancelled") {
+            clearInterval(interval)
+            setStep("failed")
+          }
+        } catch(e) {}
       }, 5000)
       setTimeout(() => {
         clearInterval(interval)
@@ -128,3 +145,4 @@ export default function IntaSendPayment({ amount, bookingId, orderId, providerId
     </div>
   )
 }
+
