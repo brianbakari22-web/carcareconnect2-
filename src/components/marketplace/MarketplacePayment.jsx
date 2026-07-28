@@ -42,7 +42,7 @@ export default function MarketplacePayment({ offer, listing, onSuccess, onCancel
 
       // Call M-Pesa edge function
       const { data: { session } } = await supabase.auth.getSession()
-      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/intasend-stk-push", {
+      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/daraja-stk-push", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -116,4 +116,5 @@ export default function MarketplacePayment({ offer, listing, onSuccess, onCancel
     </div>
   )
 }
+
 

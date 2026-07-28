@@ -59,7 +59,7 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
         const { data: cp } = await supabase.from("profile_sensitive").select("mpesa_number").eq("id", user.id).maybeSingle()
         if(cp?.mpesa_number) {
           try {
-            await fetch(import.meta.env.VITE_SUPABASE_URL+"/functions/v1/intasend-stk-push", {
+            await fetch(import.meta.env.VITE_SUPABASE_URL+"/functions/v1/daraja-stk-push", {
               method:"POST",
               headers:{"Content-Type":"application/json","Authorization":"Bearer "+import.meta.env.VITE_SUPABASE_ANON_KEY},
               body:JSON.stringify({ booking_id:booking.id, amount:serviceAmount, phone:cp.mpesa_number, customer_id:user.id, provider_id:provider.id, service_name:bookingService.name })
@@ -108,7 +108,7 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
         const { data: cp } = await supabase.from("profile_sensitive").select("mpesa_number").eq("id", user.id).maybeSingle()
         if(cp?.mpesa_number) {
           try {
-            await fetch(import.meta.env.VITE_SUPABASE_URL+"/functions/v1/intasend-stk-push", {
+            await fetch(import.meta.env.VITE_SUPABASE_URL+"/functions/v1/daraja-stk-push", {
               method:"POST",
               headers:{"Content-Type":"application/json","Authorization":"Bearer "+import.meta.env.VITE_SUPABASE_ANON_KEY},
               body:JSON.stringify({ booking_id:booking.id, amount, phone:cp.mpesa_number, customer_id:user.id, provider_id:provider.id, service_name:bookingBundle.name+" Bundle" })
@@ -387,6 +387,7 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
     </div>
   )
 }
+
 
 
 

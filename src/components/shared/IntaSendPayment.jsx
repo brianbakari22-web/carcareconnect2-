@@ -2,62 +2,49 @@ import { useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
-
 export default function IntaSendPayment({ amount, bookingId, orderId, providerId, description, onSuccess, onClose }) {
   const { user, profile } = useAuth()
-  const [phone, setPhone] = useState("")
+  const [phone, setPhone] = useState(profile?.phone || "")
   const [loading, setLoading] = useState(false)
-  const [step, setStep] = useState("input") // input, waiting, success, failed
-
-  // Calculate 3-way fee split
-  const processingFeeRate = 0.01 // 1% customer pays
+  const [step, setStep] = useState("input")
+  const processingFeeRate = 0.01
   const processingFee = Math.ceil(amount * processingFeeRate)
   const totalAmount = amount + processingFee
-
   async function initiatePayment() {
     if (!phone || phone.length < 10) return toast.error("Please enter a valid M-Pesa number")
     setLoading(true)
     try {
-      const { data, error } = await supabase.functions.invoke("intasend-stk-push", {
+      const { data, error } = await supabase.functions.invoke("daraja-stk-push", {
         body: {
           booking_id: bookingId,
-          order_id: orderId,
-          amount,
+          amount: totalAmount,
           phone,
-          customer_id: user.id,
-          provider_id: providerId,
-          service_name: description || "Car Care Connect service",
+          account_ref: bookingId?.substring(0, 12) || "CCC",
+          description: description || "Car Care Connect service",
         }
       })
-
       if (error) throw error
       if (data.error) throw new Error(data.error)
-
       setStep("waiting")
       toast.success("Check your phone for M-Pesa prompt!")
-
       // Poll for payment status every 5 seconds
       const interval = setInterval(async () => {
         const { data: txn } = await supabase
           .from("payment_transactions")
-          .select("status")
+          .select("status, mpesa_code")
           .eq("booking_id", bookingId)
           .eq("status", "completed")
           .maybeSingle()
-
         if (txn) {
           clearInterval(interval)
           setStep("success")
           setTimeout(() => onSuccess && onSuccess(), 2000)
         }
       }, 5000)
-
-      // Stop polling after 2 minutes
       setTimeout(() => {
         clearInterval(interval)
         if (step === "waiting") setStep("failed")
       }, 120000)
-
     } catch (e) {
       toast.error(e.message || "Payment failed. Please try again.")
       setStep("input")
@@ -65,21 +52,16 @@ export default function IntaSendPayment({ amount, bookingId, orderId, providerId
       setLoading(false)
     }
   }
-
   return (
     <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.6)", zIndex:1000, display:"flex", alignItems:"center", justifyContent:"center", padding:"1rem" }}>
       <div style={{ background:"#fff", borderRadius:16, padding:"1.5rem", width:"100%", maxWidth:380, fontFamily:"DM Sans,sans-serif" }}>
-
-        {/* Header */}
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1.25rem" }}>
           <div>
             <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800 }}>Pay with M-Pesa</div>
-            <div style={{ fontSize:12, color:"#888" }}>Secure payment via IntaSend</div>
+            <div style={{ fontSize:12, color:"#888" }}>Secure payment via Safaricom Daraja</div>
           </div>
           <button onClick={onClose} style={{ background:"none", border:"none", fontSize:20, cursor:"pointer", color:"#888" }}>×</button>
         </div>
-
-        {/* Amount breakdown */}
         <div style={{ background:"#f8f8f8", borderRadius:10, padding:"1rem", marginBottom:"1.25rem" }}>
           <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, marginBottom:4 }}>
             <span style={{ color:"#666" }}>{description||"Service amount"}</span>
@@ -94,7 +76,6 @@ export default function IntaSendPayment({ amount, bookingId, orderId, providerId
             <span style={{ color:"#e6821e" }}>KES {totalAmount.toLocaleString()}</span>
           </div>
         </div>
-
         {step === "input" && (
           <div>
             <label style={{ fontSize:12, color:"#666", display:"block", marginBottom:4 }}>M-Pesa Phone Number</label>
@@ -114,7 +95,6 @@ export default function IntaSendPayment({ amount, bookingId, orderId, providerId
             </div>
           </div>
         )}
-
         {step === "waiting" && (
           <div style={{ textAlign:"center", padding:"1rem" }}>
             <div style={{ fontSize:40, marginBottom:12 }}>📱</div>
@@ -123,7 +103,6 @@ export default function IntaSendPayment({ amount, bookingId, orderId, providerId
             <div style={{ fontSize:12, color:"#aaa" }}>Waiting for confirmation...</div>
           </div>
         )}
-
         {step === "success" && (
           <div style={{ textAlign:"center", padding:"1rem" }}>
             <div style={{ fontSize:40, marginBottom:12 }}>✅</div>
@@ -131,7 +110,6 @@ export default function IntaSendPayment({ amount, bookingId, orderId, providerId
             <div style={{ fontSize:13, color:"#666" }}>Your booking is confirmed.</div>
           </div>
         )}
-
         {step === "failed" && (
           <div style={{ textAlign:"center", padding:"1rem" }}>
             <div style={{ fontSize:40, marginBottom:12 }}>❌</div>
@@ -143,9 +121,8 @@ export default function IntaSendPayment({ amount, bookingId, orderId, providerId
             </button>
           </div>
         )}
-
         <div style={{ fontSize:10, color:"#bbb", textAlign:"center", marginTop:"1rem" }}>
-          Powered by IntaSend · PCI DSS Certified
+          Powered by Safaricom M-Pesa Daraja API
         </div>
       </div>
     </div>

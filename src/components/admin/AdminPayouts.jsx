@@ -56,7 +56,7 @@ export default function AdminPayouts() {
 
   async function retryPayout(txn) {
     try {
-      const { data } = await supabase.functions.invoke("intasend-payout", {
+      const { data } = await supabase.functions.invoke("daraja-b2c-payout", {
         body: {
           booking_id: txn.booking_id,
           provider_id: txn.provider_id,
@@ -169,16 +169,16 @@ export default function AdminPayouts() {
 
   return (
     <div>
-      {/* IntaSend Commission Wallet */}
+      {/* Daraja Commission Wallet */}
       <div style={{ background:"linear-gradient(135deg,#e6821e15,#fff8f0)", border:"1px solid #e6821e30", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
           <div>
-            <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:700 }}>IntaSend Commission Wallet</div>
+            <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:700 }}>Daraja Commission Wallet</div>
             <div style={{ fontSize:12, color:"#888" }}>CCC earnings from completed bookings</div>
           </div>
-          <a href="https://payment.intasend.com" target="_blank" rel="noreferrer"
+          <a href="https://payment.daraja.com" target="_blank" rel="noreferrer"
             style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"8px 14px", textDecoration:"none", cursor:"pointer" }}>
-            Open IntaSend
+            Open Daraja
           </a>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
@@ -316,6 +316,7 @@ export default function AdminPayouts() {
     </div>
   )
 }
+
 
 
 

@@ -9,7 +9,9 @@ serve(async (req) => {
   try {
     const { booking_id, confirmed_by } = await req.json()
     if (!booking_id) throw new Error("booking_id required")
-    const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!)
+    const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
+      auth: { autoRefreshToken: false, persistSession: false }
+    })
     const { data: booking, error } = await supabase.from("bookings")
       .select("*").eq("id", booking_id).single()
     if (error || !booking) throw new Error("Booking not found")
@@ -17,9 +19,11 @@ serve(async (req) => {
     if (!booking.payment_held) throw new Error("No payment held for this booking")
     const providerAmount = Number(booking.provider_earnings || 0)
     if (providerAmount <= 0) throw new Error("Invalid provider amount")
-    const { data: pSens } = await supabase.from("profile_sensitive")
-      .select("mpesa_number,till_number,paybill_number,paybill_account,pochi_number,preferred_payment_method")
-      .eq("id", booking.provider_id).single()
+    // Use SECURITY DEFINER function to bypass RLS
+    const { data: pSensRows, error: pSensError } = await supabase.rpc("get_provider_payment_details", { provider_id_input: booking.provider_id })
+    console.log("pSens query error:", JSON.stringify(pSensError))
+    console.log("pSens rows:", JSON.stringify(pSensRows))
+    const pSens = pSensRows?.[0] || null
     const prefMethod = pSens?.preferred_payment_method || "mpesa"
     const providerPhone = prefMethod==="till" ? pSens?.till_number
       : prefMethod==="paybill" ? pSens?.paybill_number
@@ -35,10 +39,10 @@ serve(async (req) => {
     // Release payment to provider - wrapped in try-catch so booking still completes
     let payoutData: any = {}
     try {
-      const payoutResp = await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/intasend-payout`, {
+      const payoutResp = await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/daraja-b2c-payout`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}` },
-        body: JSON.stringify({ phone: finalPhone, amount: providerAmount, narrative: `CCC Payment - ${booking.service_name} #${booking.booking_number}`, payment_method: prefMethod, paybill_account: pSens?.paybill_account, booking_id: booking.id, provider_id: booking.provider_id })
+        body: JSON.stringify({ phone: finalPhone, amount: providerAmount, narrative: `CCC Payment ${booking.booking_number}`, booking_id: booking.id, provider_id: booking.provider_id })
       })
       const text = await payoutResp.text()
       payoutData = text ? JSON.parse(text) : {}
@@ -80,4 +84,8 @@ serve(async (req) => {
     return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
   }
 })
+
+
+
+
 

@@ -303,7 +303,7 @@ export default function CustomerGoService() {
         go_attempt_number: 1,
       }).select().single()
       if (error) throw error
-      // Show IntaSend payment modal
+      // Show Daraja payment modal
       setPendingGoBooking({ id: bk.id, amount: calloutFee, provider_id: selectedService.provider_id })
       setShowDepositPayment(false)
     } catch(e) { toast.error(e.message||"Failed to create booking") }
@@ -531,7 +531,7 @@ export default function CustomerGoService() {
                   <div style={{ display:"flex", gap:6, marginTop:8 }}>
                     <button onClick={async()=>{
                       await supabase.from("go_parts_requests").update({ payment_released:true, customer_approved:true, customer_approved_at:new Date().toISOString() }).eq("id",r.id)
-                      await supabase.functions.invoke("intasend-stk-push",{ body:{ amount:r.total_amount, booking_id:r.booking_id, customer_id:user.id, provider_id:r.provider_id, service_name:"GO Parts: "+(r.inventory?.name||"Part") } })
+                      await supabase.functions.invoke("daraja-stk-push",{ body:{ amount:r.total_amount, booking_id:r.booking_id, customer_id:user.id, provider_id:r.provider_id, service_name:"GO Parts: "+(r.inventory?.name||"Part") } })
                       setGoPartsRequests(prev=>prev.map(x=>x.id===r.id?{...x,payment_released:true}:x))
                       toast.success("Payment released to supplier! 💰")
                     }} style={{ flex:1, background:"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"8px 10px", cursor:"pointer" }}>✅ Part Received — Pay</button>
@@ -545,7 +545,6 @@ export default function CustomerGoService() {
                 )}
                 {r.payment_released&&<div style={{ fontSize:11, color:"#1d9e75", fontWeight:600, marginTop:6 }}>✅ Payment released to supplier</div>}
               </div>
-            ))}
             ))}
           </div>
         )}
@@ -755,7 +754,7 @@ export default function CustomerGoService() {
         </div>
       )}
     {pendingGoBooking&&(
-      <IntaSendPayment
+      <DarajaPayment
         amount={pendingGoBooking.amount}
         bookingId={pendingGoBooking.id}
         providerId={pendingGoBooking.provider_id}
@@ -767,6 +766,8 @@ export default function CustomerGoService() {
     </div>
   )
 }
+
+
 
 
 

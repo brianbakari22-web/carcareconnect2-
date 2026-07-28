@@ -27,33 +27,32 @@ serve(async (req) => {
     if (formattedAccount.startsWith("+")) formattedAccount = formattedAccount.slice(1)
 
     // Determine endpoint based on payment method
+    // Use initiate endpoint for all methods
     const method = payment_method || "mpesa"
-    let endpoint = ""
+    const endpoint = `${BASE_URL}/api/v1/send-money/initiate/`
     let body: any = {
       currency: "KES",
+      provider: "MPESA-B2C",
+      wallet_id: Deno.env.get("INTASEND_WALLET_ID") || "",
+      requires_approval: "NO",
       transactions: [{
         name: "Provider",
         account: formattedAccount,
         amount: amount,
-        narrative: narrative || `CCC payout for booking ${booking_id}`,
+        narrative: (narrative || `CCC payout ${booking_id}`).replace(/[^a-zA-Z0-9_ -]/g, "").substring(0, 50),
       }]
     }
-
-    if (method === "till") {
-      endpoint = `${BASE_URL}/api/v1/send-money/till/`
-    } else if (method === "paybill") {
-      endpoint = `${BASE_URL}/api/v1/send-money/paybill/`
-      // Paybill needs account number
+    if (method === "paybill" || method === "till") {
+      body.provider = "MPESA-B2B"
       body.transactions[0].account_number = paybill_account || "000"
-    } else if (method === "pochi") {
-      endpoint = `${BASE_URL}/api/v1/send-money/mpesa/`
-      // Pochi la biashara uses same endpoint as M-Pesa
-    } else {
-      // Default: M-Pesa
-      endpoint = `${BASE_URL}/api/v1/send-money/mpesa/`
     }
 
     console.log(`Payout via ${method} to ${formattedAccount}, amount: ${amount}`)
+    console.log(`Endpoint: ${endpoint}`)
+    console.log(`Wallet ID: ${Deno.env.get("INTASEND_WALLET_ID")}`)
+    console.log(`Secret key exists: ${!!INTASEND_SECRET_KEY}`)
+    console.log(`ENV: ${INTASEND_ENV}`)
+    console.log(`Body: ${JSON.stringify(body)}`)
 
     const response = await fetch(endpoint, {
       method: "POST",
@@ -64,7 +63,10 @@ serve(async (req) => {
       body: JSON.stringify(body)
     })
 
-    const data = await response.json()
+    const responseText = await response.text()
+    console.log(`Response status: ${response.status}`)
+    console.log(`Response text: ${responseText.substring(0, 200)}`)
+    const data = JSON.parse(responseText)
     if (!response.ok) {
       throw new Error(data.detail || JSON.stringify(data) || "Payout failed")
     }
@@ -96,3 +98,7 @@ serve(async (req) => {
     })
   }
 })
+
+
+
+

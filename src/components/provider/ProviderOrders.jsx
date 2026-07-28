@@ -68,7 +68,7 @@ export default function ProviderOrders() {
     await supabase.from("notifications").insert({ user_id: req.customer_id, title: "Part approved — pay now 💳", message: "Your mechanic needs a "+req.inventory?.name+" — KES "+Number(req.total_amount).toLocaleString()+". Check app to approve payment.", type: "info" })
     setGoPartsRequests(prev=>prev.map(r=>r.id===id?{...r,status:"accepted",delivery_status:"accepted",rider_name:rider.name,rider_phone:rider.phone}:r))
     // Send STK push immediately so customer pays fast
-    await supabase.functions.invoke("intasend-stk-push", { body: { amount: req.total_amount, booking_id: req.booking_id, customer_id: req.customer_id, provider_id: req.provider_id, service_name: "GO Parts: "+(req.inventory?.name||"Part") } }).catch(e=>console.warn("Parts STK:",e.message))
+    await supabase.functions.invoke("daraja-stk-push", { body: { amount: req.total_amount, booking_id: req.booking_id, customer_id: req.customer_id, provider_id: req.provider_id, service_name: "GO Parts: "+(req.inventory?.name||"Part") } }).catch(e=>console.warn("Parts STK:",e.message))
     setShowRiderForm(null)
     toast.success("Part request accepted! Customer notified to pay.")
   }
@@ -238,7 +238,6 @@ export default function ProviderOrders() {
           ))}
         </div>
       )}
-      )}
 
       {/* Gradient stats header */}
       <div style={{ background: newOrderAlert ? "linear-gradient(135deg,#1d9e75,#22c98f)" : "linear-gradient(135deg,#e6821e,#f09840)", borderRadius:14, padding:"1rem 1.25rem", marginBottom:"1.25rem", display:"flex", justifyContent:"space-between", alignItems:"center", transition:"background 0.5s" }}>
@@ -380,6 +379,8 @@ export default function ProviderOrders() {
     </div>
   )
 }
+
+
 
 
 

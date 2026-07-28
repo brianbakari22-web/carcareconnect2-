@@ -506,7 +506,7 @@ export default function CustomerPartsMarketplace() {
                 const { data: sens } = await supabase.from("profile_sensitive").select("mpesa_number").eq("id", user.id).maybeSingle()
                 const phone = sens?.mpesa_number || profile?.phone
                 if(!phone) { toast.error("Please add your M-Pesa number in Profile settings"); setPaying(false); return }
-                const resp = await fetch(import.meta.env.VITE_SUPABASE_URL+"/functions/v1/intasend-stk-push", {
+                const resp = await fetch(import.meta.env.VITE_SUPABASE_URL+"/functions/v1/daraja-stk-push", {
                   method:"POST",
                   headers:{"Content-Type":"application/json","Authorization":"Bearer "+import.meta.env.VITE_SUPABASE_ANON_KEY},
                   body:JSON.stringify({ booking_id:pendingOrder.id, amount:Number(pendingOrder.amount||pendingOrder.subtotal||0), phone, customer_id:user.id, provider_id:pendingOrder.provider_id, service_name:"Order #"+pendingOrder.order_number })
@@ -677,6 +677,7 @@ export default function CustomerPartsMarketplace() {
     </div>
   )
 }
+
 
 
 

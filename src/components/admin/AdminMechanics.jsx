@@ -303,7 +303,6 @@ export default function AdminMechanics() {
                               style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:5, color:"#e24b4a", fontSize:9, fontWeight:700, padding:"2px 6px", cursor:"pointer" }}>
                               ✗
                             </button>
-                          )}
                         </div>
                       </div>
                     ))}
@@ -469,3 +468,4 @@ export default function AdminMechanics() {
     </div>
   )
 }
+
