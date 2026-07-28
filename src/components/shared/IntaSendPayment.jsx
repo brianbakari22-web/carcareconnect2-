@@ -85,7 +85,7 @@ export default function IntaSendPayment({ amount, bookingId, orderId, providerId
             <span>KES {amount.toLocaleString()}</span>
           </div>
           <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, marginBottom:4 }}>
-            <span style={{ color:"#888" }}>Processing fee (1%)</span>
+            <span style={{ color:"#888" }}>M-Pesa processing fee (1%)</span>
             <span style={{ color:"#888" }}>KES {processingFee.toLocaleString()}</span>
           </div>
           <div style={{ borderTop:"1px solid #eee", paddingTop:8, marginTop:4, display:"flex", justifyContent:"space-between", fontWeight:700, fontSize:15 }}>
@@ -145,4 +145,5 @@ export default function IntaSendPayment({ amount, bookingId, orderId, providerId
     </div>
   )
 }
+
 
