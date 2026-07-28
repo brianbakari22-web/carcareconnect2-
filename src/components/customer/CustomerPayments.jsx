@@ -133,7 +133,7 @@ export default function CustomerPayments() {
                 <div>
                   <div style={{ fontSize:13, fontWeight:600 }}>{t.bookings?.service_name||"GO Service Callout"}</div>
                   <div style={{ fontSize:10, color:"#888", marginTop:2 }}>{t.bookings?.booking_number||"—"} · {new Date(t.created_at).toLocaleDateString()}</div>
-                  <div style={{ fontSize:10, color:"#888" }}>M-Pesa Ref: {t.intasend_invoice_id||"—"}</div>
+                  <div style={{ fontSize:10, color:"#888" }}>M-Pesa Ref: {t.daraja_invoice_id||"—"}</div>
                 </div>
                 <div style={{ textAlign:"right" }}>
                   <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(t.total_amount||t.amount).toLocaleString()}</div>

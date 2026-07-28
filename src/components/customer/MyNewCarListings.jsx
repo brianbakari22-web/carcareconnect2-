@@ -156,7 +156,7 @@ export default function MyNewCarListings() {
     finally { setSaving(false) }
   async function payListingFee(listing) {
     try {
-      const { data, error } = await supabase.functions.invoke("intasend-stk-push", {
+      const { data, error } = await supabase.functions.invoke("daraja-stk-push", {
         body: {
           amount: fees.listing_fee,
           booking_id: listing.id,

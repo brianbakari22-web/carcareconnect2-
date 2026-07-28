@@ -20,7 +20,7 @@ export default function AdminPaymentTracking() {
   useEffect(() => { load() }, [])
 
   async function load() {
-    // Load M-Pesa IntaSend transactions
+    // Load M-Pesa Safaricom Daraja transactions
     const { data: mpesaTxns } = await supabase.from("payment_transactions")
       .select("*, profiles(first_name,last_name)")
       .order("created_at", { ascending:false })

@@ -69,7 +69,7 @@ export default function FeaturedListing({ listingId, onSuccess }) {
       sessionStorage.setItem("featured_days", days)
 
       const { data: { session } } = await supabase.auth.getSession()
-      const { data: res, error: resErr } = await supabase.functions.invoke("intasend-stk-push", {
+      const { data: res, error: resErr } = await supabase.functions.invoke("daraja-stk-push", {
         body: {
           amount,
           bookingId: payment.id,

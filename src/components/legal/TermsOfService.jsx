@@ -104,7 +104,7 @@ export default function TermsOfService() {
         </Section>
 
         <Section title="6. Service Categories and Commission Structure">
-          <Sub title="Standard Service Booking">Customer brings vehicle to provider. Platform commission: 10% of service fee. Provider receives: 90% minus 1% processing fee share. Processing fee (3% IntaSend M-Pesa fee) is split equally: 1% charged to customer, 1% absorbed by provider, 1% absorbed by CCC.</Sub>
+          <Sub title="Standard Service Booking">Customer brings vehicle to provider. Platform commission: 10% of service fee. Provider receives: 90% minus 1% processing fee share. Processing fee (3% Safaricom Daraja M-Pesa fee) is split equally: 1% charged to customer, 1% absorbed by provider, 1% absorbed by CCC.</Sub>
           <Sub title="GO Service — Callout Fee">Emergency roadside mechanic dispatch. Non-refundable KES 500 callout fee required upfront. Fee held in escrow until mechanic arrival is verified via OTP. On verification: provider receives 70%, CCC retains 30%. No-show results in full refund to customer.</Sub>
           <Sub title="GO Service — Service Fee">Charged separately after job completion via automatic M-Pesa STK push. Provider receives 85%, CCC retains 15%.</Sub>
           <Sub title="GO Parts">Parts requested by mechanic during GO Service. Customer pays upfront (held in escrow). Payment released to parts provider only after customer confirms receipt. Provider receives 90%, CCC retains 10%.</Sub>
@@ -131,9 +131,9 @@ export default function TermsOfService() {
         </Section>
 
         <Section title="9. Payments — Processed Exclusively by M-Pesa">
-          <div style={{ fontWeight:600, color:"#000", marginBottom:8 }}>All payments on Car Care Connect are processed via IntaSend, a licensed payment service provider regulated by the Central Bank of Kenya.</div>
+          <div style={{ fontWeight:600, color:"#000", marginBottom:8 }}>All payments on Car Care Connect are processed via Safaricom Daraja, a licensed payment service provider regulated by the Central Bank of Kenya.</div>
           <Sub title="Payment Processing Fee">
-            <Li>IntaSend charges a 3% processing fee on all M-Pesa transactions</Li>
+            <Li>Safaricom Daraja charges a 1% processing fee per transaction.</Li>
             <Li>This fee is shared equally: 1% added to customer total, 1% deducted from provider payout, 1% absorbed by Car Care Connect</Li>
             <Li>Processing fees are non-refundable in all circumstances</Li>
             <Li>Accepted payment methods: M-Pesa STK Push</Li>
@@ -141,7 +141,7 @@ export default function TermsOfService() {
           <Sub title="Automatic Payouts">
             <Li>Providers and drivers are paid automatically and instantly upon payment confirmation</Li>
             <Li>Payouts sent directly to registered M-Pesa number, Till Number, Paybill, or Pochi la Biashara</Li>
-            <Li>Car Care Connect platform commission is retained by IntaSend for up to 72 hours (regulatory requirement) before withdrawal</Li>
+            <Li>Car Care Connect platform commission is retained by Safaricom Daraja for up to 72 hours (regulatory requirement) before withdrawal</Li>
             <Li>Providers can register their preferred payout method in Profile → Contact Details</Li>
             <Li>KRA withholding tax applies for payments above KES 24,999 per transaction</Li>
           </Sub>

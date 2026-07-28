@@ -280,7 +280,7 @@ MPESA PAYMENT DETAILS:
 - Pending merchant contract signing for full activation
 - Current limit: KES 1,000 per transaction (test mode)
 - Full activation after contract signed with M-Pesa
-- Contact: support@intasend.com
+- Contact: support@carcareconnect.care
 - Processing fee split: Customer pays 1%, Provider pays 1%, Platform pays 1% = 3% total
 
 CONTACT BLOCKING:
@@ -641,10 +641,10 @@ PAYMENT FLOW:
 - Callout fee held in escrow until OTP verified
 - Service fee auto-requested via STK push when mechanic marks complete
 - Parts payment tracked separately in go_parts_requests table
-INTASEND PAYMENT:
-- Webhook: intasend-webhook Edge Function
-- STK Push: intasend-stk-push Edge Function
-- Payout: intasend-payout Edge Function
+DARAJA PAYMENT:
+- Webhook: daraja-callback Edge Function
+- STK Push: daraja-stk-push Edge Function
+- Payout: daraja-b2c-payout Edge Function
 - All transactions in payment_transactions table
 BULK BOOKING DETECTION: Admin sees bulk badge on multi-vehicle bookings
 SIGNUP METHOD: Admin sees Google vs email signup badges on user cards
@@ -1010,7 +1010,7 @@ NEW FEATURES (July 2026) - GO SERVICE COMPLETE SYSTEM:
 - All GO rates editable: Admin Settings → GO Service Rates (go_callout_fee, go_callout_provider_rate, go_service_provider_rate, go_parts_provider_rate, go_provider_strike_limit)
 - GO Parts visible in Admin Payouts section
 - Mechanic availability: Auto-resets when job completed/cancelled
-- IntaSend webhook rebuilt: Flexible challenge verification, handles CANCELLED state
+- Daraja callback registered with Safaricom
 - Test accounts: is_test_account flag bypasses payment for testing (GO Service shows Skip Payment button)
 - Play Store: care.carcareconnect.app, version 1.0.34, closed testing (14-day requirement)
 - Google Play production access: under review since July 17 2026
@@ -1060,7 +1060,7 @@ FOR ADMINS specifically (full platform access — all knowledge available):
 - SERVICE PHOTOS (July 2026): Providers upload up to 5 photos per service. Shown on customer service cards and in Content Hub.
 - PLAY STORE: care.carcareconnect.app, version 1.0.31, internal testing phase, ~11 days to production eligibility
 - BRS STATUS: 3 names submitted (NAIRO CAR CONNECT, KEN CAR CONNECT, CARCARE KE CONNECT) — awaiting approval
-- MPESA: IntaSend Tier 2 active - KES 300,000 daily limit with Rachel Owino (support@intasend.com)
+- MPESA: Safaricom Daraja LIVE - KES 500,000 daily limit with Rachel Owino (support@carcareconnect.care)
 - TRADEMARK: KIPI application pending — Class 35 (business services), 37 (vehicle repair), 39 (transport)`
 }
 

@@ -438,7 +438,7 @@ export default function CustomerBookings() {
         </div>
       ))}
     {serviceFeeBooking&&(
-      <IntaSendPayment
+      <Safaricom DarajaPayment
         amount={Number(serviceFeeBooking.total_amount||0)}
         bookingId={serviceFeeBooking.id}
         providerId={serviceFeeBooking.provider_id}
@@ -450,6 +450,7 @@ export default function CustomerBookings() {
     </div>
   )
 }
+
 
 
 

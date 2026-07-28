@@ -38,7 +38,7 @@ export default function InspectionRequest({ listing, onSuccess }) {
       if (error) throw error
 
       const { data: { session } } = await supabase.auth.getSession()
-      const { data: res, error: resErr } = await supabase.functions.invoke("intasend-stk-push", {
+      const { data: res, error: resErr } = await supabase.functions.invoke("daraja-stk-push", {
         body: {
           amount: totalFee,
           bookingId: insp.id,

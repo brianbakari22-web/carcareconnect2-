@@ -120,14 +120,14 @@ export default function AdminAIMonitor() {
     // Check M-Pesa - verify edge function is deployed
     try {
       const start = Date.now()
-      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/intasend-stk-push", {
+      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/daraja-stk-push", {
         method:"POST",
         headers:{"Content-Type":"application/json","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc"},
         body:JSON.stringify({ping:true})
       })
       const ms = Date.now()-start
-      checks.intasend = { status: res.status < 503 ? "ok" : "error", ms }
-    } catch(e) { checks.intasend = { status:"error", ms:0 } }
+      checks.daraja = { status: res.status < 503 ? "ok" : "error", ms }
+    } catch(e) { checks.daraja = { status:"error", ms:0 } }
 
     // Check AI
     try {
@@ -355,7 +355,7 @@ export default function AdminAIMonitor() {
 
 API HEALTH:
 - Supabase database: ${apiHealth.supabase?.status} (${apiHealth.supabase?.ms}ms)
-- M-Pesa payments: ${apiHealth.intasend?.status} (${apiHealth.intasend?.ms}ms) IntaSend Tier 2 VERIFIED - KES 300,000 daily limit ACTIVE
+- M-Pesa payments: ${apiHealth.daraja?.status} (${apiHealth.daraja?.ms}ms) Safaricom Daraja Tier 2 VERIFIED - KES 300,000 daily limit ACTIVE
 - AI assistant: ${apiHealth.ai?.status} (${apiHealth.ai?.ms}ms)
 
 PLATFORM STATUS RIGHT NOW:
@@ -455,7 +455,7 @@ NEW FEATURES ADDED (Jul 2026):
 - Service bundles: providers create discounted service packages, customers can book bundles
 - Support system: all roles (customer/provider/driver) can file support tickets
 - Claims investigation: private chat threads between admin and each party
-- IntaSend Tier 2 LIVE: KES 300,000 daily limit, real M-Pesa transactions
+- Safaricom Daraja LIVE: KES 500,000 daily limit, real M-Pesa transactions
 - ProviderCustomerReviews: providers can rate customer behavior after bookings
 - Auto-release-payments cron: runs hourly to release held payments after 24hrs
 Give a comprehensive report with these sections:
@@ -574,7 +574,7 @@ Be specific and actionable. Max 300 words. Use bullet points.`
               <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:8, marginBottom:"1rem" }}>
                 {[
                   { l:"Supabase DB", k:"supabase" },
-                  { l:"M-Pesa Pay", k:"intasend" },
+                  { l:"M-Pesa Pay", k:"daraja" },
                   { l:"AI Assistant", k:"ai" },
                 ].map(s=>(
                   <div key={s.k} style={{ background:"#ffffff", borderRadius:8, padding:"0.6rem", textAlign:"center", border:"1px solid "+(report.platformData.api_health?.[s.k]?.status==="ok"?"#1d9e7540":"#e24b4a40") }}>
@@ -629,7 +629,7 @@ Be specific and actionable. Max 300 words. Use bullet points.`
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:6 }}>
                   {[
           { f:"Customer booking", ok:true },
-                    { f:"Payments (M-Pesa)", ok:report.platformData.api_health?.intasend?.status==="ok" },
+                    { f:"Payments (M-Pesa)", ok:report.platformData.api_health?.daraja?.status==="ok" },
           { f:"GO Service", ok:true },
           { f:"Marketplace", ok:true },
           { f:"Driver verification", ok:true },

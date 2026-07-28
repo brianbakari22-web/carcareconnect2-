@@ -154,7 +154,7 @@ export default function DriverPayouts() {
 
       {tab==="auto"&&(
         <div>
-          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:12 }}>Automatic Payouts from IntaSend</div>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:12 }}>Automatic Payouts from Safaricom Daraja</div>
           {autoPayouts.length===0&&(
             <div style={{ textAlign:"center", padding:"2rem", color:"#888" }}>
               <div style={{ fontSize:32, marginBottom:8 }}>💸</div>
@@ -167,7 +167,7 @@ export default function DriverPayouts() {
                 <div>
                   <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:700 }}>KES {Number(p.amount).toLocaleString()}</div>
                   <div style={{ fontSize:12, color:"#888" }}>{new Date(p.created_at).toLocaleString()}</div>
-                  <div style={{ fontSize:11, color:"#aaa" }}>Ref: {p.intasend_ref||p.id?.slice(0,8)}</div>
+                  <div style={{ fontSize:11, color:"#aaa" }}>Ref: {p.daraja_ref||p.id?.slice(0,8)}</div>
                 </div>
                 <span style={{ fontSize:11, padding:"3px 10px", borderRadius:8,
                   background:p.status==="completed"?"#f0fdf4":p.status==="failed"?"#fff5f5":"#fff8f0",

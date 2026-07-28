@@ -24,7 +24,7 @@ export default function PaymentCallback() {
       const goProviderId = sessionStorage.getItem("go_provider_id")
       const isGoPayment = goBookingId === merchantRef
 
-      const { data: res, error: resErr } = await supabase.functions.invoke("intasend-stk-push", {
+      const { data: res, error: resErr } = await supabase.functions.invoke("daraja-stk-push", {
         body: { trackingId, merchantRef }
       })
       const data = await res.json()
