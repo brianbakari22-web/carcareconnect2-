@@ -70,6 +70,35 @@ serve(async (req) => {
           status: "confirmed",
           auto_release_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
         }).eq("id", booking_id)
+
+        // Get booking for notifications
+        const { data: booking } = await supabase.from("bookings")
+          .select("customer_id, provider_id, service_name, booking_number")
+          .eq("id", booking_id).single()
+
+        if (booking) {
+          const pushUrl = `${Deno.env.get("SUPABASE_URL")}/functions/v1/send-push`
+          const pushHeaders = { "Content-Type": "application/json", "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}` }
+
+          await fetch(pushUrl, {
+            method: "POST", headers: pushHeaders,
+            body: JSON.stringify({
+              user_id: booking.customer_id,
+              title: "Payment confirmed! ✅",
+              message: `KES ${queryData.Amount || ""} received for ${booking.service_name}.`,
+              data: { type: "payment", booking_id }
+            })
+          })
+          await fetch(pushUrl, {
+            method: "POST", headers: pushHeaders,
+            body: JSON.stringify({
+              user_id: booking.provider_id,
+              title: "Payment received! 💰",
+              message: `KES ${queryData.Amount || ""} paid for ${booking.service_name} #${booking.booking_number}.`,
+              data: { type: "payment", booking_id }
+            })
+          })
+        }
       }
 
       return new Response(JSON.stringify({ success: true, status: "completed", result: queryData }), {
@@ -92,3 +121,4 @@ serve(async (req) => {
     })
   }
 })
+
