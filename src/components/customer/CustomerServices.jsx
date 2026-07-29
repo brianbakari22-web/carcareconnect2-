@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { pushNotify } from "../../lib/pushNotify"
 import { sanitizeAmount } from "../../lib/sanitize"
@@ -770,7 +770,7 @@ export default function CustomerServices() {
       {showPayment&&pendingBooking&&(
         <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.8)", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center", padding:"1rem" }}>
           <div style={{ width:"100%", maxWidth:420 }}>
-            <Safaricom DarajaPayment
+            <IntaSendPayment
               amount={pendingBooking.amount}
               bookingId={pendingBooking.id}
               customerEmail={user?.email}
@@ -833,6 +833,7 @@ export default function CustomerServices() {
     </div>
   )
 }
+
 
 
 

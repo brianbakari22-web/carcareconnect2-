@@ -75,7 +75,7 @@ export default function IntaSendPayment({ amount, bookingId, orderId, providerId
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1.25rem" }}>
           <div>
             <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800 }}>Pay with M-Pesa</div>
-            <div style={{ fontSize:12, color:"#888" }}>Secure payment via Safaricom Daraja</div>
+            <div style={{ fontSize:12, color:"#888" }}>Secure payment via M-Pesa</div>
           </div>
           <button onClick={onClose} style={{ background:"none", border:"none", fontSize:20, cursor:"pointer", color:"#888" }}>×</button>
         </div>
@@ -145,5 +145,6 @@ export default function IntaSendPayment({ amount, bookingId, orderId, providerId
     </div>
   )
 }
+
 
 
