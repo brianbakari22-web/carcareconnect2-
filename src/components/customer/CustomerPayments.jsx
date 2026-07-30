@@ -24,7 +24,7 @@ export default function CustomerPayments() {
 
   async function load() {
     const [{ data: bks }, { data: rfs }, { data: txns }] = await Promise.all([
-      supabase.from("bookings").select("*, provider:profiles!bookings_provider_id_fkey(first_name,last_name,business_name,phone,city,address)").eq("customer_id", user.id).order("created_at", { ascending:false }),
+      supabase.from("bookings").select("*, provider:profiles!bookings_provider_id_fkey(first_name,last_name,business_name,city,address)").eq("customer_id", user.id).order("created_at", { ascending:false }),
       supabase.from("refunds").select("*").eq("customer_id", user.id).order("created_at", { ascending:false }),
       supabase.from("payment_transactions").select("*, bookings(service_name,booking_number,status)").eq("customer_id", user.id).order("created_at", { ascending:false })
     ])
@@ -225,6 +225,7 @@ export default function CustomerPayments() {
     </div>
   )
 }
+
 
 
 
