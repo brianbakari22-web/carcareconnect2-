@@ -506,10 +506,10 @@ export default function CustomerPartsMarketplace() {
                 const { data: sens } = await supabase.from("profile_sensitive").select("mpesa_number").eq("id", user.id).maybeSingle()
                 const phone = sens?.mpesa_number || profile?.phone
                 if(!phone) { toast.error("Please add your M-Pesa number in Profile settings"); setPaying(false); return }
-                const resp = await fetch(import.meta.env.VITE_SUPABASE_URL+"/functions/v1/daraja-stk-push", {
+                const resp = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/daraja-stk-push", {
                   method:"POST",
-                  headers:{"Content-Type":"application/json","Authorization":"Bearer "+import.meta.env.VITE_SUPABASE_ANON_KEY},
-                  body:JSON.stringify({ booking_id:pendingOrder.id, amount:Number(pendingOrder.amount||pendingOrder.subtotal||0), phone, customer_id:user.id, provider_id:pendingOrder.provider_id, service_name:"Order #"+pendingOrder.order_number })
+                  headers:{"Content-Type":"application/json","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc"},
+                  body:JSON.stringify({ booking_id:pendingOrder.id, amount:Number(pendingOrder.amount||pendingOrder.subtotal||0), phone, account_ref:pendingOrder.order_number?.substring(0,12)||"CCC", description:"Parts Order #"+pendingOrder.order_number })
                 })
                 const data = await resp.json()
                 if(data.error) throw new Error(data.error)
@@ -677,6 +677,8 @@ export default function CustomerPartsMarketplace() {
     </div>
   )
 }
+
+
 
 
 
