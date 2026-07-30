@@ -3,6 +3,7 @@ import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import { useTheme } from "../../contexts/ThemeContext"
 import { useNavigate, useLocation } from "react-router-dom"
+import { HomeIcon, ServicesIcon, BookingsIcon, PaymentsIcon, ProfileIcon, MarketplaceIcon, ChatIcon, NotificationsIcon, GOServiceIcon, SearchIcon, SettingsIcon, WalletIcon, LocationIcon, StarIcon, VehicleIcon, ShieldIcon, DriversIcon, OrdersIcon, AnalyticsIcon, FilterIcon, LogoutIcon, HelpIcon, MechanicIcon, PartsIcon, ReportsIcon, SecurityIcon } from "../../lib/cccIcons"
 import ThemeSwitcher from "./ThemeSwitcher"
 import { supabase } from "../../lib/supabase"
 import AIAssistant from "./AIAssistant"
@@ -386,7 +387,16 @@ export default function Layout({ children }) {
                 <button key={item.path}
                   onClick={()=>{ navigate(item.path); setMobileMenuOpen(false) }}
                   style={{ display:"flex", alignItems:"center", gap:10, width:"100%", padding:"10px 12px", background:isActive(item)?activeBg:"transparent", border:`1px solid ${isActive(item)?activeColor:"transparent"}`, borderRadius:9, color:isActive(item)?activeColor:theme.textMuted, fontSize:13, cursor:"pointer", marginBottom:4, fontFamily:"'DM Sans',sans-serif", textAlign:"left", fontWeight:isActive(item)?600:400 }}>
-                  <span style={{ fontSize:18 }}>{item.icon}</span>
+                  <span style={{ display:"flex", alignItems:"center", justifyContent:"center" }}>
+              {item.key==="overview" ? <HomeIcon size={20} active={isActive(item)} /> :
+               item.key==="bookings" ? <BookingsIcon size={20} active={isActive(item)} /> :
+               item.key==="findServices"||item.key==="myServices" ? <ServicesIcon size={20} active={isActive(item)} /> :
+               item.key==="messages" ? <ChatIcon size={20} active={isActive(item)} /> :
+               item.key==="notifications" ? <NotificationsIcon size={20} active={isActive(item)} /> :
+               item.key==="payments" ? <PaymentsIcon size={20} active={isActive(item)} /> :
+               item.label==="Marketplace" ? <MarketplaceIcon size={20} active={isActive(item)} /> :
+               <span style={{fontSize:18}}>{item.icon}</span>}
+            </span>
                   {getLabel(item)}
                 </button>
               ))}
@@ -431,7 +441,19 @@ export default function Layout({ children }) {
               {NAV[role]?.map((item,idx)=>(
                 <button key={item.path+idx} onClick={()=>{navigate(item.path);setShowMore(false)}}
                   style={{background:location.pathname===item.path?activeBg:"transparent",border:"1px solid "+(location.pathname===item.path?activeColor:theme.border),borderRadius:10,padding:"0.75rem 0.5rem",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
-                  <span style={{fontSize:22}}>{item.icon}</span>
+                  <span style={{ display:"flex", alignItems:"center", justifyContent:"center" }}>
+                {item.key==="overview" ? <HomeIcon size={22} active={isActive(item)} /> :
+                 item.key==="bookings" ? <BookingsIcon size={22} active={isActive(item)} /> :
+                 item.key==="findServices"||item.key==="myServices" ? <ServicesIcon size={22} active={isActive(item)} /> :
+                 item.key==="messages" ? <ChatIcon size={22} active={isActive(item)} /> :
+                 item.key==="notifications" ? <NotificationsIcon size={22} active={isActive(item)} hasAlert={unreadCount>0} /> :
+                 item.key==="payments" ? <PaymentsIcon size={22} active={isActive(item)} /> :
+                 item.key==="reviews"||item.key==="myRatings" ? <StarIcon size={22} active={isActive(item)} /> :
+                 item.key==="profile" ? <ProfileIcon size={22} active={isActive(item)} /> :
+                 item.label==="Marketplace" ? <MarketplaceIcon size={22} active={isActive(item)} /> :
+                 item.label==="Settings" ? <SettingsIcon size={22} active={isActive(item)} /> :
+                 <span style={{fontSize:20}}>{item.icon}</span>}
+              </span>
                   <span style={{fontSize:9,color:location.pathname===item.path?activeColor:theme.textMuted,textAlign:"center",lineHeight:1.3}}>{item.label||item.key}</span>
                 </button>
               ))}
@@ -482,7 +504,34 @@ export default function Layout({ children }) {
               className={`nav-btn${isActive(item)?" active":""}`}
               onClick={()=>navigate(item.path)}
               title={collapsed?getLabel(item):""}>
-              <span style={{ fontSize:16, flexShrink:0 }}>{item.icon}</span>
+              <span style={{ display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+              {item.key==="overview" ? <HomeIcon size={18} active={isActive(item)} /> :
+               item.key==="bookings" ? <BookingsIcon size={18} active={isActive(item)} /> :
+               item.key==="findServices"||item.key==="myServices" ? <ServicesIcon size={18} active={isActive(item)} /> :
+               item.key==="messages" ? <ChatIcon size={18} active={isActive(item)} /> :
+               item.key==="notifications" ? <NotificationsIcon size={18} active={isActive(item)} hasAlert={unreadCount>0} /> :
+               item.key==="payments" ? <PaymentsIcon size={18} active={isActive(item)} /> :
+               item.key==="earnings"||item.key==="payouts" ? <WalletIcon size={18} active={isActive(item)} /> :
+               item.key==="reviews"||item.key==="myRatings" ? <StarIcon size={18} active={isActive(item)} /> :
+               item.key==="analytics" ? <AnalyticsIcon size={18} active={isActive(item)} /> :
+               item.key==="profile" ? <ProfileIcon size={18} active={isActive(item)} /> :
+               item.key==="availability" ? <BookingsIcon size={18} active={isActive(item)} /> :
+               item.label==="GO Requests"||item.label==="GO Service 🚨" ? <GOServiceIcon size={18} /> :
+               item.label==="Marketplace" ? <MarketplaceIcon size={18} active={isActive(item)} /> :
+               item.label==="Mechanics"||item.key==="mechanics" ? <MechanicIcon size={18} active={isActive(item)} /> :
+               item.label==="Drivers" ? <DriversIcon size={18} active={isActive(item)} /> :
+               item.label==="Vehicles"||item.key==="myVehicles" ? <VehicleIcon size={18} active={isActive(item)} /> :
+               item.label==="Settings" ? <SettingsIcon size={18} active={isActive(item)} /> :
+               item.label==="Service Claims"||item.label==="My Claims" ? <ShieldIcon size={18} active={isActive(item)} /> :
+               item.label==="Orders" ? <OrdersIcon size={18} active={isActive(item)} /> :
+               item.label==="Reports"||item.label==="Revenue" ? <ReportsIcon size={18} active={isActive(item)} /> :
+               item.label==="2FA Security" ? <SecurityIcon size={18} active={isActive(item)} /> :
+               item.label==="Payouts"||item.label==="Earnings" ? <WalletIcon size={18} active={isActive(item)} /> :
+               item.label==="Support"||item.label==="Support Tickets" ? <HelpIcon size={18} active={isActive(item)} /> :
+               item.label==="Spare Parts"||item.label==="Inventory" ? <PartsIcon size={18} active={isActive(item)} /> :
+               item.label==="Chat" ? <ChatIcon size={18} active={isActive(item)} /> :
+               <span style={{fontSize:16}}>{item.icon}</span>}
+            </span>
               {!collapsed&&<span style={{ overflow:"hidden", textOverflow:"ellipsis" }}>{getLabel(item)}</span>}
             </button>
           ))}
