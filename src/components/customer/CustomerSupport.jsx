@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
-import { BookingsIcon, PaymentsIcon, VehicleIcon, OrdersIcon, ProfileIcon, ServicesIcon, SettingsIcon, ChatIcon, TicketIcon, NoteIcon, PenIcon, QuestionIcon, WarningIcon } from "../../lib/cccIcons"
+import { BookingsIcon, PaymentsIcon, VehicleIcon, OrdersIcon, ProfileIcon, ServicesIcon, SettingsIcon, ChatIcon, TicketIcon, NoteIcon, PenIcon, QuestionIcon } from "../../lib/cccIcons"
+
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
