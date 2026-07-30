@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { pushNotify } from "../../lib/pushNotify"
-import { MarketplaceIcon, VehicleIcon, ServicesIcon, LocationIcon, HeartIcon, ChatIcon, ShareIcon, EyeIcon, MyListingsIcon, ShieldIcon, WarningIcon, FilterIcon, SearchIcon, PartsIcon } from "../../lib/cccIcons"
+import { MarketplaceIcon, VehicleIcon, ServicesIcon, LocationIcon, HeartIcon, ChatIcon, ShareIcon, EyeIcon, MyListingsIcon, ShieldIcon, WarningIcon, FilterIcon, SearchIcon, PartsIcon, NoteIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import SellerProfile from "./SellerProfile"
 import NewCarMarketplace from "../customer/NewCarMarketplace"
@@ -1011,6 +1011,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
     </div>
   )
 }
+
 
 
 
