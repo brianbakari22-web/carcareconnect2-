@@ -76,7 +76,7 @@ export default function CustomerDashboard() {
           </div>
           <div onClick={()=>navigate("/dashboard/notifications")}
             style={{ width:36, height:36, borderRadius:"50%", background:"rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", fontSize:18 }}>
-            <NotificationsIcon size={20} color={unreadCount>0?"#e24b4a":"#64748B"} hasAlert={unreadCount>0} />
+            <NotificationsIcon size={20} color="#64748B" />
           </div>
         </div>
       </div>
@@ -211,6 +211,7 @@ export default function CustomerDashboard() {
     </div>
   )
 }
+
 
 
 
