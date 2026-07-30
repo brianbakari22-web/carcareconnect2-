@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { MarketplaceIcon, HomeIcon, GOServiceIcon, LocationIcon, ServicesIcon } from "../../lib/cccIcons"
 import { pushNotify } from "../../lib/pushNotify"
 import { sanitizeAmount } from "../../lib/sanitize"
 import { useSearchParams } from "react-router-dom"
@@ -10,9 +11,9 @@ import toast from "react-hot-toast"
 import IntaSendPayment from "../shared/IntaSendPayment"
 
 const CATEGORIES = [
-  { key:"shop_standard", label:"Shop Standard", icon:"🏪", desc:"You bring your car to the shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
-  { key:"shop_premium", label:"Shop Premium", icon:"🏡", desc:"Mechanic comes to your home", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
-  { key:"go_service", label:"GO Service", icon:"🚨", desc:"Emergency roadside assistance", color:"#e24b4a", bg:"#fff5f5", border:"#fecaca" },
+  { key:"shop_standard", label:"Shop Standard", icon:"marketplace", desc:"You bring your car to the shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
+  { key:"shop_premium", label:"Shop Premium", icon:"home", desc:"Mechanic comes to your home", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
+  { key:"go_service", label:"GO Service", icon:"emergency", desc:"Emergency roadside assistance", color:"#e24b4a", bg:"#fff5f5", border:"#fecaca" },
 ]
 
 export default function CustomerServices() {
@@ -325,7 +326,12 @@ export default function CustomerServices() {
             onClick={()=>setActiveCategory(activeCategory===c.key?"all":c.key)}
             style={{ background:activeCategory===c.key?c.bg:"#f5f5f5", border:`1px solid ${activeCategory===c.key?c.color:"#e5e5e5"}`, borderRadius:12, padding:"1rem", cursor:"pointer", transition:"all 0.15s" }}>
             <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
-              <span style={{ fontSize:22 }}>{c.icon}</span>
+              <span style={{ display:"flex", alignItems:"center", justifyContent:"center" }}>
+              {c.icon==="marketplace"?<MarketplaceIcon size={22} color={selectedCategory===c.key?"#fff":"#e6821e"}/>:
+               c.icon==="home"?<HomeIcon size={22} color={selectedCategory===c.key?"#fff":"#8b5cf6"}/>:
+               c.icon==="emergency"?<GOServiceIcon size={22} color={selectedCategory===c.key?"#fff":"#e24b4a"}/>:
+               <ServicesIcon size={22} color="currentColor"/>}
+            </span>
               <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:activeCategory===c.key?c.color:"#000000" }}>{c.label}</div>
             </div>
             <div style={{ fontSize:11, color:"#666" }}>{c.desc}</div>
@@ -370,7 +376,7 @@ export default function CustomerServices() {
                     <div style={{ display:"flex", gap:12, flexWrap:"wrap", alignItems:"center" }}>
                       <span style={{ fontSize:12, color:"#888", textDecoration:"line-through" }}>KES {Number(b.original_price).toLocaleString()}</span>
                       <span style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(b.bundle_price).toLocaleString()}</span>
-                      {provider&&<span style={{ fontSize:11, color:"#777777" }}>🏪 {provider.business_name||`${provider.first_name} ${provider.last_name}`}{provider.city?` · ${provider.city}`:""}</span>}
+                      {provider&&<span style={{ fontSize:11, color:"#777777", display:"flex", alignItems:"center", gap:3 }}><MarketplaceIcon size={11} color="#777777"/> {provider.business_name||`${provider.first_name} ${provider.last_name}`}{provider.city?` · ${provider.city}`:""}</span>}
                     </div>
                   </div>
                   <button onClick={()=>{ setBooking({ id:b.id, name:b.name, price:b.bundle_price, provider_id:b.provider_id, category:"shop_standard", is_bundle:true, bundle_id:b.id, platform_commission_rate:b.platform_commission_rate }); setBookForm({ date:"", time:"", notes:"", payment_method:"mpesa", is_concierge:false }) }}
@@ -520,7 +526,12 @@ export default function CustomerServices() {
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10 }}>
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6, flexWrap:"wrap" }}>
-                  <span style={{ fontSize:18 }}>{cat.icon}</span>
+                  <span style={{ display:"flex" }}>
+              {cat.icon==="marketplace"?<MarketplaceIcon size={18} color="currentColor"/>:
+               cat.icon==="home"?<HomeIcon size={18} color="currentColor"/>:
+               cat.icon==="emergency"?<GOServiceIcon size={18} color="currentColor"/>:
+               <ServicesIcon size={18} color="currentColor"/>}
+            </span>
                   <div style={{ fontFamily:"Syne", fontSize:isMobile?14:15, fontWeight:800, color:"#000000" }}>{s.name}</div>
                   <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:cat.bg, color:cat.color, border:`1px solid ${cat.border}` }}>{cat.label}</span>
                 </div>
@@ -528,7 +539,7 @@ export default function CustomerServices() {
                 <div style={{ display:"flex", gap:12, flexWrap:"wrap", alignItems:"center" }}>
                   <span style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(s.price)>=1?Number(s.price).toLocaleString():Number(s.price*100).toLocaleString()}</span>
                   <span style={{ fontSize:11, color:"#777777" }}>⏱ {s.duration_minutes||60} min</span>
-                  {provider&&<span style={{ fontSize:11, color:"#777777" }}>🏪 {provider.business_name||`${provider.first_name} ${provider.last_name}`}{provider.city?` · ${provider.city}`:""}</span>}
+                  {provider&&<span style={{ fontSize:11, color:"#777777", display:"flex", alignItems:"center", gap:3 }}><MarketplaceIcon size={11} color="#777777"/> {provider.business_name||`${provider.first_name} ${provider.last_name}`}{provider.city?` · ${provider.city}`:""}</span>}
                   {provider?.is_verified&&<span style={{ fontSize:10, color:"#1d9e75" }}>✓ Verified</span>}
                 </div>
               </div>
@@ -544,14 +555,14 @@ export default function CustomerServices() {
 
                 {s.category==="go_service"&&(
                   <div style={{ background:"#fff5f5", border:"1px solid #ffd5d5", borderRadius:8, padding:"0.75rem", marginBottom:12 }}>
-                    <div style={{ fontSize:12, color:"#e24b4a", fontWeight:600, marginBottom:2 }}>🚨 Emergency GO Service</div>
+                    <div style={{ fontSize:12, color:"#e24b4a", fontWeight:600, marginBottom:2, display:"flex", alignItems:"center", gap:4 }}><GOServiceIcon size={12} color="#e24b4a"/> Emergency GO Service</div>
                     <div style={{ fontSize:11, color:"#666" }}>A mechanic will be dispatched to your location. Online payment required. Provider has 15 minutes to accept.</div>
                   </div>
                 )}
 
                 {s.category==="shop_premium"&&(
                   <div style={{ background:"#faf5ff", border:"1px solid #e9d5ff", borderRadius:8, padding:"0.75rem", marginBottom:12 }}>
-                    <div style={{ fontSize:12, color:"#8b5cf6", fontWeight:600, marginBottom:2 }}>🏡 Premium Home Service</div>
+                    <div style={{ fontSize:12, color:"#8b5cf6", fontWeight:600, marginBottom:2, display:"flex", alignItems:"center", gap:4 }}><HomeIcon size={12} color="#8b5cf6"/> Premium Home Service</div>
                     <div style={{ fontSize:11, color:"#666" }}>A mechanic will come to your home or office. Please provide your address in the notes.</div>
                   </div>
                 )}
@@ -659,7 +670,7 @@ export default function CustomerServices() {
                               setBookForm(f=>({...f, concierge_location:data.display_name||"Location detected"}))
                             } catch(err) { toast.error("Could not detect location") }
                           }} style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:11, padding:"0 12px", cursor:"pointer", flexShrink:0 }}>
-                            📍 Detect
+                            <LocationIcon size={13} color="currentColor"/> Detect
                           </button>
                         </div>
                       </div>
@@ -733,7 +744,7 @@ export default function CustomerServices() {
                                         {/* Share my location - Fix #20 */}
                       {!bookForm.is_concierge&&(
                         <div style={{ marginBottom:12, background:"#f8f8f8", borderRadius:10, padding:"0.75rem" }}>
-                          <div style={{ fontSize:12, fontWeight:700, color:"#555", marginBottom:6 }}>📍 Your location (optional)</div>
+                          <div style={{ fontSize:12, fontWeight:700, color:"#555", marginBottom:6, display:"flex", alignItems:"center", gap:4 }}><LocationIcon size={12} color="#555"/> Your location (optional)</div>
                           {customerLocation.lat?(
                             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                               <div style={{ fontSize:11, color:"#1d9e75", flex:1, marginRight:8 }}>✓ {customerLocation.address?.substring(0,60)}...</div>
@@ -743,7 +754,7 @@ export default function CustomerServices() {
                           ):(
                             <button type="button" onClick={detectCustomerLocation} disabled={detectingLocation}
                               style={{ width:"100%", background:detectingLocation?"#888":"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"8px", cursor:"pointer" }}>
-                              {detectingLocation?"Detecting...":"📍 Share my location with provider"}
+                              {detectingLocation?"Detecting...":<><LocationIcon size={13} color="currentColor"/> Share my location with provider</>}
                             </button>
                           )}
                         </div>
