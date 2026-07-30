@@ -1,3 +1,4 @@
+import { HeartIcon, LocationIcon } from "../../lib/cccIcons";
 import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
@@ -58,7 +59,7 @@ export default function CustomerFavorites() {
 
       {favorites.length===0&&(
         <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"3rem", textAlign:"center" }}>
-          <div style={{ fontSize:36, marginBottom:12 }}>❤️</div>
+          <div style={{ marginBottom:12, display:"flex", justifyContent:"center" }}><HeartIcon size={36} color="#e24b4a" active={true} /></div>
           <div style={{ fontSize:14, color:"#777777", marginBottom:4 }}>No favorites yet</div>
           <div style={{ fontSize:12, color:"#888888", marginBottom:"1.5rem" }}>Save providers you love for quick rebooking</div>
           <button onClick={()=>navigate("/dashboard/discover")}
@@ -87,11 +88,11 @@ export default function CustomerFavorites() {
                       {p?.is_online?"● Online":"○ Offline"}
                     </span>
                   </div>
-                  {p?.city&&<div style={{ fontSize:11, color:"#777777" }}>📍 {p.city}</div>}
+                  {p?.city&&<div style={{ fontSize:11, color:"#777777", display:"flex", alignItems:"center", gap:3 }}><LocationIcon size={11} color="#777777"/> {p.city}</div>}
                 </div>
                 <button onClick={()=>removeFavorite(f.provider_id)}
                   style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", fontSize:11, padding:"6px 10px", cursor:"pointer", flexShrink:0 }}>
-                  ♥ Remove
+                  <HeartIcon size={13} color="#e24b4a" /> Remove
                 </button>
               </div>
 

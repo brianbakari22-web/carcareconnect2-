@@ -1,3 +1,4 @@
+import { TripReportIcon, VehicleIcon, LocationIcon, SuccessIcon, ErrorIcon } from "../../lib/cccIcons";
 import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
@@ -71,7 +72,7 @@ export default function CustomerTripReports() {
   return (
     <div>
       <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000", marginBottom:"1.5rem" }}>
-        🗺️ Trip Reports
+        <TripReportIcon size={20} color="#e6821e" /> Trip Reports
       </div>
       {selected ? (
         <div>
@@ -83,13 +84,13 @@ export default function CustomerTripReports() {
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, marginBottom:4 }}>{selected.service_name}</div>
             <div style={{ fontSize:11, color:"#888" }}>#{selected.booking_number} · {selected.booking_date}</div>
             <div style={{ fontSize:11, color:"#888" }}>Driver: {selected.profiles?.first_name} {selected.profiles?.last_name}</div>
-            {selected.vehicles && <div style={{ fontSize:11, color:"#378add", marginTop:2 }}>🚗 {selected.vehicles.make} {selected.vehicles.model} · {selected.vehicles.license_plate}</div>}
+            {selected.vehicles && <div style={{ fontSize:11, color:"#378add", marginTop:2, display:"flex", alignItems:"center", gap:3 }}><VehicleIcon size={11} color="#378add"/> {selected.vehicles.make} {selected.vehicles.model} · {selected.vehicles.license_plate}</div>}
           </div>
           {loadingLogs ? (
             <div style={{ color:"#888", fontSize:13, padding:"2rem", textAlign:"center" }}>Loading trip data...</div>
           ) : logs.length === 0 ? (
             <div style={{ color:"#888", fontSize:13, padding:"2rem", textAlign:"center" }}>
-              <div style={{ fontSize:32, marginBottom:10 }}>📍</div>
+              <div style={{ marginBottom:10, display:"flex", justifyContent:"center" }}><LocationIcon size={32} color="#e6821e" /></div>
               No GPS data recorded for this trip.
               <div style={{ fontSize:11, marginTop:8, color:"#aaa" }}>GPS logging is active when driver is online during your booking.</div>
             </div>
@@ -108,11 +109,11 @@ export default function CustomerTripReports() {
                 ))}
               </div>
               <div style={{ background:"#f8f8f8", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
-                <div style={{ fontSize:12, fontWeight:600, color:"#000", marginBottom:8 }}>📍 Journey Summary</div>
-                <div style={{ fontSize:12, color:"#666", marginBottom:4 }}>🟢 Start: {new Date(logs[0].recorded_at).toLocaleTimeString()} · {logs[0].lat?.toFixed(5)}, {logs[0].lng?.toFixed(5)}</div>
-                <div style={{ fontSize:12, color:"#666" }}>🔴 End: {new Date(logs[logs.length-1].recorded_at).toLocaleTimeString()} · {logs[logs.length-1].lat?.toFixed(5)}, {logs[logs.length-1].lng?.toFixed(5)}</div>
+                <div style={{ fontSize:12, fontWeight:600, color:"#000", marginBottom:8, display:"flex", alignItems:"center", gap:4 }}><LocationIcon size={14} color="#000"/> Journey Summary</div>
+                <div style={{ fontSize:12, color:"#666", marginBottom:4 }}><SuccessIcon size={12} color="#1d9e75"/> Start: {new Date(logs[0].recorded_at).toLocaleTimeString()} · {logs[0].lat?.toFixed(5)}, {logs[0].lng?.toFixed(5)}</div>
+                <div style={{ fontSize:12, color:"#666" }}><ErrorIcon size={12} color="#e24b4a"/> End: {new Date(logs[logs.length-1].recorded_at).toLocaleTimeString()} · {logs[logs.length-1].lat?.toFixed(5)}, {logs[logs.length-1].lng?.toFixed(5)}</div>
               </div>
-              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8 }}>📍 GPS Timeline</div>
+              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8, display:"flex", alignItems:"center", gap:6 }}><LocationIcon size={14} color="#e6821e"/> GPS Timeline</div>
               <div style={{ maxHeight:250, overflowY:"auto", background:"#f8f8f8", borderRadius:10, padding:"0.5rem" }}>
                 {logs.map((log, i) => (
                   <div key={log.id} style={{ display:"flex", gap:8, alignItems:"center", padding:"6px 8px", borderBottom:"1px solid #eeeeee", fontSize:11, color:"#666" }}>
@@ -120,7 +121,7 @@ export default function CustomerTripReports() {
                     <span style={{ minWidth:60 }}>{new Date(log.recorded_at).toLocaleTimeString()}</span>
                     <span style={{ color:"#888", flex:1 }}>{log.lat?.toFixed(5)}, {log.lng?.toFixed(5)}</span>
                     <span style={{ background:log.source==="tracker"?"#e8f5e9":"#eff6ff", color:log.source==="tracker"?"#1d9e75":"#378add", borderRadius:4, padding:"1px 6px", fontSize:10, flexShrink:0 }}>
-                      {log.source==="tracker"?"📡 Tracker":"🚗 Driver"}
+                      {log.source==="tracker"?<><SignalIcon size={12} color="#378add"/> Tracker</>:<><VehicleIcon size={12} color="#e6821e"/> Driver</>}
                     </span>
                   </div>
                 ))}
@@ -134,7 +135,7 @@ export default function CustomerTripReports() {
           {loading && <div style={{ color:"#888", fontSize:13 }}>Loading...</div>}
           {!loading && bookings.length === 0 && (
             <div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"3rem" }}>
-              <div style={{ fontSize:32, marginBottom:10 }}>🗺️</div>
+              <div style={{ marginBottom:10, display:"flex", justifyContent:"center" }}><TripReportIcon size={32} color="#e6821e"/></div>
               No trips with drivers yet
             </div>
           )}
@@ -147,8 +148,8 @@ export default function CustomerTripReports() {
                 <div>
                   <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:4 }}>{b.service_name}</div>
                   <div style={{ fontSize:11, color:"#888" }}>#{b.booking_number} · {b.booking_date}</div>
-                  {b.profiles && <div style={{ fontSize:11, color:"#378add", marginTop:2 }}>🚗 {b.profiles.first_name} {b.profiles.last_name}</div>}
-                  {b.vehicles && <div style={{ fontSize:11, color:"#888", marginTop:2 }}>🚘 {b.vehicles.make} {b.vehicles.model} · {b.vehicles.license_plate}</div>}
+                  {b.profiles && <div style={{ fontSize:11, color:"#378add", marginTop:2, display:"flex", alignItems:"center", gap:3 }}><VehicleIcon size={11} color="#378add"/> {b.profiles.first_name} {b.profiles.last_name}</div>}
+                  {b.vehicles && <div style={{ fontSize:11, color:"#888", marginTop:2, display:"flex", alignItems:"center", gap:3 }}><MovingCarIcon size={11} color="#888"/> {b.vehicles.make} {b.vehicles.model} · {b.vehicles.license_plate}</div>}
                 </div>
                 <div style={{ textAlign:"right" }}>
                   <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:`${SC[b.status]||"#888"}20`, color:SC[b.status]||"#888" }}>{b.status}</span>

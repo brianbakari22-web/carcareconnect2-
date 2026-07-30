@@ -1,18 +1,19 @@
 import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
+import { BookingsIcon, PaymentsIcon, VehicleIcon, OrdersIcon, ProfileIcon, ServicesIcon, SettingsIcon, ChatIcon, TicketIcon, NoteIcon, PenIcon, QuestionIcon, WarningIcon } from "../../lib/cccIcons"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
 const CATEGORIES = [
-  { k:"booking", l:"Service Booking", icon:"📅" },
-  { k:"payment", l:"Payment Issue", icon:"💳" },
-  { k:"driver", l:"Driver Complaint", icon:"🚗" },
-  { k:"parts", l:"Parts Order", icon:"📦" },
-  { k:"account", l:"Account Issue", icon:"👤" },
+  { k:"booking", l:"Service Booking", icon:"bookings" },
+  { k:"payment", l:"Payment Issue", icon:"payments" },
+  { k:"driver", l:"Driver Complaint", icon:"vehicle" },
+  { k:"parts", l:"Parts Order", icon:"orders" },
+  { k:"account", l:"Account Issue", icon:"profile" },
   { k:"provider", l:"Provider Issue", icon:"🔧" },
   { k:"technical", l:"Technical Problem", icon:"⚙️" },
-  { k:"other", l:"Other", icon:"💬" },
+  { k:"other", l:"Other", icon:"chat" },
 ]
 
 const PRIORITIES = [
@@ -187,7 +188,7 @@ export default function CustomerSupport() {
 
   return (
     <div>
-      <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000", marginBottom:"1rem" }}>🎫 Support Center</div>
+      <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000", marginBottom:"1rem" }}><><TicketIcon size={18} color="#e6821e"/> Support Center</></div>
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8, marginBottom:"1rem" }}>
         {[
           { label:"Open tickets", value:openCount, color:"#e6821e" },
@@ -201,10 +202,10 @@ export default function CustomerSupport() {
         ))}
       </div>
       <div style={{ display:"flex", gap:6, marginBottom:"1rem" }}>
-        {[{ k:"faq", l:"❓ FAQ" },{ k:"new", l:"✏️ New ticket" },{ k:"tickets", l:"📋 My tickets"+(openCount>0?" ("+openCount+")":"") }].map(t=>(
+        {[{ k:"faq", l:"FAQ" },{ k:"new", l:"New ticket" },{ k:"tickets", l:"My tickets"+(openCount>0?" ("+openCount+")":"") }].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
             style={{ flex:1, padding:"8px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#f0f0f0", color:tab===t.k?"#fff":"#555", fontWeight:tab===t.k?700:400 }}>
-            {t.l}
+            {t.k==="faq"?<><QuestionIcon size={14} color="currentColor"/> {t.l}</>:t.k==="new"?<><PenIcon size={14} color="currentColor"/> {t.l}</>:<><NoteIcon size={14} color="currentColor"/> {t.l}</>}
           </button>
         ))}
       </div>
@@ -226,7 +227,7 @@ export default function CustomerSupport() {
           <div style={{ marginTop:"1rem", textAlign:"center" }}>
             <div style={{ fontSize:12, color:"#888", marginBottom:8 }}>Didnt find your answer?</div>
             <button onClick={()=>setTab("new")} style={{ background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px 24px", cursor:"pointer" }}>
-              ✏️ Create a support ticket
+              <><PenIcon size={14} color="#e6821e"/> Create a support ticket</>
             </button>
           </div>
         </div>

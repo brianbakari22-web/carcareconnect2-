@@ -1,3 +1,4 @@
+import { LoyaltyIcon, TrophyIcon, StarIcon, SuccessIcon } from "../../lib/cccIcons";
 import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
@@ -185,7 +186,8 @@ export default function CustomerLoyalty() {
       {bookings.length===0&&<div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"1.5rem" }}>No completed bookings yet</div>}
       {bookings.map((b,i)=>(
         <div key={i} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"0.9rem", marginBottom:8, display:"flex", alignItems:"center", gap:12 }}>
-          <div style={{ width:36, height:36, background:"#f0fdf4", borderRadius:8, display:"flex", alignItems:"center", justifyContent:"center", fontSize:16 }}>🔧</div>
+          <div style={{ width:36, height:36, background:"#f0fdf4", borderRadius:8, display:"flex", alignItems:"center", justifyContent:"center" }}><SuccessIcon size={20} color="#1d9e75"/></div>
+          
           <div style={{ flex:1 }}>
             <div style={{ fontSize:13, fontWeight:500, color:"#000000" }}>{b.service_name}</div>
             <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>{b.booking_date}</div>
@@ -199,6 +201,7 @@ export default function CustomerLoyalty() {
     </div>
   )
 }
+
 
 
 

@@ -1,3 +1,4 @@
+import { PaymentsIcon, QRCodeIcon, DownloadIcon, RefreshIcon, VoucherIcon } from "../../lib/cccIcons";
 import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
@@ -72,7 +73,7 @@ export default function CustomerPayments() {
 
       <div style={{ overflowX:"auto", marginBottom:"1.25rem", paddingBottom:4, WebkitOverflowScrolling:"touch" }}>
         <div style={{ display:"flex", gap:6, minWidth:"max-content" }}>
-          {[{k:"history",l:"💳 History"},{k:"transactions",l:"📱 M-Pesa"},{k:"refunds",l:"↩️ Refunds"},{k:"vouchers",l:"🎟️ Vouchers"}].map(t=>(
+          {[{k:"history",l:"History",icon:"payments"},{k:"transactions",l:"M-Pesa",icon:"qr"},{k:"refunds",l:"Refunds",icon:"refresh"},{k:"vouchers",l:"Vouchers",icon:"voucher"}].map(t=>(
             <button key={t.k} onClick={()=>setTab(t.k)} style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#f0f0f0", color:tab===t.k?"#fff":"#555", whiteSpace:"nowrap", fontWeight:tab===t.k?700:400 }}>
               {t.l}
             </button>
@@ -82,7 +83,7 @@ export default function CustomerPayments() {
       {tab==="history"&&bookings.length>0&&(
         <button onClick={()=>downloadPaymentsCSV(bookings.map(b=>({...b,type:"Service",description:b.service_name,amount:b.total_amount})))}
           style={{ marginBottom:8, background:"#f8f8f8", border:"1px solid #ddd", borderRadius:8, color:"#555", fontSize:11, padding:"6px 14px", cursor:"pointer", display:"block", marginLeft:"auto" }}>
-          📥 Export CSV
+          <DownloadIcon size={14} color="#378add" /> Export CSV
         </button>
       )}
       {tab==="history"&&(

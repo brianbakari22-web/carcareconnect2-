@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { supabase } from "../../lib/supabase"
+import { PartsIcon, BatteryIcon, FuelIcon, KeyIcon, OverheatIcon, TowingIcon, GOServiceIcon, LocationIcon, VehicleIcon, SearchIcon, WarningIcon, PhoneCallIcon, SignalIcon, CheckIcon, CloseIcon } from "../../lib/cccIcons"
 import IntaSendPayment from "../shared/IntaSendPayment"
 import { applyRateLimit, RATE_LIMITS } from "../../lib/rateLimit"
 import { sanitizeAmount } from "../../lib/sanitize"
@@ -21,13 +22,13 @@ const EMERGENCY_SERVICE_MAP = {
 }
 
 const EMERGENCY_TYPES = [
-  { key:"flat_tire", label:"Flat tire", icon:"🛞" },
-  { key:"dead_battery", label:"Dead battery", icon:"🔋" },
-  { key:"out_of_fuel", label:"Out of fuel", icon:"⛽" },
-  { key:"car_wont_start", label:"Car won't start", icon:"🔑" },
-  { key:"overheating", label:"Overheating", icon:"🌡️" },
-  { key:"towing", label:"Need towing", icon:"🚚" },
-  { key:"other", label:"Other emergency", icon:"🆘" },
+  { key:"flat_tire", label:"Flat tire", icon:"parts" },
+  { key:"dead_battery", label:"Dead battery", icon:"battery" },
+  { key:"out_of_fuel", label:"Out of fuel", icon:"fuel" },
+  { key:"car_wont_start", label:"Car won't start", icon:"key" },
+  { key:"overheating", label:"Overheating", icon:"overheat" },
+  { key:"towing", label:"Need towing", icon:"towing" },
+  { key:"other", label:"Other emergency", icon:"emergency" },
 ]
 
 export default function CustomerGoService() {

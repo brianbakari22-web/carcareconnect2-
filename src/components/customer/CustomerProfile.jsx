@@ -1,5 +1,6 @@
 import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
+import { OrdersIcon, BookingsIcon, PaymentsIcon, VehicleIcon, StarIcon, ShieldIcon, ReferEarnIcon, AnalyticsIcon, DocumentIcon, DataIcon, RefreshIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { pushNotify } from "../../lib/pushNotify"
 import { sanitizeName, sanitizePhone, sanitizeFreeText } from "../../lib/sanitize"
@@ -263,7 +264,7 @@ export default function CustomerProfile() {
             {!exporting&&!exportData&&(
               <div>
                 <button onClick={loadExportData} style={{ width:"100%", background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:"pointer", marginBottom:"0.75rem" }}>
-                  📂 Load my data
+                  <><DataIcon size={14} color="currentColor"/> Load my data</>
                 </button>
                 <div style={{ fontSize:11, color:"#aaa", textAlign:"center" }}>We will compile all your data. This may take a few seconds.</div>
               </div>
@@ -300,7 +301,7 @@ export default function CustomerProfile() {
                   </button>
                 </div>
                 <button onClick={()=>setExportData(null)} style={{ width:"100%", background:"none", border:"1px solid #eee", borderRadius:8, color:"#888", fontSize:12, padding:"8px", cursor:"pointer" }}>
-                  🔄 Reload data
+                  <><RefreshIcon size={14} color="#e6821e"/> Reload data</>
                 </button>
               </div>
             )}

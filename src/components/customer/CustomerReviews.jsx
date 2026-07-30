@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { StarRatingIcon, CameraIcon, ChatIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
@@ -260,7 +261,7 @@ export default function CustomerReviews() {
                 <div style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>Add photos (optional)</div>
                 <input type="file" accept="image/*" multiple onChange={handlePhotoSelect} style={{ display:"none" }} id="review-photos"/>
                 <label htmlFor="review-photos" style={{ display:"inline-block", background:"#f8f8f8", border:"1px solid #eee", borderRadius:8, padding:"8px 14px", fontSize:12, cursor:"pointer", color:"#555" }}>
-                  {uploading?"Uploading...":"📷 Add photos"}
+                  {uploading?"Uploading...":<><CameraIcon size={14} color="currentColor"/> Add photos</>}
                 </label>
                 {photos.length>0&&(
                   <div style={{ display:"flex", gap:6, marginTop:8, flexWrap:"wrap" }}>

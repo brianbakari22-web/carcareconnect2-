@@ -1,3 +1,4 @@
+import { VehicleIcon, LocationIcon, ServicesIcon, OilIcon, WarningIcon, ClockIcon, EditIcon, DeleteIcon, SignalIcon, LinkIcon, CameraIcon } from "../../lib/cccIcons";
 import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
@@ -136,9 +137,9 @@ export default function CustomerVehicles() {
                 {v.is_default&&<span style={{fontSize:10,color:"#e6821e",background:"#fff8f0",padding:"2px 8px",borderRadius:10,border:"1px solid #e6821e30",flexShrink:0}}>⭐ Default</span>}
               </div>
               <div style={{fontSize:12,color:"#666",marginBottom:2}}>{v.year} · {v.color||"No color"} · {v.license_plate}</div>
-              {v.current_mileage&&<div style={{fontSize:11,color:"#888"}}>📍 {Number(v.current_mileage).toLocaleString()} km</div>}
-              {v.last_service_date&&<div style={{fontSize:11,color:"#888"}}>🔧 Last service: {new Date(v.last_service_date).toLocaleDateString()}</div>}
-              {v.last_oil_change_date&&<div style={{fontSize:11,color:"#888"}}>🛢️ Last oil change: {new Date(v.last_oil_change_date).toLocaleDateString()}</div>}
+              {v.current_mileage&&<div style={{fontSize:11,color:"#888",display:"flex",alignItems:"center",gap:3}}><LocationIcon size={11} color="#888"/> {Number(v.current_mileage).toLocaleString()} km</div>}
+              {v.last_service_date&&<div style={{fontSize:11,color:"#888",display:"flex",alignItems:"center",gap:3}}><ServicesIcon size={11} color="#888"/> Last service: {new Date(v.last_service_date).toLocaleDateString()}</div>}
+              {v.last_oil_change_date&&<div style={{fontSize:11,color:"#888",display:"flex",alignItems:"center",gap:3}}><OilIcon size={11} color="#888"/> Last oil change: {new Date(v.last_oil_change_date).toLocaleDateString()}</div>}
             </div>
           </div>
           {/* Maintenance alerts */}
@@ -146,7 +147,7 @@ export default function CustomerVehicles() {
             <div style={{display:"flex",flexWrap:"wrap",gap:4,marginBottom:10}}>
               {getMaintenanceStatus(v).filter(a=>a.level!=="unknown").map((a,i)=>(
                 <div key={i} style={{fontSize:10,color:a.level==="overdue"?"#e24b4a":"#e6821e",background:a.level==="overdue"?"#fff5f5":"#fff8f0",padding:"3px 10px",borderRadius:20,border:`1px solid ${a.level==="overdue"?"#e24b4a30":"#e6821e30"}`}}>
-                  {a.level==="overdue"?"⚠️ ":"⏰ "}{a.text}
+                  {a.level==="overdue"?<WarningIcon size={12} color="#e24b4a"/>:<ClockIcon size={12} color="#e6821e"/>} {a.text}
                 </div>
               ))}
             </div>
