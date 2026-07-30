@@ -1,6 +1,7 @@
 import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { SearchIcon, ServicesIcon, PartsIcon, DiscoverIcon, LocationIcon, MarketplaceIcon, VehicleIcon, OrdersIcon, ShieldIcon, MechanicIcon, WarningIcon } from "../../lib/cccIcons"
 import { useSearchParams } from "react-router-dom"
 import { getCurrentPosition } from "../../lib/geolocation"
 import { useAuth } from "../../contexts/AuthContext"
@@ -283,7 +284,7 @@ export default function CustomerDiscover() {
           style={{ ...inp, flex:1, minWidth:180 }}/>
         <button onClick={detectLocation} disabled={locating}
           style={{ background:userLocation?"#f0fdf4":"#f5f5f5", border:`1px solid ${userLocation?"#1d9e7540":"#e0e0e0"}`, borderRadius:8, color:userLocation?"#1d9e75":"#555", fontSize:12, padding:"0 14px", cursor:"pointer", whiteSpace:"nowrap", fontFamily:"'DM Sans',sans-serif" }}>
-          {locating?t("detecting"):`📍 ${t("nearMe")}`}
+          {locating?t("detecting"):<><LocationIcon size={14} color="#e6821e" /> {t("nearMe")}</>}
         </button>
         <button onClick={()=>setShowFilters(f=>!f)}
           style={{ background:showFilters?"#fff8f0":"#f5f5f5", border:`1px solid ${showFilters?"#e6821e40":"#e0e0e0"}`, borderRadius:8, color:showFilters?"#e6821e":"#555", fontSize:12, padding:"0 14px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
@@ -294,15 +295,15 @@ export default function CustomerDiscover() {
       {/* Provider type filter */}
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
         {[
-          { key:"all", label:"All", icon:"🔍" },
-          { key:"garage", label:"Garage", icon:"🔧" },
-          { key:"parts_dealer", label:"Parts", icon:"⚙️" },
-          { key:"accessories_shop", label:"Accessories", icon:"✨" },
-          { key:"tyre_shop", label:"Tyres", icon:"🛞" },
-          { key:"auto_electrician", label:"Electrician", icon:"⚡" },
-          { key:"car_wash", label:"Car Wash", icon:"🚿" },
-          { key:"panel_beater", label:"Panel Beater", icon:"🔨" },
-          { key:"auto_glass", label:"Auto Glass", icon:"🪟" },
+          { key:"all", label:"All", icon:"search" },
+          { key:"garage", label:"Garage", icon:"services" },
+          { key:"parts_dealer", label:"Parts", icon:"parts" },
+          { key:"accessories_shop", label:"Accessories", icon:"marketplace" },
+          { key:"tyre_shop", label:"Tyres", icon:"vehicle" },
+          { key:"auto_electrician", label:"Electrician", icon:"power" },
+          { key:"car_wash", label:"Car Wash", icon:"discover" },
+          { key:"panel_beater", label:"Panel Beater", icon:"mechanic" },
+          { key:"auto_glass", label:"Auto Glass", icon:"shield" },
         ].map(tp=>(
           <button key={tp.key} onClick={()=>setProviderTypeFilter(tp.key)}
             style={{ padding:"6px 12px", borderRadius:8, border:"none", fontSize:11, cursor:"pointer", background:providerTypeFilter===tp.key?"#e6821e":"#f0f0f0", color:providerTypeFilter===tp.key?"#fff":"#555", fontFamily:"DM Sans,sans-serif", whiteSpace:"nowrap" }}>
@@ -400,7 +401,7 @@ export default function CustomerDiscover() {
                     </div>
                     <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
                       {p.business_name&&<div style={{ fontSize:11, color:"#666" }}>{t("owner")}: {p.first_name} {p.last_name}</div>}
-                      {p.city&&<span style={{ fontSize:11, color:"#777777" }}>📍 {p.city}</span>}
+                      {p.city&&<span style={{ fontSize:11, color:"#777777", display:"flex", alignItems:"center", gap:3 }}><LocationIcon size={11} color="#777777"/> {p.city}</span>}
                       {dist!==null&&<span style={{ fontSize:11, color:"#378add" }}>· {dist.toFixed(1)} {t("kmAway")}</span>}
                     </div>
                     {status&&<div style={{ fontSize:11, color:status.color, marginTop:3, fontWeight:500 }}>✅ {status.label}</div>}
@@ -499,7 +500,7 @@ export default function CustomerDiscover() {
 
           {["parts_dealer","accessories_shop","tyre_shop"].includes(selectedProvider.provider_type) ? (
             <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:12, padding:"1.25rem", marginBottom:"1rem", textAlign:"center" }}>
-              <div style={{ fontSize:32, marginBottom:8 }}>🛒</div>
+              <div style={{ marginBottom:8, display:"flex", justifyContent:"center" }}><MarketplaceIcon size={32} color="#e6821e" /></div>
               <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#000000", marginBottom:6 }}>
                 {selectedProvider.provider_type==="parts_dealer"?"Parts Dealer":selectedProvider.provider_type==="accessories_shop"?"Accessories Shop":"Tyre Shop"}
               </div>
@@ -548,7 +549,7 @@ export default function CustomerDiscover() {
         <div>
           {bundles.length>0&&(
             <div style={{ marginBottom:"1.5rem" }}>
-              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, marginBottom:8, color:"#e6821e" }}>📦 Bundle Deals</div>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, marginBottom:8, color:"#e6821e", display:"flex", alignItems:"center", gap:6 }}><OrdersIcon size={16} color="#e6821e" /> Bundle Deals</div>
               <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(220px,1fr))", gap:10 }}>
                 {bundles.map(b=>{
                   const savings = Number(b.original_price) - Number(b.bundle_price)
@@ -617,7 +618,7 @@ export default function CustomerDiscover() {
           {searchingParts&&<div style={{ color:"#777777", fontSize:13 }}>Searching...</div>}
           {!searchingParts&&partsSearch===("")&&carModel===("")&&(
             <div style={{ textAlign:"center", padding:"2rem", color:"#888888" }}>
-              <div style={{ fontSize:32, marginBottom:10 }}>🔍</div>
+              <div style={{ marginBottom:10, display:"flex", justifyContent:"center" }}><SearchIcon size={32} color="#e6821e" /></div>
               <div style={{ fontSize:13 }}>Search for parts, accessories or filter by your car model</div>
               <button onClick={()=>navigate("/dashboard/parts")} style={{ marginTop:"1rem", background:"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne", fontSize:13, fontWeight:700, padding:"10px 24px", cursor:"pointer" }}>
                 Browse all parts →

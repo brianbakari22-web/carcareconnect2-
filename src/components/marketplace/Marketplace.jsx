@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { pushNotify } from "../../lib/pushNotify"
+import { MarketplaceIcon, VehicleIcon, ServicesIcon, LocationIcon, HeartIcon, ChatIcon, ShareIcon, EyeIcon, MyListingsIcon, ShieldIcon, WarningIcon, FilterIcon, SearchIcon, PartsIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import SellerProfile from "./SellerProfile"
 import NewCarMarketplace from "../customer/NewCarMarketplace"
@@ -275,8 +276,8 @@ export default function Marketplace() {
 
   function getSellerBadge(seller) {
     if (!seller) return { label:"Seller", color:"#777777", bg:"#ffffff" }
-    if (seller.role==="provider") return { label:"🏪 Verified Seller", color:"#378add", bg:"#eff6ff" }
-    return { label:"👤 Private Seller", color:"#555555", bg:"#f5f5f5" }
+    if (seller.role==="provider") return { label:"Verified Seller", color:"#378add", bg:"#eff6ff" }
+    return { label:"Private Seller", color:"#555555", bg:"#f5f5f5" }
   }
 
   const inp = { width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none", fontFamily:"'DM Sans',sans-serif" }
@@ -318,7 +319,7 @@ export default function Marketplace() {
     const myListings = listings.filter(l => l.user_id === user?.id || l.dealer_id === user?.id)
     return (
       <div>
-        <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, marginBottom:"1rem" }}>🏢 My Listings</div>
+        <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, marginBottom:"1rem", display:"flex", alignItems:"center", gap:8 }}><MyListingsIcon size={20} color="#e6821e" /> My Listings</div>
         {myListings.length===0 ? (
           <div style={{ textAlign:"center", padding:"3rem", color:"#888" }}>
             <div style={{ fontSize:48, marginBottom:12 }}>📋</div>
@@ -350,7 +351,7 @@ export default function Marketplace() {
   // my_listings handled below
   if (tab==="saved") return (
     <div>
-      <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, marginBottom:"1rem" }}>❤️ Saved Listings</div>
+      <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, marginBottom:"1rem", display:"flex", alignItems:"center", gap:8 }}><HeartIcon size={20} color="#e24b4a" /> Saved Listings</div>
       {userLikes.size === 0 ? (
         <div style={{ textAlign:"center", padding:"3rem", color:"#888" }}>
           <div style={{ fontSize:48, marginBottom:12 }}>🤍</div>
@@ -388,7 +389,7 @@ export default function Marketplace() {
     <div>
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:"1.25rem", flexWrap:"wrap", gap:10 }}>
         <div>
-          <div style={{ fontFamily:"Syne", fontSize:isMobile?18:22, fontWeight:800, color:"#000000" }}>🛒 Marketplace</div>
+          <div style={{ fontFamily:"Syne", fontSize:isMobile?18:22, fontWeight:800, color:"#000000", display:"flex", alignItems:"center", gap:8 }}><MarketplaceIcon size={22} color="#e6821e" /> Marketplace</div>
           <div style={{ fontSize:12, color:"#777777", marginTop:2 }}>Buy and sell vehicles, parts & accessories</div>
         </div>
         <button onClick={()=>navigate("/dashboard/marketplace/new")}
@@ -398,7 +399,7 @@ export default function Marketplace() {
       </div>
 
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
-        {[{k:"all",l:"All",icon:"🛒"},{k:"vehicle",l:"Vehicles",icon:"🚗"},{k:"new_cars",l:"New Cars",icon:"🆕"},{k:"parts_shop",l:"Parts & Accessories",icon:"⚙️"},{k:"my_listings",l:"My Listings",icon:"🏢"},{k:"saved",l:"Saved",icon:"❤️"}].map(t=>(
+        {[{k:"all",l:"All",icon:"marketplace"},{k:"vehicle",l:"Vehicles",icon:"vehicle"},{k:"new_cars",l:"New Cars",icon:"🆕"},{k:"parts_shop",l:"Parts & Accessories",icon:"⚙️"},{k:"my_listings",l:"My Listings",icon:"🏢"},{k:"saved",l:"Saved",icon:"❤️"}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
             style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#f0f0f0", color:tab===t.k?"#fff":"#555", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
             {t.icon} {t.l}
@@ -411,7 +412,7 @@ export default function Marketplace() {
           style={{ ...inp, flex:1 }}/>
         <button onClick={()=>setShowFilters(f=>!f)}
           style={{ background:showFilters?"#e6821e":"#f0f0f0", border:`1px solid ${showFilters?"#e6821e":"#e0e0e0"}`, borderRadius:8, color:showFilters?"#fff":"#555", fontSize:12, padding:"9px 14px", cursor:"pointer" }}>
-          🔽 Filter
+          <FilterIcon size={14} color="#64748B" /> Filter
         </button>
       </div>
 
@@ -451,7 +452,7 @@ export default function Marketplace() {
       {loading&&<div style={{ color:"#777777", fontSize:13, textAlign:"center", padding:"2rem" }}>Loading...</div>}
       {!loading&&filtered.length===0&&(
         <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
-          <div style={{ fontSize:40, marginBottom:10 }}>🛒</div>
+          <div style={{ marginBottom:10, display:"flex", justifyContent:"center" }}><MarketplaceIcon size={40} color="#e6821e" /></div>
           No listings found
           <div style={{ marginTop:12 }}>
             <button onClick={()=>navigate("/dashboard/marketplace/new")}
@@ -496,13 +497,13 @@ export default function Marketplace() {
                 {l.is_featured&&<div style={{ position:"absolute", top:8, left:8, background:l.featured_tier==="premium"?"#8b5cf6":"#e6821e", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10, zIndex:2 }}>{l.featured_tier==="premium"?"👑 PREMIUM":"⭐ FEATURED"}</div>}
                 {l.is_inspected&&<div style={{ position:"absolute", top:8, right:8, background:"#1d9e75", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10, zIndex:2 }}>✓ INSPECTED</div>}
                 <button onClick={e=>{ e.stopPropagation(); toggleLike(l.id) }} style={{ position:"absolute", bottom:8, right:8, background:"rgba(255,255,255,0.9)", border:"none", borderRadius:"50%", width:32, height:32, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, boxShadow:"0 2px 8px rgba(0,0,0,0.15)", zIndex:2 }}>
-                  {userLikes.has(l.id) ? "❤️" : "🤍"}
+                  <HeartIcon size={16} color="#e24b4a" active={userLikes.has(l.id)} />
                 </button>
                 {l._type&&<div style={{ position:"absolute", bottom:8, left:8, background:l._type==="new_car"?"#378add":l._type==="part"||l._type==="accessory"?"#8b5cf6":"#1d9e75", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 6px", borderRadius:4, whiteSpace:"nowrap", zIndex:2 }}>{l._type==="new_car"?"🆕 NEW":l._type==="part"?"🔧 PART":l._type==="accessory"?"✨ ACC":"🚗 USED"}</div>}
                 {l.primary_photo ? (
                   <img src={l.primary_photo} alt={l.title} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
                 ) : (
-                  <div style={{ fontSize:40 }}>{l.listing_type==="vehicle"?"🚗":l.listing_type==="part"?"🔧":"✨"}</div>
+                  <div style={{ display:"flex", justifyContent:"center" }}>{l.listing_type==="vehicle"?<VehicleIcon size={40} color="#e6821e"/>:l.listing_type==="part"?<PartsIcon size={40} color="#8b5cf6"/>:<MarketplaceIcon size={40} color="#1d9e75"/>}</div>
                 )}
               </div>
               <div style={{ padding:"0.75rem" }}>
@@ -511,26 +512,26 @@ export default function Marketplace() {
                 {l.listing_type==="part"&&<div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>{l.part_category}</div>}
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
                   <div style={{ fontFamily:"Syne", fontSize:isMobile?13:15, fontWeight:800, color:"#e6821e" }}>KES {Number(l.price).toLocaleString()}</div>
-                  <span style={{ fontSize:10, color:"#e24b4a" }}>❤️ {l.likes_count||0}</span>
+                  <span style={{ fontSize:10, color:"#e24b4a", display:"flex", alignItems:"center", gap:2 }}><HeartIcon size={10} color="#e24b4a" /> {l.likes_count||0}</span>
                   {l.seller?.marketplace_rating>0&&<span style={{ fontSize:10, color:"#e6821e" }}>⭐ {Number(l.seller.marketplace_rating).toFixed(1)}</span>}
                   <span style={{ fontSize:10, color:"#e24b4a" }}>❤️ {l.likes_count||0}</span>
                   {l.negotiable&&<span style={{ fontSize:9, color:"#1d9e75" }}>Negotiable</span>}
                   <div style={{ display:"flex", gap:8, marginTop:4 }}>
                     {(l.likes_count>0)&&<span style={{ fontSize:9, color:"#e24b4a" }}>❤️ {l.likes_count}</span>}
-                    {(l.comments_count>0)&&<span style={{ fontSize:9, color:"#888" }}>💬 {l.comments_count}</span>}
-                    {(l.shares_count>0)&&<span style={{ fontSize:9, color:"#1d9e75" }}>📤 {l.shares_count}</span>}
+                    {(l.comments_count>0)&&<span style={{ fontSize:9, color:"#888", display:"flex", alignItems:"center", gap:2 }}><ChatIcon size={9} color="#888" /> {l.comments_count}</span>}
+                    {(l.shares_count>0)&&<span style={{ fontSize:9, color:"#1d9e75", display:"flex", alignItems:"center", gap:2 }}><ShareIcon size={9} color="#1d9e75" /> {l.shares_count}</span>}
                   </div>
                 </div>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
                   <span style={{ fontSize:9, padding:"2px 6px", borderRadius:6, background:badge.bg, color:badge.color }}>{badge.label}</span>
-                  {l.city&&<span style={{ fontSize:9, color:"#888" }}>📍 {l.city}</span>}
+                  {l.city&&<span style={{ fontSize:9, color:"#888", display:"flex", alignItems:"center", gap:2 }}><LocationIcon size={9} color="#888"/> {l.city}</span>}
                 </div>
                 <div style={{ display:"flex", gap:4, flexWrap:"wrap" }}>
                   {l.condition&&<span style={{ fontSize:9, padding:"1px 6px", borderRadius:6, background:"#f5f5f5", color:"#666" }}>{l.condition}</span>}
                   {l.transmission&&<span style={{ fontSize:9, padding:"1px 6px", borderRadius:6, background:"#f5f5f5", color:"#666" }}>{l.transmission}</span>}
                   {l.fuel_type&&<span style={{ fontSize:9, padding:"1px 6px", borderRadius:6, background:"#f5f5f5", color:"#666" }}>{l.fuel_type}</span>}
                 </div>
-                <div style={{ fontSize:9, color:"#555555", marginTop:6 }}>👁 {l.views||0} views</div>
+                <div style={{ fontSize:9, color:"#555555", marginTop:6, display:"flex", alignItems:"center", gap:2 }}><EyeIcon size={9} color="#555555"/> {l.views||0} views</div>
               </div>
             </div>
           )
@@ -569,9 +570,9 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
         {listing.description&&<div style={{ fontSize:12, color:"#555", lineHeight:1.6, marginTop:8 }}>{listing.description}</div>}
       </div>
       <div style={{ background:"#fff", border:"1px solid #eee", borderRadius:12, padding:"1rem" }}>
-        <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8 }}>🏢 Showroom</div>
+        <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8, display:"flex", alignItems:"center", gap:6 }}><ShieldIcon size={14} color="#e6821e"/> Showroom</div>
         <div style={{ fontSize:13, fontWeight:600, marginBottom:4 }}>{listing.showroom_name}</div>
-        <div style={{ fontSize:12, color:"#888", marginBottom:8 }}>📍 {listing.showroom_location}</div>
+        <div style={{ fontSize:12, color:"#888", marginBottom:8, display:"flex", alignItems:"center", gap:4 }}><LocationIcon size={12} color="#888"/> {listing.showroom_location}</div>
         <div style={{ display:"flex", gap:8 }}>
           {listing.showroom_phone&&<a href={"tel:"+listing.showroom_phone} style={{ flex:1, background:"#378add", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"10px", textAlign:"center", textDecoration:"none" }}>📞 Call</a>}
           {listing.showroom_phone&&<a href={"https://wa.me/254"+listing.showroom_phone.replace(/^0/,"")} target="_blank" rel="noreferrer" style={{ flex:1, background:"#25D366", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"10px", textAlign:"center", textDecoration:"none" }}>💚 WhatsApp</a>}
@@ -639,10 +640,10 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
         </div>
         <div style={{ display:"flex", gap:8 }}>
           <button onClick={()=>toggleLike(listing.id)} style={{ flex:1, background:"#f8f8f8", border:"1px solid #eee", borderRadius:8, fontSize:12, padding:"10px", cursor:"pointer" }}>
-            {userLikes?.has(listing.id)?"❤️":"🤍"} {listing.likes_count||0}
+            <HeartIcon size={16} color="#e24b4a" active={userLikes?.has(listing.id)} /> {listing.likes_count||0}
           </button>
           <button onClick={()=>setShowChat(true)} style={{ flex:2, background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"10px", cursor:"pointer" }}>
-            💬 Message seller
+            <ChatIcon size={14} color="currentColor" /> Message seller
           </button>
         </div>
       </div>
@@ -651,7 +652,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
 
   const badge = sellerInfo?.role==="provider"
     ? { label:"🏪 Verified Seller", color:"#378add", bg:"#eff6ff" }
-    : { label:"👤 Private Seller", color:"#555555", bg:"#f5f5f5" }
+    : { label:"Private Seller", color:"#555555", bg:"#f5f5f5" }
 
   const existingOffer = offers?.find(o=>o.status==="pending"||o.status==="countered")
 
@@ -683,7 +684,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
 
             {/* Comments Section */}
             <div style={{ marginTop:16, background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem" }}>
-              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#000", marginBottom:12 }}>💬 Comments ({listing.comments_count||0})</div>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#000", marginBottom:12, display:"flex", alignItems:"center", gap:6 }}><ChatIcon size={16} color="#000"/> Comments ({listing.comments_count||0})</div>
               <div style={{ display:"flex", gap:8, marginBottom:16 }}>
                 <textarea id="comment-input" value={newComment} onChange={e=>setNewComment(e.target.value)}
                   placeholder="Write a comment... (contact sharing not allowed)" rows={2}
@@ -800,7 +801,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
           <div style={{ background:"#f5f5f5", borderRadius:12, height:isMobile?220:300, display:"flex", alignItems:"center", justifyContent:"center", marginBottom:8, overflow:"hidden" }}>
             {photos.length>0
               ? <img src={photos[activePhoto]?.photo_url} alt={listing.title} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
-              : <div style={{ fontSize:64 }}>{listing.listing_type==="vehicle"?"🚗":listing.listing_type==="part"?"🔧":"✨"}</div>
+              : <div style={{ display:"flex", justifyContent:"center" }}>{listing.listing_type==="vehicle"?<VehicleIcon size={64} color="#e6821e"/>:listing.listing_type==="part"?"🔧":"✨"}</div>
             }
           </div>
           {photos.length>1&&(
@@ -881,7 +882,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
                 <span style={{ fontSize:10, padding:"2px 7px", borderRadius:6, background:badge.bg, color:badge.color }}>{badge.label}</span>
               </div>
             </div>
-            {listing.city&&<div style={{ fontSize:11, color:"#777777", marginTop:8 }}>📍 {listing.city}</div>}
+            {listing.city&&<div style={{ fontSize:11, color:"#777777", marginTop:8, display:"flex", alignItems:"center", gap:4 }}><LocationIcon size={11} color="#777777"/> {listing.city}</div>}
           </div>
 
           {listing.seller_id!==user?.id&&(
@@ -895,17 +896,17 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
               <div style={{ display:"flex", gap:8, marginTop:4 }}>
                 <button onClick={()=>toggleLike(listing.id)}
                   style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:6, background:userLikes?.has(listing.id)?"#fff0f3":"#f8f8f8", border:`1px solid ${userLikes?.has(listing.id)?"#e24b4a40":"#eeeeee"}`, borderRadius:10, padding:"10px", cursor:"pointer", transition:"all 0.15s" }}>
-                  <span style={{ fontSize:18 }}>{userLikes?.has(listing.id)?"❤️":"🤍"}</span>
+                  <HeartIcon size={18} color="#e24b4a" active={userLikes?.has(listing.id)} />
                   <span style={{ fontSize:12, fontWeight:700, color:userLikes?.has(listing.id)?"#e24b4a":"#666" }}>{listing.likes_count||0}</span>
                 </button>
                 <button onClick={()=>document.getElementById("comment-input").focus()}
                   style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:6, background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:10, padding:"10px", cursor:"pointer" }}>
-                  <span style={{ fontSize:18 }}>💬</span>
+                  <ChatIcon size={18} color="#8b5cf6" />
                   <span style={{ fontSize:12, fontWeight:700, color:"#666" }}>{listing.comments_count||0}</span>
                 </button>
                 <button onClick={()=>shareViaWhatsApp(listing)}
                   style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:6, background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:10, padding:"10px", cursor:"pointer" }}>
-                  <span style={{ fontSize:18 }}>📤</span>
+                  <ShareIcon size={18} color="#64748B" />
                   <span style={{ fontSize:12, fontWeight:700, color:"#1d9e75" }}>{listing.shares_count||0}</span>
                 </button>
               </div>
@@ -941,7 +942,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
                 ):(
                   <button onClick={()=>setShowOffer(true)}
                     style={{ background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:"pointer" }}>
-                    💰 Make an offer
+                    <span style={{display:"flex",alignItems:"center",gap:6}}><MarketplaceIcon size={14} color="currentColor"/> Make an offer</span>
                   </button>
                 )
               )}
@@ -950,7 +951,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
               {listing.is_inspected&&(
                 <button onClick={()=>setShowChat(s=>!s)}
                 style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:10, color:"#378add", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:600, padding:"12px", cursor:"pointer" }}>
-                  💬 {showChat?"Close chat":"Open chat"}
+                  <><ChatIcon size={14} color="currentColor"/> {showChat?"Close chat":"Open chat"}</>
                 </button>
               )}
             {showChat&&(
@@ -968,7 +969,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
 
           {listing.seller_id===user?.id&&(
             <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"0.9rem", textAlign:"center" }}>
-              <div style={{ fontSize:12, color:"#777777" }}>This is your listing · 👁 {listing.views||0} views</div>
+              <div style={{ fontSize:12, color:"#777777", display:"flex", alignItems:"center", gap:4 }}>This is your listing · <EyeIcon size={12} color="#777777"/> {listing.views||0} views</div>
             </div>
           )}
         </div>

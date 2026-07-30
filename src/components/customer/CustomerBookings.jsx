@@ -7,6 +7,7 @@ import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 import IntaSendPayment from "../shared/IntaSendPayment"
+import { GOServiceIcon, ServicesIcon, LocationIcon, MarketplaceIcon, ShieldIcon, ShareIcon, PaymentsIcon, DeleteIcon, VehicleIcon, ChatIcon, DownloadIcon, WarningIcon } from "../../lib/cccIcons"
 import { downloadInvoice, downloadBookingsCSV } from "../../lib/invoice"
 import ChatWindow from "../shared/ChatWindow"
 
@@ -195,7 +196,7 @@ export default function CustomerBookings() {
       {bookings.length>0&&(
         <button onClick={()=>downloadBookingsCSV(bookings.map(b=>({...b,provider_name:b.providers?.business_name||b.providers?.first_name||"",vehicle_plate:b.vehicles?.license_plate||""})))}
           style={{ marginBottom:8, background:"#f8f8f8", border:"1px solid #ddd", borderRadius:8, color:"#555", fontSize:11, padding:"6px 14px", cursor:"pointer", display:"block", marginLeft:"auto" }}>
-          📥 Export CSV
+          <DownloadIcon size={14} color="#378add" /> Export CSV
         </button>
       )}
 
@@ -208,7 +209,7 @@ export default function CustomerBookings() {
             <div style={{ flex:1, minWidth:0, marginRight:8 }}>
               <div style={{ fontSize:isMobile?13:14, fontWeight:500, color:"#000000", marginBottom:2, display:"flex", alignItems:"center", gap:6 }}>
                 <span style={{ fontSize:16 }}>
-                  {b.service_category==="go_service"?"🚨":b.service_category==="shop_premium"?"🏡":b.service_category==="car_wash"||b.service_category==="basic_wash"||b.service_category==="standard_wash"||b.service_category==="premium_detail"?"🚿":b.service_category==="basic_wash"?"🚿":"🏪"}
+                  {b.service_category==="go_service"?<GOServiceIcon size={16} color="#e24b4a"/>:b.service_category==="shop_premium"?<ServicesIcon size={16} color="#e6821e"/>:b.service_category==="car_wash"||b.service_category==="basic_wash"||b.service_category==="standard_wash"||b.service_category==="premium_detail"?"🚿":b.service_category==="basic_wash"?"🚿":"🏪"}
                 </span>
                 {b.service_name}
               </div>
@@ -225,7 +226,7 @@ export default function CustomerBookings() {
             {["confirmed","in-progress"].includes(b.status)&&(
               <button onClick={()=>navigate("/dashboard/tracking")}
                 style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                📍 Track
+                <LocationIcon size={13} color="#378add" /> Track
               </button>
             )}
             {["pending","confirmed"].includes(b.status)&&(
@@ -251,7 +252,7 @@ export default function CustomerBookings() {
                 </button>
                 <button onClick={()=>navigate(`/dashboard/claims?booking=${b.id}`)}
                   style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                  🛡️ Service guarantee
+                  <ShieldIcon size={13} color="#1d9e75" /> Service guarantee
                 </button>
                 <button onClick={()=>downloadBookingInvoice(b)} disabled={invoiceLoading===b.id}
                   style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
@@ -262,7 +263,7 @@ export default function CustomerBookings() {
                   openExternal(`https://wa.me/?text=${msg}`)
                 }}
                   style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                  📤 Share
+                  <ShareIcon size={13} color="#64748B" /> Share
                 </button>
                 <button onClick={()=>{ setRebooking(b.id); setRebookForm({ date:"", time:"" }) }}
                 style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
@@ -273,13 +274,13 @@ export default function CustomerBookings() {
               {b.service_category==="go_service"&&b.status==="completed"&&!b.service_fee_paid&&(
                 <button onClick={()=>setServiceFeeBooking(b)}
                   style={{ background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"5px 10px", cursor:"pointer" }}>
-                  💳 Pay Service Fee
+                  <PaymentsIcon size={13} color="#e6821e" /> Pay Service Fee
                 </button>
               )}
               {(b.status==="completed"||b.status==="cancelled")&&(
                 <button onClick={()=>hideBooking(b.id)}
                   style={{ background:"none", border:"1px solid #55540", borderRadius:7, color:"#777777", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                  🗑️ Hide
+                  <DeleteIcon size={13} color="#e24b4a" /> Hide
                 </button>
               )}
             <button onClick={()=>setExpanded(expanded===b.id?null:b.id)}
@@ -290,7 +291,7 @@ export default function CustomerBookings() {
 
           {b.is_concierge&&b.driver_id&&(
             <div style={{ marginTop:10, background:"#eff6ff", border:"1px solid #378add30", borderRadius:10, padding:"0.9rem" }}>
-              <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#378add", marginBottom:8 }}>🚗 Concierge delivery</div>
+              <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#378add", marginBottom:8, display:"flex", alignItems:"center", gap:4 }}><VehicleIcon size={14} color="#378add" /> Concierge delivery</div>
               {/* Driver info */}
               {b.driver_id&&(
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:10 }}
@@ -336,7 +337,7 @@ export default function CustomerBookings() {
 
           {b.parts_details?.length>0&&!b.parts_approved&&(
             <div style={{ marginTop:10, background:"#eff6ff", border:"1px solid #378add40", borderRadius:10, padding:"0.9rem" }}>
-              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#378add", marginBottom:8 }}>🔧 Parts added by provider</div>
+              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#378add", marginBottom:8, display:"flex", alignItems:"center", gap:4 }}><ServicesIcon size={14} color="#378add" /> Parts added by provider</div>
               {b.parts_details.map((p,i)=>(
                 <div key={i} style={{ display:"flex", justifyContent:"space-between", fontSize:12, padding:"4px 0", borderBottom:"1px solid #eeeeee" }}>
                   <span style={{ color:"#555555" }}>{p.name} × {p.quantity}</span>
@@ -363,7 +364,7 @@ export default function CustomerBookings() {
             <div style={{ marginBottom:10 }}>
               <button onClick={()=>setChatBooking(chatBooking===b.id?null:b.id)}
                 style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer", width:"100%" }}>
-                💬 {chatBooking===b.id?"Close chat":"Message provider"}
+                <><ChatIcon size={13} color="#8b5cf6" /> {chatBooking===b.id?"Close chat":"Message provider"}</>
               </button>
               {chatBooking===b.id&&(
                 <div style={{ height:320, marginTop:8 }}>
@@ -378,7 +379,7 @@ export default function CustomerBookings() {
               {b.driver_id&&(
                 <button onClick={()=>setChatBooking(chatBooking===b.id+"driver"?null:b.id+"driver")}
                   style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 12px", cursor:"pointer", width:"100%", marginTop:6 }}>
-                  💬 {chatBooking===b.id+"driver"?"Close chat":"Message driver"}
+                  <><ChatIcon size={13} color="#8b5cf6" /> {chatBooking===b.id+"driver"?"Close chat":"Message driver"}</>
                 </button>
               )}
               {chatBooking===b.id+"driver"&&b.driver_id&&(
