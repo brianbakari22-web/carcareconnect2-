@@ -1,7 +1,7 @@
 import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
-import { SearchIcon, ServicesIcon, PartsIcon, DiscoverIcon, LocationIcon, MarketplaceIcon, VehicleIcon, OrdersIcon, ShieldIcon, MechanicIcon, WarningIcon } from "../../lib/cccIcons"
+import { SearchIcon, ServicesIcon, PartsIcon, MarketplaceIcon, VehicleIcon, PowerIcon, DiscoverIcon, MechanicIcon, ShieldIcon, LocationIcon, ClockIcon, ChatIcon } from "../../lib/cccIcons"
 import { useSearchParams } from "react-router-dom"
 import { getCurrentPosition } from "../../lib/geolocation"
 import { useAuth } from "../../contexts/AuthContext"
@@ -307,7 +307,16 @@ export default function CustomerDiscover() {
         ].map(tp=>(
           <button key={tp.key} onClick={()=>setProviderTypeFilter(tp.key)}
             style={{ padding:"6px 12px", borderRadius:8, border:"none", fontSize:11, cursor:"pointer", background:providerTypeFilter===tp.key?"#e6821e":"#f0f0f0", color:providerTypeFilter===tp.key?"#fff":"#555", fontFamily:"DM Sans,sans-serif", whiteSpace:"nowrap" }}>
-            {tp.icon} {tp.label}
+            {tp.icon==="search"?<SearchIcon size={14} color={providerTypeFilter===tp.key?"#fff":"#555"}/>:
+    tp.icon==="services"?<ServicesIcon size={14} color={providerTypeFilter===tp.key?"#fff":"#555"}/>:
+    tp.icon==="parts"?<PartsIcon size={14} color={providerTypeFilter===tp.key?"#fff":"#555"}/>:
+    tp.icon==="marketplace"?<MarketplaceIcon size={14} color={providerTypeFilter===tp.key?"#fff":"#555"}/>:
+    tp.icon==="vehicle"?<VehicleIcon size={14} color={providerTypeFilter===tp.key?"#fff":"#555"}/>:
+    tp.icon==="power"?<PowerIcon size={14} color={providerTypeFilter===tp.key?"#fff":"#555"}/>:
+    tp.icon==="discover"?<DiscoverIcon size={14} color={providerTypeFilter===tp.key?"#fff":"#555"}/>:
+    tp.icon==="mechanic"?<MechanicIcon size={14} color={providerTypeFilter===tp.key?"#fff":"#555"}/>:
+    tp.icon==="shield"?<ShieldIcon size={14} color={providerTypeFilter===tp.key?"#fff":"#555"}/>:
+    null} {tp.label}
           </button>
         ))}
       </div>
@@ -450,9 +459,9 @@ export default function CustomerDiscover() {
                   <div style={{ fontSize:12, color:"#555555", marginBottom:3 }}>{t("owner")}: {selectedProvider.first_name} {selectedProvider.last_name}</div>
                 )}
                 <div style={{ display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
-                  {selectedProvider.city&&<span style={{ fontSize:12, color:"#777777" }}>📍 {selectedProvider.city}</span>}
+                  {selectedProvider.city&&<span style={{ fontSize:12, color:"#777777", display:"flex", alignItems:"center", gap:3 }}><LocationIcon size={12} color="#777777"/> {selectedProvider.city}</span>}
                   {selectedProvider.is_verified&&<span style={{ fontSize:11, color:"#1d9e75", background:"#f0fdf4", padding:"2px 8px", borderRadius:10 }}>✓ {t("verified")}</span>}
-                  {getDistance(selectedProvider)!==null&&<span style={{ fontSize:11, color:"#378add" }}>📍 {getDistance(selectedProvider).toFixed(1)} {t("kmAway")}</span>}
+                  {getDistance(selectedProvider)!==null&&<span style={{ fontSize:11, color:"#378add", display:"flex", alignItems:"center", gap:3 }}><LocationIcon size={11} color="#378add"/> {getDistance(selectedProvider).toFixed(1)} {t("kmAway")}</span>}
                 </div>
                 {getProviderStatus(selectedProvider.id)&&(
                   <div style={{ fontSize:12, color:getProviderStatus(selectedProvider.id).color, marginTop:4, fontWeight:500 }}>
@@ -491,7 +500,7 @@ export default function CustomerDiscover() {
               <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8, color:"#e24b4a" }}>{t("upcomingClosures")}</div>
               {closures[selectedProvider.id].map(c=>(
                 <div key={c.id} style={{ fontSize:12, color:"#555555", marginBottom:4 }}>
-                  ≡🕐 {new Date(c.closure_date+"T00:00:00").toLocaleDateString("default",{weekday:"long",month:"long",day:"numeric"})}
+                  <ClockIcon size={12} color="#e24b4a"/> {new Date(c.closure_date+"T00:00:00").toLocaleDateString("default",{weekday:"long",month:"long",day:"numeric"})}
                   {c.reason&&` — ${c.reason}`}
                 </div>
               ))}
@@ -507,7 +516,7 @@ export default function CustomerDiscover() {
               <div style={{ fontSize:12, color:"#666", marginBottom:"1rem" }}>This provider sells products through the Parts Marketplace. Browse their inventory and place orders there.</div>
               <button onClick={()=>navigate("/dashboard/parts")}
                 style={{ background:"#e6821e", color:"#fff", border:"none", borderRadius:8, padding:"10px 20px", fontSize:13, fontWeight:700, cursor:"pointer" }}>
-                🛒 Browse their products
+                <MarketplaceIcon size={14} color="currentColor" /> Browse their products
               </button>
             </div>
           ) : (
@@ -634,13 +643,13 @@ export default function CustomerDiscover() {
                 {item.photos?.[0]&&<img src={item.photos[0]} alt={item.name} style={{ width:"100%", height:120, objectFit:"cover", borderRadius:8, marginBottom:8 }}/>}
                 <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:4 }}>{item.name}</div>
                 {item.brand&&<div style={{ fontSize:11, color:"#555555", marginBottom:2 }}>Brand: {item.brand}</div>}
-                {item.compatible_cars?.length>0&&<div style={{ fontSize:10, color:"#777777", marginBottom:4 }}>🚗 {item.compatible_cars.slice(0,2).join(", ")}</div>}
+                {item.compatible_cars?.length>0&&<div style={{ fontSize:10, color:"#777777", marginBottom:4, display:"flex", alignItems:"center", gap:3 }}><VehicleIcon size={10} color="#777777"/> {item.compatible_cars.slice(0,2).join(", ")}</div>}
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                   <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>KES {Number(item.price).toLocaleString()}</div>
                   <div style={{ fontSize:10, color:item.stock_quantity>5?"#1d9e75":"#e24b4a" }}>{item.stock_quantity} in stock</div>
                 </div>
                 <div style={{ fontSize:11, color:"#777777", marginTop:4 }}>
-                  🏪 {item.profiles?.business_name||item.profiles?.first_name}
+                  <><MarketplaceIcon size={12} color="#64748B"/> {item.profiles?.business_name||item.profiles?.first_name}</>
                   {item.profiles?.is_verified&&<span style={{ color:"#1d9e75", marginLeft:4 }}>✓</span>}
                 </div>
               </div>
