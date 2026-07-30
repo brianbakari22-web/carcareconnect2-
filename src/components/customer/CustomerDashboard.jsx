@@ -127,7 +127,7 @@ export default function CustomerDashboard() {
         <div onClick={()=>navigate("/dashboard/emergency")}
           style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:14, padding:"0.85rem 1rem", marginBottom:"1rem", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"space-between", gap:12 }}>
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-            <div style={{ width:40, height:40, borderRadius:"50%", background:"#e24b4a15", border:"1px solid #e24b4a30", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, flexShrink:0 }}>🚨</div>
+            <div style={{ width:40, height:40, borderRadius:"50%", background:"#e24b4a15", border:"1px solid #e24b4a30", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><GOServiceIcon size={20} color="#e24b4a" /></div>
             <div>
               <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:800, color:"#e24b4a" }}>Car breakdown? GO Service</div>
               <div style={{ fontSize:11, color:"#888", marginTop:1 }}>24/7 emergency · Mechanic comes to you · KES 500</div>
@@ -195,7 +195,7 @@ export default function CustomerDashboard() {
             <div key={b.id||b.created_at} onClick={()=>navigate("/dashboard/bookings")}
               style={{ background:"#fff", border:"0.5px solid #eeeeee", borderRadius:12, padding:"0.85rem", marginBottom:8, display:"flex", alignItems:"center", gap:10, cursor:"pointer" }}>
               <div style={{ width:40, height:40, borderRadius:10, background:`${SC[b.status]||"#eee"}15`, border:`1px solid ${SC[b.status]||"#eee"}30`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>
-                {b.service_category==="go_service"?<GOServiceIcon size={16} color="#e24b4a"/>:b.service_category==="car_wash"||b.service_category==="basic_wash"||b.service_category==="standard_wash"||b.service_category==="premium_detail"?"🚿":b.service_category==="shop_premium"?"🏡":"🏪"}
+                {b.service_category==="go_service"?<GOServiceIcon size={16} color="#e24b4a"/>:b.service_category==="car_wash"||b.service_category==="basic_wash"||b.service_category==="standard_wash"||b.service_category==="premium_detail"?<DiscoverIcon size={16} color="#1d9e75"/>:b.service_category==="shop_premium"?<ServicesIcon size={16} color="#e6821e"/>:<ServicesIcon size={16} color="#378add"/>}
               </div>
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ fontSize:13, fontWeight:500, color:"#000", marginBottom:2, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{b.service_name}</div>
@@ -211,6 +211,7 @@ export default function CustomerDashboard() {
     </div>
   )
 }
+
 
 
 
