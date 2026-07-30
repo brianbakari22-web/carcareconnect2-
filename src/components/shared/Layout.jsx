@@ -3,7 +3,7 @@ import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import { useTheme } from "../../contexts/ThemeContext"
 import { useNavigate, useLocation } from "react-router-dom"
-import { HomeIcon, ServicesIcon, BookingsIcon, PaymentsIcon, ProfileIcon, MarketplaceIcon, ChatIcon, NotificationsIcon, GOServiceIcon, SearchIcon, SettingsIcon, WalletIcon, LocationIcon, StarIcon, VehicleIcon, ShieldIcon, DriversIcon, OrdersIcon, AnalyticsIcon, FilterIcon, LogoutIcon, HelpIcon, MechanicIcon, PartsIcon, ReportsIcon, SecurityIcon } from "../../lib/cccIcons"
+import { HomeIcon, ServicesIcon, BookingsIcon, PaymentsIcon, ProfileIcon, MarketplaceIcon, ChatIcon, NotificationsIcon, GOServiceIcon, SearchIcon, SettingsIcon, WalletIcon, LocationIcon, StarIcon, VehicleIcon, ShieldIcon, DriversIcon, OrdersIcon, AnalyticsIcon, FilterIcon, LogoutIcon, HelpIcon, MechanicIcon, PartsIcon, ReportsIcon, SecurityIcon, TripReportIcon, LoyaltyIcon, FavoritesIcon, ReferEarnIcon, VehicleReportIcon, ServiceGuaranteeIcon, MyListingsIcon, MyTransactionsIcon, TruckDriverIcon, DiscoverIcon } from "../../lib/cccIcons"
 import ThemeSwitcher from "./ThemeSwitcher"
 import { supabase } from "../../lib/supabase"
 import AIAssistant from "./AIAssistant"
@@ -516,20 +516,34 @@ export default function Layout({ children }) {
                item.key==="analytics" ? <AnalyticsIcon size={18} active={isActive(item)} /> :
                item.key==="profile" ? <ProfileIcon size={18} active={isActive(item)} /> :
                item.key==="availability" ? <BookingsIcon size={18} active={isActive(item)} /> :
+               item.key==="discover" ? <DiscoverIcon size={18} active={isActive(item)} /> :
+               item.key==="loyalty" ? <LoyaltyIcon size={18} active={isActive(item)} /> :
+               item.key==="favorites" ? <FavoritesIcon size={18} active={isActive(item)} /> :
+               item.key==="referEarn" ? <ReferEarnIcon size={18} active={isActive(item)} /> :
                item.label==="GO Requests"||item.label==="GO Service 🚨" ? <GOServiceIcon size={18} /> :
                item.label==="Marketplace" ? <MarketplaceIcon size={18} active={isActive(item)} /> :
                item.label==="Mechanics"||item.key==="mechanics" ? <MechanicIcon size={18} active={isActive(item)} /> :
                item.label==="Drivers" ? <DriversIcon size={18} active={isActive(item)} /> :
                item.label==="Vehicles"||item.key==="myVehicles" ? <VehicleIcon size={18} active={isActive(item)} /> :
                item.label==="Settings" ? <SettingsIcon size={18} active={isActive(item)} /> :
-               item.label==="Service Claims"||item.label==="My Claims" ? <ShieldIcon size={18} active={isActive(item)} /> :
+               item.label==="Service Claims"||item.label==="My Claims" ? <ServiceGuaranteeIcon size={18} active={isActive(item)} /> :
+               item.label==="Service Guarantee" ? <ServiceGuaranteeIcon size={18} active={isActive(item)} /> :
                item.label==="Orders" ? <OrdersIcon size={18} active={isActive(item)} /> :
                item.label==="Reports"||item.label==="Revenue" ? <ReportsIcon size={18} active={isActive(item)} /> :
+               item.label==="Trip Reports" ? <TripReportIcon size={18} active={isActive(item)} /> :
+               item.label==="Vehicle Reports" ? <VehicleReportIcon size={18} active={isActive(item)} /> :
                item.label==="2FA Security" ? <SecurityIcon size={18} active={isActive(item)} /> :
                item.label==="Payouts"||item.label==="Earnings" ? <WalletIcon size={18} active={isActive(item)} /> :
                item.label==="Support"||item.label==="Support Tickets" ? <HelpIcon size={18} active={isActive(item)} /> :
                item.label==="Spare Parts"||item.label==="Inventory" ? <PartsIcon size={18} active={isActive(item)} /> :
+               item.label==="My Listings"||item.label==="My Car Listings" ? <MyListingsIcon size={18} active={isActive(item)} /> :
+               item.label==="My Transactions" ? <MyTransactionsIcon size={18} active={isActive(item)} /> :
+               item.label==="My Offers" ? <MarketplaceIcon size={18} active={isActive(item)} /> :
+               item.label==="Refer & Earn"||item.key==="referEarn" ? <ReferEarnIcon size={18} active={isActive(item)} /> :
+               item.label==="Loyalty" ? <LoyaltyIcon size={18} active={isActive(item)} /> :
+               item.label==="Favourites"||item.label==="Favorites" ? <FavoritesIcon size={18} active={isActive(item)} /> :
                item.label==="Chat" ? <ChatIcon size={18} active={isActive(item)} /> :
+               item.label==="Order Deliveries" ? <TruckDriverIcon size={18} active={isActive(item)} /> :
                <span style={{fontSize:16}}>{item.icon}</span>}
             </span>
               {!collapsed&&<span style={{ overflow:"hidden", textOverflow:"ellipsis" }}>{getLabel(item)}</span>}

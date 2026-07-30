@@ -405,3 +405,130 @@ export function SecurityIcon({ size=24, color="#e24b4a", active=false }) {
     </svg>
   )
 }
+
+export function TripReportIcon({ size=24, color="#64748B", active=false }) {
+  const c = active ? "#e6821e" : color
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M5 4H19L23 8V24H5V4Z" stroke={c} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M19 4V8H23" stroke={c} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M9 12H19M9 16H16M9 20H13" stroke={c} strokeWidth="1.5" strokeLinecap="round"/>
+      <circle cx="21" cy="6" r="2.5" fill={c}/>
+    </svg>
+  )
+}
+
+export function LoyaltyIcon({ size=24, color="#64748B", active=false }) {
+  const c = active ? "#e6821e" : color
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M14 5C14 5 7 9 7 15C7 18.3 10.1 21 14 21C17.9 21 21 18.3 21 15C21 9 14 5 14 5Z" stroke={c} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M14 21V25" stroke={c} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M10 25H18" stroke={c} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M11 14L13 16L17 12" stroke={c} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="21" cy="6" r="2.5" fill={c}/>
+    </svg>
+  )
+}
+
+export function FavoritesIcon({ size=24, color="#64748B", active=false }) {
+  const c = active ? "#e6821e" : color
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M14 22C14 22 4 16 4 10C4 7.2 6.2 5 9 5C11 5 12.8 6.1 14 7.8C15.2 6.1 17 5 19 5C21.8 5 24 7.2 24 10C24 16 14 22 14 22Z" stroke={c} strokeWidth="1.75" strokeLinejoin="round" fill={active ? c : "none"} fillOpacity={active ? "0.15" : "0"}/>
+      <circle cx="21" cy="6" r="2.5" fill={c}/>
+    </svg>
+  )
+}
+
+export function ReferEarnIcon({ size=24, color="#64748B", active=false }) {
+  const c = active ? "#e6821e" : color
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <circle cx="8" cy="9" r="3.5" stroke={c} strokeWidth="1.75"/>
+      <circle cx="20" cy="6" r="3.5" stroke={c} strokeWidth="1.75"/>
+      <circle cx="20" cy="21" r="3.5" stroke={c} strokeWidth="1.75"/>
+      <path d="M11.5 10.5L16.5 8M11.5 11.5L16.5 19.5" stroke={c} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M6 18C6 15.8 6.9 14 8 14C9.1 14 10 15.8 10 18" stroke={c} strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function VehicleReportIcon({ size=24, color="#64748B", active=false }) {
+  const c = active ? "#e6821e" : color
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M5 16H4C3.4 16 3 15.6 3 15V12.5L6 8H17" stroke={c} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M3 12.5H17" stroke={c} strokeWidth="1.75"/>
+      <circle cx="8" cy="17.5" r="2.5" stroke={c} strokeWidth="1.75"/>
+      <path d="M10.5 17.5H14" stroke={c} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M17 6H23V20H17" stroke={c} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M19 10H21M19 13H21M19 16H21" stroke={c} strokeWidth="1.5" strokeLinecap="round"/>
+      <circle cx="22" cy="5" r="2.5" fill={c}/>
+    </svg>
+  )
+}
+
+export function ServiceGuaranteeIcon({ size=24, color="#64748B", active=false }) {
+  const c = active ? "#e6821e" : color
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M14 3L5 7V14C5 18.4 9 22.5 14 24C19 22.5 23 18.4 23 14V7L14 3Z" stroke={c} strokeWidth="1.75" strokeLinejoin="round" fill={active ? c : "none"} fillOpacity={active ? "0.1" : "0"}/>
+      <path d="M9.5 14L12.5 17L18.5 11" stroke={c} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M14 7V10" stroke={c} strokeWidth="1.5" strokeLinecap="round"/>
+      <circle cx="21" cy="5" r="2.5" fill={c}/>
+    </svg>
+  )
+}
+
+export function MyListingsIcon({ size=24, color="#64748B", active=false }) {
+  const c = active ? "#e6821e" : color
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <rect x="4" y="4" width="9" height="9" rx="2" stroke={c} strokeWidth="1.75"/>
+      <rect x="15" y="4" width="9" height="9" rx="2" stroke={c} strokeWidth="1.75"/>
+      <rect x="4" y="15" width="9" height="9" rx="2" stroke={c} strokeWidth="1.75"/>
+      <rect x="15" y="15" width="9" height="9" rx="2" stroke={c} strokeWidth="1.75"/>
+      <circle cx="22" cy="5" r="2.5" fill={c}/>
+    </svg>
+  )
+}
+
+export function MyTransactionsIcon({ size=24, color="#64748B", active=false }) {
+  const c = active ? "#e6821e" : color
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M4 8H24M4 8L7 5M4 8L7 11" stroke={c} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M24 20H4M24 20L21 17M24 20L21 23" stroke={c} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="22" cy="6" r="2.5" fill={c}/>
+    </svg>
+  )
+}
+
+export function TruckDriverIcon({ size=24, color="#64748B", active=false }) {
+  const c = active ? "#e6821e" : color
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M3 17H2C1.4 17 1 16.6 1 16V10L4 5H16V17H3Z" stroke={c} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M16 8H21L25 13V17H16V8Z" stroke={c} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M1 12H16" stroke={c} strokeWidth="1.75"/>
+      <circle cx="6" cy="19" r="2.5" stroke={c} strokeWidth="1.75"/>
+      <circle cx="19" cy="19" r="2.5" stroke={c} strokeWidth="1.75"/>
+      <path d="M8.5 19H16.5" stroke={c} strokeWidth="1.75" strokeLinecap="round"/>
+      <circle cx="23" cy="6" r="2.5" fill={c}/>
+    </svg>
+  )
+}
+
+export function DiscoverIcon({ size=24, color="#64748B", active=false }) {
+  const c = active ? "#e6821e" : color
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="14" r="10" stroke={c} strokeWidth="1.75"/>
+      <path d="M14 4C14 4 10 8 10 14C10 20 14 24 14 24" stroke={c} strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M14 4C14 4 18 8 18 14C18 20 14 24 14 24" stroke={c} strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M4 14H24" stroke={c} strokeWidth="1.75" strokeLinecap="round"/>
+      <circle cx="21" cy="6" r="2.5" fill={c}/>
+    </svg>
+  )
+}
