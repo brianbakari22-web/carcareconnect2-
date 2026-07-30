@@ -42,6 +42,11 @@ computing gzip size...
 [2mdist/[22m[36massets/web-fvh2F4LP.js              [39m[1m[2m    0.42 kB[22m[1m[22m[2m Γöé gzip:   0.29 kB[22m[2m Γöé map:     1.30 kB[22m
 [2mdist/[22m[36massets/web-Cn_dYi71.js              [39m[1m[2m    0.89 kB[22m[1m[22m[2m Γöé gzip:   0.44 kB[22m[2m Γöé map:     2.18 kB[22m
 [2mdist/[22m[36massets/web-CEdk3K79.js              [39m[1m[2m    2.41 kB[22m[1m[22m[2m Γöé gzip:   0.97 kB[22m[2m Γöé map:     7.40 kB[22m
+
+(!) Some chunks are larger than 2000 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
 [2mdist/[22m[36massets/web-BqdEWCvx.js              [39m[1m[2m    8.77 kB[22m[1m[22m[2m Γöé gzip:   3.01 kB[22m[2m Γöé map:    35.75 kB[22m
 [2mdist/[22m[36massets/capacitor-DSb_wEom.js        [39m[1m[2m   11.24 kB[22m[1m[22m[2m Γöé gzip:   4.59 kB[22m[2m Γöé map:    44.89 kB[22m
 [2mdist/[22m[36massets/ui-Bp5GKSYf.js               [39m[1m[2m   12.19 kB[22m[1m[22m[2m Γöé gzip:   4.89 kB[22m[2m Γöé map:    28.09 kB[22m
@@ -51,10 +56,5 @@ computing gzip size...
 [2mdist/[22m[36massets/html2canvas.esm-CBrSDip1.js  [39m[1m[2m  201.48 kB[22m[1m[22m[2m Γöé gzip:  48.08 kB[22m[2m Γöé map:   602.27 kB[22m
 [2mdist/[22m[36massets/supabase-CwrFKnKJ.js         [39m[1m[2m  210.54 kB[22m[1m[22m[2m Γöé gzip:  54.59 kB[22m[2m Γöé map: 1,138.78 kB[22m
 [2mdist/[22m[36massets/sentry-DxRH3Bix.js           [39m[1m[2m  236.32 kB[22m[1m[22m[2m Γöé gzip:  77.37 kB[22m[2m Γöé map: 1,260.61 kB[22m
-[2mdist/[22m[36massets/index-CBkYrLro.js            [39m[1m[33m2,414.80 kB[39m[22m[2m Γöé gzip: 574.29 kB[22m[2m Γöé map: 6,055.29 kB[22m
-
-(!) Some chunks are larger than 2000 kB after minification. Consider:
-- Using dynamic import() to code-split the application
-- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
-- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-[32mΓ£ô built in 5.70s[39m
+[2mdist/[22m[36massets/index-CBkYrLro.js            [39m[1m[33m2,414.80 kB[39m[22m[2m Γöé gzip: 574.29 kB[22m[2m Γöé map: 6,062.42 kB[22m
+[32mΓ£ô built in 5.65s[39m
