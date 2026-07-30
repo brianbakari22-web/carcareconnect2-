@@ -82,12 +82,12 @@ export default function CustomerDiscover() {
     setProviders(data||[])
     if (data?.length) {
       const { data: reviews } = await supabase.from("reviews")
-        .select("provider_id,rating").in("provider_id", data.map(p=>p.id))
+        .select("provider_id,provider_rating").in("provider_id", data.map(p=>p.id))
       if (reviews?.length) {
         const rMap = {}
         reviews.forEach(r => {
           if (!rMap[r.provider_id]) rMap[r.provider_id] = []
-          rMap[r.provider_id].push(r.rating)
+          rMap[r.provider_id].push(r.provider_rating)
         })
         const avgMap = {}
         Object.keys(rMap).forEach(id => {

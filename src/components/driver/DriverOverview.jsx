@@ -191,7 +191,7 @@ export default function DriverOverview() {
             { label:"Today jobs", value:todayStats.jobs, icon:"📅", color:"#378add" },
             { label:"Today earnings", value:`KES ${Number(todayStats.earnings).toLocaleString()}`, icon:"💵", color:"#1d9e75" },
             { label:"Week jobs", value:weekStats.jobs, icon:"📊", color:"#8b5cf6" },
-            { label:"Rating", value:rating?`⭐ ${rating}`:"—", icon:"⭐", color:"#e6821e" },
+            { label:"Rating", value:provider_rating?`⭐ ${rating}`:"—", icon:"⭐", color:"#e6821e" },
           ].map(s=>(
             <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"0.75rem", display:"flex", alignItems:"center", gap:8 }}>
               <div style={{ fontSize:20 }}>{s.icon}</div>
