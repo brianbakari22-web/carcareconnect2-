@@ -1348,3 +1348,34 @@ export function SedanIcon({ size=24, color="#64748B" }) {
 }
 
 
+
+export function AirconIcon({ size=24, color="#378add" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <rect x="3" y="6" width="22" height="10" rx="3" stroke={color} strokeWidth="1.75"/>
+      <path d="M8 20L6 24M14 20V24M20 20L22 24" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M8 11H20" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+      <circle cx="6" cy="11" r="1.5" fill={color}/>
+    </svg>
+  )
+}
+
+export function BoltNutIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M14 3L20 6.5V13.5L14 17L8 13.5V6.5L14 3Z" stroke={color} strokeWidth="1.75" strokeLinejoin="round"/>
+      <circle cx="14" cy="10" r="3" stroke={color} strokeWidth="1.75"/>
+      <path d="M14 17V25M10 21H18" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function VideoCameraIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <rect x="2" y="7" width="17" height="14" rx="3" stroke={color} strokeWidth="1.75"/>
+      <path d="M19 12L26 9V19L19 16V12Z" stroke={color} strokeWidth="1.75" strokeLinejoin="round"/>
+      <circle cx="10" cy="14" r="3" stroke={color} strokeWidth="1.5"/>
+    </svg>
+  )
+}
