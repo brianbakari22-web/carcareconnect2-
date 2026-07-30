@@ -532,3 +532,503 @@ export function DiscoverIcon({ size=24, color="#64748B", active=false }) {
     </svg>
   )
 }
+
+export function RefreshIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M4 14C4 8.5 8.5 4 14 4C17.5 4 20.6 5.7 22.5 8.3" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M24 14C24 19.5 19.5 24 14 24C10.5 24 7.4 22.3 5.5 19.7" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M22 4L22.5 8.3L18.5 8" stroke={color} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M6 24L5.5 19.7L9.5 20" stroke={color} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+export function UploadShareIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M14 4L9 9H12V18H16V9H19L14 4Z" stroke={color} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M5 21H23" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M5 17V21H23V17" stroke={color} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+export function DownloadIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M14 4V18M9 13L14 18L19 13" stroke={color} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M5 21H23" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function EmailIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <rect x="3" y="6" width="22" height="16" rx="3" stroke={color} strokeWidth="1.75"/>
+      <path d="M3 9L14 16L25 9" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function LinkIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M11 17L17 11" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M13 7L15 5C17.2 2.8 20.8 2.8 23 5C25.2 7.2 25.2 10.8 23 13L21 15" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M15 21L13 23C10.8 25.2 7.2 25.2 5 23C2.8 20.8 2.8 17.2 5 15L7 13" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function TipIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M14 3C10.1 3 7 6.1 7 10C7 12.8 8.6 15.2 11 16.5V19H17V16.5C19.4 15.2 21 12.8 21 10C21 6.1 17.9 3 14 3Z" stroke={color} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M11 19H17M11 22H17" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <circle cx="14" cy="10" r="2" fill={color} opacity="0.3"/>
+    </svg>
+  )
+}
+
+export function WarningIcon({ size=24, color="#e6821e" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M14 3L25 23H3L14 3Z" stroke={color} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M14 11V16" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <circle cx="14" cy="20" r="1.2" fill={color}/>
+    </svg>
+  )
+}
+
+export function SuccessIcon({ size=24, color="#1d9e75" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="14" r="10" stroke={color} strokeWidth="1.75"/>
+      <path d="M8.5 14L12 17.5L19.5 10" stroke={color} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+export function ErrorIcon({ size=24, color="#e24b4a" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="14" r="10" stroke={color} strokeWidth="1.75"/>
+      <path d="M10 10L18 18M18 10L10 18" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function BankIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M3 11L14 4L25 11H3Z" stroke={color} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M3 11H25M3 24H25" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M6 11V24M11 11V24M17 11V24M22 11V24" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function QRCodeIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <rect x="3" y="3" width="9" height="9" rx="1.5" stroke={color} strokeWidth="1.75"/>
+      <rect x="16" y="3" width="9" height="9" rx="1.5" stroke={color} strokeWidth="1.75"/>
+      <rect x="3" y="16" width="9" height="9" rx="1.5" stroke={color} strokeWidth="1.75"/>
+      <rect x="5.5" y="5.5" width="4" height="4" rx="0.5" fill={color}/>
+      <rect x="18.5" y="5.5" width="4" height="4" rx="0.5" fill={color}/>
+      <rect x="5.5" y="18.5" width="4" height="4" rx="0.5" fill={color}/>
+      <path d="M16 16H19V19H16ZM19 19H22V22H19ZM16 22H19V25H16ZM22 16H25V19H22Z" fill={color}/>
+    </svg>
+  )
+}
+
+export function DeliveryIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M2 17H1C0.4 17 0 16.6 0 16V10L3 5H15V17H2Z" stroke={color} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M15 8H20L24 13V17H15V8Z" stroke={color} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M0 12H15" stroke={color} strokeWidth="1.75"/>
+      <circle cx="5" cy="19" r="2.5" stroke={color} strokeWidth="1.75"/>
+      <circle cx="18" cy="19" r="2.5" stroke={color} strokeWidth="1.75"/>
+      <path d="M7.5 19H15.5" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function TeamIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <circle cx="10" cy="9" r="3.5" stroke={color} strokeWidth="1.75"/>
+      <circle cx="19" cy="9" r="3" stroke={color} strokeWidth="1.75"/>
+      <path d="M2 23C2 19.1 5.6 16 10 16C14.4 16 18 19.1 18 23" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M19 15C21.8 15 24 17.2 24 20V23" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function NoteIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M6 4H22V24H6V4Z" stroke={color} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M10 10H18M10 14H18M10 18H15" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M10 4V8" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M18 4V8" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function KeyIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <circle cx="10" cy="11" r="5.5" stroke={color} strokeWidth="1.75"/>
+      <path d="M14.5 14.5L24 24" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M19 19L22 16" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <circle cx="10" cy="11" r="2" fill={color} opacity="0.3"/>
+    </svg>
+  )
+}
+
+export function FuelIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M5 24V6C5 5.4 5.4 5 6 5H16C16.6 5 17 5.4 17 6V14" stroke={color} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M5 24H17" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M17 10L21 8V18C21 19.1 20.1 20 19 20H17" stroke={color} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M8 10H14" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+      <circle cx="21" cy="6" r="2.5" fill={color}/>
+    </svg>
+  )
+}
+
+export function BatteryIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <rect x="2" y="9" width="21" height="10" rx="2.5" stroke={color} strokeWidth="1.75"/>
+      <path d="M23 12V16" stroke={color} strokeWidth="2.5" strokeLinecap="round"/>
+      <rect x="4.5" y="11.5" width="12" height="5" rx="1" fill={color} opacity="0.3" stroke={color} strokeWidth="1.2"/>
+      <path d="M25 13V15" stroke={color} strokeWidth="2" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function TrophyIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M9 4H19V14C19 17.3 16.8 20 14 20C11.2 20 9 17.3 9 14V4Z" stroke={color} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M9 7H5C5 7 4 13 9 14" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M19 7H23C23 7 24 13 19 14" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M14 20V23" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M10 23H18" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <circle cx="21" cy="5" r="2.5" fill={color}/>
+    </svg>
+  )
+}
+
+export function TicketIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M3 10C3 10 5 10 5 8C5 6 3 6 3 6V10Z" stroke={color} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M25 18C25 18 23 18 23 20C23 22 25 22 25 22V18Z" stroke={color} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M3 6H25V10C25 10 23 10 23 12C23 14 25 14 25 18H3V14C3 14 5 14 5 12C5 10 3 10 3 6Z" stroke={color} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M10 12H18M10 15H15" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function PayoutIcon({ size=24, color="#1d9e75" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <rect x="3" y="7" width="22" height="14" rx="3" stroke={color} strokeWidth="1.75"/>
+      <path d="M3 11H25" stroke={color} strokeWidth="1.75"/>
+      <path d="M14 16L11 19M14 16L17 19M14 16V23" stroke={color} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="21" cy="6" r="2.5" fill={color}/>
+    </svg>
+  )
+}
+
+export function SignalIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="14" r="2.5" fill={color}/>
+      <path d="M9 19C7.7 17.7 7 15.9 7 14C7 12.1 7.7 10.3 9 9" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M19 9C20.3 10.3 21 12.1 21 14C21 15.9 20.3 17.7 19 19" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M5.5 22.5C3.2 20.2 2 17.2 2 14C2 10.8 3.2 7.8 5.5 5.5" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M22.5 5.5C24.8 7.8 26 10.8 26 14C26 17.2 24.8 20.2 22.5 22.5" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function ClockIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="14" r="10" stroke={color} strokeWidth="1.75"/>
+      <path d="M14 8V14L18 17" stroke={color} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="21" cy="6" r="2.5" fill={color}/>
+    </svg>
+  )
+}
+
+export function LockedIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <rect x="5" y="12" width="18" height="13" rx="3" stroke={color} strokeWidth="1.75"/>
+      <path d="M9 12V9C9 6.2 11.2 4 14 4C16.8 4 19 6.2 19 9V12" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <circle cx="14" cy="18.5" r="2" fill={color}/>
+      <path d="M14 18.5V21" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function UnlockedIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <rect x="5" y="12" width="18" height="13" rx="3" stroke={color} strokeWidth="1.75"/>
+      <path d="M9 12V9C9 6.2 11.2 4 14 4C16.8 4 19 6.2 19 9" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <circle cx="14" cy="18.5" r="2" fill={color} opacity="0.3" stroke={color} strokeWidth="1.5"/>
+    </svg>
+  )
+}
+
+export function EyeIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M3 14C3 14 7 7 14 7C21 7 25 14 25 14C25 14 21 21 14 21C7 21 3 14 3 14Z" stroke={color} strokeWidth="1.75" strokeLinejoin="round"/>
+      <circle cx="14" cy="14" r="3.5" stroke={color} strokeWidth="1.75"/>
+    </svg>
+  )
+}
+
+export function EyeOffIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M5 5L23 23" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M10.5 7.5C11.6 7.2 12.8 7 14 7C21 7 25 14 25 14C24.3 15.3 23.4 16.5 22.3 17.5" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M17 17.5C16.1 18.1 15.1 18.5 14 18.5C11 18.5 8.6 16.5 7.3 15.1C6.4 14.1 5.7 13 5 12" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function MotorcycleIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <circle cx="6" cy="19" r="3.5" stroke={color} strokeWidth="1.75"/>
+      <circle cx="22" cy="19" r="3.5" stroke={color} strokeWidth="1.75"/>
+      <path d="M9.5 19H18.5" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M10 12L14 8H18L22 12L18.5 19" stroke={color} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M10 12L6 19" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M14 8V12H10" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="21" cy="6" r="2.5" fill={color}/>
+    </svg>
+  )
+}
+
+export function BroadcastIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M3 8L14 4L25 8V20L14 24L3 20V8Z" stroke={color} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M3 8L14 12L25 8" stroke={color} strokeWidth="1.75"/>
+      <path d="M14 12V24" stroke={color} strokeWidth="1.75"/>
+      <circle cx="14" cy="12" r="2.5" fill={color}/>
+    </svg>
+  )
+}
+
+export function TargetIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="14" r="10" stroke={color} strokeWidth="1.75"/>
+      <circle cx="14" cy="14" r="6" stroke={color} strokeWidth="1.75"/>
+      <circle cx="14" cy="14" r="2.5" fill={color}/>
+      <path d="M14 4V8M14 20V24M4 14H8M20 14H24" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function PowerIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M14 4V14" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M9 7.5C6.5 9.2 5 12 5 14.5C5 19.2 9 23 14 23C19 23 23 19.2 23 14.5C23 12 21.5 9.2 19 7.5" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <circle cx="21" cy="5" r="2.5" fill={color}/>
+    </svg>
+  )
+}
+
+export function BadgeIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="11" r="6" stroke={color} strokeWidth="1.75"/>
+      <path d="M9.5 16L7 25L14 21L21 25L18.5 16" stroke={color} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M11.5 11L13 12.5L16.5 9" stroke={color} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+export function AttachmentIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M22 13L13 22C10.8 24.2 7.2 24.2 5 22C2.8 19.8 2.8 16.2 5 14L14 5C15.6 3.4 18.4 3.4 20 5C21.6 6.6 21.6 9.4 20 11L11 20C10 21 8.6 21 7.6 20C6.6 19 6.6 17.6 7.6 16.6L15.5 8.5" stroke={color} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+export function SaveIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M5 4H19L23 8V24H5V4Z" stroke={color} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M9 4V11H19V4" stroke={color} strokeWidth="1.75" strokeLinejoin="round"/>
+      <rect x="8" y="16" width="12" height="8" rx="1" stroke={color} strokeWidth="1.5"/>
+      <path d="M16 4V8" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function PrintIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M7 8V4H21V8" stroke={color} strokeWidth="1.75" strokeLinejoin="round"/>
+      <rect x="3" y="8" width="22" height="12" rx="2" stroke={color} strokeWidth="1.75"/>
+      <path d="M7 20V24H21V20" stroke={color} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M10 15H18M10 20H18M10 23H16" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+      <circle cx="7" cy="13" r="1.5" fill={color}/>
+    </svg>
+  )
+}
+
+export function GlobeIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="14" r="10" stroke={color} strokeWidth="1.75"/>
+      <path d="M14 4C14 4 10 8 10 14C10 20 14 24 14 24" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M14 4C14 4 18 8 18 14C18 20 14 24 14 24" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M4 14H24M5 9H23M5 19H23" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function SpeedIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M4 20C4 13.4 8.5 8 14 8C19.5 8 24 13.4 24 20" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M14 20L10 14" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <circle cx="14" cy="20" r="2" fill={color}/>
+      <path d="M9 10L7 8M19 10L21 8M6 15L4 14M22 15L24 14" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function PlugIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M10 4V9M18 4V9" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <rect x="7" y="9" width="14" height="8" rx="3" stroke={color} strokeWidth="1.75"/>
+      <path d="M14 17V24" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <circle cx="21" cy="5" r="2.5" fill={color}/>
+    </svg>
+  )
+}
+
+export function BillIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M5 4H23V24L20 22L17 24L14 22L11 24L8 22L5 24V4Z" stroke={color} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M9 10H19M9 14H19M9 18H15" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M14 7V10M14 14V17" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function MovingCarIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M7 16H6C5.4 16 5 15.6 5 15V12.5L8 8H20L23 12.5V15C23 15.6 22.6 16 22 16H21" stroke={color} strokeWidth="1.75" strokeLinejoin="round"/>
+      <path d="M5 12.5H23" stroke={color} strokeWidth="1.75"/>
+      <circle cx="9.5" cy="17.5" r="2.5" stroke={color} strokeWidth="1.75"/>
+      <circle cx="18.5" cy="17.5" r="2.5" stroke={color} strokeWidth="1.75"/>
+      <path d="M12 17.5H16" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M2 10H5M2 13H4M2 16H4" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+      <circle cx="21" cy="6" r="2.5" fill={color}/>
+    </svg>
+  )
+}
+
+export function SunIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="14" r="5" stroke={color} strokeWidth="1.75"/>
+      <path d="M14 4V7M14 21V24M4 14H7M21 14H24M6.8 6.8L9 9M19 19L21.2 21.2M21.2 6.8L19 9M9 19L6.8 21.2" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function UsersIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <circle cx="10" cy="9" r="4" stroke={color} strokeWidth="1.75"/>
+      <path d="M2 23C2 19.1 5.6 16 10 16C14.4 16 18 19.1 18 23" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M19 12C21.2 12 23 10.2 23 8C23 5.8 21.2 4 19 4" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M22 22C24 21 26 19 26 16C26 14 24.5 12 22.5 12" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function UserPlusIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <circle cx="11" cy="9" r="4.5" stroke={color} strokeWidth="1.75"/>
+      <path d="M3 23C3 19.1 6.6 16 11 16C15.4 16 19 19.1 19 23" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M22 9V17M18 13H26" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function ChevronRightIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M11 7L18 14L11 21" stroke={color} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+export function ChevronDownIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M7 11L14 18L21 11" stroke={color} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+export function MenuIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M4 8H24M4 14H24M4 20H24" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function PlusIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M14 5V23M5 14H23" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function MinusIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M5 14H23" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+export function HeartIcon({ size=24, color="#e24b4a", active=false }) {
+  const c = active ? "#e24b4a" : color
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M14 22C14 22 4 16 4 10C4 7.2 6.2 5 9 5C11 5 12.8 6.1 14 7.8C15.2 6.1 17 5 19 5C21.8 5 24 7.2 24 10C24 16 14 22 14 22Z" stroke={c} strokeWidth="1.75" strokeLinejoin="round" fill={active ? c : "none"} fillOpacity={active ? "0.2" : "0"}/>
+    </svg>
+  )
+}
