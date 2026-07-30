@@ -134,12 +134,16 @@ export default function CustomerReferral() {
         {[
           { step:"1", icon:"ShareIcon", title:"Share your code", desc:`Send your unique referral code or link to friends`, icon:"📤" },
           { step:"2", icon:"ProfileIcon", title:"Friend signs up", desc:"They register using your referral link", icon:"👤" },
-          { step:"3", title:"First booking made", desc:"They complete their first service booking", icon:"✅" },
-          { step:"4", title:"Both earn points", desc:`You get ${REFERRAL_POINTS} pts · They get ${REFERRED_POINTS} pts`, icon:"🎉" },
+          { step:"3", title:"First booking made", desc:"They complete their first service booking", icon:"CheckIcon" },
+          { step:"4", title:"Both earn points", desc:`You get ${REFERRAL_POINTS} pts · They get ${REFERRED_POINTS} pts`, icon:"TrophyIcon" },
         ].map((s,i)=>(
           <div key={s.step} style={{ display:"flex", gap:12, marginBottom:i<3?12:0 }}>
             <div style={{ width:40, height:40, borderRadius:10, background:"#fff8f0", border:"1px solid #e6821e30", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, flexShrink:0 }}>
-              {s.icon}
+              {s.icon==="ShareIcon"?<ReferEarnIcon size={24} color="#e6821e"/>:
+   s.icon==="ProfileIcon"?<ProfileIcon size={24} color="#378add"/>:
+   s.icon==="CheckIcon"?<CheckIcon size={24} color="#1d9e75"/>:
+   s.icon==="TrophyIcon"?<TrophyIcon size={24} color="#8b5cf6"/>:
+   <SuccessIcon size={24} color="#1d9e75"/>}
             </div>
             <div style={{ flex:1 }}>
               <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:2 }}>{s.title}</div>
