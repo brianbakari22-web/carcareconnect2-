@@ -327,9 +327,9 @@ export default function CustomerServices() {
             style={{ background:activeCategory===c.key?c.bg:"#f5f5f5", border:`1px solid ${activeCategory===c.key?c.color:"#e5e5e5"}`, borderRadius:12, padding:"1rem", cursor:"pointer", transition:"all 0.15s" }}>
             <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
               <span style={{ display:"flex", alignItems:"center", justifyContent:"center" }}>
-              {c.icon==="marketplace"?<MarketplaceIcon size={22} color={selectedCategory===c.key?"#fff":"#e6821e"}/>:
-               c.icon==="home"?<HomeIcon size={22} color={selectedCategory===c.key?"#fff":"#8b5cf6"}/>:
-               c.icon==="emergency"?<GOServiceIcon size={22} color={selectedCategory===c.key?"#fff":"#e24b4a"}/>:
+              {c.icon==="marketplace"?<MarketplaceIcon size={22} color={activeCategory===c.key?"#fff":"#e6821e"}/>:
+               c.icon==="home"?<HomeIcon size={22} color={activeCategory===c.key?"#fff":"#8b5cf6"}/>:
+               c.icon==="emergency"?<GOServiceIcon size={22} color={activeCategory===c.key?"#fff":"#e24b4a"}/>:
                <ServicesIcon size={22} color="currentColor"/>}
             </span>
               <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:activeCategory===c.key?c.color:"#000000" }}>{c.label}</div>
@@ -844,6 +844,7 @@ export default function CustomerServices() {
     </div>
   )
 }
+
 
 
 
