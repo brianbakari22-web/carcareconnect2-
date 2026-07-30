@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { PaymentsIcon, LockedIcon, ShieldIcon, WarningIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -154,7 +155,7 @@ export default function EscrowManager() {
       {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&txList.length===0&&(
         <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
-          <div style={{ fontSize:32, marginBottom:10 }}>💳</div>
+          <div style={{ marginBottom:10, display:"flex", justifyContent:"center" }}><PaymentsIcon size={32} color="#e6821e"/></div>
           No transactions yet
         </div>
       )}

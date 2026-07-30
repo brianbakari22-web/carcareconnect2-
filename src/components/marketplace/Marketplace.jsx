@@ -322,7 +322,7 @@ export default function Marketplace() {
         <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, marginBottom:"1rem", display:"flex", alignItems:"center", gap:8 }}><MyListingsIcon size={20} color="#e6821e" /> My Listings</div>
         {myListings.length===0 ? (
           <div style={{ textAlign:"center", padding:"3rem", color:"#888" }}>
-            <div style={{ fontSize:48, marginBottom:12 }}>📋</div>
+            <div style={{ marginBottom:12, display:"flex", justifyContent:"center" }}><NoteIcon size={48} color="#e6821e"/></div>
             <div style={{ fontWeight:700, marginBottom:6 }}>No listings yet</div>
             <div style={{ fontSize:13, marginBottom:16 }}>Start selling by listing a vehicle or part</div>
             <button onClick={()=>setTab("all")} style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:"pointer" }}>
@@ -354,7 +354,7 @@ export default function Marketplace() {
       <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, marginBottom:"1rem", display:"flex", alignItems:"center", gap:8 }}><HeartIcon size={20} color="#e24b4a" /> Saved Listings</div>
       {userLikes.size === 0 ? (
         <div style={{ textAlign:"center", padding:"3rem", color:"#888" }}>
-          <div style={{ fontSize:48, marginBottom:12 }}>🤍</div>
+          <div style={{ marginBottom:12, display:"flex", justifyContent:"center" }}><HeartIcon size={48} color="#e24b4a"/></div>
           <div style={{ fontWeight:700, marginBottom:6 }}>No saved listings yet</div>
           <div style={{ fontSize:13 }}>Tap the heart on any listing to save it</div>
         </div>
@@ -480,7 +480,7 @@ export default function Marketplace() {
             {listings.filter(l=>l.is_featured)[0]?.primary_photo ? <img src={listings.filter(l=>l.is_featured)[0].primary_photo} style={{ width:"100%", height:"100%", objectFit:"cover" }}/> : <div style={{ fontSize:24 }}>👑</div>}
           </div>
           <div style={{ flex:1, minWidth:0 }}>
-            <div style={{ fontSize:10, color:"#8b5cf6", fontWeight:500, marginBottom:2 }}>👑 FEATURED</div>
+            <div style={{ fontSize:10, color:"#8b5cf6", fontWeight:500, marginBottom:2, display:"flex", alignItems:"center", gap:3 }}><CrownIcon size={10} color="#8b5cf6"/> FEATURED</div>
             <div style={{ fontSize:13, fontWeight:500, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{listings.filter(l=>l.is_featured)[0]?.title}</div>
             <div style={{ fontSize:13, color:"#e6821e", fontWeight:500 }}>KES {Number(listings.filter(l=>l.is_featured)[0]?.price||0).toLocaleString()}</div>
           </div>
@@ -514,7 +514,7 @@ export default function Marketplace() {
                   <div style={{ fontFamily:"Syne", fontSize:isMobile?13:15, fontWeight:800, color:"#e6821e" }}>KES {Number(l.price).toLocaleString()}</div>
                   <span style={{ fontSize:10, color:"#e24b4a", display:"flex", alignItems:"center", gap:2 }}><HeartIcon size={10} color="#e24b4a" /> {l.likes_count||0}</span>
                   {l.seller?.marketplace_rating>0&&<span style={{ fontSize:10, color:"#e6821e" }}>⭐ {Number(l.seller.marketplace_rating).toFixed(1)}</span>}
-                  <span style={{ fontSize:10, color:"#e24b4a" }}>❤️ {l.likes_count||0}</span>
+                  <span style={{ fontSize:10, color:"#e24b4a", display:"flex", alignItems:"center", gap:2 }}><HeartIcon size={10} color="#e24b4a"/> {l.likes_count||0}</span>
                   {l.negotiable&&<span style={{ fontSize:9, color:"#1d9e75" }}>Negotiable</span>}
                   <div style={{ display:"flex", gap:8, marginTop:4 }}>
                     {(l.likes_count>0)&&<span style={{ fontSize:9, color:"#e24b4a" }}>❤️ {l.likes_count}</span>}
@@ -889,7 +889,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
             <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
               <button onClick={()=>setShowChat(true)}
                 style={{ width:"100%", background:"#000", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:"pointer" }}>
-                💬 Message seller
+                <ChatIcon size={14} color="currentColor"/> Message seller
               </button>
 
               {/* Social actions */}

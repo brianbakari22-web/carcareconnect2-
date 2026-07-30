@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { LockedIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import IntaSendPayment from "../shared/IntaSendPayment"
 import { useAuth } from "../../contexts/AuthContext"
@@ -83,7 +84,7 @@ export default function MarketplacePayment({ offer, listing, onSuccess, onCancel
         </div>
       </div>
       <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:8, padding:"0.75rem", marginBottom:16, fontSize:11, color:"#1d9e75", lineHeight:1.6 }}>
-        🔒 Funds held in escrow until you confirm receipt. 7-day dispute window after delivery.
+        <><LockedIcon size={12} color="#1d9e75"/> Funds held in escrow</> until you confirm receipt. 7-day dispute window after delivery.
       </div>
       <button onClick={initPayment} disabled={paying||commissionRate==null}
         style={{ width:"100%", background:paying?"#ccc":"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:paying?"not-allowed":"pointer", marginBottom:8 }}>

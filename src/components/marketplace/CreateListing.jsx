@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { MarketplaceIcon, VehicleIcon, ServicesIcon, WarningIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
@@ -114,7 +115,7 @@ export default function CreateListing() {
       <div style={{ fontSize:12, color:"#777777", marginBottom:"1.5rem" }}>Reviewed within 24 hours before going live</div>
 
       <div style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:10, padding:"0.9rem", marginBottom:"1.5rem" }}>
-        <div style={{ fontSize:12, color:"#e24b4a", fontWeight:600, marginBottom:4 }}>⚠️ Important rules</div>
+        <div style={{ fontSize:12, color:"#e24b4a", fontWeight:600, marginBottom:4, display:"flex", alignItems:"center", gap:4 }}><WarningIcon size={12} color="#e24b4a"/> Important rules</div>
         {["Do NOT include phone number, WhatsApp or email in listing","All buyer communication must stay within Car Care Connect","Violation results in listing removal and account suspension","Platform commission applies on successful sale"].map((r,i)=>(
           <div key={i} style={{ display:"flex", gap:8, marginBottom:4 }}><span style={{ color:"#e24b4a" }}>•</span><span style={{ fontSize:11, color:"#555555" }}>{r}</span></div>
         ))}
@@ -124,7 +125,7 @@ export default function CreateListing() {
         <div style={{ marginBottom:16 }}>
           <label style={lbl}>What are you selling? *</label>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:8 }}>
-            {[{k:"vehicle",l:"🚗 Vehicle",d:"Cars, trucks"},{k:"part",l:"🔧 Car part",d:"Engine, brakes"},{k:"accessory",l:"✨ Accessory",d:"Mats, covers"}].map(t=>(
+            {[{k:"vehicle",l:"vehicle",d:"Cars, trucks"},{k:"part",l:"part",d:"Engine, brakes"},{k:"accessory",l:"accessory",d:"Mats, covers"}].map(t=>(
               <button key={t.k} type="button" onClick={()=>f("listing_type",t.k)}
                 style={{ background:form.listing_type===t.k?"#fff8f0":"#ffffff", border:`1px solid ${form.listing_type===t.k?"#e6821e":"#f5f5f5"}`, borderRadius:10, padding:"0.75rem", cursor:"pointer", textAlign:"left" }}>
                 <div style={{ fontSize:16, marginBottom:4 }}>{t.l.split(" ")[0]}</div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { pushNotify } from "../../lib/pushNotify"
+import { MarketplaceIcon, VehicleIcon, PartsIcon, WalletIcon, RefreshIcon, EyeIcon, LocationIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
@@ -159,7 +160,7 @@ export default function MyListings() {
 
       {pendingOffers.length>0&&(
         <div style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:10, padding:"0.75rem", marginBottom:"1rem" }}>
-          <div style={{ fontSize:12, color:"#8b5cf6", fontWeight:600 }}>💰 {pendingOffers.length} offer{pendingOffers.length>1?"s":""} waiting</div>
+          <div style={{ fontSize:12, color:"#8b5cf6", fontWeight:600, display:"flex", alignItems:"center", gap:4 }}><WalletIcon size={12} color="#8b5cf6"/> {pendingOffers.length} offer{pendingOffers.length>1?"s":""} waiting</div>
         </div>
       )}
 
@@ -178,7 +179,7 @@ export default function MyListings() {
         <div>
           {!loading&&listings.length===0&&(
             <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
-              <div style={{ fontSize:32, marginBottom:10 }}>🛒</div>
+              <div style={{ marginBottom:10, display:"flex", justifyContent:"center" }}><MarketplaceIcon size={32} color="#e6821e"/></div>
               No listings yet
               <div style={{ marginTop:12 }}>
                 <button onClick={()=>navigate("/dashboard/marketplace/new")}
@@ -194,7 +195,7 @@ export default function MyListings() {
                 <div style={{ width:90, minHeight:90, background:"#f5f5f5", flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
                   {l.primary_photo
                     ? <img src={l.primary_photo} alt="" style={{ width:"100%", height:"100%", objectFit:"cover", minHeight:90 }}/>
-                    : <span style={{ fontSize:32 }}>{l.listing_type==="vehicle"?"🚗":l.listing_type==="part"?"🔧":"✨"}</span>
+                    : <span style={{ fontSize:32 }}>{l.listing_type==="vehicle"?<VehicleIcon size={32} color="#e6821e"/>:l.listing_type==="part"?"🔧":"✨"}</span>
                   }
                 </div>
                 <div style={{ flex:1, padding:"0.75rem", minWidth:0 }}>

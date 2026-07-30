@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { WalletIcon, MarketplaceIcon, VehicleIcon, ServicesIcon, RefreshIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
@@ -73,7 +74,7 @@ export default function MyOffers() {
       {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&offers.length===0&&(
         <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
-          <div style={{ fontSize:32, marginBottom:10 }}>💰</div>
+          <div style={{ marginBottom:10, display:"flex", justifyContent:"center" }}><WalletIcon size={32} color="#1d9e75"/></div>
           No offers made yet
           <div style={{ marginTop:12 }}>
             <button onClick={()=>navigate("/dashboard/marketplace")}
@@ -89,7 +90,7 @@ export default function MyOffers() {
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
-                <span>{o.marketplace_listings?.listing_type==="vehicle"?"🚗":"🔧"}</span>
+                <span>{o.marketplace_listings?.listing_type==="vehicle"?<VehicleIcon size={16} color="#e6821e"/>:<ServicesIcon size={16} color="#8b5cf6"/>}</span>
                 <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{o.marketplace_listings?.title}</div>
                 <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:`${OC[o.status]||"#888"}20`, color:OC[o.status]||"#888" }}>{o.status}</span>
               </div>
@@ -113,7 +114,7 @@ export default function MyOffers() {
           {/* Counter offer action */}
           {o.status==="countered"&&(
             <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:8, padding:"0.75rem", marginBottom:8 }}>
-              <div style={{ fontSize:12, color:"#e6821e", fontWeight:600, marginBottom:4 }}>🔄 Seller countered with KES {Number(o.counter_price).toLocaleString()}</div>
+              <div style={{ fontSize:12, color:"#e6821e", fontWeight:600, marginBottom:4, display:"flex", alignItems:"center", gap:4 }}><RefreshIcon size={12} color="#e6821e"/> Seller countered with KES {Number(o.counter_price).toLocaleString()}</div>
               <div style={{ display:"flex", gap:8 }}>
                 <button onClick={()=>acceptCounter(o)}
                   style={{ background:"#1d9e75", border:"none", borderRadius:7, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"6px 14px", cursor:"pointer" }}>

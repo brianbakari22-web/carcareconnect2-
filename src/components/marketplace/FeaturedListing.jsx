@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { CrownIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
@@ -118,7 +119,7 @@ export default function FeaturedListing({ listingId, onSuccess }) {
             <div style={{ fontSize:10, color:"#888", marginTop:2 }}>Above regular listings</div>
           </button>
           <button onClick={()=>setTier("premium")} style={{ flex:1, background:tier==="premium"?"#faf5ff":"#ffffff", border:`2px solid ${tier==="premium"?"#8b5cf6":"#eeeeee"}`, borderRadius:10, padding:"10px 8px", cursor:"pointer", textAlign:"center" }}>
-            <div style={{ fontSize:16, marginBottom:4 }}>👑</div>
+            <div style={{ marginBottom:4, display:"flex", justifyContent:"center" }}><CrownIcon size={16} color="#8b5cf6"/></div>
             <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:tier==="premium"?"#8b5cf6":"#555" }}>Premium</div>
             <div style={{ fontSize:10, color:"#888", marginTop:2 }}>Above ALL featured listings</div>
           </button>
@@ -143,7 +144,7 @@ export default function FeaturedListing({ listingId, onSuccess }) {
       <div style={{ background: tier==="premium"?"#faf5ff":"#fff8f0", borderRadius:8, padding:"0.75rem", marginBottom:16 }}>
         {tier==="premium" ? (
           <>
-            <div style={{ fontSize:11, color:"#8b5cf6", fontWeight:700, marginBottom:6 }}>👑 Premium benefits</div>
+            <div style={{ fontSize:11, color:"#8b5cf6", fontWeight:700, marginBottom:6, display:"flex", alignItems:"center", gap:4 }}><CrownIcon size={11} color="#8b5cf6"/> Premium benefits</div>
             {["Appears ABOVE all standard featured listings","👑 Premium crown badge","Maximum visibility to buyers","Priority position guaranteed"].map((b,i)=>(
               <div key={i} style={{ fontSize:11, color:"#555", marginBottom:3 }}>✓ {b}</div>
             ))}
