@@ -7,7 +7,9 @@ import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 import IntaSendPayment from "../shared/IntaSendPayment"
-import { GOServiceIcon, ServicesIcon, LocationIcon, MarketplaceIcon, ShieldIcon, ShareIcon, PaymentsIcon, DeleteIcon, VehicleIcon, ChatIcon, DownloadIcon, WarningIcon } from "../../lib/cccIcons"
+import { GOServiceIcon, ServicesIcon, DiscoverIcon, MarketplaceIcon, LocationIcon, ShieldIcon, ShareIcon, PaymentsIcon, DeleteIcon, VehicleIcon, ChatIcon, DownloadIcon, DeliveryIcon, WarningIcon } from "../../lib/cccIcons"
+
+
 import { downloadInvoice, downloadBookingsCSV } from "../../lib/invoice"
 import ChatWindow from "../shared/ChatWindow"
 
@@ -209,7 +211,7 @@ export default function CustomerBookings() {
             <div style={{ flex:1, minWidth:0, marginRight:8 }}>
               <div style={{ fontSize:isMobile?13:14, fontWeight:500, color:"#000000", marginBottom:2, display:"flex", alignItems:"center", gap:6 }}>
                 <span style={{ fontSize:16 }}>
-                  {b.service_category==="go_service"?<GOServiceIcon size={16} color="#e24b4a"/>:b.service_category==="shop_premium"?<ServicesIcon size={16} color="#e6821e"/>:b.service_category==="car_wash"||b.service_category==="basic_wash"||b.service_category==="standard_wash"||b.service_category==="premium_detail"?"🚿":b.service_category==="basic_wash"?"🚿":"🏪"}
+                  {b.service_category==="go_service"?<GOServiceIcon size={16} color="#e24b4a"/>:b.service_category==="shop_premium"?<ServicesIcon size={16} color="#e6821e"/>:b.service_category==="car_wash"||b.service_category==="basic_wash"||b.service_category==="standard_wash"||b.service_category==="premium_detail"?<DiscoverIcon size={16} color="#1d9e75"/>:<MarketplaceIcon size={16} color="#378add"/>}
                 </span>
                 {b.service_name}
               </div>
@@ -329,7 +331,7 @@ export default function CustomerBookings() {
               {/* Transport allowance */}
               {b.transport_allowance>0&&(
                 <div style={{ fontSize:11, color:"#777777", marginTop:8 }}>
-                  🚌 Transport allowance: KES {Number(b.transport_allowance).toLocaleString()} included
+                  <><DeliveryIcon size={13} color="#378add"/> Transport allowance: KES {Number(b.transport_allowance).toLocaleString()} included</>
                 </div>
               )}
             </div>
@@ -451,6 +453,7 @@ export default function CustomerBookings() {
     </div>
   )
 }
+
 
 
 
