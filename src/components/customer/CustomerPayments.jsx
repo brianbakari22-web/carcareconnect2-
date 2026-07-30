@@ -3,7 +3,7 @@ import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
-import { generateInvoice, downloadPaymentsCSV } from "../../lib/invoice"
+import { downloadInvoice, downloadPaymentsCSV } from "../../lib/invoice"
 import { useLanguage } from "../../contexts/LanguageContext"
 import toast from "react-hot-toast"
 
@@ -116,7 +116,7 @@ export default function CustomerPayments() {
                   </div>
                 ))}
               </div>
-              <button onClick={()=>generateInvoice(b, b.provider, profile)}
+              <button onClick={()=>downloadInvoice(b, b.provider, profile)}
                 style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
                 Download Invoice
               </button>
@@ -225,6 +225,7 @@ export default function CustomerPayments() {
     </div>
   )
 }
+
 
 
 
