@@ -48,11 +48,11 @@ export default function MyNewCarListings() {
       .then(({data}) => setIsDealer(data?.is_dealer||false))
     supabase.from("dealer_applications").select("status").eq("user_id", user.id).maybeSingle()
       .then(({data}) => setDealerStatus(data?.status||null))
-    supabase.from("app_settings").select("key,value").in("key",["new_car_listing_fee","new_car_listing_duration_days"])
+    supabase.from("app_settings").select("key,value").in("key",["new_car_listing_fee","new_car_listing_duration_days","new_car_lead_fee"])
       .then(({ data }) => {
         const map = {}
         data?.forEach(r => { map[r.key] = Number(r.value) })
-        setFees({ listing_fee: map.new_car_listing_fee||2000, duration_days: map.new_car_listing_duration_days||30 })
+        setFees({ listing_fee: map.new_car_listing_fee||2000, duration_days: map.new_car_listing_duration_days||30, lead_fee: map.new_car_lead_fee||500 })
       })
   }, [user])
 
@@ -174,6 +174,26 @@ export default function MyNewCarListings() {
     load()
   }
 
+  async function payLeadFee(enquiry) {
+    try {
+      const { data, error } = await supabase.functions.invoke("daraja-stk-push", {
+        body: {
+          booking_id: enquiry.id,
+          amount: fees.lead_fee,
+          phone: profile?.phone || "",
+          account_ref: enquiry.id.substring(0,12),
+          description: `Lead fee - ${enquiry.customer_name}`
+        }
+      })
+      if(error) throw error
+      if(data?.success) {
+        toast.success("STK Push sent! Check your phone 📱")
+        // Mark lead fee as paid after payment
+        await supabase.from("car_enquiries").update({ lead_fee_paid: true }).eq("id", enquiry.id)
+        load()
+      } else toast.error("Payment failed. Try again.")
+    } catch(e) { toast.error(e.message) }
+  }
   async function deleteListing(id) {
     if (!confirm("Delete this listing?")) return
     await supabase.from("new_car_listings").delete().eq("id",id).eq("dealer_id",user.id)
@@ -490,3 +510,5 @@ export default function MyNewCarListings() {
     </div>
   )
 }
+
+
