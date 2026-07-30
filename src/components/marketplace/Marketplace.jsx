@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { pushNotify } from "../../lib/pushNotify"
 import { supabase } from "../../lib/supabase"
 import SellerProfile from "./SellerProfile"
 import NewCarMarketplace from "../customer/NewCarMarketplace"
@@ -1009,6 +1010,8 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
     </div>
   )
 }
+
+
 
 
 
