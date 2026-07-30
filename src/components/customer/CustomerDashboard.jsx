@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { supabase } from "../../lib/supabase"
+import { ServicesIcon, GOServiceIcon, PartsIcon, DiscoverIcon, LocationIcon, MarketplaceIcon, LoyaltyIcon, HelpIcon, NotificationsIcon, BookingsIcon, StarIcon, VehicleIcon, ClockIcon } from "../../lib/cccIcons"
 import CustomerOnboarding from "./CustomerOnboarding"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
@@ -47,14 +48,14 @@ export default function CustomerDashboard() {
   const nextTier = { Bronze:1000, Silver:5000, Gold:10000, Platinum:99999 }
   const progress = Math.min(100, (stats.points / nextTier[tier]) * 100)
   const quickActions = [
-    { label:"Book service", icon:"🔧", path:"/dashboard/services", color:"#e6821e" },
-    { label:"GO Service", icon:"🚨", path:"/dashboard/emergency", color:"#e24b4a" },
-    { label:"Order parts", icon:"⚙️", path:"/dashboard/parts", color:"#378add" },
-    { label:"Car wash", icon:"🚿", path:"/dashboard/discover", color:"#1d9e75" },
-    { label:"Track driver", icon:"📍", path:"/dashboard/tracking", color:"#8b5cf6" },
-    { label:"Marketplace", icon:"🛒", path:"/dashboard/marketplace", color:"#e6821e" },
-    { label:"Loyalty", icon:"⭐", path:"/dashboard/loyalty", color:"#e6821e" },
-    { label:"AI Help", icon:"🤖", path:"/dashboard/support", color:"#378add" },
+    { label:"Book service", icon:"services", path:"/dashboard/services", color:"#e6821e" },
+    { label:"GO Service", icon:"emergency", path:"/dashboard/emergency", color:"#e24b4a" },
+    { label:"Order parts", icon:"parts", path:"/dashboard/parts", color:"#378add" },
+    { label:"Car wash", icon:"discover", path:"/dashboard/discover", color:"#1d9e75" },
+    { label:"Track driver", icon:"location", path:"/dashboard/tracking", color:"#8b5cf6" },
+    { label:"Marketplace", icon:"marketplace", path:"/dashboard/marketplace", color:"#e6821e" },
+    { label:"Loyalty", icon:"loyalty", path:"/dashboard/loyalty", color:"#e6821e" },
+    { label:"AI Help", icon:"help", path:"/dashboard/support", color:"#378add" },
   ]
   return (
     <div style={{ margin:"-1rem", fontFamily:"DM Sans,sans-serif" }}>
@@ -75,7 +76,7 @@ export default function CustomerDashboard() {
           </div>
           <div onClick={()=>navigate("/dashboard/notifications")}
             style={{ width:36, height:36, borderRadius:"50%", background:"rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", fontSize:18 }}>
-            🔔
+            <NotificationsIcon size={20} color={unreadCount>0?"#e24b4a":"#64748B"} hasAlert={unreadCount>0} />
           </div>
         </div>
       </div>
@@ -86,7 +87,17 @@ export default function CustomerDashboard() {
         <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8, textAlign:"center", marginBottom:8 }}>
           {quickActions.slice(0,4).map(a=>(
             <div key={a.label} onClick={()=>navigate(a.path)} style={{ cursor:"pointer", padding:"6px 0" }}>
-              <div style={{ fontSize:24, marginBottom:4 }}>{a.icon}</div>
+              <div style={{ marginBottom:4, display:"flex", alignItems:"center", justifyContent:"center" }}>
+              {a.icon==="services" ? <ServicesIcon size={24} color={a.color} /> :
+               a.icon==="emergency" ? <GOServiceIcon size={24} color={a.color} /> :
+               a.icon==="parts" ? <PartsIcon size={24} color={a.color} /> :
+               a.icon==="discover" ? <DiscoverIcon size={24} color={a.color} /> :
+               a.icon==="location" ? <LocationIcon size={24} color={a.color} /> :
+               a.icon==="marketplace" ? <MarketplaceIcon size={24} color={a.color} /> :
+               a.icon==="loyalty" ? <LoyaltyIcon size={24} color={a.color} /> :
+               a.icon==="help" ? <HelpIcon size={24} color={a.color} /> :
+               <span style={{fontSize:24}}>{a.icon}</span>}
+            </div>
               <div style={{ fontSize:9, color:"#555", lineHeight:1.2 }}>{a.label}</div>
             </div>
           ))}
@@ -94,7 +105,17 @@ export default function CustomerDashboard() {
         <div style={{ borderTop:"1px solid #f5f5f5", paddingTop:8, display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8, textAlign:"center" }}>
           {quickActions.slice(4,8).map(a=>(
             <div key={a.label} onClick={()=>navigate(a.path)} style={{ cursor:"pointer", padding:"4px 0" }}>
-              <div style={{ fontSize:20, marginBottom:3 }}>{a.icon}</div>
+              <div style={{ marginBottom:3, display:"flex", alignItems:"center", justifyContent:"center" }}>
+              {a.icon==="services" ? <ServicesIcon size={20} color={a.color} /> :
+               a.icon==="emergency" ? <GOServiceIcon size={20} color={a.color} /> :
+               a.icon==="parts" ? <PartsIcon size={20} color={a.color} /> :
+               a.icon==="discover" ? <DiscoverIcon size={20} color={a.color} /> :
+               a.icon==="location" ? <LocationIcon size={20} color={a.color} /> :
+               a.icon==="marketplace" ? <MarketplaceIcon size={20} color={a.color} /> :
+               a.icon==="loyalty" ? <LoyaltyIcon size={20} color={a.color} /> :
+               a.icon==="help" ? <HelpIcon size={20} color={a.color} /> :
+               <span style={{fontSize:20}}>{a.icon}</span>}
+            </div>
               <div style={{ fontSize:9, color:"#888", lineHeight:1.2 }}>{a.label}</div>
             </div>
           ))}
@@ -118,13 +139,19 @@ export default function CustomerDashboard() {
         {/* Stats row */}
         <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:8, marginBottom:"1rem" }}>
           {[
-            { label:"Total bookings", value:stats.bookings, icon:"📅", color:"#e6821e" },
-            { label:"Pending", value:stats.pending, icon:"⏳", color:"#378add" },
-            { label:"Completed", value:stats.completed, icon:"✅", color:"#1d9e75" },
-            { label:"Loyalty points", value:stats.points.toLocaleString(), icon:"⭐", color:"#e6821e" },
+            { label:"Total bookings", value:stats.bookings, icon:"bookings", color:"#e6821e" },
+            { label:"Pending", value:stats.pending, icon:"clock", color:"#378add" },
+            { label:"Completed", value:stats.completed, icon:"completed", color:"#1d9e75" },
+            { label:"Loyalty points", value:stats.points.toLocaleString(), icon:"loyalty", color:"#e6821e" },
           ].map(s=>(
             <div key={s.label} style={{ background:"#f8f8f8", borderRadius:12, padding:"0.85rem", display:"flex", alignItems:"center", gap:10 }}>
-              <div style={{ fontSize:22 }}>{s.icon}</div>
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"center" }}>
+              {s.icon==="bookings" ? <BookingsIcon size={22} color={s.color} /> :
+               s.icon==="clock" ? <ClockIcon size={22} color={s.color} /> :
+               s.icon==="completed" ? <ServicesIcon size={22} color={s.color} /> :
+               s.icon==="loyalty" ? <LoyaltyIcon size={22} color={s.color} /> :
+               <span style={{fontSize:22}}>{s.icon}</span>}
+            </div>
               <div>
                 <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:s.color }}>{s.value}</div>
                 <div style={{ fontSize:11, color:"#888" }}>{s.label}</div>
@@ -156,7 +183,7 @@ export default function CustomerDashboard() {
           {loading && <div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"1rem" }}>Loading...</div>}
           {!loading && recentBookings.length === 0 && (
             <div style={{ textAlign:"center", padding:"2rem", background:"#f8f8f8", borderRadius:12 }}>
-              <div style={{ fontSize:36, marginBottom:8 }}>🚗</div>
+              <div style={{ marginBottom:8, display:"flex", justifyContent:"center" }}><VehicleIcon size={36} color="#e6821e" /></div>
               <div style={{ fontSize:14, color:"#888" }}>No bookings yet</div>
               <button onClick={()=>navigate("/dashboard/services")}
                 style={{ marginTop:12, background:"#e6821e", border:"none", borderRadius:20, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px 20px", cursor:"pointer" }}>
@@ -168,7 +195,7 @@ export default function CustomerDashboard() {
             <div key={b.id||b.created_at} onClick={()=>navigate("/dashboard/bookings")}
               style={{ background:"#fff", border:"0.5px solid #eeeeee", borderRadius:12, padding:"0.85rem", marginBottom:8, display:"flex", alignItems:"center", gap:10, cursor:"pointer" }}>
               <div style={{ width:40, height:40, borderRadius:10, background:`${SC[b.status]||"#eee"}15`, border:`1px solid ${SC[b.status]||"#eee"}30`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>
-                {b.service_category==="go_service"?"🚨":b.service_category==="car_wash"||b.service_category==="basic_wash"||b.service_category==="standard_wash"||b.service_category==="premium_detail"?"🚿":b.service_category==="shop_premium"?"🏡":"🏪"}
+                {b.service_category==="go_service"?<GOServiceIcon size={16} color="#e24b4a"/>:b.service_category==="car_wash"||b.service_category==="basic_wash"||b.service_category==="standard_wash"||b.service_category==="premium_detail"?"🚿":b.service_category==="shop_premium"?"🏡":"🏪"}
               </div>
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ fontSize:13, fontWeight:500, color:"#000", marginBottom:2, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{b.service_name}</div>
