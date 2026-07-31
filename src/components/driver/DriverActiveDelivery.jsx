@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { VehicleIcon, LocationIcon, GOServiceIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { getCurrentPosition } from "../../lib/geolocation"
 import { useAuth } from "../../contexts/AuthContext"
@@ -174,7 +175,7 @@ export default function DriverActiveDelivery() {
       {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&jobs.length===0&&(
         <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
-          <div style={{ fontSize:32, marginBottom:10 }}>🚗</div>
+          <div style={{ marginBottom:10, display:"flex", justifyContent:"center" }}><VehicleIcon size={32} color="#e6821e"/></div>
           No active deliveries
         </div>
       )}

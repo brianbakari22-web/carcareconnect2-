@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { VehicleIcon, MotorcycleIcon, TukTukIcon, DeliveryIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { pushNotify } from "../../lib/pushNotify"
 import { sanitizeName, sanitizePhone, sanitizeFreeText } from "../../lib/sanitize"
@@ -11,10 +12,10 @@ import toast from "react-hot-toast"
 const LICENSE_CLASSES = ["Class B - Light Motor Vehicle", "Class C - Heavy Motor Vehicle", "Class D - Motorcycle", "Class E - PSV", "Class F - Special Vehicle"]
 
 const DRIVER_VEHICLE_TYPES = [
-  { key:"car", label:"Car", icon:"🚗", desc:"Standard delivery" },
-  { key:"motorcycle", label:"Boda Boda", icon:"🏍️", desc:"Fast parts delivery" },
-  { key:"tuktuk", label:"Tuktuk", icon:"🛺", desc:"Local delivery" },
-  { key:"van", label:"Van/Pickup", icon:"🚐", desc:"Large items" },
+  { key:"car", label:"Car", icon:"vehicle", desc:"Standard delivery" },
+  { key:"motorcycle", label:"Boda Boda", icon:"motorcycle", desc:"Fast parts delivery" },
+  { key:"tuktuk", label:"Tuktuk", icon:"tuktuk", desc:"Local delivery" },
+  { key:"van", label:"Van/Pickup", icon:"delivery", desc:"Large items" },
 ]
 
 export default function DriverProfile() {

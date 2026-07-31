@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react"
+import { ChatIcon, MarketplaceIcon, VehicleIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -184,7 +185,7 @@ export default function DriverChat() {
           {loading&&<div style={{ color:"#777777", fontSize:12 }}>Loading...</div>}
           {!loading&&filtered.length===0&&(
             <div style={{ color:"#888888", fontSize:12, textAlign:"center", padding:"2rem" }}>
-              <div style={{ fontSize:28, marginBottom:8 }}>💬</div>
+              <div style={{ marginBottom:8, display:"flex", justifyContent:"center" }}><ChatIcon size={28} color="#e6821e"/></div>
               No conversations yet
             </div>
           )}
@@ -212,7 +213,7 @@ export default function DriverChat() {
               {c.lastMessage&&<div style={{ fontSize:11, color:"#777777", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.lastMessage}</div>}
               <div style={{ display:"flex", gap:6, marginTop:4, flexWrap:"wrap" }}>
                 <span style={{ fontSize:9, padding:"1px 6px", borderRadius:6, background:c.type==="marketplace"?"#fff8f0":"#f0fdf4", color:c.type==="marketplace"?"#e6821e":"#1d9e75" }}>
-                  {c.type==="marketplace"?"🛒 Marketplace":"🚗 Job"}
+                  {c.type==="marketplace"?<><MarketplaceIcon size={12} color="currentColor"/> Marketplace</>:<><VehicleIcon size={12} color="currentColor"/> Job</>}
                 </span>
                 {c.status&&<span style={{ fontSize:9, color:"#888888" }}>{c.status}</span>}
               </div>
@@ -241,7 +242,7 @@ export default function DriverChat() {
         !isMobile&&(
           <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", color:"#888888", fontSize:13 }}>
             <div style={{ textAlign:"center" }}>
-              <div style={{ fontSize:40, marginBottom:10 }}>💬</div>
+              <div style={{ marginBottom:10, display:"flex", justifyContent:"center" }}><ChatIcon size={40} color="#ccc"/></div>
               Select a conversation
             </div>
           </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
+import { VehicleIcon, MotorcycleIcon, TukTukIcon, DeliveryIcon, LocationIcon, WalletIcon, StarIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { getCurrentPosition } from "../../lib/geolocation"
 import { useAuth } from "../../contexts/AuthContext"
@@ -7,10 +8,10 @@ import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
 const VEHICLE_CONFIG = {
-  car:        { icon:"🚗", label:"Car Driver",       color:"#1d9e75", desc:"Standard delivery" },
-  motorcycle: { icon:"🏍️", label:"Boda Boda Rider",   color:"#e6821e", desc:"Fast parts and accessories delivery" },
-  tuktuk:     { icon:"🛺", label:"Tuktuk Driver",      color:"#378add", desc:"Local area parts delivery" },
-  van:        { icon:"🚐", label:"Van Driver",          color:"#8b5cf6", desc:"Bulk parts and large item delivery" },
+  car:        { icon:"vehicle", label:"Car Driver",       color:"#1d9e75", desc:"Standard delivery" },
+  motorcycle: { icon:"motorcycle", label:"Boda Boda Rider",   color:"#e6821e", desc:"Fast parts and accessories delivery" },
+  tuktuk:     { icon:"tuktuk", label:"Tuktuk Driver",      color:"#378add", desc:"Local area parts delivery" },
+  van:        { icon:"delivery", label:"Van Driver",          color:"#8b5cf6", desc:"Bulk parts and large item delivery" },
 }
 
 export default function DriverOverview() {

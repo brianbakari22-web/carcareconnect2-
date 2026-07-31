@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react"
 import { useNavigate } from "react-router-dom"
+import { VehicleIcon, LocationIcon, WalletIcon, WarningIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { openExternal, openMapsNavigation } from "../../lib/openExternal"
@@ -153,7 +154,7 @@ export default function DriverAvailableJobs() {
       {/* Status banner */}
       {!isOnline&&(
         <div style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:10, padding:"0.9rem", marginBottom:"1.25rem" }}>
-          <div style={{ fontSize:13, color:"#e24b4a", fontWeight:600, marginBottom:2 }}>🔴 You are offline</div>
+          <div style={{ fontSize:13, color:"#e24b4a", fontWeight:600, marginBottom:2, display:"flex", alignItems:"center", gap:4 }}><WarningIcon size={13} color="#e24b4a"/> You are offline</div>
           <div style={{ fontSize:11, color:"#666" }}>Go to Overview and toggle online to accept jobs.</div>
         </div>
       )}

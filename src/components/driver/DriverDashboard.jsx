@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react"
+import { CheckIcon, LocationIcon, VehicleIcon, MovingCarIcon, SuccessIcon, WalletIcon, StarIcon, ClockIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import DriverOnboarding from "./DriverOnboarding"
 import { useAuth } from "../../contexts/AuthContext"
@@ -6,10 +7,10 @@ import { openExternal, openMapsNavigation } from "../../lib/openExternal"
 import toast from "react-hot-toast"
 
 const DELIVERY_STEPS = [
-  { status:"driver-assigned", label:"Accepted", icon:"✓" },
-  { status:"arrived-for-pickup", label:"Arrived for pickup", icon:"📍" },
-  { status:"in-progress", label:"Vehicle picked up", icon:"🚗" },
-  { status:"arrived-at-dropoff", label:"Arrived at dropoff", icon:"📍" },
+  { status:"driver-assigned", label:"Accepted", icon:"check" },
+  { status:"arrived-for-pickup", label:"Arrived for pickup", icon:"location" },
+  { status:"in-progress", label:"Vehicle picked up", icon:"vehicle" },
+  { status:"arrived-at-dropoff", label:"Arrived at dropoff", icon:"location2" },
   { status:"completed", label:"Delivered", icon:"✅" },
 ]
 const STATUS_NEXT = {

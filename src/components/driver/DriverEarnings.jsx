@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { WalletIcon, WarningIcon, SuccessIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -160,7 +161,7 @@ export default function DriverEarnings() {
         </div>
         <div style={{ display:"flex", justifyContent:"space-between", fontSize:11, color:"#777777" }}>
           <span>{totalJobs} job{totalJobs!==1?"s":""} completed</span>
-          {unpaidCount>0&&<span style={{ color:"#e6821e" }}>⚠️ {unpaidCount} pending payment</span>}
+          {unpaidCount>0&&<span style={{ color:"#e6821e", display:"flex", alignItems:"center", gap:3 }}><WarningIcon size={12} color="#e6821e"/> {unpaidCount} pending payment</span>}
         </div>
       </div>
 

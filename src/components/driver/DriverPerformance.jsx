@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { VehicleIcon, MotorcycleIcon, TukTukIcon, DeliveryIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -42,10 +43,10 @@ export default function DriverPerformance() {
   }
 
   const vehicleConfig = {
-    car: { icon:"🚗", label:"Car Driver" },
-    motorcycle: { icon:"🏍️", label:"Boda Boda" },
-    tuktuk: { icon:"🛺", label:"Tuktuk" },
-    van: { icon:"🚐", label:"Van Driver" },
+    car: { icon:"vehicle", label:"Car Driver" },
+    motorcycle: { icon:"motorcycle", label:"Boda Boda" },
+    tuktuk: { icon:"tuktuk", label:"Tuktuk" },
+    van: { icon:"delivery", label:"Van Driver" },
   }
   const isConcierge = profile?.driver_category === "concierge"
   const vc = isConcierge ? { icon:"🧑‍✈️", label:"Concierge Driver" } : (vehicleConfig[profile?.driver_vehicle_type||"car"])
