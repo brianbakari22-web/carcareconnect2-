@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
+import { HomeIcon, VehicleIcon, PaymentsIcon, VideoIcon, CameraIcon, EyeIcon, ChatIcon, PhoneCallIcon, EmailIcon } from "../../lib/cccIcons"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
@@ -258,7 +259,7 @@ export default function MyNewCarListings() {
               <input placeholder="Average monthly stock" value={dealerForm.monthly_stock} onChange={e=>setDealerForm(f=>({...f,monthly_stock:e.target.value}))}
                 style={{ width:"100%", padding:"10px 12px", borderRadius:8, border:"1px solid #ddd", fontSize:13, marginBottom:12, boxSizing:"border-box" }}/>
               <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:8, padding:"10px 12px", marginBottom:12, fontSize:12, color:"#666" }}>
-                <div style={{ fontWeight:700, color:"#e6821e", marginBottom:4 }}>&#128179; Listing fee: KES 2,000/month</div>
+                <div style={{ fontWeight:700, color:"#e6821e", marginBottom:4, display:"flex", alignItems:"center", gap:6 }}><PaymentsIcon size={14} color="#e6821e"/> Listing fee: KES 2,000/month</div>
                 <div>After approval, you will pay KES 2,000/month to list unlimited cars. Our team will contact you within 24 hours to complete onboarding.</div>
               </div>
               <div style={{ display:"flex", gap:8 }}>
@@ -440,7 +441,7 @@ export default function MyNewCarListings() {
           {loading&&<div style={{ color:"#888", fontSize:13 }}>Loading...</div>}
           {!loading&&listings.length===0&&(
             <div style={{ textAlign:"center", padding:"3rem", color:"#888" }}>
-              <div style={{ fontSize:40, marginBottom:12 }}>🚗</div>
+              <div style={{ marginBottom:12, display:"flex", justifyContent:"center" }}><VehicleIcon size={40} color="#e6821e"/></div>
               <div>No listings yet. Add your first car listing above.</div>
             </div>
           )}
@@ -465,7 +466,7 @@ export default function MyNewCarListings() {
                   <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
                     {!l.listing_fee_paid&&(
                       <button onClick={()=>payListingFee(l)} style={{ background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"5px 12px", cursor:"pointer" }}>
-                        💳 Pay KES {fees.listing_fee.toLocaleString()} to activate
+                        <><PaymentsIcon size={13} color="currentColor"/> Pay KES {fees.listing_fee.toLocaleString()} to activate</>
                       </button>
                     )}
                     <button onClick={()=>startEdit(l)} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Edit</button>
