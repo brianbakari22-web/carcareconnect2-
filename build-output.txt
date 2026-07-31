@@ -62,15 +62,15 @@ computing gzip size...
 [2mdist/[22m[36massets/capacitor-DSb_wEom.js        [39m[1m[2m   11.24 kB[22m[1m[22m[2m Γöé gzip:   4.59 kB[22m[2m Γöé map:    44.89 kB[22m
 [2mdist/[22m[36massets/ui-Bp5GKSYf.js               [39m[1m[2m   12.19 kB[22m[1m[22m[2m Γöé gzip:   4.89 kB[22m[2m Γöé map:    28.09 kB[22m
 [2mdist/[22m[36massets/purify.es-Jn2rvFN8.js        [39m[1m[2m   28.96 kB[22m[1m[22m[2m Γöé gzip:  10.93 kB[22m[2m Γöé map:   158.93 kB[22m
-[2mdist/[22m[36massets/index.es-BVbca3dy.js         [39m[1m[2m  150.89 kB[22m[1m[22m[2m Γöé gzip:  51.66 kB[22m[2m Γöé map:   637.73 kB[22m
+[2mdist/[22m[36massets/index.es-DdV3nePf.js         [39m[1m[2m  150.89 kB[22m[1m[22m[2m Γöé gzip:  51.66 kB[22m[2m Γöé map:   637.73 kB[22m
 [2mdist/[22m[36massets/vendor-Deq17Bv5.js           [39m[1m[2m  153.41 kB[22m[1m[22m[2m Γöé gzip:  50.37 kB[22m[2m Γöé map:   685.66 kB[22m
 [2mdist/[22m[36massets/html2canvas.esm-CBrSDip1.js  [39m[1m[2m  201.48 kB[22m[1m[22m[2m Γöé gzip:  48.08 kB[22m[2m Γöé map:   602.27 kB[22m
 [2mdist/[22m[36massets/supabase-CwrFKnKJ.js         [39m[1m[2m  210.54 kB[22m[1m[22m[2m Γöé gzip:  54.59 kB[22m[2m Γöé map: 1,138.78 kB[22m
 [2mdist/[22m[36massets/sentry-DxRH3Bix.js           [39m[1m[2m  236.32 kB[22m[1m[22m[2m Γöé gzip:  77.37 kB[22m[2m Γöé map: 1,260.61 kB[22m
-[2mdist/[22m[36massets/index-Ctc7wyOQ.js            [39m[1m[33m2,444.58 kB[39m[22m[2m Γöé gzip: 579.12 kB[22m[2m Γöé map: 6,128.62 kB[22m
+[2mdist/[22m[36massets/index-BYUziUqW.js            [39m[1m[33m2,445.36 kB[39m[22m[2m Γöé gzip: 579.24 kB[22m[2m Γöé map: 6,129.75 kB[22m
 
 (!) Some chunks are larger than 2000 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-[32mΓ£ô built in 5.77s[39m
+[32mΓ£ô built in 5.80s[39m

@@ -47,7 +47,13 @@ export default function ProviderQRCode() {
               { icon:"qr", title:"WhatsApp status", desc:"Screenshot the QR and share on your WhatsApp status" },
             ].map(item=>(
               <div key={item.title} style={{ display:"flex", gap:10, alignItems:"flex-start", marginBottom:10 }}>
-                <span style={{ fontSize:20, flexShrink:0 }}>{item.icon}</span>
+                <span style={{ flexShrink:0, display:"flex", alignItems:"center" }}>
+                {item.icon==="payments"?<PaymentsIcon size={22} color="#e6821e"/>:
+                 item.icon==="globe"?<GlobeIcon size={22} color="#378add"/>:
+                 item.icon==="vehicle"?<VehicleIcon size={22} color="#1d9e75"/>:
+                 item.icon==="document"?<DocumentIcon size={22} color="#8b5cf6"/>:
+                 <QRCodeIcon size={22} color="#25D366"/>}
+              </span>
                 <div>
                   <div style={{ fontSize:13, fontWeight:600, color:"#000", marginBottom:2 }}>{item.title}</div>
                   <div style={{ fontSize:11, color:"#666", lineHeight:1.5 }}>{item.desc}</div>
