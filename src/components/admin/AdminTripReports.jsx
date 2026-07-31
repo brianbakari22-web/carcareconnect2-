@@ -1,3 +1,4 @@
+import { VehicleIcon, LocationIcon, TripReportIcon } from "../../lib/cccIcons"
 import { useEffect, useState } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
@@ -65,7 +66,7 @@ export default function AdminTripReports() {
             <div style={{ fontSize:11, color:"#888" }}>#{selected.booking_number} · {selected.booking_date}</div>
             <div style={{ fontSize:11, color:"#888" }}>Customer: {selected.customer?.first_name} {selected.customer?.last_name}</div>
             <div style={{ fontSize:11, color:"#378add" }}>Driver: {selected.driver?.first_name} {selected.driver?.last_name} · {selected.driver?.driver_category==="concierge"?"🧑‍✈️":"🚗"}</div>
-            {selected.vehicles&&<div style={{ fontSize:11, color:"#888" }}>🚗 {selected.vehicles.make} {selected.vehicles.model} · {selected.vehicles.license_plate}</div>}
+            {selected.vehicles&&<div style={{ fontSize:11, color:"#888", display:"flex", alignItems:"center", gap:3 }}><VehicleIcon size={11} color="#888"/> {selected.vehicles.make} {selected.vehicles.model} · {selected.vehicles.license_plate}</div>}
           </div>
           {loadingLogs?(
             <div style={{ color:"#888", fontSize:13, padding:"2rem", textAlign:"center" }}>Loading GPS data...</div>

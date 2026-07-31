@@ -1,3 +1,4 @@
+import { GOServiceIcon, WalletIcon, WarningIcon } from "../../lib/cccIcons"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import useIsMobile from "../../lib/useIsMobile"
@@ -258,7 +259,7 @@ export default function AdminPaymentTracking() {
             <div key={b.id} style={{ background:"#f8f8f8", border:"1px solid #e24b4a30", borderRadius:10, padding:"1rem", marginBottom:8 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                 <div>
-                  <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>🚨 {b.emergency_type?.replace(/_/g," ")||"Emergency"}</div>
+                  <div style={{ fontSize:13, fontWeight:600, color:"#000000", display:"flex", alignItems:"center", gap:4 }}><GOServiceIcon size={13} color="#e24b4a"/> {b.emergency_type?.replace(/_/g," ")||"Emergency"}</div>
                   <div style={{ fontSize:11, color:"#888" }}>{b.profiles?.first_name} {b.profiles?.last_name}</div>
                   <div style={{ fontSize:11, color:"#888" }}>Provider: {b.provider?.business_name||b.provider?.first_name}</div>
                   <div style={{ fontSize:10, color:"#888" }}>{new Date(b.created_at).toLocaleString()}</div>

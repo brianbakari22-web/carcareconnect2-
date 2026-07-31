@@ -1,3 +1,4 @@
+import { LockedIcon, UnlockedIcon } from "../../lib/cccIcons"
 import { useEffect, useState } from "react"
 import { useTheme } from "../../contexts/ThemeContext"
 import { supabase } from "../../lib/supabase"
@@ -127,7 +128,7 @@ export default function Admin2FA() {
 
       <div style={{ background:"#ffffff", border:`1px solid ${status?.is_enabled?"#1d9e7540":"#eeeeee"}`, borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem", display:"flex", alignItems:"center", gap:12 }}>
         <div style={{ width:44, height:44, borderRadius:10, background:status?.is_enabled?"#f0fdf4":"#f5f5f5", display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, flexShrink:0 }}>
-          {status?.is_enabled?"🔒":"🔓"}
+          {status?.is_enabled?<LockedIcon size={20} color="#1d9e75"/>:<UnlockedIcon size={20} color="#e6821e"/>}
         </div>
         <div style={{ flex:1 }}>
           <div style={{ fontSize:14, fontWeight:600, color:status?.is_enabled?"#1d9e75":"#000000" }}>

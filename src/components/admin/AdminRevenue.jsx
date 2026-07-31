@@ -1,3 +1,4 @@
+import { WarningIcon, SuccessIcon } from "../../lib/cccIcons"
 import useIsMobile from "../../lib/useIsMobile"
 import { useAuth } from "../../contexts/AuthContext"
 import { useEffect, useState } from "react"
@@ -280,7 +281,7 @@ export default function AdminRevenue() {
                   <div style={{fontSize:11,color:"#888",marginTop:2}}>{g.demand} bookings · {g.providerCount} provider{g.providerCount!==1?"s":""}</div>
                 </div>
                 <span style={{fontSize:11,padding:"2px 8px",borderRadius:10,background:g.ratio>3?"#fff5f5":g.ratio>1.5?"#fff8f0":"#f0fdf4",color:g.ratio>3?"#e24b4a":g.ratio>1.5?"#e6821e":"#1d9e75"}}>
-                  {g.ratio>3?"🔴 Critical":g.ratio>1.5?"🟡 Needed":"🟢 OK"}
+                  {g.ratio>3?<><WarningIcon size={12} color="#e24b4a"/> Critical</>:g.ratio>1.5?<><WarningIcon size={12} color="#e6821e"/> Needed</>:<><SuccessIcon size={12} color="#1d9e75"/> OK</>}
                 </span>
               </div>
               {g.missingTypes.length>0&&(

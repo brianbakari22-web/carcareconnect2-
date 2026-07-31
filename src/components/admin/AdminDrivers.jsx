@@ -1,3 +1,4 @@
+import { VehicleIcon, WarningIcon, CheckIcon, LocationIcon, StarIcon, AnalyticsIcon } from "../../lib/cccIcons"
 import { useEffect, useState, useRef } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"

@@ -1,3 +1,4 @@
+import { WarningIcon, SuccessIcon, ClockIcon, GOServiceIcon, ShieldIcon, BookingsIcon, WalletIcon, RefreshIcon } from "../../lib/cccIcons"
 import { useEffect, useState } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
@@ -5,13 +6,13 @@ import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
 const CHECKS = [
-  { key:"stuck_bookings", label:"Stuck bookings", desc:"Bookings pending >24hrs", icon:"📅", category:"business" },
-  { key:"go_service_timeout", label:"GO Service timeouts", desc:"Emergency requests with no response", icon:"🚨", category:"business" },
-  { key:"pending_claims", label:"Pending claims", desc:"Service claims awaiting review >24hrs", icon:"🛡️", category:"business" },
-  { key:"unanswered_tickets", label:"Unanswered tickets", desc:"Support tickets open >24hrs", icon:"🎫", category:"business" },
-  { key:"mileage_alerts", label:"Unresolved mileage alerts", desc:"Mileage alerts not resolved >48hrs", icon:"🚗", category:"business" },
+  { key:"stuck_bookings", label:"Stuck bookings", desc:"Bookings pending >24hrs", icon:"clock", category:"business" },
+  { key:"go_service_timeout", label:"GO Service timeouts", desc:"Emergency requests with no response", icon:"emergency", category:"business" },
+  { key:"pending_claims", label:"Pending claims", desc:"Service claims awaiting review >24hrs", icon:"shield", category:"business" },
+  { key:"unanswered_tickets", label:"Unanswered tickets", desc:"Support tickets open >24hrs", icon:"ticket", category:"business" },
+  { key:"mileage_alerts", label:"Unresolved mileage alerts", desc:"Mileage alerts not resolved >48hrs", icon:"vehicle", category:"business" },
   { key:"pending_payouts", label:"Pending payouts", desc:"Payout requests older than 7 days", icon:"💰", category:"payments" },
-  { key:"unpaid_bookings", label:"Unpaid completed bookings", desc:"Completed bookings unpaid >24hrs", icon:"💳", category:"payments" },
+  { key:"unpaid_bookings", label:"Unpaid completed bookings", desc:"Completed bookings unpaid >24hrs", icon:"payments", category:"payments" },
   { key:"unverified_drivers", label:"Unverified drivers", desc:"Drivers with credentials not yet verified", icon:"🪪", category:"users" },
   { key:"expiring_vouchers", label:"Expiring vouchers", desc:"Active vouchers expiring within 3 days", icon:"🎟️", category:"users" },
   { key:"idle_drivers", label:"Idle online drivers", desc:"Drivers online >4hrs with no job", icon:"🟢", category:"users" },
