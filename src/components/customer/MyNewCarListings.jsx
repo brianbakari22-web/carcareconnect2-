@@ -489,7 +489,7 @@ export default function MyNewCarListings() {
                 <div>
                   <div style={{ fontSize:13, fontWeight:600, color:"#000" }}>{e.customer_name}</div>
                   <div style={{ fontSize:11, color:"#888" }}>📞 {e.customer_phone} {e.customer_email?`· ✉️ ${e.customer_email}`:""}</div>
-                  <div style={{ fontSize:11, color:"#888" }}>🚗 {e.new_car_listings?.year} {e.new_car_listings?.brand} {e.new_car_listings?.model}</div>
+                  <div style={{ fontSize:11, color:"#888", display:"flex", alignItems:"center", gap:3 }}><VehicleIcon size={11} color="#888"/> {e.new_car_listings?.year} {e.new_car_listings?.brand} {e.new_car_listings?.model}</div>
                   <div style={{ fontSize:10, color:"#888" }}>{e.enquiry_type?.replace(/_/g," ")} · Prefers: {e.preferred_contact}</div>
                   {e.message&&<div style={{ fontSize:11, color:"#555", marginTop:4, fontStyle:"italic" }}>&quot;{e.message}&quot;</div>}
                   <div style={{ fontSize:10, color:"#aaa", marginTop:4 }}>{new Date(e.created_at).toLocaleString()}</div>
@@ -511,5 +511,6 @@ export default function MyNewCarListings() {
     </div>
   )
 }
+
 
 
