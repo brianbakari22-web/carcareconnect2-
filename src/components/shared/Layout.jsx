@@ -395,6 +395,53 @@ export default function Layout({ children }) {
                item.key==="notifications" ? <NotificationsIcon size={20} active={isActive(item)} /> :
                item.key==="payments" ? <PaymentsIcon size={20} active={isActive(item)} /> :
                item.label==="Marketplace" ? <MarketplaceIcon size={20} active={isActive(item)} /> :
+               item.key==="reviews"||item.key==="myRatings" ? <StarIcon size={20} active={isActive(item)} /> :
+               item.key==="analytics" ? <AnalyticsIcon size={20} active={isActive(item)} /> :
+               item.key==="earnings"||item.key==="payouts" ? <WalletIcon size={20} active={isActive(item)} /> :
+               item.key==="loyalty" ? <LoyaltyIcon size={20} active={isActive(item)} /> :
+               item.key==="favorites" ? <FavoritesIcon size={20} active={isActive(item)} /> :
+               item.key==="referEarn" ? <ReferEarnIcon size={20} active={isActive(item)} /> :
+               item.key==="discover" ? <DiscoverIcon size={20} active={isActive(item)} /> :
+               item.key==="myVehicles" ? <VehicleIcon size={20} active={isActive(item)} /> :
+               item.key==="trackDriver" ? <LocationIcon size={20} active={isActive(item)} /> :
+               item.key==="availableJobs" ? <OrdersIcon size={20} active={isActive(item)} /> :
+               item.key==="activeDelivery" ? <MovingCarIcon size={20} active={isActive(item)} /> :
+               item.key==="profile" ? <ProfileIcon size={20} active={isActive(item)} /> :
+               item.label==="GO Service 🚨"||item.label==="GO Service" ? <GOServiceIcon size={20} color="#e24b4a" /> :
+               item.label==="My Vehicles" ? <VehicleIcon size={20} active={isActive(item)} /> :
+               item.label==="Discover" ? <DiscoverIcon size={20} active={isActive(item)} /> :
+               item.label==="My Car Listings" ? <MyListingsIcon size={20} active={isActive(item)} /> :
+               item.label==="Track Driver" ? <LocationIcon size={20} active={isActive(item)} /> :
+               item.label==="Trip Reports" ? <TripReportIcon size={20} active={isActive(item)} /> :
+               item.label==="Loyalty" ? <LoyaltyIcon size={20} active={isActive(item)} /> :
+               item.label==="Reviews" ? <StarIcon size={20} active={isActive(item)} /> :
+               item.label==="Favorites" ? <FavoritesIcon size={20} active={isActive(item)} /> :
+               item.label==="Refer & Earn" ? <ReferEarnIcon size={20} active={isActive(item)} /> :
+               item.label==="Support" ? <HelpIcon size={20} active={isActive(item)} /> :
+               item.label==="Vehicle Reports" ? <VehicleReportIcon size={20} active={isActive(item)} /> :
+               item.label==="Service Guarantee" ? <ServiceGuaranteeIcon size={20} active={isActive(item)} /> :
+               item.label==="My Listings" ? <MyListingsIcon size={20} active={isActive(item)} /> :
+               item.label==="My Offers" ? <MarketplaceIcon size={20} active={isActive(item)} /> :
+               item.label==="My Transactions" ? <MyTransactionsIcon size={20} active={isActive(item)} /> :
+               item.label==="Settings" ? <SettingsIcon size={20} active={isActive(item)} /> :
+               item.label==="Drivers" ? <DriversIcon size={20} active={isActive(item)} /> :
+               item.label==="Mechanics"||item.label==="My Mechanics" ? <MechanicIcon size={20} active={isActive(item)} /> :
+               item.label==="Spare Parts"||item.label==="Inventory" ? <PartsIcon size={20} active={isActive(item)} /> :
+               item.label==="Orders" ? <OrdersIcon size={20} active={isActive(item)} /> :
+               item.label==="Earnings" ? <WalletIcon size={20} active={isActive(item)} /> :
+               item.label==="Service Claims"||item.label==="My Claims" ? <ServiceGuaranteeIcon size={20} active={isActive(item)} /> :
+               item.label==="Order Deliveries"||item.label==="Deliveries" ? <TruckDriverIcon size={20} active={isActive(item)} /> :
+               item.label==="My Vehicle" ? <VehicleIcon size={20} active={isActive(item)} /> :
+               item.label==="Performance" ? <AnalyticsIcon size={20} active={isActive(item)} /> :
+               item.label==="My Application" ? <NoteIcon size={20} active={isActive(item)} /> :
+               item.label==="Business Hours" ? <ClockIcon size={20} active={isActive(item)} /> :
+               item.label==="Availability" ? <BookingsIcon size={20} active={isActive(item)} /> :
+               item.label==="My QR Code" ? <QRCodeIcon size={20} active={isActive(item)} /> :
+               item.label==="GO Requests" ? <GOServiceIcon size={20} color="#e24b4a" /> :
+               item.label==="Service Bundles" ? <ServicesIcon size={20} active={isActive(item)} /> :
+               item.label==="Wash Queue"||item.label==="Wash Packages" ? <DiscoverIcon size={20} active={isActive(item)} /> :
+               item.label==="Staff Management" ? <TeamIcon size={20} active={isActive(item)} /> :
+               item.label==="Rate Customers" ? <StarIcon size={20} active={isActive(item)} /> :
                <span style={{fontSize:18}}>{item.icon}</span>}
             </span>
                   {getLabel(item)}
