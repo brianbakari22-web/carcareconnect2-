@@ -31,7 +31,7 @@ const ROLES = [
   {
     key: "customer",
     label: "Customer",
-    icon: "🚗",
+    icon: "vehicle",
     desc: "Book services, track drivers, earn loyalty points",
     color: "#e6821e",
     bg: "#fff8f0",
@@ -41,7 +41,7 @@ const ROLES = [
   {
     key: "provider",
     label: "Service Provider",
-    icon: "🔧",
+    icon: "services",
     desc: "List services, manage bookings, grow your business",
     color: "#378add",
     bg: "#eff6ff",
@@ -51,7 +51,7 @@ const ROLES = [
   {
     key: "driver",
     label: "Driver",
-    icon: "🚚",
+    icon: "delivery",
     desc: "Earn by delivering vehicles, set your own schedule",
     color: "#1d9e75",
     bg: "#f0fdf4",
@@ -61,7 +61,7 @@ const ROLES = [
   {
     key: "mechanic",
     label: "Mechanic",
-    icon: "👨‍🔧",
+    icon: "mechanic",
     desc: "View assigned jobs, navigate to customers, share location",
     color: "#1d9e75",
     bg: "#f0fdf4",
@@ -477,7 +477,12 @@ export default function AuthPage() {
           </div>
           {ROLES.map(r=>(
             <div key={r.key} style={{ display:"flex", alignItems:"flex-start", gap:12, marginBottom:16, padding:"0.9rem", background:selectedRole===r.key?r.bg:"transparent", border:`1px solid ${selectedRole===r.key?r.border:"transparent"}`, borderRadius:10, transition:"all 0.15s" }}>
-              <span style={{ fontSize:20, marginTop:2 }}>{r.icon}</span>
+              <span style={{display:"flex",alignItems:"center",marginTop:2}}>
+              {r.icon==="vehicle"?<VehicleIcon size={20} color={selectedRole===r.key?r.color:"#888"}/>:
+               r.icon==="services"?<ServicesIcon size={20} color={selectedRole===r.key?r.color:"#888"}/>:
+               r.icon==="delivery"?<DeliveryIcon size={20} color={selectedRole===r.key?r.color:"#888"}/>:
+               <MechanicIcon size={20} color={selectedRole===r.key?r.color:"#888"}/>}
+            </span>
               <div>
                 <div style={{ fontSize:15, fontWeight:600, color:selectedRole===r.key?r.color:"#fff", marginBottom:2 }}>{r.label}</div>
                 <div style={{ fontSize:13, color:"#666666", lineHeight:1.5 }}>{r.desc}</div>
