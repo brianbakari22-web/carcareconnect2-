@@ -1,4 +1,4 @@
-import { VehicleIcon, WarningIcon, CheckIcon, LocationIcon, StarIcon, AnalyticsIcon } from "../../lib/cccIcons"
+import { VehicleIcon, WarningIcon, CheckIcon, LocationIcon, StarIcon, AnalyticsIcon, TripReportIcon, MotorcycleIcon, TukTukIcon, DeliveryIcon, DriversIcon, CloseIcon } from "../../lib/cccIcons"
 import { useEffect, useState, useRef } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
@@ -248,7 +248,7 @@ export default function AdminDrivers() {
     { k:"verified", l:`Verified (${verifiedCount})` },
     { k:"pending", l:`Pending (${pendingCount})` },
     { k:"suspended", l:`Suspended (${suspendedCount})` },
-    { k:"map", l:"🗺️ Live map" },
+    { k:"map", l:"Live map", icon:"map" },
   ]
 
   return (
@@ -282,7 +282,7 @@ export default function AdminDrivers() {
 
       {/* Category filter */}
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
-        {[{k:"all",l:"All categories"},{k:"concierge",l:"🧑‍✈️ Concierge"},{k:"marketplace",l:"🚗 Marketplace"}].map(c=>(
+        {[{k:"all",l:"All categories"},{k:"concierge",l:"Concierge",icon:"concierge"},{k:"marketplace",l:"Marketplace",icon:"vehicle"}].map(c=>(
           <button key={c.k} onClick={()=>setCategoryFilter(c.k)}
             style={{ padding:"6px 12px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:categoryFilter===c.k?"#e6821e":"#f0f0f0", color:categoryFilter===c.k?"#fff":"#555", fontWeight:categoryFilter===c.k?700:400 }}>
             {c.l}
@@ -305,7 +305,7 @@ export default function AdminDrivers() {
           <div ref={mapRef} style={{ height:isMobile?300:450, borderRadius:10, overflow:"hidden", background:"#f5f5f5" }}>
             {onlineCount===0&&(
               <div style={{ height:"100%", display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:8 }}>
-                <div style={{ fontSize:32 }}>🗺️</div>
+                <div style={{ display:"flex", justifyContent:"center" }}><TripReportIcon size={32} color="#e6821e"/></div>
                 <div style={{ fontSize:12, color:"#888" }}>No drivers online</div>
               </div>
             )}
@@ -347,7 +347,7 @@ export default function AdminDrivers() {
                       {noShowCount>0&&<span style={{ fontSize:10, color:"#e6821e", background:"#fff8f0", padding:"2px 7px", borderRadius:10 }}>⚠️ {noShowCount} no-show{noShowCount>1?"s":""}</span>}
                       <span style={{ fontSize:10, color:(d.driver_category||"marketplace")==="concierge"?"#e6821e":"#378add", background:(d.driver_category||"marketplace")==="concierge"?"#fff8f0":"#eff6ff", padding:"2px 7px", borderRadius:10, fontWeight:600 }}>{(d.driver_category||"marketplace")==="concierge"?"🧑‍✈️ Concierge":"🚗 Marketplace"}</span>
                       {(d.driver_category!=="concierge")&&d.driver_vehicle_type&&<span style={{ fontSize:10, color:"#8b5cf6", background:"#f5f3ff", padding:"2px 7px", borderRadius:10 }}>
-                        {d.driver_vehicle_type==="motorcycle"?"🏍️ Boda Boda":d.driver_vehicle_type==="tuktuk"?"🛺 Tuktuk":d.driver_vehicle_type==="van"?"🚐 Van":"🚗 Car"}
+                        {d.driver_vehicle_type==="motorcycle"?<><MotorcycleIcon size={12} color="currentColor"/> Boda Boda</>:d.driver_vehicle_type==="tuktuk"?<><TukTukIcon size={12} color="currentColor"/> Tuktuk</>:d.driver_vehicle_type==="van"?"🚐 Van":"🚗 Car"}
                       </span>}
                     </div>
 
@@ -465,7 +465,7 @@ export default function AdminDrivers() {
                       )}
                       <button onClick={()=>recordNoShow(d.id)}
                         style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
-                        🚫 No-show
+                        <><CloseIcon size={13} color="currentColor"/> No-show</>
                       </button>
                       {(noShowCount>0||status?.is_suspended)&&(
                         <button onClick={()=>clearPenalties(d.id)}
