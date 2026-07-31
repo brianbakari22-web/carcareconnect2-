@@ -2,7 +2,7 @@ import useIsMobile from "../../lib/useIsMobile"
 import { useState, useEffect } from "react"
 import { Capacitor } from "@capacitor/core"
 
-import { ServicesIcon, PartsIcon, MarketplaceIcon, VehicleIcon, PowerIcon, DiscoverIcon, MechanicIcon, GlobeIcon, DeliveryIcon } from "../../lib/cccIcons"
+import { ServicesIcon, PartsIcon, MarketplaceIcon, VehicleIcon, PowerIcon, DiscoverIcon, MechanicIcon, GlobeIcon, DeliveryIcon, TripReportIcon, AnalyticsIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { sanitizeName, sanitizeEmail, sanitizePhone, sanitizeFreeText } from "../../lib/sanitize"
 import { applyRateLimit, RATE_LIMITS } from "../../lib/rateLimit"
@@ -693,3 +693,4 @@ export default function AuthPage() {
     </div>
   )
 }
+
