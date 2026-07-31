@@ -531,17 +531,18 @@ export default function AuthPage() {
             <div style={{ padding:"1.25rem 1.25rem 1rem", background:selectedRole===r.key?r.bg:"#fff" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                  <div style={{ width:48, height:48, borderRadius:12, background:selectedRole===r.key?r.color+"20":"#f5f5f5", display:"flex", alignItems:"center", justifyContent:"center", fontSize:26 }}>
-                    {r.icon}
+                  <div style={{ width:48, height:48, borderRadius:12, background:selectedRole===r.key?r.color+"20":"#f5f5f5", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                    {r.icon==="vehicle"?<VehicleIcon size={26} color={selectedRole===r.key?r.color:"#888"}/>:
+                     r.icon==="services"?<ServicesIcon size={26} color={selectedRole===r.key?r.color:"#888"}/>:
+                     r.icon==="delivery"?<DeliveryIcon size={26} color={selectedRole===r.key?r.color:"#888"}/>:
+                     <MechanicIcon size={26} color={selectedRole===r.key?r.color:"#888"}/>}
                   </div>
                   <div>
                     <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:selectedRole===r.key?r.color:"#000" }}>{r.label}</div>
                     <div style={{ fontSize:12, color:"#888", marginTop:1 }}>{r.desc}</div>
                   </div>
                 </div>
-                <div style={{ fontSize:32 }}>
-                  {r.key==="customer"?"🗺️":r.key==="provider"?"📊":"🚗"}
-                </div>
+                <div style={{display:"flex",justifyContent:"center"}}>{r.key==="customer"?<TripReportIcon size={32} color={r.color}/>:r.key==="provider"?<AnalyticsIcon size={32} color={r.color}/>:<VehicleIcon size={32} color={r.color}/>}</div>
               </div>
               <div style={{ display:"flex", flexDirection:"column", gap:6, background:selectedRole===r.key?r.color+"10":"#f8f8f8", borderRadius:12, padding:"0.75rem" }}>
                 {r.features.map(f=>(
