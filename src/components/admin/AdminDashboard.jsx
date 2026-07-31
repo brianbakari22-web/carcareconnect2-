@@ -413,7 +413,9 @@ export default function AdminDashboard() {
         {!loading&&activity.length===0&&<div style={{ color:"#aaa", fontSize:12 }}>No activity yet</div>}
         {activity.map((a,i)=>(
           <div key={i} style={{ display:"flex", alignItems:"center", gap:10, padding:"7px 0", borderBottom:"1px solid #f5f5f5" }}>
-            <div style={{ width:28, height:28, borderRadius:7, background:"#f5f5f5", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, flexShrink:0 }}>{a.icon}</div>
+            <div style={{ width:28, height:28, borderRadius:7, background:"#f5f5f5", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+              {a.icon==="profile"?<ProfileIcon size={16} color="#64748B"/>:a.icon==="bookings"?<BookingsIcon size={16} color="#e6821e"/>:<ServicesIcon size={16} color="#378add"/>}
+            </div>
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ fontSize:11, color:"#000000", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{a.text}</div>
               <div style={{ fontSize:9, color:"#888", marginTop:1 }}>{a.sub}</div>
