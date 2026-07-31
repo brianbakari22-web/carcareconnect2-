@@ -2,6 +2,7 @@ import useIsMobile from "../../lib/useIsMobile"
 import { useState, useEffect } from "react"
 import { Capacitor } from "@capacitor/core"
 
+import { ServicesIcon, PartsIcon, MarketplaceIcon, VehicleIcon, PowerIcon, DiscoverIcon, MechanicIcon, GlobeIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { sanitizeName, sanitizeEmail, sanitizePhone, sanitizeFreeText } from "../../lib/sanitize"
 import { applyRateLimit, RATE_LIMITS } from "../../lib/rateLimit"
@@ -10,14 +11,14 @@ import { useNavigate, useSearchParams } from "react-router-dom"
 import toast from "react-hot-toast"
 
 const PROVIDER_TYPES = [
-  { key:"garage", label:"Garage/Mechanic", icon:"🔧", desc:"Car service and repair" },
-  { key:"parts_dealer", label:"Parts Dealer", icon:"⚙️", desc:"Auto parts and spares" },
-  { key:"accessories_shop", label:"Accessories Shop", icon:"✨", desc:"Car accessories" },
-  { key:"tyre_shop", label:"Tyre Shop", icon:"🛞", desc:"Tyre sales and fitting" },
-  { key:"auto_electrician", label:"Auto Electrician", icon:"⚡", desc:"Electrical specialist" },
-  { key:"car_wash", label:"Car Wash", icon:"🚿", desc:"Wash and detailing" },
-  { key:"panel_beater", label:"Panel Beater", icon:"🔨", desc:"Body and spray paint" },
-  { key:"auto_glass", label:"Auto Glass", icon:"🪟", desc:"Windscreen specialist" },
+  { key:"garage", label:"Garage/Mechanic", icon:"services", desc:"Car service and repair" },
+  { key:"parts_dealer", label:"Parts Dealer", icon:"parts", desc:"Auto parts and spares" },
+  { key:"accessories_shop", label:"Accessories Shop", icon:"marketplace", desc:"Car accessories" },
+  { key:"tyre_shop", label:"Tyre Shop", icon:"vehicle", desc:"Tyre sales and fitting" },
+  { key:"auto_electrician", label:"Auto Electrician", icon:"power", desc:"Electrical specialist" },
+  { key:"car_wash", label:"Car Wash", icon:"discover", desc:"Wash and detailing" },
+  { key:"panel_beater", label:"Panel Beater", icon:"mechanic", desc:"Body and spray paint" },
+  { key:"auto_glass", label:"Auto Glass", icon:"globe", desc:"Windscreen specialist" },
 ]
 const DRIVER_VEHICLE_TYPES = [
   { key:"car", label:"My Car", icon:"🚗", desc:"Standard delivery", category:"marketplace" },
