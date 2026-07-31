@@ -1,3 +1,4 @@
+import { QRCodeIcon, PaymentsIcon, GlobeIcon, VehicleIcon, DocumentIcon, LocationIcon, NoteIcon, DownloadIcon, TipIcon } from "../../lib/cccIcons"
 import { useAuth } from "../../contexts/AuthContext"
 import QRCodeCard from "../shared/QRCodeCard"
 import useIsMobile from "../../lib/useIsMobile"
