@@ -1379,3 +1379,17 @@ export function VideoCameraIcon({ size=24, color="#64748B" }) {
     </svg>
   )
 }
+
+export function TukTukIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="8" width="14" height="9" rx="2" stroke={color} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M16 11h3l2 3v3h-5V11z" stroke={color} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="6" cy="18" r="2" stroke={color} strokeWidth="1.75"/>
+      <circle cx="17" cy="18" r="2" stroke={color} strokeWidth="1.75"/>
+      <path d="M8 8V6a2 2 0 012-2h2a2 2 0 012 2v2" stroke={color} strokeWidth="1.75" strokeLinecap="round"/>
+      <circle cx="6" cy="18" r="0.5" fill={color}/>
+      <circle cx="17" cy="18" r="0.5" fill={color}/>
+    </svg>
+  )
+}
