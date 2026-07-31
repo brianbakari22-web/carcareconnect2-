@@ -2,7 +2,7 @@ import useIsMobile from "../../lib/useIsMobile"
 import { useState, useEffect } from "react"
 import { Capacitor } from "@capacitor/core"
 
-import { ServicesIcon, PartsIcon, MarketplaceIcon, VehicleIcon, PowerIcon, DiscoverIcon, MechanicIcon, GlobeIcon, DeliveryIcon, TripReportIcon, AnalyticsIcon } from "../../lib/cccIcons"
+import { ServicesIcon, PartsIcon, MarketplaceIcon, VehicleIcon, PowerIcon, DiscoverIcon, MechanicIcon, GlobeIcon, DeliveryIcon, TripReportIcon, AnalyticsIcon, MotorcycleIcon, TukTukIcon, DriversIcon, ShieldIcon, LockedIcon, PaymentsIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { sanitizeName, sanitizeEmail, sanitizePhone, sanitizeFreeText } from "../../lib/sanitize"
 import { applyRateLimit, RATE_LIMITS } from "../../lib/rateLimit"
@@ -21,11 +21,11 @@ const PROVIDER_TYPES = [
   { key:"auto_glass", label:"Auto Glass", icon:"globe", desc:"Windscreen specialist" },
 ]
 const DRIVER_VEHICLE_TYPES = [
-  { key:"car", label:"My Car", icon:"🚗", desc:"Standard delivery", category:"marketplace" },
-  { key:"motorcycle", label:"My Bodaboda", icon:"🏍️", desc:"Fast parts delivery", category:"marketplace" },
-  { key:"tuktuk", label:"My Tuktuk", icon:"🛺", desc:"Local delivery", category:"marketplace" },
-  { key:"van", label:"My Van/Pickup", icon:"🚐", desc:"Large items", category:"marketplace" },
-  { key:"none", label:"Concierge Driver", icon:"🧑‍✈️", desc:"No vehicle — pick up & chauffeur customer cars", category:"concierge" },
+  { key:"car", label:"My Car", icon:"vehicle", desc:"Standard delivery", category:"marketplace" },
+  { key:"motorcycle", label:"My Bodaboda", icon:"motorcycle", desc:"Fast parts delivery", category:"marketplace" },
+  { key:"tuktuk", label:"My Tuktuk", icon:"tuktuk", desc:"Local delivery", category:"marketplace" },
+  { key:"van", label:"My Van/Pickup", icon:"delivery", desc:"Large items", category:"marketplace" },
+  { key:"none", label:"Concierge Driver", icon:"driver", desc:"No vehicle — pick up & chauffeur customer cars", category:"concierge" },
 ]
 const ROLES = [
   {
@@ -362,7 +362,7 @@ export default function AuthPage() {
                       {DRIVER_VEHICLE_TYPES.map(vt=>(
                         <div key={vt.key} onClick={()=>setForm(f=>({...f,driverVehicleType:vt.key}))}
                           style={{ background:form.driverVehicleType===vt.key?"#f0fdf4":"#f5f5f5", border:"1px solid "+(form.driverVehicleType===vt.key?"#1d9e75":"#e0e0e0"), borderRadius:8, padding:"8px 10px", cursor:"pointer" }}>
-                          <div style={{ fontSize:18, marginBottom:2 }}>{vt.icon}</div>
+                          <div style={{ marginBottom:2, display:"flex" }}>{vt.icon==="vehicle"?<VehicleIcon size={18} color={form.driverVehicleType===vt.key?"#1d9e75":"#64748B"}/>:vt.icon==="motorcycle"?<MotorcycleIcon size={18} color={form.driverVehicleType===vt.key?"#1d9e75":"#64748B"}/>:vt.icon==="tuktuk"?<TukTukIcon size={18} color={form.driverVehicleType===vt.key?"#1d9e75":"#64748B"}/>:vt.icon==="delivery"?<DeliveryIcon size={18} color={form.driverVehicleType===vt.key?"#1d9e75":"#64748B"}/>:<DriversIcon size={18} color={form.driverVehicleType===vt.key?"#1d9e75":"#64748B"}/>}</div>
                           <div style={{ fontSize:13, fontWeight:600, color:form.driverVehicleType===vt.key?"#1d9e75":"#555" }}>{vt.label}</div>
                           <div style={{ fontSize:12, color:"#999" }}>{vt.desc}</div>
                         </div>
