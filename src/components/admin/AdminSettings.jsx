@@ -116,8 +116,12 @@ export default function AdminSettings() {
             <button onClick={()=>setExpandedCat(isExpanded?null:category)}
               style={{ width:"100%", background:"none", border:"none", padding:"1rem", display:"flex", justifyContent:"space-between", alignItems:"center", cursor:"pointer" }}>
               <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                <div style={{ width:36, height:36, borderRadius:8, background:catConfig.color+"15", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}>
-                  {catConfig.icon}
+                <div style={{ width:36, height:36, borderRadius:8, background:catConfig.color+"15", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                  {catConfig.icon==="wallet"?<WalletIcon size={18} color={catConfig.color}/>:
+                   catConfig.icon==="emergency"?<GOServiceIcon size={18} color={catConfig.color}/>:
+                   catConfig.icon==="vehicle"?<VehicleIcon size={18} color={catConfig.color}/>:
+                   catConfig.icon==="shield"?<ShieldIcon size={18} color={catConfig.color}/>:
+                   <SettingsIcon size={18} color={catConfig.color}/>}
                 </div>
                 <div style={{ textAlign:"left" }}>
                   <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000" }}>{category}</div>
