@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { MarketplaceIcon, HomeIcon, GOServiceIcon, DiscoverIcon, PartsIcon, ServicesIcon, StarIcon, CameraIcon } from "../../lib/cccIcons"
+import { MarketplaceIcon, HomeIcon, GOServiceIcon, DiscoverIcon, ServicesIcon, StarIcon, MechanicIcon, PartsIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import PhotoManager from "../shared/PhotoManager"
 import { useAuth } from "../../contexts/AuthContext"
@@ -14,12 +14,12 @@ const GARAGE_CATEGORIES = [
 ]
 const WASH_CATEGORIES = [
   { key:"basic_wash", label:"Basic Wash", icon:"discover", desc:"Exterior rinse and dry", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
-  { key:"standard_wash", label:"Standard Wash", icon:"✨", desc:"Exterior + interior clean", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
+  { key:"standard_wash", label:"Standard Wash", icon:"star", desc:"Exterior + interior clean", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
   { key:"premium_detail", label:"Premium Detail", icon:"star", desc:"Full detailing service", color:"#1d9e75", bg:"#f0fdf4", border:"#bbf7d0" },
 ]
 const PANEL_CATEGORIES = [
-  { key:"shop_standard", label:"In Shop", icon:"🏪", desc:"Customer brings car to shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
-  { key:"shop_premium", label:"On Site", icon:"🔨", desc:"Go to customer location", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
+  { key:"shop_standard", label:"In Shop", icon:"marketplace", desc:"Customer brings car to shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
+  { key:"shop_premium", label:"On Site", icon:"mechanic", desc:"Go to customer location", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
 ]
 function getCategories(providerType) {
   if (providerType === "car_wash") return WASH_CATEGORIES
@@ -346,7 +346,16 @@ export default function ProviderServices() {
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10 }}>
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
-                  <span style={{ fontSize:16 }}>{cat.icon}</span>
+                  <span style={{display:"flex", alignItems:"center"}}>
+    {cat.icon==="marketplace"?<MarketplaceIcon size={16} color={cat.color}/>:
+     cat.icon==="home"?<HomeIcon size={16} color={cat.color}/>:
+     cat.icon==="emergency"?<GOServiceIcon size={16} color="#e24b4a"/>:
+     cat.icon==="discover"?<DiscoverIcon size={16} color={cat.color}/>:
+     cat.icon==="star"?<StarIcon size={16} color={cat.color}/>:
+     cat.icon==="mechanic"?<MechanicIcon size={16} color={cat.color}/>:
+     cat.icon==="parts"?<PartsIcon size={16} color={cat.color}/>:
+     <ServicesIcon size={16} color={cat.color}/>}
+  </span>
                   <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{s.name}</div>
                   <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:cat.bg, color:cat.color, border:`1px solid ${cat.border}` }}>{cat.label}</span>
                   {!s.is_active&&<span style={{ fontSize:10, color:"#777777", background:"#f5f5f5", padding:"2px 8px", borderRadius:10 }}>Inactive</span>}
