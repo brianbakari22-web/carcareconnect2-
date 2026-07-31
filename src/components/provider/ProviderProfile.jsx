@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { ServicesIcon, PartsIcon, MarketplaceIcon, VehicleIcon, DiscoverIcon, PowerIcon, MechanicIcon, GlobeIcon, CameraIcon, UploadShareIcon, WarningIcon } from "../../lib/cccIcons"
+import { ServicesIcon, PartsIcon, MarketplaceIcon, VehicleIcon, DiscoverIcon, PowerIcon, MechanicIcon, GlobeIcon, CameraIcon, UploadShareIcon, WarningIcon, ClockIcon, DocumentIcon, AnalyticsIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { pushNotify } from "../../lib/pushNotify"
 import { sanitizeName, sanitizePhone, sanitizeFreeText } from "../../lib/sanitize"
@@ -136,7 +136,7 @@ export default function ProviderProfile() {
     <div style={{ maxWidth:isMobile?"100%":520 }}>
       {profile?.verification_status==="pending"&&!profile?.is_verified&&(
         <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.75rem 1rem", marginBottom:"1rem", fontSize:12, color:"#e6821e" }}>
-          ⏳ Your account is pending verification. Complete your profile and our team will review it soon.
+          <ClockIcon size={14} color="#e6821e"/> Your account is pending verification. Complete your profile and our team will review it soon.
         </div>
       )}
       {profile?.verification_status==="rejected"&&(
@@ -150,7 +150,7 @@ export default function ProviderProfile() {
         </div>
       )}
       <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.75rem 1rem", marginBottom:"1rem" }}>
-        <div style={{ fontSize:12, fontWeight:700, color:"#e6821e", marginBottom:4 }}>📤 Your public storefront</div>
+        <div style={{ fontSize:12, fontWeight:700, color:"#e6821e", marginBottom:4, display:"flex", alignItems:"center", gap:4 }}><UploadShareIcon size={12} color="#e6821e"/> Your public storefront</div>
         <div style={{ fontSize:11, color:"#666", marginBottom:8 }}>Share this link so customers can view your services and book directly.</div>
         <div style={{ display:"flex", gap:6, alignItems:"center" }}>
           <input readOnly value={`https://carcareconnect.care/provider/${user.id}`} onClick={e=>e.target.select()}
@@ -345,11 +345,11 @@ export default function ProviderProfile() {
                 <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
                   <button onClick={()=>downloadPDF(exportData, `provider-data-${new Date().toISOString().split("T")[0]}.pdf`)}
                     style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:8, color:"#1d9e75", fontSize:12, fontWeight:600, padding:"9px 16px", cursor:"pointer" }}>
-                    📄 Download PDF report
+                    <><DocumentIcon size={13} color="currentColor"/> Download PDF report</>
                   </button>
                   <button onClick={()=>downloadCSV(exportData.bookings, `bookings-${new Date().toISOString().split("T")[0]}.csv`)}
                     style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:8, color:"#378add", fontSize:12, fontWeight:600, padding:"9px 16px", cursor:"pointer" }}>
-                    📊 Bookings CSV
+                    <><AnalyticsIcon size={13} color="currentColor"/> Bookings CSV</>
                   </button>
                 </div>
               </div>
