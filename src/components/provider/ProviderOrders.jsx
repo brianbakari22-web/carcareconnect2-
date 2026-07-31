@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { ClockIcon, CheckIcon, OrdersIcon, SuccessIcon, CloseIcon, MarketplaceIcon, PaymentsIcon, DeliveryIcon, LocationIcon, MovingCarIcon, ProfileIcon, WarningIcon, NoteIcon, PhoneCallIcon, ShareIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -204,10 +205,10 @@ export default function ProviderOrders() {
               <div style={{ marginBottom:8 }}>
                 <div style={{ fontSize:13, fontWeight:600 }}>{r.inventory?.name} x{r.quantity}</div>
                 <div style={{ fontSize:11, color:"#888" }}>KES {Number(r.total_amount).toLocaleString()} · Your cut: KES {Number(r.provider_payout||r.total_amount*0.9).toLocaleString()}</div>
-                <div style={{ fontSize:11, color:"#555", marginTop:2 }}>📍 {r.delivery_location_address}</div>
+                <div style={{ fontSize:11, color:"#555", marginTop:2, display:"flex", alignItems:"center", gap:3 }}><LocationIcon size={11} color="#555"/> {r.delivery_location_address}</div>
                 {r.delivery_location_lat&&r.delivery_location_lng&&<a href={`https://www.google.com/maps/dir/?api=1&destination=${r.delivery_location_lat},${r.delivery_location_lng}`} target="_blank" rel="noopener noreferrer" style={{ fontSize:11, color:"#4285f4", fontWeight:600 }}>🗺️ Navigate to customer</a>}
                 <div style={{ fontSize:11, color:"#888" }}>Mechanic: {r.mechanic?.first_name}</div>
-                {r.rider_name&&<div style={{ fontSize:11, color:"#555" }}>🚴 Rider: {r.rider_name} {r.rider_phone&&<a href={"tel:"+r.rider_phone} style={{ color:"#1d9e75" }}>{r.rider_phone}</a>}</div>}
+                {r.rider_name&&<div style={{ fontSize:11, color:"#555", display:"flex", alignItems:"center", gap:3 }}><MovingCarIcon size={11} color="#555"/> Rider: {r.rider_name} {r.rider_phone&&<a href={"tel:"+r.rider_phone} style={{ color:"#1d9e75" }}>{r.rider_phone}</a>}</div>}
                 <div style={{ display:"flex", gap:4, marginTop:6, marginBottom:4 }}>{["accepted","picked_up","on_the_way","delivered"].map((s,i)=>(<div key={s} style={{ flex:1, height:3, borderRadius:3, background:["accepted","picked_up","on_the_way","delivered"].indexOf(r.delivery_status||"accepted")>=i?"#8b5cf6":"#eee" }}/>))}</div>
                 <div style={{ fontSize:10, padding:"2px 8px", borderRadius:8, display:"inline-block", marginTop:4, background:r.delivery_status==="delivered"?"#f0fdf4":r.delivery_status==="on_the_way"?"#eff6ff":r.delivery_status==="picked_up"?"#fff8f0":"#f3f0ff", color:r.delivery_status==="delivered"?"#1d9e75":r.delivery_status==="on_the_way"?"#378add":r.delivery_status==="picked_up"?"#e6821e":"#8b5cf6", fontWeight:600 }}>{r.delivery_status?.replace(/_/g," ")||"pending"}</div>
               </div>
@@ -242,7 +243,7 @@ export default function ProviderOrders() {
       {/* Gradient stats header */}
       <div style={{ background: newOrderAlert ? "linear-gradient(135deg,#1d9e75,#22c98f)" : "linear-gradient(135deg,#e6821e,#f09840)", borderRadius:14, padding:"1rem 1.25rem", marginBottom:"1.25rem", display:"flex", justifyContent:"space-between", alignItems:"center", transition:"background 0.5s" }}>
         <div>
-          <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#fff" }}>{newOrderAlert ? "🛒 New order!" : today+" orders today"}</div>
+          <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#fff", display:"flex", alignItems:"center", gap:8 }}>{newOrderAlert ? "🛒 New order!" : today+" orders today"}</div>
           <div style={{ fontSize:11, color:"rgba(255,255,255,0.8)", marginTop:2 }}>KES {revenue.toLocaleString()} earned from delivered orders</div>
         </div>
         <div style={{ textAlign:"center" }}>
@@ -253,7 +254,7 @@ export default function ProviderOrders() {
 
       {pending>0&&(
         <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.75rem 1rem", marginBottom:"1rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-          <div style={{ fontSize:13, color:"#e6821e", fontWeight:600 }}>⚠️ {pending} order{pending>1?"s":""} waiting for confirmation</div>
+          <div style={{ fontSize:13, color:"#e6821e", fontWeight:600, display:"flex", alignItems:"center", gap:4 }}><WarningIcon size={13} color="#e6821e"/> {pending} order{pending>1?"s":""} waiting for confirmation</div>
         </div>
       )}
 
@@ -266,7 +267,7 @@ export default function ProviderOrders() {
         {["pending","confirmed","processing","ready","delivered","cancelled","all"].map(f=>(
           <button key={f} onClick={()=>setFilter(f)}
             style={{ padding:"6px 12px", borderRadius:8, border:"none", fontSize:11, cursor:"pointer", background:filter===f?(STATUS_COLORS[f]||"#8b5cf6"):"#f0f0f0", color:filter===f?"#fff":"#555", fontWeight:filter===f?700:400 }}>
-            {STATUS_ICONS[f]||"📋"} {f==="all"?"All":STATUS_LABELS[f]} ({f==="all"?orders.length:orders.filter(o=>o.status===f).length})
+            {f==="all"?<MarketplaceIcon size={14} color="currentColor"/>:STATUS_ICONS[f]==="clock"?<ClockIcon size={14} color="currentColor"/>:STATUS_ICONS[f]==="check"?<CheckIcon size={14} color="currentColor"/>:STATUS_ICONS[f]==="orders"?<OrdersIcon size={14} color="currentColor"/>:STATUS_ICONS[f]==="success"?<SuccessIcon size={14} color="currentColor"/>:<CloseIcon size={14} color="currentColor"/>} {f==="all"?"All":STATUS_LABELS[f]} ({f==="all"?orders.length:orders.filter(o=>o.status===f).length})
           </button>
         ))}
       </div>
@@ -289,7 +290,7 @@ export default function ProviderOrders() {
       {loading&&<div style={{ color:"#777", fontSize:13 }}>Loading...</div>}
       {!loading&&filtered.length===0&&(
         <div style={{ textAlign:"center", padding:"2rem", color:"#888" }}>
-          <div style={{ fontSize:36, marginBottom:8 }}>📦</div>
+          <div style={{ marginBottom:8, display:"flex", justifyContent:"center" }}><OrdersIcon size={36} color="#e6821e"/></div>
           <div style={{ fontSize:13 }}>No orders found</div>
         </div>
       )}
@@ -305,9 +306,9 @@ export default function ProviderOrders() {
                 )}
                 <div>
                   <div style={{ fontSize:13, fontWeight:700, color:"#000", marginBottom:2 }}>#{o.order_number}</div>
-                  <div style={{ fontSize:11, color:"#777" }}>👤 {o.customer_name||o.profiles?.first_name+" "+o.profiles?.last_name}</div>
-                  <div style={{ fontSize:11, color:"#777" }}>{o.fulfillment_type==="delivery"?"🚚 Delivery to "+o.delivery_address:"🏪 Customer pickup"}</div>
-                  {o.delivery_zone&&<div style={{ fontSize:11, color:"#378add" }}>📍 Zone: {o.delivery_zone}</div>}
+                  <div style={{ fontSize:11, color:"#777", display:"flex", alignItems:"center", gap:3 }}><ProfileIcon size={11} color="#777"/> {o.customer_name||o.profiles?.first_name+" "+o.profiles?.last_name}</div>
+                  <div style={{ fontSize:11, color:"#777" }}>{o.fulfillment_type==="delivery"?<><DeliveryIcon size={11} color="#378add"/> Delivery to {o.delivery_address}</>:<><MarketplaceIcon size={11} color="#888"/> Customer pickup</>}</div>
+                  {o.delivery_zone&&<div style={{ fontSize:11, color:"#378add", display:"flex", alignItems:"center", gap:3 }}><LocationIcon size={11} color="#378add"/> Zone: {o.delivery_zone}</div>}
                   <div style={{ fontSize:10, color:"#888" }}>{new Date(o.created_at).toLocaleString()}</div>
                 </div>
               </div>

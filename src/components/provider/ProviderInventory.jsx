@@ -11,10 +11,10 @@ const CATEGORIES = [
   { key:"accessories", label:"Accessories", icon:"marketplace" },
   { key:"tyres", label:"Tyres", icon:"vehicle" },
   { key:"tools", label:"Tools", icon:"services" },
-  { key:"oils", label:"Oils & Fluids", icon:"🛢️" },
-  { key:"electrical", label:"Electrical", icon:"⚡" },
-  { key:"body", label:"Body Parts", icon:"🚗" },
-  { key:"other", label:"Other", icon:"📦" },
+  { key:"oils", label:"Oils & Fluids", icon:"oil" },
+  { key:"electrical", label:"Electrical", icon:"power" },
+  { key:"body", label:"Body Parts", icon:"vehicle" },
+  { key:"other", label:"Other", icon:"orders" },
 ]
 
 const PROVIDER_CATEGORY_PRIORITY = {
@@ -197,7 +197,7 @@ export default function ProviderInventory() {
       {/* Alerts */}
       {(lowStock>0||outOfStock>0)&&(
         <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:10, padding:"0.75rem 1rem", marginBottom:"1rem", display:"flex", gap:8, alignItems:"center" }}>
-          <span style={{ fontSize:16 }}>⚠️</span>
+          <WarningIcon size={16} color="#e6821e"/>
           <div style={{ fontSize:12, color:"#e6821e" }}>
             {outOfStock>0&&<span style={{ color:"#e24b4a", fontWeight:600 }}>{outOfStock} out of stock</span>}
             {outOfStock>0&&lowStock>0&&" · "}
@@ -342,7 +342,7 @@ export default function ProviderInventory() {
       {loading&&<div style={{ color:"#777", fontSize:13, textAlign:"center", padding:"2rem" }}>Loading inventory...</div>}
       {!loading&&filtered.length===0&&(
         <div style={{ textAlign:"center", padding:"3rem", color:"#888" }}>
-          <div style={{ fontSize:40, marginBottom:10 }}>📦</div>
+          <div style={{ marginBottom:10, display:"flex", justifyContent:"center" }}><OrdersIcon size={40} color="#e6821e"/></div>
           <div style={{ fontSize:14, fontWeight:600, color:"#555", marginBottom:6 }}>No items found</div>
           <div style={{ fontSize:12 }}>Add your first item or try a different filter</div>
         </div>
