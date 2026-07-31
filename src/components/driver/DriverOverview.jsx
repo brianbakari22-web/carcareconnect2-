@@ -1,6 +1,6 @@
+import { VehicleIcon, MotorcycleIcon, TukTukIcon, DeliveryIcon, LocationIcon, WalletIcon, StarIcon, AnalyticsIcon, BookingsIcon } from "../../lib/cccIcons"
 import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
-import { VehicleIcon, MotorcycleIcon, TukTukIcon, DeliveryIcon, LocationIcon, WalletIcon, StarIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { getCurrentPosition } from "../../lib/geolocation"
 import { useAuth } from "../../contexts/AuthContext"
