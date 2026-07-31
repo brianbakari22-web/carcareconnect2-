@@ -638,6 +638,33 @@ export default function Layout({ children }) {
                item.label==="Favourites"||item.label==="Favorites" ? <FavoritesIcon size={18} active={isActive(item)} /> :
                item.label==="Chat" ? <ChatIcon size={18} active={isActive(item)} /> :
                item.label==="Order Deliveries" ? <TruckDriverIcon size={18} active={isActive(item)} /> :
+               item.icon==="overview" ? <HomeIcon size={18} active={isActive(item)} /> :
+               item.icon==="users" ? <ProfileIcon size={18} active={isActive(item)} /> :
+               item.icon==="map" ? <TripReportIcon size={18} active={isActive(item)} /> :
+               item.icon==="block" ? <CloseIcon size={18} color="#e24b4a" /> :
+               item.icon==="warning" ? <WarningIcon size={18} color="#e6821e" /> :
+               item.icon==="payout" ? <PayoutIcon size={18} active={isActive(item)} /> :
+               item.icon==="ticket" ? <TicketIcon size={18} active={isActive(item)} /> :
+               item.icon==="helpTicket" ? <HelpIcon size={18} active={isActive(item)} /> :
+               item.icon==="health" ? <HelpIcon size={18} active={isActive(item)} /> :
+               item.icon==="commissions" ? <AnalyticsIcon size={18} active={isActive(item)} /> :
+               item.icon==="adminSettings" ? <SettingsIcon size={18} active={isActive(item)} /> :
+               item.icon==="qr" ? <QRCodeIcon size={18} active={isActive(item)} /> :
+               item.icon==="video" ? <VideoIcon size={18} active={isActive(item)} /> :
+               item.icon==="newCar" ? <VehicleIcon size={18} active={isActive(item)} /> :
+               item.icon==="badge" ? <BadgeIcon size={18} active={isActive(item)} /> :
+               item.icon==="team" ? <TeamIcon size={18} active={isActive(item)} /> :
+               item.icon==="adminOrders" ? <OrdersIcon size={18} active={isActive(item)} /> :
+               item.icon==="failedJobs" ? <WarningIcon size={18} color="#e24b4a" /> :
+               item.icon==="delete" ? <DeleteIcon size={18} color="#e24b4a" /> :
+               item.icon==="wallet" ? <WalletIcon size={18} active={isActive(item)} /> :
+               item.icon==="notifications" ? <NotificationsIcon size={18} active={isActive(item)} /> :
+               item.icon==="payments" ? <PaymentsIcon size={18} active={isActive(item)} /> :
+               item.icon==="shield" ? <ShieldIcon size={18} active={isActive(item)} /> :
+               item.icon==="security" ? <SecurityIcon size={18} active={isActive(item)} /> :
+               item.icon==="analytics" ? <AnalyticsIcon size={18} active={isActive(item)} /> :
+               item.icon==="parts" ? <PartsIcon size={18} active={isActive(item)} /> :
+               item.icon==="settings" ? <SettingsIcon size={18} active={isActive(item)} /> :
                <span style={{fontSize:16}}>{item.icon}</span>}
             </span>
               {!collapsed&&<span style={{ overflow:"hidden", textOverflow:"ellipsis" }}>{getLabel(item)}</span>}
