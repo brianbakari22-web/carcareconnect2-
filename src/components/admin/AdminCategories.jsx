@@ -1,4 +1,4 @@
-import { OilIcon, ServicesIcon, VehicleIcon, DiscoverIcon, PowerIcon, MechanicIcon, GlobeIcon } from "../../lib/cccIcons"
+import { OilIcon, ServicesIcon, VehicleIcon, DiscoverIcon, PowerIcon, MechanicIcon, GlobeIcon, SettingsIcon, NoteIcon, TowingIcon, AirconIcon } from "../../lib/cccIcons"
 import useIsMobile from "../../lib/useIsMobile"
 import { useAuth } from "../../contexts/AuthContext"
 import { useEffect, useState } from "react"
@@ -106,8 +106,19 @@ export default function AdminCategories() {
       <div style={{ display:"grid", gap:8, marginBottom:"1.5rem" }}>
         {categories.map(c=>(
           <div key={c.id} style={{ background:"#f8f8f8", border:`1px solid ${c.is_active===false?"#e24b4a20":"#eeeeee"}`, borderRadius:10, padding:"1rem", display:"flex", alignItems:"center", gap:12 }}>
-            <div style={{ width:44, height:44, borderRadius:10, background:"#f5f5f5", display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, flexShrink:0 }}>
-              {c.icon||"🔧"}
+            <div style={{ width:44, height:44, borderRadius:10, background:"#f5f5f5", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+              {c.icon==="oil"?<OilIcon size={22} color="#e6821e"/>:
+               c.icon==="vehicle"?<VehicleIcon size={22} color="#e6821e"/>:
+               c.icon==="services"?<ServicesIcon size={22} color="#e6821e"/>:
+               c.icon==="discover"?<DiscoverIcon size={22} color="#e6821e"/>:
+               c.icon==="power"?<PowerIcon size={22} color="#e6821e"/>:
+               c.icon==="settings"?<SettingsIcon size={22} color="#e6821e"/>:
+               c.icon==="note"?<NoteIcon size={22} color="#e6821e"/>:
+               c.icon==="towing"?<TowingIcon size={22} color="#e6821e"/>:
+               c.icon==="aircon"?<AirconIcon size={22} color="#e6821e"/>:
+               c.icon==="mechanic"?<MechanicIcon size={22} color="#e6821e"/>:
+               c.icon==="globe"?<GlobeIcon size={22} color="#e6821e"/>:
+               <ServicesIcon size={22} color="#e6821e"/>}
             </div>
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:2 }}>
