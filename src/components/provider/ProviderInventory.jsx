@@ -1,5 +1,6 @@
+import { PartsIcon, MarketplaceIcon, VehicleIcon, ServicesIcon, OilIcon, PowerIcon, OrdersIcon, WarningIcon, EyeIcon, DeleteIcon, EditIcon } from "../../lib/cccIcons"
 import { useEffect, useState, useRef } from "react"
-import { PartsIcon, MarketplaceIcon, VehicleIcon, ServicesIcon, WarningIcon, CameraIcon, VideoIcon, SearchIcon, EyeIcon, DeleteIcon, EditIcon } from "../../lib/cccIcons"
+
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
