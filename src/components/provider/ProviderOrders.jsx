@@ -199,14 +199,14 @@ export default function ProviderOrders() {
       </div>
       {/* GO Parts Requests */}
         <div style={{ background:"#f3f0ff", border:"1px solid #8b5cf640", borderRadius:12, padding:"1rem", marginBottom:"1.25rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#8b5cf6", marginBottom:8 }}>🔧 GO Service Part Requests</div>
+          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#8b5cf6", marginBottom:8, display:"flex", alignItems:"center", gap:6 }}><ServicesIcon size={14} color="#8b5cf6"/> GO Service Part Requests</div>
           {goPartsRequests.filter(r=>r.status==="pending"||r.status==="accepted").map(r=>(
             <div key={r.id} style={{ background:"#fff", borderRadius:10, padding:"0.75rem", marginBottom:8 }}>
               <div style={{ marginBottom:8 }}>
                 <div style={{ fontSize:13, fontWeight:600 }}>{r.inventory?.name} x{r.quantity}</div>
                 <div style={{ fontSize:11, color:"#888" }}>KES {Number(r.total_amount).toLocaleString()} · Your cut: KES {Number(r.provider_payout||r.total_amount*0.9).toLocaleString()}</div>
                 <div style={{ fontSize:11, color:"#555", marginTop:2, display:"flex", alignItems:"center", gap:3 }}><LocationIcon size={11} color="#555"/> {r.delivery_location_address}</div>
-                {r.delivery_location_lat&&r.delivery_location_lng&&<a href={`https://www.google.com/maps/dir/?api=1&destination=${r.delivery_location_lat},${r.delivery_location_lng}`} target="_blank" rel="noopener noreferrer" style={{ fontSize:11, color:"#4285f4", fontWeight:600 }}>🗺️ Navigate to customer</a>}
+                {r.delivery_location_lat&&r.delivery_location_lng&&<a href={`https://www.google.com/maps/dir/?api=1&destination=${r.delivery_location_lat},${r.delivery_location_lng}`} target="_blank" rel="noopener noreferrer" style={{ fontSize:11, color:"#4285f4", fontWeight:600 }}><TripReportIcon size={13} color="#4285f4"/> Navigate to customer</a>}
                 <div style={{ fontSize:11, color:"#888" }}>Mechanic: {r.mechanic?.first_name}</div>
                 {r.rider_name&&<div style={{ fontSize:11, color:"#555", display:"flex", alignItems:"center", gap:3 }}><MovingCarIcon size={11} color="#555"/> Rider: {r.rider_name} {r.rider_phone&&<a href={"tel:"+r.rider_phone} style={{ color:"#1d9e75" }}>{r.rider_phone}</a>}</div>}
                 <div style={{ display:"flex", gap:4, marginTop:6, marginBottom:4 }}>{["accepted","picked_up","on_the_way","delivered"].map((s,i)=>(<div key={s} style={{ flex:1, height:3, borderRadius:3, background:["accepted","picked_up","on_the_way","delivered"].indexOf(r.delivery_status||"accepted")>=i?"#8b5cf6":"#eee" }}/>))}</div>
