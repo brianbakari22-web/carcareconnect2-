@@ -1,3 +1,4 @@
+import { OilIcon, ServicesIcon, VehicleIcon, DiscoverIcon, PowerIcon, MechanicIcon, GlobeIcon } from "../../lib/cccIcons"
 import useIsMobile from "../../lib/useIsMobile"
 import { useAuth } from "../../contexts/AuthContext"
 import { useEffect, useState } from "react"
@@ -5,15 +6,15 @@ import { supabase } from "../../lib/supabase"
 import toast from "react-hot-toast"
 
 const DEFAULT_CATEGORIES = [
-  { name:"Oil Change", icon:"🛢️", description:"Engine oil and filter replacement" },
-  { name:"Brake Repair", icon:"🔧", description:"Brake pads, rotors and brake fluid" },
-  { name:"Tire Service", icon:"🔄", description:"Rotation, balancing and replacement" },
+  { name:"Oil Change", icon:"oil", description:"Engine oil and filter replacement" },
+  { name:"Brake Repair", icon:"services", description:"Brake pads, rotors and brake fluid" },
+  { name:"Tire Service", icon:"vehicle", description:"Rotation, balancing and replacement" },
   { name:"Engine Repair", icon:"⚙️", description:"Diagnostics and engine servicing" },
   { name:"AC Repair", icon:"❄️", description:"Air conditioning service and regas" },
   { name:"Transmission", icon:"🔩", description:"Gearbox and transmission repair" },
   { name:"Detailing", icon:"✨", description:"Interior and exterior detailing" },
   { name:"Maintenance", icon:"📋", description:"General servicing and checkups" },
-  { name:"Electrical", icon:"⚡", description:"Electrical diagnostics and repair" },
+  { name:"Electrical", icon:"power", description:"Electrical diagnostics and repair" },
   { name:"Body Repair", icon:"🚗", description:"Dents, scratches and panel work" },
 ]
 

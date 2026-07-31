@@ -1,3 +1,4 @@
+import { ProfileIcon, LocationIcon, VehicleIcon, ServicesIcon, NoteIcon } from "../../lib/cccIcons"
 import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"

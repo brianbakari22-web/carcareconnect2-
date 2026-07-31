@@ -1,3 +1,4 @@
+import { GOServiceIcon, VehicleIcon, LocationIcon, AnalyticsIcon } from "../../lib/cccIcons"
 import { useEffect, useState, useRef } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
@@ -154,7 +155,7 @@ export default function AdminLiveMap() {
           { label:"Online now", value:onlineCount, color:"#1d9e75" },
           { label:"Concierge", value:conciergeCount, color:"#8b5cf6" },
           { label:"Marketplace", value:marketplaceCount, color:"#e6821e" },
-          { label:"🚨 GO Requests", value:activeGoRequests, color:activeGoRequests>0?"#e24b4a":"#888" },
+          { label:"GO Requests", value:activeGoRequests, color:activeGoRequests>0?"#e24b4a":"#888" },
           { label:"🆘 SOS Active", value:activeSOS, color:activeSOS>0?"#e24b4a":"#888" },
           { label:"👨‍🔧 Mechanics", value:mechanics.length, color:"#378add" },
         ].map(s=>(

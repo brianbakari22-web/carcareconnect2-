@@ -1,3 +1,4 @@
+import { VehicleIcon, CheckIcon, DocumentIcon, ShieldIcon } from "../../lib/cccIcons"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
@@ -211,7 +212,7 @@ export default function AdminDriverVetting() {
             <div>
               <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#000" }}>{selected.driver?.first_name} {selected.driver?.last_name}</div>
               <div style={{ fontSize:11, color:"#888" }}>{selected.driver?.email} · {selected.driver?.phone}</div>
-              <div style={{ fontSize:11, color:"#888" }}>Vehicle: {selected.driver?.driver_category==="concierge"?"🧑‍✈️ Concierge Driver":(selected.driver?.driver_vehicle_type||"—")} · {selected.appointment_date} at {selected.appointment_time}</div>
+              <div style={{ fontSize:11, color:"#888", display:"flex", alignItems:"center", gap:3 }}><VehicleIcon size={11} color="#888"/> Vehicle: {selected.driver?.driver_category==="concierge"?"🧑‍✈️ Concierge Driver":(selected.driver?.driver_vehicle_type||"—")} · {selected.appointment_date} at {selected.appointment_time}</div>
             </div>
             <button onClick={()=>setSelected(null)} style={{ background:"none", border:"none", fontSize:18, color:"#888", cursor:"pointer" }}>×</button>
           </div>

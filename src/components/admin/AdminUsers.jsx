@@ -1,3 +1,4 @@
+import { ProfileIcon, CheckIcon } from "../../lib/cccIcons"
 import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
@@ -157,7 +158,7 @@ export default function AdminUsers() {
             <div style={{ borderTop:"1px solid #eeeeee", paddingTop:10, display:"flex", gap:8, flexWrap:"wrap" }}>
               <button onClick={()=>toggleVerified(u.id, u.is_verified)}
                 style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:12, padding:"6px 12px", cursor:"pointer" }}>
-                {u.is_verified?"Remove verification":"✓ Verify"}
+                {u.is_verified?"Remove verification":<><CheckIcon size={12} color="currentColor"/> Verify</>}
               </button>
               <button onClick={()=>toggleActive(u.id, u.is_active)}
                 style={{ background:u.is_active?"#fff5f5":"#f0fdf4", border:`1px solid ${u.is_active?"#e24b4a40":"#1d9e7540"}`, borderRadius:7, color:u.is_active?"#e24b4a":"#1d9e75", fontSize:12, padding:"6px 12px", cursor:"pointer" }}>

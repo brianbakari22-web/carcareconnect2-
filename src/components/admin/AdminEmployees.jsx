@@ -1,3 +1,4 @@
+import { NoteIcon, EditIcon, WalletIcon, ProfileIcon } from "../../lib/cccIcons"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
@@ -214,7 +215,7 @@ export default function AdminEmployees() {
 
       {/* Statutory notice */}
       <div style={{ background:"#eff6ff", border:"1px solid #378add30", borderRadius:10, padding:"0.75rem 1rem", marginBottom:"1.25rem", fontSize:12, color:"#378add" }}>
-        📋 Kenya statutory rates: PAYE (10-35% graduated) · NSSF KES 2,160/employee · SHIF 2.75% of gross · Housing Levy 1.5% of gross. Due by 9th of each month.
+        <><NoteIcon size={13} color="#378add"/> Kenya statutory rates:</> PAYE (10-35% graduated) · NSSF KES 2,160/employee · SHIF 2.75% of gross · Housing Levy 1.5% of gross. Due by 9th of each month.
       </div>
 
       {/* Tabs */}
