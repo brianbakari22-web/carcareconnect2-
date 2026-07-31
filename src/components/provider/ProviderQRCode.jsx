@@ -40,11 +40,11 @@ export default function ProviderQRCode() {
           <div style={{ background:"#f8f8f8", borderRadius:12, padding:"1.25rem", marginBottom:"1rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000", marginBottom:12 }}><><TipIcon size={14} color="currentColor"/> Where to use your QR code</></div>
             {[
-              { icon:"💳", title:"Business cards", desc:"Print on the back of your business card — customers scan to book instantly" },
-              { icon:"🪟", title:"Shop window sticker", desc:"A3 or A4 sticker on your shop window — drives walk-in traffic to online bookings" },
-              { icon:"🚗", title:"Vehicle wrap/sticker", desc:"Put on your service vehicles so people on the road can find you" },
-              { icon:"📄", title:"Flyers & brochures", desc:"Include in any printed marketing material" },
-              { icon:"📱", title:"WhatsApp status", desc:"Screenshot the QR and share on your WhatsApp status" },
+              { icon:"payments", title:"Business cards", desc:"Print on the back of your business card — customers scan to book instantly" },
+              { icon:"globe", title:"Shop window sticker", desc:"A3 or A4 sticker on your shop window — drives walk-in traffic to online bookings" },
+              { icon:"vehicle", title:"Vehicle wrap/sticker", desc:"Put on your service vehicles so people on the road can find you" },
+              { icon:"document", title:"Flyers & brochures", desc:"Include in any printed marketing material" },
+              { icon:"qr", title:"WhatsApp status", desc:"Screenshot the QR and share on your WhatsApp status" },
             ].map(item=>(
               <div key={item.title} style={{ display:"flex", gap:10, alignItems:"flex-start", marginBottom:10 }}>
                 <span style={{ fontSize:20, flexShrink:0 }}>{item.icon}</span>
