@@ -332,7 +332,16 @@ export default function AuthPage() {
                       {PROVIDER_TYPES.map(pt=>(
                         <div key={pt.key} onClick={()=>setForm(f=>({...f,providerType:pt.key}))}
                           style={{ background:form.providerType===pt.key?"#eff6ff":"#f5f5f5", border:"1px solid "+(form.providerType===pt.key?"#378add":"#e0e0e0"), borderRadius:8, padding:"8px 10px", cursor:"pointer" }}>
-                          <div style={{ fontSize:18, marginBottom:2 }}>{pt.icon}</div>
+                          <div style={{ marginBottom:2, display:"flex" }}>
+                          {pt.icon==="services"?<ServicesIcon size={18} color={form.providerType===pt.key?"#378add":"#64748B"}/>:
+                           pt.icon==="parts"?<PartsIcon size={18} color={form.providerType===pt.key?"#378add":"#64748B"}/>:
+                           pt.icon==="marketplace"?<MarketplaceIcon size={18} color={form.providerType===pt.key?"#378add":"#64748B"}/>:
+                           pt.icon==="vehicle"?<VehicleIcon size={18} color={form.providerType===pt.key?"#378add":"#64748B"}/>:
+                           pt.icon==="power"?<PowerIcon size={18} color={form.providerType===pt.key?"#378add":"#64748B"}/>:
+                           pt.icon==="discover"?<DiscoverIcon size={18} color={form.providerType===pt.key?"#378add":"#64748B"}/>:
+                           pt.icon==="mechanic"?<MechanicIcon size={18} color={form.providerType===pt.key?"#378add":"#64748B"}/>:
+                           <GlobeIcon size={18} color={form.providerType===pt.key?"#378add":"#64748B"}/>}
+                        </div>
                           <div style={{ fontSize:13, fontWeight:600, color:form.providerType===pt.key?"#378add":"#555" }}>{pt.label}</div>
                           <div style={{ fontSize:12, color:"#999" }}>{pt.desc}</div>
                         </div>
