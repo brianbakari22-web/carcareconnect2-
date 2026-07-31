@@ -153,6 +153,8 @@ export function AuthProvider({ children }) {
           last_name: lastName,
           role: role || "customer",
           business_name: businessName || "",
+          providerType: providerType || "",
+          driverVehicleType: driverVehicleType || "",
         }
       }
     })
