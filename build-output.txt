@@ -1,5 +1,5 @@
 
-> car-care-connect@1.0.39 build
+> car-care-connect@1.0.40 build
 > vite build
 
 [36mvite v5.4.21 [32mbuilding for production...[36m[39m
@@ -73,4 +73,4 @@ computing gzip size...
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-[32mΓ£ô built in 5.86s[39m
+[32mΓ£ô built in 5.88s[39m
