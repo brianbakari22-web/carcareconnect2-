@@ -1,4 +1,4 @@
-import { VehicleIcon, MotorcycleIcon, TukTukIcon, DeliveryIcon, LocationIcon, WalletIcon, StarIcon, AnalyticsIcon, BookingsIcon } from "../../lib/cccIcons"
+import { VehicleIcon, MotorcycleIcon, TukTukIcon, DeliveryIcon, LocationIcon, WalletIcon, StarIcon, AnalyticsIcon, BookingsIcon, OrdersIcon, WarningIcon, LockedIcon } from "../../lib/cccIcons"
 import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { supabase } from "../../lib/supabase"
@@ -220,7 +220,7 @@ export default function DriverOverview() {
         {/* No-show warning */}
         {noShowCount>0&&!isSuspended&&(
           <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.85rem", marginBottom:"1rem" }}>
-            <div style={{ fontSize:13, color:"#e6821e", fontWeight:600, marginBottom:2 }}>⚠️ No-show warning</div>
+            <div style={{ fontSize:13, color:"#e6821e", fontWeight:600, marginBottom:2, display:"flex", alignItems:"center", gap:4 }}><WarningIcon size={13} color="#e6821e"/> No-show warning</div>
             <div style={{ fontSize:11, color:"#666" }}>
               You have {noShowCount} no-show{noShowCount>1?"s":""} recorded.
               {noShowCount===1&&" One more will result in a 72hr suspension."}
@@ -232,7 +232,7 @@ export default function DriverOverview() {
         {/* Docs not verified */}
         {!isVerified&&!isSuspended&&(
           <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.85rem", marginBottom:"1rem" }}>
-            <div style={{ fontSize:12, color:"#e6821e" }}>⚠️ Documents pending verification — go to Profile → Credentials</div>
+            <div style={{ fontSize:12, color:"#e6821e", display:"flex", alignItems:"center", gap:4 }}><WarningIcon size={12} color="#e6821e"/> Documents pending verification — go to Profile → Credentials</div>
           </div>
         )}
 
@@ -257,11 +257,11 @@ export default function DriverOverview() {
         {isOnline&&isVerified&&!isSuspended&&(
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:"1rem" }}>
             <button onClick={()=>navigate(isConcierge?"/dashboard/jobs":"/dashboard/deliveries")} style={{ background:"#1d9e75", border:"none", borderRadius:10, padding:"0.85rem", textAlign:"center", cursor:"pointer", width:"100%" }}>
-              <div style={{ fontSize:20, marginBottom:2 }}>{isConcierge?"📦":"🚚"}</div>
+              <div style={{ marginBottom:2, display:"flex", justifyContent:"center" }}>{isConcierge?<OrdersIcon size={20} color="#fff"/>:<DeliveryIcon size={20} color="#fff"/>}</div>
               <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#fff" }}>{isConcierge?"Available Jobs":"Order Deliveries"}</div>
             </button>
             <button onClick={()=>navigate(isConcierge?"/dashboard/active":"/dashboard/deliveries")} style={{ background:"#378add", border:"none", borderRadius:10, padding:"0.85rem", textAlign:"center", cursor:"pointer", width:"100%" }}>
-              <div style={{ fontSize:20, marginBottom:2 }}>{isConcierge?"🚗":"📦"}</div>
+              <div style={{ marginBottom:2, display:"flex", justifyContent:"center" }}>{isConcierge?<VehicleIcon size={20} color="#fff"/>:<OrdersIcon size={20} color="#fff"/>}</div>
               <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#fff" }}>{isConcierge?"Active Delivery":"My Deliveries"}</div>
             </button>
           </div>
@@ -293,17 +293,17 @@ export default function DriverOverview() {
 
         {/* Earnings structure */}
         <div style={{ background:"#f8f8f8", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75", marginBottom:10 }}>💰 Your earnings structure</div>
+          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75", marginBottom:10, display:"flex", alignItems:"center", gap:6 }}><WalletIcon size={14} color="#1d9e75"/> Your earnings structure</div>
           {(isConcierge ? [
             { icon:"wallet", label:"Commission", desc:"15% of service fee — paid after delivery complete" },
             { icon:"🚌", label:"Transport allowance", desc:"KES 200 per booking — covers your travel to pick up and return the car" },
-            { icon:"⚠️", label:"No-show policy", desc:"Allowance only paid after pickup report filed. No-shows result in penalties." },
-            { icon:"🔒", label:"Payment security", desc:"Both released only after you complete the delivery and file the dropoff report" },
+            { icon:"warning", label:"No-show policy", desc:"Allowance only paid after pickup report filed. No-shows result in penalties." },
+            { icon:"locked", label:"Payment security", desc:"Both released only after you complete the delivery and file the dropoff report" },
           ] : [
-            { icon:"📦", label:"Delivery earnings", desc:"85% of delivery fee — paid after successful delivery" },
-            { icon:"🗺️", label:"Per delivery", desc:"Earn more by completing more deliveries in your zone" },
-            { icon:"⚠️", label:"No-show policy", desc:"Declining or missing deliveries may result in suspension" },
-            { icon:"🔒", label:"Payment security", desc:"Earnings released only after customer confirms delivery received" },
+            { icon:"orders", label:"Delivery earnings", desc:"85% of delivery fee — paid after successful delivery" },
+            { icon:"location", label:"Per delivery", desc:"Earn more by completing more deliveries in your zone" },
+            { icon:"warning", label:"No-show policy", desc:"Declining or missing deliveries may result in suspension" },
+            { icon:"locked", label:"Payment security", desc:"Earnings released only after customer confirms delivery received" },
           ]).map(item=>(
             <div key={item.label} style={{ display:"flex", gap:10, alignItems:"flex-start", marginBottom:8 }}>
               <span style={{ fontSize:16, flexShrink:0 }}>{item.icon}</span>
