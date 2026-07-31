@@ -107,8 +107,14 @@ export default function AdminCommissions() {
           <div key={rate.id} style={{ background:"#f8f8f8", border:`1px solid ${isEditing?"#8b5cf6":"#eeeeee"}`, borderRadius:12, padding:"1rem", marginBottom:10, transition:"border-color 0.2s" }}>
             <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:isEditing?12:0 }}>
               <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                <div style={{ width:40, height:40, borderRadius:10, background:"#ffffff", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>
-                  {typeInfo.icon}
+                <div style={{ width:40, height:40, borderRadius:10, background:"#ffffff", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                  {typeInfo.icon==="services"?<ServicesIcon size={20} color="#e6821e"/>:
+                   typeInfo.icon==="vehicle"?<VehicleIcon size={20} color="#378add"/>:
+                   typeInfo.icon==="emergency"?<GOServiceIcon size={20} color="#e24b4a"/>:
+                   typeInfo.icon==="discover"?<DiscoverIcon size={20} color="#1d9e75"/>:
+                   typeInfo.icon==="parts"?<PartsIcon size={20} color="#8b5cf6"/>:
+                   typeInfo.icon==="marketplace"?<MarketplaceIcon size={20} color="#e6821e"/>:
+                   <ServicesIcon size={20} color="#64748B"/>}
                 </div>
                 <div>
                   <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000" }}>{typeInfo.label}</div>
