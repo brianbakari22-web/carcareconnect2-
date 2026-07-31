@@ -1,7 +1,7 @@
 import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
-import { OrdersIcon, BookingsIcon, PaymentsIcon, VehicleIcon, StarIcon, ShieldIcon, ReferEarnIcon, AnalyticsIcon, DocumentIcon, DataIcon, RefreshIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
+import { OrdersIcon, BookingsIcon, PaymentsIcon, VehicleIcon, StarIcon, ReferEarnIcon, ShieldIcon, AnalyticsIcon, DocumentIcon, RefreshIcon, DataIcon } from "../../lib/cccIcons"
 import { pushNotify } from "../../lib/pushNotify"
 import { sanitizeName, sanitizePhone, sanitizeFreeText } from "../../lib/sanitize"
 import { useAuth } from "../../contexts/AuthContext"
@@ -252,7 +252,7 @@ export default function CustomerProfile() {
           <div>
             {/* Header */}
             <div style={{ background:"linear-gradient(135deg,#fff8f0,#fff)", border:"1px solid #e6821e20", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
-              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#000", marginBottom:4 }}>📦 My Personal Data</div>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#000", marginBottom:4, display:"flex", alignItems:"center", gap:6 }}><DataIcon size={16} color="#e6821e"/> My Personal Data</div>
               <div style={{ fontSize:12, color:"#666", lineHeight:1.7 }}>Under Kenya Data Protection Act, you have the right to download or delete all your personal data stored on Car Care Connect.</div>
             </div>
             {exporting&&(
@@ -274,12 +274,12 @@ export default function CustomerProfile() {
                 <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#555", marginBottom:8, textTransform:"uppercase", letterSpacing:"0.05em" }}>Your data summary</div>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8, marginBottom:"1.25rem" }}>
                   {[
-                    { label:"Bookings", value:exportData.bookings?.length||0, icon:"📅", color:"#378add" },
-                    { label:"Payments", value:exportData.payments?.length||0, icon:"💳", color:"#1d9e75" },
-                    { label:"Vehicles", value:exportData.vehicles?.length||0, icon:"🚗", color:"#e6821e" },
-                    { label:"Reviews", value:exportData.reviews?.length||0, icon:"⭐", color:"#f59e0b" },
-                    { label:"Points", value:exportData.loyaltyPoints||0, icon:"🎁", color:"#8b5cf6" },
-                    { label:"Claims", value:exportData.claims?.length||0, icon:"🛡️", color:"#e24b4a" },
+                    { label:"Bookings", value:exportData.bookings?.length||0, icon:"bookings", color:"#378add" },
+                    { label:"Payments", value:exportData.payments?.length||0, icon:"payments", color:"#1d9e75" },
+                    { label:"Vehicles", value:exportData.vehicles?.length||0, icon:"vehicle", color:"#e6821e" },
+                    { label:"Reviews", value:exportData.reviews?.length||0, icon:"star", color:"#f59e0b" },
+                    { label:"Points", value:exportData.loyaltyPoints||0, icon:"referral", color:"#8b5cf6" },
+                    { label:"Claims", value:exportData.claims?.length||0, icon:"shield", color:"#e24b4a" },
                   ].map(item=>(
                     <div key={item.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"0.75rem 0.5rem", textAlign:"center", border:"1px solid #eee" }}>
                       <div style={{ fontSize:20, marginBottom:4 }}>{item.icon}</div>
@@ -291,13 +291,13 @@ export default function CustomerProfile() {
                 <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#555", marginBottom:8, textTransform:"uppercase", letterSpacing:"0.05em" }}>Download formats</div>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr", gap:8, marginBottom:"1rem" }}>
                   <button onClick={()=>downloadJSON(exportData, "ccc-my-data-"+new Date().toLocaleDateString()+".json")} style={{ background:"#fff", border:"1px solid #378add", borderRadius:10, color:"#378add", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer", display:"flex", alignItems:"center", gap:8 }}>
-                    <span>📦</span><span>Download as JSON</span><span style={{ marginLeft:"auto", fontSize:10, color:"#aaa" }}>Full data export</span>
+                    <span><OrdersIcon size={16} color="#e6821e"/></span><span>Download as JSON</span><span style={{ marginLeft:"auto", fontSize:10, color:"#aaa" }}>Full data export</span>
                   </button>
                   <button onClick={()=>downloadCSV(exportData.bookings||[], "ccc-bookings-"+new Date().toLocaleDateString()+".csv")} style={{ background:"#fff", border:"1px solid #1d9e75", borderRadius:10, color:"#1d9e75", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer", display:"flex", alignItems:"center", gap:8 }}>
-                    <span>📊</span><span>Download as CSV</span><span style={{ marginLeft:"auto", fontSize:10, color:"#aaa" }}>Spreadsheet format</span>
+                    <span><AnalyticsIcon size={16} color="#1d9e75"/></span><span>Download as CSV</span><span style={{ marginLeft:"auto", fontSize:10, color:"#aaa" }}>Spreadsheet format</span>
                   </button>
                   <button onClick={()=>downloadPDF(exportData, "ccc-my-data-"+new Date().toLocaleDateString()+".pdf")} style={{ background:"#fff", border:"1px solid #e6821e", borderRadius:10, color:"#e6821e", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer", display:"flex", alignItems:"center", gap:8 }}>
-                    <span>📄</span><span>Download as PDF</span><span style={{ marginLeft:"auto", fontSize:10, color:"#aaa" }}>Printable report</span>
+                    <span><DocumentIcon size={16} color="#378add"/></span><span>Download as PDF</span><span style={{ marginLeft:"auto", fontSize:10, color:"#aaa" }}>Printable report</span>
                   </button>
                 </div>
                 <button onClick={()=>setExportData(null)} style={{ width:"100%", background:"none", border:"1px solid #eee", borderRadius:8, color:"#888", fontSize:12, padding:"8px", cursor:"pointer" }}>
