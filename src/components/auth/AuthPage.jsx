@@ -287,7 +287,13 @@ export default function AuthPage() {
 
           {roleData&&mode==="signup"&&(
             <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:"1.25rem", padding:"0.9rem 1rem", background:roleData.bg, border:`1px solid ${roleData.border}`, borderRadius:10 }}>
-              <span style={{ fontSize:22 }}>{roleData.icon}</span>
+              <span style={{display:"flex",alignItems:"center"}}>
+              {roleData.icon==="vehicle"?<VehicleIcon size={22} color={roleData.color}/>:
+               roleData.icon==="services"?<ServicesIcon size={22} color={roleData.color}/>:
+               roleData.icon==="delivery"?<DeliveryIcon size={22} color={roleData.color}/>:
+               roleData.icon==="mechanic"?<MechanicIcon size={22} color={roleData.color}/>:
+               <ServicesIcon size={22} color={roleData.color}/>}
+            </span>
               <div>
                 <div style={{ fontSize:15, fontWeight:600, color:roleData.color }}>{roleData.label}</div>
                 <div style={{ fontSize:13, color:"#666666" }}>{roleData.desc}</div>
