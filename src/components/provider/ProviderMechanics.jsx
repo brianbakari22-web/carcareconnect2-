@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { MechanicIcon, CheckIcon, CloseIcon, ChatIcon, WalletIcon, StarIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
@@ -146,7 +147,7 @@ export default function ProviderMechanics() {
       {/* Header */}
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
         <div>
-          <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000" }}>👨‍🔧 Mechanics</div>
+          <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000", display:"flex", alignItems:"center", gap:8 }}><MechanicIcon size={20} color="#e6821e"/> Mechanics</div>
           <div style={{ fontSize:12, color:"#888" }}>{mechanics.length} mechanic{mechanics.length!==1?"s":""} in your garage</div>
         </div>
         <button onClick={()=>setShowAdd(!showAdd)}
@@ -217,7 +218,7 @@ export default function ProviderMechanics() {
       {/* Mechanics list */}
       {mechanics.length===0&&!showAdd&&(
         <div style={{ textAlign:"center", padding:"3rem 1rem", background:"#ffffff", borderRadius:14, border:"1px solid #eeeeee" }}>
-          <div style={{ fontSize:48, marginBottom:12 }}>👨‍🔧</div>
+          <div style={{ marginBottom:12, display:"flex", justifyContent:"center" }}><MechanicIcon size={48} color="#e6821e"/></div>
           <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:700, color:"#000", marginBottom:4 }}>No mechanics yet</div>
           <div style={{ fontSize:13, color:"#888" }}>Add mechanics to assign them to jobs</div>
         </div>
@@ -231,7 +232,7 @@ export default function ProviderMechanics() {
             onClick={()=>setExpanded(expanded===m.id?null:m.id)}>
             {/* Avatar */}
             <div style={{ width:44, height:44, borderRadius:"50%", background:m.is_active&&m.is_available?"#f0fdf4":"#f5f5f5", border:"2px solid " + (m.is_active&&m.is_available?"#1d9e75":"#ddd"), display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, flexShrink:0 }}>
-              👨‍🔧
+              
             </div>
             {/* Info */}
             <div style={{ flex:1, minWidth:0 }}>

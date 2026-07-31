@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react"
+import { ShieldIcon, WarningIcon, CameraIcon, ChatIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { validateFile, sanitizeFilePath } from "../../lib/uploadValidation"
 import { useAuth } from "../../contexts/AuthContext"
@@ -146,7 +147,7 @@ export default function ProviderClaims() {
 
   return (
     <div>
-      <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000", marginBottom:"1rem" }}>🛡️ Claims Center</div>
+      <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000", display:"flex", alignItems:"center", gap:8, marginBottom:"1rem" }}>🛡️ Claims Center</div>
 
       {/* Stats */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8, marginBottom:"1rem" }}>

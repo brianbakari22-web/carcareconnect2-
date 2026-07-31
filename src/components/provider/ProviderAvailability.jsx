@@ -1,5 +1,6 @@
 import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
+import { BookingsIcon, CloseIcon, RefreshIcon, SuccessIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
@@ -264,7 +265,7 @@ export default function ProviderAvailability() {
             <div style={{ display:"flex", gap:8, flexWrap:"wrap", marginBottom:12 }}>
               <button onClick={()=>bulkBlock("weekends")} disabled={saving}
                 style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:8, color:"#e6821e", fontSize:12, fontWeight:600, padding:"8px 14px", cursor:"pointer" }}>
-                📅 Block weekends
+                <><BookingsIcon size={13} color="currentColor"/> Block weekends</>
               </button>
               <button onClick={()=>bulkBlock("all")} disabled={saving}
                 style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:8, color:"#e24b4a", fontSize:12, fontWeight:600, padding:"8px 14px", cursor:"pointer" }}>

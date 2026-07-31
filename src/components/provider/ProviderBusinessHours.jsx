@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { SunIcon, SettingsIcon, BookingsIcon, SuccessIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -6,7 +7,7 @@ import toast from "react-hot-toast"
 
 const DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
 const DAY_SHORT = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
-const DAY_ICONS = ["🌅","💼","💼","💼","💼","💼","🎉"]
+const DAY_ICONS = ["sun","work","work","work","work","work","success"]
 
 const DEFAULT_HOURS = DAYS.map((day, i) => ({
   day_of_week: i,
@@ -17,8 +18,8 @@ const DEFAULT_HOURS = DAYS.map((day, i) => ({
 }))
 
 const PRESETS = [
-  { label:"Mon–Fri", icon:"💼", apply:(hours)=>hours.map((d,i)=>({...d,is_open:i>=1&&i<=5,open_time:"08:00",close_time:"18:00"})) },
-  { label:"Mon–Sat", icon:"📅", apply:(hours)=>hours.map((d,i)=>({...d,is_open:i>=1&&i<=6,open_time:"08:00",close_time:"18:00"})) },
+  { label:"Mon–Fri", icon:"work", apply:(hours)=>hours.map((d,i)=>({...d,is_open:i>=1&&i<=5,open_time:"08:00",close_time:"18:00"})) },
+  { label:"Mon–Sat", icon:"bookings", apply:(hours)=>hours.map((d,i)=>({...d,is_open:i>=1&&i<=6,open_time:"08:00",close_time:"18:00"})) },
   { label:"7 Days", icon:"🗓️", apply:(hours)=>hours.map(d=>({...d,is_open:true,open_time:"08:00",close_time:"18:00"})) },
   { label:"Half day", icon:"☀️", apply:(hours)=>hours.map((d,i)=>({...d,is_open:i>=1&&i<=6,open_time:"08:00",close_time:"13:00"})) },
 ]

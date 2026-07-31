@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react"
+import { ChatIcon, CheckIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { auditLog, AUDIT_ACTIONS } from "../../lib/auditLog"
 import { useAuth } from "../../contexts/AuthContext"
@@ -161,7 +162,7 @@ export default function ProviderChat() {
             </div>
             {[
               { icon:"✓", label:"Mark all as read", color:"#1d9e75", action:()=>{ const c=conversations.find(x=>(x.bookingId||x.inventoryId)===menuFor); if(c) markAllRead(c) } },
-              { icon:"💬", label:"Open chat", color:"#378add", action:()=>{ const c=conversations.find(x=>(x.bookingId||x.inventoryId)===menuFor); if(c){ setSelected(c); setMenuFor(null) } } },
+              { icon:"chat", label:"Open chat", color:"#378add", action:()=>{ const c=conversations.find(x=>(x.bookingId||x.inventoryId)===menuFor); if(c){ setSelected(c); setMenuFor(null) } } },
               { icon:"🗑", label:"Delete conversation", color:"#e24b4a", action:()=>{ const c=conversations.find(x=>(x.bookingId||x.inventoryId)===menuFor); if(c) deleteConversation(c) } },
             ].map(item=>(
               <div key={item.label} onClick={item.action}
