@@ -61,42 +61,42 @@ const NAV = {
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
   ],
   admin: [
-    { path:"/admin-dashboard", key:"overview", icon:"🏠" },
-    { path:"/admin-dashboard/users", label:"Users", icon:"👥" },
-    { path:"/admin-dashboard/providers", label:"Providers", icon:"🔧" },
-    { path:"/admin-dashboard/drivers", label:"Drivers", icon:"🚗" },
-    { path:"/admin-dashboard/live-map", label:"Live Map", icon:"🗺️" },
-    { path:"/admin-dashboard/trip-reports", label:"Trip Reports", icon:"📍" },
-    { path:"/admin-dashboard/mechanics", label:"Mechanics & Services", icon:"👨‍🔧" },
-    { path:"/admin-dashboard/penalties", label:"Penalties", icon:"🚫" },
-    { path:"/admin-dashboard/disputes", label:"Disputes & Reports", icon:"⚠️" },
-    { path:"/admin-dashboard/claims", label:"Service Claims", icon:"🛡️" },
-    { path:"/admin-dashboard/bookings", key:"bookings", icon:"📅" },
-    { path:"/admin-dashboard/services", label:"Services", icon:"⚙️" },
-    { path:"/admin-dashboard/revenue", label:"Revenue", icon:"💰" },
-    { path:"/admin-dashboard/payouts", label:"Payouts", icon:"🏦" },
-    { path:"/admin-dashboard/promos", label:"Promo Codes", icon:"🏷️" },
+    { path:"/admin-dashboard", key:"overview", icon:"overview" },
+    { path:"/admin-dashboard/users", label:"Users", icon:"users" },
+    { path:"/admin-dashboard/providers", label:"Providers", icon:"services" },
+    { path:"/admin-dashboard/drivers", label:"Drivers", icon:"vehicle" },
+    { path:"/admin-dashboard/live-map", label:"Live Map", icon:"map" },
+    { path:"/admin-dashboard/trip-reports", label:"Trip Reports", icon:"tripReport" },
+    { path:"/admin-dashboard/mechanics", label:"Mechanics & Services", icon:"mechanic" },
+    { path:"/admin-dashboard/penalties", label:"Penalties", icon:"block" },
+    { path:"/admin-dashboard/disputes", label:"Disputes & Reports", icon:"warning" },
+    { path:"/admin-dashboard/claims", label:"Service Claims", icon:"shield" },
+    { path:"/admin-dashboard/bookings", key:"bookings", icon:"bookings" },
+    { path:"/admin-dashboard/services", label:"Services", icon:"settings" },
+    { path:"/admin-dashboard/revenue", label:"Revenue", icon:"wallet" },
+    { path:"/admin-dashboard/payouts", label:"Payouts", icon:"payout" },
+    { path:"/admin-dashboard/promos", label:"Promo Codes", icon:"ticket" },
     { path:"/admin-dashboard/reviews", key:"reviews", icon:"⭐" },
     { path:"/admin-dashboard/loyalty", key:"loyalty", icon:"🏠" },
-    { path:"/admin-dashboard/categories", label:"Categories", icon:"📂" },
-    { path:"/admin-dashboard/security", label:"2FA Security", icon:"🔐" },
-    { path:"/admin-dashboard/support", label:"Support Tickets", icon:"🎫" },
-    { path:"/admin-dashboard/notifications", label:"Notifications", icon:"🔔" },
-    { path:"/admin-dashboard/health", label:"System Health", icon:"💊" },
-    { path:"/admin-dashboard/diagnostics", label:"Diagnostics", icon:"🔬" },
-    { path:"/admin-dashboard/commissions", label:"Commissions", icon:"💹" },
-    { path:"/admin-dashboard/settings", label:"Settings", icon:"⚙️" },
-    { path:"/admin-dashboard/qrcode", label:"QR Code", icon:"📱" },
-    { path:"/admin-dashboard/content-hub", label:"Content Hub", icon:"🎬" },
-    { path:"/admin-dashboard/new-cars", label:"New Cars", icon:"🚗" },
-    { path:"/admin-dashboard/driver-vetting", label:"Driver Vetting", icon:"🪪" },
-    { path:"/admin-dashboard/marketplace", label:"Marketplace", icon:"🛒" },
-    { path:"/admin-dashboard/employees", label:"Employees", icon:"👨‍💼" },
-    { path:"/admin-dashboard/orders", label:"Orders", icon:"🛒" },
-    { path:"/admin-dashboard/inventory", label:"Inventory", icon:"📦" },
-    { path:"/admin-dashboard/payment-tracking", label:"Payment Tracking", icon:"💹" },
-    { path:"/admin-dashboard/failed-jobs", label:"Failed Jobs", icon:"⚠️" },
-    { path:"/admin-dashboard/deletion-requests", label:"Deletion Requests", icon:"🗑️" },
+    { path:"/admin-dashboard/categories", label:"Categories", icon:"orders" },
+    { path:"/admin-dashboard/security", label:"2FA Security", icon:"security" },
+    { path:"/admin-dashboard/support", label:"Support Tickets", icon:"helpTicket" },
+    { path:"/admin-dashboard/notifications", label:"Notifications", icon:"notifications" },
+    { path:"/admin-dashboard/health", label:"System Health", icon:"health" },
+    { path:"/admin-dashboard/diagnostics", label:"Diagnostics", icon:"analytics" },
+    { path:"/admin-dashboard/commissions", label:"Commissions", icon:"commissions" },
+    { path:"/admin-dashboard/settings", label:"Settings", icon:"adminSettings" },
+    { path:"/admin-dashboard/qrcode", label:"QR Code", icon:"qr" },
+    { path:"/admin-dashboard/content-hub", label:"Content Hub", icon:"video" },
+    { path:"/admin-dashboard/new-cars", label:"New Cars", icon:"newCar" },
+    { path:"/admin-dashboard/driver-vetting", label:"Driver Vetting", icon:"badge" },
+    { path:"/admin-dashboard/marketplace", label:"Marketplace", icon:"marketplace" },
+    { path:"/admin-dashboard/employees", label:"Employees", icon:"team" },
+    { path:"/admin-dashboard/orders", label:"Orders", icon:"adminOrders" },
+    { path:"/admin-dashboard/inventory", label:"Inventory", icon:"parts" },
+    { path:"/admin-dashboard/payment-tracking", label:"Payment Tracking", icon:"payments" },
+    { path:"/admin-dashboard/failed-jobs", label:"Failed Jobs", icon:"failedJobs" },
+    { path:"/admin-dashboard/deletion-requests", label:"Deletion Requests", icon:"delete" },
 
   ],
 }
@@ -124,10 +124,10 @@ const BOTTOM_NAV = {
 
   ],
   admin: [
-    { path:"/admin-dashboard", key:"overview", icon:"🏠" },
-    { path:"/admin-dashboard/users", label:"Users", icon:"👥" },
+    { path:"/admin-dashboard", key:"overview", icon:"overview" },
+    { path:"/admin-dashboard/users", label:"Users", icon:"users" },
     { path:"/admin-dashboard/bookings", key:"bookings", icon:"📅" },
-    { path:"/admin-dashboard/revenue", label:"Revenue", icon:"💰" },
+    { path:"/admin-dashboard/revenue", label:"Revenue", icon:"wallet" },
     { path:"more", label:"Menu", icon:"☰" },
   ],
 }
@@ -442,6 +442,34 @@ export default function Layout({ children }) {
                item.label==="Wash Queue"||item.label==="Wash Packages" ? <DiscoverIcon size={20} active={isActive(item)} /> :
                item.label==="Staff Management" ? <TeamIcon size={20} active={isActive(item)} /> :
                item.label==="Rate Customers" ? <StarIcon size={20} active={isActive(item)} /> :
+               item.icon==="overview"?<HomeIcon size={20} active={isActive(item)}/>:
+               item.icon==="users"?<ProfileIcon size={20} active={isActive(item)}/>:
+               item.icon==="vehicle"?<VehicleIcon size={20} active={isActive(item)}/>:
+               item.icon==="map"?<TripReportIcon size={20} active={isActive(item)}/>:
+               item.icon==="tripReport"?<TripReportIcon size={20} active={isActive(item)}/>:
+               item.icon==="mechanic"?<MechanicIcon size={20} active={isActive(item)}/>:
+               item.icon==="block"?<CloseIcon size={20} active={isActive(item)}/>:
+               item.icon==="warning"?<WarningIcon size={20} color={isActive(item)?"#e6821e":"#64748B"}/>:
+               item.icon==="shield"?<ShieldIcon size={20} active={isActive(item)}/>:
+               item.icon==="wallet"?<WalletIcon size={20} active={isActive(item)}/>:
+               item.icon==="payout"?<PayoutIcon size={20} active={isActive(item)}/>:
+               item.icon==="ticket"?<TicketIcon size={20} active={isActive(item)}/>:
+               item.icon==="security"?<SecurityIcon size={20} active={isActive(item)}/>:
+               item.icon==="helpTicket"?<HelpIcon size={20} active={isActive(item)}/>:
+               item.icon==="health"?<HelpIcon size={20} active={isActive(item)}/>:
+               item.icon==="analytics"?<AnalyticsIcon size={20} active={isActive(item)}/>:
+               item.icon==="commissions"?<AnalyticsIcon size={20} active={isActive(item)}/>:
+               item.icon==="adminSettings"?<SettingsIcon size={20} active={isActive(item)}/>:
+               item.icon==="qr"?<QRCodeIcon size={20} active={isActive(item)}/>:
+               item.icon==="video"?<VideoIcon size={20} active={isActive(item)}/>:
+               item.icon==="newCar"?<VehicleIcon size={20} active={isActive(item)}/>:
+               item.icon==="badge"?<BadgeIcon size={20} active={isActive(item)}/>:
+               item.icon==="team"?<TeamIcon size={20} active={isActive(item)}/>:
+               item.icon==="adminOrders"?<OrdersIcon size={20} active={isActive(item)}/>:
+               item.icon==="payments"?<PaymentsIcon size={20} active={isActive(item)}/>:
+               item.icon==="failedJobs"?<WarningIcon size={20} color="#e24b4a"/>:
+               item.icon==="delete"?<DeleteIcon size={20} color="#e24b4a"/>:
+               item.icon==="settings"?<SettingsIcon size={20} active={isActive(item)}/>:
                <span style={{fontSize:18}}>{item.icon}</span>}
             </span>
                   {getLabel(item)}
