@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { ServicesIcon, PartsIcon, MarketplaceIcon, VehicleIcon, DiscoverIcon, PowerIcon, MechanicIcon, GlobeIcon, CameraIcon, UploadShareIcon, WarningIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { pushNotify } from "../../lib/pushNotify"
 import { sanitizeName, sanitizePhone, sanitizeFreeText } from "../../lib/sanitize"
@@ -11,14 +12,14 @@ import { exportUserData, downloadJSON, downloadCSV, downloadPDF } from "../../li
 import toast from "react-hot-toast"
 
 const PROVIDER_TYPES = [
-  { key:"garage", label:"Garage/Mechanic", icon:"🔧" },
-  { key:"parts_dealer", label:"Parts Dealer", icon:"⚙️" },
-  { key:"accessories_shop", label:"Accessories Shop", icon:"✨" },
-  { key:"tyre_shop", label:"Tyre Shop", icon:"🛞" },
-  { key:"auto_electrician", label:"Auto Electrician", icon:"⚡" },
-  { key:"car_wash", label:"Car Wash", icon:"🚿" },
-  { key:"panel_beater", label:"Panel Beater", icon:"🔨" },
-  { key:"auto_glass", label:"Auto Glass", icon:"🪟" },
+  { key:"garage", label:"Garage/Mechanic", icon:"services" },
+  { key:"parts_dealer", label:"Parts Dealer", icon:"parts" },
+  { key:"accessories_shop", label:"Accessories Shop", icon:"marketplace" },
+  { key:"tyre_shop", label:"Tyre Shop", icon:"vehicle" },
+  { key:"auto_electrician", label:"Auto Electrician", icon:"power" },
+  { key:"car_wash", label:"Car Wash", icon:"discover" },
+  { key:"panel_beater", label:"Panel Beater", icon:"mechanic" },
+  { key:"auto_glass", label:"Auto Glass", icon:"globe" },
 ]
 
 export default function ProviderProfile() {

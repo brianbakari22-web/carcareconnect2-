@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { MarketplaceIcon, HomeIcon, GOServiceIcon, DiscoverIcon, PartsIcon, ServicesIcon, StarIcon, CameraIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import PhotoManager from "../shared/PhotoManager"
 import { useAuth } from "../../contexts/AuthContext"
@@ -7,14 +8,14 @@ import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
 const GARAGE_CATEGORIES = [
-  { key:"shop_standard", label:"Shop Standard", icon:"🏪", desc:"Customer brings car to your shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
-  { key:"shop_premium", label:"Shop Premium", icon:"🏡", desc:"Your mechanic goes to customer", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
-  { key:"go_service", label:"GO Service", icon:"🚨", desc:"Emergency roadside assistance", color:"#e24b4a", bg:"#fff5f5", border:"#fecaca" },
+  { key:"shop_standard", label:"Shop Standard", icon:"marketplace", desc:"Customer brings car to your shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
+  { key:"shop_premium", label:"Shop Premium", icon:"home", desc:"Your mechanic goes to customer", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
+  { key:"go_service", label:"GO Service", icon:"emergency", desc:"Emergency roadside assistance", color:"#e24b4a", bg:"#fff5f5", border:"#fecaca" },
 ]
 const WASH_CATEGORIES = [
-  { key:"basic_wash", label:"Basic Wash", icon:"🚿", desc:"Exterior rinse and dry", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
+  { key:"basic_wash", label:"Basic Wash", icon:"discover", desc:"Exterior rinse and dry", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
   { key:"standard_wash", label:"Standard Wash", icon:"✨", desc:"Exterior + interior clean", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
-  { key:"premium_detail", label:"Premium Detail", icon:"✨", desc:"Full detailing service", color:"#1d9e75", bg:"#f0fdf4", border:"#bbf7d0" },
+  { key:"premium_detail", label:"Premium Detail", icon:"star", desc:"Full detailing service", color:"#1d9e75", bg:"#f0fdf4", border:"#bbf7d0" },
 ]
 const PANEL_CATEGORIES = [
   { key:"shop_standard", label:"In Shop", icon:"🏪", desc:"Customer brings car to shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { NotificationsIcon, SuccessIcon, WarningIcon, ErrorIcon, ChatIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
@@ -72,7 +73,7 @@ export default function ProviderNotifications() {
       {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&notifications.length===0&&(
         <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
-          <div style={{ fontSize:32, marginBottom:10 }}>🔔</div>
+          <div style={{ marginBottom:10, display:"flex", justifyContent:"center" }}><NotificationsIcon size={32} color="#e6821e"/></div>
           No notifications yet
         </div>
       )}
@@ -89,7 +90,7 @@ export default function ProviderNotifications() {
       }}
           style={{ background:n.is_read?"#f8f8f8":"#ffffff", border:`1px solid ${n.is_read?"#eeeeee":typeColor[n.type]||"#e6821e"}30`, borderRadius:10, padding:"1rem", marginBottom:8, cursor:n.is_read?"default":"pointer", display:"flex", alignItems:"flex-start", gap:12 }}>
           <div style={{ width:38, height:38, borderRadius:9, background:typeBg[n.type]||"#fff8f0", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>
-            {typeIcon[n.type]||"🔔"}
+            {n.type==="success"?<SuccessIcon size={18} color="#1d9e75"/>:n.type==="error"?<ErrorIcon size={18} color="#e24b4a"/>:n.type==="warning"?<WarningIcon size={18} color="#e6821e"/>:n.type==="message"?<ChatIcon size={18} color="#8b5cf6"/>:<NotificationsIcon size={18} color="#378add"/>}
           </div>
           <div style={{ flex:1, minWidth:0 }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:8 }}>

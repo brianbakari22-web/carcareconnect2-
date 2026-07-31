@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react"
+import { PartsIcon, MarketplaceIcon, VehicleIcon, ServicesIcon, WarningIcon, CameraIcon, VideoIcon, SearchIcon, EyeIcon, DeleteIcon, EditIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -6,10 +7,10 @@ import PhotoLightbox from "../shared/PhotoLightbox"
 import toast from "react-hot-toast"
 
 const CATEGORIES = [
-  { key:"parts", label:"Parts", icon:"⚙️" },
-  { key:"accessories", label:"Accessories", icon:"✨" },
-  { key:"tyres", label:"Tyres", icon:"🛞" },
-  { key:"tools", label:"Tools", icon:"🔧" },
+  { key:"parts", label:"Parts", icon:"parts" },
+  { key:"accessories", label:"Accessories", icon:"marketplace" },
+  { key:"tyres", label:"Tyres", icon:"vehicle" },
+  { key:"tools", label:"Tools", icon:"services" },
   { key:"oils", label:"Oils & Fluids", icon:"🛢️" },
   { key:"electrical", label:"Electrical", icon:"⚡" },
   { key:"body", label:"Body Parts", icon:"🚗" },

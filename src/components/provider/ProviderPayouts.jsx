@@ -1,5 +1,6 @@
 import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
+import { LockedIcon, PayoutIcon, WarningIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
@@ -129,7 +130,7 @@ export default function ProviderPayouts() {
             <label style={lbl}>Account number</label>
             <input style={inp} placeholder="Your bank account number" value={bankInfo.bank_account_number} onChange={e=>setBankInfo(b=>({...b,bank_account_number:e.target.value}))} required/>
             <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7530", borderRadius:8, padding:"0.75rem", marginBottom:12 }}>
-              <div style={{ fontSize:12, fontWeight:600, color:"#1d9e75", marginBottom:4 }}>🔒 Why we collect this information</div>
+              <div style={{ fontSize:12, fontWeight:600, color:"#1d9e75", marginBottom:4, display:"flex", alignItems:"center", gap:4 }}><LockedIcon size={12} color="#1d9e75"/> Why we collect this information</div>
               <div style={{ fontSize:11, color:"#555", lineHeight:1.6 }}>Your bank details, national ID and KRA PIN are required for secure payout processing and Kenya Revenue Authority (KRA) tax compliance. This information is encrypted and only accessible to CCC administrators for payment purposes. We never share your details with third parties.</div>
             </div>
             <label style={lbl}>M-Pesa number (for faster payouts)</label>
@@ -151,7 +152,7 @@ export default function ProviderPayouts() {
           <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:12 }}>Automatic Payouts from Safaricom Daraja</div>
           {autoPayouts.length===0&&(
             <div style={{ textAlign:"center", padding:"2rem", color:"#888" }}>
-              <div style={{ fontSize:32, marginBottom:8 }}>💸</div>
+              <div style={{ marginBottom:8, display:"flex", justifyContent:"center" }}><PayoutIcon size={32} color="#e6821e"/></div>
               <div>No automatic payouts yet. They appear here after bookings are completed.</div>
             </div>
           )}

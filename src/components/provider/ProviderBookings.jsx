@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { MarketplaceIcon, HomeIcon, GOServiceIcon, ServicesIcon, DiscoverIcon, MechanicIcon, CheckIcon, CloseIcon, WalletIcon, ChatIcon, ShieldIcon, WarningIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { pushNotify } from "../../lib/pushNotify"
 import { useAuth } from "../../contexts/AuthContext"
@@ -12,9 +13,9 @@ import ProviderPartsManager from "./ProviderPartsManager"
 const SC = { pending:"#e6821e", confirmed:"#378add", "in-progress":"#8b5cf6", completed:"#1d9e75", cancelled:"#e24b4a" }
 const SB = { pending:"#fff8f0", confirmed:"#eff6ff", "in-progress":"#faf5ff", completed:"#f0fdf4", cancelled:"#fff5f5" }
 const CATEGORIES = {
-  shop_standard: { label:"Shop Standard", icon:"🏪", color:"#378add" },
-  shop_premium: { label:"Shop Premium", icon:"🏡", color:"#8b5cf6" },
-  go_service: { label:"GO Service", icon:"🚨", color:"#e24b4a" },
+  shop_standard: { label:"Shop Standard", icon:"marketplace", color:"#378add" },
+  shop_premium: { label:"Shop Premium", icon:"home", color:"#8b5cf6" },
+  go_service: { label:"GO Service", icon:"emergency", color:"#e24b4a" },
 }
 
 export default function ProviderBookings() {
