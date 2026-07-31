@@ -467,7 +467,26 @@ export default function Layout({ children }) {
             onClick={item.path==="more"?()=>setMobileMenuOpen(true):()=>navigate(item.path)}
             style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:3, padding:"8px 4px", background:"transparent", border:"none", cursor:"pointer", color:isActive(item)?activeColor:theme.textFaint, borderTop:`2px solid ${isActive(item)?activeColor:"transparent"}` }}>
             <span style={{ position:"relative", display:"inline-block" }}>
-              <span style={{ fontSize:20, animation:item.key==="notifications"&&unreadCount>0?"notif-glow 2s ease-in-out infinite":item.key==="messages"&&unreadChat>0?"chat-glow 2s ease-in-out infinite":undefined }}>{item.icon}</span>
+              <span style={{ display:"flex", alignItems:"center", justifyContent:"center", animation:item.key==="notifications"&&unreadCount>0?"notif-glow 2s ease-in-out infinite":item.key==="messages"&&unreadChat>0?"chat-glow 2s ease-in-out infinite":undefined }}>
+              {item.key==="overview" ? <HomeIcon size={22} active={isActive(item)} /> :
+               item.key==="bookings" ? <BookingsIcon size={22} active={isActive(item)} /> :
+               item.key==="findServices"||item.key==="myServices" ? <ServicesIcon size={22} active={isActive(item)} /> :
+               item.key==="messages" ? <ChatIcon size={22} active={isActive(item)} /> :
+               item.key==="notifications" ? <NotificationsIcon size={22} active={isActive(item)} hasAlert={unreadCount>0} /> :
+               item.key==="payments" ? <PaymentsIcon size={22} active={isActive(item)} /> :
+               item.key==="earnings"||item.key==="payouts" ? <WalletIcon size={22} active={isActive(item)} /> :
+               item.key==="availableJobs" ? <OrdersIcon size={22} active={isActive(item)} /> :
+               item.key==="activeDelivery" ? <VehicleIcon size={22} active={isActive(item)} /> :
+               item.key==="analytics" ? <AnalyticsIcon size={22} active={isActive(item)} /> :
+               item.key==="discover" ? <DiscoverIcon size={22} active={isActive(item)} /> :
+               item.key==="loyalty" ? <LoyaltyIcon size={22} active={isActive(item)} /> :
+               item.key==="favorites" ? <FavoritesIcon size={22} active={isActive(item)} /> :
+               item.label==="Menu"||item.path==="more" ? <MenuIcon size={22} color={isActive(item)?"#e6821e":"#64748B"} /> :
+               item.label==="Inventory" ? <OrdersIcon size={22} active={isActive(item)} /> :
+               item.label==="Trip Reports" ? <TripReportIcon size={22} active={isActive(item)} /> :
+               item.label==="Deliveries"||item.label==="Order Deliveries" ? <TruckDriverIcon size={22} active={isActive(item)} /> :
+               <span style={{fontSize:20}}>{item.icon}</span>}
+            </span>
               {item.key==="notifications"&&unreadCount>0&&(
                 <span style={{ position:"absolute", top:-4, right:-4, background:"#e24b4a", color:"#fff", borderRadius:"50%", fontSize:8, fontWeight:800, minWidth:14, height:14, display:"flex", alignItems:"center", justifyContent:"center" }}>{unreadCount>9?"9+":unreadCount}</span>
               )}
