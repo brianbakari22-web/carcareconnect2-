@@ -198,6 +198,7 @@ export default function ProviderOrders() {
         <div style={{ fontSize:12, color:"#777" }}>Manage parts and accessories orders</div>
       </div>
       {/* GO Parts Requests */}
+        {goPartsRequests.filter(r=>r.status==="pending"||r.status==="accepted").length > 0 && (
         <div style={{ background:"#f3f0ff", border:"1px solid #8b5cf640", borderRadius:12, padding:"1rem", marginBottom:"1.25rem" }}>
           <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#8b5cf6", marginBottom:8, display:"flex", alignItems:"center", gap:6 }}><ServicesIcon size={14} color="#8b5cf6"/> GO Service Part Requests</div>
           {goPartsRequests.filter(r=>r.status==="pending"||r.status==="accepted").map(r=>(
@@ -239,7 +240,7 @@ export default function ProviderOrders() {
           ))}
         </div>
       )}
-
+      )}
       {/* Gradient stats header */}
       <div style={{ background: newOrderAlert ? "linear-gradient(135deg,#1d9e75,#22c98f)" : "linear-gradient(135deg,#e6821e,#f09840)", borderRadius:14, padding:"1rem 1.25rem", marginBottom:"1.25rem", display:"flex", justifyContent:"space-between", alignItems:"center", transition:"background 0.5s" }}>
         <div>
