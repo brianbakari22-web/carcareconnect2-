@@ -289,17 +289,23 @@ export default function ProviderBookings() {
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
               <div style={{ flex:1, minWidth:0, marginRight:8 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:4, flexWrap:"wrap" }}>
-                  <span style={{ fontSize:14 }}>{cat.icon}</span>
+                  <span style={{display:"flex", alignItems:"center"}}>
+                  {cat.icon==="marketplace"?<MarketplaceIcon size={14} color={cat.color}/>:
+                   cat.icon==="home"?<HomeIcon size={14} color={cat.color}/>:
+                   cat.icon==="emergency"?<GOServiceIcon size={14} color="#e24b4a"/>:
+                   cat.icon==="discover"?<DiscoverIcon size={14} color={cat.color}/>:
+                   <ServicesIcon size={14} color={cat.color}/>}
+                </span>
                   <div style={{ fontSize:isMobile?13:14, fontWeight:500, color:"#000000" }}>{b.service_name}</div>
                   <span style={{ fontSize:10, padding:"1px 7px", borderRadius:10, background:`${cat.color}20`, color:cat.color }}>{cat.label}</span>
                 </div>
                 <div style={{ fontSize:11, color:"#777777" }}>{b.booking_date} · {b.booking_time?.slice(0,5)}</div>
                 {b.booking_number&&<div style={{ fontSize:10, color:"#888888", marginTop:2 }}>#{b.booking_number}</div>}
                 {b.problem_description&&<div style={{ fontSize:11, color:"#555555", marginTop:4, fontStyle:"italic" }}>&quot;{b.problem_description}&quot;</div>}
-                {b.assigned_mechanic_id&&<div style={{ fontSize:11, color:"#1d9e75", marginTop:2 }}>👨‍🔧 Mechanic assigned</div>}
+                {b.assigned_mechanic_id&&<div style={{ fontSize:11, color:"#1d9e75", marginTop:2, display:"flex", alignItems:"center", gap:3 }}><MechanicIcon size={11} color="#1d9e75"/> Mechanic assigned</div>}
                 {b.parts_details?.length>0&&(
                   <div style={{ fontSize:11, color:b.parts_approved?"#1d9e75":"#e6821e", marginTop:2 }}>
-                    🔧 Parts: {b.parts_details.length} item{b.parts_details.length!==1?"s":""} · {b.parts_approved?"✓ Approved":"Awaiting approval"}
+                    <ServicesIcon size={11} color="currentColor"/> Parts: {b.parts_details.length} item{b.parts_details.length!==1?"s":""} · {b.parts_approved?"✓ Approved":"Awaiting approval"}
                   </div>
                 )}
               </div>
@@ -320,7 +326,7 @@ export default function ProviderBookings() {
               {b.status==="confirmed"&&<>
                 <button onClick={()=>{ setAssigningMechanic(b.id); setSelectedMechanic("") }}
                   style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-                  👨‍🔧 Assign mechanic
+                  <><MechanicIcon size={13} color="currentColor"/> Assign mechanic</>
                 </button>
                 <button onClick={()=>updateStatus(b.id,"in-progress")}
                   style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
