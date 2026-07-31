@@ -1,3 +1,4 @@
+import { RefreshIcon, DeleteIcon, WarningIcon } from "../../lib/cccIcons"
 import { useState, useEffect } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
@@ -75,7 +76,7 @@ export default function AdminDeletionRequests() {
           <div style={{ fontSize:12, color:"#888" }}>Manage user account deletion requests</div>
         </div>
         <button onClick={load} style={{ padding:"6px 14px", borderRadius:8, border:"0.5px solid #ddd", background:"#f5f5f5", fontSize:12, cursor:"pointer" }}>
-          🔄 Refresh
+          <><RefreshIcon size={13} color="currentColor"/> Refresh</>
         </button>
       </div>
 
@@ -129,7 +130,7 @@ export default function AdminDeletionRequests() {
                   <div style={{ display:"flex", gap:8 }}>
                     <button onClick={()=>processDeletion(r.id, r.user_id)}
                       style={{ background:"#e24b4a", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:600, padding:"8px 16px", cursor:"pointer" }}>
-                      🗑️ Delete Account
+                      <><DeleteIcon size={13} color="currentColor"/> Delete Account</>
                     </button>
                     <button onClick={()=>cancelDeletion(r.id, r.user_id)}
                       style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:8, color:"#1d9e75", fontSize:12, fontWeight:600, padding:"8px 16px", cursor:"pointer" }}>

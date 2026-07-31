@@ -1,3 +1,4 @@
+import { WarningIcon, RefreshIcon, DeleteIcon } from "../../lib/cccIcons"
 import { useState, useEffect } from "react"
 import { supabase } from "../../lib/supabase"
 import toast from "react-hot-toast"
@@ -45,7 +46,7 @@ export default function AdminFailedJobs() {
     <div>
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
         <div>
-          <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800 }}>⚠️ Failed Jobs</div>
+          <div style={{ fontFamily:"Syne", fontSize:20, fontWeight:800, display:"flex", alignItems:"center", gap:8 }}><WarningIcon size={20} color="#e24b4a"/> Failed Jobs</div>
           <div style={{ fontSize:12, color:"#888" }}>Monitor and resolve failed background operations</div>
         </div>
         <div style={{ display:"flex", gap:6 }}>
@@ -56,7 +57,7 @@ export default function AdminFailedJobs() {
             </button>
           ))}
           <button onClick={load} style={{ padding:"6px 14px", borderRadius:8, border:"0.5px solid #ddd", background:"#f5f5f5", fontSize:12, cursor:"pointer" }}>
-            🔄 Refresh
+            <><RefreshIcon size={13} color="currentColor"/> Refresh</>
           </button>
         </div>
       </div>
@@ -85,7 +86,7 @@ export default function AdminFailedJobs() {
                   <div style={{ display:"flex", gap:6 }}>
                     <button onClick={()=>retry(job)}
                       style={{ padding:"4px 10px", borderRadius:6, border:"0.5px solid #378add", background:"#eff6ff", color:"#378add", fontSize:11, cursor:"pointer" }}>
-                      🔄 Retry
+                      <><RefreshIcon size={13} color="currentColor"/> Retry</>
                     </button>
                     <button onClick={()=>resolve(job.id)}
                       style={{ padding:"4px 10px", borderRadius:6, border:"0.5px solid #1d9e75", background:"#f0fdf4", color:"#1d9e75", fontSize:11, cursor:"pointer" }}>

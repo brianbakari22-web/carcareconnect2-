@@ -1,3 +1,4 @@
+import { LocationIcon, ServicesIcon, DeliveryIcon } from "../../lib/cccIcons"
 import { useEffect, useState } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
@@ -96,7 +97,7 @@ export default function AdminOrders() {
         </div>
         <button onClick={()=>setShowZones(!showZones)}
           style={{ background:"#f5f3ff", border:"1px solid #8b5cf640", borderRadius:9, color:"#8b5cf6", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"9px 16px", cursor:"pointer" }}>
-          📍 Delivery zones
+          <><LocationIcon size={13} color="currentColor"/> Delivery zones</>
         </button>
       </div>
 

@@ -1,3 +1,4 @@
+import { TrophyIcon } from "../../lib/cccIcons"
 import useIsMobile from "../../lib/useIsMobile"
 import { useAuth } from "../../contexts/AuthContext"
 import { useEffect, useState } from "react"
@@ -133,7 +134,7 @@ export default function AdminLoyalty() {
       {leaderboard.map((row,i)=>(
         <div key={row.user_id} style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:10, padding:"0.75rem 1rem", marginBottom:6, display:"flex", alignItems:"center", gap:10 }}>
           <div style={{ width:28, textAlign:"center", fontFamily:"Syne", fontSize:14, fontWeight:800, color:i===0?"#e6821e":i===1?"#888":i===2?"#a0703a":"#bbb" }}>
-            {i===0?"🥇":i===1?"🥈":i===2?"🥉":i+1}
+            {i===0?<TrophyIcon size={16} color="#e6821e"/>:i===1?<TrophyIcon size={16} color="#aaa"/>:i===2?<TrophyIcon size={16} color="#cd7f32"/>:i+1}
           </div>
           <div style={{ flex:1, fontSize:13, color:"#000000" }}>{row.first_name} {row.last_name}</div>
           <div style={{ fontSize:11, color:"#777" }}>{row.total_referrals} referral{row.total_referrals!==1?"s":""}</div>

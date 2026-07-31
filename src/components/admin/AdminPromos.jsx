@@ -1,3 +1,4 @@
+import { UploadShareIcon } from "../../lib/cccIcons"
 import useIsMobile from "../../lib/useIsMobile"
 import { useAuth } from "../../contexts/AuthContext"
 import { useEffect, useState } from "react"
@@ -126,7 +127,7 @@ export default function AdminPromos() {
           </div>
           <div style={{ display:"flex", gap:6 }}>
             <button onClick={()=>setDistributePanel(distributePanel===p.id?null:p.id)} style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-              📤 Distribute
+              <><UploadShareIcon size={13} color="currentColor"/> Distribute</>
             </button>
             <button onClick={()=>togglePromo(p.id,p.is_active)} style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#888", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
               {p.is_active?"Disable":"Enable"}

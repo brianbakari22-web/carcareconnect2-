@@ -1,3 +1,4 @@
+import { MarketplaceIcon, HomeIcon, GOServiceIcon, MechanicIcon, DiscoverIcon, ServicesIcon, LocationIcon, StarIcon } from "../../lib/cccIcons"
 import { useEffect, useState, useRef } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
@@ -5,9 +6,9 @@ import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
 const CATEGORIES = {
-  shop_standard: { label:"Shop Standard", icon:"🏪", color:"#378add", bg:"#eff6ff" },
-  shop_premium: { label:"Shop Premium", icon:"🏡", color:"#8b5cf6", bg:"#f5f3ff" },
-  go_service: { label:"GO Service", icon:"🚨", color:"#e24b4a", bg:"#fff5f5" },
+  shop_standard: { label:"Shop Standard", icon:"marketplace", color:"#378add", bg:"#eff6ff" },
+  shop_premium: { label:"Shop Premium", icon:"home", color:"#8b5cf6", bg:"#f5f3ff" },
+  go_service: { label:"GO Service", icon:"emergency", color:"#e24b4a", bg:"#fff5f5" },
 }
 
 const EICONS = { flat_tire:"🛞", dead_battery:"🔋", out_of_fuel:"⛽", car_wont_start:"🔑", overheating:"🌡️", towing:"🚚", other:"🆘" }

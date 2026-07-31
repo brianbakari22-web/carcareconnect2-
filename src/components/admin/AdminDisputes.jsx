@@ -1,3 +1,4 @@
+import { NoteIcon, ProfileIcon, WarningIcon, CheckIcon } from "../../lib/cccIcons"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import useIsMobile from "../../lib/useIsMobile"
@@ -98,8 +99,8 @@ export default function AdminDisputes() {
                     <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{d.dispute_type?.replace("_"," ").toUpperCase()} dispute</div>
                     <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:d.status==="open"?"#fff5f5":d.status==="resolved"?"#f0fdf4":"#fff8f0", color:d.status==="open"?"#e24b4a":d.status==="resolved"?"#1d9e75":"#e6821e" }}>{d.status}</span>
                   </div>
-                  <div style={{ fontSize:12, color:"#888", marginBottom:2 }}>📋 {d.bookings?.service_name} — #{d.bookings?.booking_number}</div>
-                  <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>👤 {d.profiles?.first_name} {d.profiles?.last_name}</div>
+                  <div style={{ fontSize:12, color:"#888", marginBottom:2, display:"flex", alignItems:"center", gap:3 }}><NoteIcon size={12} color="#888"/> {d.bookings?.service_name} — #{d.bookings?.booking_number}</div>
+                  <div style={{ fontSize:11, color:"#888", marginBottom:2, display:"flex", alignItems:"center", gap:3 }}><ProfileIcon size={11} color="#888"/> {d.profiles?.first_name} {d.profiles?.last_name}</div>
                   <div style={{ fontSize:11, color:"#888", lineHeight:1.5 }}>&quot;{d.description}&quot;</div>
                   {d.admin_notes&&<div style={{ fontSize:11, color:"#378add", marginTop:4 }}>Admin: &quot;{d.admin_notes}&quot;</div>}
                   <div style={{ fontSize:10, color:"#888", marginTop:4 }}>{new Date(d.created_at).toLocaleString()}</div>

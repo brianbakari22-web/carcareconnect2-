@@ -1,3 +1,4 @@
+import { VehicleIcon, WarningIcon, CheckIcon, CloseIcon } from "../../lib/cccIcons"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
@@ -170,7 +171,7 @@ export default function AdminNewCars() {
       {/* Alert for pending items */}
       {(pending.length>0||pendingApps>0)&&(
         <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.75rem 1rem", marginBottom:"1rem", display:"flex", gap:8, alignItems:"center" }}>
-          <span>⚠️</span>
+          <WarningIcon size={14} color="#e6821e"/>
           <span style={{ fontSize:12, color:"#e6821e", fontWeight:600 }}>
             {pending.length>0&&`${pending.length} listing${pending.length>1?"s":""} awaiting review`}
             {pending.length>0&&pendingApps>0&&" · "}
@@ -206,7 +207,7 @@ export default function AdminNewCars() {
         <div>
           {tabListings.length===0&&(
             <div style={{ textAlign:"center", padding:"2rem", color:"#888" }}>
-              <div style={{ fontSize:32, marginBottom:8 }}>🚗</div>
+              <div style={{ marginBottom:8, display:"flex", justifyContent:"center" }}><VehicleIcon size={32} color="#e6821e"/></div>
               <div style={{ fontSize:13 }}>No listings in this category</div>
             </div>
           )}

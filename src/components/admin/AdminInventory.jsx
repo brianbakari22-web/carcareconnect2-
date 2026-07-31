@@ -1,3 +1,4 @@
+import { WarningIcon, MarketplaceIcon } from "../../lib/cccIcons"
 import { useEffect, useState } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
@@ -66,7 +67,7 @@ export default function AdminInventory() {
 
       {lowStock>0&&(
         <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.75rem", marginBottom:"1rem" }}>
-          <div style={{ fontSize:13, color:"#e6821e", fontWeight:600 }}>⚠️ {lowStock} item{lowStock>1?"s":""} low on stock · {outOfStock} out of stock</div>
+          <div style={{ fontSize:13, color:"#e6821e", fontWeight:600, display:"flex", alignItems:"center", gap:4 }}><WarningIcon size={13} color="#e6821e"/> {lowStock} item{lowStock>1?"s":""} low on stock · {outOfStock} out of stock</div>
         </div>
       )}
 
@@ -110,7 +111,7 @@ export default function AdminInventory() {
               </div>
               <div style={{ fontSize:11, color:"#888", marginBottom:2 }}>{item.category} {item.subcategory?`· ${item.subcategory}`:""}</div>
               <div style={{ fontSize:11, color:"#888" }}>
-                🏪 {item.profiles?.business_name||item.profiles?.first_name} · {item.profiles?.city||"—"}
+                <><MarketplaceIcon size={12} color="#64748B"/> {item.profiles?.business_name||item.profiles?.first_name}</> · {item.profiles?.city||"—"}
                 <span style={{ color:"#8b5cf6", marginLeft:6 }}>{item.profiles?.provider_type?.replace(/_/g," ")}</span>
               </div>
               {item.compatible_cars?.length>0&&<div style={{ fontSize:10, color:"#888", marginTop:2 }}>🚗 {item.compatible_cars.join(", ")}</div>}
