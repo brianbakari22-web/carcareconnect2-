@@ -243,7 +243,7 @@ export default function AdminDashboard() {
           { icon:"diagnostics", label:"Diagnostics", path:"/admin-dashboard/diagnostics", color:"#e24b4a", value:"Check" },
         ].map(a=>(
           <a key={a.path} href={a.path} style={{ background:"#f8f8f8", border:`1px solid ${a.color}30`, borderRadius:10, padding:"0.75rem", textDecoration:"none", textAlign:"center", display:"block" }}>
-            <div style={{ fontSize:22, marginBottom:4 }}>{a.icon}</div>
+            <div style={{display:"flex",justifyContent:"center",marginBottom:4}}>{a.icon==="users"?<ProfileIcon size={22} color={a.color}/>:a.icon==="bookings"?<BookingsIcon size={22} color={a.color}/>:a.icon==="orders"?<OrdersIcon size={22} color={a.color}/>:a.icon==="parts"?<PartsIcon size={22} color={a.color}/>:a.icon==="wallet"?<WalletIcon size={22} color={a.color}/>:<AnalyticsIcon size={22} color={a.color}/>}</div>
             <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:800, color:a.color }}>{a.value}</div>
             <div style={{ fontSize:10, color:"#888", marginTop:2 }}>{a.label}</div>
           </a>
