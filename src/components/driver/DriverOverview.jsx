@@ -306,7 +306,7 @@ export default function DriverOverview() {
             { icon:"locked", label:"Payment security", desc:"Earnings released only after customer confirms delivery received" },
           ]).map(item=>(
             <div key={item.label} style={{ display:"flex", gap:10, alignItems:"flex-start", marginBottom:8 }}>
-              <span style={{ fontSize:16, flexShrink:0 }}>{item.icon}</span>
+              <span style={{flexShrink:0,display:"flex",alignItems:"center"}}>{item.icon==="orders"?<OrdersIcon size={16} color="#e6821e"/>:item.icon==="location"?<LocationIcon size={16} color="#8b5cf6"/>:item.icon==="warning"?<WarningIcon size={16} color="#e6821e"/>:item.icon==="locked"?<LockedIcon size={16} color="#1d9e75"/>:<WalletIcon size={16} color="#1d9e75"/>}</span>
               <div>
                 <div style={{ fontSize:12, color:"#000", fontWeight:600 }}>{item.label}</div>
                 <div style={{ fontSize:11, color:"#888", lineHeight:1.4 }}>{item.desc}</div>
