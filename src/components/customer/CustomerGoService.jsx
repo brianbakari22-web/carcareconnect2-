@@ -631,7 +631,15 @@ export default function CustomerGoService() {
           {EMERGENCY_TYPES.map(e=>(
             <button key={e.key} onClick={()=>setEmergencyType(e.key)}
               style={{ background:emergencyType===e.key?"#fff5f5":"#f5f5f5", border:`1px solid ${emergencyType===e.key?"#e24b4a":"#e5e5e5"}`, borderRadius:10, padding:"0.75rem", cursor:"pointer", textAlign:"center" }}>
-              <div style={{ fontSize:24, marginBottom:4 }}>{e.icon}</div>
+              <div style={{ marginBottom:4, display:"flex", justifyContent:"center" }}>
+              {e.icon==="parts"?<PartsIcon size={24} color={emergencyType===e.key?"#e24b4a":"#64748B"}/>:
+               e.icon==="battery"?<BatteryIcon size={24} color={emergencyType===e.key?"#e24b4a":"#64748B"}/>:
+               e.icon==="fuel"?<FuelIcon size={24} color={emergencyType===e.key?"#e24b4a":"#64748B"}/>:
+               e.icon==="key"?<KeyIcon size={24} color={emergencyType===e.key?"#e24b4a":"#64748B"}/>:
+               e.icon==="overheat"?<OverheatIcon size={24} color={emergencyType===e.key?"#e24b4a":"#64748B"}/>:
+               e.icon==="towing"?<TowingIcon size={24} color={emergencyType===e.key?"#e24b4a":"#64748B"}/>:
+               <GOServiceIcon size={24} color={emergencyType===e.key?"#e24b4a":"#64748B"}/>}
+            </div>
               <div style={{ fontSize:11, color:emergencyType===e.key?"#e24b4a":"#555555", fontWeight:emergencyType===e.key?600:400 }}>{e.label}</div>
             </button>
           ))}
