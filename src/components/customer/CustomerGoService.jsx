@@ -645,7 +645,7 @@ export default function CustomerGoService() {
         </div>
         <button onClick={detectLocation} disabled={locating}
           style={{ background:locating?"#f0f0f0":"#fff5f5", border:"1px solid #fecaca", borderRadius:9, color:locating?"#999":"#e24b4a", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 20px", cursor:locating?"not-allowed":"pointer", width:"100%", marginBottom:10 }}>
-          {locating?"📍 Detecting...":"📍 Use my current location"}
+          {locating?"📍 Detecting...":<><LocationIcon size={14} color="#e24b4a"/> Use my current location</>}
         </button>
         {location.address&&(
           <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", fontSize:12, color:"#555555" }}>
@@ -767,6 +767,7 @@ export default function CustomerGoService() {
     </div>
   )
 }
+
 
 
 

@@ -12,8 +12,8 @@ const CATEGORIES = [
   { k:"driver", l:"Driver Complaint", icon:"vehicle" },
   { k:"parts", l:"Parts Order", icon:"orders" },
   { k:"account", l:"Account Issue", icon:"profile" },
-  { k:"provider", l:"Provider Issue", icon:"🔧" },
-  { k:"technical", l:"Technical Problem", icon:"⚙️" },
+  { k:"provider", l:"Provider Issue", icon:"services" },
+  { k:"technical", l:"Technical Problem", icon:"settings" },
   { k:"other", l:"Other", icon:"chat" },
 ]
 

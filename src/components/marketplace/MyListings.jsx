@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
+import { VehicleIcon, ServicesIcon, LocationIcon, EyeIcon, VideoIcon, MarketplaceIcon, HeartIcon, ChatIcon, ShareIcon } from "../../lib/cccIcons"
 import { pushNotify } from "../../lib/pushNotify"
-import { MarketplaceIcon, VehicleIcon, PartsIcon, WalletIcon, RefreshIcon, EyeIcon, LocationIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
@@ -195,7 +195,7 @@ export default function MyListings() {
                 <div style={{ width:90, minHeight:90, background:"#f5f5f5", flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
                   {l.primary_photo
                     ? <img src={l.primary_photo} alt="" style={{ width:"100%", height:"100%", objectFit:"cover", minHeight:90 }}/>
-                    : <span style={{ fontSize:32 }}>{l.listing_type==="vehicle"?<VehicleIcon size={32} color="#e6821e"/>:l.listing_type==="part"?"🔧":"✨"}</span>
+                    : <span style={{ display:"flex", justifyContent:"center" }}>{l.listing_type==="vehicle"?<VehicleIcon size={32} color="#e6821e"/>:l.listing_type==="part"?"🔧":"✨"}</span>
                   }
                 </div>
                 <div style={{ flex:1, padding:"0.75rem", minWidth:0 }}>
@@ -211,12 +211,12 @@ export default function MyListings() {
                       <span style={{ fontSize:10, padding:"1px 6px", borderRadius:8,
                         background:l.video_status==="approved"?"#f0fdf4":l.video_status==="rejected"?"#fff5f5":"#fff8f0",
                         color:l.video_status==="approved"?"#1d9e75":l.video_status==="rejected"?"#e24b4a":"#e6821e" }}>
-                        🎥 {l.video_status==="approved"?"Video ✓":l.video_status==="rejected"?"Video ✗":"Video pending"}
+                        <VideoIcon size={12} color="#8b5cf6"/> {l.video_status==="approved"?"Video ✓":l.video_status==="rejected"?"Video ✗":"Video pending"}
                       </span>
                     )}
                   </div>
                   {l.listing_type==="vehicle"&&<div style={{ fontSize:10, color:"#777777", marginBottom:2 }}>{[l.make,l.model,l.year].filter(Boolean).join(" · ")}</div>}
-                  <div style={{ fontSize:10, color:"#777777" }}>📍 {l.city||"—"} · 👁 {l.views||0} · {new Date(l.created_at).toLocaleDateString()}</div>
+                  <div style={{ fontSize:10, color:"#777777", display:"flex", alignItems:"center", gap:4 }}><LocationIcon size={10} color="#777777"/> {l.city||"—"} · <EyeIcon size={10} color="#777777"/> {l.views||0} · {new Date(l.created_at).toLocaleDateString()}</div>
                 </div>
               </div>
 
