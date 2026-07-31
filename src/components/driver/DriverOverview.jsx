@@ -190,12 +190,12 @@ export default function DriverOverview() {
         <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:8 }}>
           {[
             { label:"Today jobs", value:todayStats.jobs, icon:"📅", color:"#378add" },
-            { label:"Today earnings", value:`KES ${Number(todayStats.earnings).toLocaleString()}`, icon:"💵", color:"#1d9e75" },
-            { label:"Week jobs", value:weekStats.jobs, icon:"📊", color:"#8b5cf6" },
-            { label:"Rating", value:provider_rating?`⭐ ${rating}`:"—", icon:"⭐", color:"#e6821e" },
+            { label:"Today earnings", value:`KES ${Number(todayStats.earnings).toLocaleString()}`, icon:"wallet", color:"#1d9e75" },
+            { label:"Week jobs", value:weekStats.jobs, icon:"analytics", color:"#8b5cf6" },
+            { label:"Rating", value:rating?`⭐ ${rating}`:"—", icon:"star", color:"#e6821e" },
           ].map(s=>(
             <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"0.75rem", display:"flex", alignItems:"center", gap:8 }}>
-              <div style={{ fontSize:20 }}>{s.icon}</div>
+              <div style={{display:"flex",alignItems:"center"}}>{s.icon==="wallet"?<WalletIcon size={20} color={s.color}/>:s.icon==="analytics"?<AnalyticsIcon size={20} color={s.color}/>:s.icon==="star"?<StarIcon size={20} color={s.color}/>:<VehicleIcon size={20} color={s.color}/>}</div>
               <div>
                 <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:s.color }}>{s.value}</div>
                 <div style={{ fontSize:10, color:"#888" }}>{s.label}</div>
@@ -295,7 +295,7 @@ export default function DriverOverview() {
         <div style={{ background:"#f8f8f8", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
           <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75", marginBottom:10 }}>💰 Your earnings structure</div>
           {(isConcierge ? [
-            { icon:"💵", label:"Commission", desc:"15% of service fee — paid after delivery complete" },
+            { icon:"wallet", label:"Commission", desc:"15% of service fee — paid after delivery complete" },
             { icon:"🚌", label:"Transport allowance", desc:"KES 200 per booking — covers your travel to pick up and return the car" },
             { icon:"⚠️", label:"No-show policy", desc:"Allowance only paid after pickup report filed. No-shows result in penalties." },
             { icon:"🔒", label:"Payment security", desc:"Both released only after you complete the delivery and file the dropoff report" },
@@ -331,6 +331,7 @@ export default function DriverOverview() {
     </div>
   )
 }
+
 
 
 
