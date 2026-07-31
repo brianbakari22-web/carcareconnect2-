@@ -37,7 +37,7 @@ export default function ProviderQRCode() {
 
         <div>
           <div style={{ background:"#f8f8f8", borderRadius:12, padding:"1.25rem", marginBottom:"1rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000", marginBottom:12 }}>💡 Where to use your QR code</div>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000", marginBottom:12 }}><><TipIcon size={14} color="currentColor"/> Where to use your QR code</></div>
             {[
               { icon:"💳", title:"Business cards", desc:"Print on the back of your business card — customers scan to book instantly" },
               { icon:"🪟", title:"Shop window sticker", desc:"A3 or A4 sticker on your shop window — drives walk-in traffic to online bookings" },
@@ -56,12 +56,12 @@ export default function ProviderQRCode() {
           </div>
 
           <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7530", borderRadius:12, padding:"1.25rem" }}>
-            <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75", marginBottom:8 }}>📍 Your storefront link</div>
+            <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75", marginBottom:8 }}><><LocationIcon size={14} color="currentColor"/> Your storefront link</></div>
             <div style={{ fontSize:12, color:"#555", marginBottom:8 }}>Share this link directly on social media or WhatsApp:</div>
             <div style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", fontSize:12, color:"#378add", wordBreak:"break-all", border:"1px solid #1d9e7530" }}>{providerUrl}</div>
             <button onClick={()=>{ navigator.clipboard.writeText(providerUrl); }}
               style={{ marginTop:10, background:"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>
-              📋 Copy link
+              <><NoteIcon size={14} color="currentColor"/> Copy link</>
             </button>
           </div>
         </div>
