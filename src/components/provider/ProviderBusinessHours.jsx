@@ -152,7 +152,7 @@ export default function ProviderBusinessHours() {
                 <div style={{ display:"flex", alignItems:"center", gap:12 }}>
                   {/* Day toggle */}
                   <div style={{ width:36, height:36, borderRadius:10, background:day.is_open?"#378add":"#e0e0e0", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, flexShrink:0, transition:"background 0.2s" }}>
-                    {day.is_open?(DAY_ICONS[i]==="sun"?<SunIcon size={14} color="#e6821e"/>:DAY_ICONS[i]==="success"?<SuccessIcon size={14} color="#1d9e75"/>:<SettingsIcon size={14} color="#64748B"/>):"—"}
+                    {day.is_open?(DAY_ICONS[i]==="sun"?<SunIcon size={16} color="#ffffff"/>:DAY_ICONS[i]==="success"?<SuccessIcon size={16} color="#ffffff"/>:<SettingsIcon size={16} color="#ffffff"/>):"—"}
                   </div>
                   <div style={{ flex:1, minWidth:0 }}>
                     <div style={{ fontSize:13, fontWeight:day.is_open?700:400, color:day.is_open?"#000":"#999", marginBottom:2 }}>{day.day_name}</div>
