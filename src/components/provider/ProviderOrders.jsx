@@ -240,7 +240,6 @@ export default function ProviderOrders() {
           ))}
         </div>
       )}
-      )}
       {/* Gradient stats header */}
       <div style={{ background: newOrderAlert ? "linear-gradient(135deg,#1d9e75,#22c98f)" : "linear-gradient(135deg,#e6821e,#f09840)", borderRadius:14, padding:"1rem 1.25rem", marginBottom:"1.25rem", display:"flex", justifyContent:"space-between", alignItems:"center", transition:"background 0.5s" }}>
         <div>
