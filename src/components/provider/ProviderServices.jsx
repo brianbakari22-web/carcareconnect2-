@@ -201,7 +201,15 @@ export default function ProviderServices() {
         {CATEGORIES.map(c=>(
           <div key={c.key} style={{ background:c.bg, border:`1px solid ${c.border}`, borderRadius:12, padding:"1rem" }}>
             <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
-              <span style={{ fontSize:20 }}>{c.icon}</span>
+              <span style={{display:"flex", alignItems:"center"}}>
+              {c.icon==="marketplace"?<MarketplaceIcon size={20} color={c.color}/>:
+               c.icon==="home"?<HomeIcon size={20} color={c.color}/>:
+               c.icon==="emergency"?<GOServiceIcon size={20} color="#e24b4a"/>:
+               c.icon==="discover"?<DiscoverIcon size={20} color={c.color}/>:
+               c.icon==="star"?<StarIcon size={20} color={c.color}/>:
+               c.icon==="mechanic"?<MechanicIcon size={20} color={c.color}/>:
+               <ServicesIcon size={20} color={c.color}/>}
+            </span>
               <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:c.color }}>{c.label}</div>
             </div>
             <div style={{ fontSize:11, color:"#666", marginBottom:4 }}>{c.desc}</div>
@@ -258,7 +266,15 @@ export default function ProviderServices() {
               {CATEGORIES.map(c=>(
                 <button key={c.key} type="button" onClick={()=>setForm(f=>({...f,category:c.key}))}
                   style={{ background:form.category===c.key?c.bg:"#ffffff", border:`1px solid ${form.category===c.key?c.color:"#f5f5f5"}`, borderRadius:9, padding:"0.75rem", cursor:"pointer", textAlign:"left" }}>
-                  <div style={{ fontSize:16, marginBottom:4 }}>{c.icon}</div>
+                  <div style={{ marginBottom:4, display:"flex" }}>
+                  {c.icon==="marketplace"?<MarketplaceIcon size={16} color={c.color}/>:
+                   c.icon==="home"?<HomeIcon size={16} color={c.color}/>:
+                   c.icon==="emergency"?<GOServiceIcon size={16} color="#e24b4a"/>:
+                   c.icon==="discover"?<DiscoverIcon size={16} color={c.color}/>:
+                   c.icon==="star"?<StarIcon size={16} color={c.color}/>:
+                   c.icon==="mechanic"?<MechanicIcon size={16} color={c.color}/>:
+                   <ServicesIcon size={16} color={c.color}/>}
+                </div>
                   <div style={{ fontSize:12, fontWeight:600, color:form.category===c.key?c.color:"#666", marginBottom:2 }}>{c.label}</div>
                   <div style={{ fontSize:10, color:"#888888" }}>{c.commission}</div>
                 </button>
@@ -334,7 +350,7 @@ export default function ProviderServices() {
       {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&filtered.length===0&&(
         <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
-          <div style={{ fontSize:32, marginBottom:10 }}>🔧</div>
+          <div style={{ marginBottom:10, display:"flex", justifyContent:"center" }}><ServicesIcon size={32} color="#e6821e"/></div>
           No services yet. Add your first service above.
         </div>
       )}
