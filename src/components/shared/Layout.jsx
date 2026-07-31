@@ -3,7 +3,7 @@ import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import { useTheme } from "../../contexts/ThemeContext"
 import { useNavigate, useLocation } from "react-router-dom"
-import { HomeIcon, ServicesIcon, BookingsIcon, PaymentsIcon, ProfileIcon, MarketplaceIcon, ChatIcon, NotificationsIcon, GOServiceIcon, SearchIcon, SettingsIcon, WalletIcon, LocationIcon, StarIcon, VehicleIcon, ShieldIcon, DriversIcon, OrdersIcon, AnalyticsIcon, FilterIcon, LogoutIcon, HelpIcon, MechanicIcon, PartsIcon, ReportsIcon, SecurityIcon, TripReportIcon, LoyaltyIcon, FavoritesIcon, ReferEarnIcon, VehicleReportIcon, ServiceGuaranteeIcon, MyListingsIcon, MyTransactionsIcon, TruckDriverIcon, DiscoverIcon } from "../../lib/cccIcons"
+import { HomeIcon, ServicesIcon, BookingsIcon, PaymentsIcon, ProfileIcon, MarketplaceIcon, ChatIcon, NotificationsIcon, GOServiceIcon, SearchIcon, SettingsIcon, WalletIcon, LocationIcon, StarIcon, VehicleIcon, ShieldIcon, DriversIcon, OrdersIcon, AnalyticsIcon, FilterIcon, LogoutIcon, HelpIcon, MechanicIcon, PartsIcon, ReportsIcon, SecurityIcon, TripReportIcon, LoyaltyIcon, FavoritesIcon, ReferEarnIcon, VehicleReportIcon, ServiceGuaranteeIcon, MyListingsIcon, MyTransactionsIcon, TruckDriverIcon, DiscoverIcon, MenuIcon } from "../../lib/cccIcons"
 import ThemeSwitcher from "./ThemeSwitcher"
 import { supabase } from "../../lib/supabase"
 import AIAssistant from "./AIAssistant"
@@ -620,6 +620,7 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 
 
