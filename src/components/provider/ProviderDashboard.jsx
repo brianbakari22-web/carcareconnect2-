@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { supabase } from "../../lib/supabase"
-import { ServicesIcon, VehicleIcon, PartsIcon, MarketplaceIcon, DiscoverIcon, PowerIcon, GlobeIcon, MechanicIcon, CloseIcon, OrdersIcon, WalletIcon, SuccessIcon, ShieldIcon, WarningIcon, DeliveryIcon, NotificationsIcon } from "../../lib/cccIcons"
+import { ServicesIcon, VehicleIcon, PartsIcon, MarketplaceIcon, DiscoverIcon, PowerIcon, GlobeIcon, MechanicIcon, CloseIcon, OrdersIcon, WalletIcon, SuccessIcon, ShieldIcon, WarningIcon, DeliveryIcon, NotificationsIcon, ClockIcon, BookingsIcon } from "../../lib/cccIcons"
 import ProviderOnboarding from "./ProviderOnboarding"
 import { validateFile, sanitizeFilePath } from "../../lib/uploadValidation"
 import { useAuth } from "../../contexts/AuthContext"
@@ -189,13 +189,23 @@ export default function ProviderDashboard() {
         ) : (
           <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:8 }}>
             {[
-              { label:"Pending", value:bookingStats.pending, color:"#e6821e", icon:"⏳", pulse:bookingStats.pending>0 },
-              { label:"Confirmed", value:bookingStats.confirmed, color:"#378add", icon:"✅" },
+              { label:"Pending", value:bookingStats.pending, color:"#e6821e", icon:"clock", pulse:bookingStats.pending>0 },
+              { label:"Confirmed", value:bookingStats.confirmed, color:"#378add", icon:"bookings" },
               { label:"Completed", value:bookingStats.completed, color:"#1d9e75", icon:"success" },
               { label:"Earnings", value:"KES "+Number(bookingStats.earnings).toLocaleString(), color:"#8b5cf6", icon:"wallet" },
             ].map(s=>(
               <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"0.75rem", display:"flex", alignItems:"center", gap:8 }}>
-                <div style={{ fontSize:20 }}>{s.icon}</div>
+                <div style={{ display:"flex", alignItems:"center", justifyContent:"center" }}>
+                {s.icon==="orders"?<OrdersIcon size={20} color={s.color}/>:
+                 s.icon==="wallet"?<WalletIcon size={20} color={s.color}/>:
+                 s.icon==="success"?<SuccessIcon size={20} color={s.color}/>:
+                 s.icon==="services"?<ServicesIcon size={20} color={s.color}/>:
+                 s.icon==="vehicle"?<VehicleIcon size={20} color={s.color}/>:
+                 s.icon==="warning"?<WarningIcon size={20} color={s.color}/>:
+                 s.icon==="clock"?<ClockIcon size={20} color={s.color}/>:
+                 s.icon==="bookings"?<BookingsIcon size={20} color={s.color}/>:
+                 <span style={{fontSize:20}}>{s.icon}</span>}
+              </div>
                 <div>
                   <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:s.color }}>{s.value}</div>
                   <div style={{ fontSize:10, color:"#888" }}>{s.label}</div>
