@@ -1,3 +1,4 @@
+import { ShieldIcon } from "../../lib/cccIcons"
 import { useNavigate } from "react-router-dom"
 import useIsMobile from "../../lib/useIsMobile"
 
@@ -9,7 +10,7 @@ export default function AdminRefunds() {
 
   return (
     <div style={{ maxWidth:600, margin:"0 auto", textAlign:"center", padding:"3rem 1rem" }}>
-      <div style={{ fontSize:48, marginBottom:"1rem" }}>🛡️</div>
+      <div style={{ marginBottom:"1rem", display:"flex", justifyContent:"center" }}><ShieldIcon size={48} color="#e6821e"/></div>
       <div style={{ fontFamily:"Syne", fontSize:isMobile?18:22, fontWeight:800, color:"#000000", marginBottom:8 }}>
         Refunds have moved
       </div>

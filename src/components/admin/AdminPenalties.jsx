@@ -1,3 +1,4 @@
+import { ClockIcon, CloseIcon, WarningIcon, ShieldIcon, StarIcon, ServicesIcon } from "../../lib/cccIcons"
 import { useState, useEffect } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"

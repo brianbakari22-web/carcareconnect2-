@@ -1,3 +1,4 @@
+import { ProfileIcon, BookingsIcon, OrdersIcon, PartsIcon, WalletIcon, AnalyticsIcon, GOServiceIcon, WarningIcon, SuccessIcon, VehicleIcon, ServicesIcon } from "../../lib/cccIcons"
 import useIsMobile from "../../lib/useIsMobile"
 import { useAuth } from "../../contexts/AuthContext"
 import AdminAIMonitor from "./AdminAIMonitor"
@@ -133,8 +134,8 @@ export default function AdminDashboard() {
     setStats(s=>({...s, pendingOrders, lowStock, inventoryItems:(inventoryItems||[]).length }))
 
     const feed = [
-      ...(recentBookings||[]).map(b=>({ type:"booking", text:`Booking: ${b.service_name}`, sub:b.status, time:b.created_at, tag:b.status==="completed"?"Completed":b.status==="cancelled"?"Cancelled":"Pending", icon:"📅" })),
-      ...(recentUsers||[]).map(u=>({ type:"user", text:`New ${u.role}: ${u.first_name} ${u.last_name}`, sub:"registered", time:u.created_at, tag:u.role, icon:"👤" })),
+      ...(recentBookings||[]).map(b=>({ type:"booking", text:`Booking: ${b.service_name}`, sub:b.status, time:b.created_at, tag:b.status==="completed"?"Completed":b.status==="cancelled"?"Cancelled":"Pending", icon:"bookings" })),
+      ...(recentUsers||[]).map(u=>({ type:"user", text:`New ${u.role}: ${u.first_name} ${u.last_name}`, sub:"registered", time:u.created_at, tag:u.role, icon:"profile" })),
     ].sort((a,b)=>new Date(b.time)-new Date(a.time)).slice(0,10)
     setActivity(feed)
 
@@ -192,7 +193,7 @@ export default function AdminDashboard() {
       {sosAlerts.length>0&&(
         <div style={{ background:"#fff5f5", border:"2px solid #e24b4a", borderRadius:12, padding:"1rem", marginBottom:"1.25rem" }}>
           <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e24b4a", marginBottom:8 }}>
-            🚨 {sosAlerts.length} Active Emergency Alert{sosAlerts.length>1?"s":""}
+            <GOServiceIcon size={14} color="#e24b4a"/> {sosAlerts.length} Active Emergency Alert{sosAlerts.length>1?"s":""}
           </div>
           {sosAlerts.map(a=>(
             <div key={a.id} style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", marginBottom:6, display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:8 }}>
@@ -234,12 +235,12 @@ export default function AdminDashboard() {
       {/* QUICK ACTIONS */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))", gap:8, marginBottom:"1.25rem" }}>
         {[
-          { icon:"👥", label:"Users", path:"/admin-dashboard/users", color:"#378add", value:stats.users },
-          { icon:"📅", label:"Bookings", path:"/admin-dashboard/bookings", color:"#e6821e", value:stats.bookings },
-          { icon:"🛒", label:"Orders", path:"/admin-dashboard/orders", color:"#8b5cf6", value:stats.pendingOrders||0 },
-          { icon:"📦", label:"Inventory", path:"/admin-dashboard/inventory", color:"#1d9e75", value:stats.inventoryItems||0 },
-          { icon:"💰", label:"Revenue", path:"/admin-dashboard/revenue", color:"#e6821e", value:"KES "+(stats.revenue||0).toLocaleString() },
-          { icon:"🔬", label:"Diagnostics", path:"/admin-dashboard/diagnostics", color:"#e24b4a", value:"Check" },
+          { icon:"users", label:"Users", path:"/admin-dashboard/users", color:"#378add", value:stats.users },
+          { icon:"bookings", label:"Bookings", path:"/admin-dashboard/bookings", color:"#e6821e", value:stats.bookings },
+          { icon:"orders", label:"Orders", path:"/admin-dashboard/orders", color:"#8b5cf6", value:stats.pendingOrders||0 },
+          { icon:"parts", label:"Inventory", path:"/admin-dashboard/inventory", color:"#1d9e75", value:stats.inventoryItems||0 },
+          { icon:"wallet", label:"Revenue", path:"/admin-dashboard/revenue", color:"#e6821e", value:"KES "+(stats.revenue||0).toLocaleString() },
+          { icon:"diagnostics", label:"Diagnostics", path:"/admin-dashboard/diagnostics", color:"#e24b4a", value:"Check" },
         ].map(a=>(
           <a key={a.path} href={a.path} style={{ background:"#f8f8f8", border:`1px solid ${a.color}30`, borderRadius:10, padding:"0.75rem", textDecoration:"none", textAlign:"center", display:"block" }}>
             <div style={{ fontSize:22, marginBottom:4 }}>{a.icon}</div>

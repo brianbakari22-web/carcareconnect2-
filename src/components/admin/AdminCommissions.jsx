@@ -1,3 +1,4 @@
+import { ServicesIcon, VehicleIcon, GOServiceIcon, DiscoverIcon, PartsIcon, MarketplaceIcon } from "../../lib/cccIcons"
 import { useEffect, useState } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
@@ -6,9 +7,9 @@ import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
 const PROVIDER_TYPES = [
-  { key:"garage_shop_standard", label:"Garage - In Shop", icon:"🔧" },
-  { key:"garage_shop_premium", label:"Garage - Mobile Mechanic", icon:"🚗" },
-  { key:"garage_go_service", label:"Garage - GO Emergency", icon:"🚨" },
+  { key:"garage_shop_standard", label:"Garage - In Shop", icon:"services" },
+  { key:"garage_shop_premium", label:"Garage - Mobile Mechanic", icon:"vehicle" },
+  { key:"garage_go_service", label:"Garage - GO Emergency", icon:"emergency" },
   { key:"panel_beater_shop_standard", label:"Panel Beater - In Shop", icon:"🔨" },
   { key:"panel_beater_shop_premium", label:"Panel Beater - On Site", icon:"🔨" },
   { key:"auto_glass_shop_standard", label:"Auto Glass - In Shop", icon:"🪟" },
@@ -18,7 +19,7 @@ const PROVIDER_TYPES = [
   { key:"car_wash_basic_wash", label:"Car Wash - Basic", icon:"🚿" },
   { key:"car_wash_standard_wash", label:"Car Wash - Standard", icon:"🚿" },
   { key:"car_wash_premium_detail", label:"Car Wash - Premium Detail", icon:"✨" },
-  { key:"parts_dealer", label:"Parts Dealer", icon:"⚙️" },
+  { key:"parts_dealer", label:"Parts Dealer", icon:"parts" },
   { key:"accessories_shop", label:"Accessories Shop", icon:"✨" },
   { key:"tyre_shop", label:"Tyre Shop", icon:"🛞" },
   { key:"marketplace_vehicle", label:"Marketplace - Vehicle Sale", icon:"🚙" },

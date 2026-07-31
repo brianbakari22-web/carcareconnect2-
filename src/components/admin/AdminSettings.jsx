@@ -1,3 +1,4 @@
+import { WalletIcon, GOServiceIcon, VehicleIcon, ShieldIcon, SettingsIcon } from "../../lib/cccIcons"
 import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import useIsMobile from "../../lib/useIsMobile"
@@ -6,9 +7,9 @@ import { validateFile } from "../../lib/uploadValidation"
 import { useAuth } from "../../contexts/AuthContext"
 
 const SETTING_CATEGORIES = {
-  "Commissions & Fees": { icon:"💰", color:"#1d9e75", keys:["inspection_fee","go_service_callout_fee","shop_standard_commission","shop_premium_commission","go_service_commission","concierge_surcharge_rate","marketplace_processing_fee_rate"] },
-  "GO Service Rates": { icon:"🚨", color:"#e24b4a", keys:["go_callout_fee","go_callout_provider_rate","go_callout_platform_rate","go_service_provider_rate","go_service_platform_rate","go_parts_provider_rate","go_parts_platform_rate","go_provider_strike_limit"] },
-  "New Car Marketplace": { icon:"🚗", color:"#378add", keys:["new_car_listing_fee","new_car_lead_fee","new_car_featured_fee_day","new_car_featured_fee_week","new_car_featured_fee_month","new_car_listing_duration_days"] },
+  "Commissions & Fees": { icon:"wallet", color:"#1d9e75", keys:["inspection_fee","go_service_callout_fee","shop_standard_commission","shop_premium_commission","go_service_commission","concierge_surcharge_rate","marketplace_processing_fee_rate"] },
+  "GO Service Rates": { icon:"emergency", color:"#e24b4a", keys:["go_callout_fee","go_callout_provider_rate","go_callout_platform_rate","go_service_provider_rate","go_service_platform_rate","go_parts_provider_rate","go_parts_platform_rate","go_provider_strike_limit"] },
+  "New Car Marketplace": { icon:"vehicle", color:"#378add", keys:["new_car_listing_fee","new_car_lead_fee","new_car_featured_fee_day","new_car_featured_fee_week","new_car_featured_fee_month","new_car_listing_duration_days"] },
   "Payment & Banking": { icon:"🏦", color:"#8b5cf6", keys:["go_callout_fee","min_payout_amount","platform_bank_name","platform_bank_account","platform_bank_account_name","daraja_wallet_id"] },
 }
 

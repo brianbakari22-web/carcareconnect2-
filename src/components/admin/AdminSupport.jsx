@@ -1,3 +1,4 @@
+import { BookingsIcon, PaymentsIcon, VehicleIcon, OrdersIcon, ProfileIcon, ServicesIcon, ChatIcon } from "../../lib/cccIcons"
 import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
@@ -6,7 +7,7 @@ import toast from "react-hot-toast"
 
 const SC = { open:"#e6821e", in_progress:"#378add", resolved:"#1d9e75", closed:"#555" }
 const PC = { low:"#1d9e75", medium:"#e6821e", high:"#e24b4a", urgent:"#d4537e" }
-const CAT_ICON = { booking:"📅", payment:"💳", driver:"🚗", parts:"📦", account:"👤", technical:"🔧", other:"💬" }
+const CAT_ICON = { booking:"bookings", payment:"payments", driver:"vehicle", parts:"orders", account:"profile", technical:"🔧", other:"💬" }
 
 export default function AdminSupport() {
   const isMobile = useIsMobile()
