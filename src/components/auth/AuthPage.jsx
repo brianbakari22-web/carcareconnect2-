@@ -2,7 +2,7 @@ import useIsMobile from "../../lib/useIsMobile"
 import { useState, useEffect } from "react"
 import { Capacitor } from "@capacitor/core"
 
-import { ServicesIcon, PartsIcon, MarketplaceIcon, VehicleIcon, PowerIcon, DiscoverIcon, MechanicIcon, GlobeIcon } from "../../lib/cccIcons"
+import { ServicesIcon, PartsIcon, MarketplaceIcon, VehicleIcon, PowerIcon, DiscoverIcon, MechanicIcon, GlobeIcon, DeliveryIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { sanitizeName, sanitizeEmail, sanitizePhone, sanitizeFreeText } from "../../lib/sanitize"
 import { applyRateLimit, RATE_LIMITS } from "../../lib/rateLimit"
@@ -618,7 +618,12 @@ export default function AuthPage() {
                 <div key={r.key} className="role-pill"
                   onClick={()=>{ setSelectedRole(r.key); setStep("role"); setMode("signup") }}
                   style={{ background:r.bg, border:"1.5px solid "+r.border, borderRadius:16, padding:"1rem", cursor:"pointer", transition:"all 0.18s" }}>
-                  <div style={{ fontSize:28, marginBottom:8 }}>{r.emoji}</div>
+                  <div style={{ marginBottom:8, display:"flex", justifyContent:"center" }}>
+                  {r.emoji==="car"?<VehicleIcon size={28} color={r.color}/>:
+                   r.emoji==="wrench"?<ServicesIcon size={28} color={r.color}/>:
+                   r.emoji==="gear"?<MechanicIcon size={28} color={r.color}/>:
+                   <DeliveryIcon size={28} color={r.color}/>}
+                </div>
                   <div style={{ fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, color:"#000", marginBottom:3 }}>{r.label}</div>
                   <div style={{ fontSize:11, color:"#888", lineHeight:1.4 }}>{r.desc}</div>
                   <div style={{ marginTop:8, fontSize:11, fontWeight:700, color:r.color }}>Join free</div>
@@ -630,7 +635,7 @@ export default function AuthPage() {
           <div className="au3"
             onClick={()=>{ setSelectedRole("parts_dealer"); setStep("role"); setMode("signup") }}
             style={{ background:"#fefce8", border:"1.5px solid #f59e0b25", borderRadius:14, padding:"0.875rem 1rem", display:"flex", alignItems:"center", gap:12, cursor:"pointer", marginBottom:"1.5rem" }}>
-            <div style={{ fontSize:28, flexShrink:0 }}>🛒</div>
+            <div style={{ flexShrink:0, display:"flex", alignItems:"center" }}><MarketplaceIcon size={28} color="#f59e0b"/></div>
             <div style={{ flex:1 }}>
               <div style={{ fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, color:"#000" }}>Parts Dealer</div>
               <div style={{ fontSize:11, color:"#888", marginTop:2 }}>Sell genuine and aftermarket parts online. Keep up to 95%.</div>
