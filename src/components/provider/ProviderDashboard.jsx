@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { supabase } from "../../lib/supabase"
+import { ServicesIcon, VehicleIcon, PartsIcon, MarketplaceIcon, DiscoverIcon, PowerIcon, GlobeIcon, MechanicIcon, CloseIcon, OrdersIcon, WalletIcon, SuccessIcon, ShieldIcon, WarningIcon, DeliveryIcon, NotificationsIcon } from "../../lib/cccIcons"
 import ProviderOnboarding from "./ProviderOnboarding"
 import { validateFile, sanitizeFilePath } from "../../lib/uploadValidation"
 import { useAuth } from "../../contexts/AuthContext"
@@ -9,15 +10,15 @@ import toast from "react-hot-toast"
 
 
 const TYPE_CONFIG = {
-  garage:          { label:"Garage / Mechanic",   icon:"🔧", color:"#e6821e", focus:"bookings" },
-  garage_premium:  { label:"Mobile Mechanic",      icon:"🚗", color:"#378add", focus:"bookings" },
-  parts_dealer:    { label:"Parts Dealer",          icon:"⚙️", color:"#8b5cf6", focus:"inventory" },
-  accessories_shop:{ label:"Accessories Shop",      icon:"✨", color:"#e6821e", focus:"inventory" },
-  tyre_shop:       { label:"Tyre Shop",             icon:"🛞", color:"#1d9e75", focus:"inventory" },
-  auto_electrician:{ label:"Auto Electrician",      icon:"⚡", color:"#e6821e", focus:"bookings" },
-  car_wash:        { label:"Car Wash",              icon:"🚿", color:"#378add", focus:"bookings" },
-  panel_beater:    { label:"Panel Beater",          icon:"🔨", color:"#e24b4a", focus:"bookings" },
-  auto_glass:      { label:"Auto Glass",            icon:"🪟", color:"#1d9e75", focus:"bookings" },
+  garage:          { label:"Garage / Mechanic",   icon:"services", color:"#e6821e", focus:"bookings" },
+  garage_premium:  { label:"Mobile Mechanic",      icon:"vehicle", color:"#378add", focus:"bookings" },
+  parts_dealer:    { label:"Parts Dealer",          icon:"parts", color:"#8b5cf6", focus:"inventory" },
+  accessories_shop:{ label:"Accessories Shop",      icon:"marketplace", color:"#e6821e", focus:"inventory" },
+  tyre_shop:       { label:"Tyre Shop",             icon:"parts2", color:"#1d9e75", focus:"inventory" },
+  auto_electrician:{ label:"Auto Electrician",      icon:"power", color:"#e6821e", focus:"bookings" },
+  car_wash:        { label:"Car Wash",              icon:"discover", color:"#378add", focus:"bookings" },
+  panel_beater:    { label:"Panel Beater",          icon:"mechanic", color:"#e24b4a", focus:"bookings" },
+  auto_glass:      { label:"Auto Glass",            icon:"globe", color:"#1d9e75", focus:"bookings" },
 }
 
 export default function ProviderDashboard() {
@@ -40,7 +41,7 @@ export default function ProviderDashboard() {
   // Suspension check
   if (profile?.is_banned) return (
     <div style={{ padding:"2rem", textAlign:"center", color:"#e24b4a" }}>
-      <div style={{ fontSize:32, marginBottom:10 }}>🚫</div>
+      <div style={{ marginBottom:10, display:"flex", justifyContent:"center" }}><CloseIcon size={32} color="#e24b4a"/></div>
       <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, marginBottom:8 }}>Account Permanently Banned</div>
       <div style={{ fontSize:13, color:"#666" }}>Your account has been permanently banned due to repeated service violations. Contact support if you believe this is an error.</div>
     </div>
@@ -167,12 +168,17 @@ export default function ProviderDashboard() {
           <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:8 }}>
             {[
               { label:"Pending orders", value:orderStats.pending, color:orderStats.pending>0?"#e6821e":"#555", icon:"🛒" },
-              { label:"Inventory items", value:orderStats.items, color:"#378add", icon:"📦" },
+              { label:"Inventory items", value:orderStats.items, color:"#378add", icon:"orders" },
               { label:"Low stock", value:orderStats.lowStock, color:orderStats.lowStock>0?"#e24b4a":"#555", icon:"⚠️" },
-              { label:"Revenue", value:"KES "+orderStats.revenue.toLocaleString(), color:"#1d9e75", icon:"💰" },
+              { label:"Revenue", value:"KES "+orderStats.revenue.toLocaleString(), color:"#1d9e75", icon:"wallet" },
             ].map(s=>(
               <div key={s.label} style={{ background:s.pulse?"#fff8f0":"#f8f8f8", borderRadius:10, padding:"0.75rem", display:"flex", alignItems:"center", gap:8, border:s.pulse?"2px solid #e6821e30":"2px solid transparent", boxShadow:s.pulse?"0 0 8px #e6821e20":"none" }}>
-                <div style={{ fontSize:20 }}>{s.icon}</div>
+                <div style={{ display:"flex", justifyContent:"center" }}>
+              {s.icon==="orders"?<OrdersIcon size={20} color={s.color}/>:
+               s.icon==="wallet"?<WalletIcon size={20} color={s.color}/>:
+               s.icon==="success"?<SuccessIcon size={20} color={s.color}/>:
+               <ServicesIcon size={20} color={s.color}/>}
+            </div>
                 <div>
                   <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:s.color }}>{s.value}</div>
                   <div style={{ fontSize:10, color:"#888" }}>{s.label}</div>
@@ -185,8 +191,8 @@ export default function ProviderDashboard() {
             {[
               { label:"Pending", value:bookingStats.pending, color:"#e6821e", icon:"⏳", pulse:bookingStats.pending>0 },
               { label:"Confirmed", value:bookingStats.confirmed, color:"#378add", icon:"✅" },
-              { label:"Completed", value:bookingStats.completed, color:"#1d9e75", icon:"🎉" },
-              { label:"Earnings", value:"KES "+Number(bookingStats.earnings).toLocaleString(), color:"#8b5cf6", icon:"💰" },
+              { label:"Completed", value:bookingStats.completed, color:"#1d9e75", icon:"success" },
+              { label:"Earnings", value:"KES "+Number(bookingStats.earnings).toLocaleString(), color:"#8b5cf6", icon:"wallet" },
             ].map(s=>(
               <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"0.75rem", display:"flex", alignItems:"center", gap:8 }}>
                 <div style={{ fontSize:20 }}>{s.icon}</div>
@@ -210,9 +216,9 @@ export default function ProviderDashboard() {
               Car Care Connect operates a <strong>Service Guarantee</strong> for all customers. As a provider, you must be aware:
             </div>
             {[
-              { icon:"⚠️", text:"1st approved claim — Warning + full cost deducted from earnings" },
-              { icon:"🚫", text:"2nd approved claim — 7 day suspension + cost deducted" },
-              { icon:"❗", text:"3rd approved claim — Permanent ban from platform" },
+              { icon:"warning", text:"1st approved claim — Warning + full cost deducted from earnings" },
+              { icon:"block", text:"2nd approved claim — 7 day suspension + cost deducted" },
+              { icon:"error", text:"3rd approved claim — Permanent ban from platform" },
               { icon:"✅", text:"Always deliver excellent, professional service to avoid claims" },
             ].map(item=>(
               <div key={item.icon} style={{ display:"flex", gap:10, alignItems:"flex-start", marginBottom:6 }}>
@@ -236,7 +242,7 @@ export default function ProviderDashboard() {
         {/* Guarantee reminder */}
         {!showPolicy&&(
           <div style={{ background:"#fff5f5", border:"1px solid #e24b4a20", borderRadius:10, padding:"0.75rem", marginBottom:"1rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-            <div style={{ fontSize:11, color:"#888" }}>🛡️ Service Guarantee active — deliver quality service</div>
+            <div style={{ fontSize:11, color:"#888", display:"flex", alignItems:"center", gap:4 }}><ShieldIcon size={11} color="#888"/> Service Guarantee active — deliver quality service</div>
             <button onClick={()=>setShowPolicy(true)} style={{ background:"none", border:"none", color:"#e24b4a", fontSize:11, cursor:"pointer" }}>View policy</button>
           </div>
         )}
@@ -246,20 +252,20 @@ export default function ProviderDashboard() {
           <>
             {orderStats.lowStock>0&&(
               <div style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:10, padding:"0.75rem", marginBottom:"1rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                <div style={{ fontSize:13, color:"#e24b4a", fontWeight:600 }}>⚠️ {orderStats.lowStock} item{orderStats.lowStock>1?"s":""} low on stock</div>
+                <div style={{ fontSize:13, color:"#e24b4a", fontWeight:600, display:"flex", alignItems:"center", gap:4 }}><WarningIcon size={13} color="#e24b4a"/> {orderStats.lowStock} item{orderStats.lowStock>1?"s":""} low on stock</div>
                 <a href="/dashboard/inventory" style={{ fontSize:11, color:"#e6821e", textDecoration:"none" }}>Manage →</a>
               </div>
             )}
             {orderStats.pending>0&&(
               <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.75rem", marginBottom:"1rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                <div style={{ fontSize:13, color:"#e6821e", fontWeight:600 }}>🛒 {orderStats.pending} order{orderStats.pending>1?"s":""} waiting</div>
+                <div style={{ fontSize:13, color:"#e6821e", fontWeight:600, display:"flex", alignItems:"center", gap:4 }}><OrdersIcon size={13} color="#e6821e"/> {orderStats.pending} order{orderStats.pending>1?"s":""} waiting</div>
                 <a href="/dashboard/orders" style={{ fontSize:11, color:"#e6821e", textDecoration:"none" }}>View →</a>
               </div>
             )}
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:"1rem" }}>
               {[
-                { href:"/dashboard/inventory", icon:"📦", label:"Inventory", desc:"Add, edit, update stock", color:config.color },
-                { href:"/dashboard/orders", icon:"🛒", label:"Orders", desc:"Confirm, pack, dispatch", color:"#1d9e75" },
+                { href:"/dashboard/inventory", icon:"orders", label:"Inventory", desc:"Add, edit, update stock", color:config.color },
+                { href:"/dashboard/orders", icon:"marketplace", label:"Orders", desc:"Confirm, pack, dispatch", color:"#1d9e75" },
               ].map(q=>(
                 <a key={q.label} href={q.href} style={{ background:"#f8f8f8", border:`1px solid ${q.color}20`, borderRadius:12, padding:"1rem", textDecoration:"none", display:"block" }}>
                   <div style={{ fontSize:24, marginBottom:6 }}>{q.icon}</div>
@@ -272,7 +278,7 @@ export default function ProviderDashboard() {
             {loading&&<div style={{ color:"#888", fontSize:13 }}>Loading...</div>}
             {!loading&&orders.length===0&&(
               <div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem", background:"#f8f8f8", borderRadius:12 }}>
-                <div style={{ fontSize:32, marginBottom:8 }}>📭</div>
+                <div style={{ marginBottom:8, display:"flex", justifyContent:"center" }}><NotificationsIcon size={32} color="#ccc"/></div>
                 No orders yet — add inventory to start selling
               </div>
             )}
@@ -281,7 +287,7 @@ export default function ProviderDashboard() {
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                   <div>
                     <div style={{ fontSize:13, fontWeight:600, color:"#000" }}>#{o.order_number}</div>
-                    <div style={{ fontSize:11, color:"#888" }}>{o.fulfillment_type==="delivery"?"🚚 Delivery":"🏪 Pickup"} · {new Date(o.created_at).toLocaleDateString()}</div>
+                    <div style={{ fontSize:11, color:"#888" }}>{o.fulfillment_type==="delivery"?<><DeliveryIcon size={12} color="#378add"/> Delivery</>:"🏪 Pickup"} · {new Date(o.created_at).toLocaleDateString()}</div>
                     <div style={{ fontSize:11, color:"#888" }}>{o.order_items?.length||0} item(s)</div>
                   </div>
                   <div style={{ textAlign:"right" }}>
@@ -306,7 +312,7 @@ export default function ProviderDashboard() {
                 </div>
                 <div style={{ textAlign:"right" }}>
                   <div style={{ fontSize:13, fontWeight:700, color:"#e6821e" }}>KES {Number(item.price).toLocaleString()}</div>
-                  {item.stock_quantity<=5&&<div style={{ fontSize:9, color:"#e24b4a" }}>⚠️ Low stock</div>}
+                  {item.stock_quantity<=5&&<div style={{ fontSize:9, color:"#e24b4a", display:"flex", alignItems:"center", gap:2 }}><WarningIcon size={9} color="#e24b4a"/> Low stock</div>}
                 </div>
               </div>
             ))}
@@ -327,7 +333,7 @@ export default function ProviderDashboard() {
             {loading&&<div style={{ color:"#888", fontSize:13 }}>Loading...</div>}
             {!loading&&bookings.length===0&&(
               <div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem", background:"#f8f8f8", borderRadius:12 }}>
-                <div style={{ fontSize:32, marginBottom:8 }}>📭</div>
+                <div style={{ marginBottom:8, display:"flex", justifyContent:"center" }}><NotificationsIcon size={32} color="#ccc"/></div>
                 No bookings yet
               </div>
             )}
