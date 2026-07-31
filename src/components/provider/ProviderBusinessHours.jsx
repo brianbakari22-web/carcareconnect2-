@@ -20,8 +20,8 @@ const DEFAULT_HOURS = DAYS.map((day, i) => ({
 const PRESETS = [
   { label:"Mon–Fri", icon:"work", apply:(hours)=>hours.map((d,i)=>({...d,is_open:i>=1&&i<=5,open_time:"08:00",close_time:"18:00"})) },
   { label:"Mon–Sat", icon:"bookings", apply:(hours)=>hours.map((d,i)=>({...d,is_open:i>=1&&i<=6,open_time:"08:00",close_time:"18:00"})) },
-  { label:"7 Days", icon:"🗓️", apply:(hours)=>hours.map(d=>({...d,is_open:true,open_time:"08:00",close_time:"18:00"})) },
-  { label:"Half day", icon:"☀️", apply:(hours)=>hours.map((d,i)=>({...d,is_open:i>=1&&i<=6,open_time:"08:00",close_time:"13:00"})) },
+  { label:"7 Days", icon:"7days", apply:(hours)=>hours.map(d=>({...d,is_open:true,open_time:"08:00",close_time:"18:00"})) },
+  { label:"Half day", icon:"halfday", apply:(hours)=>hours.map((d,i)=>({...d,is_open:i>=1&&i<=6,open_time:"08:00",close_time:"13:00"})) },
 ]
 
 export default function ProviderBusinessHours() {
@@ -134,7 +134,11 @@ export default function ProviderBusinessHours() {
               {PRESETS.map(p=>(
                 <button key={p.label} type="button" onClick={()=>applyPreset(p)}
                   style={{ background:"#f0f7ff", border:"1px solid #378add30", borderRadius:8, color:"#378add", fontSize:12, fontWeight:600, padding:"7px 14px", cursor:"pointer", display:"flex", alignItems:"center", gap:5 }}>
-                  {p.icon} {p.label}
+                  {p.icon==="work"?<SettingsIcon size={14} color="currentColor"/>:
+   p.icon==="bookings"?<BookingsIcon size={14} color="currentColor"/>:
+   p.icon==="7days"?<BookingsIcon size={14} color="currentColor"/>:
+   p.icon==="halfday"?<SunIcon size={14} color="currentColor"/>:
+   <SunIcon size={14} color="currentColor"/>} {p.label}
                 </button>
               ))}
             </div>
@@ -148,7 +152,7 @@ export default function ProviderBusinessHours() {
                 <div style={{ display:"flex", alignItems:"center", gap:12 }}>
                   {/* Day toggle */}
                   <div style={{ width:36, height:36, borderRadius:10, background:day.is_open?"#378add":"#e0e0e0", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, flexShrink:0, transition:"background 0.2s" }}>
-                    {day.is_open?DAY_ICONS[i]:"—"}
+                    {day.is_open?(DAY_ICONS[i]==="sun"?<SunIcon size={14} color="#e6821e"/>:DAY_ICONS[i]==="success"?<SuccessIcon size={14} color="#1d9e75"/>:<SettingsIcon size={14} color="#64748B"/>):"—"}
                   </div>
                   <div style={{ flex:1, minWidth:0 }}>
                     <div style={{ fontSize:13, fontWeight:day.is_open?700:400, color:day.is_open?"#000":"#999", marginBottom:2 }}>{day.day_name}</div>
