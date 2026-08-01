@@ -4,6 +4,7 @@ import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
 import { validateFile } from "../../lib/uploadValidation"
+import { BadgeIcon, ShieldIcon, DocumentIcon, NoteIcon, WarningIcon } from "../../lib/cccIcons"
 
 export default function DriverVehicle() {
   const isMobile = useIsMobile()
@@ -111,14 +112,14 @@ export default function DriverVehicle() {
         {docs.map(d=>(
           <div key={d.id} style={{ display:"flex", alignItems:"center", gap:12, padding:"0.75rem", background:"#ffffff", borderRadius:8, marginBottom:8, border:`1px solid ${isExpired(d.expiry_date)?"#e24b4a40":isExpiringSoon(d.expiry_date)?"#e6821e40":"#f5f5f5"}` }}>
             <div style={{ width:36, height:36, background:`${docTypeColor[d.type]}20`, borderRadius:8, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>
-              {d.type==="license"?"🪪":d.type==="insurance"?"🛡️":d.type==="registration"?"📄":"📎"}
+              {d.type==="license"?<BadgeIcon size={18} color={docTypeColor[d.type]}/>:d.type==="insurance"?<ShieldIcon size={18} color={docTypeColor[d.type]}/>:d.type==="registration"?<DocumentIcon size={18} color={docTypeColor[d.type]}/>:<NoteIcon size={18} color={docTypeColor[d.type]}/>}
             </div>
             <div style={{ flex:1 }}>
               <div style={{ fontSize:13, fontWeight:500, color:"#000000", textTransform:"capitalize" }}>{d.type}</div>
               {d.expiry_date&&(
                 <div style={{ fontSize:11, color:isExpired(d.expiry_date)?"#e24b4a":isExpiringSoon(d.expiry_date)?"#e6821e":"#555", marginTop:2 }}>
                   {isExpired(d.expiry_date)?"Expired":"Expires"}: {new Date(d.expiry_date).toLocaleDateString()}
-                  {isExpiringSoon(d.expiry_date)&&" ⚠️"}
+                  {isExpiringSoon(d.expiry_date)&&<WarningIcon size={11} color="#e6821e"/>}
                 </div>
               )}
               {d.is_verified&&<div style={{ fontSize:10, color:"#1d9e75", marginTop:2 }}>✓ Verified</div>}
@@ -155,9 +156,9 @@ export default function DriverVehicle() {
                 style={{ width:"100%", fontSize:12, color:"#555", fontFamily:"DM Sans,sans-serif" }}/>
               {docForm.file&&<div style={{ fontSize:11, color:"#1d9e75", marginTop:4 }}>✓ {docForm.file.name}</div>}
             </div>
-            <button type="submit"
-              style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:"pointer" }}>
-              Add document
+            <button type="submit" disabled={docUploading}
+              style={{ background:docUploading?"#ccc":"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:docUploading?"not-allowed":"pointer" }}>
+              {docUploading?"Uploading...":"Upload document"}
             </button>
           </form>
         </div>
