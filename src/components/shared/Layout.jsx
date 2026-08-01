@@ -679,7 +679,7 @@ export default function Layout({ children }) {
                item.key==="referEarn" ? <ReferEarnIcon size={18} active={isActive(item)} /> :
                item.label==="GO Requests"||item.label==="GO Service 🚨" ? <GOServiceIcon size={18} /> :
                item.label==="Marketplace" ? <MarketplaceIcon size={18} active={isActive(item)} /> :
-               item.label==="Mechanics"||item.label==="My Mechanics"||item.key==="mechanics" ? <MechanicIcon size={18} active={isActive(item)} /> :
+               item.label==="Mechanics"||item.label==="My Mechanics"||item.label==="Mechanics & Services"||item.key==="mechanics" ? <MechanicIcon size={18} active={isActive(item)} /> :
                item.label==="Drivers" ? <DriversIcon size={18} active={isActive(item)} /> :
                item.label==="Vehicles"||item.key==="myVehicles" ? <VehicleIcon size={18} active={isActive(item)} /> :
                item.label==="Settings" ? <SettingsIcon size={18} active={isActive(item)} /> :
@@ -800,6 +800,7 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 
 
