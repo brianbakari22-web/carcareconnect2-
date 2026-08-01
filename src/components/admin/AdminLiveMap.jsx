@@ -1,4 +1,4 @@
-import { GOServiceIcon, VehicleIcon, LocationIcon, AnalyticsIcon } from "../../lib/cccIcons"
+import { GOServiceIcon, VehicleIcon, LocationIcon, AnalyticsIcon, TripReportIcon, MechanicIcon } from "../../lib/cccIcons"
 import { useEffect, useState, useRef } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
@@ -281,4 +281,5 @@ export default function AdminLiveMap() {
     </div>
   )
 }
+
 
