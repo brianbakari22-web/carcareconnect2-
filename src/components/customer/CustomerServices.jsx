@@ -28,7 +28,8 @@ export default function CustomerServices() {
   const [activeCategory, setActiveCategory] = useState("all")
   const [search, setSearch] = useState("")
   const [booking, setBooking] = useState(null)
-  const [bookForm, setBookForm] = useState({ date:"", time:"", notes:"", payment_method:"mpesa", is_concierge:false, concierge_location:"", problem_description:"", parts_needed:false, parts_description:"" })
+  const [dateAvailability, setDateAvailability] = useState(null)
+    const [bookForm, setBookForm] = useState({ date:"", time:"", notes:"", payment_method:"mpesa", is_concierge:false, concierge_location:"", problem_description:"", parts_needed:false, parts_description:"" })
   const [bookingLoading, setBookingLoading] = useState(false)
   const [customerLocation, setCustomerLocation] = useState({ lat:null, lng:null, address:"" })
   const [detectingLocation, setDetectingLocation] = useState(false)
@@ -391,7 +392,7 @@ export default function CustomerServices() {
                       <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10, marginBottom:10 }}>
                         <div>
                           <label style={lbl}>Date</label>
-                          <input type="date" value={bookForm.date} onChange={e=>setBookForm(f=>({...f,date:e.target.value}))} required min={new Date().toISOString().split("T")[0]} style={inp}/>
+                          <input type="date" value={bookForm.date} onChange={e=>{ setBookForm(f=>({...f,date:e.target.value})); setDateAvailability(null); if(e.target.value) checkDateAvailability(e.target.value, booking?.provider_id) }} required min={new Date().toISOString().split("T")[0]} style={inp}/>
                         </div>
                         <div>
                           <label style={lbl}>Time</label>
@@ -571,7 +572,7 @@ export default function CustomerServices() {
                   <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10, marginBottom:10 }}>
                     <div>
                       <label style={lbl}>Date</label>
-                      <input type="date" value={bookForm.date} onChange={e=>setBookForm(f=>({...f,date:e.target.value}))} required min={new Date().toISOString().split("T")[0]} style={inp}/>
+                      <input type="date" value={bookForm.date} onChange={e=>{ setBookForm(f=>({...f,date:e.target.value})); setDateAvailability(null); if(e.target.value) checkDateAvailability(e.target.value, booking?.provider_id) }} required min={new Date().toISOString().split("T")[0]} style={inp}/>
                     </div>
                     <div>
                       <label style={lbl}>Time</label>
