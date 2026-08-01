@@ -470,6 +470,27 @@ export default function Layout({ children }) {
                item.icon==="failedJobs"?<WarningIcon size={20} color="#e24b4a"/>:
                item.icon==="delete"?<DeleteIcon size={20} color="#e24b4a"/>:
                item.icon==="settings"?<SettingsIcon size={20} active={isActive(item)}/>:
+               item.icon==="bookings"?<BookingsIcon size={18} active={isActive(item)}/>:
+               item.icon==="wallet"?<WalletIcon size={18} active={isActive(item)}/>:
+               item.icon==="star"?<StarIcon size={18} active={isActive(item)}/>:
+               item.icon==="payout"?<PayoutIcon size={18} active={isActive(item)}/>:
+               item.icon==="qr"?<QRCodeIcon size={18} active={isActive(item)}/>:
+               item.icon==="notifications"?<NotificationsIcon size={18} active={isActive(item)}/>:
+               item.icon==="messages"?<ChatIcon size={18} active={isActive(item)}/>:
+               item.icon==="clock"?<ClockIcon size={18} active={isActive(item)}/>:
+               item.icon==="overview"?<HomeIcon size={18} active={isActive(item)}/>:
+               item.icon==="services"?<ServicesIcon size={18} active={isActive(item)}/>:
+               item.icon==="orders"?<OrdersIcon size={18} active={isActive(item)}/>:
+               item.icon==="emergency"?<GOServiceIcon size={18} color="#e24b4a"/>:
+               item.icon==="helpTicket"?<HelpIcon size={18} active={isActive(item)}/>:
+               item.icon==="profile"?<ProfileIcon size={18} active={isActive(item)}/>:
+               item.icon==="mechanic"?<MechanicIcon size={18} active={isActive(item)}/>:
+               item.icon==="shield"?<ShieldIcon size={18} active={isActive(item)}/>:
+               item.icon==="parts"?<PartsIcon size={18} active={isActive(item)}/>:
+               item.icon==="analytics"?<AnalyticsIcon size={18} active={isActive(item)}/>:
+               item.icon==="vehicle"?<VehicleIcon size={18} active={isActive(item)}/>:
+               item.icon==="discover"?<DiscoverIcon size={18} active={isActive(item)}/>:
+               item.icon==="team"?<TeamIcon size={18} active={isActive(item)}/>:
                <span style={{fontSize:18}}>{item.icon}</span>}
             </span>
                   {getLabel(item)}
@@ -527,7 +548,49 @@ export default function Layout({ children }) {
                  item.key==="profile" ? <ProfileIcon size={22} active={isActive(item)} /> :
                  item.label==="Marketplace" ? <MarketplaceIcon size={22} active={isActive(item)} /> :
                  item.label==="Settings" ? <SettingsIcon size={22} active={isActive(item)} /> :
-                 <span style={{fontSize:20}}>{item.icon}</span>}
+                 item.icon==="bookings"?<BookingsIcon size={20} active={isActive(item)}/>:
+               item.icon==="wallet"?<WalletIcon size={20} active={isActive(item)}/>:
+               item.icon==="star"?<StarIcon size={20} active={isActive(item)}/>:
+               item.icon==="payout"?<PayoutIcon size={20} active={isActive(item)}/>:
+               item.icon==="qr"?<QRCodeIcon size={20} active={isActive(item)}/>:
+               item.icon==="notifications"?<NotificationsIcon size={20} active={isActive(item)}/>:
+               item.icon==="messages"?<ChatIcon size={20} active={isActive(item)}/>:
+               item.icon==="clock"?<ClockIcon size={20} active={isActive(item)}/>:
+               item.icon==="overview"?<HomeIcon size={20} active={isActive(item)}/>:
+               item.icon==="services"?<ServicesIcon size={20} active={isActive(item)}/>:
+               item.icon==="orders"?<OrdersIcon size={20} active={isActive(item)}/>:
+               item.icon==="emergency"?<GOServiceIcon size={20} color="#e24b4a"/>:
+               item.icon==="helpTicket"?<HelpIcon size={20} active={isActive(item)}/>:
+               item.icon==="profile"?<ProfileIcon size={20} active={isActive(item)}/>:
+               item.icon==="mechanic"?<MechanicIcon size={20} active={isActive(item)}/>:
+               item.icon==="shield"?<ShieldIcon size={20} active={isActive(item)}/>:
+               item.icon==="parts"?<PartsIcon size={20} active={isActive(item)}/>:
+               item.icon==="analytics"?<AnalyticsIcon size={20} active={isActive(item)}/>:
+               item.icon==="vehicle"?<VehicleIcon size={20} active={isActive(item)}/>:
+               item.icon==="discover"?<DiscoverIcon size={20} active={isActive(item)}/>:
+               item.icon==="team"?<TeamIcon size={20} active={isActive(item)}/>:
+               item.icon==="bookings"?<BookingsIcon size={20} active={isActive(item)}/>:
+               item.icon==="wallet"?<WalletIcon size={20} active={isActive(item)}/>:
+               item.icon==="star"?<StarIcon size={20} active={isActive(item)}/>:
+               item.icon==="payout"?<PayoutIcon size={20} active={isActive(item)}/>:
+               item.icon==="qr"?<QRCodeIcon size={20} active={isActive(item)}/>:
+               item.icon==="notifications"?<NotificationsIcon size={20} active={isActive(item)}/>:
+               item.icon==="messages"?<ChatIcon size={20} active={isActive(item)}/>:
+               item.icon==="clock"?<ClockIcon size={20} active={isActive(item)}/>:
+               item.icon==="overview"?<HomeIcon size={20} active={isActive(item)}/>:
+               item.icon==="services"?<ServicesIcon size={20} active={isActive(item)}/>:
+               item.icon==="orders"?<OrdersIcon size={20} active={isActive(item)}/>:
+               item.icon==="emergency"?<GOServiceIcon size={20} color="#e24b4a"/>:
+               item.icon==="helpTicket"?<HelpIcon size={20} active={isActive(item)}/>:
+               item.icon==="profile"?<ProfileIcon size={20} active={isActive(item)}/>:
+               item.icon==="mechanic"?<MechanicIcon size={20} active={isActive(item)}/>:
+               item.icon==="shield"?<ShieldIcon size={20} active={isActive(item)}/>:
+               item.icon==="parts"?<PartsIcon size={20} active={isActive(item)}/>:
+               item.icon==="analytics"?<AnalyticsIcon size={20} active={isActive(item)}/>:
+               item.icon==="vehicle"?<VehicleIcon size={20} active={isActive(item)}/>:
+               item.icon==="discover"?<DiscoverIcon size={20} active={isActive(item)}/>:
+               item.icon==="team"?<TeamIcon size={20} active={isActive(item)}/>:
+               <span style={{fontSize:20}}>{item.icon}</span>}
               </span>
                   <span style={{fontSize:9,color:location.pathname===item.path?activeColor:theme.textMuted,textAlign:"center",lineHeight:1.3}}>{item.label||item.key}</span>
                 </button>
