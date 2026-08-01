@@ -134,6 +134,13 @@ export default function DriverVehicle() {
                 <input style={inp} type="date" value={docForm.expiry_date} onChange={e=>setDocForm(f=>({...f,expiry_date:e.target.value}))}/>
               </div>
             </div>
+            
+            <div style={{ marginBottom:10 }}>
+              <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Upload file (PDF, JPG, PNG) *</label>
+              <input type="file" accept="image/*,.pdf" onChange={e=>setDocForm(f=>({...f,file:e.target.files[0]}))}
+                style={{ width:"100%", fontSize:12, color:"#555", fontFamily:"DM Sans,sans-serif" }}/>
+              {docForm.file&&<div style={{ fontSize:11, color:"#1d9e75", marginTop:4 }}>✓ {docForm.file.name}</div>}
+            </div>
             <button type="submit"
               style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:"pointer" }}>
               Add document
