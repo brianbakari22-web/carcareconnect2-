@@ -11,7 +11,7 @@ import EmergencySOS from "./EmergencySOS"
 
 const NAV = {
   customer: [
-    { path:"/dashboard", key:"overview", icon:"🏠" },
+    { path:"/dashboard", key:"overview", icon:"overview" },
     { path:"/dashboard/bookings", key:"bookings", icon:"📅" },
     { path:"/dashboard/services", key:"findServices", icon:"🔍" },
     { path:"/dashboard/vehicles", key:"myVehicles", icon:"🚗" },
@@ -21,10 +21,10 @@ const NAV = {
     { path:"/dashboard/trip-reports", label:"Trip Reports", icon:"🗺️" },
     { path:"/dashboard/loyalty", key:"loyalty", icon:"⭐" },
     { path:"/dashboard/payments", key:"payments", icon:"💳" },
-    { path:"/dashboard/reviews", key:"reviews", icon:"⭐" },
+    { path:"/dashboard/reviews", key:"reviews", icon:"reviews" },
     { path:"/dashboard/favorites", key:"favorites", icon:"❤️" },
     { path:"/dashboard/referral", key:"referEarn", icon:"🎁" },
-    { path:"/dashboard/support", label:"Support", icon:"🎫" },
+    { path:"/dashboard/support", label:"Support", icon:"helpTicket" },
     { path:"/dashboard/emergency", label:"GO Service 🚨", icon:"🚨" },
     { path:"/dashboard/vehicle-reports", label:"Vehicle Reports", icon:"📋" },
     { path:"/dashboard/claims", label:"Service Guarantee", icon:"🛡️" },
@@ -34,7 +34,7 @@ const NAV = {
     { path:"/dashboard/marketplace/my-offers", label:"My Offers", icon:"💰" },
     { path:"/dashboard/marketplace/transactions", label:"My Transactions", icon:"💳" },
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
-    { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
+    { path:"/dashboard/notifications", key:"notifications", icon:"notifications" },
     { path:"/dashboard/profile", key:"profile", icon:"⚙️" },
   ],
   provider: [], // built dynamically below
@@ -44,9 +44,9 @@ const NAV = {
     { path:"/dashboard/jobs", key:"availableJobs", icon:"📦" },
     { path:"/dashboard/active", key:"activeDelivery", icon:"🚗" },
     { path:"/dashboard/deliveries", label:"Order Deliveries", icon:"📦" },
-    { path:"/dashboard/earnings", key:"earnings", icon:"💰" },
+    { path:"/dashboard/earnings", key:"earnings", icon:"wallet" },
     { path:"/dashboard/reviews", key:"myRatings", icon:"⭐" },
-    { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
+    { path:"/dashboard/payouts", key:"payouts", icon:"payout" },
     { path:"/dashboard/claims", label:"My Claims", icon:"🛡️" },
     { path:"/dashboard/application", label:"My Application", icon:"📋" },
     { path:"/dashboard/vehicle", label:"My Vehicle", icon:"🚗" },
@@ -233,32 +233,32 @@ export default function Layout({ children }) {
     ...(!isPureInventoryProvider ? [{ path:"/dashboard/bookings", key:"bookings", icon:"📅" }] : []),
     ...(!isPureInventoryProvider ? [{ path:"/dashboard/services", key:"myServices", icon:"🔧" }] : []),
     ...( ["garage","garage_premium","panel_beater","auto_electrician","mobile_mechanic"].includes(providerType) ? [
-      { path:"/dashboard/bundles", label:"Service Bundles", icon:"📦" },
+      { path:"/dashboard/bundles", label:"Service Bundles", icon:"services" },
     ] : []),
     ...( hasInventory ? [
-      { path:"/dashboard/inventory", label:"Inventory", icon:"📦" },
-      { path:"/dashboard/orders", label:"Orders", icon:"🛒" },
+      { path:"/dashboard/inventory", label:"Inventory", icon:"parts" },
+      { path:"/dashboard/orders", label:"Orders", icon:"orders" },
     ] : []),
     { path:"/dashboard/earnings", key:"earnings", icon:"💰" },
-    { path:"/dashboard/analytics", key:"analytics", icon:"📊" },
-    { path:"/dashboard/qrcode", label:"My QR Code", icon:"📱" },
+    { path:"/dashboard/analytics", key:"analytics", icon:"analytics" },
+    { path:"/dashboard/qrcode", label:"My QR Code", icon:"qr" },
     { path:"/dashboard/reviews", key:"reviews", icon:"⭐" },
-    { path:"/dashboard/customer-reviews", label:"Rate Customers", icon:"👤" },
-    { path:"/dashboard/business-hours", label:"Business Hours", icon:"🕐" },
-    { path:"/dashboard/availability", key:"availability", icon:"🗓️" },
+    { path:"/dashboard/customer-reviews", label:"Rate Customers", icon:"profile" },
+    { path:"/dashboard/business-hours", label:"Business Hours", icon:"clock" },
+    { path:"/dashboard/availability", key:"availability", icon:"bookings" },
     { path:"/dashboard/payouts", key:"payouts", icon:"🏦" },
     ...( ["garage","garage_premium","auto_electrician"].includes(providerType) ? [
-      { path:"/dashboard/mechanics", label:"My Mechanics", icon:"👨‍🔧" },
+      { path:"/dashboard/mechanics", label:"My Mechanics", icon:"mechanic" },
     ] : []),
     ...( ["garage","garage_premium","auto_electrician"].includes(providerType) ? [
-      { path:"/dashboard/go-requests", label:"GO Requests", icon:"🚨" },
+      { path:"/dashboard/go-requests", label:"GO Requests", icon:"emergency" },
     ] : []),
-    { path:"/dashboard/claims", label:"Service Claims", icon:"🛡️" },
+    { path:"/dashboard/claims", label:"Service Claims", icon:"shield" },
     { path:"/dashboard/support", label:"Support", icon:"🎫" },
     ...( ["car_wash"].includes(providerType) ? [
-      { path:"/dashboard/wash-queue", label:"Wash Queue", icon:"🚿" },
-      { path:"/dashboard/wash-packages", label:"Wash Packages", icon:"✨" },
-      { path:"/dashboard/staff", label:"Staff Management", icon:"👥" },
+      { path:"/dashboard/wash-queue", label:"Wash Queue", icon:"discover" },
+      { path:"/dashboard/wash-packages", label:"Wash Packages", icon:"star" },
+      { path:"/dashboard/staff", label:"Staff Management", icon:"team" },
     ] : []),
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
     { path:"/dashboard/notifications", key:"notifications", icon:"🔔" },
@@ -722,6 +722,7 @@ export default function Layout({ children }) {
     </div>
   )
 }
+
 
 
 

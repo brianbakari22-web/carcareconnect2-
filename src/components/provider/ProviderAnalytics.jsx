@@ -69,7 +69,7 @@ export default function ProviderAnalytics() {
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(5,1fr)", gap:10, marginBottom:"1.5rem" }}>
         {[
           { label:"Completion rate", value:`${completionRate}%`, color:completionRate>=80?"#1d9e75":completionRate>=50?"#e6821e":"#e24b4a" },
-          { label:"Avg rating", value:avgRating?`⭐ ${avgRating}`:"—", color:avgRating>=4?"#1d9e75":avgRating>=3?"#e6821e":avgRating?"#e24b4a":undefined },
+          { label:"Avg rating", value:avgRating?`★ ${avgRating}`:"—", color:avgRating>=4?"#1d9e75":avgRating>=3?"#e6821e":avgRating?"#e24b4a":undefined },
           { label:"Review response rate", value:`${responseRate}%`, color:responseRate>=70?"#1d9e75":responseRate>=30?"#e6821e":"#e24b4a" },
           { label:"Returning customers", value:`${retentionRate}%`, color:"#378add" },
           { label:"Cancelled bookings", value:cancelled.length, color:cancelled.length>0?"#e24b4a":undefined },
@@ -139,6 +139,7 @@ export default function ProviderAnalytics() {
     </div>
   )
 }
+
 
 
 
