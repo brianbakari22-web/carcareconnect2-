@@ -1,3 +1,4 @@
+import { SecurityIcon, ShieldIcon, AnalyticsIcon, GOServiceIcon } from "../../lib/cccIcons"
 import { useState, useEffect, useRef, memo, useMemo } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
@@ -214,10 +215,10 @@ export default function AdminAuthPage() {
   ), [isMobile])
 
   const features = [
-    {icon:"🔐", text:"Two-factor authentication"},
-    {icon:"🛡️", text:"Role-based access control"},
-    {icon:"📊", text:"Full platform oversight"},
-    {icon:"⚡", text:"Real-time monitoring"},
+    {icon:"security", text:"Two-factor authentication"},
+    {icon:"shield", text:"Role-based access control"},
+    {icon:"analytics", text:"Full platform oversight"},
+    {icon:"realtime", text:"Real-time monitoring"},
   ]
 
   return (
@@ -248,7 +249,12 @@ export default function AdminAuthPage() {
           <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4,1fr)", gap:8, marginBottom:"2rem" }}>
             {features.map(f=>(
               <div key={f.text} style={{ background:"rgba(22,10,46,0.85)", border:"1px solid #8b5cf620", borderRadius:10, padding:isMobile?"0.6rem":"0.75rem", textAlign:"center" }}>
-                <div style={{ fontSize:isMobile?18:20, marginBottom:4 }}>{f.icon}</div>
+                <div style={{ marginBottom:4, display:"flex", justifyContent:"center" }}>
+                  {f.icon==="security"?<SecurityIcon size={20} color="#8b5cf6"/>:
+                   f.icon==="shield"?<ShieldIcon size={20} color="#8b5cf6"/>:
+                   f.icon==="analytics"?<AnalyticsIcon size={20} color="#8b5cf6"/>:
+                   <GOServiceIcon size={20} color="#8b5cf6"/>}
+                </div>
                 <div style={{ fontSize:isMobile?9:10, color:"#666", lineHeight:1.4 }}>{f.text}</div>
               </div>
             ))}
@@ -256,7 +262,7 @@ export default function AdminAuthPage() {
 
           <button onClick={()=>setSheetOpen(true)}
             style={{ background:"#8b5cf6", border:"none", borderRadius:14, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:isMobile?14:16, fontWeight:700, padding:isMobile?"12px 32px":"16px 48px", cursor:"pointer", display:"inline-flex", alignItems:"center", gap:10 }}>
-            🔐 Admin Sign In
+            Admin Sign In
           </button>
 
           <div style={{ marginTop:12, fontSize:10, color:"#555555" }}>
