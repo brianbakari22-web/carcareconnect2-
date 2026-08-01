@@ -1,7 +1,7 @@
 import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { useLanguage } from "../../contexts/LanguageContext"
-import { generateInvoice } from "../../lib/invoice"
+import { downloadInvoice } from "../../lib/invoice"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 
@@ -104,7 +104,7 @@ export default function ProviderEarnings() {
             <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>{b.booking_date} · #{b.booking_number}</div>
           </div>
           <div style={{ textAlign:"right" }}>
-              <button onClick={()=>generateInvoice(b, profile, "provider")} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:6, color:"#378add", fontSize:10, padding:"4px 8px", cursor:"pointer", marginBottom:4, display:"block" }}>Invoice</button>
+              <button onClick={()=>downloadInvoice(b, profile)} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:6, color:"#378add", fontSize:10, padding:"4px 8px", cursor:"pointer", marginBottom:4, display:"block" }}>Invoice</button>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#e6821e" }}>+KES {Number(b.provider_earnings||0).toFixed(2)}</div>
             <div style={{ fontSize:10, color:"#777777" }}>of KES {Number(b.total_amount).toFixed(2)}</div>
           </div>
@@ -113,6 +113,7 @@ export default function ProviderEarnings() {
     </div>
   )
 }
+
 
 
 
