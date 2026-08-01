@@ -41,6 +41,14 @@ serve(async (req) => {
     }
     return new Response(JSON.stringify({ sent: results.length, results }), { headers: { ...corsHeaders, "Content-Type": "application/json" } })
   } catch(error) {
+    try {
+      const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+      await supabase.from("failed_jobs").insert({
+        job_type: "notification",
+        error_message: error.message,
+        status: "failed"
+      })
+    } catch (logErr) { console.error("Failed to log to failed_jobs:", logErr) }
     return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: corsHeaders })
   }
 })
