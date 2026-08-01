@@ -148,7 +148,7 @@ export default function AdminLiveMap() {
 
   return (
     <div>
-      <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000", marginBottom:"1rem" }}>🗺️ Live Driver Map</div>
+      <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000", marginBottom:"1rem", display:"flex", alignItems:"center", gap:8 }}><TripReportIcon size={20} color="#e6821e"/> Live Driver Map</div>
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:6, marginBottom:"1rem" }}>
         {[
           { label:"Total drivers", value:drivers.length, color:"#000" },
@@ -156,8 +156,8 @@ export default function AdminLiveMap() {
           { label:"Concierge", value:conciergeCount, color:"#8b5cf6" },
           { label:"Marketplace", value:marketplaceCount, color:"#e6821e" },
           { label:"GO Requests", value:activeGoRequests, color:activeGoRequests>0?"#e24b4a":"#888" },
-          { label:"🆘 SOS Active", value:activeSOS, color:activeSOS>0?"#e24b4a":"#888" },
-          { label:"👨‍🔧 Mechanics", value:mechanics.length, color:"#378add" },
+          { label:"SOS Active", value:activeSOS, color:activeSOS>0?"#e24b4a":"#888" },
+          { label:"Mechanics", value:mechanics.length, color:"#378add" },
         ].map(s=>(
           <div key={s.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"0.75rem", border:"1px solid #eee", textAlign:"center" }}>
             <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:s.color }}>{s.value}</div>
@@ -168,10 +168,10 @@ export default function AdminLiveMap() {
       {/* Tab buttons */}
       <div style={{ display:"flex", gap:4, marginBottom:"1rem", overflowX:"auto", paddingBottom:4, WebkitOverflowScrolling:"touch" }}>
         {[
-          {k:"map",l:"🗺️ Live Map"},
-          {k:"go",l:"🚨 GO ("+goRequests.length+")"},
-          {k:"sos",l:"🆘 SOS ("+sosAlerts.length+")"},
-          {k:"mechanics",l:"👨‍🔧 Mechanics ("+mechanics.length+")"},
+          {k:"map",l:"Live Map"},
+          {k:"go",l:"GO ("+goRequests.length+")"},
+          {k:"sos",l:"SOS ("+sosAlerts.length+")"},
+          {k:"mechanics",l:"Mechanics ("+mechanics.length+")"},
         ].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)} style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#f0f0f0", color:tab===t.k?"#fff":"#555", fontWeight:tab===t.k?700:400, whiteSpace:"nowrap" }}>{t.l}</button>
         ))}
@@ -181,7 +181,7 @@ export default function AdminLiveMap() {
       {tab==="map"&&(
         <>
           <div style={{ display:"flex", gap:4, marginBottom:"0.75rem", overflowX:"auto", paddingBottom:2 }}>
-            {[["all","All"],["online","🟢 Online"],["concierge","🧑‍✈️ Concierge"],["marketplace","🚗 Marketplace"]].map(([k,l])=>(
+            {[["all","All"],["online","Online"],["concierge","Concierge"],["marketplace","Marketplace"]].map(([k,l])=>(
               <button key={k} onClick={()=>setFilter(k)} style={{ padding:"6px 14px", borderRadius:7, border:"none", fontSize:12, cursor:"pointer", background:filter===k?"#e6821e":"#f8f8f8", color:filter===k?"#fff":"#666" }}>{l}</button>
             ))}
           </div>
@@ -189,7 +189,7 @@ export default function AdminLiveMap() {
             {loading&&<div style={{ display:"flex", alignItems:"center", justifyContent:"center", height:"100%", color:"#888", fontSize:13 }}>Loading map...</div>}
             {!loading&&drivers.filter(d=>d.current_lat).length===0&&(
               <div style={{ display:"flex", alignItems:"center", justifyContent:"center", height:"100%", color:"#888", fontSize:13, flexDirection:"column", gap:8 }}>
-                <div style={{ fontSize:32 }}>🗺️</div>No drivers with GPS location found
+                <div style={{ display:"flex", justifyContent:"center", marginBottom:8 }}><TripReportIcon size={32} color="#ccc"/></div>No drivers with GPS location found
               </div>
             )}
           </div>
@@ -198,7 +198,7 @@ export default function AdminLiveMap() {
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                 <div>
                   <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, marginBottom:4 }}>{selected.driver?.first_name} {selected.driver?.last_name}</div>
-                  <div style={{ fontSize:12, color:"#888" }}>{selected.driver?.driver_category==="concierge"?"🧑‍✈️ Concierge":`🚗 ${selected.driver?.driver_vehicle_type||"Car"}`}</div>
+                  <div style={{ fontSize:12, color:"#888" }}>{selected.driver?.driver_category==="concierge"?"Concierge":`🚗 ${selected.driver?.driver_vehicle_type||"Car"}`}</div>
                   <div style={{ fontSize:11, color:selected.is_online?"#1d9e75":"#888", marginTop:2 }}>{selected.is_online?"🟢 Online":"⚫ Offline"}</div>
                   <div style={{ fontSize:11, color:"#888", marginTop:4 }}>📍 {selected.current_lat?.toFixed(5)}, {selected.current_lng?.toFixed(5)}</div>
                   {selected.updated_at&&<div style={{ fontSize:11, color:"#aaa", marginTop:2 }}>Last seen: {new Date(selected.updated_at).toLocaleTimeString()}</div>}
@@ -220,7 +220,7 @@ export default function AdminLiveMap() {
               <div style={{ width:8, height:8, borderRadius:"50%", background:d.is_online?"#1d9e75":"#ccc", flexShrink:0 }}/>
               <div style={{ flex:1 }}>
                 <div style={{ fontSize:13, fontWeight:600 }}>{d.driver?.first_name} {d.driver?.last_name}</div>
-                <div style={{ fontSize:11, color:"#888" }}>{d.driver?.driver_category==="concierge"?"🧑‍✈️ Concierge":`🚗 ${d.driver?.driver_vehicle_type||"Car"}`}{d.current_booking_id&&" · 📅 On job"}</div>
+                <div style={{ fontSize:11, color:"#888" }}>{d.driver?.driver_category==="concierge"?"Concierge":`🚗 ${d.driver?.driver_vehicle_type||"Car"}`}{d.current_booking_id&&" · 📅 On job"}</div>
               </div>
               <div style={{ fontSize:11, color:d.is_online?"#1d9e75":"#888" }}>{d.is_online?"Online":"Offline"}</div>
             </div>
@@ -252,7 +252,7 @@ export default function AdminLiveMap() {
           {sosAlerts.length===0&&<div style={{ color:"#888", textAlign:"center", padding:"2rem" }}>No active SOS alerts 🎉</div>}
           {sosAlerts.map(s=>(
             <div key={s.id} style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:10, padding:"1rem", marginBottom:8 }}>
-              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e24b4a", marginBottom:4 }}>🆘 {s.user?.first_name} {s.user?.last_name}</div>
+              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e24b4a", marginBottom:4, display:"flex", alignItems:"center", gap:4 }}><GOServiceIcon size={13} color="#e24b4a"/> {s.user?.first_name} {s.user?.last_name}</div>
               <div style={{ fontSize:12, color:"#555" }}>{s.message||"Emergency alert triggered"}</div>
               <div style={{ fontSize:11, color:"#aaa", marginTop:4 }}>{new Date(s.created_at).toLocaleString()}</div>
             </div>
@@ -266,9 +266,9 @@ export default function AdminLiveMap() {
           {mechanics.map(m=>(
             <div key={m.id} style={{ background:"#fff", border:"1px solid #eee", borderRadius:10, padding:"1rem", marginBottom:8, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
               <div>
-                <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700 }}>👨‍🔧 {m.profile?.first_name} {m.profile?.last_name}</div>
+                <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, display:"flex", alignItems:"center", gap:4 }}><MechanicIcon size={13} color="#378add"/> {m.profile?.first_name} {m.profile?.last_name}</div>
                 <div style={{ fontSize:11, color:"#888" }}>{m.specialization||"General mechanic"}</div>
-                <div style={{ fontSize:11, color:m.is_available?"#1d9e75":"#888" }}>{m.is_available?"🟢 Available":"🔴 Busy"}</div>
+                <div style={{ fontSize:11, color:m.is_available?"#1d9e75":"#888" }}>{m.is_available?"Available":"🔴 Busy"}</div>
               </div>
               <div style={{ textAlign:"right", fontSize:11, color:"#888" }}>
                 <div>Jobs: {m.jobs_completed||0}</div>
@@ -281,3 +281,4 @@ export default function AdminLiveMap() {
     </div>
   )
 }
+
