@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { WalletIcon, WarningIcon, SuccessIcon } from "../../lib/cccIcons"
+import { WalletIcon, WarningIcon, SuccessIcon, TargetIcon, FuelIcon, PaymentsIcon, DeliveryIcon, LockedIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
@@ -145,7 +145,7 @@ export default function DriverEarnings() {
 
       {/* Earnings breakdown */}
       <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
-        <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75", marginBottom:"1rem" }}>💰 Earnings breakdown</div>
+        <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75", marginBottom:"1rem", display:"flex", alignItems:"center", gap:6 }}><WalletIcon size={14} color="#1d9e75"/>>💰 Earnings breakdown</div>
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4,1fr)", gap:10, marginBottom:12 }}>
           {[
             { label:isConcierge?"Commission (15%)":"Delivery earnings (85%)", value:`KES ${totalCommission.toFixed(0)}`, color:"#378add" },
@@ -168,7 +168,7 @@ export default function DriverEarnings() {
       {/* Monthly goal tracker */}
       <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000" }}>🎯 Monthly earnings goal</div>
+          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000", display:"flex", alignItems:"center", gap:6 }}><TargetIcon size={14} color="#e6821e"/> Monthly earnings goal</div>
           {!editingGoal&&<button onClick={()=>{ setEditingGoal(true); setGoalInput(monthlyGoal?String(monthlyGoal):"") }} style={{ background:"none", border:"1px solid #dddddd", borderRadius:7, color:"#666", fontSize:11, padding:"4px 10px", cursor:"pointer" }}>{monthlyGoal>0?"Edit":"Set goal"}</button>}
         </div>
         {editingGoal?(
@@ -202,7 +202,7 @@ export default function DriverEarnings() {
       {/* Fuel expense tracker */}
       <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000" }}>⛽ Fuel expenses</div>
+          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000000", display:"flex", alignItems:"center", gap:6 }}><FuelIcon size={14} color="#e6821e"/> Fuel expenses</div>
           <button onClick={()=>setShowExpenseForm(!showExpenseForm)} style={{ background:showExpenseForm?"none":"#e6821e", border:showExpenseForm?"1px solid #dddddd":"none", borderRadius:7, color:showExpenseForm?"#666":"#fff", fontSize:11, fontWeight:700, padding:"5px 12px", cursor:"pointer" }}>
             {showExpenseForm?"Cancel":"+ Log expense"}
           </button>
@@ -269,13 +269,13 @@ export default function DriverEarnings() {
       <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"0.9rem", marginBottom:"1.5rem" }}>
         <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#000000", marginBottom:8 }}>How your earnings work</div>
         {[
-          { icon:"💵", label:"Commission", desc:"15% of service fee — paid after delivery complete" },
-          { icon:"🚌", label:"Transport allowance", desc:"KES 200 per job — covers your travel costs" },
-          { icon:"🔒", label:"Payment security", desc:"Both are released only after you complete the delivery and file the dropoff report" },
-          { icon:"⚠️", label:"No-show penalty", desc:"If you accept a job and don't show up, you lose both the commission and allowance" },
+          { icon:"payments", label:"Commission", desc:"15% of service fee — paid after delivery complete" },
+          { icon:"delivery", label:"Transport allowance", desc:"KES 200 per job — covers your travel costs" },
+          { icon:"locked", label:"Payment security", desc:"Both are released only after you complete the delivery and file the dropoff report" },
+          { icon:"warning", label:"No-show penalty", desc:"If you accept a job and don't show up, you lose both the commission and allowance" },
         ].map(item=>(
           <div key={item.label} style={{ display:"flex", gap:10, alignItems:"flex-start", marginBottom:8 }}>
-            <span style={{ fontSize:16, flexShrink:0 }}>{item.icon}</span>
+            <span style={{flexShrink:0,display:"flex"}}>{item.icon==="payments"?<PaymentsIcon size={16} color="#e6821e"/>:item.icon==="delivery"?<DeliveryIcon size={16} color="#378add"/>:item.icon==="locked"?<LockedIcon size={16} color="#1d9e75"/>:<WarningIcon size={16} color="#e6821e"/>}</span>
             <div>
               <div style={{ fontSize:12, color:"#000000", fontWeight:600 }}>{item.label}</div>
               <div style={{ fontSize:11, color:"#777777", lineHeight:1.4 }}>{item.desc}</div>
@@ -288,7 +288,7 @@ export default function DriverEarnings() {
       {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
       {!loading&&filtered.length===0&&(
         <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>
-          <div style={{ fontSize:32, marginBottom:10 }}>💰</div>
+          <div style={{ marginBottom:10, display:"flex", justifyContent:"center" }}><WalletIcon size={32} color="#ccc"/></div>
           No completed jobs for this period
         </div>
       )}
