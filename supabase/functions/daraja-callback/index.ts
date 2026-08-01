@@ -104,6 +104,17 @@ serve(async (req) => {
 
   } catch (error: any) {
     console.error("Daraja callback error:", error.message)
+    try {
+      const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
+        auth: { autoRefreshToken: false, persistSession: false }
+      })
+      await supabase.from("failed_jobs").insert({
+        job_type: "payment_callback",
+        error_message: error.message,
+        payload: { error: String(error) },
+        status: "failed"
+      })
+    } catch (logErr) { console.error("Failed to log to failed_jobs:", logErr) }
     return new Response(JSON.stringify({ ResultCode: 0, ResultDesc: "Received" }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" }
     })

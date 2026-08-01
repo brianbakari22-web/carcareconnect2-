@@ -92,6 +92,18 @@ serve(async (req) => {
 
   } catch (error: any) {
     console.error("B2C payout error:", error.message)
+    try {
+      const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
+        auth: { autoRefreshToken: false, persistSession: false }
+      })
+      const body = await req.clone().json().catch(()=>({}))
+      await supabase.from("failed_jobs").insert({
+        job_type: "b2c_payout",
+        error_message: error.message,
+        payload: body,
+        status: "failed"
+      })
+    } catch (logErr) { console.error("Failed to log to failed_jobs:", logErr) }
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" }
