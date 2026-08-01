@@ -520,8 +520,12 @@ export default function CustomerServices() {
                 {s.photos.length>1&&<div style={{ position:"absolute", bottom:6, right:6, background:"rgba(0,0,0,0.55)", borderRadius:8, padding:"2px 8px", fontSize:10, color:"#fff" }}>📷 {s.photos.length}</div>}
               </div>
             ) : (
-              <div style={{ marginBottom:"0.875rem", borderRadius:10, height:80, background:cat.bg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:36 }}>
-                {cat.icon}
+              <div style={{ marginBottom:"0.875rem", borderRadius:10, height:80, background:cat.bg, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                {cat.icon==="marketplace"?<MarketplaceIcon size={36} color={cat.color}/>:
+                 cat.icon==="home"?<HomeIcon size={36} color={cat.color}/>:
+                 cat.icon==="emergency"?<GOServiceIcon size={36} color="#e24b4a"/>:
+                 cat.icon==="discover"?<DiscoverIcon size={36} color={cat.color}/>:
+                 <ServicesIcon size={36} color={cat.color}/>}
               </div>
             )}
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10 }}>
