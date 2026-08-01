@@ -67,7 +67,7 @@ export default function ProviderEarnings() {
         {[
           { label:t("earnings"), value:`KES ${totalEarned.toFixed(2)}`, color:"#e6821e" },
           { label:"Total revenue", value:`KES ${totalRevenue.toFixed(2)}` },
-          { label:"Pending payout", value:`KES ${totalEarned.toFixed(2)}`, color:"#1d9e75" },
+          { label:"Total earned", value:`KES ${totalEarned.toFixed(2)}`, color:"#1d9e75" },
         ].map(s=>(
           <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
             <div style={{ fontSize:11, color:"#777777", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
@@ -113,6 +113,7 @@ export default function ProviderEarnings() {
     </div>
   )
 }
+
 
 
 
