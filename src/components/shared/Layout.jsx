@@ -665,6 +665,21 @@ export default function Layout({ children }) {
                item.icon==="analytics" ? <AnalyticsIcon size={18} active={isActive(item)} /> :
                item.icon==="parts" ? <PartsIcon size={18} active={isActive(item)} /> :
                item.icon==="settings" ? <SettingsIcon size={18} active={isActive(item)} /> :
+               item.icon==="bookings" ? <BookingsIcon size={18} active={isActive(item)} /> :
+               item.icon==="wallet" ? <WalletIcon size={18} active={isActive(item)} /> :
+               item.icon==="star" ? <StarIcon size={18} active={isActive(item)} /> :
+               item.icon==="payout" ? <PayoutIcon size={18} active={isActive(item)} /> :
+               item.icon==="qr" ? <QRCodeIcon size={18} active={isActive(item)} /> :
+               item.icon==="notifications" ? <NotificationsIcon size={18} active={isActive(item)} /> :
+               item.icon==="messages" ? <ChatIcon size={18} active={isActive(item)} /> :
+               item.icon==="clock" ? <ClockIcon size={18} active={isActive(item)} /> :
+               item.icon==="overview" ? <HomeIcon size={18} active={isActive(item)} /> :
+               item.icon==="services" ? <ServicesIcon size={18} active={isActive(item)} /> :
+               item.icon==="orders" ? <OrdersIcon size={18} active={isActive(item)} /> :
+               item.icon==="emergency" ? <GOServiceIcon size={18} color="#e24b4a" /> :
+               item.icon==="reviews" ? <StarIcon size={18} active={isActive(item)} /> :
+               item.icon==="helpTicket" ? <HelpIcon size={18} active={isActive(item)} /> :
+               item.icon==="profile" ? <ProfileIcon size={18} active={isActive(item)} /> :
                <span style={{fontSize:16}}>{item.icon}</span>}
             </span>
               {!collapsed&&<span style={{ overflow:"hidden", textOverflow:"ellipsis" }}>{getLabel(item)}</span>}
