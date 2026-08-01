@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
+import { validateFile } from "../../lib/uploadValidation"
 
 export default function DriverVehicle() {
   const isMobile = useIsMobile()
@@ -10,7 +11,8 @@ export default function DriverVehicle() {
   const [docs, setDocs] = useState([])
   const [form, setForm] = useState({ vehicle_model:"", vehicle_color:"", vehicle_plate:"", vehicle_year:"" })
   const [saving, setSaving] = useState(false)
-  const [docForm, setDocForm] = useState({ type:"license", expiry_date:"" })
+  const [docForm, setDocForm] = useState({ type:"license", expiry_date:"", file:null })
+  const [docUploading, setDocUploading] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -107,7 +109,10 @@ export default function DriverVehicle() {
               )}
               {d.is_verified&&<div style={{ fontSize:10, color:"#1d9e75", marginTop:2 }}>✓ Verified</div>}
             </div>
-            <button onClick={()=>deleteDoc(d.id)} style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:6, color:"#e24b4a", fontSize:11, padding:"4px 8px", cursor:"pointer" }}>Remove</button>
+            <div style={{ display:"flex", gap:6 }}>
+              {d.document_url&&<a href={d.document_url} target="_blank" rel="noreferrer" style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:6, color:"#378add", fontSize:11, padding:"4px 8px", textDecoration:"none" }}>View</a>}
+              <button onClick={()=>deleteDoc(d.id)} style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:6, color:"#e24b4a", fontSize:11, padding:"4px 8px", cursor:"pointer" }}>Remove</button>
+            </div>
           </div>
         ))}
 
