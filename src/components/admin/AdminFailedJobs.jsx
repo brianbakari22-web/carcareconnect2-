@@ -1,4 +1,5 @@
 import { WarningIcon, RefreshIcon, DeleteIcon } from "../../lib/cccIcons"
+import { useAuth } from "../../contexts/AuthContext"
 import { useState, useEffect } from "react"
 import { supabase } from "../../lib/supabase"
 import toast from "react-hot-toast"
@@ -109,5 +110,4 @@ export default function AdminFailedJobs() {
       )}
     </div>
   )
-}
-import { useAuth } from "../../contexts/AuthContext"
+}

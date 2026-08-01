@@ -4,14 +4,6 @@
 
 [36mvite v5.4.21 [32mbuilding for production...[36m[39m
 transforming...
-[plugin:vite:esbuild] [plugin vite:esbuild] src/components/driver/DriverEarnings.jsx: The character ">" is not valid inside a JSX element
-146|        {/* Earnings breakdown */}
-147|        <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
-148|          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75", marginBottom:"1rem", display:"flex", alignItems:"center", gap:6 }}><WalletIcon size={14} color="#1d9e75"/>>≡ƒÆ░ Earnings breakdown</div>
-   |                                                                                                                                                                                                   ^
-149|          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4,1fr)", gap:10, marginBottom:12 }}>
-150|            {[
-
 [plugin:vite:esbuild] [plugin vite:esbuild] src/components/customer/CustomerReferral.jsx: Duplicate key "icon" in object literal
 133|          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>How it works</div>
 134|          {[
@@ -27,6 +19,14 @@ transforming...
    |                                                                                                                    ^
 137|            { step:"3", title:"First booking made", desc:"They complete their first service booking", icon:"CheckIcon" },
 138|            { step:"4", title:"Both earn points", desc:`You get ${REFERRAL_POINTS} pts ┬╖ They get ${REFERRED_POINTS} pts`, icon:"TrophyIcon" },
+
+[plugin:vite:esbuild] [plugin vite:esbuild] src/components/driver/DriverEarnings.jsx: The character ">" is not valid inside a JSX element
+146|        {/* Earnings breakdown */}
+147|        <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
+148|          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75", marginBottom:"1rem", display:"flex", alignItems:"center", gap:6 }}><WalletIcon size={14} color="#1d9e75"/>>≡ƒÆ░ Earnings breakdown</div>
+   |                                                                                                                                                                                                   ^
+149|          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4,1fr)", gap:10, marginBottom:12 }}>
+150|            {[
 
 [plugin:vite:esbuild] [plugin vite:esbuild] src/components/customer/ProviderStorefront.jsx: The character "}" is not valid inside a JSX element
 275|                        ) : (
@@ -73,4 +73,4 @@ computing gzip size...
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-[32mΓ£ô built in 5.81s[39m
+[32mΓ£ô built in 5.69s[39m
