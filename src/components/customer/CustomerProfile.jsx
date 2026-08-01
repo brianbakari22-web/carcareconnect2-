@@ -282,7 +282,14 @@ export default function CustomerProfile() {
                     { label:"Claims", value:exportData.claims?.length||0, icon:"shield", color:"#e24b4a" },
                   ].map(item=>(
                     <div key={item.label} style={{ background:"#f8f8f8", borderRadius:10, padding:"0.75rem 0.5rem", textAlign:"center", border:"1px solid #eee" }}>
-                      <div style={{ fontSize:20, marginBottom:4 }}>{item.icon}</div>
+                      <div style={{ marginBottom:4, display:"flex", justifyContent:"center" }}>
+                      {item.icon==="bookings"?<BookingsIcon size={20} color={item.color}/>:
+                       item.icon==="payments"?<PaymentsIcon size={20} color={item.color}/>:
+                       item.icon==="vehicle"?<VehicleIcon size={20} color={item.color}/>:
+                       item.icon==="star"?<StarIcon size={20} color={item.color}/>:
+                       item.icon==="referral"?<ReferEarnIcon size={20} color={item.color}/>:
+                       <ShieldIcon size={20} color={item.color}/>}
+                    </div>
                       <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:item.color }}>{item.value}</div>
                       <div style={{ fontSize:10, color:"#888", marginTop:2 }}>{item.label}</div>
                     </div>
