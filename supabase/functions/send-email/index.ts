@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")
 const FROM_EMAIL = "noreply@carcareconnect.com"
@@ -50,6 +51,16 @@ serve(async (req) => {
       headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
     })
   } catch (err) {
+    try {
+      const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
+        auth: { autoRefreshToken: false, persistSession: false }
+      })
+      await supabase.from("failed_jobs").insert({
+        job_type: "email",
+        error_message: err.message,
+        status: "failed"
+      })
+    } catch (logErr) { console.error("Failed to log to failed_jobs:", logErr) }
     return new Response(JSON.stringify({ error: err.message }), {
       status: 500,
       headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
