@@ -1,3 +1,4 @@
+import { OrdersIcon, LocationIcon, CheckIcon, CloseIcon, DeliveryIcon } from "../../lib/cccIcons"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
@@ -159,11 +160,11 @@ export default function DriverDeliveries() {
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
                 <div>
                   <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:2 }}>#{o.order_number}</div>
-                  <div style={{ fontSize:11, color:"#777777" }}>📦 Pick up from: {o.provider?.business_name||o.provider?.first_name} · {o.provider?.city}</div>
+                  <div style={{ fontSize:11, color:"#777777", display:"flex", alignItems:"center", gap:3 }}><OrdersIcon size={11} color="#777777"/> Pick up from: {o.provider?.business_name||o.provider?.first_name} · {o.provider?.city}</div>
                   {o.provider?.latitude&&o.provider?.longitude&&(
                     <a href={`https://www.google.com/maps/dir/?api=1&destination=${o.provider.latitude},${o.provider.longitude}`} target="_blank" rel="noreferrer" style={{ fontSize:11, color:"#e6821e", textDecoration:"none" }}>🗺️ Navigate to pickup →</a>
                   )}
-                  <div style={{ fontSize:11, color:"#777777" }}>📍 Deliver to: {o.delivery_address}</div>
+                  <div style={{ fontSize:11, color:"#777777", display:"flex", alignItems:"center", gap:3 }}><LocationIcon size={11} color="#777777"/> Deliver to: {o.delivery_address}</div>
                   <div style={{ fontSize:11, color:"#378add" }}>Zone: {o.delivery_zone}</div>
                   <div style={{ fontSize:10, color:"#888888" }}>{o.order_items?.length} item(s)</div>
                 </div>
@@ -173,7 +174,7 @@ export default function DriverDeliveries() {
                 </div>
               </div>
               <button onClick={()=>acceptDelivery(o.id)} style={{ width:"100%", background:"#1d9e75", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px", cursor:"pointer" }}>
-                ✓ Accept delivery
+                <><CheckIcon size={13} color="currentColor"/> Accept delivery</>
               </button>
             </div>
           ))}
@@ -192,7 +193,7 @@ export default function DriverDeliveries() {
                   {o.provider?.latitude&&o.provider?.longitude&&(
                     <a href={`https://www.google.com/maps/dir/?api=1&destination=${o.provider.latitude},${o.provider.longitude}`} target="_blank" rel="noreferrer" style={{ fontSize:11, color:"#e6821e", textDecoration:"none" }}>🗺️ Navigate to provider →</a>
                   )}
-                  <div style={{ fontSize:11, color:"#777777" }}>📍 Deliver to: {o.delivery_address}</div>
+                  <div style={{ fontSize:11, color:"#777777", display:"flex", alignItems:"center", gap:3 }}><LocationIcon size={11} color="#777777"/> Deliver to: {o.delivery_address}</div>
                   {o.profiles?.latitude&&o.profiles?.longitude&&(
                     <a href={`https://www.google.com/maps/dir/?api=1&destination=${o.profiles.latitude},${o.profiles.longitude}`} target="_blank" rel="noreferrer" style={{ fontSize:11, color:"#378add", textDecoration:"none" }}>🗺️ Navigate to customer →</a>
                   )}
@@ -215,16 +216,16 @@ export default function DriverDeliveries() {
                 {o.delivery_status==="driver_assigned"&&(
                   <>
                     <button onClick={()=>updateDeliveryStatus(o.id,"picked_up",o.customer_id)} style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"6px 14px", cursor:"pointer", fontWeight:600 }}>
-                      📦 Confirm pickup
+                      <><OrdersIcon size={13} color="currentColor"/> Confirm pickup</>
                     </button>
                     <button onClick={()=>declineDelivery(o.id)} style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"6px 14px", cursor:"pointer", fontWeight:600 }}>
-                      ✗ Decline
+                      <><CloseIcon size={13} color="currentColor"/> Decline</>
                     </button>
                   </>
                 )}
                 {o.delivery_status==="picked_up"&&(
                   <button onClick={()=>updateDeliveryStatus(o.id,"delivered",o.customer_id)} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 14px", cursor:"pointer", fontWeight:600 }}>
-                    ✅ Confirm delivery
+                    <><CheckIcon size={13} color="#1d9e75"/> Confirm delivery</>
                   </button>
                 )}
               </div>
