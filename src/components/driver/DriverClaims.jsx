@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react"
+import { ShieldIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { validateFile, sanitizeFilePath } from "../../lib/uploadValidation"
 import { useAuth } from "../../contexts/AuthContext"
@@ -136,7 +137,7 @@ export default function DriverClaims() {
 
   return (
     <div>
-      <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000", marginBottom:"1rem" }}>🛡️ Claims Center</div>
+      <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#000", marginBottom:"1rem", display:"flex", alignItems:"center", gap:8 }}><ShieldIcon size={20} color="#e6821e"/> Claims Center</div>
       <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:8, marginBottom:"1rem" }}>
         {[
           { label:"Against you", value:claims.length, color:"#e24b4a" },
@@ -296,3 +297,4 @@ export default function DriverClaims() {
     </div>
   )
 }
+
