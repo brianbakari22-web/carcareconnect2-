@@ -33,7 +33,7 @@ export default function DriverPayouts() {
     const [{ data: bks }, { data: pts }, { data: sens }, { data: ords }] = await Promise.all([
       supabase.from("bookings").select("driver_earnings").eq("driver_id", user.id).eq("status", "completed"),
       supabase.from("payout_requests").select("*").eq("user_id", user.id).order("created_at", { ascending:false }),
-      supabase.from("profile_sensitive").select("bank_name,bank_account_name,bank_account_number").eq("id", user.id).single(),
+      supabase.from("profile_sensitive").select("bank_name,bank_account_name,bank_account_number,mpesa_number,id_number,kra_pin").eq("id", user.id).single(),
       supabase.from("orders").select("delivery_fee").eq("delivery_driver_id", user.id).eq("status","delivered")
     ])
     const conciergeEarned = (bks||[]).reduce((s,b)=>s+Number(b.driver_earnings||0),0)
@@ -280,6 +280,7 @@ export default function DriverPayouts() {
     </div>
   )
 }
+
 
 
 
