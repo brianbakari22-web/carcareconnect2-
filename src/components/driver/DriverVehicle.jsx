@@ -44,13 +44,27 @@ export default function DriverVehicle() {
 
   async function addDocument(e) {
     e.preventDefault()
-    const { error } = await supabase.from("driver_documents").insert({ driver_id:user.id, type:docForm.type, expiry_date:docForm.expiry_date||null })
-    if (error) return toast.error(error.message)
-    toast.success("Document added")
-    setDocForm({ type:"license", expiry_date:"" })
-    loadDocs()
+    if (!docForm.file) return toast.error("Please select a file to upload")
+    setDocUploading(true)
+    try {
+      const ext = docForm.file.name.split(".").pop()
+      const path = `${user.id}/${docForm.type}_${Date.now()}.${ext}`
+      const { error: upErr } = await supabase.storage.from("driver-documents").upload(path, docForm.file, { upsert:true })
+      if (upErr) throw upErr
+      const { data: urlData } = supabase.storage.from("driver-documents").getPublicUrl(path)
+      const { error } = await supabase.from("driver_documents").insert({
+        driver_id: user.id,
+        type: docForm.type,
+        expiry_date: docForm.expiry_date||null,
+        document_url: urlData.publicUrl
+      })
+      if (error) throw error
+      toast.success("Document uploaded!")
+      setDocForm({ type:"license", expiry_date:"", file:null })
+      loadDocs()
+    } catch(err) { toast.error(err.message) }
+    finally { setDocUploading(false) }
   }
-
   async function deleteDoc(id) {
     if (!confirm("Remove this document?")) return
     await supabase.from("driver_documents").delete().eq("id",id).eq("driver_id",user.id)
