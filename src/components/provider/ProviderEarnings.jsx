@@ -19,7 +19,7 @@ export default function ProviderEarnings() {
     const { data } = await supabase.from("bookings")
       .select("*")
       .eq("provider_id", user.id)
-      .eq("status", "completed").eq("is_archived", false)
+      .in("status", ["completed", "in-progress"]).eq("is_archived", false)
       .order("booking_date", { ascending:false })
     setBookings(data||[])
     setLoading(false)
@@ -36,7 +36,8 @@ export default function ProviderEarnings() {
   })
 
   const totalRevenue = filtered.reduce((s,b)=>s+Number(b.total_amount),0)
-  const totalEarned = filtered.reduce((s,b)=>s+Number(b.provider_earnings||0),0)
+  const totalEarned = filtered.filter(b=>b.status==="completed").reduce((s,b)=>s+Number(b.provider_earnings||0),0)
+  const totalPending = filtered.filter(b=>b.status==="in-progress").reduce((s,b)=>s+Number(b.provider_earnings||0),0)
   const totalCommission = filtered.reduce((s,b)=>s+Number(b.platform_commission||0),0)
 
   const byMonth = bookings.reduce((acc,b) => {
@@ -68,6 +69,7 @@ export default function ProviderEarnings() {
           { label:t("earnings"), value:`KES ${totalEarned.toFixed(2)}`, color:"#e6821e" },
           { label:"Total revenue", value:`KES ${totalRevenue.toFixed(2)}` },
           { label:"Total earned", value:`KES ${totalEarned.toFixed(2)}`, color:"#1d9e75" },
+          { label:"Pending earnings", value:`KES ${totalPending.toFixed(2)}`, color:"#e6821e" },
         ].map(s=>(
           <div key={s.label} style={{ background:"#ffffff", borderRadius:10, padding:"1rem", border:"1px solid #eeeeee" }}>
             <div style={{ fontSize:11, color:"#777777", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>{s.label}</div>
@@ -105,7 +107,8 @@ export default function ProviderEarnings() {
           </div>
           <div style={{ textAlign:"right" }}>
               <button onClick={()=>downloadInvoice(b, profile)} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:6, color:"#378add", fontSize:10, padding:"4px 8px", cursor:"pointer", marginBottom:4, display:"block" }}>Invoice</button>
-            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#e6821e" }}>+KES {Number(b.provider_earnings||0).toFixed(2)}</div>
+            <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:b.status==="completed"?"#1d9e75":"#e6821e" }}>{b.status==="completed"?"+ ":"⏳ "}KES {Number(b.provider_earnings||0).toFixed(2)}</div>
+            <div style={{ fontSize:9, color:b.status==="completed"?"#1d9e75":"#e6821e", fontWeight:600 }}>{b.status==="completed"?"Earned":"In progress"}</div>
             <div style={{ fontSize:10, color:"#777777" }}>of KES {Number(b.total_amount).toFixed(2)}</div>
           </div>
         </div>
