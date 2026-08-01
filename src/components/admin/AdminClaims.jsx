@@ -70,18 +70,7 @@ export default function AdminClaims() {
       load()
     } catch(e) { toast.error(e.message) }
   }
-  async function requestEvidence(claim) {
-    try {
-      await supabase.from("notifications").insert([
-        { user_id:claim.customer_id, title:"Evidence requested 📸", message:"Admin has requested additional evidence for your claim. Please add photos or details in the claim chat.", type:"warning" },
-        { user_id:claim.provider_id, title:"Evidence requested 📸", message:"Admin has requested your response and evidence for a claim against you. Please respond in the claim chat.", type:"warning" }
-      ])
-      await supabase.from("service_claims").update({ status:"under_review" }).eq("id",claim.id)
-      toast.success("Evidence requested from both parties")
-      load()
-    } catch(e) { toast.error(e.message) }
-  }
-  async function approveClaim(claim) {
+    async function approveClaim(claim) {
     setProcessing(true)
     try {
       const voucherCode = generateVoucherCode()
