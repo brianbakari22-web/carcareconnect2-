@@ -155,7 +155,7 @@ export default function ProviderDashboard() {
           <div onClick={()=>fileRef.current?.click()} style={{ width:52, height:52, borderRadius:12, background:"rgba(255,255,255,0.2)", border:"2px solid rgba(255,255,255,0.4)", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", overflow:"hidden", flexShrink:0 }}>
             {profile?.profile_photo_url
               ? <img src={profile.profile_photo_url} alt="Profile" style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
-              : <span style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#fff" }}>{initials||config.icon}</span>
+              : <span style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, color:"#fff" }}>{initials||"?"}</span>
             }
           </div>
           <input ref={fileRef} type="file" accept="image/*" onChange={uploadPhoto} style={{ display:"none" }}/>
@@ -278,7 +278,7 @@ export default function ProviderDashboard() {
                 { href:"/dashboard/orders", icon:"marketplace", label:"Orders", desc:"Confirm, pack, dispatch", color:"#1d9e75" },
               ].map(q=>(
                 <a key={q.label} href={q.href} style={{ background:"#f8f8f8", border:`1px solid ${q.color}20`, borderRadius:12, padding:"1rem", textDecoration:"none", display:"block" }}>
-                  <div style={{ fontSize:24, marginBottom:6 }}>{q.icon}</div>
+                  <div style={{ marginBottom:6 }}>{q.icon==="orders"?<PartsIcon size={24} color={q.color}/>:<MarketplaceIcon size={24} color={q.color}/>}</div>
                   <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:q.color, marginBottom:2 }}>{q.label}</div>
                   <div style={{ fontSize:11, color:"#888" }}>{q.desc}</div>
                 </a>
@@ -297,7 +297,7 @@ export default function ProviderDashboard() {
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                   <div>
                     <div style={{ fontSize:13, fontWeight:600, color:"#000" }}>#{o.order_number}</div>
-                    <div style={{ fontSize:11, color:"#888" }}>{o.fulfillment_type==="delivery"?<><DeliveryIcon size={12} color="#378add"/> Delivery</>:"🏪 Pickup"} · {new Date(o.created_at).toLocaleDateString()}</div>
+                    <div style={{ fontSize:11, color:"#888" }}>{o.fulfillment_type==="delivery"?<><DeliveryIcon size={12} color="#378add"/> Delivery</>:"Pickup"} · {new Date(o.created_at).toLocaleDateString()}</div>
                     <div style={{ fontSize:11, color:"#888" }}>{o.order_items?.length||0} item(s)</div>
                   </div>
                   <div style={{ textAlign:"right" }}>
