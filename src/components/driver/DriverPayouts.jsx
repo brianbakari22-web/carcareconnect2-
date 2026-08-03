@@ -31,12 +31,12 @@ export default function DriverPayouts() {
   async function load() {
 
     const [{ data: bks }, { data: pts }, { data: sens }, { data: ords }] = await Promise.all([
-      supabase.from("bookings").select("driver_earnings").eq("driver_id", user.id).eq("status", "completed"),
+      supabase.from("bookings").select("driver_earnings,transport_allowance").eq("driver_id", user.id).eq("status", "completed"),
       supabase.from("payout_requests").select("*").eq("user_id", user.id).order("created_at", { ascending:false }),
       supabase.from("profile_sensitive").select("bank_name,bank_account_name,bank_account_number,mpesa_number,id_number,kra_pin").eq("id", user.id).single(),
       supabase.from("orders").select("delivery_fee").eq("delivery_driver_id", user.id).eq("status","delivered")
     ])
-    const conciergeEarned = (bks||[]).reduce((s,b)=>s+Number(b.driver_earnings||0),0)
+    const conciergeEarned = (bks||[]).reduce((s,b)=>s+Number(b.driver_earnings||0)+Number(b.transport_allowance||0),0)
     const marketplaceEarned = (ords||[]).reduce((s,o)=>s+Number(o.delivery_fee||0)*0.85,0)
     const totalEarned = isConcierge ? conciergeEarned : marketplaceEarned
     const totalPaid = (pts||[]).filter(p=>p.status==="paid").reduce((s,p)=>s+Number(p.amount),0)
