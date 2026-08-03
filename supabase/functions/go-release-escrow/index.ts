@@ -61,7 +61,7 @@ serve(async (req) => {
     const phone = sensitive?.mpesa_number || sensitive?.till_number
     if (!phone) throw new Error("Provider has no M-Pesa number set")
 
-    await supabase.functions.invoke("intasend-payout", {
+    await supabase.functions.invoke("daraja-b2c-payout", {
       body: {
         booking_id,
         provider_id: booking.provider_id,
@@ -92,3 +92,4 @@ serve(async (req) => {
     })
   }
 })
+

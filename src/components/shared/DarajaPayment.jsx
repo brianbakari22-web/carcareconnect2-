@@ -1,8 +1,9 @@
+import { PaymentsIcon, CheckIcon, CloseIcon } from "../../lib/cccIcons"
 import { useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import toast from "react-hot-toast"
-export default function IntaSendPayment({ amount, bookingId, orderId, providerId, description, onSuccess, onClose }) {
+export default function DarajaPayment({ amount, bookingId, orderId, providerId, description, onSuccess, onClose }) {
   const { user, profile } = useAuth()
   const [phone, setPhone] = useState(profile?.phone || "")
   const [loading, setLoading] = useState(false)
@@ -114,7 +115,7 @@ export default function IntaSendPayment({ amount, bookingId, orderId, providerId
         )}
         {step === "waiting" && (
           <div style={{ textAlign:"center", padding:"1rem" }}>
-            <div style={{ fontSize:40, marginBottom:12 }}>📱</div>
+            <div style={{ marginBottom:12, display:"flex", justifyContent:"center" }}><PaymentsIcon size={40} color="#e6821e"/></div>
             <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:700, marginBottom:8 }}>Check your phone</div>
             <div style={{ fontSize:13, color:"#666", marginBottom:16 }}>Enter your M-Pesa PIN to complete payment of KES {totalAmount.toLocaleString()}</div>
             <div style={{ fontSize:12, color:"#aaa" }}>Waiting for confirmation...</div>
@@ -122,14 +123,14 @@ export default function IntaSendPayment({ amount, bookingId, orderId, providerId
         )}
         {step === "success" && (
           <div style={{ textAlign:"center", padding:"1rem" }}>
-            <div style={{ fontSize:40, marginBottom:12 }}>✅</div>
+            <div style={{ marginBottom:12, display:"flex", justifyContent:"center" }}><CheckIcon size={40} color="#1d9e75"/></div>
             <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:700, marginBottom:8 }}>Payment successful!</div>
             <div style={{ fontSize:13, color:"#666" }}>Your booking is confirmed.</div>
           </div>
         )}
         {step === "failed" && (
           <div style={{ textAlign:"center", padding:"1rem" }}>
-            <div style={{ fontSize:40, marginBottom:12 }}>❌</div>
+            <div style={{ marginBottom:12, display:"flex", justifyContent:"center" }}><CloseIcon size={40} color="#e24b4a"/></div>
             <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:700, marginBottom:8 }}>Payment not received</div>
             <div style={{ fontSize:13, color:"#666", marginBottom:16 }}>Please try again or use a different number.</div>
             <button onClick={()=>setStep("input")}

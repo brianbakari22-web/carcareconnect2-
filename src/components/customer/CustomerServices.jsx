@@ -8,7 +8,7 @@ import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
-import IntaSendPayment from "../shared/IntaSendPayment"
+import DarajaPayment from "../shared/DarajaPayment"
 
 const CATEGORIES = [
   { key:"shop_standard", label:"Shop Standard", icon:"marketplace", desc:"You bring your car to the shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
@@ -786,7 +786,7 @@ export default function CustomerServices() {
       {showPayment&&pendingBooking&&(
         <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.8)", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center", padding:"1rem" }}>
           <div style={{ width:"100%", maxWidth:420 }}>
-            <IntaSendPayment
+            <DarajaPayment
               amount={pendingBooking.amount}
               bookingId={pendingBooking.id}
               customerEmail={user?.email}

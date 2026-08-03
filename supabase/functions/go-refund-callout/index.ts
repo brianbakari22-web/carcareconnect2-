@@ -62,7 +62,7 @@ serve(async (req) => {
 
     if (phone) {
       // Refund callout fee to customer
-      await supabase.functions.invoke("intasend-payout", {
+      await supabase.functions.invoke("daraja-b2c-payout", {
         body: {
           booking_id,
           provider_id: customer_id,

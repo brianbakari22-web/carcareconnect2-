@@ -50,7 +50,7 @@ serve(async (req) => {
     const serviceAmount = Number(booking.total_amount || 0)
 
     // Send STK Push using fetch with proper auth headers
-    const stkRes = await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/intasend-stk-push`, {
+    const stkRes = await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/daraja-stk-push`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

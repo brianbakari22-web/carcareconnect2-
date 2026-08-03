@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom"
 import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
-import IntaSendPayment from "../shared/IntaSendPayment"
+import DarajaPayment from "../shared/DarajaPayment"
 import { GOServiceIcon, ServicesIcon, DiscoverIcon, MarketplaceIcon, LocationIcon, ShieldIcon, ShareIcon, PaymentsIcon, DeleteIcon, VehicleIcon, ChatIcon, DownloadIcon, DeliveryIcon, WarningIcon } from "../../lib/cccIcons"
 
 
@@ -441,7 +441,7 @@ export default function CustomerBookings() {
         </div>
       ))}
     {serviceFeeBooking&&(
-      <IntaSendPayment
+      <DarajaPayment
         amount={Number(serviceFeeBooking.total_amount||0)}
         bookingId={serviceFeeBooking.id}
         providerId={serviceFeeBooking.provider_id}

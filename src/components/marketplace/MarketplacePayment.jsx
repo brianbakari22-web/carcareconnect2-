@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { LockedIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
-import IntaSendPayment from "../shared/IntaSendPayment"
+import DarajaPayment from "../shared/DarajaPayment"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
@@ -47,7 +47,7 @@ export default function MarketplacePayment({ offer, listing, onSuccess, onCancel
   }
   if (showPayment && txnId) {
     return (
-      <IntaSendPayment
+      <DarajaPayment
         amount={totalAmount}
         bookingId={txnId}
         description={`Marketplace - ${listing.title}`}
@@ -97,3 +97,4 @@ export default function MarketplacePayment({ offer, listing, onSuccess, onCancel
     </div>
   )
 }
+
