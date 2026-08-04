@@ -241,6 +241,13 @@ export default function AdminLiveMap() {
                   <div style={{ fontSize:10, color:"#aaa" }}>{new Date(g.created_at).toLocaleString()}</div>
                 </div>
                 <span style={{ fontSize:11, padding:"3px 10px", borderRadius:10, background:g.status==="pending"?"#fff5f5":"#f0fdf4", color:g.status==="pending"?"#e24b4a":"#1d9e75", fontWeight:600 }}>{g.status}</span>
+              <button onClick={async()=>{
+                const { data: latest } = await supabase.from("booking_location_logs").select("lat,lng").eq("booking_id",g.booking_id).eq("source","customer").order("recorded_at",{ascending:false}).limit(1).maybeSingle()
+                if(!latest){ alert("Customer has not shared live location for this request."); return }
+                window.open(`https://www.google.com/maps?q=${latest.lat},${latest.lng}`, "_blank")
+              }} style={{ marginTop:8, background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
+                View live location
+              </button>
               </div>
             </div>
           ))}
