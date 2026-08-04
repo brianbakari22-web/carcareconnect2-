@@ -44,6 +44,8 @@ export default function CustomerGoService() {
   const [vehicle, setVehicle] = useState("")
   const [vehicles, setVehicles] = useState([])
   const [locating, setLocating] = useState(false)
+  const [sharingLive, setSharingLive] = useState(false)
+  const [liveInterval, setLiveInterval] = useState(null)
   const [submitting, setSubmitting] = useState(false)
   const [booking, setBooking] = useState(null)
   const [goRequest, setGoRequest] = useState(null)
@@ -229,6 +231,30 @@ export default function CustomerGoService() {
     }
   }
 
+  function startLiveSharing(bookingId) {
+    if (liveInterval) return
+    setSharingLive(true)
+    const interval = setInterval(async () => {
+      try {
+        const pos = await getCurrentPosition()
+        await supabase.from("booking_location_logs").insert({
+          booking_id: bookingId,
+          driver_id: null,
+          lat: pos.latitude,
+          lng: pos.longitude,
+          source: "customer",
+        })
+      } catch(e) { console.warn("Live share error:", e.message) }
+    }, 15000)
+    setLiveInterval(interval)
+  }
+  function stopLiveSharing() {
+    if (liveInterval) { clearInterval(liveInterval); setLiveInterval(null) }
+    setSharingLive(false)
+  }
+  useEffect(() => {
+    return () => { if (liveInterval) clearInterval(liveInterval) }
+  }, [liveInterval])
   async function checkRateLimit() {
     const today = new Date().toISOString().split("T")[0]
     const { count } = await supabase.from("bookings").select("id",{count:"exact"}).eq("customer_id",user.id).eq("is_emergency",true).gte("created_at",today+"T00:00:00")
@@ -549,6 +575,16 @@ export default function CustomerGoService() {
             ))}
           </div>
         )}
+        <div style={{ background:"#fff", border:"1px solid #eee", borderRadius:12, padding:"1rem", marginBottom:"1rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+          <div>
+            <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700 }}>Share my live location</div>
+            <div style={{ fontSize:11, color:"#888", marginTop:2 }}>{sharingLive?"Provider can see you moving in real-time":"Help the provider find you if you need to move"}</div>
+          </div>
+          <button onClick={()=>{ if(sharingLive){ stopLiveSharing() } else { startLiveSharing(booking?.id) } }}
+            style={{ background:sharingLive?"#1d9e75":"#e6e6e6", border:"none", borderRadius:20, width:44, height:24, position:"relative", cursor:"pointer", flexShrink:0 }}>
+            <div style={{ position:"absolute", top:2, left:sharingLive?22:2, width:20, height:20, background:"#fff", borderRadius:"50%", transition:"left 0.2s" }}/>
+          </button>
+        </div>
         <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.75rem", marginBottom:"1rem" }}>
           <div style={{ fontSize:12, fontWeight:700, color:"#e6821e", marginBottom:4 }}>⚠️ Payment Protection</div>
           <div style={{ fontSize:11, color:"#555", lineHeight:1.6 }}>Never pay the mechanic directly. All payments go through CCC for your protection. Direct payments void your warranty and refund rights.</div>

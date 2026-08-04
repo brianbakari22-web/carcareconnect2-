@@ -602,9 +602,14 @@ export default function MechanicDashboard() {
                       {job.status==="confirmed"&&(
                         <>
                           {job.service_category==="go_service"&&job.emergency_location_lat&&(
-                            <a href={`https://www.google.com/maps/dir/?api=1&destination=${job.emergency_location_lat},${job.emergency_location_lng}`} target="_blank" rel="noopener noreferrer" style={{ display:"inline-flex", alignItems:"center", gap:6, background:"#4285f4", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"7px 12px", textDecoration:"none" }}>
+                            <button onClick={async()=>{
+                              const { data: latest } = await supabase.from("booking_location_logs").select("lat,lng").eq("booking_id",job.id).eq("source","customer").order("recorded_at",{ascending:false}).limit(1).maybeSingle()
+                              const lat = latest?.lat || job.emergency_location_lat
+                              const lng = latest?.lng || job.emergency_location_lng
+                              window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, "_blank")
+                            }} style={{ display:"inline-flex", alignItems:"center", gap:6, background:"#4285f4", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"7px 12px", cursor:"pointer" }}>
                               🗺️ Navigate to customer
-                            </a>
+                            </button>
                           )}
                           {job.service_category==="go_service"&&job.emergency_location_address&&(
                             <div style={{ width:"100%", fontSize:11, color:"#e6821e", background:"#fff8f0", borderRadius:8, padding:"6px 10px", marginBottom:4 }}>📍 {job.emergency_location_address}</div>
