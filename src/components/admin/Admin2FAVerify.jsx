@@ -1,3 +1,4 @@
+import { SecurityIcon } from "../../lib/cccIcons"
 import { useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
@@ -57,7 +58,7 @@ export default function Admin2FAVerify({ onVerified }) {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');`}</style>
       <div style={{ width:"100%", maxWidth:380, padding:"0 1rem" }}>
         <div style={{ textAlign:"center", marginBottom:"2rem" }}>
-          <div style={{ width:60, height:60, background:"#fff8f0", borderRadius:14, display:"flex", alignItems:"center", justifyContent:"center", fontSize:28, margin:"0 auto 1rem", border:`1px solid ${"#e6821e30"}` }}>🔐</div>
+          <div style={{ width:60, height:60, background:"#fff8f0", borderRadius:14, display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 1rem", border:`1px solid ${"#e6821e30"}` }}><SecurityIcon size={28} color="#e6821e"/></div>
           <div style={{ fontFamily:"Syne", fontSize:22, fontWeight:800, color:"#000000", marginBottom:4 }}>Two-Factor Auth</div>
           <div style={{ fontSize:13, color:"#999999" }}>Enter the 6-digit code from your authenticator app</div>
         </div>
@@ -87,3 +88,4 @@ export default function Admin2FAVerify({ onVerified }) {
     </div>
   )
 }
+

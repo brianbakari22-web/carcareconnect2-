@@ -623,6 +623,10 @@ export default function Layout({ children }) {
                item.label==="Inventory" ? <OrdersIcon size={22} active={isActive(item)} /> :
                item.label==="Trip Reports" ? <TripReportIcon size={22} active={isActive(item)} /> :
                item.label==="Deliveries"||item.label==="Order Deliveries" ? <TruckDriverIcon size={22} active={isActive(item)} /> :
+               item.icon==="users" ? <ProfileIcon size={22} active={isActive(item)} /> :
+               item.icon==="wallet" ? <WalletIcon size={22} active={isActive(item)} /> :
+               item.icon==="bookings" ? <BookingsIcon size={22} active={isActive(item)} /> :
+               item.icon==="overview" ? <HomeIcon size={22} active={isActive(item)} /> :
                <span style={{fontSize:20}}>{item.icon}</span>}
             </span>
               {item.key==="notifications"&&unreadCount>0&&(
