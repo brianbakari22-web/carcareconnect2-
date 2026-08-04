@@ -102,7 +102,7 @@ export default function AdminLiveMap() {
           d.driver?.driver_vehicle_type==="motorcycle"?"\u{1F3CD}\u{FE0F}":
           d.driver?.driver_vehicle_type==="tuktuk"?"\u{1F6FA}":
           d.driver?.driver_vehicle_type==="van"?"\u{1F690}":"\u{1F697}"
-        const color = d.is_online?"#1d9e75":"#888888"
+        const color = d.is_online&&!isStale(d)?"#1d9e75":"#888888"
         const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="${color}" stroke="white" stroke-width="3"/><text x="24" y="32" font-size="20" text-anchor="middle">${icon}</text></svg>`
         const markerIcon = { url:"data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(svg), scaledSize:new window.google.maps.Size(48,48), anchor:new window.google.maps.Point(24,24) }
         if (markersRef.current[d.driver_id]) {
@@ -140,7 +140,21 @@ export default function AdminLiveMap() {
     return true
   })
 
-  const onlineCount = drivers.filter(d=>d.is_online).length
+  function isStale(d) {
+    if (!d.updated_at) return true
+    return (Date.now() - new Date(d.updated_at).getTime()) > 10*60*1000
+  }
+  function timeAgo(dateStr) {
+    if (!dateStr) return "never"
+    const diff = Date.now() - new Date(dateStr).getTime()
+    const mins = Math.floor(diff/60000)
+    if (mins < 1) return "just now"
+    if (mins < 60) return mins+"m ago"
+    const hrs = Math.floor(mins/60)
+    if (hrs < 24) return hrs+"h ago"
+    return Math.floor(hrs/24)+"d ago"
+  }
+  const onlineCount = drivers.filter(d=>d.is_online && !isStale(d)).length
   const conciergeCount = drivers.filter(d=>d.driver?.driver_category==="concierge").length
   const marketplaceCount = drivers.filter(d=>d.driver?.driver_category==="marketplace").length
   const activeGoRequests = goRequests.filter(g=>g.status==="pending"||g.status==="accepted").length
@@ -216,15 +230,15 @@ export default function AdminLiveMap() {
           <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8 }}>Driver List ({filtered.length})</div>
           {filtered.map(d=>(
             <div key={d.driver_id} onClick={()=>{ setSelected(d); if(mapInstanceRef.current&&d.current_lat) mapInstanceRef.current.panTo({lat:d.current_lat,lng:d.current_lng}) }}
-              style={{ background:"#f8f8f8", border:`1px solid ${d.is_online?"#1d9e7530":"#eee"}`, borderRadius:10, padding:"0.75rem", marginBottom:6, cursor:"pointer", display:"flex", alignItems:"center", gap:10 }}>
-              <div style={{ width:8, height:8, borderRadius:"50%", background:d.is_online?"#1d9e75":"#ccc", flexShrink:0 }}/>
+              style={{ background:"#f8f8f8", border:`1px solid ${d.is_online&&!isStale(d)?"#1d9e7530":"#eee"}`, borderRadius:10, padding:"0.75rem", marginBottom:6, cursor:"pointer", display:"flex", alignItems:"center", gap:10, opacity:isStale(d)?0.6:1 }}>
+              <div style={{ width:8, height:8, borderRadius:"50%", background:d.is_online&&!isStale(d)?"#1d9e75":"#ccc", flexShrink:0 }}/>
               <div style={{ flex:1 }}>
                 <div style={{ fontSize:13, fontWeight:600 }}>{d.driver?.first_name} {d.driver?.last_name}</div>
                 <div style={{ fontSize:11, color:"#888" }}>{d.driver?.driver_category==="concierge"?"Concierge":`🚗 ${d.driver?.driver_vehicle_type||"Car"}`}{d.current_booking_id&&" · 📅 On job"}</div>
+                <div style={{ fontSize:10, color:isStale(d)?"#e6821e":"#aaa" }}>Last seen: {timeAgo(d.updated_at)}</div>
               </div>
-              <div style={{ fontSize:11, color:d.is_online?"#1d9e75":"#888" }}>{d.is_online?"Online":"Offline"}</div>
-            </div>
-          ))}
+              <div style={{ fontSize:11, color:d.is_online&&!isStale(d)?"#1d9e75":"#888" }}>{isStale(d)?"Stale":d.is_online?"Online":"Offline"}</div>
+            </div>))}
         </>
       )}
       {/* GO Requests Tab */}
@@ -288,5 +302,6 @@ export default function AdminLiveMap() {
     </div>
   )
 }
+
 
 
