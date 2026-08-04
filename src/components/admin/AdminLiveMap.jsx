@@ -52,7 +52,7 @@ export default function AdminLiveMap() {
         const sv = new window.google.maps.StreetViewService()
         sv.getPanorama({ location:{ lat:selected.current_lat, lng:selected.current_lng }, radius:100 }, (data, status) => {
           if (status === "OK") {
-            new window.google.maps.StreetViewPanorama(svDiv, {
+            const panorama = new window.google.maps.StreetViewPanorama(svDiv, {
               position: { lat: selected.current_lat, lng: selected.current_lng },
               pov: { heading: 34, pitch: 10 },
               zoom: 1,
@@ -60,6 +60,8 @@ export default function AdminLiveMap() {
               showRoadLabels: true,
               motionTracking: false,
             })
+            window.google.maps.event.trigger(panorama, "resize")
+            setTimeout(() => window.google.maps.event.trigger(panorama, "resize"), 300)
           } else {
             svDiv.innerHTML = "<div style=\"display:flex;align-items:center;justify-content:center;height:100%;color:#888;font-size:12px;flex-direction:column;gap:8px\"><span style=\"font-size:24px\">🗺️</span>Street View not available at this location</div>"
           }
