@@ -1,22 +1,23 @@
+import { VehicleIcon, ServicesIcon, MechanicIcon, DriversIcon, MarketplaceIcon, GOServiceIcon, DiscoverIcon, SearchIcon, PowerIcon } from "../../lib/cccIcons"
 import { useState, useEffect, useRef } from "react"
 
 const ROLES = [
-  { key:"customer", emoji:"🚗", label:"Customers", title:"Vehicle Owners", tagline:"Book, track & relax.", desc:"Find verified mechanics near you, get 24/7 emergency help, order genuine parts all from your phone.", color:"#e6821e", bg:"#fff8f0", border:"#e6821e25", img:"https://images.unsplash.com/photo-1611448746128-7c39e03b71e4?w=700&q=85", actions:["Book a mechanic","GO Emergency","Order parts","Track my car"], path:"/auth" },
-  { key:"provider", emoji:"🔧", label:"Garages", title:"Garages and Shops", tagline:"List. Earn. Grow.", desc:"Reach thousands of vehicle owners across Kenya. Manage bookings, dispatch mechanics and get paid instantly.", color:"#378add", bg:"#eff6ff", border:"#378add25", img:"https://images.unsplash.com/photo-1551522435-b2347f669045?w=700&q=85", actions:["Manage bookings","View earnings","GO requests","Manage mechanics"], path:"/auth" },
-  { key:"mechanic", emoji:"⚙️", label:"Mechanics", title:"Mechanics", tagline:"Get jobs. Get paid.", desc:"Get job assignments from your garage, track earnings, upload service photos and grow your reputation.", color:"#1d9e75", bg:"#f0fdf4", border:"#1d9e7525", img:"https://images.unsplash.com/photo-1702146713858-8e7d1cc29fe8?w=700&q=85", actions:["View assigned jobs","Track earnings","Request parts","Service photos"], path:"/mechanic-login" },
-  { key:"driver", emoji:"🚘", label:"Drivers", title:"Drivers", tagline:"Drive. Deliver. Earn.", desc:"Accept vehicle pickup and parts delivery jobs across Kenya. GPS routes, earnings dashboard and a PANIC button.", color:"#8b5cf6", bg:"#faf5ff", border:"#8b5cf625", img:"https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=700&q=85", actions:["Available jobs","Active delivery","My earnings","Performance"], path:"/auth" },
-  { key:"dealer", emoji:"🛒", label:"Dealers", title:"Parts Dealers", tagline:"List parts. Sell more.", desc:"Sell genuine and aftermarket parts online. Manage inventory, fulfill orders and reach mechanics across Kenya.", color:"#f59e0b", bg:"#fefce8", border:"#f59e0b25", img:"https://images.unsplash.com/photo-1487754180451-c456f719a1fc?w=700&q=85", actions:["My inventory","Incoming orders","Sales analytics","Add new parts"], path:"/auth" },
+  { key:"customer", emoji:"vehicle", label:"Customers", title:"Vehicle Owners", tagline:"Book, track & relax.", desc:"Find verified mechanics near you, get 24/7 emergency help, order genuine parts all from your phone.", color:"#e6821e", bg:"#fff8f0", border:"#e6821e25", img:"https://images.unsplash.com/photo-1611448746128-7c39e03b71e4?w=700&q=85", actions:["Book a mechanic","GO Emergency","Order parts","Track my car"], path:"/auth" },
+  { key:"provider", emoji:"services", label:"Garages", title:"Garages and Shops", tagline:"List. Earn. Grow.", desc:"Reach thousands of vehicle owners across Kenya. Manage bookings, dispatch mechanics and get paid instantly.", color:"#378add", bg:"#eff6ff", border:"#378add25", img:"https://images.unsplash.com/photo-1551522435-b2347f669045?w=700&q=85", actions:["Manage bookings","View earnings","GO requests","Manage mechanics"], path:"/auth" },
+  { key:"mechanic", emoji:"mechanic", label:"Mechanics", title:"Mechanics", tagline:"Get jobs. Get paid.", desc:"Get job assignments from your garage, track earnings, upload service photos and grow your reputation.", color:"#1d9e75", bg:"#f0fdf4", border:"#1d9e7525", img:"https://images.unsplash.com/photo-1702146713858-8e7d1cc29fe8?w=700&q=85", actions:["View assigned jobs","Track earnings","Request parts","Service photos"], path:"/mechanic-login" },
+  { key:"driver", emoji:"drivers", label:"Drivers", title:"Drivers", tagline:"Drive. Deliver. Earn.", desc:"Accept vehicle pickup and parts delivery jobs across Kenya. GPS routes, earnings dashboard and a PANIC button.", color:"#8b5cf6", bg:"#faf5ff", border:"#8b5cf625", img:"https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=700&q=85", actions:["Available jobs","Active delivery","My earnings","Performance"], path:"/auth" },
+  { key:"dealer", emoji:"marketplace", label:"Dealers", title:"Parts Dealers", tagline:"List parts. Sell more.", desc:"Sell genuine and aftermarket parts online. Manage inventory, fulfill orders and reach mechanics across Kenya.", color:"#f59e0b", bg:"#fefce8", border:"#f59e0b25", img:"https://images.unsplash.com/photo-1487754180451-c456f719a1fc?w=700&q=85", actions:["My inventory","Incoming orders","Sales analytics","Add new parts"], path:"/auth" },
 ]
 
 const SERVICES = [
-  { emoji:"🔧", name:"Mechanic" },
-  { emoji:"🚨", name:"Emergency" },
-  { emoji:"🛒", name:"Parts" },
-  { emoji:"🚗", name:"Concierge" },
-  { emoji:"🚿", name:"Car Wash" },
-  { emoji:"🔍", name:"Diagnostics" },
-  { emoji:"🛞", name:"Tyres" },
-  { emoji:"⚡", name:"Electrical" },
+  { emoji:"services", name:"Mechanic" },
+  { emoji:"emergency", name:"Emergency" },
+  { emoji:"marketplace", name:"Parts" },
+  { emoji:"vehicle", name:"Concierge" },
+  { emoji:"discover", name:"Car Wash" },
+  { emoji:"search", name:"Diagnostics" },
+  { emoji:"vehicle", name:"Tyres" },
+  { emoji:"power", name:"Electrical" },
 ]
 
 const SVC_ICONS = {
@@ -239,7 +240,7 @@ export default function AppHomePage() {
           <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8 }}>
             {SERVICES.map(s=>(
               <div key={s.name} className="svc-btn" onClick={()=>nav("/auth")}>
-                <span style={{ fontSize:20 }}>{s.emoji}</span>
+                <span style={{display:"flex"}}>{s.emoji==="services"?<ServicesIcon size={20} color="currentColor"/>:s.emoji==="emergency"?<GOServiceIcon size={20} color="#e24b4a"/>:s.emoji==="marketplace"?<MarketplaceIcon size={20} color="currentColor"/>:s.emoji==="vehicle"?<VehicleIcon size={20} color="currentColor"/>:s.emoji==="discover"?<DiscoverIcon size={20} color="currentColor"/>:s.emoji==="search"?<SearchIcon size={20} color="currentColor"/>:s.emoji==="power"?<PowerIcon size={20} color="currentColor"/>:<ServicesIcon size={20} color="currentColor"/>}</span>
                 <span style={{ fontSize:10, fontFamily:"Syne,sans-serif", fontWeight:600, color:"#555", textAlign:"center", lineHeight:1.3 }}>{s.name}</span>
               </div>
             ))}
