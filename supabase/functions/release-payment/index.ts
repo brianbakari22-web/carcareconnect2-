@@ -19,25 +19,20 @@ serve(async (req) => {
     if (!booking.payment_held) throw new Error("No payment held for this booking")
     const providerAmount = Number(booking.provider_earnings || 0)
     if (providerAmount <= 0) throw new Error("Invalid provider amount")
-    // Use SECURITY DEFINER function to bypass RLS
-    const { data: pSensRows, error: pSensError } = await supabase.rpc("get_provider_payment_details", { provider_id_input: booking.provider_id })
-    console.log("pSens query error:", JSON.stringify(pSensError))
-    console.log("pSens rows:", JSON.stringify(pSensRows))
+    const { data: pSensRows } = await supabase.rpc("get_provider_payment_details", { provider_id_input: booking.provider_id })
     const pSens = pSensRows?.[0] || null
     const prefMethod = pSens?.preferred_payment_method || "mpesa"
-    const providerPhone = prefMethod==="till" ? pSens?.till_number
-      : prefMethod==="paybill" ? pSens?.paybill_number
-      : prefMethod==="pochi" ? pSens?.pochi_number
+    const providerPhone = prefMethod === "till" ? pSens?.till_number
+      : prefMethod === "paybill" ? pSens?.paybill_number
+      : prefMethod === "pochi" ? pSens?.pochi_number
       : (pSens?.mpesa_number || pSens?.till_number || pSens?.pochi_number)
-    console.log("pSens data:", JSON.stringify(pSens))
-    console.log("prefMethod:", prefMethod)
-    console.log("providerPhone:", providerPhone)
-    // Use mpesa_number as fallback regardless of preferred method
     const finalPhone = providerPhone || pSens?.mpesa_number || pSens?.till_number || pSens?.pochi_number
-    console.log("Final phone:", finalPhone, "pSens:", JSON.stringify(pSens))
     if (!finalPhone) throw new Error("Provider has no payment number configured")
-    // Release payment to provider - wrapped in try-catch so booking still completes
+
+    // Call B2C payout - this call must genuinely succeed for us to proceed
     let payoutData: any = {}
+    let payoutFailed = false
+    let payoutErrorMsg = ""
     try {
       const payoutResp = await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/daraja-b2c-payout`, {
         method: "POST",
@@ -46,26 +41,49 @@ serve(async (req) => {
       })
       const text = await payoutResp.text()
       payoutData = text ? JSON.parse(text) : {}
-      console.log("Payout response:", JSON.stringify(payoutData))
-    } catch(payoutErr: any) {
-      console.error("Payout error (non-fatal):", payoutErr.message)
+      if (!payoutResp.ok || payoutData.error || !payoutData.success) {
+        payoutFailed = true
+        payoutErrorMsg = payoutData.error || "B2C payout was not accepted by Safaricom"
+      }
+    } catch (payoutErr: any) {
+      payoutFailed = true
+      payoutErrorMsg = payoutErr.message
     }
-    // Always mark payment released regardless of payout result
+
+    if (payoutFailed) {
+      // Log the failure so admin can see it and retry - do NOT mark payment released
+      await supabase.from("failed_jobs").insert({
+        job_type: "b2c_payout",
+        error_message: payoutErrorMsg,
+        payload: { booking_id: booking.id, booking_number: booking.booking_number, amount: providerAmount, phone: finalPhone },
+        status: "failed"
+      })
+      await supabase.from("notifications").insert({
+        user_id: booking.provider_id,
+        title: "Payment delayed",
+        message: `We could not release KES ${providerAmount.toLocaleString()} to you yet. Our team has been notified and will resolve this shortly.`,
+        type: "warning"
+      })
+      throw new Error("Payout failed: " + payoutErrorMsg)
+    }
+
+    // Payout genuinely accepted by Safaricom - mark released
     await supabase.from("bookings").update({
       payment_released: true,
       payment_released_at: new Date().toISOString(),
       completion_confirmed_at: confirmed_by === "customer" ? new Date().toISOString() : null,
       status: "completed"
     }).eq("id", booking_id)
+
     await supabase.from("notifications").insert({
       user_id: booking.provider_id,
-      title: "Payment released! 💰",
+      title: "Payment released!",
       message: `KES ${providerAmount.toLocaleString()} has been sent to your ${prefMethod} for ${booking.service_name} #${booking.booking_number}`,
       type: "success"
     })
     await supabase.from("notifications").insert({
       user_id: booking.customer_id,
-      title: confirmed_by === "auto" ? "Payment auto-released ⏰" : "Payment confirmed ✅",
+      title: confirmed_by === "auto" ? "Payment auto-released" : "Payment confirmed",
       message: confirmed_by === "auto"
         ? `Payment of KES ${providerAmount.toLocaleString()} was automatically released to the provider after 24 hours.`
         : `Thank you for confirming! KES ${providerAmount.toLocaleString()} has been released to the provider.`,
@@ -75,17 +93,13 @@ serve(async (req) => {
       await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/send-push`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}` },
-        body: JSON.stringify({ user_id: booking.provider_id, title: "Payment released! 💰", message: `KES ${providerAmount.toLocaleString()} sent to your ${prefMethod}` })
+        body: JSON.stringify({ user_id: booking.provider_id, title: "Payment released!", message: `KES ${providerAmount.toLocaleString()} sent to your ${prefMethod}` })
       })
-    } catch(e) {}
+    } catch (e) {}
+
     return new Response(JSON.stringify({ success: true, amount: providerAmount }), { headers: { ...corsHeaders, "Content-Type": "application/json" } })
   } catch (error: any) {
     console.error("Release payment error:", error.message)
     return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
   }
 })
-
-
-
-
-
