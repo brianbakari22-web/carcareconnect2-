@@ -160,6 +160,25 @@ export function LocationIcon({ size=24, color="#e24b4a", active=false }) {
   )
 }
 
+export function NewIcon({ size=24, color="#64748B", active=false }) {
+  const c = active ? "#e6821e" : color
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M14 4L16 12L24 14L16 16L14 24L12 16L4 14L12 12L14 4Z" stroke={c} strokeWidth="1.75" strokeLinejoin="round" fill={active ? c : "none"} fillOpacity={active ? "0.15" : "0"}/>
+    </svg>
+  )
+}
+export function AccessoryIcon({ size=24, color="#64748B", active=false }) {
+  const c = active ? "#e6821e" : color
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M9 10C9 10 9 5 14 5C19 5 19 10 19 10" stroke={c} strokeWidth="1.75" strokeLinecap="round"/>
+      <rect x="5" y="10" width="18" height="14" rx="2" stroke={c} strokeWidth="1.75"/>
+      <path d="M11 14V16" stroke={c} strokeWidth="1.75" strokeLinecap="round"/>
+      <path d="M17 14V16" stroke={c} strokeWidth="1.75" strokeLinecap="round"/>
+    </svg>
+  )
+}
 export function StarIcon({ size=24, color="#64748B", active=false }) {
   const c = active ? "#e6821e" : color
   return (
