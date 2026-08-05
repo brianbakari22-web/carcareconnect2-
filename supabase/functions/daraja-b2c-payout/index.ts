@@ -38,7 +38,7 @@ serve(async (req) => {
 
     // B2C Payment Request
     const b2cBody = {
-      InitiatorName: "CCCAPI",
+      InitiatorName: Deno.env.get("DARAJA_INITIATOR_NAME") || "CCCmanager",
       SecurityCredential: Deno.env.get("DARAJA_SECURITY_CREDENTIAL") || "",
       CommandID: "BusinessPayment",
       Amount: Math.floor(amount),
@@ -110,6 +110,7 @@ serve(async (req) => {
     })
   }
 })
+
 
 
 
