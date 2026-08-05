@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { pushNotify } from "../../lib/pushNotify"
-import { MarketplaceIcon, VehicleIcon, ServicesIcon, LocationIcon, HeartIcon, ChatIcon, ShareIcon, EyeIcon, MyListingsIcon, ShieldIcon, WarningIcon, FilterIcon, SearchIcon, PartsIcon, NoteIcon, CrownIcon, StarIcon, CheckIcon, NewIcon, AccessoryIcon } from "../../lib/cccIcons"
+import { MarketplaceIcon, VehicleIcon, ServicesIcon, LocationIcon, HeartIcon, ChatIcon, ShareIcon, EyeIcon, MyListingsIcon, ShieldIcon, WarningIcon, FilterIcon, SearchIcon, PartsIcon, NoteIcon, CrownIcon, StarIcon, CheckIcon, NewIcon, AccessoryIcon, SettingsIcon, HomeIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import SellerProfile from "./SellerProfile"
 import NewCarMarketplace from "../customer/NewCarMarketplace"
@@ -399,13 +399,14 @@ export default function Marketplace() {
       </div>
 
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
-        {[{k:"all",l:"All",icon:"marketplace"},{k:"vehicle",l:"Vehicles",icon:"vehicle"},{k:"new_cars",l:"New Cars",icon:"🆕"},{k:"parts_shop",l:"Parts & Accessories",icon:"⚙️"},{k:"my_listings",l:"My Listings",icon:"🏢"},{k:"saved",l:"Saved",icon:"❤️"}].map(t=>(
+        {[{k:"all",l:"All",icon:"marketplace"},{k:"vehicle",l:"Vehicles",icon:"vehicle"},{k:"new_cars",l:"New Cars",icon:"new"},{k:"parts_shop",l:"Parts& Accessories",icon:"settings"},{k:"my_listings",l:"My Listings",icon:"home"},{k:"saved",l:"Saved",icon:"heart"}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#f0f0f0", color:tab===t.k?"#fff":"#555", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400 }}>
-            {t.icon} {t.l}
+            style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#f0f0f0", color:tab===t.k?"#fff":"#555", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400, display:"inline-flex", alignItems:"center", gap:5 }}>
+            {t.icon==="marketplace"?<MarketplaceIcon size={13} color="currentColor"/>:t.icon==="vehicle"?<VehicleIcon size={13} color="currentColor"/>:t.icon==="new"?<NewIcon size={13} color="currentColor"/>:t.icon==="settings"?<SettingsIcon size={13} color="currentColor"/>:t.icon==="home"?<HomeIcon size={13} color="currentColor"/>:<HeartIcon size={13} color="currentColor"/>} {t.l}
           </button>
         ))}
       </div>
+      <div style={{ fontSize:11, color:"#888", marginBottom:"0.75rem" }}>{listings.length} listing{listings.length!==1?"s":""} available</div>
 
       <div style={{ display:"flex", gap:8, marginBottom:"1rem" }}>
         <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search vehicles, parts, makes..."
@@ -1011,6 +1012,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
     </div>
   )
 }
+
 
 
 
