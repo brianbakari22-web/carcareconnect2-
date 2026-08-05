@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { pushNotify } from "../../lib/pushNotify"
-import { MarketplaceIcon, VehicleIcon, ServicesIcon, LocationIcon, HeartIcon, ChatIcon, ShareIcon, EyeIcon, MyListingsIcon, ShieldIcon, WarningIcon, FilterIcon, SearchIcon, PartsIcon, NoteIcon } from "../../lib/cccIcons"
+import { MarketplaceIcon, VehicleIcon, ServicesIcon, LocationIcon, HeartIcon, ChatIcon, ShareIcon, EyeIcon, MyListingsIcon, ShieldIcon, WarningIcon, FilterIcon, SearchIcon, PartsIcon, NoteIcon, CrownIcon, StarIcon, CheckIcon, NewIcon, AccessoryIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import SellerProfile from "./SellerProfile"
 import NewCarMarketplace from "../customer/NewCarMarketplace"
@@ -494,12 +494,12 @@ export default function Marketplace() {
             <div key={l.id} onClick={()=>openListing(l)}
               style={{ background:"#ffffff", border:`1px solid ${l.featured_tier==="premium"?"#8b5cf6":l.is_featured?"#e6821e":"#eeeeee"}`, borderRadius:12, overflow:"hidden", cursor:"pointer" }}>
               <div style={{ height:isMobile?120:160, background:"#f5f5f5", position:"relative", display:"flex", alignItems:"center", justifyContent:"center" }}>
-                {l.is_featured&&<div style={{ position:"absolute", top:8, left:8, background:l.featured_tier==="premium"?"#8b5cf6":"#e6821e", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10, zIndex:2 }}>{l.featured_tier==="premium"?"👑 PREMIUM":"⭐ FEATURED"}</div>}
-                {l.is_inspected&&<div style={{ position:"absolute", top:8, right:8, background:"#1d9e75", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10, zIndex:2 }}>✓ INSPECTED</div>}
+                {l.is_featured&&<div style={{ position:"absolute", top:8, left:8, background:l.featured_tier==="premium"?"#8b5cf6":"#e6821e", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10, zIndex:2 }}>{l.featured_tier==="premium"?<><CrownIcon size={10} color="#fff"/> PREMIUM</>:<><StarIcon size={10} color="#fff"/> FEATURED</>}</div>}
+                {l.is_inspected&&<div style={{ position:"absolute", top:8, right:8, background:"#1d9e75", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:10, zIndex:2 }}><><CheckIcon size={10} color="#fff"/> INSPECTED</></div>}
                 <button onClick={e=>{ e.stopPropagation(); toggleLike(l.id) }} style={{ position:"absolute", bottom:8, right:8, background:"rgba(255,255,255,0.9)", border:"none", borderRadius:"50%", width:32, height:32, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, boxShadow:"0 2px 8px rgba(0,0,0,0.15)", zIndex:2 }}>
                   <HeartIcon size={16} color="#e24b4a" active={userLikes.has(l.id)} />
                 </button>
-                {l._type&&<div style={{ position:"absolute", bottom:8, left:8, background:l._type==="new_car"?"#378add":l._type==="part"||l._type==="accessory"?"#8b5cf6":"#1d9e75", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 6px", borderRadius:4, whiteSpace:"nowrap", zIndex:2 }}>{l._type==="new_car"?"🆕 NEW":l._type==="part"?"🔧 PART":l._type==="accessory"?"✨ ACC":"🚗 USED"}</div>}
+                {l._type&&<div style={{ position:"absolute", bottom:8, left:8, background:l._type==="new_car"?"#378add":l._type==="part"||l._type==="accessory"?"#8b5cf6":"#1d9e75", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 6px", borderRadius:4, whiteSpace:"nowrap", zIndex:2 }}>{l._type==="new_car"?<><NewIcon size={10} color="#fff"/> NEW</>:l._type==="part"?<><ServicesIcon size={10} color="#fff"/> PART</>:l._type==="accessory"?<><AccessoryIcon size={10} color="#fff"/> ACC</>:<><VehicleIcon size={10} color="#fff"/> USED</>}</div>}
                 {l.primary_photo ? (
                   <img src={l.primary_photo} alt={l.title} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
                 ) : (
@@ -513,11 +513,11 @@ export default function Marketplace() {
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
                   <div style={{ fontFamily:"Syne", fontSize:isMobile?13:15, fontWeight:800, color:"#e6821e" }}>KES {Number(l.price).toLocaleString()}</div>
                   <span style={{ fontSize:10, color:"#e24b4a", display:"flex", alignItems:"center", gap:2 }}><HeartIcon size={10} color="#e24b4a" /> {l.likes_count||0}</span>
-                  {l.seller?.marketplace_rating>0&&<span style={{ fontSize:10, color:"#e6821e" }}>⭐ {Number(l.seller.marketplace_rating).toFixed(1)}</span>}
+                  {l.seller?.marketplace_rating>0&&<span style={{ fontSize:10, color:"#e6821e", display:"flex", alignItems:"center", gap:2 }}><StarIcon size={9} color="#e6821e"/> {Number(l.seller.marketplace_rating).toFixed(1)}</span>}
                   <span style={{ fontSize:10, color:"#e24b4a", display:"flex", alignItems:"center", gap:2 }}><HeartIcon size={10} color="#e24b4a"/> {l.likes_count||0}</span>
                   {l.negotiable&&<span style={{ fontSize:9, color:"#1d9e75" }}>Negotiable</span>}
                   <div style={{ display:"flex", gap:8, marginTop:4 }}>
-                    {(l.likes_count>0)&&<span style={{ fontSize:9, color:"#e24b4a" }}>❤️ {l.likes_count}</span>}
+                    
                     {(l.comments_count>0)&&<span style={{ fontSize:9, color:"#888", display:"flex", alignItems:"center", gap:2 }}><ChatIcon size={9} color="#888" /> {l.comments_count}</span>}
                     {(l.shares_count>0)&&<span style={{ fontSize:9, color:"#1d9e75", display:"flex", alignItems:"center", gap:2 }}><ShareIcon size={9} color="#1d9e75" /> {l.shares_count}</span>}
                   </div>
