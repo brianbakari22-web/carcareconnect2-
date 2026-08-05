@@ -72,7 +72,7 @@ serve(async (req) => {
     }
 
     const payBody: Record<string, any> = {
-      InitiatorName: Deno.env.get("DARAJA_INITIATOR_NAME") || "CCCmanager",
+      InitiatorName: Deno.env.get("DARAJA_INITIATOR_NAME") || "CCCAPI",
       SecurityCredential: Deno.env.get("DARAJA_SECURITY_CREDENTIAL") || "",
       CommandID: commandId,
       Amount: Math.floor(amount),
@@ -139,3 +139,4 @@ serve(async (req) => {
     })
   }
 })
+
