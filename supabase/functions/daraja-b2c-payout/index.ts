@@ -1,17 +1,14 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
-
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 }
-
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders })
   try {
-    const { phone, amount, booking_id, provider_id, narrative } = await req.json()
+    const { phone, amount, booking_id, provider_id, narrative, payment_method, account_reference } = await req.json()
     if (!phone || !amount || !booking_id) throw new Error("phone, amount and booking_id required")
-
     const CONSUMER_KEY = Deno.env.get("DARAJA_CONSUMER_KEY")!
     const CONSUMER_SECRET = Deno.env.get("DARAJA_CONSUMER_SECRET")!
     const SHORTCODE = Deno.env.get("DARAJA_SHORTCODE") || "4326921"
@@ -19,8 +16,8 @@ serve(async (req) => {
     const RESULT_URL = `${Deno.env.get("SUPABASE_URL")}/functions/v1/daraja-callback`
     const TIMEOUT_URL = `${Deno.env.get("SUPABASE_URL")}/functions/v1/daraja-callback`
 
-    // Format phone
-    let formattedPhone = phone.replace(/\s/g, "")
+    // Format phone (only relevant for standard B2C to a personal number)
+    let formattedPhone = String(phone).replace(/\s/g, "")
     if (formattedPhone.startsWith("0")) formattedPhone = "254" + formattedPhone.slice(1)
     if (formattedPhone.startsWith("+")) formattedPhone = formattedPhone.slice(1)
 
@@ -33,70 +30,102 @@ serve(async (req) => {
     const authData = await authResp.json()
     if (!authData.access_token) throw new Error("Auth failed: " + JSON.stringify(authData))
 
-    // Clean narrative
     const cleanNarrative = (narrative || `CCC payout ${booking_id}`).replace(/[^a-zA-Z0-9_ -]/g, " ").substring(0, 100)
 
-    // B2C Payment Request
-    const b2cBody = {
+    // Route by payment method - PartyB and CommandID differ per method.
+    // "mpesa" (personal number) requires standard B2C approval from Safaricom (pending as of this writing).
+    // "till" and "paybill" use B2B, which is already enabled on this account.
+    // "pochi" is not wired here yet - needs the exact Business To Pochi endpoint/spec confirmed in Daraja docs.
+    let commandId: string
+    let partyB: string
+    let endpoint: string
+    let extraFields: Record<string, any> = {}
+
+    const method = (payment_method || "mpesa").toLowerCase()
+
+    if (method === "till") {
+      commandId = "BusinessBuyGoods"
+      partyB = String(phone).replace(/\s/g, "")
+      endpoint = `${BASE_URL}/mpesa/b2b/v1/paymentrequest`
+      extraFields = {
+        SenderIdentifierType: "4",
+        RecieverIdentifierType: "4",
+      }
+    } else if (method === "paybill") {
+      commandId = "BusinessPayBill"
+      partyB = String(phone).replace(/\s/g, "")
+      endpoint = `${BASE_URL}/mpesa/b2b/v1/paymentrequest`
+      extraFields = {
+        SenderIdentifierType: "4",
+        RecieverIdentifierType: "4",
+        AccountReference: account_reference || booking_id,
+      }
+    } else if (method === "pochi") {
+      // Not implemented yet - Business To Pochi uses a different request shape
+      // that hasn't been confirmed. Fail clearly instead of guessing.
+      throw new Error("Pochi payout routing not yet implemented - check Daraja docs for Business To Pochi request format")
+    } else {
+      // Standard B2C to a personal M-Pesa number - requires Safaricom B2C product approval
+      commandId = "BusinessPayment"
+      partyB = formattedPhone
+      endpoint = `${BASE_URL}/mpesa/b2c/v1/paymentrequest`
+    }
+
+    const payBody: Record<string, any> = {
       InitiatorName: Deno.env.get("DARAJA_INITIATOR_NAME") || "CCCmanager",
       SecurityCredential: Deno.env.get("DARAJA_SECURITY_CREDENTIAL") || "",
-      CommandID: "BusinessPayment",
+      CommandID: commandId,
       Amount: Math.floor(amount),
       PartyA: SHORTCODE,
-      PartyB: formattedPhone,
+      PartyB: partyB,
       Remarks: cleanNarrative,
       QueueTimeOutURL: TIMEOUT_URL,
       ResultURL: RESULT_URL,
-      Occassion: "Provider Payout"
+      Occassion: "Provider Payout",
+      ...extraFields,
     }
 
-    console.log("B2C body:", JSON.stringify(b2cBody))
-
-    const b2cResp = await fetch(`${BASE_URL}/mpesa/b2c/v1/paymentrequest`, {
+    console.log("Payout body:", JSON.stringify({ ...payBody, SecurityCredential: "[redacted]" }))
+    const payResp = await fetch(endpoint, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${authData.access_token}`,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(b2cBody)
+      body: JSON.stringify(payBody)
     })
+    const payData = await payResp.json()
+    console.log("Payout response:", JSON.stringify(payData))
+    if (payData.ResponseCode !== "0") throw new Error(payData.errorMessage || payData.ResponseDescription || "Payout failed")
 
-    const b2cData = await b2cResp.json()
-    console.log("B2C response:", JSON.stringify(b2cData))
-
-    if (b2cData.ResponseCode !== "0") throw new Error(b2cData.errorMessage || b2cData.ResponseDescription || "B2C failed")
-
-    // Log payout
     const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
       auth: { autoRefreshToken: false, persistSession: false }
     })
-
     await supabase.from("payment_transactions").insert({
       booking_id,
       provider_id,
       amount,
-      phone: formattedPhone,
+      phone: partyB,
       status: "pending",
       provider: "daraja",
-      payment_method: "daraja_b2c",
-      raw_response: b2cData,
+      payment_method: `daraja_${method}`,
+      raw_response: payData,
       type: "payout"
     })
 
     return new Response(JSON.stringify({
       success: true,
-      conversation_id: b2cData.ConversationID,
-      originator_conversation_id: b2cData.OriginatorConversationID,
-      message: `B2C payout of KES ${amount} initiated to ${formattedPhone}`
+      conversation_id: payData.ConversationID,
+      originator_conversation_id: payData.OriginatorConversationID,
+      message: `Payout of KES ${amount} initiated to ${partyB} via ${method}`
     }), { headers: { ...corsHeaders, "Content-Type": "application/json" } })
-
   } catch (error: any) {
-    console.error("B2C payout error:", error.message)
+    console.error("Payout error:", error.message)
     try {
       const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
         auth: { autoRefreshToken: false, persistSession: false }
       })
-      const body = await req.clone().json().catch(()=>({}))
+      const body = await req.clone().json().catch(() => ({}))
       await supabase.from("failed_jobs").insert({
         job_type: "b2c_payout",
         error_message: error.message,
@@ -110,7 +139,3 @@ serve(async (req) => {
     })
   }
 })
-
-
-
-
