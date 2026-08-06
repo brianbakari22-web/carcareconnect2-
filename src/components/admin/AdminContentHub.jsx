@@ -516,7 +516,7 @@ export default function AdminContentHub() {
       ctx.fillText("carcareconnect.care", 40, 990)
       ctx.fillStyle = "#999999"
       ctx.font = "26px Arial"
-      drawPhoneIcon(ctx, 700, 990, 22, "#999999")
+      drawPhoneIcon(ctx, 700, 980, 22, "#999999")
       ctx.fillText("0113858966", 730, 990)
       ctx.restore()
       // === DOWNLOAD ===
