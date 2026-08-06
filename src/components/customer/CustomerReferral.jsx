@@ -1,4 +1,4 @@
-import { ReferEarnIcon, LinkIcon, ShareIcon, ProfileIcon, CheckIcon, SuccessIcon, TrophyIcon } from "../../lib/cccIcons";
+import { ReferEarnIcon, LinkIcon, ShareIcon, ProfileIcon, CheckIcon, SuccessIcon, TrophyIcon, WhatsAppIcon, EmailIcon } from "../../lib/cccIcons";
 import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
@@ -102,11 +102,11 @@ export default function CustomerReferral() {
         <div style={{ display:"flex", gap:8 }}>
           <button onClick={shareWhatsApp}
             style={{ flex:1, background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:9, color:"#1d9e75", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px", cursor:"pointer" }}>
-            Share on WhatsApp
+            <WhatsAppIcon size={15} color="#1d9e75"/> Share on WhatsApp
           </button>
           <button onClick={shareEmail}
             style={{ flex:1, background:"#eff6ff", border:"1px solid #378add40", borderRadius:9, color:"#378add", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px", cursor:"pointer" }}>
-            Share via Email
+            <EmailIcon size={15} color="#378add"/> Share via Email
           </button>
           <button onClick={copyLink}
             style={{ background:"#f5f5f5", border:"1px solid #dddddd", borderRadius:9, color:"#555555", fontSize:13, padding:"11px 16px", cursor:"pointer" }}>
