@@ -741,11 +741,11 @@ export default function AdminContentHub() {
         {selected&&(
           <div ref={studioRef} style={{ position:isMobile?"static":"sticky", top:80, scrollMarginTop:16 }}>
             {/* POST STUDIO */}
-            <div style={{ background:"#0f0f0f", borderRadius:20, overflow:"hidden", marginBottom:"1rem" }}>
-              <div style={{ padding:"1rem 1.25rem 0.75rem", borderBottom:"1px solid #1e1e1e", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+            <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:20, overflow:"hidden", marginBottom:"1rem" }}>
+              <div style={{ padding:"1rem 1.25rem 0.75rem", borderBottom:"1px solid #eeeeee", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                 <div>
-                  <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#fff" }}>✦ Post Studio</div>
-                  <div style={{ fontSize:10, color:"#555" }}>Build content for your platforms</div>
+                  <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#000" }}>✦ Post Studio</div>
+                  <div style={{ fontSize:10, color:"#888" }}>Build content for your platforms</div>
                 </div>
                 {selected&&<div style={{ fontSize:10, color:"#e6821e", background:"#e6821e15", border:"1px solid #e6821e30", borderRadius:10, padding:"3px 8px" }}>{selected._type?.toUpperCase()}</div>}
               </div>
@@ -766,9 +766,9 @@ export default function AdminContentHub() {
                   )}
                 </div>
               ) : selected ? (
-                <div style={{ height:120, background:"#1a1a1a", display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:6 }}>
+                <div style={{ height:120, background:"#f5f5f5", display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:6 }}>
                   <div style={{ display:"flex", justifyContent:"center" }}>{selected._category_icon==="discover"?<DiscoverIcon size={40} color="#888"/>:selected._category_icon==="emergency"?<GOServiceIcon size={40} color="#e24b4a"/>:selected._category_icon==="home"?<HomeIcon size={40} color="#888"/>:<ServicesIcon size={40} color="#888"/>}</div>
-                  <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#fff" }}>{selected._label}</div>
+                  <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#000" }}>{selected._label}</div>
                   {selected._price&&<div style={{ fontSize:11, color:"#e6821e" }}>KES {Number(selected._price).toLocaleString()}</div>}
                 </div>
               ) : (
@@ -780,13 +780,13 @@ export default function AdminContentHub() {
               <div style={{ padding:"1rem 1.25rem" }}>
                 {/* Platform pills */}
                 <div style={{ marginBottom:"1rem" }}>
-                  <div style={{ fontSize:9, color:"#444", marginBottom:6, textTransform:"uppercase", letterSpacing:"0.08em" }}>Platform</div>
+                  <div style={{ fontSize:9, color:"#888", marginBottom:6, textTransform:"uppercase", letterSpacing:"0.08em" }}>Platform</div>
                   <div style={{ display:"flex", gap:5, flexWrap:"wrap" }}>
                     {PLATFORMS.map(p=>(
                       <button key={p.key} onClick={()=>updateCaption(p.key)}
-                        style={{ background:platform===p.key?p.color:"#1e1e1e", border:`1px solid ${platform===p.key?p.color:"#2a2a2a"}`, borderRadius:20, padding:"4px 10px", cursor:"pointer", display:"flex", alignItems:"center", gap:4, transition:"all 0.15s" }}>
+                        style={{ background:platform===p.key?p.color:"#f5f5f5", border:`1px solid ${platform===p.key?p.color:"#dddddd"}`, borderRadius:20, padding:"4px 10px", cursor:"pointer", display:"flex", alignItems:"center", gap:4, transition:"all 0.15s", color:platform===p.key?"#fff":"#555" }}>
                         <span style={{ display:"flex" }}>{p.icon==="whatsapp"?<WhatsAppIcon size={11} color="currentColor"/>:p.icon==="tiktok"?<TikTokIcon size={11} color="currentColor"/>:p.icon==="instagram"?<InstagramIcon size={11} color="currentColor"/>:p.icon==="facebook"?<FacebookIcon size={11} color="currentColor"/>:p.icon==="x"?<XSocialIcon size={11} color="currentColor"/>:<YouTubeIcon size={11} color="currentColor"/>}</span>
-                        <span style={{ fontSize:10, color:platform===p.key?"#fff":"#555", fontWeight:platform===p.key?700:400 }}>{p.label}</span>
+                        <span style={{ fontSize:10, color:platform===p.key?"#fff":"#555555", fontWeight:platform===p.key?700:400 }}>{p.label}</span>
                       </button>
                     ))}
                   </div>
@@ -799,7 +799,7 @@ export default function AdminContentHub() {
                     {charLimit&&<div style={{ fontSize:9, color:overLimit?"#e24b4a":"#444" }}>{charCount}/{charLimit}</div>}
                   </div>
                   <textarea value={caption} onChange={e=>setCaption(e.target.value)}
-                    style={{ width:"100%", background:"#1a1a1a", border: overLimit ? "1px solid #e24b4a" : "1px solid #2a2a2a", borderRadius:10, padding:"10px 12px", fontSize:11, outline:"none", resize:"vertical", minHeight:130, fontFamily:"DM Sans,sans-serif", lineHeight:1.6, color:"#ccc" }}/>
+                    style={{ width:"100%", background:"#f8f8f8", border: overLimit ? "1px solid #e24b4a" : "1px solid #dddddd", borderRadius:10, padding:"10px 12px", fontSize:11, outline:"none", resize:"vertical", minHeight:130, fontFamily:"DM Sans,sans-serif", lineHeight:1.6, color:"#000" }}/>
                 </div>
 
                 {/* URL row */}
