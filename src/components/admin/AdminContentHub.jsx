@@ -198,12 +198,19 @@ export default function AdminContentHub() {
       const blob = await res.blob()
       const isNative = typeof window !== "undefined" && window.Capacitor?.isNativePlatform?.()
       if(isNative) {
-        import("@capacitor/filesystem").then(({Filesystem,Directory})=>import("@capacitor/share").then(async ({Share})=>{
-          const arr = await blob.arrayBuffer()
-          const base64 = btoa(String.fromCharCode(...new Uint8Array(arr)))
-            .then(()=>Filesystem.getUri({path:filename||"ccc-content.jpg",directory:Directory.Cache}))
-            .then(r=>Share.share({title:filename||"ccc-content.jpg",url:r.uri}))
-        }))
+        const { Filesystem, Directory } = await import("@capacitor/filesystem")
+        const { Share } = await import("@capacitor/share")
+        const arr = await blob.arrayBuffer()
+        const bytes = new Uint8Array(arr)
+        let binary = ""
+        for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i])
+        const base64 = btoa(binary)
+        const writeResult = await Filesystem.writeFile({
+          path: filename || "ccc-content.jpg",
+          data: base64,
+          directory: Directory.Cache,
+        })
+        await Share.share({ title: filename || "ccc-content.jpg", url: writeResult.uri })
       } else {
         const a = document.createElement("a")
         a.href = URL.createObjectURL(blob)
