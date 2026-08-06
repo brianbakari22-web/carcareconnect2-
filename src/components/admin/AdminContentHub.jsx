@@ -622,16 +622,16 @@ export default function AdminContentHub() {
       </div>
 
         {/* Social Accounts Setup */}
-        <div style={{ background:"#0f0f0f", borderRadius:12, padding:"0.875rem 1rem", marginBottom:"1.25rem" }}>
+        <div style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:12, padding:"0.875rem 1rem", marginBottom:"1.25rem" }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:showSocialSetup?12:0 }}>
             <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:800, color:"#fff", display:"flex", alignItems:"center", gap:6 }}><ChatIcon size={14} color="#fff"/> Your Social Accounts</div>
-              <div style={{ fontSize:9, color:"#555", background:"#1a1a1a", borderRadius:10, padding:"2px 8px" }}>
+              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:800, color:"#000", display:"flex", alignItems:"center", gap:6 }}><ChatIcon size={14} color="#e6821e"/> Your Social Accounts</div>
+              <div style={{ fontSize:9, color:"#666", background:"#eeeeee", borderRadius:10, padding:"2px 8px" }}>
                 {Object.values(socialAccounts).filter(v=>v).length}/6 connected
               </div>
             </div>
             <button onClick={()=>setShowSocialSetup(s=>!s)}
-              style={{ background:"#1a1a1a", border:"none", borderRadius:8, color:"#888", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
+              style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
               {showSocialSetup?"Done":<><SettingsIcon size={12} color="currentColor"/> Setup</>}
             </button>
           </div>
