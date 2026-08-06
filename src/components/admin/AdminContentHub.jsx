@@ -715,23 +715,23 @@ export default function AdminContentHub() {
                     <img src={item._photos[0]} alt="" style={{ width:"100%", height:140, objectFit:"cover", borderRadius:8 }}/>
                   ):(
                     <div style={{ width:"100%", height:140, background:"#f0f0f0", borderRadius:8, display:"flex", alignItems:"center", justifyContent:"center", fontSize:36 }}>
-                      {item._category_icon||( item._type==="car"?"🚗":item._type==="wash"?"🚿":item._type==="service"?"🔧":"📦")}
+                      {item._category_icon==="discover"?<DiscoverIcon size={36} color="#888"/>:item._category_icon==="emergency"?<GOServiceIcon size={36} color="#e24b4a"/>:item._category_icon==="home"?<HomeIcon size={36} color="#888"/>:item._category_icon==="services"?<ServicesIcon size={36} color="#888"/>:item._type==="car"?<VehicleIcon size={36} color="#888"/>:item._type==="wash"?<DiscoverIcon size={36} color="#888"/>:item._type==="service"?<ServicesIcon size={36} color="#888"/>:<PartsIcon size={36} color="#888"/>}
                     </div>
                   )}
                   {item._video&&(
                     <div style={{ position:"absolute", top:8, right:8, background:"rgba(0,0,0,0.7)", borderRadius:6, padding:"2px 8px", fontSize:10, color:"#fff" }}>
-                      🎥 Video
+                      <VideoIcon size={10} color="#fff"/> Video
                     </div>
                   )}
                   {item._photos?.length>1&&(
                     <div style={{ position:"absolute", top:8, left:8, background:"rgba(0,0,0,0.7)", borderRadius:6, padding:"2px 8px", fontSize:10, color:"#fff" }}>
-                      📷 {item._photos.length}
+                      <PhotoIcon size={10} color="#fff"/> {item._photos.length}
                     </div>
                   )}
                 </div>
                 <div style={{ fontSize:13, fontWeight:600, color:"#000", marginBottom:2 }}>{item._label}</div>
                 {item._price&&<div style={{ fontSize:12, color:"#e6821e", fontWeight:700 }}>KES {Number(item._price).toLocaleString()}</div>}
-                {(item.showroom_name||item.business_name)&&<div style={{ fontSize:10, color:"#888" }}>🏢 {item.showroom_name||item.business_name}</div>}
+                {(item.showroom_name||item.business_name)&&<div style={{ fontSize:10, color:"#888", display:"flex", alignItems:"center", gap:3 }}><HomeIcon size={10} color="#888"/> {item.showroom_name||item.business_name}</div>}
               </div>
             ))}
           </div>
