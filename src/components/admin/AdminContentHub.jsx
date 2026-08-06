@@ -917,6 +917,10 @@ export default function AdminContentHub() {
                 <div style={{ marginBottom:"0.75rem" }}>
                   <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:4 }}>
                     <div style={{ fontSize:9, color:"#444", textTransform:"uppercase", letterSpacing:"0.08em" }}>Caption</div>
+                    <button onClick={generateAICaption} disabled={generatingAI||!selected}
+                      style={{ background:generatingAI?"#f0f0f0":"#faf5ff", border:"1px solid #8b5cf640", borderRadius:20, color:"#8b5cf6", fontSize:9, fontWeight:700, padding:"3px 10px", cursor:generatingAI||!selected?"not-allowed":"pointer", display:"flex", alignItems:"center", gap:4 }}>
+                      ✦ {generatingAI?"Generating...":"Regenerate with AI"}
+                    </button>
                     {charLimit&&<div style={{ fontSize:9, color:overLimit?"#e24b4a":"#444" }}>{charCount}/{charLimit}</div>}
                   </div>
                   <textarea value={caption} onChange={e=>setCaption(e.target.value)}
