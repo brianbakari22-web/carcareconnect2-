@@ -386,12 +386,15 @@ export default function AdminContentHub() {
       canvas.width = 1080
       canvas.height = 1080
       const ctx = canvas.getContext("2d")
-
+      // === ROUNDED CARD CLIP (transparent corners in exported PNG) ===
+      ctx.save()
+      ctx.beginPath()
+      ctx.roundRect(0, 0, 1080, 1080, 32)
+      ctx.clip()
       // === BACKGROUND ===
       ctx.fillStyle = "#0f0f0f"
       ctx.fillRect(0, 0, 1080, 1080)
-
-      // === PHOTO SECTION (full bleed with gradient) ===
+      // === PHOTO SECTION (full bleed with gradient) - slightly shorter to give price/CTA more room ===
       const photoToUse = selectedPhoto || item._photos?.[0]
       if (photoToUse) {
         try {
@@ -399,31 +402,29 @@ export default function AdminContentHub() {
           img.crossOrigin = "anonymous"
           await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = photoToUse })
           const imgAspect = img.width / img.height
-          const canvasAspect = 1080 / 680
-          let drawX = 0, drawY = 0, drawW = 1080, drawH = 680
-          if (imgAspect > canvasAspect) { drawH = 680; drawW = img.width*(680/img.height); drawX = (1080-drawW)/2 }
-          else { drawW = 1080; drawH = img.height*(1080/img.width); drawY = (680-drawH)/2 }
-          ctx.save(); ctx.beginPath(); ctx.rect(0,0,1080,680); ctx.clip()
+          const canvasAspect = 1080 / 620
+          let drawX = 0, drawY = 0, drawW = 1080, drawH = 620
+          if (imgAspect > canvasAspect) { drawH = 620; drawW = img.width*(620/img.height); drawX = (1080-drawW)/2 }
+          else { drawW = 1080; drawH = img.height*(1080/img.width); drawY = (620-drawH)/2 }
+          ctx.save(); ctx.beginPath(); ctx.rect(0,0,1080,620); ctx.clip()
           ctx.drawImage(img, drawX, drawY, drawW, drawH)
           ctx.restore()
         } catch(e) {
           ctx.fillStyle = "#1a1a1a"
-          ctx.fillRect(0,0,1080,680)
-          drawServicesIcon(ctx, 540, 380, 100, "#444444")
+          ctx.fillRect(0,0,1080,620)
+          drawServicesIcon(ctx, 540, 320, 100, "#444444")
         }
       } else {
         ctx.fillStyle = "#1a1a1a"
-        ctx.fillRect(0,0,1080,680)
-        drawServicesIcon(ctx, 540, 380, 100, "#444444")
+        ctx.fillRect(0,0,1080,620)
+        drawServicesIcon(ctx, 540, 320, 100, "#444444")
       }
-
       // === GRADIENT OVERLAY on photo ===
-      const grad = ctx.createLinearGradient(0, 300, 0, 680)
+      const grad = ctx.createLinearGradient(0, 260, 0, 620)
       grad.addColorStop(0, "rgba(0,0,0,0)")
       grad.addColorStop(1, "rgba(0,0,0,0.85)")
       ctx.fillStyle = grad
-      ctx.fillRect(0, 0, 1080, 680)
-
+      ctx.fillRect(0, 0, 1080, 620)
       // === LOGO top-left ===
       ctx.fillStyle = "#E6821E"
       ctx.beginPath()
@@ -432,7 +433,6 @@ export default function AdminContentHub() {
       ctx.fillStyle = "#ffffff"
       ctx.font = "bold 28px Arial"
       ctx.fillText("CarCare Connect", 50, 70)
-
       // === CATEGORY BADGE top-right ===
       const typeLabel = item._type==="service"?"SERVICE":item._type==="car"?"NEW CAR":item._type==="parts"?"PARTS":"PRODUCT"
       ctx.fillStyle = "rgba(0,0,0,0.6)"
@@ -444,71 +444,81 @@ export default function AdminContentHub() {
       ctx.textAlign = "center"
       ctx.fillText(typeLabel, 940, 70)
       ctx.textAlign = "left"
-
-      // === BOTTOM INFO PANEL ===
+      // === BOTTOM INFO PANEL (taller, more room) ===
       ctx.fillStyle = "#111111"
-      ctx.fillRect(0, 680, 1080, 400)
-
-      // === ITEM NAME ===
+      ctx.fillRect(0, 620, 1080, 460)
+      // === SUBTLE BRAND GLOW ACCENT in panel ===
+      const glow1 = ctx.createRadialGradient(1000, 1000, 0, 1000, 1000, 340)
+      glow1.addColorStop(0, "rgba(230,130,30,0.10)")
+      glow1.addColorStop(1, "rgba(230,130,30,0)")
+      ctx.fillStyle = glow1
+      ctx.fillRect(620, 620, 460, 460)
+      const glow2 = ctx.createRadialGradient(0, 620, 0, 0, 620, 260)
+      glow2.addColorStop(0, "rgba(230,130,30,0.06)")
+      glow2.addColorStop(1, "rgba(230,130,30,0)")
+      ctx.fillStyle = glow2
+      ctx.fillRect(0, 620, 300, 300)
+      // === PRICE (now the loudest element - biggest, boldest) ===
+      const hasPrice = item._price && Number(item._price) > 0
+      if (hasPrice) {
+        ctx.fillStyle = "#E6821E"
+        ctx.font = "bold 86px Arial"
+        ctx.fillText(`KES ${Number(item._price).toLocaleString()}`, 40, 730)
+      }
+      // === CTA BADGE top-right of panel ===
+      ctx.fillStyle = "#E6821E"
+      ctx.beginPath()
+      ctx.roundRect(830, 650, 210, 62, 31)
+      ctx.fill()
       ctx.fillStyle = "#ffffff"
-      ctx.font = "bold 52px Arial"
+      ctx.font = "bold 26px Arial"
+      ctx.textAlign = "center"
+      ctx.fillText("BOOK NOW", 935, 689)
+      ctx.textAlign = "left"
+      // === ITEM NAME (secondary to price now) ===
+      ctx.fillStyle = "#ffffff"
+      ctx.font = "bold 38px Arial"
       const label = item._label || "Amazing Deal"
-      const shortLabel = label.length > 28 ? label.substring(0,28)+"..." : label
-      ctx.fillText(shortLabel, 40, 760)
-
+      const shortLabel = label.length > 32 ? label.substring(0,32)+"..." : label
+      ctx.fillText(shortLabel, 40, hasPrice ? 790 : 730)
       // === DESCRIPTION ===
       if (item.description || item.name) {
         const desc = (item.description||item.name||"").substring(0,60)
         ctx.fillStyle = "#888888"
-        ctx.font = "26px Arial"
-        ctx.fillText(desc.length>55?desc.substring(0,55)+"...":desc, 40, 810)
+        ctx.font = "24px Arial"
+        ctx.fillText(desc.length>55?desc.substring(0,55)+"...":desc, 40, hasPrice ? 828 : 768)
       }
-
-      // === PRICE ===
-      if (item._price && Number(item._price) > 0) {
-        ctx.fillStyle = "#E6821E"
-        ctx.font = "bold 64px Arial"
-        ctx.fillText(`KES ${Number(item._price).toLocaleString()}`, 40, 890)
-      }
-
       // === PROVIDER ===
       const sub = item.showroom_name || item.business_name || ""
       if (sub) {
         ctx.fillStyle = "#cccccc"
-        ctx.font = "28px Arial"
-        drawBuildingIcon(ctx, 40, 950, 22, "#cccccc")
-        ctx.fillText(`${sub}`, 72, 950)
+        ctx.font = "26px Arial"
+        drawBuildingIcon(ctx, 40, 880, 20, "#cccccc")
+        ctx.fillText(`${sub}`, 70, 880)
       }
-
-      // === DIVIDER ===
-      ctx.fillStyle = "#222222"
-      ctx.fillRect(0, 970, 1080, 2)
-
-      // === FOOTER ===
-      ctx.fillStyle = "#E6821E"
-      ctx.font = "bold 30px Arial"
-      ctx.fillText("carcareconnect.care", 40, 1040)
-      ctx.fillStyle = "#666666"
-      ctx.font = "26px Arial"
-      drawPhoneIcon(ctx, 420, 1040, 20, "#666666")
-      ctx.fillText("0113858966", 448, 1040)
-      ctx.fillStyle = "#444444"
-      ctx.font = "22px Arial"
-      drawEnvelopeIcon(ctx, 680, 1032, 18, "#444444")
-      ctx.fillText("carcareconnect254@gmail.com", 706, 1040)
-
       // === VERIFIED BADGE if applicable ===
       if (item.is_verified) {
         ctx.fillStyle = "#1d9e75"
         ctx.beginPath()
-        ctx.roundRect(40, 895, 200, 44, 10)
+        ctx.roundRect(830, 730, 210, 44, 22)
         ctx.fill()
         ctx.fillStyle = "#ffffff"
-        ctx.font = "bold 22px Arial"
-        drawCheckIcon(ctx, 65, 918, 16, "#ffffff")
-        ctx.fillText("VERIFIED", 82, 923)
+        ctx.font = "bold 20px Arial"
+        drawCheckIcon(ctx, 858, 752, 14, "#ffffff")
+        ctx.fillText("VERIFIED", 878, 758)
       }
-
+      // === DIVIDER ===
+      ctx.fillStyle = "#222222"
+      ctx.fillRect(40, 930, 1000, 2)
+      // === SIMPLIFIED FOOTER - website + phone only, bigger and clearer ===
+      ctx.fillStyle = "#E6821E"
+      ctx.font = "bold 34px Arial"
+      ctx.fillText("carcareconnect.care", 40, 990)
+      ctx.fillStyle = "#999999"
+      ctx.font = "26px Arial"
+      drawPhoneIcon(ctx, 700, 990, 22, "#999999")
+      ctx.fillText("0113858966", 730, 990)
+      ctx.restore()
       // === DOWNLOAD ===
       canvas.toBlob(blob => {
         const url = URL.createObjectURL(blob)
@@ -524,6 +534,7 @@ export default function AdminContentHub() {
     } catch(e) { toast.error("Card generation failed: " + e.message) }
     finally { setDownloading(false) }
   }
+
 
   async function generateCampaignCard(campaign) {
     setDownloading(true)
