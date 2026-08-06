@@ -132,8 +132,8 @@ export default function CustomerReferral() {
       <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
         <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>How it works</div>
         {[
-          { step:"1", icon:"ShareIcon", title:"Share your code", desc:`Send your unique referral code or link to friends`, icon:"📤" },
-          { step:"2", icon:"ProfileIcon", title:"Friend signs up", desc:"They register using your referral link", icon:"👤" },
+          { step:"1", icon:"ShareIcon", title:"Share your code", desc:`Send your unique referral code or link to friends` },
+          { step:"2", icon:"ProfileIcon", title:"Friend signs up", desc:"They register using your referral link" },
           { step:"3", title:"First booking made", desc:"They complete their first service booking", icon:"CheckIcon" },
           { step:"4", title:"Both earn points", desc:`You get ${REFERRAL_POINTS} pts · They get ${REFERRED_POINTS} pts`, icon:"TrophyIcon" },
         ].map((s,i)=>(
