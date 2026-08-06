@@ -428,7 +428,8 @@ export default function AdminContentHub() {
       if (sub) {
         ctx.fillStyle = "#cccccc"
         ctx.font = "28px Arial"
-        ctx.fillText(`🏢 ${sub}`, 40, 950)
+        drawBuildingIcon(ctx, 40, 950, 22, "#cccccc")
+        ctx.fillText(`${sub}`, 72, 950)
       }
 
       // === DIVIDER ===
@@ -441,10 +442,12 @@ export default function AdminContentHub() {
       ctx.fillText("carcareconnect.care", 40, 1040)
       ctx.fillStyle = "#666666"
       ctx.font = "26px Arial"
-      ctx.fillText("📞 0113858966", 420, 1040)
+      drawPhoneIcon(ctx, 420, 1040, 20, "#666666")
+      ctx.fillText("0113858966", 448, 1040)
       ctx.fillStyle = "#444444"
       ctx.font = "22px Arial"
-      ctx.fillText("✉ carcareconnect254@gmail.com", 680, 1040)
+      drawEnvelopeIcon(ctx, 680, 1032, 18, "#444444")
+      ctx.fillText("carcareconnect254@gmail.com", 706, 1040)
 
       // === VERIFIED BADGE if applicable ===
       if (item.is_verified) {
@@ -454,7 +457,8 @@ export default function AdminContentHub() {
         ctx.fill()
         ctx.fillStyle = "#ffffff"
         ctx.font = "bold 22px Arial"
-        ctx.fillText("✓ VERIFIED", 70, 923)
+        drawCheckIcon(ctx, 65, 918, 16, "#ffffff")
+        ctx.fillText("VERIFIED", 82, 923)
       }
 
       // === DOWNLOAD ===
