@@ -253,6 +253,84 @@ export default function AdminContentHub() {
     finally { setDownloading(false) }
   }
 
+  // Canvas icon drawing helpers - line-icon style matching cccIcons.jsx
+  function drawServicesIcon(ctx, cx, cy, r, color) {
+    ctx.save()
+    ctx.strokeStyle = color
+    ctx.lineWidth = r * 0.12
+    ctx.lineCap = "round"
+    ctx.lineJoin = "round"
+    ctx.beginPath()
+    ctx.moveTo(cx - r*0.5, cy + r*0.6)
+    ctx.lineTo(cx + r*0.1, cy)
+    ctx.arc(cx + r*0.35, cy - r*0.25, r*0.35, Math.PI*0.75, Math.PI*1.75)
+    ctx.lineTo(cx - r*0.1, cy - r*0.05)
+    ctx.lineTo(cx - r*0.6, cy + r*0.45)
+    ctx.closePath()
+    ctx.stroke()
+    ctx.restore()
+  }
+  function drawBuildingIcon(ctx, x, y, size, color) {
+    ctx.save()
+    ctx.strokeStyle = color
+    ctx.lineWidth = size * 0.09
+    ctx.lineJoin = "round"
+    const w = size * 0.7, h = size
+    ctx.strokeRect(x, y - h, w, h)
+    ctx.beginPath()
+    for (let i = 1; i <= 3; i++) {
+      const wy = y - h + (h/4)*i
+      ctx.moveTo(x + w*0.15, wy - h*0.1)
+      ctx.lineTo(x + w*0.15, wy)
+      ctx.moveTo(x + w*0.55, wy - h*0.1)
+      ctx.lineTo(x + w*0.55, wy)
+    }
+    ctx.stroke()
+    ctx.restore()
+  }
+  function drawPhoneIcon(ctx, x, y, size, color) {
+    ctx.save()
+    ctx.strokeStyle = color
+    ctx.lineWidth = size * 0.1
+    ctx.lineCap = "round"
+    ctx.lineJoin = "round"
+    ctx.beginPath()
+    ctx.moveTo(x, y - size*0.7)
+    ctx.bezierCurveTo(x, y - size*0.5, x + size*0.2, y - size*0.1, x + size*0.35, y + size*0.05)
+    ctx.bezierCurveTo(x + size*0.45, y + size*0.15, x + size*0.5, y + size*0.1, x + size*0.6, y + size*0.2)
+    ctx.lineTo(x + size*0.75, y + size*0.35)
+    ctx.bezierCurveTo(x + size*0.85, y + size*0.45, x + size*0.7, y + size*0.7, x + size*0.5, y + size*0.6)
+    ctx.bezierCurveTo(x + size*0.1, y + size*0.4, x - size*0.2, y, x, y - size*0.7)
+    ctx.stroke()
+    ctx.restore()
+  }
+  function drawEnvelopeIcon(ctx, x, y, size, color) {
+    ctx.save()
+    ctx.strokeStyle = color
+    ctx.lineWidth = size * 0.08
+    ctx.lineJoin = "round"
+    const w = size, h = size * 0.65
+    ctx.strokeRect(x, y - h, w, h)
+    ctx.beginPath()
+    ctx.moveTo(x, y - h)
+    ctx.lineTo(x + w/2, y - h/2)
+    ctx.lineTo(x + w, y - h)
+    ctx.stroke()
+    ctx.restore()
+  }
+  function drawCheckIcon(ctx, cx, cy, size, color) {
+    ctx.save()
+    ctx.strokeStyle = color
+    ctx.lineWidth = size * 0.15
+    ctx.lineCap = "round"
+    ctx.lineJoin = "round"
+    ctx.beginPath()
+    ctx.moveTo(cx - size*0.4, cy)
+    ctx.lineTo(cx - size*0.1, cy + size*0.3)
+    ctx.lineTo(cx + size*0.45, cy - size*0.35)
+    ctx.stroke()
+    ctx.restore()
+  }
   async function generateContentCard(item) {
     setDownloading(true)
     try {
