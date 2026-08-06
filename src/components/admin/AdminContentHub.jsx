@@ -62,6 +62,7 @@ export default function AdminContentHub() {
   const [selected, setSelected] = useState(null)
   const [platform, setPlatform] = useState("whatsapp")
   const [caption, setCaption] = useState("")
+  const [generatingAI, setGeneratingAI] = useState(false)
   const [downloading, setDownloading] = useState(false)
   const [selectedPhoto, setSelectedPhoto] = useState(null)
   const [search, setSearch] = useState("")
@@ -155,6 +156,36 @@ export default function AdminContentHub() {
     setPlatform(p)
     if (selected) setCaption(generateCaption(selected, p, selected._type, getItemUrl(selected)))
   }
+  async function generateAICaption() {
+    if (!selected) return toast.error("Select an item first")
+    setGeneratingAI(true)
+    try {
+      const name = selected._label || "this item"
+      const price = selected._price ? `KES ${Number(selected._price).toLocaleString()}` : ""
+      const business = selected.showroom_name || selected.business_name || "Car Care Connect"
+      const platformLabel = PLATFORMS.find(p=>p.key===platform)?.label || platform
+      const limit = charLimit ? `Keep it under ${charLimit} characters.` : ""
+      const system = "You write short, engaging social media captions for Car Care Connect, an automotive services marketplace in Kenya. Write in a natural, human voice - not robotic or overly salesy. Include relevant emoji sparingly. Always end with a call to action and the website carcareconnect.care. Do not use markdown formatting."
+      const userMsg = `Write a ${platformLabel} caption for: ${name}${price ? " - " + price : ""}${business ? " from " + business : ""}. ${limit}`
+      const { data, error } = await supabase.functions.invoke("ai-chat", {
+        body: { system, messages: [{ role: "user", content: userMsg }] }
+      })
+      if (error) throw error
+      if (data?.text) {
+        setCaption(data.text.trim())
+        toast.success("AI caption generated!")
+      } else {
+        throw new Error("No caption returned")
+      }
+    } catch(e) {
+      toast.error("AI generation failed: " + e.message)
+    } finally {
+      setGeneratingAI(false)
+    }
+  }
+
+
+
 
   function copyCaption() {
     navigator.clipboard.writeText(caption)
