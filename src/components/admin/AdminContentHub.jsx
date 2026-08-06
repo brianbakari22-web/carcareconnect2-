@@ -331,6 +331,23 @@ export default function AdminContentHub() {
     ctx.stroke()
     ctx.restore()
   }
+  function drawPlatformDot(ctx, cx, cy, r, key) {
+    const colors = { whatsapp:"#25D366", tiktok:"#000000", instagram:"#E1306C", facebook:"#1877F2", x:"#000000", youtube:"#FF0000" }
+    const labels = { whatsapp:"W", tiktok:"T", instagram:"I", facebook:"F", x:"X", youtube:"Y" }
+    ctx.save()
+    ctx.fillStyle = colors[key] || "#666666"
+    ctx.beginPath()
+    ctx.arc(cx, cy, r, 0, Math.PI*2)
+    ctx.fill()
+    ctx.fillStyle = "#ffffff"
+    ctx.font = "bold " + Math.round(r*1.1) + "px Arial"
+    ctx.textAlign = "center"
+    ctx.textBaseline = "middle"
+    ctx.fillText(labels[key] || "?", cx, cy+2)
+    ctx.textAlign = "left"
+    ctx.textBaseline = "alphabetic"
+    ctx.restore()
+  }
   async function generateContentCard(item) {
     setDownloading(true)
     try {
@@ -555,10 +572,8 @@ export default function AdminContentHub() {
         ctx.fillStyle = "#444444"
         ctx.font = "24px Arial"
         ctx.fillText("Platforms:", 40, 590)
-        const platformIcons = { whatsapp:"💚", tiktok:"🎵", instagram:"📸", facebook:"👥", x:"🐦", youtube:"▶️" }
         campaign.target_platforms.forEach((p, i) => {
-          ctx.font = "52px Arial"
-          ctx.fillText(platformIcons[p]||"📱", 40 + (i * 80), 660)
+          drawPlatformDot(ctx, 40 + (i * 80) + 26, 640, 26, p)
         })
       }
 
@@ -580,7 +595,8 @@ export default function AdminContentHub() {
       // === PHONE ===
       ctx.fillStyle = "rgba(255,255,255,0.6)"
       ctx.font = "26px Arial"
-      ctx.fillText("📞 0113858966", 540, 1050)
+      drawPhoneIcon(ctx, 540, 1050, 20, "#666666")
+      ctx.fillText("0113858966", 568, 1050)
       ctx.textAlign = "left"
 
       // === DOWNLOAD ===
