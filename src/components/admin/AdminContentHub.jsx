@@ -645,7 +645,7 @@ export default function AdminContentHub() {
                 { key:"x", icon:"x", label:"X" },
                 { key:"youtube", icon:"youtube", label:"YouTube" },
               ].map(p=>(
-                <div key={p.key} style={{ display:"flex", alignItems:"center", gap:4, background:"#1a1a1a", borderRadius:20, padding:"4px 10px", border:`1px solid ${socialAccounts[p.key]?"#1d9e7540":"#2a2a2a"}` }}>
+                <div key={p.key} style={{ display:"flex", alignItems:"center", gap:4, background:"#ffffff", borderRadius:20, padding:"4px 10px", border:`1px solid ${socialAccounts[p.key]?"#1d9e7540":"#dddddd"}`, color:"#555" }}>
                   <span style={{ display:"flex" }}>{p.icon==="whatsapp"?<WhatsAppIcon size={12} color="currentColor"/>:p.icon==="tiktok"?<TikTokIcon size={12} color="currentColor"/>:p.icon==="instagram"?<InstagramIcon size={12} color="currentColor"/>:p.icon==="facebook"?<FacebookIcon size={12} color="currentColor"/>:p.icon==="x"?<XSocialIcon size={12} color="currentColor"/>:<YouTubeIcon size={12} color="currentColor"/>}</span>
                   <span style={{ display:"flex", color:socialAccounts[p.key]?"#1d9e75":"#555" }}>{socialAccounts[p.key]?<CheckIcon size={10} color="#1d9e75"/>:"–"}</span>
                 </div>
