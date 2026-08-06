@@ -361,20 +361,12 @@ export default function AdminContentHub() {
         } catch(e) {
           ctx.fillStyle = "#1a1a1a"
           ctx.fillRect(0,0,1080,680)
-          ctx.fillStyle = "#333"
-          ctx.font = "120px Arial"
-          ctx.textAlign = "center"
-          ctx.fillText(item._category_icon||"🔧", 540, 380)
-          ctx.textAlign = "left"
+          drawServicesIcon(ctx, 540, 380, 100, "#444444")
         }
       } else {
         ctx.fillStyle = "#1a1a1a"
         ctx.fillRect(0,0,1080,680)
-        ctx.fillStyle = "#333"
-        ctx.font = "120px Arial"
-        ctx.textAlign = "center"
-        ctx.fillText(item._category_icon||"🔧", 540, 380)
-        ctx.textAlign = "left"
+        drawServicesIcon(ctx, 540, 380, 100, "#444444")
       }
 
       // === GRADIENT OVERLAY on photo ===
