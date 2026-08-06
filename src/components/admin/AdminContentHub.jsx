@@ -944,7 +944,7 @@ export default function AdminContentHub() {
         <div style={{ marginTop:"2rem", background:"#0f0f0f", borderRadius:16, padding:"1.25rem" }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
             <div>
-              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#fff" }}>🎯 Campaigns</div>
+              <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#fff", display:"flex", alignItems:"center", gap:6 }}><TargetIcon size={14} color="#fff"/> Campaigns</div>
               <div style={{ fontSize:10, color:"#555", marginTop:2 }}>Organize your content into campaigns</div>
             </div>
             <button onClick={()=>setShowCampaignForm(f=>!f)}
@@ -1013,7 +1013,7 @@ export default function AdminContentHub() {
           )}
           {campaigns.length===0&&!showCampaignForm&&(
             <div style={{ textAlign:"center", padding:"2rem", color:"#333" }}>
-              <div style={{ fontSize:32, marginBottom:8 }}>🎯</div>
+              <div style={{ marginBottom:8, display:"flex", justifyContent:"center" }}><TargetIcon size={32} color="#ccc"/></div>
               <div style={{ fontSize:12, color:"#555" }}>No campaigns yet</div>
               <div style={{ fontSize:10, color:"#444", marginTop:4 }}>Create campaigns to organize your content by theme or season</div>
             </div>
@@ -1031,7 +1031,7 @@ export default function AdminContentHub() {
                     style={{ background:"none", border:"none", color:"#444", cursor:"pointer", fontSize:12, display:"flex" }}><DeleteIcon size={14} color="#e24b4a"/></button>
                 </div>
                 {camp.description&&<div style={{ fontSize:10, color:"#666", marginBottom:6 }}>{camp.description}</div>}
-                {camp.goal&&<div style={{ fontSize:10, color:camp.color||"#e6821e", marginBottom:6 }}>🎯 {camp.goal}</div>}
+                {camp.goal&&<div style={{ fontSize:10, color:camp.color||"#e6821e", marginBottom:6, display:"flex", alignItems:"center", gap:3 }}><TargetIcon size={10} color={camp.color||"#e6821e"}/> {camp.goal}</div>}
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:4 }}>
                   <div style={{ display:"flex", gap:4 }}>
                     {(camp.target_platforms||[]).map(pk=>(
@@ -1094,7 +1094,7 @@ export default function AdminContentHub() {
             <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#fff", marginBottom:10 }}>Posts ({campaignPosts.length})</div>
             {campaignPosts.length===0&&(
               <div style={{ textAlign:"center", padding:"2rem", color:"#333" }}>
-                <div style={{ fontSize:32, marginBottom:8 }}>📭</div>
+                <div style={{ marginBottom:8, display:"flex", justifyContent:"center" }}><NotificationsIcon size={32} color="#ccc"/></div>
                 <div style={{ fontSize:12, color:"#555" }}>No posts yet — select content and add it here</div>
               </div>
             )}
