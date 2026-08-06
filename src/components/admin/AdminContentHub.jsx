@@ -678,14 +678,14 @@ export default function AdminContentHub() {
       {/* Content type tabs */}
       <div style={{ display:"flex", gap:6, marginBottom:"1.25rem", flexWrap:"wrap" }}>
         {[
-          {k:"new_cars",l:"🚗 New Cars"},
-          {k:"marketplace",l:"🛒 Marketplace"},
-          {k:"services",l:"🔧 Services"},
-          {k:"providers",l:"🏪 Providers"},{k:"inventory",l:"📦 Inventory"},
+          {k:"new_cars",l:"New Cars",icon:"vehicle"},
+          {k:"marketplace",l:"Marketplace",icon:"marketplace"},
+          {k:"services",l:"Services",icon:"services"},
+          {k:"providers",l:"Providers",icon:"home"},{k:"inventory",l:"Inventory",icon:"parts"},
         ].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#f8f8f8", color:tab===t.k?"#fff":"#666", fontWeight:tab===t.k?700:400 }}>
-            {t.l}
+            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#f8f8f8", color:tab===t.k?"#fff":"#666", fontWeight:tab===t.k?700:400, display:"inline-flex", alignItems:"center", gap:5 }}>
+            {t.icon==="vehicle"?<VehicleIcon size={13} color="currentColor"/>:t.icon==="marketplace"?<MarketplaceIcon size={13} color="currentColor"/>:t.icon==="services"?<ServicesIcon size={13} color="currentColor"/>:t.icon==="home"?<HomeIcon size={13} color="currentColor"/>:<PartsIcon size={13} color="currentColor"/>} {t.l}
           </button>
         ))}
       </div>
