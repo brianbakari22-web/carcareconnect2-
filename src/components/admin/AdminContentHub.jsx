@@ -3,14 +3,16 @@ import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
+import { WhatsAppIcon, TikTokIcon, InstagramIcon, FacebookIcon, XSocialIcon, YouTubeIcon, VehicleIcon, MarketplaceIcon, ServicesIcon, DiscoverIcon, GOServiceIcon, HomeIcon, PartsIcon, VideoIcon, CameraIcon, LinkIcon, NoteIcon, BookingsIcon, CheckIcon, TargetIcon, CloseIcon, SettingsIcon, PhoneCallIcon, ChatIcon, PhotoIcon, DeleteIcon, NotificationsIcon } from "../../lib/cccIcons"
+
 
 const PLATFORMS = [
-  { key:"whatsapp", label:"WhatsApp", icon:"💚", color:"#25D366", maxChars:null },
-  { key:"tiktok", label:"TikTok", icon:"🎵", color:"#000000", maxChars:2200 },
-  { key:"instagram", label:"Instagram", icon:"📸", color:"#E1306C", maxChars:2200 },
-  { key:"facebook", label:"Facebook", icon:"👥", color:"#1877F2", maxChars:63206 },
-  { key:"x", label:"X (Twitter)", icon:"🐦", color:"#000000", maxChars:280 },
-  { key:"youtube", label:"YouTube", icon:"▶️", color:"#FF0000", maxChars:5000 },
+  { key:"whatsapp", label:"WhatsApp", icon:"whatsapp", color:"#25D366", maxChars:null },
+  { key:"tiktok", label:"TikTok", icon:"tiktok", color:"#000000", maxChars:2200 },
+  { key:"instagram", label:"Instagram", icon:"instagram", color:"#E1306C", maxChars:2200 },
+  { key:"facebook", label:"Facebook", icon:"facebook", color:"#1877F2", maxChars:63206 },
+  { key:"x", label:"X (Twitter)", icon:"x", color:"#000000", maxChars:280 },
+  { key:"youtube", label:"YouTube", icon:"youtube", color:"#FF0000", maxChars:5000 },
 ]
 
 const HASHTAGS = {
@@ -100,7 +102,7 @@ export default function AdminContentHub() {
         _photos: i.photos?.length>0 ? i.photos : i.profiles?.profile_photo_url ? [i.profiles.profile_photo_url] : i.profiles?.avatar_url ? [i.profiles.avatar_url] : [],
         _video:null,
         business_name:i.profiles?.business_name||i.profiles?.first_name,
-        _category_icon: i.category==="car_wash"?"🚿":i.category==="go_service"?"🚨":i.category==="shop_premium"?"🏡":"🔧"
+        _category_icon: i.category==="car_wash"?"discover":i.category==="go_service"?"emergency":i.category==="shop_premium"?"home":"services"
       }))
     } else if (tab==="inventory") {
       const { data: d } = await supabase.from("inventory").select("*, profiles!inventory_provider_id_fkey(business_name,first_name,last_name)").eq("is_active",true).order("created_at",{ascending:false})
@@ -623,24 +625,24 @@ export default function AdminContentHub() {
         <div style={{ background:"#0f0f0f", borderRadius:12, padding:"0.875rem 1rem", marginBottom:"1.25rem" }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:showSocialSetup?12:0 }}>
             <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:800, color:"#fff" }}>📱 Your Social Accounts</div>
+              <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:800, color:"#fff", display:"flex", alignItems:"center", gap:6 }}><ChatIcon size={14} color="#fff"/> Your Social Accounts</div>
               <div style={{ fontSize:9, color:"#555", background:"#1a1a1a", borderRadius:10, padding:"2px 8px" }}>
                 {Object.values(socialAccounts).filter(v=>v).length}/6 connected
               </div>
             </div>
             <button onClick={()=>setShowSocialSetup(s=>!s)}
               style={{ background:"#1a1a1a", border:"none", borderRadius:8, color:"#888", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
-              {showSocialSetup?"Done":"⚙ Setup"}
+              {showSocialSetup?"Done":<><SettingsIcon size={12} color="currentColor"/> Setup</>}
             </button>
           </div>
           {!showSocialSetup&&(
             <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginTop:8 }}>
               {[
-                { key:"whatsapp", icon:"💚", label:"WhatsApp" },
-                { key:"tiktok", icon:"🎵", label:"TikTok" },
-                { key:"instagram", icon:"📸", label:"Instagram" },
-                { key:"facebook", icon:"👥", label:"Facebook" },
-                { key:"x", icon:"🐦", label:"X" },
+                { key:"whatsapp", icon:"whatsapp", label:"WhatsApp" },
+                { key:"tiktok", icon:"tiktok", label:"TikTok" },
+                { key:"instagram", icon:"instagram", label:"Instagram" },
+                { key:"facebook", icon:"facebook", label:"Facebook" },
+                { key:"x", icon:"x", label:"X" },
                 { key:"youtube", icon:"▶️", label:"YouTube" },
               ].map(p=>(
                 <div key={p.key} style={{ display:"flex", alignItems:"center", gap:4, background:"#1a1a1a", borderRadius:20, padding:"4px 10px", border:`1px solid ${socialAccounts[p.key]?"#1d9e7540":"#2a2a2a"}` }}>
@@ -653,11 +655,11 @@ export default function AdminContentHub() {
           {showSocialSetup&&(
             <div style={{ display:"grid", gap:8 }}>
               {[
-                { key:"whatsapp", icon:"💚", label:"WhatsApp", placeholder:"https://wa.me/254113858966" },
-                { key:"tiktok", icon:"🎵", label:"TikTok", placeholder:"https://www.tiktok.com/@yourhandle" },
-                { key:"instagram", icon:"📸", label:"Instagram", placeholder:"https://www.instagram.com/yourhandle" },
-                { key:"facebook", icon:"👥", label:"Facebook", placeholder:"https://www.facebook.com/yourpage" },
-                { key:"x", icon:"🐦", label:"X (Twitter)", placeholder:"https://twitter.com/yourhandle" },
+                { key:"whatsapp", icon:"whatsapp", label:"WhatsApp", placeholder:"https://wa.me/254113858966" },
+                { key:"tiktok", icon:"tiktok", label:"TikTok", placeholder:"https://www.tiktok.com/@yourhandle" },
+                { key:"instagram", icon:"instagram", label:"Instagram", placeholder:"https://www.instagram.com/yourhandle" },
+                { key:"facebook", icon:"facebook", label:"Facebook", placeholder:"https://www.facebook.com/yourpage" },
+                { key:"x", icon:"x", label:"X (Twitter)", placeholder:"https://twitter.com/yourhandle" },
                 { key:"youtube", icon:"▶️", label:"YouTube", placeholder:"https://youtube.com/@yourchannel" },
               ].map(p=>(
                 <div key={p.key} style={{ display:"flex", gap:6, alignItems:"center" }}>
@@ -667,7 +669,7 @@ export default function AdminContentHub() {
                     placeholder={p.placeholder}
                     onBlur={e=>saveSocialAccount(p.key, e.target.value.trim())}
                     style={{ flex:1, background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, padding:"7px 10px", fontSize:11, color:"#ccc", outline:"none", fontFamily:"DM Sans,sans-serif" }}/>
-                  {socialAccounts[p.key]&&<span style={{ fontSize:14, color:"#1d9e75", flexShrink:0 }}>✓</span>}
+                  {socialAccounts[p.key]&&<span style={{ flexShrink:0, display:"flex" }}><CheckIcon size={14} color="#1d9e75"/></span>}
                 </div>
               ))}
             </div>
@@ -1158,3 +1160,4 @@ export default function AdminContentHub() {
     </div>
   )
 }
+

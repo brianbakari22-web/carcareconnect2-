@@ -179,6 +179,54 @@ export function AccessoryIcon({ size=24, color="#64748B", active=false }) {
     </svg>
   )
 }
+export function WhatsAppIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M14 4C8.5 4 4 8.5 4 14C4 15.9 4.5 17.7 5.4 19.2L4 24L9 22.6C10.5 23.4 12.2 23.9 14 23.9C19.5 23.9 24 19.5 24 14C24 8.5 19.5 4 14 4Z" stroke={color} strokeWidth="1.75" strokeLinejoin="round" fill="none"/>
+      <path d="M9.5 13.5C9.5 12.7 10.2 12 11 12H11.5C11.9 12 12.2 12.3 12.3 12.6L12.7 14.3C12.8 14.6 12.7 15 12.4 15.2L11.7 15.8C12.3 17.1 13.4 18.1 14.7 18.6L15.3 17.9C15.5 17.6 15.9 17.5 16.2 17.6L17.9 18C18.2 18.1 18.4 18.4 18.4 18.7V19.2C18.4 20 17.7 20.6 17 20.5C13 20 9.8 16.9 9.5 13.5Z" stroke={color} strokeWidth="1.4" strokeLinejoin="round" fill="none"/>
+    </svg>
+  )
+}
+export function TikTokIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M16 5V17.5C16 19.4 14.4 21 12.5 21C10.6 21 9 19.4 9 17.5C9 15.6 10.6 14 12.5 14C13 14 13.5 14.1 14 14.3V16.4C13.5 16.1 13 16 12.5 16C11.7 16 11 16.7 11 17.5C11 18.3 11.7 19 12.5 19C13.3 19 14 18.3 14 17.5V5H16Z" stroke={color} strokeWidth="1.75" strokeLinejoin="round" fill="none"/>
+      <path d="M16 5C16 7.2 17.8 9 20 9" stroke={color} strokeWidth="1.75" strokeLinecap="round" fill="none"/>
+    </svg>
+  )
+}
+export function InstagramIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <rect x="5" y="5" width="18" height="18" rx="6" stroke={color} strokeWidth="1.75" fill="none"/>
+      <circle cx="14" cy="14" r="5" stroke={color} strokeWidth="1.75" fill="none"/>
+      <circle cx="19.3" cy="8.7" r="1.3" fill={color}/>
+    </svg>
+  )
+}
+export function FacebookIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="14" r="10" stroke={color} strokeWidth="1.75" fill="none"/>
+      <path d="M16 10.5H14.5C13.7 10.5 13 11.2 13 12V13.5H16L15.6 16H13V21.5H10.7V16H8.7V13.5H10.7V11.7C10.7 9.7 12.2 8 14.2 8H16V10.5Z" fill={color}/>
+    </svg>
+  )
+}
+export function XSocialIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M6 6L22 22M22 6L6 22" stroke={color} strokeWidth="2" strokeLinecap="round"/>
+    </svg>
+  )
+}
+export function YouTubeIcon({ size=24, color="#64748B" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <rect x="4" y="7" width="20" height="14" rx="5" stroke={color} strokeWidth="1.75" fill="none"/>
+      <path d="M12 11L18 14L12 17V11Z" fill={color}/>
+    </svg>
+  )
+}
 export function StarIcon({ size=24, color="#64748B", active=false }) {
   const c = active ? "#e6821e" : color
   return (
