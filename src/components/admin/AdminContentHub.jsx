@@ -647,7 +647,7 @@ export default function AdminContentHub() {
               ].map(p=>(
                 <div key={p.key} style={{ display:"flex", alignItems:"center", gap:4, background:"#1a1a1a", borderRadius:20, padding:"4px 10px", border:`1px solid ${socialAccounts[p.key]?"#1d9e7540":"#2a2a2a"}` }}>
                   <span style={{ fontSize:12 }}>{p.icon}</span>
-                  <span style={{ fontSize:10, color:socialAccounts[p.key]?"#1d9e75":"#555" }}>{socialAccounts[p.key]?"✓":"–"}</span>
+                  <span style={{ display:"flex", color:socialAccounts[p.key]?"#1d9e75":"#555" }}>{socialAccounts[p.key]?<CheckIcon size={10} color="#1d9e75"/>:"–"}</span>
                 </div>
               ))}
             </div>
@@ -761,13 +761,13 @@ export default function AdminContentHub() {
                   </div>
                   {selected?._photos?.length>1&&(
                     <div style={{ position:"absolute", top:8, right:8, background:"rgba(0,0,0,0.6)", borderRadius:10, padding:"2px 8px", fontSize:10, color:"#fff" }}>
-                      📷 {selected._photos.length}
+                      <PhotoIcon size={10} color="#fff"/> {selected._photos.length}
                     </div>
                   )}
                 </div>
               ) : selected ? (
                 <div style={{ height:120, background:"#1a1a1a", display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:6 }}>
-                  <div style={{ fontSize:40 }}>{selected._category_icon||"🔧"}</div>
+                  <div style={{ display:"flex", justifyContent:"center" }}>{selected._category_icon==="discover"?<DiscoverIcon size={40} color="#888"/>:selected._category_icon==="emergency"?<GOServiceIcon size={40} color="#e24b4a"/>:selected._category_icon==="home"?<HomeIcon size={40} color="#888"/>:<ServicesIcon size={40} color="#888"/>}</div>
                   <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#fff" }}>{selected._label}</div>
                   {selected._price&&<div style={{ fontSize:11, color:"#e6821e" }}>KES {Number(selected._price).toLocaleString()}</div>}
                 </div>
@@ -805,7 +805,7 @@ export default function AdminContentHub() {
                 {/* URL row */}
                 {selected&&(
                   <div style={{ display:"flex", gap:6, alignItems:"center", marginBottom:"0.75rem", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, padding:"6px 10px" }}>
-                    <span style={{ fontSize:11 }}>🔗</span>
+                    <span style={{ display:"flex" }}><LinkIcon size={11} color="currentColor"/></span>
                     <div style={{ flex:1, fontSize:9, color:"#378add", fontFamily:"monospace", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{getItemUrl(selected)}</div>
                     <button onClick={()=>{ navigator.clipboard.writeText(getItemUrl(selected)); toast.success("URL copied!") }}
                       style={{ background:"#378add20", border:"none", borderRadius:6, color:"#378add", fontSize:10, fontWeight:700, padding:"3px 8px", cursor:"pointer", flexShrink:0 }}>
@@ -833,11 +833,11 @@ export default function AdminContentHub() {
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:6, marginBottom:"0.75rem" }}>
                   <button onClick={copyCaption}
                     style={{ background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"9px", cursor:"pointer" }}>
-                    📋 Copy Caption
+                    <><NoteIcon size={13} color="currentColor"/> Copy Caption</>
                   </button>
                   <button onClick={()=>selected&&generateContentCard(selected)} disabled={downloading}
                     style={{ background:"#1d9e75", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"9px", cursor:downloading?"not-allowed":"pointer", opacity:downloading?0.6:1 }}>
-                    {downloading?"Generating...":"🖼 Branded Card"}
+                    {downloading?"Generating...":<><PhotoIcon size={13} color="currentColor"/> Branded Card</>}
                   </button>
                 </div>
 
@@ -855,7 +855,7 @@ export default function AdminContentHub() {
                       </button>
                       <button onClick={()=>{ navigator.clipboard.writeText(selected._video); toast.success("Video URL copied!") }}
                         style={{ background:"#1e1e1e", border:"1px solid #2a2a2a", borderRadius:8, color:"#aaa", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"8px", cursor:"pointer" }}>
-                        🔗 Copy URL
+                        <><LinkIcon size={13} color="currentColor"/> Copy URL</>
                       </button>
                     </div>
                   </div>
@@ -887,11 +887,11 @@ export default function AdminContentHub() {
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:6 }}>
                   <button onClick={()=>selected&&markAsPosted(selected.id, platform)}
                     style={{ background:"#1e1e1e", border:"1px solid #1d9e7530", borderRadius:10, color:"#1d9e75", fontFamily:"Syne,sans-serif", fontSize:10, fontWeight:700, padding:"9px 4px", cursor:"pointer" }}>
-                    ✓ Mark Posted
+                    <><CheckIcon size={13} color="currentColor"/> Mark Posted</>
                   </button>
                   <button onClick={()=>setShowScheduleForm(s=>!s)}
                     style={{ background:"#1e1e1e", border:"1px solid #8b5cf630", borderRadius:10, color:"#8b5cf6", fontFamily:"Syne,sans-serif", fontSize:10, fontWeight:700, padding:"9px 4px", cursor:"pointer" }}>
-                    📅 Schedule
+                    <><BookingsIcon size={13} color="currentColor"/> Schedule</>
                   </button>
                 </div>
 
@@ -924,7 +924,7 @@ export default function AdminContentHub() {
       {/* Scheduled Posts Section */}
       {scheduledPosts.length>0&&(
         <div style={{ marginTop:"2rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#000", marginBottom:10 }}>📅 Scheduled Posts ({scheduledPosts.length})</div>
+          <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#000", marginBottom:10 }}><><BookingsIcon size={13} color="currentColor"/> Schedule</>d Posts ({scheduledPosts.length})</div>
           <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(2,1fr)", gap:8 }}>
             {scheduledPosts.map(p=>(
               <div key={p.id} style={{ background:"#f5f3ff", border:"1px solid #8b5cf630", borderRadius:10, padding:"0.75rem" }}>
@@ -949,7 +949,7 @@ export default function AdminContentHub() {
             </div>
             <button onClick={()=>setShowCampaignForm(f=>!f)}
               style={{ background:showCampaignForm?"#2a2a2a":"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"7px 14px", cursor:"pointer" }}>
-              {showCampaignForm?"✕ Cancel":"+ New Campaign"}
+              {showCampaignForm?<><CloseIcon size={12} color="currentColor"/> Cancel</>:"+ New Campaign"}
             </button>
           </div>
           {showCampaignForm&&(
@@ -1028,7 +1028,7 @@ export default function AdminContentHub() {
                     <div style={{ fontSize:13, fontWeight:700, color:"#fff" }}>{camp.name}</div>
                   </div>
                   <button onClick={async(e)=>{ e.stopPropagation(); if(confirm("Delete campaign?")) { await supabase.from("content_campaigns").delete().eq("id",camp.id); loadCampaigns() } }}
-                    style={{ background:"none", border:"none", color:"#444", cursor:"pointer", fontSize:12 }}>🗑</button>
+                    style={{ background:"none", border:"none", color:"#444", cursor:"pointer", fontSize:12, display:"flex" }}><DeleteIcon size={14} color="#e24b4a"/></button>
                 </div>
                 {camp.description&&<div style={{ fontSize:10, color:"#666", marginBottom:6 }}>{camp.description}</div>}
                 {camp.goal&&<div style={{ fontSize:10, color:camp.color||"#e6821e", marginBottom:6 }}>🎯 {camp.goal}</div>}
@@ -1065,7 +1065,7 @@ export default function AdminContentHub() {
             {selectedCampaign.start_date&&<div style={{ fontSize:11, color:"#555", marginBottom:"1.5rem" }}>{selectedCampaign.start_date} to {selectedCampaign.end_date||"ongoing"}</div>}
             <button onClick={()=>generateCampaignCard(selectedCampaign)} disabled={downloading}
               style={{ background:selectedCampaign.color||"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"12px", cursor:"pointer", width:"100%", marginBottom:"1.5rem", opacity:downloading?0.6:1 }}>
-              {downloading?"Generating...":"🖼 Download Campaign Card (1080×1080)"}
+              {downloading?"Generating...":<><PhotoIcon size={13} color="currentColor"/> Download Campaign Card (1080{"\u00d7"}1080)</>}
             </button>
             {selected&&(
               <div style={{ background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:12, padding:"0.875rem", marginBottom:"1.5rem" }}>
@@ -1113,7 +1113,7 @@ export default function AdminContentHub() {
                 <div style={{ display:"flex", flexDirection:"column", gap:5, flexShrink:0 }}>
                   <button onClick={async()=>{ await supabase.from("content_posts").update({ status:"posted", posted_at:new Date().toISOString() }).eq("id",post.id); loadCampaignPosts(selectedCampaign.id); toast.success("Marked as posted!") }}
                     style={{ background:"#1d9e7520", border:"1px solid #1d9e7540", borderRadius:8, color:"#1d9e75", fontSize:10, fontWeight:700, padding:"5px 10px", cursor:"pointer" }}>
-                    {post.status==="posted"?"✓ Posted":"Mark posted"}
+                    {post.status==="posted"?<><CheckIcon size={12} color="currentColor"/> Posted</>:"Mark posted"}
                   </button>
                   {post.item_photo&&(
                     <button onClick={()=>downloadPhoto(post.item_photo, `CCC-${(post.item_label||"post").replace(/\s+/g,"-")}.jpg`)}
@@ -1123,7 +1123,7 @@ export default function AdminContentHub() {
                   )}
                   <button onClick={()=>{ navigator.clipboard.writeText(post.caption||caption); toast.success("Caption copied!") }}
                     style={{ background:"#e6821e20", border:"1px solid #e6821e40", borderRadius:8, color:"#e6821e", fontSize:10, fontWeight:700, padding:"5px 10px", cursor:"pointer" }}>
-                    📋 Caption
+                    <><NoteIcon size={13} color="currentColor"/> Caption</>
                   </button>
                 </div>
                 </div>
