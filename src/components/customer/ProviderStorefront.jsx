@@ -267,6 +267,7 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
                       <div style={{ fontSize:11, color:"#777777" }}>⏱ {s.duration_minutes||60} min</div>
                     </div>
                     <div style={{ textAlign:"right" }}>
+                        {s.discounted_price ? (
                         <div>
                           <span style={{ fontFamily:"Syne", fontSize:12, color:"#888", textDecoration:"line-through", marginRight:6 }}>KES {Number(s.price||0).toLocaleString()}</span>
                           <span style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#1d9e75" }}>KES {Number(s.discounted_price).toLocaleString()}</span>
