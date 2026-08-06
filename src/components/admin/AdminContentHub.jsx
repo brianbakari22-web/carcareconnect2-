@@ -603,7 +603,7 @@ export default function AdminContentHub() {
 
   return (
     <div>
-      <div style={{ fontFamily:"Syne", fontSize:isMobile?18:24, fontWeight:800, color:"#000", marginBottom:4 }}>Content Hub 🎬</div>
+      <div style={{ fontFamily:"Syne", fontSize:isMobile?18:24, fontWeight:800, color:"#000", marginBottom:4, display:"flex", alignItems:"center", gap:8 }}><VideoIcon size={22} color="#e6821e"/> Content Hub</div>
       <div style={{ fontSize:12, color:"#777", marginBottom:"1.5rem" }}>Generate, download and share content for all your social media platforms</div>
 
       {/* Stats */}
@@ -643,10 +643,10 @@ export default function AdminContentHub() {
                 { key:"instagram", icon:"instagram", label:"Instagram" },
                 { key:"facebook", icon:"facebook", label:"Facebook" },
                 { key:"x", icon:"x", label:"X" },
-                { key:"youtube", icon:"▶️", label:"YouTube" },
+                { key:"youtube", icon:"youtube", label:"YouTube" },
               ].map(p=>(
                 <div key={p.key} style={{ display:"flex", alignItems:"center", gap:4, background:"#1a1a1a", borderRadius:20, padding:"4px 10px", border:`1px solid ${socialAccounts[p.key]?"#1d9e7540":"#2a2a2a"}` }}>
-                  <span style={{ fontSize:12 }}>{p.icon}</span>
+                  <span style={{ display:"flex" }}>{p.icon==="whatsapp"?<WhatsAppIcon size={12} color="currentColor"/>:p.icon==="tiktok"?<TikTokIcon size={12} color="currentColor"/>:p.icon==="instagram"?<InstagramIcon size={12} color="currentColor"/>:p.icon==="facebook"?<FacebookIcon size={12} color="currentColor"/>:p.icon==="x"?<XSocialIcon size={12} color="currentColor"/>:<YouTubeIcon size={12} color="currentColor"/>}</span>
                   <span style={{ display:"flex", color:socialAccounts[p.key]?"#1d9e75":"#555" }}>{socialAccounts[p.key]?<CheckIcon size={10} color="#1d9e75"/>:"–"}</span>
                 </div>
               ))}
@@ -660,10 +660,10 @@ export default function AdminContentHub() {
                 { key:"instagram", icon:"instagram", label:"Instagram", placeholder:"https://www.instagram.com/yourhandle" },
                 { key:"facebook", icon:"facebook", label:"Facebook", placeholder:"https://www.facebook.com/yourpage" },
                 { key:"x", icon:"x", label:"X (Twitter)", placeholder:"https://twitter.com/yourhandle" },
-                { key:"youtube", icon:"▶️", label:"YouTube", placeholder:"https://youtube.com/@yourchannel" },
+                { key:"youtube", icon:"youtube", label:"YouTube", placeholder:"https://youtube.com/@yourchannel" },
               ].map(p=>(
                 <div key={p.key} style={{ display:"flex", gap:6, alignItems:"center" }}>
-                  <span style={{ fontSize:16, flexShrink:0 }}>{p.icon}</span>
+                  <span style={{ display:"flex", flexShrink:0 }}>{p.icon==="whatsapp"?<WhatsAppIcon size={16} color="currentColor"/>:p.icon==="tiktok"?<TikTokIcon size={16} color="currentColor"/>:p.icon==="instagram"?<InstagramIcon size={16} color="currentColor"/>:p.icon==="facebook"?<FacebookIcon size={16} color="currentColor"/>:p.icon==="x"?<XSocialIcon size={16} color="currentColor"/>:<YouTubeIcon size={16} color="currentColor"/>}</span>
                   <input
                     defaultValue={socialAccounts[p.key]}
                     placeholder={p.placeholder}
@@ -785,7 +785,7 @@ export default function AdminContentHub() {
                     {PLATFORMS.map(p=>(
                       <button key={p.key} onClick={()=>updateCaption(p.key)}
                         style={{ background:platform===p.key?p.color:"#1e1e1e", border:`1px solid ${platform===p.key?p.color:"#2a2a2a"}`, borderRadius:20, padding:"4px 10px", cursor:"pointer", display:"flex", alignItems:"center", gap:4, transition:"all 0.15s" }}>
-                        <span style={{ fontSize:11 }}>{p.icon}</span>
+                        <span style={{ display:"flex" }}>{p.icon==="whatsapp"?<WhatsAppIcon size={11} color="currentColor"/>:p.icon==="tiktok"?<TikTokIcon size={11} color="currentColor"/>:p.icon==="instagram"?<InstagramIcon size={11} color="currentColor"/>:p.icon==="facebook"?<FacebookIcon size={11} color="currentColor"/>:p.icon==="x"?<XSocialIcon size={11} color="currentColor"/>:<YouTubeIcon size={11} color="currentColor"/>}</span>
                         <span style={{ fontSize:10, color:platform===p.key?"#fff":"#555", fontWeight:platform===p.key?700:400 }}>{p.label}</span>
                       </button>
                     ))}
@@ -876,7 +876,7 @@ export default function AdminContentHub() {
                     {PLATFORMS.map(p=>(
                       <button key={p.key} onClick={()=>shareToSocial(p.key)}
                         style={{ background:p.color+"18", border:`1px solid ${p.color}30`, borderRadius:8, color:p.color, padding:"8px 2px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:2 }}>
-                        <span style={{ fontSize:16 }}>{p.icon}</span>
+                        <span style={{ display:"flex" }}>{p.icon==="whatsapp"?<WhatsAppIcon size={16} color="currentColor"/>:p.icon==="tiktok"?<TikTokIcon size={16} color="currentColor"/>:p.icon==="instagram"?<InstagramIcon size={16} color="currentColor"/>:p.icon==="facebook"?<FacebookIcon size={16} color="currentColor"/>:p.icon==="x"?<XSocialIcon size={16} color="currentColor"/>:<YouTubeIcon size={16} color="currentColor"/>}</span>
                         <span style={{ fontSize:7, fontWeight:700 }}>{["instagram","tiktok","youtube"].includes(p.key)?"Open":"Share"}</span>
                       </button>
                     ))}
@@ -996,7 +996,7 @@ export default function AdminContentHub() {
                   {PLATFORMS.map(p=>(
                     <button key={p.key} type="button" onClick={()=>setCampaignForm(f=>({ ...f, target_platforms: f.target_platforms.includes(p.key) ? f.target_platforms.filter(x=>x!==p.key) : [...f.target_platforms, p.key] }))}
                       style={{ background:campaignForm.target_platforms.includes(p.key)?p.color+"30":"#0f0f0f", border:`1px solid ${campaignForm.target_platforms.includes(p.key)?p.color:"#2a2a2a"}`, borderRadius:20, padding:"4px 10px", cursor:"pointer", fontSize:11, color:campaignForm.target_platforms.includes(p.key)?p.color:"#555" }}>
-                      {p.icon} {p.label}
+                      <span style={{display:"inline-flex",alignItems:"center",gap:4}}>{p.icon==="whatsapp"?<WhatsAppIcon size={11} color="currentColor"/>:p.icon==="tiktok"?<TikTokIcon size={11} color="currentColor"/>:p.icon==="instagram"?<InstagramIcon size={11} color="currentColor"/>:p.icon==="facebook"?<FacebookIcon size={11} color="currentColor"/>:p.icon==="x"?<XSocialIcon size={11} color="currentColor"/>:<YouTubeIcon size={11} color="currentColor"/>} {p.label}</span>
                     </button>
                   ))}
                 </div>
@@ -1081,7 +1081,7 @@ export default function AdminContentHub() {
                   {PLATFORMS.map(p=>(
                     <button key={p.key} onClick={()=>setPlatform(p.key)}
                       style={{ background:platform===p.key?p.color+"30":"#0f0f0f", border:"1px solid "+(platform===p.key?p.color:"#2a2a2a"), borderRadius:20, padding:"3px 10px", cursor:"pointer", fontSize:11, color:platform===p.key?p.color:"#555" }}>
-                      {p.icon} {p.label}
+                      <span style={{display:"inline-flex",alignItems:"center",gap:4}}>{p.icon==="whatsapp"?<WhatsAppIcon size={11} color="currentColor"/>:p.icon==="tiktok"?<TikTokIcon size={11} color="currentColor"/>:p.icon==="instagram"?<InstagramIcon size={11} color="currentColor"/>:p.icon==="facebook"?<FacebookIcon size={11} color="currentColor"/>:p.icon==="x"?<XSocialIcon size={11} color="currentColor"/>:<YouTubeIcon size={11} color="currentColor"/>} {p.label}</span>
                     </button>
                   ))}
                 </div>
