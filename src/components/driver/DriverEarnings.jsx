@@ -145,7 +145,7 @@ export default function DriverEarnings() {
 
       {/* Earnings breakdown */}
       <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
-        <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75", marginBottom:"1rem", display:"flex", alignItems:"center", gap:6 }}><WalletIcon size={14} color="#1d9e75"/>>💰 Earnings breakdown</div>
+        <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75", marginBottom:"1rem", display:"flex", alignItems:"center", gap:6 }}><WalletIcon size={14} color="#1d9e75"/> Earnings breakdown</div>
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4,1fr)", gap:10, marginBottom:12 }}>
           {[
             { label:isConcierge?"Commission (15%)":"Delivery earnings (85%)", value:`KES ${totalCommission.toFixed(0)}`, color:"#378add" },
