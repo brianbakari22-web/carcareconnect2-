@@ -941,14 +941,14 @@ export default function AdminContentHub() {
       )}
 
         {/* Campaigns Section */}
-        <div style={{ marginTop:"2rem", background:"#0f0f0f", borderRadius:16, padding:"1.25rem" }}>
+        <div style={{ marginTop:"2rem", background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:16, padding:"1.25rem" }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
             <div>
               <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#fff", display:"flex", alignItems:"center", gap:6 }}><TargetIcon size={14} color="#fff"/> Campaigns</div>
-              <div style={{ fontSize:10, color:"#555", marginTop:2 }}>Organize your content into campaigns</div>
+              <div style={{ fontSize:10, color:"#888", marginTop:2 }}>Organize your content into campaigns</div>
             </div>
             <button onClick={()=>setShowCampaignForm(f=>!f)}
-              style={{ background:showCampaignForm?"#2a2a2a":"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"7px 14px", cursor:"pointer" }}>
+              style={{ background:showCampaignForm?"#666666":"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"7px 14px", cursor:"pointer" }}>
               {showCampaignForm?<><CloseIcon size={12} color="currentColor"/> Cancel</>:"+ New Campaign"}
             </button>
           </div>
