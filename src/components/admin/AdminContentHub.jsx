@@ -668,7 +668,7 @@ export default function AdminContentHub() {
                     defaultValue={socialAccounts[p.key]}
                     placeholder={p.placeholder}
                     onBlur={e=>saveSocialAccount(p.key, e.target.value.trim())}
-                    style={{ flex:1, background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, padding:"7px 10px", fontSize:11, color:"#ccc", outline:"none", fontFamily:"DM Sans,sans-serif" }}/>
+                    style={{ flex:1, background:"#ffffff", border:"1px solid #dddddd", borderRadius:8, padding:"7px 10px", fontSize:11, color:"#000", outline:"none", fontFamily:"DM Sans,sans-serif" }}/>
                   {socialAccounts[p.key]&&<span style={{ flexShrink:0, display:"flex" }}><CheckIcon size={14} color="#1d9e75"/></span>}
                 </div>
               ))}
