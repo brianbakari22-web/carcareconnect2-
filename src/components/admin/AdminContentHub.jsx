@@ -321,18 +321,13 @@ export default function AdminContentHub() {
   }
   function drawPhoneIcon(ctx, x, y, size, color) {
     ctx.save()
-    ctx.strokeStyle = color
-    ctx.lineWidth = size * 0.1
-    ctx.lineCap = "round"
-    ctx.lineJoin = "round"
+    const scale = size / 24
+    ctx.translate(x - size/2, y - size/2)
+    ctx.scale(scale, scale)
+    ctx.fillStyle = color
     ctx.beginPath()
-    ctx.moveTo(x, y - size*0.7)
-    ctx.bezierCurveTo(x, y - size*0.5, x + size*0.2, y - size*0.1, x + size*0.35, y + size*0.05)
-    ctx.bezierCurveTo(x + size*0.45, y + size*0.15, x + size*0.5, y + size*0.1, x + size*0.6, y + size*0.2)
-    ctx.lineTo(x + size*0.75, y + size*0.35)
-    ctx.bezierCurveTo(x + size*0.85, y + size*0.45, x + size*0.7, y + size*0.7, x + size*0.5, y + size*0.6)
-    ctx.bezierCurveTo(x + size*0.1, y + size*0.4, x - size*0.2, y, x, y - size*0.7)
-    ctx.stroke()
+    const path = new Path2D("M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z")
+    ctx.fill(path)
     ctx.restore()
   }
   function drawEnvelopeIcon(ctx, x, y, size, color) {
@@ -476,7 +471,7 @@ export default function AdminContentHub() {
       ctx.fillText("BOOK NOW", 935, 689)
       ctx.textAlign = "left"
       // === ITEM NAME (secondary to price now) ===
-      ctx.fillStyle = "#ffffff"
+      ctx.fillStyle = "#111111"
       ctx.font = "bold 38px Arial"
       const label = item._label || "Amazing Deal"
       const shortLabel = label.length > 32 ? label.substring(0,32)+"..." : label
@@ -491,9 +486,9 @@ export default function AdminContentHub() {
       // === PROVIDER ===
       const sub = item.showroom_name || item.business_name || ""
       if (sub) {
-        ctx.fillStyle = "#cccccc"
+        ctx.fillStyle = "#555555"
         ctx.font = "26px Arial"
-        drawBuildingIcon(ctx, 40, 880, 20, "#cccccc")
+        drawBuildingIcon(ctx, 40, 880, 20, "#555555")
         ctx.fillText(`${sub}`, 70, 880)
       }
       // === VERIFIED BADGE if applicable ===
@@ -508,7 +503,7 @@ export default function AdminContentHub() {
         ctx.fillText("VERIFIED", 878, 758)
       }
       // === DIVIDER ===
-      ctx.fillStyle = "#222222"
+      ctx.fillStyle = "#eeeeee"
       ctx.fillRect(40, 930, 1000, 2)
       // === SIMPLIFIED FOOTER - website + phone only, bigger and clearer ===
       ctx.fillStyle = "#E6821E"
