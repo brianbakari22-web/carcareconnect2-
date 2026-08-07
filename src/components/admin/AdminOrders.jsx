@@ -1,4 +1,4 @@
-import { LocationIcon, ServicesIcon, DeliveryIcon } from "../../lib/cccIcons"
+import { LocationIcon, ServicesIcon, DeliveryIcon, ProfileIcon, MarketplaceIcon, WalletIcon } from "../../lib/cccIcons"
 import { useEffect, useState } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
@@ -117,7 +117,7 @@ export default function AdminOrders() {
 
       {showZones&&(
         <div style={{ background:"#f8f8f8", border:"1px solid #8b5cf630", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#8b5cf6", marginBottom:"1rem" }}>📍 Delivery Zones</div>
+          <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#8b5cf6", marginBottom:"1rem", display:"flex", alignItems:"center", gap:6 }}><LocationIcon size={14} color="#8b5cf6"/> Delivery Zones</div>
           <form onSubmit={addZone} style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr auto", gap:8, marginBottom:"1rem", alignItems:"end" }}>
             <div><label style={{ fontSize:10, color:"#888", display:"block", marginBottom:3 }}>Zone name</label><input style={inp} value={zoneForm.name} onChange={e=>setZoneForm(f=>({...f,name:e.target.value}))} placeholder="e.g. Westlands" required/></div>
             <div><label style={{ fontSize:10, color:"#888", display:"block", marginBottom:3 }}>Base fee (KES)</label><input type="number" style={inp} value={zoneForm.base_fee} onChange={e=>setZoneForm(f=>({...f,base_fee:e.target.value}))} required/></div>
@@ -157,10 +157,10 @@ export default function AdminOrders() {
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
             <div>
               <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>#{o.order_number}</div>
-              <div style={{ fontSize:11, color:"#888" }}>👤 {o.profiles?.first_name} {o.profiles?.last_name}</div>
-              <div style={{ fontSize:11, color:"#888" }}>🏪 {o.provider?.business_name||o.provider?.first_name}</div>
-              {o.delivery_driver_id&&<div style={{ fontSize:11, color:"#378add" }}>🚚 Driver: {o.driver?.first_name} {o.driver?.last_name} ({o.driver?.driver_vehicle_type})</div>}
-              <div style={{ fontSize:11, color:"#888" }}>{o.fulfillment_type==="delivery"?"🚚 "+o.delivery_address:"🏪 Pickup"}</div>
+              <div style={{ fontSize:11, color:"#888", display:"flex", alignItems:"center", gap:4 }}><ProfileIcon size={10} color="#888"/> {o.profiles?.first_name} {o.profiles?.last_name}</div>
+              <div style={{ fontSize:11, color:"#888", display:"flex", alignItems:"center", gap:4 }}><MarketplaceIcon size={10} color="#888"/> {o.provider?.business_name||o.provider?.first_name}</div>
+              {o.delivery_driver_id&&<div style={{ fontSize:11, color:"#378add", display:"flex", alignItems:"center", gap:4 }}><DeliveryIcon size={10} color="#378add"/> Driver: {o.driver?.first_name} {o.driver?.last_name} ({o.driver?.driver_vehicle_type})</div>}
+              <div style={{ fontSize:11, color:"#888", display:"flex", alignItems:"center", gap:4 }}>{o.fulfillment_type==="delivery"?<><DeliveryIcon size={10} color="#888"/> {o.delivery_address}</>:<><MarketplaceIcon size={10} color="#888"/> Pickup</>}</div>
               {o.delivery_zone&&<div style={{ fontSize:10, color:"#378add" }}>Zone: {o.delivery_zone}</div>}
               <div style={{ fontSize:10, color:"#888" }}>{new Date(o.created_at).toLocaleString()}</div>
             </div>
@@ -168,8 +168,8 @@ export default function AdminOrders() {
               <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>KES {Number(o.subtotal||0).toLocaleString()}</div>
               <div style={{ fontSize:10, color:"#1d9e75" }}>Commission: KES {Number(o.platform_commission||0).toLocaleString()}</div>
               <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:(SC[o.status]||"#888")+"20", color:SC[o.status]||"#888", display:"inline-block", marginTop:4 }}>{o.status}</span>
-              <div style={{ fontSize:10, color:o.payment_status==="paid"?"#1d9e75":o.payment_status==="awaiting_payment"?"#e6821e":"#888", marginTop:2 }}>💳 {o.payment_status||"pending"}</div>
-              <div style={{ fontSize:10, color:"#888", marginTop:2 }}>{o.payment_method==="cash"?"💵 Cash":"💳 Online"}</div>
+              <div style={{ fontSize:10, color:o.payment_status==="paid"?"#1d9e75":o.payment_status==="awaiting_payment"?"#e6821e":"#888", marginTop:2, display:"flex", alignItems:"center", justifyContent:"flex-end", gap:3 }}><WalletIcon size={10} color={o.payment_status==="paid"?"#1d9e75":o.payment_status==="awaiting_payment"?"#e6821e":"#888"}/> {o.payment_status||"pending"}</div>
+              <div style={{ fontSize:10, color:"#888", marginTop:2, display:"flex", alignItems:"center", justifyContent:"flex-end", gap:3 }}><WalletIcon size={10} color="#888"/> {o.payment_method==="cash"?"Cash":"Online"}</div>
             </div>
           </div>
           <div style={{ background:"#ffffff", borderRadius:8, padding:"0.6rem", marginBottom:8 }}>
@@ -182,7 +182,7 @@ export default function AdminOrders() {
           </div>
           {o.status==="ready"&&o.fulfillment_type==="delivery"&&!o.delivery_driver_id&&(
             <button onClick={()=>assignDriver(o.id)} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
-              🚚 Assign driver
+              <DeliveryIcon size={11} color="#378add"/> Assign driver
             </button>
           )}
         </div>
