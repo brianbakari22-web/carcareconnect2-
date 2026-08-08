@@ -71,8 +71,10 @@ serve(async (req) => {
       endpoint = `${BASE_URL}/mpesa/b2c/v1/paymentrequest`
     }
 
+    const isB2B = method === "till" || method === "paybill"
+    const initiatorFieldName = isB2B ? "Initiator" : "InitiatorName"
     const payBody: Record<string, any> = {
-      InitiatorName: Deno.env.get("DARAJA_INITIATOR_NAME") || "CCCAPI",
+      [initiatorFieldName]: Deno.env.get("DARAJA_INITIATOR_NAME") || "CCCAPI",
       SecurityCredential: Deno.env.get("DARAJA_SECURITY_CREDENTIAL") || "",
       CommandID: commandId,
       Amount: Math.floor(amount),
