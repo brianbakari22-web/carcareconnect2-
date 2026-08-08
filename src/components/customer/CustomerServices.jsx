@@ -659,7 +659,7 @@ export default function CustomerServices() {
                   {s.category!=="go_service"&&(<>
                     <label style={{ display:"flex", alignItems:"center", gap:8, marginBottom:14, cursor:"pointer" }}>
                       <input type="checkbox" checked={bookForm.is_concierge} onChange={e=>setBookForm(f=>({...f,is_concierge:e.target.checked}))} style={{ accentColor:"#e6821e" }}/>
-                      <span style={{ fontSize:12, color:"#666" }}>Add concierge driver (pick up & drop off my car) — extra 15%</span>
+                      <span style={{ fontSize:12, color:"#666" }}>Add concierge driver (pick up & drop off my car) — extra {Math.round((conciergeMultiplier-1)*100)}%</span>
                     </label>
                     {bookForm.is_concierge&&(
                       <div style={{ marginBottom:8 }}>
@@ -728,7 +728,7 @@ export default function CustomerServices() {
                     </div>
                     {bookForm.is_concierge&&(
                       <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#555555", marginBottom:2 }}>
-                        <span>Concierge fee</span><span>KES {(Number(s.price)*0.15).toFixed(0)}</span>
+                        <span>Concierge fee</span><span>KES {(Number(s.price)*(conciergeMultiplier-1)).toFixed(0)}</span>
                       </div>
                     )}
                     <div style={{ height:1, background:"#f0f0f0", margin:"6px 0" }}/>
