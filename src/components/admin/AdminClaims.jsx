@@ -91,6 +91,8 @@ export default function AdminClaims() {
       await Promise.all([
         // Update claim status
         supabase.from("service_claims").update({ status:"approved", admin_notes:adminNotes, resolved_by:user.id, resolved_at:new Date().toISOString() }).eq("id",claim.id),
+        // Close out original booking payment - provider must NOT be paid, customer got a voucher instead
+        supabase.from("bookings").update({ payment_held:false, payment_released:false, payment_status:"refunded_as_voucher" }).eq("id", claim.booking_id),
 
         // Create voucher for customer
         supabase.from("service_vouchers").insert({
