@@ -674,7 +674,7 @@ export default function CustomerServices() {
                               const pos = await getCurrentPosition()
                               const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.latitude}&lon=${pos.longitude}&format=json`)
                               const data = await res.json()
-                              setBookForm(f=>({...f, concierge_location:data.display_name||"Location detected"}))
+                              setBookForm(f=>({...f, concierge_location:data.display_name||"Location detected"})); setCustomerLocation({ lat:pos.latitude, lng:pos.longitude, address:data.display_name||"" })
                             } catch(err) { toast.error("Could not detect location") }
                           }} style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:11, padding:"0 12px", cursor:"pointer", flexShrink:0 }}>
                             <LocationIcon size={13} color="currentColor"/> Detect
