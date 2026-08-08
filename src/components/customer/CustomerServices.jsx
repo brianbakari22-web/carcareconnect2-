@@ -45,8 +45,13 @@ export default function CustomerServices() {
   const [selectedVehicle, setSelectedVehicle] = useState("")
   const [bulkMode, setBulkMode] = useState(false)
   const [bulkVehicles, setBulkVehicles] = useState([])
+  const [conciergeMultiplier, setConciergeMultiplier] = useState(1.15)
 
   useEffect(() => { if (user) load() }, [user])
+  useEffect(() => {
+    supabase.from("app_settings").select("value").eq("key","concierge_surcharge_rate").maybeSingle()
+      .then(({ data }) => { if (data?.value) setConciergeMultiplier(1 + Number(data.value)/100) })
+  }, [])
 
   useEffect(() => {
     const serviceId = searchParams.get("service")
@@ -215,7 +220,7 @@ export default function CustomerServices() {
       const commissionRates = { shop_standard:0.10, shop_premium:0.20, go_service:0.15 }
       const platformRate = commissionRates[booking.category]||0.10
       const providerRate = 1 - platformRate
-      const baseAmount = Number(booking.price)*(bookForm.is_concierge?1.15:1)
+      const baseAmount = Number(booking.price)*(bookForm.is_concierge?conciergeMultiplier:1)
       const voucherDiscount = voucherData?Number(voucherData.value):0
       const promoDiscount = promoData?Number(promoData.discount):0
       const finalAmount = Math.max(0, baseAmount - voucherDiscount - promoDiscount)
@@ -244,7 +249,7 @@ export default function CustomerServices() {
         is_concierge: bookForm.is_concierge||false,
         concierge_pickup_location: bookForm.concierge_location||null,
         concierge_expires_at: bookForm.is_concierge ? new Date(Date.now()+30*60*1000).toISOString() : null,
-        concierge_surcharge: bookForm.is_concierge ? Number(booking.price)*0.15 : 0,
+        concierge_surcharge: bookForm.is_concierge ? Number(booking.price)*(conciergeMultiplier-1) : 0,
         customer_location_lat: customerLocation.lat||null,
         customer_location_lng: customerLocation.lng||null,
         customer_location_address: customerLocation.address||null,
@@ -703,7 +708,7 @@ export default function CustomerServices() {
                       <input value={promoCode} onChange={e=>setPromoCode(e.target.value.toUpperCase())}
                         placeholder="SAVE10"
                         style={{ ...inp, flex:1, marginBottom:0 }}/>
-                      <button type="button" onClick={()=>validatePromo(Number(s.price)*(bookForm.is_concierge?1.15:1))} disabled={promoLoading||!promoCode.trim()}
+                      <button type="button" onClick={()=>validatePromo(Number(s.price)*(bookForm.is_concierge?conciergeMultiplier:1))} disabled={promoLoading||!promoCode.trim()}
                         style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:12, padding:"0 14px", cursor:"pointer", flexShrink:0 }}>
                         {promoLoading?"...":"Apply"}
                       </button>
@@ -739,7 +744,7 @@ export default function CustomerServices() {
                     )}
                     <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, color:"#e6821e", fontWeight:700 }}>
                       <span>Total</span>
-                      <span>KES {Math.max(0,(Number(s.price)*(bookForm.is_concierge?1.15:1))-(voucherData?Number(voucherData.value):0)-(promoData?Number(promoData.discount):0)).toFixed(0)}</span>
+                      <span>KES {Math.max(0,(Number(s.price)*(bookForm.is_concierge?conciergeMultiplier:1))-(voucherData?Number(voucherData.value):0)-(promoData?Number(promoData.discount):0)).toFixed(0)}</span>
                     </div>
                   </div>
 
