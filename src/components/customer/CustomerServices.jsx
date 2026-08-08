@@ -218,7 +218,7 @@ export default function CustomerServices() {
     try {
       const cat = CATEGORIES.find(c=>c.key===booking.category)||CATEGORIES[0]
       const commissionRates = { shop_standard:0.10, shop_premium:0.20, go_service:0.15 }
-      const platformRate = commissionRates[booking.category]||0.10
+      const platformRate = booking.platform_commission_rate!=null ? Number(booking.platform_commission_rate) : (commissionRates[booking.category]||0.10)
       const providerRate = 1 - platformRate
       const baseAmount = Number(booking.price)*(bookForm.is_concierge?conciergeMultiplier:1)
       const voucherDiscount = voucherData?Number(voucherData.value):0
