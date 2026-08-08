@@ -244,12 +244,12 @@ export default function DriverAvailableJobs() {
                 <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:8, padding:"0.75rem" }}>
                   <div style={{ fontSize:10, color:"#e6821e", fontWeight:600, marginBottom:4 }}>📍 PICKUP — Go here first</div>
                   <div style={{ fontSize:12, color:"#000", fontWeight:600 }}>{job.concierge_pickup_location}</div>
-                  {customer?.latitude&&customer?.longitude&&(
-                    <a href={`https://www.google.com/maps/dir/?api=1&destination=${customer.latitude},${customer.longitude}`} target="_blank" rel="noreferrer"
+                  {(job.customer_location_lat&&job.customer_location_lng)||(customer?.latitude&&customer?.longitude)?(
+                    <a href={`https://www.google.com/maps/dir/?api=1&destination=${job.customer_location_lat||customer?.latitude},${job.customer_location_lng||customer?.longitude}`} target="_blank" rel="noreferrer"
                       style={{ fontSize:11, color:"#e6821e", textDecoration:"none", display:"block", marginTop:4 }}>
-                      🗺️ Open in Google Maps →
+                      <LocationIcon size={11} color="#e6821e"/> Open in Google Maps
                     </a>
-                  )}
+                  ):null}
                 </div>
               )}
               {job.provider&&(
