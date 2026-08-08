@@ -22,6 +22,7 @@ export default function CustomerBookings() {
   const { t } = useLanguage()
   const isMobile = useIsMobile()
   const [bookings, setBookings] = useState([])
+  const [openClaimBookingIds, setOpenClaimBookingIds] = useState(new Set())
   const [filter, setFilter] = useState("all")
   const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState(null)
@@ -82,6 +83,8 @@ export default function CustomerBookings() {
   async function load() {
     const { data } = await supabase.from("bookings").select("*,profiles!bookings_driver_id_fkey(first_name,last_name)").eq("customer_id", user.id).eq("hidden_from_customer", false).order("created_at",{ascending:false})
     setBookings(data||[])
+    const { data: claims } = await supabase.from("service_claims").select("booking_id").eq("customer_id", user.id).in("status", ["pending","under_review"])
+    setOpenClaimBookingIds(new Set((claims||[]).map(c=>c.booking_id).filter(Boolean)))
     setLoading(false)
   }
 
@@ -237,13 +240,13 @@ export default function CustomerBookings() {
                 {t("cancelBooking")}
               </button>
             )}
-            {b.payment_held&&!b.payment_released&&["in-progress","completed"].includes(b.status)&&(
+            {b.payment_held&&!b.payment_released&&!openClaimBookingIds.has(b.id)&&["in-progress","completed"].includes(b.status)&&(
               <button onClick={()=>confirmPayment(b)}
                 style={{ background:"#1d9e75", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"5px 12px", cursor:"pointer" }}>
                 ✅ Confirm & Release Payment
               </button>
             )}
-            {b.payment_held&&!b.payment_released&&["in-progress","completed"].includes(b.status)&&(
+            {b.payment_held&&!b.payment_released&&!openClaimBookingIds.has(b.id)&&["in-progress","completed"].includes(b.status)&&(
               <div style={{ fontSize:10, color:"#888", padding:"4px 8px", background:"#f8f8f8", borderRadius:6 }}>💰 Payment held · auto-releases in 24hrs</div>
             )}
             {b.status==="completed"&&(
