@@ -197,6 +197,7 @@ export default function AdminClaims() {
       const amount = Number(claim.bookings?.total_amount||0)
       await Promise.all([
         supabase.from("service_claims").update({ status:"approved", admin_notes:`CASH REFUND: ${adminNotes}`, resolved_by:user.id, resolved_at:new Date().toISOString() }).eq("id",claim.id),
+        supabase.from("bookings").update({ payment_held:false, payment_released:false, payment_status:"refunded_cash" }).eq("id", claim.booking_id),
         supabase.from("notifications").insert({ user_id:claim.customer_id, title:"Cash refund approved 💰", message:`A cash refund of KES ${amount.toLocaleString()} has been approved. Allow 3-5 business days for processing.`, type:"success" }),
         supabase.from("notifications").insert({ user_id:claim.provider_id, title:"Cash refund issued against you ⚠️", message:`A cash refund of KES ${amount.toLocaleString()} was issued due to: ${claim.reason}. Deducted from your earnings.`, type:"error" }),
         supabase.from("provider_penalties").insert({ provider_id:claim.provider_id, claim_id:claim.id, penalty_type:"deduction", amount_deducted:amount, reason:`Cash refund exception — ${claim.reason}`, is_active:true, applied_by:user.id }),
