@@ -250,6 +250,7 @@ export default function CustomerServices() {
         concierge_pickup_location: bookForm.concierge_location||null,
         concierge_expires_at: bookForm.is_concierge ? new Date(Date.now()+30*60*1000).toISOString() : null,
         concierge_surcharge: bookForm.is_concierge ? Number(booking.price)*(conciergeMultiplier-1) : 0,
+        promo_code: promoData?.code || null,
         customer_location_lat: customerLocation.lat||null,
         customer_location_lng: customerLocation.lng||null,
         customer_location_address: customerLocation.address||null,
