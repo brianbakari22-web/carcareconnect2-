@@ -215,13 +215,12 @@ export default function CustomerServices() {
       const commissionRates = { shop_standard:0.10, shop_premium:0.20, go_service:0.15 }
       const platformRate = commissionRates[booking.category]||0.10
       const providerRate = 1 - platformRate
-      const platformAmount = Number(booking.price) * platformRate
-      const providerAmount = Number(booking.price) * providerRate
-
       const baseAmount = Number(booking.price)*(bookForm.is_concierge?1.15:1)
       const voucherDiscount = voucherData?Number(voucherData.value):0
       const promoDiscount = promoData?Number(promoData.discount):0
       const finalAmount = Math.max(0, baseAmount - voucherDiscount - promoDiscount)
+      const platformAmount = finalAmount * platformRate
+      const providerAmount = finalAmount * providerRate
       const bookingPayload = {
         customer_id: user.id,
         provider_id: booking.provider_id,
@@ -230,7 +229,7 @@ export default function CustomerServices() {
         service_category: booking.category,
         booking_date: bookForm.date,
         booking_time: bookForm.time,
-        total_amount: Number(booking.price),
+        total_amount: finalAmount,
         platform_commission: platformAmount,
         provider_earnings: providerAmount,
         platform_commission_rate: platformRate,
