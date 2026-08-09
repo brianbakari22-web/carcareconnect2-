@@ -85,6 +85,10 @@ export default function AdminLiveMap() {
     setMechanics(mechs||[])
     setLoading(false)
   }
+  async function resolveSOS(id) {
+    await supabase.from("emergency_alerts").update({ status:"resolved", resolved_at:new Date().toISOString() }).eq("id", id)
+    setSosAlerts(prev => prev.filter(s => s.id !== id))
+  }
 
   function initMap() {
     if (!mapRef.current) return
@@ -278,6 +282,18 @@ export default function AdminLiveMap() {
               <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e24b4a", marginBottom:4, display:"flex", alignItems:"center", gap:4 }}><GOServiceIcon size={13} color="#e24b4a"/> {s.user?.first_name} {s.user?.last_name}</div>
               <div style={{ fontSize:12, color:"#555" }}>{s.message||"Emergency alert triggered"}</div>
               <div style={{ fontSize:11, color:"#aaa", marginTop:4 }}>{new Date(s.created_at).toLocaleString()}</div>
+              <div style={{ display:"flex", gap:8, marginTop:8, alignItems:"center" }}>
+                {s.latitude&&s.longitude&&(
+                  <a href={`https://www.google.com/maps/dir/?api=1&destination=${s.latitude},${s.longitude}`} target="_blank" rel="noreferrer"
+                    style={{ fontSize:11, color:"#378add", textDecoration:"none", display:"flex", alignItems:"center", gap:4 }}>
+                    <LocationIcon size={11} color="#378add"/> View location
+                  </a>
+                )}
+                <button onClick={()=>resolveSOS(s.id)}
+                  style={{ background:"#1d9e75", border:"none", borderRadius:6, color:"#fff", fontSize:11, fontWeight:700, padding:"4px 10px", cursor:"pointer", display:"flex", alignItems:"center", gap:4, marginLeft:"auto" }}>
+                  <CheckIcon size={11} color="#fff"/> Mark Resolved
+                </button>
+              </div>
             </div>
           ))}
         </div>
