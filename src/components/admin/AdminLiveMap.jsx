@@ -1,4 +1,4 @@
-import { GOServiceIcon, VehicleIcon, LocationIcon, AnalyticsIcon, TripReportIcon, MechanicIcon } from "../../lib/cccIcons"
+import { GOServiceIcon, VehicleIcon, LocationIcon, AnalyticsIcon, TripReportIcon, MechanicIcon, CheckIcon, PhoneCallIcon } from "../../lib/cccIcons"
 import { useEffect, useState, useRef } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
@@ -80,7 +80,14 @@ export default function AdminLiveMap() {
     const { data: go } = await supabase.from("go_service_requests").select("*, booking:bookings!go_service_requests_booking_id_fkey(id,service_name,customer_id), provider:profiles!go_service_requests_provider_id_fkey(first_name,last_name,business_name)").in("status",["pending","accepted","en_route"]).order("created_at",{ascending:false})
     setGoRequests(go||[])
     const { data: sos } = await supabase.from("emergency_alerts").select("*, user:profiles!emergency_alerts_user_id_fkey(first_name,last_name)").eq("status","active").order("created_at",{ascending:false})
-    setSosAlerts(sos||[])
+    let sosWithPhones = sos||[]
+    if (sosWithPhones.length > 0) {
+      const userIds = sosWithPhones.map(s=>s.user_id).filter(Boolean)
+      const { data: sensRows } = await supabase.from("profile_sensitive").select("id,phone").in("id", userIds)
+      const phoneMap = Object.fromEntries((sensRows||[]).map(r=>[r.id, r.phone]))
+      sosWithPhones = sosWithPhones.map(s=>({ ...s, phone: phoneMap[s.user_id]||null }))
+    }
+    setSosAlerts(sosWithPhones)
     const { data: mechs } = await supabase.from("mechanics").select("*, profile:profiles!mechanics_user_id_fkey(first_name,last_name)").eq("is_active",true)
     setMechanics(mechs||[])
     setLoading(false)
@@ -283,6 +290,12 @@ export default function AdminLiveMap() {
               <div style={{ fontSize:12, color:"#555" }}>{s.message||"Emergency alert triggered"}</div>
               <div style={{ fontSize:11, color:"#aaa", marginTop:4 }}>{new Date(s.created_at).toLocaleString()}</div>
               <div style={{ display:"flex", gap:8, marginTop:8, alignItems:"center" }}>
+                {s.phone&&(
+                  <a href={`tel:${s.phone}`}
+                    style={{ fontSize:11, color:"#1d9e75", textDecoration:"none", display:"flex", alignItems:"center", gap:4 }}>
+                    <PhoneCallIcon size={11} color="#1d9e75"/> {s.phone}
+                  </a>
+                )}
                 {s.latitude&&s.longitude&&(
                   <a href={`https://www.google.com/maps/dir/?api=1&destination=${s.latitude},${s.longitude}`} target="_blank" rel="noreferrer"
                     style={{ fontSize:11, color:"#378add", textDecoration:"none", display:"flex", alignItems:"center", gap:4 }}>
