@@ -80,6 +80,29 @@ export default function CustomerServices() {
     setLoading(false)
   }
 
+  async function checkDateAvailability(date, providerId) {
+    if (!providerId || !date) return
+    try {
+      const [{ data: avail }, { data: existingBookings }] = await Promise.all([
+        supabase.from("provider_availability").select("*").eq("provider_id", providerId).eq("date", date).maybeSingle(),
+        supabase.from("bookings").select("id").eq("provider_id", providerId).eq("booking_date", date).neq("status", "cancelled")
+      ])
+      if (avail?.is_blocked) {
+        setDateAvailability({ available: false, message: avail.block_reason || "Provider unavailable on this date" })
+        return
+      }
+      const bookedCount = existingBookings?.length || 0
+      const maxBookings = avail?.max_bookings ?? null
+      if (maxBookings != null && bookedCount >= maxBookings) {
+        setDateAvailability({ available: false, message: "Provider fully booked on this date" })
+        return
+      }
+      const slotsLeft = maxBookings != null ? maxBookings - bookedCount : null
+      setDateAvailability({ available: true, message: slotsLeft != null ? `${slotsLeft} slot${slotsLeft!==1?"s":""} available` : "Available" })
+    } catch(e) {
+      setDateAvailability(null)
+    }
+  }
   async function validateVoucher() {
     if (!voucherCode.trim()) return
     setVoucherLoading(true)
@@ -398,6 +421,7 @@ export default function CustomerServices() {
                         <div>
                           <label style={lbl}>Date</label>
                           <input type="date" value={bookForm.date} onChange={e=>{ setBookForm(f=>({...f,date:e.target.value})); setDateAvailability(null); if(e.target.value) checkDateAvailability(e.target.value, booking?.provider_id) }} required min={new Date().toISOString().split("T")[0]} style={inp}/>
+                    {dateAvailability&&<div style={{ fontSize:11, marginTop:4, color:dateAvailability.available?"#1d9e75":"#e24b4a" }}>{dateAvailability.available?"✓ ":"✗ "}{dateAvailability.message}</div>}
                         </div>
                         <div>
                           <label style={lbl}>Time</label>
@@ -581,6 +605,7 @@ export default function CustomerServices() {
                     <div>
                       <label style={lbl}>Date</label>
                       <input type="date" value={bookForm.date} onChange={e=>{ setBookForm(f=>({...f,date:e.target.value})); setDateAvailability(null); if(e.target.value) checkDateAvailability(e.target.value, booking?.provider_id) }} required min={new Date().toISOString().split("T")[0]} style={inp}/>
+                    {dateAvailability&&<div style={{ fontSize:11, marginTop:4, color:dateAvailability.available?"#1d9e75":"#e24b4a" }}>{dateAvailability.available?"✓ ":"✗ "}{dateAvailability.message}</div>}
                     </div>
                     <div>
                       <label style={lbl}>Time</label>
