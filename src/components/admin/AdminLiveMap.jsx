@@ -40,7 +40,7 @@ export default function AdminLiveMap() {
 
   useEffect(() => {
     if (!loading) initMap()
-  }, [drivers, loading])
+  }, [drivers, sosAlerts, loading])
 
   useEffect(() => {
     if (!selected?.current_lat) return
@@ -125,6 +125,28 @@ export default function AdminLiveMap() {
           const marker = new window.google.maps.Marker({ position:{lat:d.current_lat,lng:d.current_lng}, map:mapInstanceRef.current, title:`${d.driver?.first_name} ${d.driver?.last_name}`, icon:markerIcon })
           marker.addListener("click", () => setSelected(d))
           markersRef.current[d.driver_id] = marker
+        }
+      })
+      // Plot SOS emergency alert markers
+      const activeSosWithLoc = sosAlerts.filter(s=>s.latitude&&s.longitude)
+      Object.keys(sosMarkersRef.current).forEach(id => {
+        if (!activeSosWithLoc.find(s=>s.id===id)) {
+          sosMarkersRef.current[id].setMap(null)
+          delete sosMarkersRef.current[id]
+        }
+      })
+      activeSosWithLoc.forEach(s => {
+        const sosSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 52 52"><circle cx="26" cy="26" r="24" fill="#e24b4a" stroke="white" stroke-width="3"/><text x="26" y="34" font-size="22" text-anchor="middle">🆘</text></svg>`
+        const sosIcon = { url:"data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(sosSvg), scaledSize:new window.google.maps.Size(52,52), anchor:new window.google.maps.Point(26,26) }
+        if (sosMarkersRef.current[s.id]) {
+          sosMarkersRef.current[s.id].setPosition({ lat:Number(s.latitude), lng:Number(s.longitude) })
+        } else {
+          const sosMarker = new window.google.maps.Marker({ position:{ lat:Number(s.latitude), lng:Number(s.longitude) }, map:mapInstanceRef.current, title:`SOS: ${s.user_name||"Unknown"}`, icon:sosIcon, zIndex:999 })
+          sosMarker.addListener("click", () => {
+            mapInstanceRef.current.panTo({ lat:Number(s.latitude), lng:Number(s.longitude) })
+            mapInstanceRef.current.setZoom(16)
+          })
+          sosMarkersRef.current[s.id] = sosMarker
         }
       })
     }
