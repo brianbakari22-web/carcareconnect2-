@@ -1,4 +1,4 @@
-import { GOServiceIcon, VehicleIcon, LocationIcon, AnalyticsIcon, TripReportIcon, MechanicIcon, CheckIcon, PhoneCallIcon } from "../../lib/cccIcons"
+import { GOServiceIcon, VehicleIcon, LocationIcon, AnalyticsIcon, TripReportIcon, MechanicIcon, CheckIcon, PhoneCallIcon, StarIcon, RefreshIcon } from "../../lib/cccIcons"
 import { useEffect, useState, useRef } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
@@ -35,6 +35,10 @@ export default function AdminLiveMap() {
         markersRef.current[id].setMap(null)
       })
       markersRef.current = {}
+      Object.keys(sosMarkersRef.current).forEach(id => {
+        sosMarkersRef.current[id].setMap(null)
+      })
+      sosMarkersRef.current = {}
     }
   }, [])
 
@@ -63,7 +67,7 @@ export default function AdminLiveMap() {
             window.google.maps.event.trigger(panorama, "resize")
             setTimeout(() => window.google.maps.event.trigger(panorama, "resize"), 300)
           } else {
-            svDiv.innerHTML = "<div style=\"display:flex;align-items:center;justify-content:center;height:100%;color:#888;font-size:12px;flex-direction:column;gap:8px\"><span style=\"font-size:24px\">🗺️</span>Street View not available at this location</div>"
+            svDiv.innerHTML = "<div style=\"display:flex;align-items:center;justify-content:center;height:100%;color:#888;font-size:12px;flex-direction:column;gap:8px\">Street View not available at this location</div>"
           }
         })
       } catch(e) { svDiv.innerHTML = "<div style=\"display:flex;align-items:center;justify-content:center;height:100%;color:#888;font-size:12px;\">Street View unavailable</div>" }
@@ -224,7 +228,7 @@ export default function AdminLiveMap() {
         ].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)} style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#f0f0f0", color:tab===t.k?"#fff":"#555", fontWeight:tab===t.k?700:400, whiteSpace:"nowrap" }}>{t.l}</button>
         ))}
-        <button onClick={load} style={{ marginLeft:"auto", padding:"6px 14px", borderRadius:7, border:"1px solid #eee", fontSize:12, cursor:"pointer", background:"#fff", color:"#555" }}>🔄 Refresh</button>
+        <button onClick={load} style={{ marginLeft:"auto", padding:"6px 14px", borderRadius:7, border:"1px solid #eee", fontSize:12, cursor:"pointer", background:"#fff", color:"#555", display:"flex", alignItems:"center", gap:4 }}><RefreshIcon size={12} color="#555"/> Refresh</button>
       </div>
       {/* Map Tab */}
       {tab==="map"&&(
@@ -247,9 +251,9 @@ export default function AdminLiveMap() {
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                 <div>
                   <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, marginBottom:4 }}>{selected.driver?.first_name} {selected.driver?.last_name}</div>
-                  <div style={{ fontSize:12, color:"#888" }}>{selected.driver?.driver_category==="concierge"?"Concierge":`🚗 ${selected.driver?.driver_vehicle_type||"Car"}`}</div>
-                  <div style={{ fontSize:11, color:selected.is_online?"#1d9e75":"#888", marginTop:2 }}>{selected.is_online?"🟢 Online":"⚫ Offline"}</div>
-                  <div style={{ fontSize:11, color:"#888", marginTop:4 }}>📍 {selected.current_lat?.toFixed(5)}, {selected.current_lng?.toFixed(5)}</div>
+                  <div style={{ fontSize:12, color:"#888" }}>{selected.driver?.driver_category==="concierge"?"Concierge":`${selected.driver?.driver_vehicle_type||"Car"}`}</div>
+                  <div style={{ fontSize:11, color:selected.is_online?"#1d9e75":"#888", marginTop:2 }}>{selected.is_online?"Online":"Offline"}</div>
+                  <div style={{ fontSize:11, color:"#888", marginTop:4 }}>{selected.current_lat?.toFixed(5)}, {selected.current_lng?.toFixed(5)}</div>
                   {selected.current_lat&&selected.current_lng&&(
                     <a href={`https://www.google.com/maps/dir/?api=1&destination=${selected.current_lat},${selected.current_lng}`} target="_blank" rel="noreferrer"
                       style={{ fontSize:11, color:"#378add", textDecoration:"none", display:"flex", alignItems:"center", gap:4, marginTop:4 }}>
@@ -259,7 +263,7 @@ export default function AdminLiveMap() {
                   {selected.updated_at&&<div style={{ fontSize:11, color:"#aaa", marginTop:2 }}>Last seen: {new Date(selected.updated_at).toLocaleTimeString()}</div>}
                   {selected.current_lat&&(
                     <div style={{ marginTop:10 }}>
-                      <div style={{ fontSize:11, fontWeight:600, color:"#000", marginBottom:6 }}>🏙️ Street View</div>
+                      <div style={{ fontSize:11, fontWeight:600, color:"#000", marginBottom:6 }}>Street View</div>
                       <div id="admin-street-view" style={{ width:"100%", height:200, borderRadius:8, overflow:"hidden", background:"#f0f0f0" }}/>
                     </div>
                   )}
@@ -275,7 +279,7 @@ export default function AdminLiveMap() {
               <div style={{ width:8, height:8, borderRadius:"50%", background:d.is_online&&!isStale(d)?"#1d9e75":"#ccc", flexShrink:0 }}/>
               <div style={{ flex:1 }}>
                 <div style={{ fontSize:13, fontWeight:600 }}>{d.driver?.first_name} {d.driver?.last_name}</div>
-                <div style={{ fontSize:11, color:"#888" }}>{d.driver?.driver_category==="concierge"?"Concierge":`🚗 ${d.driver?.driver_vehicle_type||"Car"}`}{d.current_booking_id&&" · 📅 On job"}</div>
+                <div style={{ fontSize:11, color:"#888" }}>{d.driver?.driver_category==="concierge"?"Concierge":`${d.driver?.driver_vehicle_type||"Car"}`}{d.current_booking_id&&" · On job"}</div>
                 <div style={{ fontSize:10, color:isStale(d)?"#e6821e":"#aaa" }}>Last seen: {timeAgo(d.updated_at)}</div>
               </div>
               <div style={{ fontSize:11, color:d.is_online&&!isStale(d)?"#1d9e75":"#888" }}>{isStale(d)?"Stale":d.is_online?"Online":"Offline"}</div>
@@ -311,7 +315,7 @@ export default function AdminLiveMap() {
       {/* SOS Tab */}
       {tab==="sos"&&(
         <div>
-          {sosAlerts.length===0&&<div style={{ color:"#888", textAlign:"center", padding:"2rem" }}>No active SOS alerts 🎉</div>}
+          {sosAlerts.length===0&&<div style={{ color:"#888", textAlign:"center", padding:"2rem" }}>No active SOS alerts</div>}
           {sosAlerts.map(s=>(
             <div key={s.id} style={{ background:"#fff5f5", border:"1px solid #e24b4a40", borderRadius:10, padding:"1rem", marginBottom:8 }}>
               <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#e24b4a", marginBottom:4, display:"flex", alignItems:"center", gap:4 }}><GOServiceIcon size={13} color="#e24b4a"/> {s.user?.first_name} {s.user?.last_name}</div>
@@ -348,7 +352,7 @@ export default function AdminLiveMap() {
               <div>
                 <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, display:"flex", alignItems:"center", gap:4 }}><MechanicIcon size={13} color="#378add"/> {m.profile?.first_name} {m.profile?.last_name}</div>
                 <div style={{ fontSize:11, color:"#888" }}>{m.specialization||"General mechanic"}</div>
-                <div style={{ fontSize:11, color:m.is_available?"#1d9e75":"#888" }}>{m.is_available?"Available":"🔴 Busy"}</div>
+                <div style={{ fontSize:11, color:m.is_available?"#1d9e75":"#888" }}>{m.is_available?"Available":"Busy"}</div>
               </div>
               <div style={{ textAlign:"right", fontSize:11, color:"#888" }}>
                 <div>Jobs: {m.jobs_completed||0}</div>
