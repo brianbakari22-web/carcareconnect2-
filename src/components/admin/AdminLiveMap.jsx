@@ -250,6 +250,12 @@ export default function AdminLiveMap() {
                   <div style={{ fontSize:12, color:"#888" }}>{selected.driver?.driver_category==="concierge"?"Concierge":`🚗 ${selected.driver?.driver_vehicle_type||"Car"}`}</div>
                   <div style={{ fontSize:11, color:selected.is_online?"#1d9e75":"#888", marginTop:2 }}>{selected.is_online?"🟢 Online":"⚫ Offline"}</div>
                   <div style={{ fontSize:11, color:"#888", marginTop:4 }}>📍 {selected.current_lat?.toFixed(5)}, {selected.current_lng?.toFixed(5)}</div>
+                  {selected.current_lat&&selected.current_lng&&(
+                    <a href={`https://www.google.com/maps/dir/?api=1&destination=${selected.current_lat},${selected.current_lng}`} target="_blank" rel="noreferrer"
+                      style={{ fontSize:11, color:"#378add", textDecoration:"none", display:"flex", alignItems:"center", gap:4, marginTop:4 }}>
+                      <LocationIcon size={11} color="#378add"/> View location
+                    </a>
+                  )}
                   {selected.updated_at&&<div style={{ fontSize:11, color:"#aaa", marginTop:2 }}>Last seen: {new Date(selected.updated_at).toLocaleTimeString()}</div>}
                   {selected.current_lat&&(
                     <div style={{ marginTop:10 }}>
