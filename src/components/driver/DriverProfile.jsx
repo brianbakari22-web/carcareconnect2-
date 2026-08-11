@@ -482,7 +482,7 @@ export default function DriverProfile() {
           <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>Change password</div>
             <label style={lbl}>New password</label>
-            <input style={inp} type="password" placeholder="Min 6 characters" value={passwordForm.password} onChange={e=>setPasswordForm(f=>({...f,password:e.target.value}))} required/>
+            <input style={inp} type="password" placeholder="Min 8 characters, 1 number" value={passwordForm.password} onChange={e=>setPasswordForm(f=>({...f,password:e.target.value}))} required/>
             <label style={lbl}>Confirm password</label>
             <input style={inp} type="password" placeholder="Repeat password" value={passwordForm.confirm} onChange={e=>setPasswordForm(f=>({...f,confirm:e.target.value}))} required/>
             <button type="submit"

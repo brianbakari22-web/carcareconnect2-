@@ -57,7 +57,7 @@ export default function ResetPassword() {
         ) : (
           <form onSubmit={handleReset}>
             <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>New password</label>
-            <input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Min 6 characters" required style={inp}/>
+            <input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Min 8 characters, 1 number" required style={inp}/>
             <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>Confirm password</label>
             <input type="password" value={confirm} onChange={e=>setConfirm(e.target.value)} placeholder="Repeat password" required style={inp}/>
             <button type="submit" disabled={loading}

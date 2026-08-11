@@ -238,7 +238,7 @@ export default function CustomerProfile() {
           <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem" }}>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, marginBottom:"1rem", color:"#000000" }}>{t("changePassword")}</div>
             <label style={lbl}>{t("newPassword")}</label>
-            <input style={inp} type="password" name="password" placeholder="Min 6 characters" required/>
+            <input style={inp} type="password" name="password" placeholder="Min 8 characters, 1 number" required/>
             <label style={lbl}>{t("confirmPassword")}</label>
             <input style={inp} type="password" name="confirm" placeholder="Repeat password" required/>
             <button type="submit"
