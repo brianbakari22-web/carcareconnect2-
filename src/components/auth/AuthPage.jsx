@@ -7,6 +7,7 @@ import { supabase } from "../../lib/supabase"
 import { sanitizeName, sanitizeEmail, sanitizePhone, sanitizeFreeText } from "../../lib/sanitize"
 import { applyRateLimit, RATE_LIMITS } from "../../lib/rateLimit"
 import { useAuth } from "../../contexts/AuthContext"
+import { validatePassword } from "../../lib/passwordValidation"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import toast from "react-hot-toast"
 
@@ -136,6 +137,7 @@ export default function AuthPage() {
   async function handleAuth(e) {
     e.preventDefault()
     if (mode === "signup" && !agreed) return toast.error("Please agree to the Terms and Privacy Policy")
+    if (mode === "signup") { const pwError = validatePassword(form.password); if (pwError) return toast.error(pwError) }
     setLoading(true)
     try {
       if (mode === "forgot") {
@@ -379,7 +381,7 @@ export default function AuthPage() {
             <input style={inp} type="email" placeholder="you@example.com" value={form.email} onChange={e=>setForm(f=>({...f,email:e.target.value}))} required autoFocus={mode==="signin"}/>
 
             <label style={lbl}>Password</label>
-            <input style={{ ...inp, marginBottom:mode==="signup"?12:20 }} type="password" placeholder="Min 6 characters" value={form.password} onChange={e=>setForm(f=>({...f,password:e.target.value}))} required/>
+            <input style={{ ...inp, marginBottom:mode==="signup"?12:20 }} type="password" placeholder="Min 8 characters, 1 number" value={form.password} onChange={e=>setForm(f=>({...f,password:e.target.value}))} required/>
 
             {mode==="signin"&&(
               <button type="button" onClick={()=>{ setMode("forgot"); setResetSent(false) }}

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
+import { validatePassword } from "../../lib/passwordValidation"
 
 export default function ResetPassword() {
   const navigate = useNavigate()
@@ -18,7 +19,7 @@ export default function ResetPassword() {
 
   async function handleReset(e) {
     e.preventDefault()
-    if (password.length < 6) return toast.error("Password must be at least 6 characters")
+    const pwError = validatePassword(password); if (pwError) return toast.error(pwError)
     if (password !== confirm) return toast.error("Passwords do not match")
     setLoading(true)
     try {

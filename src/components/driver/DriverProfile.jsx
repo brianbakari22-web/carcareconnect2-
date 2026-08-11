@@ -3,6 +3,7 @@ import { VehicleIcon, MotorcycleIcon, TukTukIcon, DeliveryIcon } from "../../lib
 import { supabase } from "../../lib/supabase"
 import { pushNotify } from "../../lib/pushNotify"
 import { sanitizeName, sanitizePhone, sanitizeFreeText } from "../../lib/sanitize"
+import { validatePassword } from "../../lib/passwordValidation"
 import { validateFile, sanitizeFilePath } from "../../lib/uploadValidation"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
@@ -199,7 +200,7 @@ export default function DriverProfile() {
   async function changePassword(e) {
     e.preventDefault()
     if (passwordForm.password !== passwordForm.confirm) return toast.error("Passwords do not match")
-    if (passwordForm.password.length < 6) return toast.error("Min 6 characters")
+    const pwError = validatePassword(passwordForm.password); if (pwError) return toast.error(pwError)
     const { error } = await supabase.auth.updateUser({ password: passwordForm.password })
     if (error) return toast.error(error.message)
     toast.success("Password changed")

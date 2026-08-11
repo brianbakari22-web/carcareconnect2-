@@ -3,6 +3,7 @@ import { ServicesIcon, PartsIcon, MarketplaceIcon, VehicleIcon, DiscoverIcon, Po
 import { supabase } from "../../lib/supabase"
 import { pushNotify } from "../../lib/pushNotify"
 import { sanitizeName, sanitizePhone, sanitizeFreeText } from "../../lib/sanitize"
+import { validatePassword } from "../../lib/passwordValidation"
 import { getCurrentPosition } from "../../lib/geolocation"
 import PhotoManager from "../shared/PhotoManager"
 import { useAuth } from "../../contexts/AuthContext"
@@ -106,7 +107,7 @@ export default function ProviderProfile() {
     const pw = e.target.password.value
     const confirm = e.target.confirm.value
     if (pw !== confirm) return toast.error("Passwords do not match")
-    if (pw.length < 6) return toast.error("Min 6 characters")
+    const pwError = validatePassword(pw); if (pwError) return toast.error(pwError)
     const { error } = await supabase.auth.updateUser({ password: pw })
     if (error) return toast.error(error.message)
     toast.success("Password changed")

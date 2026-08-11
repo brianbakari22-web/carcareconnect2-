@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { OrdersIcon, BookingsIcon, PaymentsIcon, VehicleIcon, StarIcon, ReferEarnIcon, ShieldIcon, AnalyticsIcon, DocumentIcon, RefreshIcon, DataIcon } from "../../lib/cccIcons"
 import { pushNotify } from "../../lib/pushNotify"
+import { validatePassword } from "../../lib/passwordValidation"
 import { sanitizeName, sanitizePhone, sanitizeFreeText } from "../../lib/sanitize"
 import { useAuth } from "../../contexts/AuthContext"
 import { useLanguage } from "../../contexts/LanguageContext"
@@ -56,7 +57,7 @@ export default function CustomerProfile() {
     const pw = e.target.password.value
     const confirm = e.target.confirm.value
     if (pw !== confirm) return toast.error("Passwords do not match")
-    if (pw.length < 6) return toast.error("Min 6 characters")
+    const pwError = validatePassword(pw); if (pwError) return toast.error(pwError)
     const { error } = await supabase.auth.updateUser({ password: pw })
     if (error) return toast.error(error.message)
     toast.success("Password changed")
