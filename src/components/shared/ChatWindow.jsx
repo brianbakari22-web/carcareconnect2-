@@ -49,8 +49,8 @@ export default function ChatWindow({ bookingId, listingId, inventoryId, claimId,
           if (!belongsHere) return
         }
         setMessages(prev => {
-          const exists = prev.find(m => m.id===payload.new.id || m._tempId===payload.new.id)
-          if (exists) return prev.map(m => m._tempId===payload.new.id ? {...payload.new} : m)
+          const exists = prev.find(m => m.id===payload.new.id)
+          if (exists) return prev
           return [...prev, payload.new]
         })
         if (payload.new.sender_id !== effectiveUserId) markRead()
@@ -200,7 +200,7 @@ export default function ChatWindow({ bookingId, listingId, inventoryId, claimId,
     }
     setMessages(prev => [...prev, optimistic])
 
-    const { error } = await supabase.from("chat_messages").insert({
+    const { data: insertedRows, error } = await supabase.from("chat_messages").insert({
       booking_id: bookingId||null,
       listing_id: listingId||null,
         inventory_id: inventoryId||null,
@@ -209,7 +209,7 @@ export default function ChatWindow({ bookingId, listingId, inventoryId, claimId,
       sender_id: effectiveUserId,
       receiver_id: otherUserId,
       message: messageText,
-    })
+    }).select().single()
 
     if (error) {
       console.error("Chat error:", error)
@@ -220,7 +220,7 @@ export default function ChatWindow({ bookingId, listingId, inventoryId, claimId,
       return
     }
 
-    setMessages(prev => prev.map(m => m.id===tempId ? {...m, _pending:false} : m))
+    setMessages(prev => prev.map(m => m.id===tempId ? { ...(insertedRows||m), _pending:false } : m))
     // Notify the recipient so they get a push/in-app alert, not just a silent unread badge
     try {
       if (!otherUserId) return
@@ -231,6 +231,7 @@ export default function ChatWindow({ bookingId, listingId, inventoryId, claimId,
         type: "info"
       })
     } catch(err) { console.warn("Notification send failed (non-critical):", err?.message) }
+    setSending(false)
 
 
 
