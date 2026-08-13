@@ -37,9 +37,9 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
         .maybeSingle()
       const platformRate = rateRow ? Number(rateRow.platform_rate) : 0.10
       const providerRate = rateRow ? Number(rateRow.provider_rate) : 0.90
-      const { data: feeRow } = await supabase.from("app_settings").select("value").eq("key","customer_processing_fee_rate").maybeSingle()
+      const { data: feeRow } = await supabase.from("app_settings").select("value").eq("key","marketplace_processing_fee_rate").maybeSingle()
       const custFeeRate = feeRow ? Number(feeRow.value)/100 : 0.01
-      const processingFee = Math.ceil(serviceAmount * custFeeRate)
+      const processingFee = Math.round(serviceAmount * custFeeRate)
       const totalAmount = serviceAmount + processingFee
       const bookingNumber = "BK-"+Math.random().toString(36).substring(2,10).toUpperCase()
       const { data: booking, error } = await supabase.from("bookings").insert({
@@ -82,9 +82,9 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
     setBundleLoading(true)
     try {
       const amount = Number(bookingBundle.bundle_price)
-      const { data: feeRow } = await supabase.from("app_settings").select("value").eq("key","customer_processing_fee_rate").maybeSingle()
+      const { data: feeRow } = await supabase.from("app_settings").select("value").eq("key","marketplace_processing_fee_rate").maybeSingle()
       const custFeeRate = feeRow ? Number(feeRow.value)/100 : 0.01
-      const processingFee = Math.ceil(amount * custFeeRate)
+      const processingFee = Math.round(amount * custFeeRate)
       const totalAmount = amount + processingFee
       const bookingNumber = "BK-"+Math.random().toString(36).substring(2,10).toUpperCase()
       const commRate = Number(bookingBundle.platform_commission_rate||0.10)
