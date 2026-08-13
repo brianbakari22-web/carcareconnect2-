@@ -17,6 +17,7 @@ export default function AdminLiveMap() {
   const mapRef = useRef(null)
   const mapInstanceRef = useRef(null)
   const markersRef = useRef({})
+  const sosMarkersRef = useRef({})
 
   useEffect(() => {
     load()
