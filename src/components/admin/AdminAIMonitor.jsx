@@ -64,6 +64,17 @@ export default function AdminAIMonitor() {
         "src/components/marketplace/Marketplace.jsx",
         "src/components/marketplace/MyListings.jsx",
         "src/lib/pushNotifications.js",
+        "src/components/shared/ChatWindow.jsx",
+        "src/components/admin/AdminLiveMap.jsx",
+        "src/components/admin/AdminClaims.jsx",
+        "src/components/admin/AdminCommissions.jsx",
+        "src/components/admin/AdminSettings.jsx",
+        "src/components/admin/AdminBookings.jsx",
+        "src/components/customer/CustomerServices.jsx",
+        "src/components/customer/CustomerBookings.jsx",
+        "src/components/customer/ProviderStorefront.jsx",
+        "src/components/auth/AuthPage.jsx",
+        "src/components/auth/ResetPassword.jsx",
       ]
       const issues = []
       for (const file of files) {
