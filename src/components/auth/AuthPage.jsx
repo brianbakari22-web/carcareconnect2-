@@ -195,7 +195,10 @@ export default function AuthPage() {
         checkProfile()
       }
     } catch(err) {
-      toast.error(err.message || "Something went wrong")
+      const friendlyMessage = (err.message||"").toLowerCase().includes("fetch")
+        ? "Could not connect. Please check your internet connection and try again."
+        : (err.message || "Something went wrong")
+      toast.error(friendlyMessage)
       // Log to error tracker
       if (window.__ccc_errors !== undefined) {
         window.__ccc_errors.unshift({ time:new Date().toLocaleTimeString(), msg:"Auth error: "+err.message, src:"AuthPage", line:0, col:0 })
