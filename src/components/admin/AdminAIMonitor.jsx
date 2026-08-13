@@ -355,7 +355,7 @@ export default function AdminAIMonitor() {
 
 API HEALTH:
 - Supabase database: ${apiHealth.supabase?.status} (${apiHealth.supabase?.ms}ms)
-- M-Pesa payments: ${apiHealth.daraja?.status} (${apiHealth.daraja?.ms}ms) Safaricom Daraja Tier 2 VERIFIED - KES 300,000 daily limit ACTIVE
+- M-Pesa payments: ${apiHealth.daraja?.status} (${apiHealth.daraja?.ms}ms) [NOTE: this only confirms the payment function is reachable, NOT that transactions actually execute. B2C and B2B payouts are currently confirmed broken with Safaricom - requests are accepted but silently never complete, no callback received. Do not report payments as fully operational.]
 - AI assistant: ${apiHealth.ai?.status} (${apiHealth.ai?.ms}ms)
 
 PLATFORM STATUS RIGHT NOW:
