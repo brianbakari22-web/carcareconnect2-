@@ -101,6 +101,25 @@ const tools = [
       },
       required: ["booking_id", "status"]
     }
+  },
+  {
+    name: "resolve_sos_alert",
+    description: "Mark an active emergency SOS alert as resolved. Use when admin confirms the emergency has been handled.",
+    input_schema: {
+      type: "object",
+      properties: {
+        alert_id: { type: "string", description: "The emergency_alerts UUID" }
+      },
+      required: ["alert_id"]
+    }
+  },
+  {
+    name: "check_stuck_payouts",
+    description: "Check for M-Pesa payout transactions stuck in pending status for over 30 minutes - indicates payments accepted by Safaricom but not actually completing. Read-only, always safe to call.",
+    input_schema: {
+      type: "object",
+      properties: {}
+    }
   }
 ]
 
@@ -225,6 +244,27 @@ async function executeTool(name: string, input: any): Promise<string> {
         return `Booking ${input.booking_id} status updated to ${input.status}.`
       }
 
+      case "resolve_sos_alert": {
+        const { error } = await supabase.from("emergency_alerts")
+          .update({ status: "resolved", resolved_at: new Date().toISOString() })
+          .eq("id", input.alert_id)
+        if(error) return `Error: ${error.message}`
+        return `SOS alert ${input.alert_id} marked resolved.`
+      }
+
+      case "check_stuck_payouts": {
+        const thirtyMinAgo = new Date(Date.now() - 30*60*1000).toISOString()
+        const { data: stuck, error } = await supabase.from("payment_transactions")
+          .select("id, amount, phone, created_at, booking_id")
+          .eq("status", "pending")
+          .eq("type", "payout")
+          .lt("created_at", thirtyMinAgo)
+        if(error) return `Error: ${error.message}`
+        if (!stuck || stuck.length === 0) return "No stuck payouts found - all payments processing normally."
+        const total = stuck.reduce((s: number, p: any) => s + Number(p.amount || 0), 0)
+        return `Found ${stuck.length} stuck payout(s) totaling KES ${total.toLocaleString()}: ${JSON.stringify(stuck)}`
+      }
+
       default:
         return `Unknown tool: ${name}`
     }
@@ -259,6 +299,8 @@ CAPABILITIES:
 - Release held escrow payments
 - Send notifications to users
 - Update booking statuses
+- Resolve SOS emergency alerts
+- Check for stuck/failed M-Pesa payouts
 
 Current platform snapshot: ${JSON.stringify(platform_data || {})}`
 
