@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useAuth } from "../../contexts/AuthContext"
 import { supabase } from "../../lib/supabase"
 import toast from "react-hot-toast"
+import { jsPDF } from "jspdf"
 
 export default function AdminAIMonitor() {
   const { user, profile } = useAuth()
@@ -527,6 +528,38 @@ Be specific and actionable. Max 300 words. Use bullet points.`
     setLoading(false)
   }
 
+  function downloadReportPDF() {
+    if (!report?.text) { toast.error("No report to download yet"); return }
+    const doc = new jsPDF()
+    const pageWidth = doc.internal.pageSize.getWidth()
+    const margin = 15
+    const maxWidth = pageWidth - margin * 2
+    let y = 20
+
+    doc.setFontSize(16)
+    doc.setFont(undefined, "bold")
+    doc.text("Car Care Connect - Admin AI Report", margin, y)
+    y += 8
+
+    doc.setFontSize(10)
+    doc.setFont(undefined, "normal")
+    doc.setTextColor(120)
+    doc.text("Generated: " + (report.generatedAt || new Date().toLocaleString()), margin, y)
+    y += 10
+
+    doc.setTextColor(0)
+    doc.setFontSize(11)
+    const lines = doc.splitTextToSize(report.text, maxWidth)
+    lines.forEach((line) => {
+      if (y > 280) { doc.addPage(); y = 20 }
+      doc.text(line, margin, y)
+      y += 6
+    })
+
+    doc.save("CCC-Admin-Report-" + new Date().toISOString().split("T")[0] + ".pdf")
+    toast.success("Report downloaded!")
+  }
+
   async function sendChat(e) {
     e.preventDefault()
     if (!chatInput.trim() || chatLoading) return
@@ -583,6 +616,12 @@ Be specific and actionable. Max 300 words. Use bullet points.`
           <div>
             <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#8b5cf6" }}>AI Admin Monitor</div>
             <div style={{ fontSize:10, color:"#888" }}>{loading?"Scanning platform...":report?.generatedAt?"Last scan: "+report.generatedAt:"Ready"}</div>
+            {report?.text&&(
+              <button onClick={downloadReportPDF}
+                style={{ marginTop:8, background:"#8b5cf6", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 14px", cursor:"pointer" }}>
+                Download Report (PDF)
+              </button>
+            )}
           </div>
         </div>
         <div style={{ display:"flex", alignItems:"center", gap:8 }}>
