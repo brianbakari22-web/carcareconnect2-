@@ -649,8 +649,17 @@ Be specific and actionable. Max 300 words. Use bullet points.`
     })
 
     addFooter()
-    doc.save("CCC-Admin-Report-" + new Date().toISOString().split("T")[0] + ".pdf")
-    toast.success("Report downloaded!")
+    const fileName = "CCC-Admin-Report-" + new Date().toISOString().split("T")[0] + ".pdf"
+    const pdfBlob = doc.output("blob")
+    const pdfFile = new File([pdfBlob], fileName, { type: "application/pdf" })
+    if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+      navigator.share({ files: [pdfFile], title: fileName })
+        .then(() => toast.success("Report ready!"))
+        .catch(() => { doc.save(fileName); toast.success("Report downloaded!") })
+    } else {
+      doc.save(fileName)
+      toast.success("Report downloaded!")
+    }
   }
 
 
