@@ -94,6 +94,14 @@ If everything is quiet (all zeros or normal), just say things look good today in
       await supabase.from("notifications").insert(notifications)
     }
 
+    // Save a snapshot for historical trend tracking (upsert - one per day, safe to re-run)
+    const { error: snapshotError } = await supabase.from("admin_daily_snapshots").upsert({
+      snapshot_date: new Date().toISOString().split("T")[0],
+      metrics,
+      digest_text: digestText,
+    }, { onConflict: "snapshot_date" })
+    if (snapshotError) console.error("Snapshot save failed:", JSON.stringify(snapshotError))
+
     return new Response(JSON.stringify({ ok: true, metrics, digest: digestText, admins_notified: notifications.length }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     })
