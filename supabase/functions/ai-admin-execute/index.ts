@@ -276,7 +276,15 @@ async function executeTool(name: string, input: any): Promise<string> {
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders })
   try {
-    const { messages, system, platform_data } = await req.json()
+    const { messages, system, platform_data, confirmed_action } = await req.json()
+
+    // Direct execution path - only reached when admin clicked Confirm in the UI. Bypasses the AI entirely.
+    if (confirmed_action?.name) {
+      const result = await executeTool(confirmed_action.name, confirmed_action.input)
+      return new Response(JSON.stringify({ text: result }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      })
+    }
 
     // Build enhanced system prompt with tool capabilities
     const enhancedSystem = `${system}
@@ -345,7 +353,37 @@ Current platform snapshot: ${JSON.stringify(platform_data || {})}`
       }
 
       // Execute tool calls
+      const DESTRUCTIVE_TOOLS = ["cancel_booking", "verify_driver", "release_payment", "resolve_sos_alert", "send_notification"]
+      const destructiveCall = toolUseBlocks.find((t: any) => DESTRUCTIVE_TOOLS.includes(t.name))
+      if (destructiveCall) {
+        return new Response(JSON.stringify({
+          text: `I'd like to ${destructiveCall.name.replace(/_/g, " ")} with these details: ${JSON.stringify(destructiveCall.input)}. Please confirm below to proceed.`,
+          needs_confirmation: { name: destructiveCall.name, input: destructiveCall.input }
+        }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        })
+      }
       const toolResults = []
+      const DESTRUCTIVE_TOOLS = ["cancel_booking", "verify_driver", "release_payment", "resolve_sos_alert", "send_notification"]
+      const destructiveCall = toolUseBlocks.find((t: any) => DESTRUCTIVE_TOOLS.includes(t.name))
+      if (destructiveCall) {
+        return new Response(JSON.stringify({
+          text: `I'd like to ${destructiveCall.name.replace(/_/g, " ")} with these details: ${JSON.stringify(destructiveCall.input)}. Please confirm below to proceed.`,
+          needs_confirmation: { name: destructiveCall.name, input: destructiveCall.input }
+        }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        })
+      }
+      const DESTRUCTIVE_TOOLS = ["cancel_booking", "verify_driver", "release_payment", "resolve_sos_alert", "send_notification"]
+      const destructiveCall = toolUseBlocks.find((t: any) => DESTRUCTIVE_TOOLS.includes(t.name))
+      if (destructiveCall) {
+        return new Response(JSON.stringify({
+          text: `I'd like to ${destructiveCall.name.replace(/_/g, " ")} with these details: ${JSON.stringify(destructiveCall.input)}. Please confirm below to proceed.`,
+          needs_confirmation: { name: destructiveCall.name, input: destructiveCall.input }
+        }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        })
+      }
       for(const toolUse of toolUseBlocks) {
         console.log(`Executing tool: ${toolUse.name}`, JSON.stringify(toolUse.input))
         const result = await executeTool(toolUse.name, toolUse.input)

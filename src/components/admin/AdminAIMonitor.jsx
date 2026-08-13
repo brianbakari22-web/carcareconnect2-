@@ -550,13 +550,31 @@ Be specific and actionable. Max 300 words. Use bullet points.`
       })
       const data = await res.json()
       const reply = data.text || data.content?.[0]?.text || "Sorry, could not process."
-      setChatMessages(prev=>[...prev, { role:"assistant", content:reply }])
+      setChatMessages(prev=>[...prev, { role:"assistant", content:reply, needsConfirmation:data.needs_confirmation||null }])
     } catch(e) {
       setChatMessages(prev=>[...prev, { role:"assistant", content:"Connection error. Please try again." }])
     }
     setChatLoading(false)
   }
 
+  async function confirmAction(action) {
+    setChatLoading(true)
+    try {
+      const res = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/ai-admin-execute", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc"
+        },
+        body: JSON.stringify({ confirmed_action: action })
+      })
+      const data = await res.json()
+      setChatMessages(prev=>[...prev, { role:"assistant", content:data.text||"Done.", needsConfirmation:null }])
+    } catch(e) {
+      setChatMessages(prev=>[...prev, { role:"assistant", content:"Confirmation failed - connection error." }])
+    }
+    setChatLoading(false)
+  }
   return (
     <div style={{ background:"#f8f8f8", border:"1px solid #8b5cf640", borderRadius:14, marginBottom:"1.5rem", overflow:"hidden" }}>
       <div onClick={()=>setOpen(o=>!o)} style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"1rem 1.25rem", cursor:"pointer", background:"linear-gradient(135deg,#f5f3ff,#ffffff)" }}>
@@ -707,6 +725,18 @@ Be specific and actionable. Max 300 words. Use bullet points.`
                     <div key={i} style={{ display:"flex", justifyContent:m.role==="user"?"flex-end":"flex-start" }}>
                       <div style={{ maxWidth:"85%", padding:"8px 12px", borderRadius:m.role==="user"?"12px 12px 4px 12px":"12px 12px 12px 4px", background:m.role==="user"?"#8b5cf6":"#f5f5f5", color:"#000000", fontSize:12, lineHeight:1.5, whiteSpace:"pre-wrap" }}>
                         {m.content}
+                        {m.needsConfirmation&&(
+                          <div style={{ display:"flex", gap:6, marginTop:8 }}>
+                            <button onClick={()=>confirmAction(m.needsConfirmation)} disabled={chatLoading}
+                              style={{ background:"#e24b4a", border:"none", borderRadius:6, color:"#fff", fontSize:11, fontWeight:700, padding:"5px 12px", cursor:"pointer" }}>
+                              Confirm
+                            </button>
+                            <button onClick={()=>{ const updated=[...chatMessages]; updated[i+1]={...updated[i+1],needsConfirmation:null}; setChatMessages(updated) }}
+                              style={{ background:"none", border:"1px solid #ddd", borderRadius:6, color:"#888", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>
+                              Cancel
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
