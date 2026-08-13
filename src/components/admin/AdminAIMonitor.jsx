@@ -127,6 +127,16 @@ export default function AdminAIMonitor() {
       })
       const ms = Date.now()-start
       checks.daraja = { status: res.status < 503 ? "ok" : "error", ms }
+      // Real signal: check for payouts stuck in "pending" for over 30 minutes - the actual honest indicator of whether payments are executing
+      const thirtyMinAgo = new Date(Date.now() - 30*60*1000).toISOString()
+      const { data: stuckPayouts } = await supabase.from("payment_transactions")
+        .select("id, amount, created_at")
+        .eq("status", "pending")
+        .eq("type", "payout")
+        .lt("created_at", thirtyMinAgo)
+      checks.daraja.stuck_payouts = stuckPayouts?.length || 0
+      checks.daraja.stuck_payout_amount = stuckPayouts?.reduce((s,p)=>s+Number(p.amount||0),0) || 0
+      if ((stuckPayouts?.length || 0) > 0) checks.daraja.status = "error"
     } catch(e) { checks.daraja = { status:"error", ms:0 } }
 
     // Check AI
@@ -355,7 +365,7 @@ export default function AdminAIMonitor() {
 
 API HEALTH:
 - Supabase database: ${apiHealth.supabase?.status} (${apiHealth.supabase?.ms}ms)
-- M-Pesa payments: ${apiHealth.daraja?.status} (${apiHealth.daraja?.ms}ms) [NOTE: this only confirms the payment function is reachable, NOT that transactions actually execute. B2C and B2B payouts are currently confirmed broken with Safaricom - requests are accepted but silently never complete, no callback received. Do not report payments as fully operational.]
+- M-Pesa payments: ${apiHealth.daraja?.status} (${apiHealth.daraja?.ms}ms) | Stuck payouts (pending >30min): ${apiHealth.daraja?.stuck_payouts||0} totaling KES ${(apiHealth.daraja?.stuck_payout_amount||0).toLocaleString()} [If stuck_payouts > 0, this means payment requests are being accepted by Safaricom but not actually completing - flag this as a critical issue, do not describe payments as fully operational]
 - AI assistant: ${apiHealth.ai?.status} (${apiHealth.ai?.ms}ms)
 
 PLATFORM STATUS RIGHT NOW:
