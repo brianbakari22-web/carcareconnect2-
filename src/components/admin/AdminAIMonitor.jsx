@@ -372,12 +372,23 @@ export default function AdminAIMonitor() {
         avg_rating_this_month: topReviews?.length>0?(topReviews.reduce((s,r)=>s+Number(r.provider_rating||0),0)/topReviews.length).toFixed(1):"N/A",
       }
 
+      const sevenDaysAgo = new Date(Date.now() - 7*24*60*60*1000).toISOString().split("T")[0]
+      const { data: history } = await supabase.from("admin_daily_snapshots")
+        .select("snapshot_date, metrics")
+        .gte("snapshot_date", sevenDaysAgo)
+        .order("snapshot_date", { ascending: true })
+      const trendSummary = history && history.length > 1
+        ? `7-day history: ${history.map(h => `${h.snapshot_date}: stuck_bookings=${h.metrics.stuck_bookings}, pending_claims=${h.metrics.pending_claims}, stuck_payouts=${h.metrics.stuck_payouts}`).join(" | ")}`
+        : "No historical data yet (less than 2 days recorded)."
+
       const prompt = `You are the Car Care Connect AI Admin Monitor. Analyze this platform data and give a CONCISE priority report.
 
 API HEALTH:
 - Supabase database: ${apiHealth.supabase?.status} (${apiHealth.supabase?.ms}ms)
 - M-Pesa payments: ${apiHealth.daraja?.status} (${apiHealth.daraja?.ms}ms) | Stuck payouts (pending >30min): ${apiHealth.daraja?.stuck_payouts||0} totaling KES ${(apiHealth.daraja?.stuck_payout_amount||0).toLocaleString()} [If stuck_payouts > 0, this means payment requests are being accepted by Safaricom but not actually completing - flag this as a critical issue, do not describe payments as fully operational]
 - AI assistant: ${apiHealth.ai?.status} (${apiHealth.ai?.ms}ms)
+
+\
 
 PLATFORM STATUS RIGHT NOW:
 OPERATIONS:
