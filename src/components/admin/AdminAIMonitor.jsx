@@ -532,33 +532,127 @@ Be specific and actionable. Max 300 words. Use bullet points.`
     if (!report?.text) { toast.error("No report to download yet"); return }
     const doc = new jsPDF()
     const pageWidth = doc.internal.pageSize.getWidth()
+    const pageHeight = doc.internal.pageSize.getHeight()
     const margin = 15
     const maxWidth = pageWidth - margin * 2
-    let y = 20
+    let y = 0
 
-    doc.setFontSize(16)
+    function addFooter() {
+      const pageCount = doc.internal.getNumberOfPages()
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i)
+        doc.setFontSize(8)
+        doc.setTextColor(150)
+        doc.text("Car Care Connect - Confidential", margin, pageHeight - 8)
+        doc.text(String(i) + " / " + pageCount, pageWidth - margin - 10, pageHeight - 8)
+      }
+    }
+
+    function checkPageBreak(neededSpace) {
+      if (y + neededSpace > pageHeight - 15) {
+        doc.addPage()
+        y = 20
+      }
+    }
+
+    // Header banner
+    doc.setFillColor(230, 130, 30)
+    doc.rect(0, 0, pageWidth, 28, "F")
+    doc.setTextColor(255, 255, 255)
+    doc.setFontSize(18)
     doc.setFont(undefined, "bold")
-    doc.text("Car Care Connect - Admin AI Report", margin, y)
-    y += 8
-
-    doc.setFontSize(10)
-    doc.setFont(undefined, "normal")
-    doc.setTextColor(120)
-    doc.text("Generated: " + (report.generatedAt || new Date().toLocaleString()), margin, y)
-    y += 10
-
-    doc.setTextColor(0)
+    doc.text("Car Care Connect", margin, 14)
     doc.setFontSize(11)
-    const lines = doc.splitTextToSize(report.text, maxWidth)
-    lines.forEach((line) => {
-      if (y > 280) { doc.addPage(); y = 20 }
-      doc.text(line, margin, y)
-      y += 6
+    doc.setFont(undefined, "normal")
+    doc.text("AI Admin Priority Report", margin, 22)
+    doc.setFontSize(9)
+    doc.text(report.generatedAt || new Date().toLocaleString(), pageWidth - margin - 55, 22)
+
+    y = 40
+    doc.setTextColor(0, 0, 0)
+
+    const rawLines = report.text.split("\n")
+    rawLines.forEach(rawLine => {
+      let line = rawLine.trim()
+      if (!line) { y += 3; return }
+
+      // Section headers with emoji markers -> colored bold headers
+      if (line.startsWith("## ")) {
+        const heading = line.replace("## ", "").replace(/[🔴🟡✅❌🔧🟢💡]/g, "").trim()
+        let color = [80, 80, 80]
+        if (line.includes("🔴")) color = [226, 75, 74]
+        else if (line.includes("🟡")) color = [230, 130, 30]
+        else if (line.includes("✅")) color = [29, 158, 117]
+        else if (line.includes("❌")) color = [226, 75, 74]
+        else if (line.includes("🔧")) color = [139, 92, 246]
+        else if (line.includes("🟢")) color = [29, 158, 117]
+        else if (line.includes("💡")) color = [55, 138, 221]
+        checkPageBreak(14)
+        y += 4
+        doc.setFontSize(13)
+        doc.setFont(undefined, "bold")
+        doc.setTextColor(color[0], color[1], color[2])
+        doc.text(heading, margin, y)
+        y += 7
+        doc.setDrawColor(color[0], color[1], color[2])
+        doc.setLineWidth(0.5)
+        doc.line(margin, y - 5, margin + 40, y - 5)
+        doc.setTextColor(0, 0, 0)
+        return
+      }
+
+      // Main title
+      if (line.startsWith("# ")) {
+        return // already shown in header banner
+      }
+
+      // Horizontal rule
+      if (line === "---") {
+        checkPageBreak(6)
+        y += 2
+        doc.setDrawColor(220, 220, 220)
+        doc.setLineWidth(0.2)
+        doc.line(margin, y, pageWidth - margin, y)
+        y += 4
+        return
+      }
+
+      // Bullet points
+      if (line.startsWith("- ") || line.startsWith("* ")) {
+        const bulletText = line.replace(/^[-*]\s/, "").replace(/\*\*/g, "")
+        doc.setFontSize(10.5)
+        doc.setFont(undefined, "normal")
+        doc.setTextColor(40, 40, 40)
+        const wrapped = doc.splitTextToSize(bulletText, maxWidth - 8)
+        checkPageBreak(wrapped.length * 5.5 + 2)
+        doc.setFont(undefined, "bold")
+        doc.text("-", margin + 2, y)
+        doc.setFont(undefined, "normal")
+        wrapped.forEach((wLine, i) => {
+          doc.text(wLine, margin + 7, y + i * 5.5)
+        })
+        y += wrapped.length * 5.5 + 1
+        return
+      }
+
+      // Bold status line (e.g. "Status: ...")
+      const cleanLine = line.replace(/\*\*/g, "")
+      doc.setFontSize(10.5)
+      doc.setFont(undefined, line.includes("**") ? "bold" : "normal")
+      doc.setTextColor(20, 20, 20)
+      const wrapped = doc.splitTextToSize(cleanLine, maxWidth)
+      checkPageBreak(wrapped.length * 5.5 + 2)
+      wrapped.forEach((wLine, i) => {
+        doc.text(wLine, margin, y + i * 5.5)
+      })
+      y += wrapped.length * 5.5 + 2
     })
 
+    addFooter()
     doc.save("CCC-Admin-Report-" + new Date().toISOString().split("T")[0] + ".pdf")
     toast.success("Report downloaded!")
   }
+
 
   async function sendChat(e) {
     e.preventDefault()
