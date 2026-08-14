@@ -37,7 +37,7 @@ serve(async (req) => {
       const payoutResp = await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/daraja-b2c-payout`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}` },
-        body: JSON.stringify({ phone: finalPhone, amount: providerAmount, narrative: `CCC Payment ${booking.booking_number}`, booking_id: booking.id, provider_id: booking.provider_id, payment_method: prefMethod, account_reference: booking.booking_number })
+        body: JSON.stringify({ phone: finalPhone, amount: providerAmount, narrative: `CCC Payment ${booking.booking_number}`, booking_id: booking.id, provider_id: booking.provider_id, payment_method: prefMethod, account_reference: (prefMethod === "paybill" && pSens?.paybill_account) ? pSens.paybill_account : booking.booking_number })
       })
       const text = await payoutResp.text()
       payoutData = text ? JSON.parse(text) : {}
