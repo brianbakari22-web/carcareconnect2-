@@ -77,7 +77,7 @@ serve(async (req) => {
       [initiatorFieldName]: Deno.env.get("DARAJA_INITIATOR_NAME") || "CCCAPI",
       SecurityCredential: Deno.env.get("DARAJA_SECURITY_CREDENTIAL") || "",
       CommandID: commandId,
-      Amount: Math.floor(amount),
+      Amount: Math.round(amount),
       PartyA: SHORTCODE,
       PartyB: partyB,
       Remarks: cleanNarrative,
