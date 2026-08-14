@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react"
 import { supabase } from "../lib/supabase"
 import { initPushNotifications, initWebPushForAdmin } from "../lib/pushNotifications"
+import { normalizeEmail } from "../lib/emailValidation"
 
 const AuthContext = createContext({})
 export const useAuth = () => useContext(AuthContext)
@@ -170,6 +171,10 @@ export function AuthProvider({ children }) {
       // Save referral if exists
       if (referrerId && data.user) {
         try {
+          const { data: refSensitive } = await supabase.from("profile_sensitive").select("email").eq("id", referrerId).maybeSingle()
+          if (refSensitive && normalizeEmail(refSensitive.email) === normalizeEmail(email)) {
+            console.log("Self-referral blocked")
+          } else {
           await supabase.from("referrals").insert({
             referrer_id: referrerId,
             referred_id: data.user.id,
@@ -192,6 +197,7 @@ export function AuthProvider({ children }) {
             message: firstName+" "+lastName+" joined CCC using your referral link. You earned 100 loyalty points!",
             type: "success"
           })
+        }
         } catch(refErr) { console.log("Referral save error:", refErr.message) }
       }
       // Profile created by webhook after email confirmation

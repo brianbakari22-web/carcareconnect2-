@@ -12,6 +12,13 @@ const DISPOSABLE_DOMAINS = new Set([
   "mailbox52.ml", "mailbox92.biz", "inboxbear.com", "10minemail.com",
 ])
 
+export function normalizeEmail(email) {
+  if (!email || !email.includes("@")) return (email||"").toLowerCase().trim()
+  const [local, domain] = email.toLowerCase().trim().split("@")
+  const cleanLocal = local.split("+")[0]
+  return cleanLocal + "@" + domain
+}
+
 export function isDisposableEmail(email) {
   if (!email || !email.includes("@")) return false
   const domain = email.split("@")[1]?.toLowerCase().trim()
