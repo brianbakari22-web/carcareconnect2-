@@ -147,8 +147,8 @@ export default function ProviderOnboarding({ onComplete }) {
               </div>
               <input style={inp} type="tel" placeholder="07XX XXX XXX" value={form.mpesa_number} onChange={e=>setForm(f=>({...f,mpesa_number:e.target.value}))}/>
               <div style={{ display:"flex", gap:8 }}>
-                <button onClick={()=>setStep(4)} style={{ flex:1, background:"#f5f5f5", border:"none", borderRadius:10, color:"#555", fontSize:13, padding:"12px", cursor:"pointer" }}>Skip</button>
-                <button onClick={saveMpesa} disabled={saving||!form.mpesa_number} style={{ flex:2, background:form.mpesa_number?"#e6821e":"#ccc", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px", cursor:form.mpesa_number?"pointer":"not-allowed" }}>
+                
+                <button onClick={saveMpesa} disabled={saving||!form.mpesa_number} style={{ flex:1, background:form.mpesa_number?"#e6821e":"#ccc", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px", cursor:form.mpesa_number?"pointer":"not-allowed" }}>
                   {saving?"Saving...":"Save and continue"}
                 </button>
               </div>
