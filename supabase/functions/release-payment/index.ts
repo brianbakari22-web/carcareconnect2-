@@ -67,6 +67,41 @@ serve(async (req) => {
       throw new Error("Payout failed: " + payoutErrorMsg)
     }
 
+    // Concierge bookings also owe the driver their share - pay them too, but never block the provider payout above on this
+    const driverAmount = Number(booking.driver_earnings || 0)
+    let driverPayoutNote = ""
+    if (booking.driver_id && driverAmount > 0) {
+      try {
+        const { data: dSensRows } = await supabase.rpc("get_provider_payment_details", { provider_id_input: booking.driver_id })
+        const dSens = dSensRows?.[0] || null
+        const dMethod = dSens?.preferred_payment_method || "mpesa"
+        const dPhone = dMethod === "till" ? dSens?.till_number
+          : dMethod === "paybill" ? dSens?.paybill_number
+          : dMethod === "pochi" ? dSens?.pochi_number
+          : (dSens?.mpesa_number || dSens?.till_number || dSens?.pochi_number)
+        if (!dPhone) {
+          driverPayoutNote = "Driver has no payment number configured"
+          await supabase.from("failed_jobs").insert({ job_type: "driver_payout", error_message: driverPayoutNote, payload: { booking_id: booking.id, driver_id: booking.driver_id, amount: driverAmount }, status: "failed" })
+        } else {
+          const dResp = await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/daraja-b2c-payout`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}` },
+            body: JSON.stringify({ phone: dPhone, amount: driverAmount, narrative: `CCC Driver Payment ${booking.booking_number}`, booking_id: booking.id, provider_id: booking.driver_id, payment_method: dMethod, account_reference: booking.booking_number })
+          })
+          const dText = await dResp.text()
+          const dData = dText ? JSON.parse(dText) : {}
+          if (!dResp.ok || dData.error || !dData.success) {
+            driverPayoutNote = dData.error || "Driver B2C payout was not accepted"
+            await supabase.from("failed_jobs").insert({ job_type: "driver_payout", error_message: driverPayoutNote, payload: { booking_id: booking.id, driver_id: booking.driver_id, amount: driverAmount, phone: dPhone }, status: "failed" })
+          } else {
+            await supabase.from("notifications").insert({ user_id: booking.driver_id, title: "Payment released!", message: `KES ${driverAmount.toLocaleString()} has been sent to your ${dMethod} for ${booking.service_name} #${booking.booking_number}`, type: "success" })
+          }
+        }
+      } catch (dErr: any) {
+        driverPayoutNote = dErr.message
+        await supabase.from("failed_jobs").insert({ job_type: "driver_payout", error_message: driverPayoutNote, payload: { booking_id: booking.id, driver_id: booking.driver_id, amount: driverAmount }, status: "failed" })
+      }
+    }
     // Payout genuinely accepted by Safaricom - mark released
     await supabase.from("bookings").update({
       payment_released: true,
