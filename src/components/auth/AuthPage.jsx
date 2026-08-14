@@ -2,7 +2,7 @@ import useIsMobile from "../../lib/useIsMobile"
 import { useState, useEffect } from "react"
 import { Capacitor } from "@capacitor/core"
 
-import { ServicesIcon, PartsIcon, MarketplaceIcon, VehicleIcon, PowerIcon, DiscoverIcon, MechanicIcon, GlobeIcon, DeliveryIcon, TripReportIcon, AnalyticsIcon, MotorcycleIcon, TukTukIcon, DriversIcon, ShieldIcon, LockedIcon, PaymentsIcon } from "../../lib/cccIcons"
+import { ServicesIcon, PartsIcon, MarketplaceIcon, VehicleIcon, PowerIcon, DiscoverIcon, MechanicIcon, GlobeIcon, DeliveryIcon, TripReportIcon, AnalyticsIcon, MotorcycleIcon, TukTukIcon, DriversIcon, ShieldIcon, LockedIcon, PaymentsIcon, EyeIcon, EyeOffIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { sanitizeName, sanitizeEmail, sanitizePhone, sanitizeFreeText } from "../../lib/sanitize"
 import { applyRateLimit, RATE_LIMITS } from "../../lib/rateLimit"
@@ -95,6 +95,7 @@ export default function AuthPage() {
   const [resetSent, setResetSent] = useState(false)
   const [form, setForm] = useState({ email:"", password:"", firstName:"", lastName:"", phone:"", businessName:"", providerType:"garage", driverVehicleType:"car" })
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const [logoUrl, setLogoUrl] = useState(localStorage.getItem("ccc_logo_url")||"/logo_c.svg")
 
   useEffect(() => {
@@ -386,7 +387,12 @@ export default function AuthPage() {
             <input style={inp} type="email" placeholder="you@example.com" value={form.email} onChange={e=>setForm(f=>({...f,email:e.target.value}))} required autoFocus={mode==="signin"}/>
 
             <label style={lbl}>Password</label>
-            <input style={{ ...inp, marginBottom:mode==="signup"?12:20 }} type="password" placeholder="Min 8 characters, 1 number" value={form.password} onChange={e=>setForm(f=>({...f,password:e.target.value}))} required/>
+            <div style={{ position:"relative", marginBottom:mode==="signup"?12:20 }}>
+              <input style={{ ...inp, marginBottom:0, paddingRight:44 }} type={showPassword?"text":"password"} placeholder="Min 8 characters, 1 number" value={form.password} onChange={e=>setForm(f=>({...f,password:e.target.value}))} required/>
+              <button type="button" onClick={()=>setShowPassword(s=>!s)} style={{ position:"absolute", right:12, top:"50%", transform:"translateY(-50%)", background:"none", border:"none", cursor:"pointer", padding:0, display:"flex", alignItems:"center" }}>
+                {showPassword ? <EyeOffIcon size={18} color="#888"/> : <EyeIcon size={18} color="#888"/>}
+              </button>
+            </div>
 
             {mode==="signin"&&(
               <button type="button" onClick={()=>{ setMode("forgot"); setResetSent(false) }}
