@@ -111,7 +111,11 @@ export default function CustomerBookings() {
       })
       const data = await resp.json()
       if(data.error) throw new Error(data.error)
-      toast.success("Payment released! Thank you for confirming. ✅")
+      if (data.partial) {
+        toast(data.note || "Part of the payment was released; the rest is on hold.", { icon: "⏳" })
+      } else {
+        toast.success("Payment released! Thank you for confirming. ✅")
+      }
       load()
     } catch(err) { toast.error(err.message) }
   }
@@ -240,13 +244,13 @@ export default function CustomerBookings() {
                 {t("cancelBooking")}
               </button>
             )}
-            {b.payment_held&&!b.payment_released&&!openClaimBookingIds.has(b.id)&&["in-progress","completed"].includes(b.status)&&(
+            {b.payment_held&&!b.payment_released&&["in-progress","completed"].includes(b.status)&&(
               <button onClick={()=>confirmPayment(b)}
                 style={{ background:"#1d9e75", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"5px 12px", cursor:"pointer" }}>
                 ✅ Confirm & Release Payment
               </button>
             )}
-            {b.payment_held&&!b.payment_released&&!openClaimBookingIds.has(b.id)&&["in-progress","completed"].includes(b.status)&&(
+            {b.payment_held&&!b.payment_released&&["in-progress","completed"].includes(b.status)&&(
               <div style={{ fontSize:10, color:"#888", padding:"4px 8px", background:"#f8f8f8", borderRadius:6 }}>💰 Payment held · auto-releases in 24hrs</div>
             )}
             {b.status==="completed"&&(
