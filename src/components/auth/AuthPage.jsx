@@ -330,11 +330,11 @@ export default function AuthPage() {
                 <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
                   <div>
                     <label style={lbl}>First name</label>
-                    <input style={inp} placeholder="John" value={form.firstName} onChange={e=>setForm(f=>({...f,firstName:e.target.value}))} required/>
+                    <input style={inp} value={form.firstName} onChange={e=>setForm(f=>({...f,firstName:e.target.value}))} required/>
                   </div>
                   <div>
                     <label style={lbl}>Last name</label>
-                    <input style={inp} placeholder="Doe" value={form.lastName} onChange={e=>setForm(f=>({...f,lastName:e.target.value}))} required/>
+                    <input style={inp} value={form.lastName} onChange={e=>setForm(f=>({...f,lastName:e.target.value}))} required/>
                   </div>
                 </div>
                 {selectedRole==="provider"&&(
