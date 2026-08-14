@@ -76,8 +76,8 @@ export default function CustomerDiscover() {
   }
 
   async function loadProviders() {
-    const { data } = await supabase.from("profile_public")
-      .select("*").eq("role","provider").eq("is_active",true).eq("is_verified",true)
+    const { data } = await supabase.from("verified_providers")
+      .select("*")
       .not("first_name","ilike","%test%")
     setProviders(data||[])
     if (data?.length) {
