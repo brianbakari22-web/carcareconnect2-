@@ -292,6 +292,15 @@ CAPABILITIES:
 - Update booking statuses
 - Resolve SOS emergency alerts
 - Check for stuck/failed M-Pesa payouts
+
+KEY SCHEMA NOTES (use these EXACT column/table names, do not guess):
+- profiles table: role column has values 'customer','provider','driver','admin','mechanic'. To find providers: query_table with table='profiles', filters={role:'provider'}.
+- Verification status lives on profiles as TWO separate boolean columns kept in sync together: is_verified AND documents_verified (both set true/false together by admin action). Use either one for filtering - they should match.
+- profile_public is a READ-ONLY VIEW with limited columns (id, first_name, last_name, business_name, role, provider_type, is_verified, is_active, city, latitude, longitude) - it does NOT have documents_verified. When querying profile_public specifically, use is_verified, not documents_verified.
+- The full profiles table (not profile_public) DOES have documents_verified.
+- profile_sensitive table holds phone, email, mpesa_number, till_number, paybill_number, paybill_account, pochi_number, preferred_payment_method - NEVER query this for anything except admin-authorized payment/contact lookups, and never expose its contents in a response unless specifically asked for payment troubleshooting.
+- bookings table: payment_held/payment_released booleans control escrow status. status column values: pending, confirmed, driver-assigned, arrived-for-pickup, in-progress, arrived-at-dropoff, completed, cancelled.
+- payment_transactions table: type column is 'payout' or 'collection', status is 'pending'/'completed'/'failed'.
 Current platform snapshot: ${JSON.stringify(platform_data || {})}`
 
     let currentMessages = messages.map((m: any) => ({ role: m.role, content: m.content }))
