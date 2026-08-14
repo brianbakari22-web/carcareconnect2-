@@ -6,6 +6,7 @@ import { getCurrentPosition } from "../../lib/geolocation"
 import { useAuth } from "../../contexts/AuthContext"
 import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
+import DriverOnboarding from "./DriverOnboarding"
 
 const VEHICLE_CONFIG = {
   car:        { icon:"vehicle", label:"Car Driver",       color:"#1d9e75", desc:"Standard delivery" },
@@ -19,7 +20,11 @@ export default function DriverOverview() {
   console.log("DriverOverview render", { profile, vehicleType: profile?.driver_vehicle_type })
   const navigate = useNavigate()
   const isMobile = useIsMobile()
+  useEffect(() => {
+    if(profile && !profile.onboarding_complete) setShowOnboarding(true)
+  }, [profile])
   const [driverStatus, setDriverStatus] = useState(null)
+  const [showOnboarding, setShowOnboarding] = useState(false)
   const [loading, setLoading] = useState(true)
   const [toggling, setToggling] = useState(false)
   const [activeJob, setActiveJob] = useState(null)
@@ -328,6 +333,7 @@ export default function DriverOverview() {
           </div>
         )}
       </div>
+      {showOnboarding && <DriverOnboarding onComplete={()=>{ setShowOnboarding(false); window.location.reload() }} />}
     </div>
   )
 }
