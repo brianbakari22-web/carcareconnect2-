@@ -106,14 +106,14 @@ export default function CustomerDiscover() {
 
   async function loadServices() {
     const { data } = await supabase.from("services")
-      .select("*, profile_public(id,first_name,last_name,business_name)")
-      .eq("is_active",true).order("created_at",{ascending:false})
+      .select("*, profile_public!inner(id,first_name,last_name,business_name,is_verified)")
+      .eq("is_active",true).eq("profile_public.is_verified",true).order("created_at",{ascending:false})
     setServices(data||[])
   }
   async function loadBundles() {
     const { data } = await supabase.from("service_bundles")
-      .select("*, profile_public:profiles!service_bundles_provider_id_fkey(id,first_name,last_name,business_name)")
-      .eq("is_active",true).order("created_at",{ascending:false})
+      .select("*, profile_public:profiles!service_bundles_provider_id_fkey!inner(id,first_name,last_name,business_name,documents_verified)")
+      .eq("is_active",true).eq("profile_public.documents_verified",true).order("created_at",{ascending:false})
     setBundles(data||[])
   }
 
