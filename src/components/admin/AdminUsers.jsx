@@ -51,7 +51,7 @@ export default function AdminUsers() {
   }
 
   async function toggleVerified(id, is_verified) {
-    await supabase.from("profiles").update({ is_verified:!is_verified }).eq("id",id)
+    await supabase.from("profiles").update({ is_verified:!is_verified, documents_verified:!is_verified }).eq("id",id)
     toast.success(is_verified?"Verification removed":"User verified")
     load()
   }
