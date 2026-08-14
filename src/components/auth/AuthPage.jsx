@@ -8,6 +8,7 @@ import { sanitizeName, sanitizeEmail, sanitizePhone, sanitizeFreeText } from "..
 import { applyRateLimit, RATE_LIMITS } from "../../lib/rateLimit"
 import { useAuth } from "../../contexts/AuthContext"
 import { validatePassword } from "../../lib/passwordValidation"
+import { checkEmailBlocked } from "../../lib/emailValidation"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import toast from "react-hot-toast"
 
@@ -138,6 +139,7 @@ export default function AuthPage() {
     e.preventDefault()
     if (mode === "signup" && !agreed) return toast.error("Please agree to the Terms and Privacy Policy")
     if (mode === "signup") { const pwError = validatePassword(form.password); if (pwError) return toast.error(pwError) }
+      if (mode === "signup") { const emailError = await checkEmailBlocked(supabase, form.email); if (emailError) return toast.error(emailError) }
     setLoading(true)
     try {
       if (mode === "forgot") {
