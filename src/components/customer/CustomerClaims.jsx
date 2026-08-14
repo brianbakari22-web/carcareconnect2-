@@ -33,6 +33,7 @@ export default function CustomerClaims() {
   const [adminId, setAdminId] = useState(null)
   const [showForm, setShowForm] = useState(!!preselectedBooking)
   const [form, setForm] = useState({ booking_id:preselectedBooking||"", order_id:"", reason:"", description:"", refund_preference:"voucher" })
+  const [claimTarget, setClaimTarget] = useState("provider")
   const [submitting, setSubmitting] = useState(false)
   const [evidencePhotos, setEvidencePhotos] = useState([])
   const [uploadingEvidence, setUploadingEvidence] = useState(false)
@@ -134,6 +135,11 @@ export default function CustomerClaims() {
         order_id: claimType==="order" ? form.order_id : null,
         customer_id: user.id,
         provider_id: claimType==="booking" ? booking?.provider_id : order?.provider_id,
+        claimant_type: "customer",
+        claimant_id: user.id,
+        against_type: (claimType==="booking" && claimTarget==="driver" && booking?.driver_id) ? "driver" : "provider",
+        against_id: (claimType==="booking" && claimTarget==="driver" && booking?.driver_id) ? booking.driver_id : (claimType==="booking" ? booking?.provider_id : order?.provider_id),
+        driver_id_claim: (claimType==="booking" && claimTarget==="driver" && booking?.driver_id) ? booking.driver_id : null,
         reason: form.reason,
         description: form.description,
         status: "pending",
@@ -291,6 +297,21 @@ export default function CustomerClaims() {
                   <option key={o.id} value={o.id}>Order #{o.order_number} · KES {Number(o.subtotal||0).toLocaleString()} · {new Date(o.created_at).toLocaleDateString()}</option>
                 ))}
               </select></>
+            )}
+            {claimType==="booking"&&bookings.find(b=>b.id===form.booking_id)?.is_concierge&&bookings.find(b=>b.id===form.booking_id)?.driver_id&&(
+              <>
+                <label style={lbl}>Who is this claim about? *</label>
+                <div style={{ display:"flex", gap:8, marginBottom:12 }}>
+                  <button type="button" onClick={()=>setClaimTarget("provider")}
+                    style={{ flex:1, padding:"10px", borderRadius:8, border:claimTarget==="provider"?"2px solid #e6821e":"1px solid #ddd", background:claimTarget==="provider"?"#fff8f0":"#fff", color:claimTarget==="provider"?"#e6821e":"#666", fontSize:13, fontWeight:600, cursor:"pointer" }}>
+                    The Provider (service quality)
+                  </button>
+                  <button type="button" onClick={()=>setClaimTarget("driver")}
+                    style={{ flex:1, padding:"10px", borderRadius:8, border:claimTarget==="driver"?"2px solid #e6821e":"1px solid #ddd", background:claimTarget==="driver"?"#fff8f0":"#fff", color:claimTarget==="driver"?"#e6821e":"#666", fontSize:13, fontWeight:600, cursor:"pointer" }}>
+                    The Driver (pickup/drop-off)
+                  </button>
+                </div>
+              </>
             )}
             <label style={lbl}>Reason *</label>
             <select style={inp} value={form.reason} onChange={e=>setForm(f=>({...f,reason:e.target.value}))} required>
