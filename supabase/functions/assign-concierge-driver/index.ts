@@ -52,14 +52,27 @@ Deno.serve(async (req) => {
         concierge_attempt_expires_at: null,
       }).eq("id", booking_id)
 
-      // Create refund payout request for customer
+      // Refund the concierge surcharge to the customer immediately - unrelated to the escrow release for the actual service
       if (surcharge > 0) {
-        await supabase.from("payout_requests").insert({
-          user_id: booking.customer_id,
-          amount: surcharge,
-          status: "pending",
-          admin_note: `Concierge surcharge refund - no driver found for booking #${booking.booking_number}`
-        })
+        try {
+          const { data: custSens } = await supabase.from("profile_sensitive").select("phone").eq("id", booking.customer_id).maybeSingle()
+          const custPhone = custSens?.phone
+          if (custPhone) {
+            const refundResp = await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/daraja-b2c-payout`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}` },
+              body: JSON.stringify({ phone: custPhone, amount: surcharge, narrative: `Concierge refund ${booking.booking_number}`, booking_id: booking.id, provider_id: booking.customer_id, payment_method: "mpesa", account_reference: booking.booking_number })
+            })
+            const refundData = await refundResp.json()
+            if (!refundResp.ok || refundData.error || !refundData.success) {
+              await supabase.from("failed_jobs").insert({ job_type: "concierge_refund", error_message: refundData.error || "Refund payout not accepted", payload: { booking_id: booking.id, customer_id: booking.customer_id, amount: surcharge, phone: custPhone }, status: "failed" })
+            }
+          } else {
+            await supabase.from("failed_jobs").insert({ job_type: "concierge_refund", error_message: "Customer has no phone number on file", payload: { booking_id: booking.id, customer_id: booking.customer_id, amount: surcharge }, status: "failed" })
+          }
+        } catch (refundErr) {
+          await supabase.from("failed_jobs").insert({ job_type: "concierge_refund", error_message: refundErr.message, payload: { booking_id: booking.id, customer_id: booking.customer_id, amount: surcharge }, status: "failed" })
+        }
       }
 
       // Notify customer
