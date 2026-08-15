@@ -108,6 +108,22 @@ serve(async (req) => {
       }
     }
 
+    const allowanceAmount = Number(booking.transport_allowance || 0)
+    if (booking.driver_id && allowanceAmount > 0 && !booking.transport_allowance_paid) {
+      const { data: pickupReport } = await supabase.from("vehicle_condition_reports").select("id").eq("booking_id", booking_id).eq("report_type", "pickup").maybeSingle()
+      if (!pickupReport) {
+        blockedReasons.push("Transport allowance on hold - pickup condition report not yet filed")
+      } else {
+        const allowanceResult = await payParty(supabase, { partyId: booking.driver_id, amount: allowanceAmount, bookingId: booking.id, bookingNumber: booking.booking_number, narrativeLabel: "Transport Allowance", jobType: "transport_allowance_payout" })
+        if (allowanceResult.success) {
+          await supabase.from("bookings").update({ transport_allowance_paid: true }).eq("id", booking_id)
+          await supabase.from("notifications").insert({ user_id: booking.driver_id, title: "Transport allowance paid!", message: `KES ${allowanceAmount.toLocaleString()} transport allowance sent to your ${allowanceResult.method} for #${booking.booking_number}`, type: "success" })
+        } else {
+          blockedReasons.push("Transport allowance payout failed: " + allowanceResult.error)
+        }
+      }
+    }
+
     const fullyReleased = providerDone && driverDone
     if (fullyReleased) {
       await supabase.from("bookings").update({
