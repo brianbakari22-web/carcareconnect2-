@@ -103,7 +103,7 @@ export default function DriverAvailableJobs() {
       // Fetch concierge surcharge rate from app_settings
       const { data: surchargeRow } = await supabase.from("app_settings").select("value").eq("key","concierge_surcharge_rate").maybeSingle()
       const surchargeRate = surchargeRow ? Number(surchargeRow.value)/100 : 0.15
-      const driverEarnings = Number(job.total_amount||0) * surchargeRate
+      const driverEarnings = Number(job.concierge_surcharge||0) // use the value already correctly calculated at booking creation, not a fresh recalculation
 
       const { error } = await supabase.from("bookings").update({
         driver_id: user.id,
