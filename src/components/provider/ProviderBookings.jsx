@@ -323,7 +323,7 @@ export default function ProviderBookings() {
                 <button onClick={()=>updateStatus(b.id,"cancelled")} style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Decline</button>
               </>}
 
-              {b.status==="confirmed"&&<>
+              {["confirmed","driver-assigned","arrived-for-pickup"].includes(b.status)&&<>
                 <button onClick={()=>{ setAssigningMechanic(b.id); setSelectedMechanic("") }}
                   style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                   <><MechanicIcon size={13} color="currentColor"/> Assign mechanic</>
@@ -334,7 +334,7 @@ export default function ProviderBookings() {
                 </button>
               </>}
 
-              {b.status==="in-progress"&&(
+              {["in-progress","arrived-at-dropoff"].includes(b.status)&&(
                 <button onClick={()=>completeAndFreeMechanic(b.id, b.assigned_mechanic_id)}
                   style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                   ✓ Complete
