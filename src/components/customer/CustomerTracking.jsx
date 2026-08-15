@@ -187,7 +187,9 @@ export default function CustomerTracking() {
       const existing = document.getElementById("google-maps-sdk")
       if (!existing) {
         const script = document.createElement("script")
+        script.id = "google-maps-sdk"
         script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_KEY}&libraries=marker,places&loading=async`
+        script.onload = initGoogleMap
         document.head.appendChild(script)
       } else {
         setTimeout(initGoogleMap, 500)
@@ -195,7 +197,7 @@ export default function CustomerTracking() {
     }
 
     return () => { mapInstanceRef.current = null; driverMarkerRef.current = null; mechanicMarkerRef.current = null }
-  }, [selected?.id, driver?.current_lat, mechanic?.current_latitude])
+  }, [selected?.id])
 
   async function load() {
     const [{ data: bks }, { data: ords }] = await Promise.all([
