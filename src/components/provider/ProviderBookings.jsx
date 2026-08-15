@@ -112,6 +112,19 @@ export default function ProviderBookings() {
     const { error } = await supabase.from("bookings").update(updateData).eq("id",id).eq("provider_id",user.id)
     if (error) return toast.error(error.message)
     toast.success(`Booking ${status}`)
+    const booking = bookings.find(b=>b.id===id)
+    if (booking?.customer_id) {
+      const STATUS_MESSAGES = {
+        confirmed: { title: "Booking confirmed! ✅", message: `Your booking for ${booking.service_name} has been confirmed by the provider.` },
+        "in-progress": { title: "Service started 🔧", message: `Work has started on your ${booking.service_name}.` },
+        completed: { title: "Service complete! ✅", message: `Your ${booking.service_name} is done. Please confirm to release payment.` },
+        cancelled: { title: "Booking declined", message: `Your booking for ${booking.service_name} was declined by the provider.` },
+      }
+      const msg = STATUS_MESSAGES[status]
+      if (msg) {
+        await supabase.from("notifications").insert({ user_id: booking.customer_id, title: msg.title, message: msg.message, type: status==="cancelled"?"warning":"success" })
+      }
+    }
     load()
   }
 

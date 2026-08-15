@@ -116,6 +116,19 @@ export default function DriverActiveDelivery() {
   async function updateStatus(id, status) {
     await supabase.from("bookings").update({ status }).eq("id",id).eq("driver_id",user.id)
     toast.success(`Status updated to ${status}`)
+    const job = jobs.find(j=>j.id===id)
+    if (job?.customer_id) {
+      const STATUS_MESSAGES = {
+        "arrived-for-pickup": { title: "Driver has arrived 🚗", message: `Your driver has arrived to pick up your vehicle for ${job.service_name}.` },
+        "in-progress": { title: "On the way 🚗", message: `Your vehicle is on its way for ${job.service_name}.` },
+        "arrived-at-dropoff": { title: "Driver has arrived 🚗", message: `Your driver has arrived at the dropoff location for ${job.service_name}.` },
+        completed: { title: "Delivery complete ✅", message: `Your vehicle delivery for ${job.service_name} is complete.` },
+      }
+      const msg = STATUS_MESSAGES[status]
+      if (msg) {
+        await supabase.from("notifications").insert({ user_id: job.customer_id, title: msg.title, message: msg.message, type: "info" })
+      }
+    }
     load()
   }
 
