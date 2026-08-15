@@ -675,7 +675,7 @@ export default function CustomerDiscover() {
                   <div style={{ fontSize:14, fontWeight:500, color:"#000000" }}>{d.first_name} {d.last_name}</div>
                   {d.is_verified&&<span style={{ fontSize:10, color:"#1d9e75", background:"#f0fdf4", padding:"1px 6px", borderRadius:10 }}>✓</span>}
                 </div>
-                <div style={{ fontSize:11, color:"#777777" }}>{language==="sw"?"Dereva wa kuchukua":"Concierge driver"} · {d.city||"Nairobi"}</div>
+                <div style={{ fontSize:11, color:"#777777" }}>{d.driver_category==="concierge" ? (language==="sw"?"Dereva wa kuchukua":"Concierge driver") : (language==="sw"?"Dereva wa usafirishaji":"Delivery driver")} · {d.city||"Nairobi"}</div>
               </div>
               <span style={{ fontSize:11, fontWeight:600, padding:"4px 10px", borderRadius:20, background:d.is_online?"#f0fdf4":"#ffffff", color:d.is_online?"#1d9e75":"#555", border:`1px solid ${d.is_online?"#1d9e7530":"#33333330"}`, flexShrink:0 }}>
                 {d.is_online?t("online"):t("offline")}
