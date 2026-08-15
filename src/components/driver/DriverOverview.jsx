@@ -287,7 +287,7 @@ export default function DriverOverview() {
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginTop:8 }}>
               <div style={{ background:"#fff", borderRadius:8, padding:"0.6rem", textAlign:"center" }}>
                 <div style={{ fontSize:10, color:"#888" }}>Earnings</div>
-                <div style={{ fontSize:13, color:"#1d9e75", fontWeight:700 }}>KES {(Number(activeJob.total_amount||0)*0.15).toFixed(0)}</div>
+                <div style={{ fontSize:13, color:"#1d9e75", fontWeight:700 }}>KES {Number(activeJob.driver_earnings||0).toFixed(0)}</div>
               </div>
               <div style={{ background:"#fff", borderRadius:8, padding:"0.6rem", textAlign:"center" }}>
                 <div style={{ fontSize:10, color:"#888" }}>Allowance</div>
