@@ -191,7 +191,7 @@ export default function DriverAvailableJobs() {
       {jobs.map(job=>{
         const vehicle = job.vehicles
         const customer = job.profiles
-        const earnings = Number(job.total_amount||0) * 0.15
+        const earnings = Number(job.concierge_surcharge||0)
         return (
           <div key={job.id} style={{ background:"#ffffff", border:"1px solid #1d9e7520", borderRadius:12, padding:isMobile?"1rem":"1.25rem", marginBottom:12 }}>
             {/* Header */}
@@ -205,7 +205,7 @@ export default function DriverAvailableJobs() {
               </div>
               <div style={{ textAlign:"right", flexShrink:0 }}>
                 <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#1d9e75" }}>KES {earnings.toFixed(0)}</div>
-                <div style={{ fontSize:10, color:"#777777" }}>your earnings (15%)</div>
+                <div style={{ fontSize:10, color:"#777777" }}>your earnings</div>
               </div>
             </div>
 
