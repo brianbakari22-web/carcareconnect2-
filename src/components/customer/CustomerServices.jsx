@@ -46,11 +46,14 @@ export default function CustomerServices() {
   const [bulkMode, setBulkMode] = useState(false)
   const [bulkVehicles, setBulkVehicles] = useState([])
   const [conciergeMultiplier, setConciergeMultiplier] = useState(1.15)
+  const [transportAllowance, setTransportAllowance] = useState(200)
 
   useEffect(() => { if (user) load() }, [user])
   useEffect(() => {
     supabase.from("app_settings").select("value").eq("key","concierge_surcharge_rate").maybeSingle()
       .then(({ data }) => { if (data?.value) setConciergeMultiplier(1 + Number(data.value)/100) })
+    supabase.from("app_settings").select("value").eq("key","driver_transport_allowance").maybeSingle()
+      .then(({ data }) => { if (data?.value) setTransportAllowance(Number(data.value)) })
   }, [])
 
   useEffect(() => {
@@ -270,6 +273,7 @@ export default function CustomerServices() {
         parts_needed: bookForm.parts_needed||false,
         parts_description: bookForm.parts_description||"",
         is_concierge: bookForm.is_concierge||false,
+        transport_allowance: bookForm.is_concierge ? transportAllowance : 0,
         concierge_pickup_location: bookForm.concierge_location||null,
         concierge_expires_at: bookForm.is_concierge ? new Date(Date.now()+30*60*1000).toISOString() : null,
         concierge_surcharge: bookForm.is_concierge ? Number(booking.price)*(conciergeMultiplier-1) : 0,
