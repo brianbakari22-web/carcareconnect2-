@@ -12,6 +12,7 @@ export default function DriverDeliveries() {
   const [deliveries, setDeliveries] = useState([])
   const [available, setAvailable] = useState([])
   const [loading, setLoading] = useState(true)
+  const [marketplaceRate, setMarketplaceRate] = useState(0.85)
   const [tab, setTab] = useState("available")
   const [now, setNow] = useState(Date.now())
 
@@ -31,6 +32,7 @@ export default function DriverDeliveries() {
   }, [user])
 
   async function load() {
+    supabase.from("app_settings").select("value").eq("key","marketplace_driver_commission_rate").maybeSingle().then(({data}) => { if (data) setMarketplaceRate(Number(data.value)/100) })
     const [{ data: mine }, { data: avail }] = await Promise.all([
       supabase.from("orders")
         .select("*, order_items(name,quantity), profiles!orders_customer_id_fkey(first_name,last_name,city,latitude,longitude), provider:profiles!orders_provider_id_fkey(first_name,last_name,business_name,city,address,latitude,longitude)")
@@ -119,7 +121,7 @@ export default function DriverDeliveries() {
   const SC = { driver_assigned:"#378add", picked_up:"#8b5cf6", delivered:"#1d9e75" }
   const activeDeliveries = deliveries.filter(d=>d.delivery_status!=="delivered")
   const completedDeliveries = deliveries.filter(d=>d.delivery_status==="delivered")
-  const earnings = completedDeliveries.reduce((s,d)=>s+Number(d.delivery_fee||0)*0.85,0)
+  const earnings = completedDeliveries.reduce((s,d)=>s+Number(d.delivery_fee||0)*marketplaceRate,0)
 
   return (
     <div>
@@ -169,7 +171,7 @@ export default function DriverDeliveries() {
                   <div style={{ fontSize:10, color:"#888888" }}>{o.order_items?.length} item(s)</div>
                 </div>
                 <div style={{ textAlign:"right" }}>
-                  <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#1d9e75" }}>KES {(Number(o.delivery_fee||0)*0.85).toLocaleString()}</div>
+                  <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#1d9e75" }}>KES {(Number(o.delivery_fee||0)*marketplaceRate).toLocaleString()}</div>
                   <div style={{ fontSize:10, color:"#777777" }}>Your earnings (85%)</div>
                 </div>
               </div>
@@ -202,7 +204,7 @@ export default function DriverDeliveries() {
                   </span>
                 </div>
                 <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#1d9e75" }}>
-                  KES {(Number(o.delivery_fee||0)*0.85).toLocaleString()}
+                  KES {(Number(o.delivery_fee||0)*marketplaceRate).toLocaleString()}
                 </div>
               </div>
               {o.delivery_status==="driver_assigned"&&o.delivery_attempt_expires_at&&(
@@ -245,7 +247,7 @@ export default function DriverDeliveries() {
                   <div style={{ fontSize:11, color:"#777777" }}>{o.delivery_zone} · {new Date(o.created_at).toLocaleDateString()}</div>
                 </div>
                 <div style={{ textAlign:"right" }}>
-                  <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#1d9e75" }}>KES {(Number(o.delivery_fee||0)*0.85).toLocaleString()}</div>
+                  <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#1d9e75" }}>KES {(Number(o.delivery_fee||0)*marketplaceRate).toLocaleString()}</div>
                   <div style={{ fontSize:10, color:"#777777" }}>earned</div>
                 </div>
               </div>
