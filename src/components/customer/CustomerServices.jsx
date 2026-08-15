@@ -246,12 +246,15 @@ export default function CustomerServices() {
       const commissionRates = { shop_standard:0.10, shop_premium:0.20, go_service:0.15 }
       const platformRate = booking.platform_commission_rate!=null ? Number(booking.platform_commission_rate) : (commissionRates[booking.category]||0.10)
       const providerRate = 1 - platformRate
-      const baseAmount = Number(booking.price)*(bookForm.is_concierge?conciergeMultiplier:1)
+      const servicePriceOnly = Number(booking.price)
       const voucherDiscount = voucherData?Number(voucherData.value):0
       const promoDiscount = promoData?Number(promoData.discount):0
-      const finalAmount = Math.max(0, baseAmount - voucherDiscount - promoDiscount)
-      const platformAmount = finalAmount * platformRate
-      const providerAmount = finalAmount * providerRate
+      const servicePriceAfterDiscount = Math.max(0, servicePriceOnly - voucherDiscount - promoDiscount)
+      const conciergeSurchargeAmount = bookForm.is_concierge ? servicePriceAfterDiscount * (conciergeMultiplier - 1) : 0
+      const transportAllowanceAmount = bookForm.is_concierge ? transportAllowance : 0
+      const finalAmount = servicePriceAfterDiscount + conciergeSurchargeAmount + transportAllowanceAmount
+      const platformAmount = servicePriceAfterDiscount * platformRate
+      const providerAmount = servicePriceAfterDiscount * providerRate
       const bookingPayload = {
         customer_id: user.id,
         provider_id: booking.provider_id,
@@ -276,7 +279,7 @@ export default function CustomerServices() {
         transport_allowance: bookForm.is_concierge ? transportAllowance : 0,
         concierge_pickup_location: bookForm.concierge_location||null,
         concierge_expires_at: bookForm.is_concierge ? new Date(Date.now()+30*60*1000).toISOString() : null,
-        concierge_surcharge: bookForm.is_concierge ? Number(booking.price)*(conciergeMultiplier-1) : 0,
+        concierge_surcharge: conciergeSurchargeAmount,
         promo_code: promoData?.code || null,
         customer_location_lat: customerLocation.lat||null,
         customer_location_lng: customerLocation.lng||null,
