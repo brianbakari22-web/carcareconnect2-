@@ -97,9 +97,13 @@ export default function ProviderBookings() {
   }
 
   async function updateStatus(id, status) {
-    const updateData = { status }
+    const booking = bookings.find(b=>b.id===id)
+    const isConciergeCompletion = status === "completed" && booking?.is_concierge
+    // For concierge bookings, the provider marking their service done should NOT overwrite the
+    // shared status field, since that would remove the job from the driver's own active list
+    // before the driver has finished their separate delivery task. Track it independently instead.
+    const updateData = isConciergeCompletion ? { service_completed_at: new Date().toISOString() } : { status }
     if (status === "completed") {
-      const booking = bookings.find(b=>b.id===id)
       if (booking?.is_concierge && booking?.pickup_lat && booking?.dropoff_lat) {
         const R = 6371
         const dLat = (booking.dropoff_lat - booking.pickup_lat) * Math.PI/180
@@ -112,12 +116,13 @@ export default function ProviderBookings() {
     const { error } = await supabase.from("bookings").update(updateData).eq("id",id).eq("provider_id",user.id)
     if (error) return toast.error(error.message)
     toast.success(`Booking ${status}`)
-    const booking = bookings.find(b=>b.id===id)
     if (booking?.customer_id) {
       const STATUS_MESSAGES = {
         confirmed: { title: "Booking confirmed! ✅", message: `Your booking for ${booking.service_name} has been confirmed by the provider.` },
         "in-progress": { title: "Service started 🔧", message: `Work has started on your ${booking.service_name}.` },
-        completed: { title: "Service complete! ✅", message: `Your ${booking.service_name} is done. Please confirm to release payment.` },
+        completed: booking.is_concierge
+          ? { title: "Service complete! ✅", message: `Your ${booking.service_name} is done. Your driver will bring your vehicle back shortly.` }
+          : { title: "Service complete! ✅", message: `Your ${booking.service_name} is done. Please confirm to release payment.` },
         cancelled: { title: "Booking declined", message: `Your booking for ${booking.service_name} was declined by the provider.` },
       }
       const msg = STATUS_MESSAGES[status]
@@ -347,7 +352,10 @@ export default function ProviderBookings() {
                 </button>
               </>}
 
-              {["in-progress","arrived-at-dropoff"].includes(b.status)&&(
+              {b.service_completed_at&&["in-progress","arrived-at-dropoff"].includes(b.status)&&(
+                <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px" }}>Service marked complete - awaiting driver delivery</div>
+              )}
+              {["in-progress","arrived-at-dropoff"].includes(b.status)&&!b.service_completed_at&&(
                 <button onClick={()=>completeAndFreeMechanic(b.id, b.assigned_mechanic_id)}
                   style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>
                   ✓ Complete
