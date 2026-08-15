@@ -74,6 +74,7 @@ export default function DriverAvailableJobs() {
   }
 
     async function load() {
+    if (profile?.driver_category !== "concierge") { setJobs([]); setLoading(false); return }
     const [{ data: jobs }, { data: status }] = await Promise.all([
       supabase.from("bookings")
         .select("*, vehicles(make,model,year,license_plate,color), profiles!bookings_customer_id_fkey(first_name,last_name,city,latitude,longitude), provider:profiles!bookings_provider_id_fkey(first_name,last_name,business_name,city,address), concierge_current_driver_id, concierge_attempt, concierge_attempt_expires_at, concierge_pickup_location, concierge_surcharge")
@@ -182,8 +183,8 @@ export default function DriverAvailableJobs() {
       {!loading&&jobs.length===0&&(
         <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"3rem" }}>
           <div style={{ fontSize:32, marginBottom:10 }}>🚗</div>
-          <div style={{ marginBottom:6 }}>No available jobs right now</div>
-          <div style={{ fontSize:11, color:"#555555" }}>New concierge requests will appear here automatically</div>
+          <div style={{ marginBottom:6 }}>{profile?.driver_category!=="concierge"?"Concierge jobs are for concierge drivers only":"No available jobs right now"}</div>
+          <div style={{ fontSize:11, color:"#555555" }}>{profile?.driver_category!=="concierge"?"Your account is registered for marketplace/delivery jobs":"New concierge requests will appear here automatically"}</div>
         </div>
       )}
 
