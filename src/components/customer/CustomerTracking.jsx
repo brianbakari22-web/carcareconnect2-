@@ -370,9 +370,10 @@ export default function CustomerTracking() {
         )}
 
         {/* Map */}
-        <div ref={mapRef} style={{ height:isMobile?260:350, borderRadius:10, overflow:"hidden", background:"#f5f5f5" }}>
+        <div style={{ position:"relative", height:isMobile?260:350, borderRadius:10, overflow:"hidden", background:"#f5f5f5" }}>
+          <div ref={mapRef} style={{ width:"100%", height:"100%" }}/>
           {!driver?.current_lat&&!mechanic?.current_latitude&&(
-            <div style={{ height:"100%", display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:8 }}>
+            <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:8, background:"#f5f5f5", pointerEvents:"none" }}>
               <div style={{ fontSize:32 }}>🗺️</div>
               <div style={{ fontSize:12, color:"#777777" }}>Waiting for location...</div>
             </div>
