@@ -184,7 +184,10 @@ export default function ProviderBookings() {
 
   async function completeAndFreeMechanic(bookingId, mechanicId) {
     const booking = bookings.find(b=>b.id===bookingId)
-    await supabase.from("bookings").update({ status:"completed" }).eq("id",bookingId).eq("provider_id",user.id)
+    // For concierge bookings, do not overwrite the shared status field - it would remove the job
+    // from the driver's own active list before their delivery is actually done. Track separately.
+    const completionUpdate = booking?.is_concierge ? { service_completed_at: new Date().toISOString() } : { status:"completed" }
+    await supabase.from("bookings").update(completionUpdate).eq("id",bookingId).eq("provider_id",user.id)
     if (mechanicId) {
       await supabase.from("mechanics").update({ is_available:true, current_booking_id:null, current_latitude:null, current_longitude:null }).eq("id",mechanicId)
     }
