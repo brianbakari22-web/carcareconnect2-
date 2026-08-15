@@ -18,18 +18,9 @@ serve(async (req) => {
     if (error) throw error
 
     // Find any bookings with an unresolved claim - these must NOT be auto-released
-    const bookingIds = (bookings||[]).map(b => b.id)
-    let blockedBookingIds = new Set()
-    if (bookingIds.length > 0) {
-      const { data: openClaims } = await supabase.from("service_claims")
-        .select("booking_id")
-        .in("booking_id", bookingIds)
-        .in("status", ["pending", "under_review"])
-      blockedBookingIds = new Set((openClaims||[]).map(c => c.booking_id).filter(Boolean))
-    }
-
-    const eligibleBookings = (bookings||[]).filter(b => !blockedBookingIds.has(b.id))
-    console.log(`Found ${bookings?.length||0} bookings due for auto-release, ${blockedBookingIds.size} blocked by open claims, ${eligibleBookings.length} proceeding`)
+    // Note: no longer pre-filtering by claim status - release-payment itself checks claims per-party (against_type) and does a partial release, paying whichever party is not specifically disputed
+    const eligibleBookings = bookings || []
+    console.log(`Found ${eligibleBookings.length} bookings due for auto-release`)
 
     const results = []
     for (const booking of eligibleBookings) {
@@ -53,7 +44,7 @@ serve(async (req) => {
     return new Response(JSON.stringify({
       ok: true,
       processed: results.length,
-      blocked_by_claims: blockedBookingIds.size,
+      blocked_by_claims: 0,
       results
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" }
