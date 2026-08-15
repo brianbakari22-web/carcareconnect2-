@@ -28,18 +28,16 @@ export default function AdminPayouts() {
 
   async function loadWalletData() {
     try {
-      // Get total commission from completed transactions
-      const { data: txns } = await supabase
-        .from("payment_transactions")
-        .select("amount, processing_fee")
-        .eq("status", "completed")
-        .eq("type", "collection")
-      
-      if(txns) {
-        const total = txns.reduce((sum, t) => {
-          const commission = Number(t.amount) * 0.10 // 10% commission
-          return sum + commission
-        }, 0)
+      // Get total commission from the real, already-correctly-calculated platform_commission
+      // field on each booking, instead of assuming a blanket 10% rate (rates actually vary by
+      // service category and can be customized per-booking)
+      const { data: bks } = await supabase
+        .from("bookings")
+        .select("platform_commission")
+        .eq("payment_status", "paid")
+
+      if(bks) {
+        const total = bks.reduce((sum, b) => sum + Number(b.platform_commission||0), 0)
         setTotalCommission(Math.floor(total))
       }
 

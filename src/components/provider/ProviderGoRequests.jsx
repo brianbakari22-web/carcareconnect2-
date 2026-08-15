@@ -290,7 +290,7 @@ export default function ProviderGoRequests() {
                   )}
                   {r.bookings?.notes&&<div style={{ fontSize:11, color:"#666" }}>📝 {r.bookings.notes}</div>}
                   <div style={{ fontSize:11, color:"#e6821e", marginTop:4 }}>
-                    💰 KES {Number(r.bookings?.total_amount||0).toLocaleString()} · Your earnings: KES {(Number(r.bookings?.total_amount||0)*0.85).toFixed(0)} (est.)
+                    💰 KES {Number(r.bookings?.total_amount||0).toLocaleString()} · Your earnings: KES {Number(r.bookings?.provider_earnings||0).toFixed(0)}
                   </div>
                   <div style={{ fontSize:11, color:"#777777", marginTop:2 }}>Attempt {r.attempt_number} of 5</div>
                 </div>
