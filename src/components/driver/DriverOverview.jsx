@@ -23,10 +23,12 @@ export default function DriverOverview() {
   useEffect(() => {
     if(profile && !profile.onboarding_complete) setShowOnboarding(true)
     supabase.from("app_settings").select("value").eq("key","concierge_surcharge_rate").maybeSingle().then(({data}) => { if (data) setCommissionRate(Number(data.value)) })
+    supabase.from("app_settings").select("value").eq("key","driver_transport_allowance").maybeSingle().then(({data}) => { if (data) setTransportAllowanceAmt(Number(data.value)) })
   }, [profile])
   const [driverStatus, setDriverStatus] = useState(null)
   const [showOnboarding, setShowOnboarding] = useState(false)
   const [commissionRate, setCommissionRate] = useState(15)
+  const [transportAllowanceAmt, setTransportAllowanceAmt] = useState(200)
   const [loading, setLoading] = useState(true)
   const [toggling, setToggling] = useState(false)
   const [activeJob, setActiveJob] = useState(null)
@@ -303,7 +305,7 @@ export default function DriverOverview() {
           <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#1d9e75", marginBottom:10, display:"flex", alignItems:"center", gap:6 }}><WalletIcon size={14} color="#1d9e75"/> Your earnings structure</div>
           {(isConcierge ? [
             { icon:"wallet", label:"Commission", desc:`${commissionRate}% of service fee — paid after delivery complete` },
-            { icon:"🚌", label:"Transport allowance", desc:"KES 200 per booking — covers your travel to pick up and return the car" },
+            { icon:"🚌", label:"Transport allowance", desc:`KES ${transportAllowanceAmt} per booking — covers your travel to pick up and return the car` },
             { icon:"warning", label:"No-show policy", desc:"Allowance only paid after pickup report filed. No-shows result in penalties." },
             { icon:"locked", label:"Payment security", desc:"Both released only after you complete the delivery and file the dropoff report" },
           ] : [
