@@ -121,6 +121,8 @@ export default function DriverActiveDelivery() {
 
   async function shareLocation(bookingId) {
     getCurrentPosition().then(async pos => { pos = { coords: { latitude: pos.latitude, longitude: pos.longitude } };
+      await supabase.from("driver_status").update({ current_lat: pos.coords.latitude, current_lng: pos.coords.longitude, last_location_update: new Date().toISOString() }).eq("driver_id", user.id)
+      await supabase.from("booking_location_logs").insert({ booking_id: bookingId, driver_id: user.id, lat: pos.coords.latitude, lng: pos.coords.longitude, source: "driver" })
       const { data: booking } = await supabase.from("bookings").select("assigned_mechanic_id").eq("id",bookingId).single()
       if (booking?.assigned_mechanic_id) {
         await supabase.from("mechanic_location_history").insert({
