@@ -49,11 +49,11 @@ export default function MyNewCarListings() {
       .then(({data}) => setIsDealer(data?.is_dealer||false))
     supabase.from("dealer_applications").select("status").eq("user_id", user.id).maybeSingle()
       .then(({data}) => setDealerStatus(data?.status||null))
-    supabase.from("app_settings").select("key,value").in("key",["new_car_listing_fee","new_car_listing_duration_days","new_car_lead_fee"])
+    supabase.from("app_settings").select("key,value").in("key",["new_car_listing_fee","new_car_listing_duration_days","new_car_lead_fee","new_car_featured_fee_day","new_car_featured_fee_week","new_car_featured_fee_month"])
       .then(({ data }) => {
         const map = {}
         data?.forEach(r => { map[r.key] = Number(r.value) })
-        setFees({ listing_fee: map.new_car_listing_fee||2000, duration_days: map.new_car_listing_duration_days||30, lead_fee: map.new_car_lead_fee||500 })
+        setFees({ listing_fee: map.new_car_listing_fee||2000, duration_days: map.new_car_listing_duration_days||30, lead_fee: map.new_car_lead_fee||500, featured_day: map.new_car_featured_fee_day||100, featured_week: map.new_car_featured_fee_week||500, featured_month: map.new_car_featured_fee_month||1500 })
       })
   }, [user])
 
@@ -169,6 +169,29 @@ export default function MyNewCarListings() {
       if(error) throw error
       if(data?.success) toast.success("STK Push sent! Check your phone for M-Pesa prompt.")
       else toast.error("Payment initiation failed. Please try again.")
+    } catch(e) { toast.error(e.message) }
+  }
+  async function payFeatureFee(listing, tier) {
+    const tierAmounts = { day: fees.featured_day, week: fees.featured_week, month: fees.featured_month }
+    const tierDays = { day: 1, week: 7, month: 30 }
+    const amount = tierAmounts[tier]
+    try {
+      const { data, error } = await supabase.functions.invoke("daraja-stk-push", {
+        body: {
+          amount,
+          booking_id: listing.id,
+          customer_id: user.id,
+          phone: listing.showroom_phone||profile?.phone||"",
+          service_name: `Feature listing (${tier}) - ${listing.brand} ${listing.model}`
+        }
+      })
+      if(error) throw error
+      if(data?.success) {
+        toast.success("STK Push sent! Check your phone for M-Pesa prompt.")
+        const featuredUntil = new Date(Date.now() + tierDays[tier]*24*60*60*1000).toISOString()
+        await supabase.from("new_car_listings").update({ is_featured: true, featured_until: featuredUntil }).eq("id", listing.id)
+        load()
+      } else toast.error("Payment initiation failed. Please try again.")
     } catch(e) { toast.error(e.message) }
   }
     toast.success("Status updated")
@@ -468,6 +491,19 @@ export default function MyNewCarListings() {
                       <button onClick={()=>payListingFee(l)} style={{ background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"5px 12px", cursor:"pointer" }}>
                         <><PaymentsIcon size={13} color="currentColor"/> Pay KES {fees.listing_fee.toLocaleString()} to activate</>
                       </button>
+                    )}
+                    {l.is_active&&(!l.is_featured||new Date(l.featured_until)<new Date())&&(
+                      <>
+                        <button onClick={()=>payFeatureFee(l,"day")} style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, fontWeight:700, padding:"5px 12px", cursor:"pointer" }}>
+                          Feature 1 day - KES {fees.featured_day.toLocaleString()}
+                        </button>
+                        <button onClick={()=>payFeatureFee(l,"week")} style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, fontWeight:700, padding:"5px 12px", cursor:"pointer" }}>
+                          Feature 1 week - KES {fees.featured_week.toLocaleString()}
+                        </button>
+                        <button onClick={()=>payFeatureFee(l,"month")} style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, fontWeight:700, padding:"5px 12px", cursor:"pointer" }}>
+                          Feature 1 month - KES {fees.featured_month.toLocaleString()}
+                        </button>
+                      </>
                     )}
                     <button onClick={()=>startEdit(l)} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Edit</button>
                     <button onClick={()=>deleteListing(l.id)} style={{ background:"none", border:"1px solid #e24b4a30", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"5px 10px", cursor:"pointer" }}>Delete</button>
