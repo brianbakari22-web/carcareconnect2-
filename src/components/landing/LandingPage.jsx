@@ -116,6 +116,12 @@ export default function LandingPage() {
   const BP = { background:"#e6821e", border:"none", borderRadius:12, color:"#fff", fontFamily:"DM Sans,sans-serif", fontSize:15, fontWeight:700, padding:"14px 28px", cursor:"pointer", display:"inline-flex", alignItems:"center", gap:8 }
   const BO = { background:"#fff", border:"2px solid #e0e0e0", borderRadius:12, color:"#0f172a", fontFamily:"DM Sans,sans-serif", fontSize:14, fontWeight:600, padding:"13px 26px", cursor:"pointer", display:"inline-flex", alignItems:"center", gap:8 }
   const role = ROLES[activeRole]
+  const dynamicRoles = ROLES.map(r => {
+    const match = providers.find(p => p.key === r.key)
+    if (!match?.keep || match.keep === "—") return r
+    return { ...r, perks: r.perks.map(perk => /^Keep/.test(perk) ? `Keep up to ${match.keep}` : perk) }
+  })
+  const displayRole = dynamicRoles[activeRole]
 
   return (
     <div style={{ fontFamily:"DM Sans,sans-serif", background:"#fff", color:"#0f172a", overflowX:"hidden" }}>
@@ -267,7 +273,7 @@ export default function LandingPage() {
               <h3 style={{ fontFamily:"Syne,sans-serif",fontSize:"clamp(24px,3vw,36px)",fontWeight:800,letterSpacing:"-0.5px",marginBottom:"0.75rem",lineHeight:1.1 }}>{role.tagline}</h3>
               <p style={{ fontSize:15,color:"#475569",lineHeight:1.75,marginBottom:"1.75rem" }}>{role.desc}</p>
               <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:"1.75rem" }}>
-                {role.perks.map(p=>(
+                {displayRole.perks.map(p=>(
                   <div key={p} style={{ display:"flex",alignItems:"center",gap:8,fontSize:13,color:"#0f172a",fontWeight:500 }}>
                     <span style={{ width:8,height:8,borderRadius:"50%",background:role.color,flexShrink:0 }}/>
                     {p}
