@@ -89,7 +89,20 @@ serve(async (req) => {
     }
 
     if (hasDriver && !driverDone) {
-      const { data: dropoffReport } = await supabase.from("vehicle_condition_reports").select("id").eq("booking_id", booking_id).eq("report_type", "dropoff").maybeSingle()
+      const bookingIdNormalized = String(booking_id ?? "").trim()
+      const { data: dropoffReports, error: dropoffError } = await supabase
+        .from("vehicle_condition_reports")
+        .select("id, booking_id, report_type, created_at")
+        .eq("booking_id", bookingIdNormalized)
+        .eq("report_type", "dropoff")
+      console.log("========== DROPOFF DEBUG ==========")
+      console.log("booking_id:", JSON.stringify(bookingIdNormalized))
+      console.log("reports:", JSON.stringify(dropoffReports))
+      console.log("count:", dropoffReports?.length)
+      console.log("error:", JSON.stringify(dropoffError))
+      console.log("===================================")
+      if (dropoffError) throw new Error("Dropoff query failed: " + dropoffError.message)
+      const dropoffReport = dropoffReports?.[0] ?? null
       if (!dropoffReport) {
         blockedReasons.push("Driver payout on hold - dropoff condition report not yet filed")
       } else

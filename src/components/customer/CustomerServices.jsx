@@ -250,7 +250,7 @@ export default function CustomerServices() {
       const voucherDiscount = voucherData?Number(voucherData.value):0
       const promoDiscount = promoData?Number(promoData.discount):0
       const servicePriceAfterDiscount = Math.max(0, servicePriceOnly - voucherDiscount - promoDiscount)
-      const conciergeSurchargeAmount = bookForm.is_concierge ? servicePriceAfterDiscount * (conciergeMultiplier - 1) : 0
+      const conciergeSurchargeAmount = bookForm.is_concierge ? Math.max(10, servicePriceAfterDiscount * (conciergeMultiplier - 1)) : 0 // KES 10 minimum floor - confirmed via real testing that B2C payouts below this can silently fail to arrive despite Safaricom accepting the request
       const transportAllowanceAmount = bookForm.is_concierge ? transportAllowance : 0
       const finalAmount = servicePriceAfterDiscount + conciergeSurchargeAmount + transportAllowanceAmount
       const platformAmount = servicePriceAfterDiscount * platformRate
