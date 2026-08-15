@@ -189,7 +189,7 @@ export default function CustomerTracking() {
         const script = document.createElement("script")
         script.id = "google-maps-sdk"
         script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_KEY}&libraries=marker,places&loading=async`
-        script.onload = initGoogleMap
+        script.onload = () => { setTimeout(initGoogleMap, 100) }
         document.head.appendChild(script)
       } else {
         setTimeout(initGoogleMap, 500)
