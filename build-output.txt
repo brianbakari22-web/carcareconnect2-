@@ -31,14 +31,14 @@ computing gzip size...
 [2mdist/[22m[36massets/ui-6xqmMb-3.js               [39m[1m[2m   12.19 kB[22m[1m[22m[2m Γöé gzip:   4.89 kB[22m[2m Γöé map:    28.09 kB[22m
 [2mdist/[22m[36massets/purify.es-Jn2rvFN8.js        [39m[1m[2m   28.96 kB[22m[1m[22m[2m Γöé gzip:  10.93 kB[22m[2m Γöé map:   159.03 kB[22m
 [2mdist/[22m[36massets/vendor-6sQYc7iK.js           [39m[1m[2m  154.34 kB[22m[1m[22m[2m Γöé gzip:  50.71 kB[22m[2m Γöé map:   687.23 kB[22m
-[2mdist/[22m[36massets/index.es-Cxeeral1.js         [39m[1m[2m  159.80 kB[22m[1m[22m[2m Γöé gzip:  53.64 kB[22m[2m Γöé map:   643.26 kB[22m
+[2mdist/[22m[36massets/index.es-CNWQkiHa.js         [39m[1m[2m  159.80 kB[22m[1m[22m[2m Γöé gzip:  53.64 kB[22m[2m Γöé map:   643.26 kB[22m
 [2mdist/[22m[36massets/html2canvas.esm-QH1iLAAe.js  [39m[1m[2m  202.43 kB[22m[1m[22m[2m Γöé gzip:  48.09 kB[22m[2m Γöé map:   603.21 kB[22m
 [2mdist/[22m[36massets/supabase-BYBfiHzV.js         [39m[1m[2m  210.55 kB[22m[1m[22m[2m Γöé gzip:  54.59 kB[22m[2m Γöé map: 1,138.82 kB[22m
 [2mdist/[22m[36massets/sentry-Cu9woQSl.js           [39m[1m[2m  236.49 kB[22m[1m[22m[2m Γöé gzip:  77.53 kB[22m[2m Γöé map: 1,260.61 kB[22m
-[2mdist/[22m[36massets/index-DbI3JWw5.js            [39m[1m[33m2,520.09 kB[39m[22m[2m Γöé gzip: 593.42 kB[22m[2m Γöé map: 6,307.17 kB[22m
+[2mdist/[22m[36massets/index-l86vBXyl.js            [39m[1m[33m2,521.18 kB[39m[22m[2m Γöé gzip: 593.59 kB[22m[2m Γöé map: 6,309.13 kB[22m
 
 (!) Some chunks are larger than 2000 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-[32mΓ£ô built in 7.10s[39m
+[32mΓ£ô built in 5.23s[39m

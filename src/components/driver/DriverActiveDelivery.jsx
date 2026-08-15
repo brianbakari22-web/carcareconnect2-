@@ -93,7 +93,7 @@ export default function DriverActiveDelivery() {
 
   async function load() {
     const { data } = await supabase.from("bookings")
-      .select("*, vehicles(make,model,year,license_plate,color)")
+      .select("*, vehicles(make,model,year,license_plate,color), provider:profiles!bookings_provider_id_fkey(business_name,first_name,last_name,address,latitude,longitude)")
       .eq("driver_id", user.id)
       .not("status", "in", '("completed","cancelled")')
       .order("created_at", { ascending:false })
@@ -231,6 +231,22 @@ export default function DriverActiveDelivery() {
               </div>
             </div>
 
+            <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:8 }}>
+              {job.customer_location_lat&&job.customer_location_lng&&(
+                <a href={`https://www.google.com/maps/dir/?api=1&destination=${job.customer_location_lat},${job.customer_location_lng}`}
+                  target="_blank" rel="noopener noreferrer"
+                  style={{ display:"inline-flex", alignItems:"center", gap:6, background:"#4285f4", color:"#fff", borderRadius:8, padding:"6px 12px", fontSize:11, fontWeight:700, textDecoration:"none" }}>
+                  🗺️ Navigate to customer
+                </a>
+              )}
+              {job.provider?.latitude&&job.provider?.longitude&&(
+                <a href={`https://www.google.com/maps/dir/?api=1&destination=${job.provider.latitude},${job.provider.longitude}`}
+                  target="_blank" rel="noopener noreferrer"
+                  style={{ display:"inline-flex", alignItems:"center", gap:6, background:"#1d9e75", color:"#fff", borderRadius:8, padding:"6px 12px", fontSize:11, fontWeight:700, textDecoration:"none" }}>
+                  🗺️ Navigate to provider
+                </a>
+              )}
+            </div>
             <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
               {!hasPickup&&(
                 <button onClick={()=>{ setShowReport(job.id); setReportType("pickup") }}
