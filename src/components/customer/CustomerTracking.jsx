@@ -109,19 +109,6 @@ export default function CustomerTracking() {
         mapTypeId: "roadmap", mapId: "ccc_tracking_map"
       })
 
-      if (driver?.current_lat) {
-        driverMarkerRef.current = new window.google.maps.Marker({
-          position: { lat: driver.current_lat, lng: driver.current_lng },
-          map,
-          title: `Driver: ${driver.first_name} ${driver.last_name}`,
-          icon: {
-            url: "data:image/svg+xml;charset=UTF-8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#378add" stroke="white" stroke-width="3"/><text x="24" y="32" font-size="22" text-anchor="middle">🚗</text></svg>'),
-            scaledSize: new window.google.maps.Size(48, 48),
-            anchor: new window.google.maps.Point(24, 24)
-          }
-        })
-      }
-
       if (mechanic?.current_latitude) {
         mechanicMarkerRef.current = new window.google.maps.Marker({
           position: { lat: mechanic.current_latitude, lng: mechanic.current_longitude },
@@ -198,6 +185,27 @@ export default function CustomerTracking() {
 
     return () => { mapInstanceRef.current = null; driverMarkerRef.current = null; mechanicMarkerRef.current = null }
   }, [selected?.id])
+
+  // Create/update the driver marker whenever driver location data changes - decoupled from
+  // map creation itself, so a location that arrives after the map first builds still shows up
+  useEffect(() => {
+    if (!mapInstanceRef.current || !window.google?.maps?.Map || !driver?.current_lat) return
+    const position = { lat: driver.current_lat, lng: driver.current_lng }
+    if (driverMarkerRef.current) {
+      driverMarkerRef.current.setPosition(position)
+    } else {
+      driverMarkerRef.current = new window.google.maps.Marker({
+        position, map: mapInstanceRef.current,
+        title: `Driver: ${driver.first_name} ${driver.last_name}`,
+        icon: {
+          url: "data:image/svg+xml;charset=UTF-8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#378add" stroke="white" stroke-width="3"/><text x="24" y="32" font-size="22" text-anchor="middle">🚗</text></svg>'),
+          scaledSize: new window.google.maps.Size(48, 48),
+          anchor: new window.google.maps.Point(24, 24)
+        }
+      })
+      mapInstanceRef.current.panTo(position)
+    }
+  }, [driver?.current_lat, driver?.current_lng])
 
   async function load() {
     const [{ data: bks }, { data: ords }] = await Promise.all([
