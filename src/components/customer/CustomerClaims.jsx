@@ -354,16 +354,14 @@ export default function CustomerClaims() {
                   <option value="redo">🔧 Redo the service (same provider)</option>
                 </select>
               </div>
-              <div style={{ display:"flex", gap:8 }}>
-                <button type="submit" disabled={submitting}
-                  style={{ background:submitting?"#555555":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:submitting?"not-allowed":"pointer" }}>
-                  {submitting?"Submitting...":"Submit claim"}
-                </button>
-                <button type="button" onClick={()=>{ setShowForm(false); setForm({ booking_id:"", order_id:"", reason:"", description:"", refund_preference:"voucher" }) }}
-                  style={{ background:"none", border:"1px solid #dddddd", borderRadius:9, color:"#666", fontSize:13, padding:"11px 16px", cursor:"pointer" }}>
-                  Cancel
-                </button>
-              </div>
+              <button type="submit" disabled={submitting}
+                style={{ width:"100%", marginBottom:8, background:submitting?"#555555":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"11px 24px", cursor:submitting?"not-allowed":"pointer" }}>
+                {submitting?"Submitting...":"Submit claim"}
+              </button>
+              <button type="button" onClick={()=>{ setShowForm(false); setForm({ booking_id:"", order_id:"", reason:"", description:"", refund_preference:"voucher" }) }}
+                style={{ width:"100%", background:"none", border:"1px solid #dddddd", borderRadius:9, color:"#666", fontSize:13, padding:"11px 16px", cursor:"pointer" }}>
+                Cancel
+              </button>
             </div>
           </form>
         </div>
