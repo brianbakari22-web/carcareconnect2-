@@ -89,6 +89,10 @@ serve(async (req) => {
     }
 
     if (hasDriver && !driverDone) {
+      const { data: dropoffReport } = await supabase.from("vehicle_condition_reports").select("id").eq("booking_id", booking_id).eq("report_type", "dropoff").maybeSingle()
+      if (!dropoffReport) {
+        blockedReasons.push("Driver payout on hold - dropoff condition report not yet filed")
+      } else
       if (claimAgainstDriver) {
         blockedReasons.push("Driver payout on hold due to an open claim")
       } else {
