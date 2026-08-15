@@ -9,11 +9,13 @@ export default function DriverPerformance() {
   const isMobile = useIsMobile()
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [marketplaceRate, setMarketplaceRate] = useState(0.85)
   const [recentJobs, setRecentJobs] = useState([])
 
   useEffect(() => { if (user) load() }, [user])
 
   async function load() {
+    supabase.from("app_settings").select("value").eq("key","marketplace_driver_commission_rate").maybeSingle().then(({data}) => { if (data) setMarketplaceRate(Number(data.value)/100) })
     const [{ data: bks }, { data: revs }, { data: status }, { data: ords }] = await Promise.all([
       supabase.from("bookings").select("status,total_amount,created_at,service_name,driver_earnings").eq("driver_id", user.id),
       supabase.from("reviews").select("driver_rating,driver_review,created_at").eq("driver_id", user.id).order("created_at",{ascending:false}),
@@ -35,7 +37,7 @@ export default function DriverPerformance() {
       acceptanceRate,
       completionRate,
       noShows: status?.no_show_count||0,
-      totalEarnings: isConciergeLoad ? completed.reduce((s,b)=>s+Number(b.driver_earnings||0),0) : completed.reduce((s,o)=>s+Number(o.delivery_fee||0)*0.85,0),
+      totalEarnings: isConciergeLoad ? completed.reduce((s,b)=>s+Number(b.driver_earnings||0),0) : completed.reduce((s,o)=>s+Number(o.delivery_fee||0)*marketplaceRate,0),
       onlineHours: 0,
     })
     setRecentJobs(all.slice(0,10).map(j=>({ ...j, service_name: j.service_name || "Order #"+(j.order_number||"") })))
