@@ -318,10 +318,14 @@ export default function CustomerGoService() {
         total_amount: calloutFee,
         go_callout_fee: calloutFee,
         go_callout_paid: false,
-        platform_commission: Number(selectedService.price)*(1-serviceProviderRate),
-        provider_earnings: Number(selectedService.price)*serviceProviderRate,
-        platform_commission_rate: (1-serviceProviderRate),
-        provider_commission_rate: serviceProviderRate,
+        go_service_fee: Number(selectedService.price),
+        go_service_fee_paid: false,
+        // These reflect the callout fee only - that's the only amount actually collected at this
+        // point. The service fee's own commission split happens separately when it's paid later.
+        platform_commission: Math.round(calloutFee*(1-calloutProviderRate)),
+        provider_earnings: Math.round(calloutFee*calloutProviderRate),
+        platform_commission_rate: (1-calloutProviderRate),
+        provider_commission_rate: calloutProviderRate,
         payment_method: "mpesa",
         payment_status: "pending",
         status: "pending",
@@ -335,6 +339,31 @@ export default function CustomerGoService() {
       setShowDepositPayment(false)
     } catch(e) { toast.error(e.message||"Failed to create booking") }
     finally { setPayingCallout(false) }
+  }
+  const [payingServiceFee, setPayingServiceFee] = useState(false)
+  async function payServiceFee() {
+    setPayingServiceFee(true)
+    try {
+      const { data, error } = await supabase.functions.invoke("daraja-stk-push", {
+        body: {
+          amount: booking.go_service_fee,
+          booking_id: booking.id,
+          customer_id: user.id,
+          phone: profile?.phone || "",
+          service_name: `GO Service fee - ${booking.service_name}`
+        }
+      })
+      if (error) throw error
+      if (data?.success) {
+        toast.success("STK Push sent! Check your phone for M-Pesa prompt.")
+        await supabase.functions.invoke("go-release-service-fee", { body: { booking_id: booking.id } })
+        setShowServiceFeePayment(false)
+        toast.success("Service fee paid! Thank you. 🎉")
+      } else {
+        toast.error("Payment initiation failed. Please try again.")
+      }
+    } catch(e) { toast.error(e.message||"Failed to process payment") }
+    finally { setPayingServiceFee(false) }
   }
   async function submitEmergency() {
     if (!emergencyType) return toast.error("Please select emergency type")
@@ -794,6 +823,25 @@ export default function CustomerGoService() {
             <button onClick={()=>setShowDepositPayment(false)}
               style={{ width:"100%", background:"none", border:"1px solid #dddddd", borderRadius:10, color:"#666", fontSize:13, padding:"11px", cursor:"pointer" }}>
               Cancel
+            </button>
+          </div>
+        </div>
+      )}
+      {showServiceFeePayment&&(
+        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.8)", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center", padding:"1rem" }}>
+          <div style={{ width:"100%", maxWidth:400, background:"#ffffff", border:"1px solid #1d9e7540", borderRadius:16, padding:"1.5rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#1d9e75", marginBottom:4 }}>✅ Service Complete!</div>
+            <div style={{ fontSize:12, color:"#555555", marginBottom:16, lineHeight:1.6 }}>
+              Please pay the service fee to complete this booking. This covers the actual work done by the provider.
+            </div>
+            <div style={{ background:"#f8f8f8", borderRadius:10, padding:"1rem", marginBottom:16 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, color:"#1d9e75", fontWeight:700 }}>
+                <span>Service fee</span><span>KES {Number(booking?.go_service_fee||0).toLocaleString()}</span>
+              </div>
+            </div>
+            <button onClick={payServiceFee} disabled={payingServiceFee}
+              style={{ width:"100%", background:payingServiceFee?"#555555":"#1d9e75", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:payingServiceFee?"not-allowed":"pointer", marginBottom:8 }}>
+              {payingServiceFee?"Sending M-Pesa prompt...":`Pay KES ${Number(booking?.go_service_fee||0).toLocaleString()} Service Fee`}
             </button>
           </div>
         </div>
