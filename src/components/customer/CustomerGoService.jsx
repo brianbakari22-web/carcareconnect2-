@@ -55,6 +55,11 @@ export default function CustomerGoService() {
   const [goServices, setGoServices] = useState([])
   const filteredGoServices = emergencyType && EMERGENCY_SERVICE_MAP[emergencyType]?.length ? goServices.filter(s=>EMERGENCY_SERVICE_MAP[emergencyType].some(k=>s.name?.toLowerCase().includes(k)||s.description?.toLowerCase().includes(k))).concat(goServices.filter(s=>!EMERGENCY_SERVICE_MAP[emergencyType].some(k=>s.name?.toLowerCase().includes(k)||s.description?.toLowerCase().includes(k))).map(s=>({...s,_dimmed:true}))) : goServices
   const [selectedService, setSelectedService] = useState(null)
+  // Auto-select the nearest matching GO service behind the scenes - the customer no longer
+  // manually picks a provider; the system dispatches automatically via assign-go-provider
+  useEffect(() => {
+    if (!selectedService && filteredGoServices.length > 0) setSelectedService(filteredGoServices[0])
+  }, [filteredGoServices])
 
   const [showDepositPayment, setShowDepositPayment] = useState(false)
   const [pendingGoBooking, setPendingGoBooking] = useState(null)
@@ -744,31 +749,17 @@ export default function CustomerGoService() {
         )}
       </div>
 
-      {/* Step 3 — Select GO service */}
-      <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1rem" }}>
-        <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000", marginBottom:"1rem" }}>
-          3. Select service
+      {/* Step 3 - Provider is matched automatically after payment, not selected manually */}
+      <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:12, padding:"1.25rem", marginBottom:"1rem" }}>
+        <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000", marginBottom:6 }}>
+          3. We'll find the nearest provider for you
         </div>
-        {filteredGoServices.length===0&&<div style={{ fontSize:12, color:"#777777" }}>No GO services available in your area right now</div>}
-        {filteredGoServices.map(s=>(
-          <div key={s.id} onClick={()=>setSelectedService(s)}
-            style={{ background:selectedService?.id===s.id?"#fff5f5":"#f5f5f5", border:`1px solid ${selectedService?.id===s.id?"#e24b4a":"#eeeeee"}`, borderRadius:10, padding:"0.9rem", cursor:"pointer", marginBottom:8, opacity:s._dimmed?0.5:1 }}>
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-              <div>
-                {s.profiles?.is_online&&<span style={{ fontSize:9, background:"#f0fdf4", color:"#1d9e75", border:"1px solid #1d9e7540", borderRadius:4, padding:"1px 6px", fontWeight:700, marginBottom:4, display:"inline-block" }}>🟢 Online</span>}
-                {s.profiles?.carries_parts_for_go&&<span style={{ fontSize:9, background:"#fff8f0", color:"#e6821e", border:"1px solid #e6821e40", borderRadius:4, padding:"1px 6px", fontWeight:700, marginBottom:4, display:"inline-block", marginLeft:4 }}>🔧 Carries parts</span>}
-                <div style={{ fontSize:11, color:"#777777" }}>🏪 {s.profiles?.business_name||`${s.profiles?.first_name} ${s.profiles?.last_name}`}{s._distance!=null&&` · ${s._distance.toFixed(1)}km away`}</div>
-              </div>
-                {s.profiles?.marketplace_rating>0&&<div style={{ fontSize:10, color:"#e6821e" }}>⭐ {Number(s.profiles.marketplace_rating).toFixed(1)} ({s.profiles.marketplace_review_count||0} reviews)</div>}
-              <div style={{ textAlign:"right" }}>
-                <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e" }}>KES {Number(s.price).toLocaleString()}</div>
-                {selectedService?.id===s.id&&<div style={{ fontSize:12, color:"#e24b4a", marginTop:2 }}>✓ Selected</div>}
-              </div>
-            </div>
-          </div>
-        ))}
+        <div style={{ fontSize:12, color:"#666666", lineHeight:1.6 }}>
+          {filteredGoServices.length>0
+            ? `${filteredGoServices.length} provider${filteredGoServices.length===1?"":"s"} available in your area. After payment, we'll automatically dispatch to the nearest one.`
+            : "No GO services available in your area right now."}
+        </div>
       </div>
-
       {/* Step 4 — Vehicle + details */}
       <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1.25rem", marginBottom:"1.5rem" }}>
         <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000", marginBottom:"1rem" }}>
