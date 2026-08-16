@@ -304,7 +304,8 @@ export default function CustomerGoService() {
     try {
       const { data: bk, error } = await supabase.from("bookings").insert({
         customer_id: user.id,
-        provider_id: selectedService.provider_id,
+        // provider_id intentionally left unset - assign-go-provider picks the nearest available
+        // provider automatically after this booking is created, matching the intended dispatch model
         service_id: selectedService.id,
         service_name: selectedService.name,
         service_category: "go_service",
@@ -334,8 +335,14 @@ export default function CustomerGoService() {
         go_attempt_number: 1,
       }).select().single()
       if (error) throw error
+      // Trigger automatic nearest-provider matching (system dispatch, not manual selection)
+      const { error: assignError } = await supabase.functions.invoke("assign-go-provider", { body: { booking_id: bk.id } })
+      if (assignError) {
+        console.error("Failed to start provider matching:", assignError.message)
+        toast.error("Something went wrong finding a provider. Please contact support with booking " + bk.booking_number)
+      }
       // Show Daraja payment modal
-      setPendingGoBooking({ id: bk.id, amount: calloutFee, provider_id: selectedService.provider_id })
+      setPendingGoBooking({ id: bk.id, amount: calloutFee })
       setShowDepositPayment(false)
     } catch(e) { toast.error(e.message||"Failed to create booking") }
     finally { setPayingCallout(false) }
