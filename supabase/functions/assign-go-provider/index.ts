@@ -89,6 +89,18 @@ Deno.serve(async (req) => {
         .filter(c => c.profiles && c.profiles.is_active && c.profiles.is_online && !triedIds.includes(c.provider_id))
     }
 
+    // Only match providers who actually have an available mechanic to dispatch
+    if (eligible.length) {
+      const { data: availableMechs } = await supabase
+        .from("mechanics")
+        .select("provider_id")
+        .in("provider_id", eligible.map(e => e.provider_id))
+        .eq("is_active", true)
+        .eq("is_available", true)
+      const providersWithMechanics = new Set((availableMechs || []).map(m => m.provider_id))
+      eligible = eligible.filter(e => providersWithMechanics.has(e.provider_id))
+    }
+
     if (!eligible.length) {
       // No providers online right now - retry later within the same attempt window
       await supabase.from("bookings").update({ go_attempt_number: attempt }).eq("id", booking_id)

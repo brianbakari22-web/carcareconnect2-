@@ -23,6 +23,8 @@ const TYPE_CONFIG = {
 
 export default function ProviderDashboard() {
   const { user, profile, updateProfile } = useAuth()
+  const [hasGoService, setHasGoService] = useState(false)
+  const [isOnlineGo, setIsOnlineGo] = useState(false)
   const { t, language } = useLanguage()
   const isMobile = useIsMobile()
   const fileRef = useRef(null)
@@ -81,11 +83,15 @@ export default function ProviderDashboard() {
 
   async function load() {
     setLoading(true)
-    const [{ data: bks }, { data: inv }, { data: ords }] = await Promise.all([
+    const [{ data: bks }, { data: inv }, { data: ords }, { data: goSvc }, { data: prof }] = await Promise.all([
       supabase.from("bookings").select("*").eq("provider_id", user.id).eq("is_archived", false).order("created_at",{ascending:false}).limit(10),
       supabase.from("inventory").select("*").eq("provider_id", user.id).order("created_at",{ascending:false}),
       supabase.from("orders").select("*, order_items(*)").eq("provider_id", user.id).order("created_at",{ascending:false}).limit(10),
+      supabase.from("services").select("id").eq("provider_id", user.id).eq("category","go_service").eq("is_active", true).limit(1),
+      supabase.from("profiles").select("is_online").eq("id", user.id).maybeSingle(),
     ])
+    setHasGoService((goSvc||[]).length > 0)
+    setIsOnlineGo(!!prof?.is_online)
     const b = bks||[]; const i = inv||[]; const o = ords||[]
     setBookings(b); setInventory(i); setOrders(o)
     setBookingStats({ pending:b.filter(x=>x.status==="pending").length, confirmed:b.filter(x=>x.status==="confirmed").length, completed:b.filter(x=>x.status==="completed").length, earnings:b.filter(x=>x.status==="completed").reduce((s,x)=>s+Number(x.provider_earnings||0),0) })
@@ -218,6 +224,21 @@ export default function ProviderDashboard() {
 
       <div style={{ padding:"0 1rem" }}>
 
+        {hasGoService&&!isOnlineGo&&(
+          <div style={{ background:"#fff8f0", border:"2px solid #e6821e", borderRadius:12, padding:"1rem", marginBottom:"1rem", display:"flex", alignItems:"center", justifyContent:"space-between", gap:12, flexWrap:"wrap" }}>
+            <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+              <span style={{ fontSize:22 }}>🚨</span>
+              <div>
+                <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:800, color:"#e6821e" }}>You're offline for GO Service</div>
+                <div style={{ fontSize:11, color:"#888" }}>You won't receive emergency requests until you go online</div>
+              </div>
+            </div>
+            <button onClick={()=>window.location.href="/dashboard/go-requests"}
+              style={{ background:"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 16px", cursor:"pointer" }}>
+              Go Online
+            </button>
+          </div>
+        )}
         {/* SERVICE GUARANTEE POLICY */}
         {showPolicy&&(
           <div style={{ background:"#fff5f5", border:"2px solid #e24b4a", borderRadius:12, padding:"1.25rem", marginBottom:"1rem" }}>
