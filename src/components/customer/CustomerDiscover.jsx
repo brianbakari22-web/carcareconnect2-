@@ -604,7 +604,7 @@ export default function CustomerDiscover() {
                   ))}
                 </div>
               )}
-              <button onClick={()=>{ const p = providers.find(pr=>pr.id===s.provider_id); if(p) setSelectedProvider(p) }}
+              <button onClick={()=>{ if (s.category==="go_service") { window.location.href = "/dashboard/emergency"; return } const p = providers.find(pr=>pr.id===s.provider_id); if(p) setSelectedProvider(p) }}
                 style={{ width:"100%", background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px", cursor:"pointer", marginTop:6 }}>
                 Book this service
               </button>
