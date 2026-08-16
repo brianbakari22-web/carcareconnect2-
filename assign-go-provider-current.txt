@@ -1,10 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-}
-
 function getDistance(lat1, lng1, lat2, lng2) {
   const R = 6371
   const dLat = (lat2 - lat1) * Math.PI / 180
@@ -16,33 +11,37 @@ function getDistance(lat1, lng1, lat2, lng2) {
 }
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders })
-
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL"),
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")
   )
   try {
     const { booking_id } = await req.json()
+
     const { data: booking, error: bookingError } = await supabase
       .from("bookings")
       .select("*")
       .eq("id", booking_id)
       .maybeSingle()
     if (bookingError || !booking) {
-      return new Response(JSON.stringify({ error: "Booking not found" }), { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      return new Response(JSON.stringify({ error: "Booking not found" }), { status: 404 })
     }
     if (!booking.is_emergency || booking.provider_id) {
-      return new Response(JSON.stringify({ message: "Booking already assigned or not a GO Service request" }), { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      return new Response(JSON.stringify({ message: "Booking already assigned or not a GO Service request" }))
     }
+
     const attempt = (booking.go_attempt_number || 0) + 1
     const MAX_ATTEMPTS = 5
+
+    // Get provider_ids already tried for this booking
     const { data: tried } = await supabase
       .from("go_service_requests")
       .select("provider_id")
       .eq("booking_id", booking_id)
     const triedIds = (tried || []).map(t => t.provider_id)
+
     if (attempt > MAX_ATTEMPTS) {
+      // Refund the callout fee - no provider available
       const calloutFee = Number(booking.go_callout_fee || 0)
       if (calloutFee > 0) {
         try {
@@ -66,15 +65,20 @@ Deno.serve(async (req) => {
         message: `We couldn't find an available provider for your emergency request. Your callout fee of KES ${calloutFee.toLocaleString()} has been refunded.`,
         type: "warning"
       })
-      return new Response(JSON.stringify({ message: "No provider found - refund issued" }), { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      return new Response(JSON.stringify({ message: "No provider found - refund issued" }))
     }
+
+    // Find providers offering this exact service, online, within radius, not yet tried
     const { data: candidates } = await supabase
       .from("services")
       .select("id, provider_id, price, profiles!services_provider_id_fkey(id, latitude, longitude, go_service_radius_km, is_online, is_active)")
       .eq("id", booking.service_id)
       .eq("is_active", true)
+
     let eligible = (candidates || [])
       .filter(c => c.profiles && c.profiles.is_active && c.profiles.is_online && !triedIds.includes(c.provider_id))
+
+    // Also check broader: other providers offering the SAME category service, if the original listing itself has no other candidates
     if (eligible.length === 0) {
       const { data: broaderCandidates } = await supabase
         .from("services")
@@ -84,6 +88,8 @@ Deno.serve(async (req) => {
       eligible = (broaderCandidates || [])
         .filter(c => c.profiles && c.profiles.is_active && c.profiles.is_online && !triedIds.includes(c.provider_id))
     }
+
+    // Only match providers who actually have an available mechanic to dispatch
     if (eligible.length) {
       const { data: availableMechs } = await supabase
         .from("mechanics")
@@ -94,7 +100,9 @@ Deno.serve(async (req) => {
       const providersWithMechanics = new Set((availableMechs || []).map(m => m.provider_id))
       eligible = eligible.filter(e => providersWithMechanics.has(e.provider_id))
     }
+
     if (!eligible.length) {
+      // No providers online right now - retry later within the same attempt window
       await supabase.from("bookings").update({ go_attempt_number: attempt }).eq("id", booking_id)
       await supabase.from("notifications").insert({
         user_id: booking.customer_id,
@@ -102,8 +110,9 @@ Deno.serve(async (req) => {
         message: `Attempt ${attempt}/${MAX_ATTEMPTS}: No providers online right now. We'll keep trying.`,
         type: "info"
       })
-      return new Response(JSON.stringify({ message: "No providers online, will retry" }), { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      return new Response(JSON.stringify({ message: "No providers online, will retry" }))
     }
+
     const custLat = booking.emergency_location_lat
     const custLng = booking.emergency_location_lng
     eligible.sort((a, b) => {
@@ -115,12 +124,15 @@ Deno.serve(async (req) => {
     const distance = nearest.profiles.latitude && nearest.profiles.longitude && custLat && custLng
       ? Math.round(getDistance(custLat, custLng, nearest.profiles.latitude, nearest.profiles.longitude) * 10) / 10
       : null
+
     const expiresAt = new Date(Date.now() + 15*60*1000).toISOString()
+
     await supabase.from("bookings").update({
       go_attempt_number: attempt,
       go_service_fee: Number(nearest.price),
       provider_id: nearest.provider_id,
     }).eq("id", booking_id)
+
     const { error: reqError } = await supabase.from("go_service_requests").insert({
       booking_id: booking.id,
       provider_id: nearest.provider_id,
@@ -129,8 +141,9 @@ Deno.serve(async (req) => {
     })
     if (reqError) {
       await supabase.from("failed_jobs").insert({ job_type: "go_service_request_create", error_message: reqError.message, payload: { booking_id: booking.id, provider_id: nearest.provider_id }, status: "failed" })
-      return new Response(JSON.stringify({ error: "Failed to create request", detail: reqError.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      return new Response(JSON.stringify({ error: "Failed to create request", detail: reqError.message }), { status: 500 })
     }
+
     await supabase.from("notifications").insert({
       user_id: nearest.provider_id,
       title: "🚨 Emergency GO Service request! (Attempt " + attempt + "/" + MAX_ATTEMPTS + ")",
@@ -143,15 +156,17 @@ Deno.serve(async (req) => {
       message: `Attempt ${attempt}/${MAX_ATTEMPTS}: We found a nearby provider and sent them your request.`,
       type: "info"
     })
+
     return new Response(JSON.stringify({
       message: "Provider offered job",
       provider_id: nearest.provider_id,
       attempt,
       expires_at: expiresAt,
       distance_km: distance
-    }), { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+    }), { headers: { "Content-Type": "application/json" } })
   } catch (err) {
     console.error("Error:", err.message)
-    return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+    return new Response(JSON.stringify({ error: err.message }), { status: 500 })
   }
 })
+
