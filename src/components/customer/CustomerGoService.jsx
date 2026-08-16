@@ -398,12 +398,16 @@ export default function CustomerGoService() {
       }).select().single()
       if (error) throw error
       // Create go_service_request so providers can see it
-      await supabase.from("go_service_requests").insert({
+      const { error: reqError } = await supabase.from("go_service_requests").insert({
         booking_id: bk.id,
         provider_id: selectedService.provider_id,
         status: "pending",
         attempt_number: 1,
       })
+      if (reqError) {
+        console.error("Failed to create go_service_request:", reqError.message)
+        toast.error("Dispatch issue: " + reqError.message)
+      }
       // Notify provider
       await supabase.from("notifications").insert({
         user_id: selectedService.provider_id,
