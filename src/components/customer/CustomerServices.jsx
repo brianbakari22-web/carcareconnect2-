@@ -47,6 +47,7 @@ export default function CustomerServices() {
   const [bulkVehicles, setBulkVehicles] = useState([])
   const [conciergeMultiplier, setConciergeMultiplier] = useState(1.15)
   const [transportAllowance, setTransportAllowance] = useState(200)
+  const [goServicePlatformRate, setGoServicePlatformRate] = useState(0.15)
 
   useEffect(() => { if (user) load() }, [user])
   useEffect(() => {
@@ -54,6 +55,8 @@ export default function CustomerServices() {
       .then(({ data }) => { if (data?.value) setConciergeMultiplier(1 + Number(data.value)/100) })
     supabase.from("app_settings").select("value").eq("key","driver_transport_allowance").maybeSingle()
       .then(({ data }) => { if (data?.value) setTransportAllowance(Number(data.value)) })
+    supabase.from("app_settings").select("value").eq("key","go_service_provider_rate").maybeSingle()
+      .then(({ data }) => { if (data?.value) setGoServicePlatformRate(1 - Number(data.value)/100) })
   }, [])
 
   useEffect(() => {
@@ -243,7 +246,7 @@ export default function CustomerServices() {
     setBookingLoading(true)
     try {
       const cat = CATEGORIES.find(c=>c.key===booking.category)||CATEGORIES[0]
-      const commissionRates = { shop_standard:0.10, shop_premium:0.20, go_service:0.15 }
+      const commissionRates = { shop_standard:0.10, shop_premium:0.20, go_service:goServicePlatformRate } // go_service reads the real, admin-editable go_service_provider_rate setting - kept in sync with CustomerGoService.jsx instead of a separate hardcoded value
       const platformRate = booking.platform_commission_rate!=null ? Number(booking.platform_commission_rate) : (commissionRates[booking.category]||0.10)
       const providerRate = 1 - platformRate
       const servicePriceOnly = Number(booking.price)
