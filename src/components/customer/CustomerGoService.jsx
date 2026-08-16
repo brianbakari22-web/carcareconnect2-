@@ -12,12 +12,17 @@ import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
 const EMERGENCY_SERVICE_MAP = {
-  flat_tire: ["tyre","tire","puncture","wheel","flat"],
-  dead_battery: ["battery","jump","start","electrical"],
-  out_of_fuel: ["fuel","petrol","diesel","gas"],
-  car_wont_start: ["battery","electrical","ignition","start","mechanical"],
-  overheating: ["cooling","overheat","radiator","water","temperature","diagnosis"],
-  towing: ["tow","towing","recovery","transport"],
+  flat_tire: ["tyre","tire","puncture","wheel","flat","rim","valve"],
+  dead_battery: ["battery","jump","start","electrical","charge","alternator"],
+  out_of_fuel: ["fuel","petrol","diesel","gas","empty tank"],
+  car_wont_start: ["battery","electrical","ignition","start","mechanical","starter","spark"],
+  overheating: ["cooling","overheat","radiator","water","temperature","diagnosis","coolant"],
+  towing: ["tow","towing","recovery","transport","haul"],
+  locked_out: ["lock","key","locked","locksmith","door"],
+  accident: ["accident","collision","crash","dent","body","panel"],
+  brake_failure: ["brake","braking","pad","disc","rotor"],
+  warning_light: ["diagnostic","diagnosis","scan","warning","light","check engine","computer"],
+  windshield_damage: ["windshield","windscreen","glass","crack","chip"],
   other: []
 }
 
@@ -28,6 +33,11 @@ const EMERGENCY_TYPES = [
   { key:"car_wont_start", label:"Car won't start", icon:"key" },
   { key:"overheating", label:"Overheating", icon:"overheat" },
   { key:"towing", label:"Need towing", icon:"towing" },
+  { key:"locked_out", label:"Locked out", icon:"key" },
+  { key:"accident", label:"Accident/collision", icon:"emergency" },
+  { key:"brake_failure", label:"Brake failure", icon:"emergency" },
+  { key:"warning_light", label:"Warning light on", icon:"overheat" },
+  { key:"windshield_damage", label:"Windshield damage", icon:"parts" },
   { key:"other", label:"Other emergency", icon:"emergency" },
 ]
 
@@ -53,7 +63,14 @@ export default function CustomerGoService() {
   const [timeLeft, setTimeLeft] = useState(null)
   const [activeGoBookings, setActiveGoBookings] = useState([])
   const [goServices, setGoServices] = useState([])
-  const filteredGoServices = emergencyType && EMERGENCY_SERVICE_MAP[emergencyType]?.length ? goServices.filter(s=>EMERGENCY_SERVICE_MAP[emergencyType].some(k=>s.name?.toLowerCase().includes(k)||s.description?.toLowerCase().includes(k))).concat(goServices.filter(s=>!EMERGENCY_SERVICE_MAP[emergencyType].some(k=>s.name?.toLowerCase().includes(k)||s.description?.toLowerCase().includes(k))).map(s=>({...s,_dimmed:true}))) : goServices
+  const [searchText, setSearchText] = useState("")
+  const searchWords = searchText.trim().toLowerCase().split(/\s+/).filter(Boolean)
+  const emergencyKeywords = emergencyType ? (EMERGENCY_SERVICE_MAP[emergencyType]||[]) : []
+  const allKeywords = [...emergencyKeywords, ...searchWords]
+  const matchesService = (s) => allKeywords.some(k=>s.name?.toLowerCase().includes(k)||s.description?.toLowerCase().includes(k))
+  const filteredGoServices = allKeywords.length
+    ? goServices.filter(matchesService).concat(goServices.filter(s=>!matchesService(s)).map(s=>({...s,_dimmed:true})))
+    : goServices
   const [selectedService, setSelectedService] = useState(null)
   // Auto-select the nearest matching GO service behind the scenes - the customer no longer
   // manually picks a provider; the system dispatches automatically via assign-go-provider
@@ -708,6 +725,9 @@ export default function CustomerGoService() {
         <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:700, color:"#000000", marginBottom:"1rem" }}>
           1. What is your emergency?
         </div>
+        <input value={searchText} onChange={e=>setSearchText(e.target.value)}
+          placeholder="Or describe it in your own words - e.g. 'grinding noise when I brake'..."
+          style={{ width:"100%", background:"#f8f8f8", border:"1px solid #e5e5e5", borderRadius:8, padding:"10px 12px", color:"#000000", fontSize:12, outline:"none", fontFamily:"'DM Sans',sans-serif", marginBottom:12, boxSizing:"border-box" }}/>
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)", gap:8 }}>
           {EMERGENCY_TYPES.map(e=>(
             <button key={e.key} onClick={()=>setEmergencyType(e.key)}
