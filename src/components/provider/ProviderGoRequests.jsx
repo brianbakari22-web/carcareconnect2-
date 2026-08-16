@@ -22,9 +22,12 @@ export default function ProviderGoRequests() {
   const [selectedPart, setSelectedPart] = useState(null)
   const [partQty, setPartQty] = useState(1)
   const [requestingPart, setRequestingPart] = useState(false)
+  const [isOnline, setIsOnline] = useState(false)
+  const [togglingOnline, setTogglingOnline] = useState(false)
 
   useEffect(() => {
     if (!user) return
+    supabase.from("profiles").select("is_online").eq("id", user.id).maybeSingle().then(({data}) => { if (data) setIsOnline(!!data.is_online) })
     load()
     requestPushPermission()
     const sub = supabase.channel("provider-go-requests")
@@ -260,8 +263,28 @@ export default function ProviderGoRequests() {
 
   const EMERGENCY_ICONS = { flat_tire:"🛞", dead_battery:"🔋", out_of_fuel:"⛽", car_wont_start:"🔑", overheating:"🌡️", towing:"🚚", other:"🚗" }
 
+  async function toggleOnline() {
+    setTogglingOnline(true)
+    const next = !isOnline
+    const { error } = await supabase.from("profiles").update({ is_online: next }).eq("id", user.id)
+    if (error) { toast.error(error.message) } else { setIsOnline(next); toast.success(next ? "You're online - ready for GO Service requests" : "You're offline") }
+    setTogglingOnline(false)
+  }
   return (
     <div>
+      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", background:isOnline?"#f0fdf4":"#f5f5f5", border:`1px solid ${isOnline?"#1d9e7540":"#dddddd"}`, borderRadius:12, padding:"0.9rem 1rem", marginBottom:"1.5rem" }}>
+        <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+          <div style={{ width:10, height:10, borderRadius:"50%", background:isOnline?"#1d9e75":"#999", boxShadow:isOnline?"0 0 8px #1d9e75":"none" }}/>
+          <div>
+            <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:isOnline?"#1d9e75":"#555" }}>{isOnline?"Online - receiving GO requests":"Offline"}</div>
+            <div style={{ fontSize:11, color:"#888" }}>{isOnline?"Customers can be matched to you":"Go online to start receiving emergency requests"}</div>
+          </div>
+        </div>
+        <button onClick={toggleOnline} disabled={togglingOnline}
+          style={{ background:isOnline?"#e24b4a":"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 16px", cursor:togglingOnline?"not-allowed":"pointer" }}>
+          {togglingOnline?"...":isOnline?"Go Offline":"Go Online"}
+        </button>
+      </div>
       {pending.length > 0 && (
         <div style={{ background:"#fff5f5", border:"2px solid #e24b4a", borderRadius:12, padding:"1rem", marginBottom:"1.5rem" }}>
           <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:10 }}>
