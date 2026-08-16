@@ -583,7 +583,7 @@ export default function CustomerServices() {
                   {provider?.is_verified&&<span style={{ fontSize:10, color:"#1d9e75" }}>✓ Verified</span>}
                 </div>
               </div>
-              <button onClick={()=>{ setBooking(s); setBookForm({ date:"", time:"", notes:"", payment_method:"mpesa", is_concierge:false }) }}
+              <button onClick={()=>{ if (s.category==="go_service") { window.location.href = "/dashboard/emergency"; return } setBooking(s); setBookForm({ date:"", time:"", notes:"", payment_method:"mpesa", is_concierge:false }) }}
                 style={{ background:"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 16px", cursor:"pointer", flexShrink:0 }}>
                 Book
               </button>
