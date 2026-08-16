@@ -807,10 +807,10 @@ export default function CustomerGoService() {
                 <span>Emergency type</span><span style={{ color:"#000000" }}>{emergencyType.replace(/_/g," ")}</span>
               </div>
               <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#555555", marginBottom:6 }}>
-                <span>Service provider</span><span style={{ color:"#000000" }}>{selectedService?.profiles?.business_name||selectedService?.profiles?.first_name}</span>
+                <span>Provider</span><span style={{ color:"#000000" }}>Nearest available (auto-assigned)</span>
               </div>
               <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#555555", marginBottom:6 }}>
-                <span>Service fee</span><span style={{ color:"#000000" }}>KES {Number(selectedService?.price||0).toLocaleString()}</span>
+                <span>Service fee</span><span style={{ color:"#000000" }}>Set by assigned provider</span>
               </div>
               <div style={{ height:1, background:"#f0f0f0", margin:"8px 0" }}/>
               <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, color:"#e6821e", fontWeight:700 }}>
