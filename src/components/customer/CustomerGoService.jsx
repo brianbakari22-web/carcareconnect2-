@@ -653,10 +653,9 @@ export default function CustomerGoService() {
           <div style={{ fontSize:11, color:"#555", lineHeight:1.6 }}>Never pay the mechanic directly. All payments go through CCC for your protection. Direct payments void your warranty and refund rights.</div>
         </div>
         <div style={{ background:"#fff", border:"1px solid #eee", borderRadius:12, padding:"1rem", marginBottom:"1rem" }}>
-          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8 }}>Has the provider arrived?</div>
-          <div style={{ fontSize:11, color:"#888", marginBottom:12 }}>Confirming arrival releases KES {Math.round(calloutFee*calloutProviderRate)} to the provider. CCC retains KES {Math.round(calloutFee*(1-calloutProviderRate))}.</div>
+          <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, marginBottom:8 }}>Confirming your mechanic</div>
+          <div style={{ fontSize:11, color:"#888", marginBottom:12, lineHeight:1.6 }}>When your mechanic arrives, they'll ask you for a verification code. Check your notifications for a 4-digit code and read it to them - this confirms it's genuinely your assigned mechanic before releasing payment.</div>
           <div style={{ display:"flex", gap:8 }}>
-            <button onClick={async()=>{ const {error} = await supabase.from("bookings").update({ go_provider_arrived:true, go_arrival_confirmed_at:new Date().toISOString() }).eq("id",booking?.id); if(!error){ await supabase.functions.invoke("go-release-escrow",{body:{booking_id:booking?.id}}); toast.success("Confirmed! Provider payment released. 💰") } else { toast.error(error.message) } }} style={{ flex:1, background:"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"10px", cursor:"pointer" }}>✅ Yes, arrived</button>
             <button onClick={async()=>{ await supabase.from("go_provider_strikes").insert({ provider_id:booking?.provider_id, booking_id:booking?.id, reason:"no_show" }); await supabase.functions.invoke("go-refund-callout",{body:{booking_id:booking?.id, customer_id:user.id}}); toast.error("No-show reported. Refund initiated. 💸") }} style={{ flex:1, background:"#fff5f5", border:"1px solid #fecaca", borderRadius:8, color:"#e24b4a", fontSize:12, fontWeight:700, padding:"10px", cursor:"pointer" }}>❌ No show</button>
           </div>
         </div>

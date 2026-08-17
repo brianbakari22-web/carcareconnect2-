@@ -68,21 +68,25 @@ Deno.serve(async (req) => {
       })
       return new Response(JSON.stringify({ message: "No provider found - refund issued" }), { headers: { ...corsHeaders, "Content-Type": "application/json" } })
     }
-    const { data: candidates } = await supabase
+    const { data: candidates, error: candErr } = await supabase
       .from("services")
       .select("id, provider_id, price, profiles!services_provider_id_fkey(id, latitude, longitude, go_service_radius_km, is_online, is_active)")
       .eq("id", booking.service_id)
       .eq("is_active", true)
+    console.log("CANDIDATES QUERY:", { service_id: booking.service_id, candidates, candErr })
     let eligible = (candidates || [])
       .filter(c => c.profiles && c.profiles.is_active && c.profiles.is_online && !triedIds.includes(c.provider_id))
+    console.log("ELIGIBLE AFTER FIRST FILTER:", eligible.length, "triedIds:", triedIds)
     if (eligible.length === 0) {
-      const { data: broaderCandidates } = await supabase
+      const { data: broaderCandidates, error: broadErr } = await supabase
         .from("services")
         .select("id, provider_id, price, profiles!services_provider_id_fkey(id, latitude, longitude, go_service_radius_km, is_online, is_active)")
         .eq("category", "go_service")
         .eq("is_active", true)
+      console.log("BROADER CANDIDATES QUERY:", { broaderCandidates, broadErr })
       eligible = (broaderCandidates || [])
         .filter(c => c.profiles && c.profiles.is_active && c.profiles.is_online && !triedIds.includes(c.provider_id))
+      console.log("ELIGIBLE AFTER BROADER FILTER:", eligible.length)
     }
     if (eligible.length) {
       const { data: availableMechs } = await supabase
