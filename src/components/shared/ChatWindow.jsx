@@ -252,16 +252,18 @@ export default function ChatWindow({ bookingId, listingId, inventoryId, claimId,
 
     setMessages(prev => prev.map(m => m.id===tempId ? { ...(insertedRows||m), _pending:false } : m))
     // Notify the recipient so they get a push/in-app alert, not just a silent unread badge
-    try {
-      if (!otherUserId) return
-      if (senderIsMechanic) return // mechanic_send_chat_message RPC already created this notification safely
-      await supabase.from("notifications").insert({
-        user_id: otherUserId,
-        title: "New message \uD83D\uDCAC",
-        message: hasContactInfo(messageText) ? "New message received" : messageText.length > 80 ? messageText.slice(0, 80) + "..." : messageText,
-        type: "info"
-      })
-    } catch(err) { console.warn("Notification send failed (non-critical):", err?.message) }
+    // mechanic_send_chat_message RPC already created this notification safely - skip the direct
+    // insert (which would fail via RLS anyway) for that path
+    if (otherUserId && !senderIsMechanic) {
+      try {
+        await supabase.from("notifications").insert({
+          user_id: otherUserId,
+          title: "New message \uD83D\uDCAC",
+          message: hasContactInfo(messageText) ? "New message received" : messageText.length > 80 ? messageText.slice(0, 80) + "..." : messageText,
+          type: "info"
+        })
+      } catch(err) { console.warn("Notification send failed (non-critical):", err?.message) }
+    }
     setSending(false)
 
 
