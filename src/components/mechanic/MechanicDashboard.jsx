@@ -265,8 +265,9 @@ export default function MechanicDashboard() {
     }
     if (status === "completed") {
       const job = jobs.find(j=>j.id===jobId)
+      const isGoServiceAwaitingPayment = job?.service_category==="go_service"
       if(job?.customer_id) {
-        if(job.service_category==="go_service") {
+        if(isGoServiceAwaitingPayment) {
           await supabase.functions.invoke("go-request-service-payment", { body: { booking_id: jobId } })
         } else {
           await supabase.from("notifications").insert({
@@ -277,9 +278,14 @@ export default function MechanicDashboard() {
           })
         }
       }
-      setActiveJob(null)
-      stopSharing()
-      if (timerRef) { clearInterval(timerRef); setTimerRef(null) }
+      // Keep the job card visible for GO Service jobs awaiting the customer's payment -
+      // only clear it once the fee is genuinely confirmed paid (job leaves the active list
+      // entirely once get_mechanic_jobs stops returning it, i.e. go_service_fee_paid becomes true)
+      if (!isGoServiceAwaitingPayment) {
+        setActiveJob(null)
+        stopSharing()
+        if (timerRef) { clearInterval(timerRef); setTimerRef(null) }
+      }
       loadEarnings()
       loadHistory()
     }
