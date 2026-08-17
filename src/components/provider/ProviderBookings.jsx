@@ -324,6 +324,12 @@ export default function ProviderBookings() {
                 {b.booking_number&&<div style={{ fontSize:10, color:"#888888", marginTop:2 }}>#{b.booking_number}</div>}
                 {b.problem_description&&<div style={{ fontSize:11, color:"#555555", marginTop:4, fontStyle:"italic" }}>&quot;{b.problem_description}&quot;</div>}
                 {b.assigned_mechanic_id&&<div style={{ fontSize:11, color:"#1d9e75", marginTop:2, display:"flex", alignItems:"center", gap:3 }}><MechanicIcon size={11} color="#1d9e75"/> Mechanic assigned</div>}
+                {(b.before_photo_url||b.after_photo_url)&&(
+                  <div style={{ display:"flex", gap:6, marginTop:6 }}>
+                    {b.before_photo_url&&<img src={b.before_photo_url} alt="Before" style={{ width:44, height:44, objectFit:"cover", borderRadius:6, border:"1px solid #eee" }}/>}
+                    {b.after_photo_url&&<img src={b.after_photo_url} alt="After" style={{ width:44, height:44, objectFit:"cover", borderRadius:6, border:"1px solid #eee" }}/>}
+                  </div>
+                )}
                 {b.parts_details?.length>0&&(
                   <div style={{ fontSize:11, color:b.parts_approved?"#1d9e75":"#e6821e", marginTop:2 }}>
                     <ServicesIcon size={11} color="currentColor"/> Parts: {b.parts_details.length} item{b.parts_details.length!==1?"s":""} · {b.parts_approved?"✓ Approved":"Awaiting approval"}

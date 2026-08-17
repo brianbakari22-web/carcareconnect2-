@@ -573,6 +573,25 @@ export default function CustomerGoService() {
           <div style={{ fontSize:11, color:"#777777", marginBottom:6 }}>Booking reference</div>
           <div style={{ fontSize:13, color:"#000000", fontFamily:"monospace" }}>#{booking?.booking_number}</div>
         </div>
+        {(booking?.before_photo_url||booking?.after_photo_url)&&(
+          <div style={{ background:"#ffffff", borderRadius:10, padding:"1rem", textAlign:"left", marginBottom:"1rem" }}>
+            <div style={{ fontSize:11, color:"#777777", marginBottom:8 }}>Vehicle condition photos</div>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
+              {booking?.before_photo_url&&(
+                <div>
+                  <img src={booking.before_photo_url} alt="Before" style={{ width:"100%", height:100, objectFit:"cover", borderRadius:8, border:"1px solid #eee" }}/>
+                  <div style={{ fontSize:10, color:"#888", marginTop:4, textAlign:"center" }}>Before</div>
+                </div>
+              )}
+              {booking?.after_photo_url&&(
+                <div>
+                  <img src={booking.after_photo_url} alt="After" style={{ width:"100%", height:100, objectFit:"cover", borderRadius:8, border:"1px solid #eee" }}/>
+                  <div style={{ fontSize:10, color:"#888", marginTop:4, textAlign:"center" }}>After</div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
         {goPartsRequests.length>0&&(
           <div style={{ background:"#f3f0ff", border:"1px solid #8b5cf640", borderRadius:12, padding:"1rem", marginBottom:"1rem", textAlign:"left" }}>
             <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#8b5cf6", marginBottom:8 }}>🔧 Parts Request</div>

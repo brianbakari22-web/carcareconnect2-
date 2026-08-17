@@ -186,6 +186,12 @@ export default function AdminBookings() {
                 🏪 {b.provider?.business_name||`${b.provider?.first_name} ${b.provider?.last_name}`}
               </div>
               <div style={{ fontSize:10, color:"#aaa", marginTop:2 }}>#{b.booking_number} · {b.booking_date} {b.booking_time?.slice(0,5)}</div>
+              {(b.before_photo_url||b.after_photo_url)&&(
+                <div style={{ display:"flex", gap:6, marginTop:6 }}>
+                  {b.before_photo_url&&<img src={b.before_photo_url} alt="Before" style={{ width:40, height:40, objectFit:"cover", borderRadius:6, border:"1px solid #eee" }}/>}
+                  {b.after_photo_url&&<img src={b.after_photo_url} alt="After" style={{ width:40, height:40, objectFit:"cover", borderRadius:6, border:"1px solid #eee" }}/>}
+                </div>
+              )}
             </div>
             <div style={{ textAlign:"right", flexShrink:0 }}>
               <span style={{ fontSize:10, padding:"2px 8px", borderRadius:10, background:SB[b.status]||"#f8f8f8", color:SC[b.status]||"#888", border:`1px solid ${SC[b.status]||"#888"}30`, display:"block", marginBottom:4 }}>{b.status}</span>
