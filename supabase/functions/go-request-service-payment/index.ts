@@ -55,7 +55,6 @@ serve(async (req) => {
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
-        "apikey": Deno.env.get("SUPABASE_ANON_KEY")!,
       },
       body: JSON.stringify({
         amount: serviceAmount,
@@ -68,7 +67,8 @@ serve(async (req) => {
     })
 
     const stkData = await stkRes.json()
-    if (!stkRes.ok) throw new Error(stkData.error || "STK push failed")
+    console.log("STK PUSH RESPONSE:", { status: stkRes.status, ok: stkRes.ok, stkData })
+    if (!stkRes.ok) throw new Error(JSON.stringify(stkData) || "STK push failed")
 
     // Notify customer
     await supabase.from("notifications").insert({
