@@ -13,7 +13,6 @@ import DarajaPayment from "../shared/DarajaPayment"
 const CATEGORIES = [
   { key:"shop_standard", label:"Shop Standard", icon:"marketplace", desc:"You bring your car to the shop", color:"#378add", bg:"#eff6ff", border:"#bfdbfe" },
   { key:"shop_premium", label:"Shop Premium", icon:"home", desc:"Mechanic comes to your home", color:"#8b5cf6", bg:"#faf5ff", border:"#e9d5ff" },
-  { key:"go_service", label:"GO Service", icon:"emergency", desc:"Emergency roadside assistance", color:"#e24b4a", bg:"#fff5f5", border:"#fecaca" },
 ]
 
 export default function CustomerServices() {
