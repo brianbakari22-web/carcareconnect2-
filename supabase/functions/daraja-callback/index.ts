@@ -52,6 +52,7 @@ serve(async (req) => {
         if (txn?.booking_id) {
           const { data: bk } = await supabase.from("bookings").select("is_emergency, status, go_service_fee_paid").eq("id", txn.booking_id).maybeSingle()
           const isGoServiceFeePayment = bk?.is_emergency && bk?.status === "completed" && !bk?.go_service_fee_paid
+          const isGoCalloutPayment = bk?.is_emergency && bk?.status === "pending"
           if (isGoServiceFeePayment) {
             // This is the service fee payment, not the initial callout fee - the booking is already
             // "completed" and must stay that way. Trigger the actual provider payout instead.
@@ -62,6 +63,12 @@ serve(async (req) => {
               body: JSON.stringify({ booking_id: txn.booking_id })
             })
             console.log("GO service fee release triggered:", txn.booking_id, releaseRes.status)
+          } else if (isGoCalloutPayment) {
+            // Initial GO Service callout fee payment - the booking must stay "pending" so the
+            // provider-matching system (assign-go-provider / check-expired-go-requests) can
+            // still work. Only mark payment as held, do not touch status here at all.
+            await supabase.from("bookings").update({ payment_held: true }).eq("id", txn.booking_id)
+            console.log("GO callout fee payment held (status stays pending):", txn.booking_id)
           } else {
             await supabase.from("bookings").update({
               payment_held: true,
