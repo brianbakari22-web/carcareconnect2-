@@ -529,7 +529,7 @@ export default function CustomerDiscover() {
           )}
           <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(200px,1fr))", gap:10 }}>
             {providerServices(selectedProvider.id).map(s=>(
-              <div key={s.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem" }}>
+              <div key={s.id} onClick={()=>navigate(`/dashboard/services?service=${s.id}`)} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", cursor:"pointer" }}>
                 <div style={{ fontSize:11, color:"#777777", marginBottom:4 }}>{s.category}</div>
                 <div style={{ fontSize:14, fontWeight:600, color:"#000000", marginBottom:4 }}>{s.name}</div>
                 {s.description&&<div style={{ fontSize:11, color:"#666", marginBottom:8, lineHeight:1.5 }}>{s.description.slice(0,80)}{s.description.length>80?"...":""}</div>}
@@ -604,7 +604,7 @@ export default function CustomerDiscover() {
                   ))}
                 </div>
               )}
-              <button onClick={()=>{ if (s.category==="go_service") { window.location.href = "/dashboard/emergency"; return } const p = providers.find(pr=>pr.id===s.provider_id); if(p) setSelectedProvider(p) }}
+              <button onClick={()=>{ if (s.category==="go_service") { window.location.href = "/dashboard/emergency"; return } navigate(`/dashboard/services?service=${s.id}`) }}
                 style={{ width:"100%", background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px", cursor:"pointer", marginTop:6 }}>
                 Book this service
               </button>
