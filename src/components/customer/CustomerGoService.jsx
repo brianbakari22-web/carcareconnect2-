@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { supabase } from "../../lib/supabase"
+import * as Sentry from "@sentry/react"
 import { PartsIcon, BatteryIcon, FuelIcon, KeyIcon, OverheatIcon, TowingIcon, GOServiceIcon, LocationIcon, VehicleIcon, SearchIcon, WarningIcon, PhoneCallIcon, SignalIcon, CheckIcon, CloseIcon } from "../../lib/cccIcons"
 import DarajaPayment from "../shared/DarajaPayment"
 import { applyRateLimit, RATE_LIMITS } from "../../lib/rateLimit"
@@ -324,6 +325,8 @@ export default function CustomerGoService() {
   async function payCalloutFee() {
     setPayingCallout(true)
     try {
+      Sentry.captureMessage("GO_CREATE_PROOF: about to insert booking with status=pending, no provider_id", { level: "info" })
+      console.log("GO CREATE PATH - PROOF-2026-08-17-02: about to insert with status=pending")
       const { data: bk, error } = await supabase.from("bookings").insert({
         customer_id: user.id,
         // provider_id intentionally left unset - assign-go-provider picks the nearest available
@@ -357,6 +360,8 @@ export default function CustomerGoService() {
         go_attempt_number: 1,
       }).select().single()
       if (error) throw error
+      Sentry.captureMessage("GO_CREATE_PROOF: booking created", { level: "info", extra: { bookingId: bk?.id, bookingNumber: bk?.booking_number, actualStatus: bk?.status, actualProviderId: bk?.provider_id } })
+      console.log("GO CREATE PROOF - booking returned from DB:", { id: bk?.id, status: bk?.status, provider_id: bk?.provider_id })
       // Trigger automatic nearest-provider matching (system dispatch, not manual selection)
       const { data: assignData, error: assignError } = await supabase.functions.invoke("assign-go-provider", { body: { booking_id: bk.id } })
       console.log("GO DISPATCH RESULT:", { bookingId: bk.id, bookingNumber: bk.booking_number, assignData, assignError })
