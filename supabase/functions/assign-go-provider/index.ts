@@ -15,6 +15,27 @@ function getDistance(lat1, lng1, lat2, lng2) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
 }
 
+const EMERGENCY_SERVICE_MAP = {
+  flat_tire: ["tyre","tire","puncture","wheel","flat","rim","valve"],
+  dead_battery: ["battery","jump","start","electrical","charge","alternator"],
+  out_of_fuel: ["fuel","petrol","diesel","gas","empty tank"],
+  car_wont_start: ["battery","electrical","ignition","start","mechanical","starter","spark"],
+  overheating: ["cooling","overheat","radiator","water","temperature","diagnosis","coolant"],
+  towing: ["tow","towing","recovery","transport","haul"],
+  locked_out: ["lock","key","locked","locksmith","door"],
+  accident: ["accident","collision","crash","dent","body","panel"],
+  brake_failure: ["brake","braking","pad","disc","rotor"],
+  warning_light: ["diagnostic","diagnosis","scan","warning","light","check engine","computer"],
+  windshield_damage: ["windshield","windscreen","glass","crack","chip"],
+  other: [],
+}
+function matchesEmergencyType(emergencyType, name, description) {
+  const keywords = EMERGENCY_SERVICE_MAP[emergencyType]
+  if (!keywords || !keywords.length) return true // "other" or unknown type - don't restrict
+  const text = ((name||"") + " " + (description||"")).toLowerCase()
+  return keywords.some(k => text.includes(k))
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders })
 
@@ -70,22 +91,22 @@ Deno.serve(async (req) => {
     }
     const { data: candidates, error: candErr } = await supabase
       .from("services")
-      .select("id, provider_id, price, profiles!services_provider_id_fkey(id, latitude, longitude, go_service_radius_km, is_online, is_active, is_verified)")
+      .select("id, provider_id, price, name, description, profiles!services_provider_id_fkey(id, latitude, longitude, go_service_radius_km, is_online, is_active, is_verified)")
       .eq("id", booking.service_id)
       .eq("is_active", true)
     console.log("CANDIDATES QUERY:", { service_id: booking.service_id, candidates, candErr })
     let eligible = (candidates || [])
-      .filter(c => c.profiles && c.profiles.is_active && c.profiles.is_online && c.profiles.is_verified && !triedIds.includes(c.provider_id))
+      .filter(c => c.profiles && c.profiles.is_active && c.profiles.is_online && c.profiles.is_verified && !triedIds.includes(c.provider_id) && matchesEmergencyType(booking.emergency_type, c.name, c.description))
     console.log("ELIGIBLE AFTER FIRST FILTER:", eligible.length, "triedIds:", triedIds)
     if (eligible.length === 0) {
       const { data: broaderCandidates, error: broadErr } = await supabase
         .from("services")
-        .select("id, provider_id, price, profiles!services_provider_id_fkey(id, latitude, longitude, go_service_radius_km, is_online, is_active, is_verified)")
+        .select("id, provider_id, price, name, description, profiles!services_provider_id_fkey(id, latitude, longitude, go_service_radius_km, is_online, is_active, is_verified)")
         .eq("category", "go_service")
         .eq("is_active", true)
       console.log("BROADER CANDIDATES QUERY:", { broaderCandidates, broadErr })
       eligible = (broaderCandidates || [])
-        .filter(c => c.profiles && c.profiles.is_active && c.profiles.is_online && c.profiles.is_verified && !triedIds.includes(c.provider_id))
+        .filter(c => c.profiles && c.profiles.is_active && c.profiles.is_online && c.profiles.is_verified && !triedIds.includes(c.provider_id) && matchesEmergencyType(booking.emergency_type, c.name, c.description))
       console.log("ELIGIBLE AFTER BROADER FILTER:", eligible.length)
     }
     if (eligible.length) {
