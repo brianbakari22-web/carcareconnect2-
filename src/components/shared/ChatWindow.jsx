@@ -6,7 +6,7 @@ import { useLanguage } from "../../contexts/LanguageContext"
 import toast from "react-hot-toast"
 import { applyRateLimit, RATE_LIMITS } from "../../lib/rateLimit"
 
-export default function ChatWindow({ bookingId, listingId, inventoryId, claimId, mechanicId, otherUserId, otherUserName, overrideUserId, onClose, title }) {
+export default function ChatWindow({ bookingId, listingId, inventoryId, claimId, mechanicId, senderIsMechanic, otherUserId, otherUserName, overrideUserId, onClose, title }) {
   const { user } = useAuth()
   const effectiveUserId = overrideUserId != null ? overrideUserId : user?.id
   const { t } = useLanguage()
@@ -201,7 +201,7 @@ export default function ChatWindow({ bookingId, listingId, inventoryId, claimId,
     setMessages(prev => [...prev, optimistic])
 
     let insertedRows, error
-    if (mechanicId) {
+    if (senderIsMechanic && mechanicId) {
       // Mechanics use PIN auth, not real Supabase auth sessions, so the normal RLS-protected
       // insert (which checks sender_id = auth.uid()) always fails for them. Use a dedicated,
       // verified RPC instead that bypasses RLS safely after confirming the mechanic's identity.

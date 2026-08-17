@@ -718,6 +718,7 @@ export default function MechanicDashboard() {
                           <ChatWindow
                             bookingId={job.id}
                             mechanicId={mechanic.mechanic_id}
+                            senderIsMechanic={true}
                             otherUserId={job.customer_id}
                             overrideUserId={mechanic.user_id}
                             otherUserName={(job.profiles?.first_name||"") + " " + (job.profiles?.last_name||"")}
@@ -1129,6 +1130,7 @@ export default function MechanicDashboard() {
             <ChatWindow
               bookingId={null}
               mechanicId={mechanic?.mechanic_id}
+              senderIsMechanic={true}
               otherUserId={mechanic?.provider_id}
               overrideUserId={mechanic?.user_id}
               otherUserName={mechanic?.business_name||"Garage Manager"}
