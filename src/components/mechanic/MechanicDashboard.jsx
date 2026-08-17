@@ -22,6 +22,7 @@ export default function MechanicDashboard() {
   const [tab, setTab] = useState("jobs")
   const [jobs, setJobs] = useState([])
   const [history, setHistory] = useState([])
+  const [selectedHistoryJob, setSelectedHistoryJob] = useState(null)
   const [loading, setLoading] = useState(true)
   const [activeJob, setActiveJob] = useState(null)
   const [sharing, setSharing] = useState(false)
@@ -796,7 +797,7 @@ export default function MechanicDashboard() {
               </div>
             )}
             {history.map(job=>(
-              <div key={job.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem", marginBottom:8 }}>
+              <div key={job.id} onClick={()=>setSelectedHistoryJob(job)} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:12, padding:"1rem", marginBottom:8, cursor:"pointer" }}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                   <div>
                     <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:"#000" }}>{job.services?.name||job.service_name}</div>
@@ -1162,6 +1163,45 @@ export default function MechanicDashboard() {
               </div>
             )}
             <button onClick={()=>setShowCCCParts(null)} style={{ width:"100%", background:"none", border:"1px solid #ddd", borderRadius:10, color:"#666", fontSize:13, padding:"11px", cursor:"pointer", marginTop:8 }}>Cancel</button>
+          </div>
+        </div>
+      )}
+      {selectedHistoryJob&&(
+        <div onClick={()=>setSelectedHistoryJob(null)} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.8)", zIndex:300, display:"flex", alignItems:"center", justifyContent:"center", padding:"1rem" }}>
+          <div onClick={(e)=>e.stopPropagation()} style={{ width:"100%", maxWidth:400, maxHeight:"85vh", overflowY:"auto", background:"#ffffff", borderRadius:16, padding:"1.5rem" }}>
+            <div style={{ fontFamily:"Syne", fontSize:16, fontWeight:800, color:"#000", marginBottom:4 }}>{selectedHistoryJob.services?.name||selectedHistoryJob.service_name}</div>
+            <div style={{ fontSize:12, color:"#555", marginBottom:2 }}>{selectedHistoryJob.profiles?.first_name} {selectedHistoryJob.profiles?.last_name}</div>
+            <div style={{ fontSize:11, color:"#888", marginBottom:12 }}>📅 {selectedHistoryJob.booking_date} · #{selectedHistoryJob.booking_number}</div>
+            {(selectedHistoryJob.before_photo_url||selectedHistoryJob.after_photo_url)&&(
+              <div style={{ marginBottom:12 }}>
+                <div style={{ fontSize:11, color:"#777777", marginBottom:8 }}>Vehicle condition photos</div>
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
+                  {selectedHistoryJob.before_photo_url&&(
+                    <div>
+                      <img src={selectedHistoryJob.before_photo_url} alt="Before" style={{ width:"100%", height:120, objectFit:"cover", borderRadius:8, border:"1px solid #eee" }}/>
+                      <div style={{ fontSize:10, color:"#888", marginTop:4, textAlign:"center" }}>Before</div>
+                    </div>
+                  )}
+                  {selectedHistoryJob.after_photo_url&&(
+                    <div>
+                      <img src={selectedHistoryJob.after_photo_url} alt="After" style={{ width:"100%", height:120, objectFit:"cover", borderRadius:8, border:"1px solid #eee" }}/>
+                      <div style={{ fontSize:10, color:"#888", marginTop:4, textAlign:"center" }}>After</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            {selectedHistoryJob.mechanic_notes&&(
+              <div style={{ marginBottom:12 }}>
+                <div style={{ fontSize:11, color:"#777777", marginBottom:6 }}>Your notes</div>
+                <div style={{ fontSize:12, color:"#333", background:"#f8f8f8", borderRadius:8, padding:"0.75rem" }}>{selectedHistoryJob.mechanic_notes}</div>
+              </div>
+            )}
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", background:"#f0fdf4", borderRadius:10, padding:"0.75rem 1rem", marginBottom:12 }}>
+              <span style={{ fontSize:12, color:"#555" }}>Your earnings</span>
+              <span style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#1d9e75" }}>KES {Math.round(mechanic.commission_type==="fixed" ? Number(mechanic.commission_rate||0) : Number(selectedHistoryJob.provider_earnings||0)*(Number(mechanic.commission_rate||15)/100)).toLocaleString()}</span>
+            </div>
+            <button onClick={()=>setSelectedHistoryJob(null)} style={{ width:"100%", background:"none", border:"1px solid #ddd", borderRadius:10, color:"#666", fontSize:13, padding:"11px", cursor:"pointer" }}>Close</button>
           </div>
         </div>
       )}
