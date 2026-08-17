@@ -200,16 +200,34 @@ export default function ChatWindow({ bookingId, listingId, inventoryId, claimId,
     }
     setMessages(prev => [...prev, optimistic])
 
-    const { data: insertedRows, error } = await supabase.from("chat_messages").insert({
-      booking_id: bookingId||null,
-      listing_id: listingId||null,
+    let insertedRows, error
+    if (mechanicId) {
+      // Mechanics use PIN auth, not real Supabase auth sessions, so the normal RLS-protected
+      // insert (which checks sender_id = auth.uid()) always fails for them. Use a dedicated,
+      // verified RPC instead that bypasses RLS safely after confirming the mechanic's identity.
+      const { data: newId, error: rpcError } = await supabase.rpc("mechanic_send_chat_message", {
+        p_mechanic_id: mechanicId,
+        p_sender_user_id: effectiveUserId,
+        p_receiver_id: otherUserId,
+        p_message: messageText,
+        p_booking_id: bookingId || null,
+      })
+      error = rpcError
+      if (!rpcError) insertedRows = { id: newId, sender_id: effectiveUserId, receiver_id: otherUserId, message: messageText, mechanic_id: mechanicId, booking_id: bookingId||null, created_at: new Date().toISOString() }
+    } else {
+      const { data, error: insertError } = await supabase.from("chat_messages").insert({
+        booking_id: bookingId||null,
+        listing_id: listingId||null,
         inventory_id: inventoryId||null,
-      claim_id: claimId||null,
-      mechanic_id: mechanicId||null,
-      sender_id: effectiveUserId,
-      receiver_id: otherUserId,
-      message: messageText,
-    }).select().single()
+        claim_id: claimId||null,
+        mechanic_id: mechanicId||null,
+        sender_id: effectiveUserId,
+        receiver_id: otherUserId,
+        message: messageText,
+      }).select().single()
+      insertedRows = data
+      error = insertError
+    }
 
     if (error) {
       console.error("Chat error:", error)
