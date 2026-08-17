@@ -373,7 +373,7 @@ export default function ProviderMechanics() {
               {chatPanel===m.id&&m.user_id&&(
                 <div style={{ height:400, marginTop:8 }}>
                   <ChatWindow
-                    mechanicId={m.user_id}
+                    mechanicId={m.id}
                     otherUserId={m.user_id}
                     overrideUserId={user.id}
                     otherUserName={m.first_name + " " + (m.last_name||"")}
