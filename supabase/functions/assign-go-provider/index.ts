@@ -15,24 +15,30 @@ function getDistance(lat1, lng1, lat2, lng2) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
 }
 
+// A provider whose listing reads as general roadside help (not tied to one specific
+// emergency type) should be eligible for ANY emergency - these keywords override the
+// specific-type check below.
+const GENERIC_ROADSIDE_KEYWORDS = ["roadside","emergency","assistance","assist","help","24/7","247","mobile mechanic","rescue","breakdown","callout","on-site","onsite","urgent"]
+
 const EMERGENCY_SERVICE_MAP = {
-  flat_tire: ["tyre","tire","puncture","wheel","flat","rim","valve"],
-  dead_battery: ["battery","jump","start","electrical","charge","alternator"],
-  out_of_fuel: ["fuel","petrol","diesel","gas","empty tank"],
-  car_wont_start: ["battery","electrical","ignition","start","mechanical","starter","spark"],
-  overheating: ["cooling","overheat","radiator","water","temperature","diagnosis","coolant"],
-  towing: ["tow","towing","recovery","transport","haul"],
-  locked_out: ["lock","key","locked","locksmith","door"],
-  accident: ["accident","collision","crash","dent","body","panel"],
-  brake_failure: ["brake","braking","pad","disc","rotor"],
-  warning_light: ["diagnostic","diagnosis","scan","warning","light","check engine","computer"],
-  windshield_damage: ["windshield","windscreen","glass","crack","chip"],
+  flat_tire: ["tyre","tire","puncture","wheel","flat","rim","valve","spare","deflated","burst"],
+  dead_battery: ["battery","jump","jumpstart","start","electrical","charge","charging","alternator","dead"],
+  out_of_fuel: ["fuel","petrol","diesel","gas","empty tank","refuel","fuel delivery"],
+  car_wont_start: ["battery","electrical","ignition","start","mechanical","starter","spark","won't start","no start"],
+  overheating: ["cooling","overheat","radiator","water pump","temperature","diagnosis","coolant","engine heat"],
+  towing: ["tow","towing","recovery","transport","haul","flatbed","winch","pull"],
+  locked_out: ["lock","key","locked","locksmith","door","keys","car key","key replacement"],
+  accident: ["accident","collision","crash","dent","body","panel","bodywork","fender","smash"],
+  brake_failure: ["brake","braking","pad","disc","rotor","brake fluid","brake line"],
+  warning_light: ["diagnostic","diagnosis","scan","warning","light","check engine","computer","obd","fault code","sensor"],
+  windshield_damage: ["windshield","windscreen","glass","crack","chip","wiper"],
   other: [],
 }
 function matchesEmergencyType(emergencyType, name, description) {
+  const text = ((name||"") + " " + (description||"")).toLowerCase()
+  if (GENERIC_ROADSIDE_KEYWORDS.some(k => text.includes(k))) return true
   const keywords = EMERGENCY_SERVICE_MAP[emergencyType]
   if (!keywords || !keywords.length) return true // "other" or unknown type - don't restrict
-  const text = ((name||"") + " " + (description||"")).toLowerCase()
   return keywords.some(k => text.includes(k))
 }
 
