@@ -254,6 +254,7 @@ export default function ChatWindow({ bookingId, listingId, inventoryId, claimId,
     // Notify the recipient so they get a push/in-app alert, not just a silent unread badge
     try {
       if (!otherUserId) return
+      if (senderIsMechanic) return // mechanic_send_chat_message RPC already created this notification safely
       await supabase.from("notifications").insert({
         user_id: otherUserId,
         title: "New message \uD83D\uDCAC",
