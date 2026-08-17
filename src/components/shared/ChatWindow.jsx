@@ -76,6 +76,18 @@ export default function ChatWindow({ bookingId, listingId, inventoryId, claimId,
   }, [messages, otherTyping])
 
   async function load() {
+    if (senderIsMechanic && mechanicId) {
+      // Same problem as sending - mechanics have no real auth.uid(), so the normal
+      // RLS-protected select can never find their own messages. Use the verified RPC instead.
+      const { data, error } = await supabase.rpc("mechanic_get_chat_messages", {
+        p_mechanic_id: mechanicId,
+        p_sender_user_id: effectiveUserId,
+        p_other_user_id: otherUserId,
+      })
+      console.log("ChatWindow load() (mechanic RPC) result - data:", data, "error:", error)
+      setMessages(data||[])
+      return
+    }
     let query = supabase.from("chat_messages").select("*")
     if (bookingId) query = query.eq("booking_id", bookingId)
     else if (inventoryId) {
