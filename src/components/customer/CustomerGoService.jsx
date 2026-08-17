@@ -358,7 +358,8 @@ export default function CustomerGoService() {
       }).select().single()
       if (error) throw error
       // Trigger automatic nearest-provider matching (system dispatch, not manual selection)
-      const { error: assignError } = await supabase.functions.invoke("assign-go-provider", { body: { booking_id: bk.id } })
+      const { data: assignData, error: assignError } = await supabase.functions.invoke("assign-go-provider", { body: { booking_id: bk.id } })
+      console.log("GO DISPATCH RESULT:", { bookingId: bk.id, bookingNumber: bk.booking_number, assignData, assignError })
       if (assignError) {
         console.error("Failed to start provider matching:", assignError.message)
         toast.error("Something went wrong finding a provider. Please contact support with booking " + bk.booking_number)

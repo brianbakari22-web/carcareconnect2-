@@ -102,7 +102,7 @@ Deno.serve(async (req) => {
         message: `Attempt ${attempt}/${MAX_ATTEMPTS}: No providers online right now. We'll keep trying.`,
         type: "info"
       })
-      return new Response(JSON.stringify({ message: "No providers online, will retry" }), { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      return new Response(JSON.stringify({ version: "2026-08-17-DISPATCH-01", message: "No providers online, will retry", eligible_count: eligible.length }), { headers: { ...corsHeaders, "Content-Type": "application/json" } })
     }
     const custLat = booking.emergency_location_lat
     const custLng = booking.emergency_location_lng
@@ -144,11 +144,13 @@ Deno.serve(async (req) => {
       type: "info"
     })
     return new Response(JSON.stringify({
+      version: "2026-08-17-DISPATCH-01",
       message: "Provider offered job",
       provider_id: nearest.provider_id,
       attempt,
       expires_at: expiresAt,
-      distance_km: distance
+      distance_km: distance,
+      request_created: !reqError
     }), { headers: { ...corsHeaders, "Content-Type": "application/json" } })
   } catch (err) {
     console.error("Error:", err.message)
