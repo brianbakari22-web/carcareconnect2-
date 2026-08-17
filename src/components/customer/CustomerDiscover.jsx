@@ -107,7 +107,7 @@ export default function CustomerDiscover() {
   async function loadServices() {
     const { data } = await supabase.from("services")
       .select("*, profile_public!inner(id,first_name,last_name,business_name,is_verified)")
-      .eq("is_active",true).eq("profile_public.is_verified",true).order("created_at",{ascending:false})
+      .eq("is_active",true).eq("profile_public.is_verified",true).neq("category","go_service").order("created_at",{ascending:false})
     setServices(data||[])
   }
   async function loadBundles() {
