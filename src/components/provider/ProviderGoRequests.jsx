@@ -247,6 +247,9 @@ export default function ProviderGoRequests() {
   async function declineRequest(request) {
     if (!confirm("Decline this emergency request?")) return
     await supabase.from("go_service_requests").update({ status:"declined", responded_at:new Date().toISOString() }).eq("id", request.id)
+    // Clear provider_id first - assign-go-provider refuses to run if the booking still shows
+    // an assigned provider, which it would since that's the very provider who just declined
+    await supabase.from("bookings").update({ provider_id: null }).eq("id", request.booking_id)
     // Trigger reassignment to the next nearest provider immediately - the timeout cron only
     // catches expired "pending" requests, never explicit declines, so without this the customer
     // would be stuck waiting until manual intervention
