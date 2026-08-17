@@ -47,7 +47,7 @@ serve(async (req) => {
     const phone = sensitive?.mpesa_number || sensitive?.phone
     if (!phone) throw new Error("Customer has no phone number set")
 
-    const serviceAmount = Number(booking.total_amount || 0)
+    const serviceAmount = Number(booking.go_service_fee || 0)
 
     // Send STK Push using fetch with proper auth headers
     const stkRes = await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/daraja-stk-push`, {

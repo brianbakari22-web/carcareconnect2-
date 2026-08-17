@@ -50,13 +50,26 @@ serve(async (req) => {
           .single()
 
         if (txn?.booking_id) {
-          await supabase.from("bookings").update({
-            payment_held: true,
-            status: "confirmed",
-            auto_release_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
-          }).eq("id", txn.booking_id)
-
-          console.log("Booking confirmed:", txn.booking_id)
+          const { data: bk } = await supabase.from("bookings").select("is_emergency, status, go_service_fee_paid").eq("id", txn.booking_id).maybeSingle()
+          const isGoServiceFeePayment = bk?.is_emergency && bk?.status === "completed" && !bk?.go_service_fee_paid
+          if (isGoServiceFeePayment) {
+            // This is the service fee payment, not the initial callout fee - the booking is already
+            // "completed" and must stay that way. Trigger the actual provider payout instead.
+            await supabase.from("bookings").update({ payment_held: true }).eq("id", txn.booking_id)
+            const releaseRes = await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/go-release-service-fee`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}` },
+              body: JSON.stringify({ booking_id: txn.booking_id })
+            })
+            console.log("GO service fee release triggered:", txn.booking_id, releaseRes.status)
+          } else {
+            await supabase.from("bookings").update({
+              payment_held: true,
+              status: "confirmed",
+              auto_release_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+            }).eq("id", txn.booking_id)
+            console.log("Booking confirmed:", txn.booking_id)
+          }
         }
       } else {
         // Payment failed
