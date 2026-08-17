@@ -717,6 +717,7 @@ export default function MechanicDashboard() {
                         <div style={{ height:300, borderRadius:10, overflow:"hidden", border:"1px solid #8b5cf620" }}>
                           <ChatWindow
                             bookingId={job.id}
+                            mechanicId={mechanic.mechanic_id}
                             otherUserId={job.customer_id}
                             overrideUserId={mechanic.user_id}
                             otherUserName={(job.profiles?.first_name||"") + " " + (job.profiles?.last_name||"")}
@@ -1127,7 +1128,7 @@ export default function MechanicDashboard() {
           <div style={{ flex:1, overflow:"hidden" }}>
             <ChatWindow
               bookingId={null}
-              mechanicId={mechanic?.user_id}
+              mechanicId={mechanic?.mechanic_id}
               otherUserId={mechanic?.provider_id}
               overrideUserId={mechanic?.user_id}
               otherUserName={mechanic?.business_name||"Garage Manager"}
