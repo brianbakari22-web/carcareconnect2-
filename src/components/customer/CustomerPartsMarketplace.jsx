@@ -647,14 +647,6 @@ export default function CustomerPartsMarketplace() {
                       <span>Delivery fee</span><span>KES {deliveryFee.toLocaleString()}</span>
                     </div>
                   )}
-                  <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#888", marginBottom:4 }}>
-                    <span>Subtotal</span><span>KES {cartTotal.toLocaleString()}</span>
-                  </div>
-                  {fulfillment==="delivery"&&deliveryFee>0&&(
-                  <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#888", marginBottom:4 }}>
-                    <span>Delivery fee</span><span>KES {deliveryFee.toLocaleString()}</span>
-                  </div>
-                  )}
                   <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#888", marginBottom:8, paddingBottom:8, borderBottom:"1px dashed #eee" }}>
                     <span>Platform fee <span style={{ fontSize:10, color:"#bbb" }}>(2%, max KES 200)</span></span>
                     <span>KES {platformFeeDisplay.toLocaleString()}</span>
