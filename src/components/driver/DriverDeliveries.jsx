@@ -173,7 +173,9 @@ export default function DriverDeliveries() {
 
   const SC = { driver_assigned:"#378add", picked_up:"#8b5cf6", delivered:"#1d9e75" }
   const activeDeliveries = deliveries.filter(d=>d.delivery_status!=="delivered")
-  const completedDeliveries = deliveries.filter(d=>d.delivery_status==="delivered")
+  // Only count as genuinely earned once release-order-payment has actually paid out - matching
+  // the same fix already applied to DriverEarnings and DriverPayouts.
+  const completedDeliveries = deliveries.filter(d=>d.delivery_status==="delivered" && d.driver_payment_released)
   const earnings = completedDeliveries.reduce((s,d)=>s+Number(d.delivery_fee||0)*marketplaceRate,0)
 
   return (
