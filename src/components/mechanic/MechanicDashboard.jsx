@@ -526,14 +526,35 @@ export default function MechanicDashboard() {
               style={{ background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.2)", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>
               📞 Call
             </button>
-            <button onClick={()=>uploadJobPhoto(activeJob.id,"after")} disabled={uploadingPhoto===activeJob.id+"after"}
-              style={{ background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.2)", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>
-              {uploadingPhoto===activeJob.id+"after"?"⏳":"📸 After photo"}
-            </button>
-            <button onClick={()=>updateJobStatus(activeJob.id,"completed")}
-              style={{ background:"#4ade80", border:"none", borderRadius:8, color:"#000", fontSize:11, fontWeight:800, padding:"6px 14px", cursor:"pointer" }}>
-              ✓ Complete
-            </button>
+{activeJob.status==="in-progress"&&(
+              <button onClick={()=>uploadJobPhoto(activeJob.id,"after")} disabled={uploadingPhoto===activeJob.id+"after"}
+                style={{ background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.2)", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>
+                {uploadingPhoto===activeJob.id+"after"?"⏳":"📸 After photo"}
+              </button>
+            )}
+            {activeJob.status==="in-progress"&&(
+              <button onClick={()=>updateJobStatus(activeJob.id,"completed")}
+                style={{ background:"#4ade80", border:"none", borderRadius:8, color:"#000", fontSize:11, fontWeight:800, padding:"6px 14px", cursor:"pointer" }}>
+                ✓ Complete
+              </button>
+            )}
+            {activeJob.status!=="in-progress"&&arrivedJob!==activeJob.id&&(
+              <button onClick={()=>generateArrivalOTP(activeJob.id)}
+                style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 14px", cursor:"pointer" }}>
+                📍 I have Arrived
+              </button>
+            )}
+            {activeJob.status!=="in-progress"&&arrivedJob===activeJob.id&&(
+              <div style={{ display:"flex", gap:6, alignItems:"center" }}>
+                <input type="text" maxLength={4} placeholder="OTP" value={otpInput[activeJob.id]||""}
+                  onChange={e=>setOtpInput(prev=>({...prev,[activeJob.id]:e.target.value.replace(/\D/g,"")}))}
+                  style={{ width:60, padding:"6px", borderRadius:8, border:"1px solid rgba(255,255,255,0.3)", fontSize:14, textAlign:"center", letterSpacing:4, background:"rgba(255,255,255,0.9)" }}/>
+                <button onClick={()=>verifyArrivalOTP(activeJob)} disabled={otpVerifying===activeJob.id}
+                  style={{ background:"#1d9e75", border:"none", borderRadius:8, color:"#fff", fontSize:11, fontWeight:700, padding:"6px 12px", cursor:"pointer" }}>
+                  {otpVerifying===activeJob.id?"...":"Verify OTP"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
