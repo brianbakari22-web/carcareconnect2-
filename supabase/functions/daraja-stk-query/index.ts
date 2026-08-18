@@ -65,11 +65,34 @@ serve(async (req) => {
 
       // Update booking
       if (booking_id) {
-        await supabase.from("bookings").update({
-          payment_held: true,
-          status: "confirmed",
-          auto_release_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
-        }).eq("id", booking_id)
+        // Same GO Service awareness as daraja-callback needed here - this polling path can win
+        // the race against the webhook callback, so bypassing this logic here bypasses it entirely:
+        // never touch status for the initial callout (let assign-go-provider do real dispatch),
+        // never revert a completed service-fee booking back to confirmed.
+        const { data: bk } = await supabase.from("bookings").select("is_emergency, status, go_service_fee_paid").eq("id", booking_id).maybeSingle()
+        const isGoServiceFeePayment = bk?.is_emergency && bk?.status === "completed" && !bk?.go_service_fee_paid
+        const isGoCalloutPayment = bk?.is_emergency && bk?.status === "pending"
+        if (isGoServiceFeePayment) {
+          await supabase.from("bookings").update({ payment_held: true }).eq("id", booking_id)
+          await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/go-release-service-fee`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}` },
+            body: JSON.stringify({ booking_id })
+          })
+        } else if (isGoCalloutPayment) {
+          await supabase.from("bookings").update({ payment_held: true }).eq("id", booking_id)
+          await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/assign-go-provider`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}` },
+            body: JSON.stringify({ booking_id })
+          })
+        } else {
+          await supabase.from("bookings").update({
+            payment_held: true,
+            status: "confirmed",
+            auto_release_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+          }).eq("id", booking_id)
+        }
 
         // Get booking for notifications
         const { data: booking } = await supabase.from("bookings")
