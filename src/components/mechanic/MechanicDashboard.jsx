@@ -352,10 +352,13 @@ export default function MechanicDashboard() {
     else toast.error("Customer location not available")
   }
 
-  function callCustomer(job) {
-    const phone = job.profile_sensitive?.phone
-    if (phone) openExternal("tel:" + phone)
-    else toast.error("Customer phone not available")
+  async function callCustomer(job) {
+    // get_mechanic_jobs only returns raw bookings columns - it never joins the customer's
+    // phone number, so job.profile_sensitive was always undefined and this never actually
+    // worked. Fetch it fresh via a verified RPC instead.
+    const { data: phone, error } = await supabase.rpc("mechanic_get_customer_phone", { p_mechanic_id: mechanic.mechanic_id, p_booking_id: job.id })
+    if (error || !phone) { toast.error("Customer phone not available"); return }
+    openExternal("tel:" + phone)
   }
 
   async function saveJobNotes(jobId) {
