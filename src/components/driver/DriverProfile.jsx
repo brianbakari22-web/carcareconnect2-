@@ -230,9 +230,11 @@ export default function DriverProfile() {
           <div>
             <div style={{ fontFamily:"Syne", fontSize:17, fontWeight:800, color:"#000000" }}>{profile?.first_name} {profile?.last_name}</div>
             <div style={{ fontSize:12, color:"#777777", marginTop:2 }}>
-              {profile?.driver_vehicle_type==="motorcycle"?"🏍️ Boda Boda Driver":
-               profile?.driver_vehicle_type==="tuktuk"?"🛺 Tuktuk Driver":
-               profile?.driver_vehicle_type==="van"?"🚐 Van Driver":"🚗 Concierge Driver"}
+              {profile?.driver_category!=="concierge"?(
+                profile?.driver_vehicle_type==="motorcycle"?"🏍️ Boda Boda Driver":
+                profile?.driver_vehicle_type==="tuktuk"?"🛺 Tuktuk Driver":
+                profile?.driver_vehicle_type==="van"?"🚐 Van Driver":"🚗 Car Driver"
+               ):"🚗 Concierge Driver"}
                · {profile?.city||"Location not set"}
             </div>
             <div style={{ display:"flex", alignItems:"center", gap:6, marginTop:4 }}>
