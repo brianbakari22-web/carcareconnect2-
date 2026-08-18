@@ -43,6 +43,7 @@ export default function CustomerPartsMarketplace() {
   const [deliveryLng, setDeliveryLng] = useState(null)
   const [detectingLocation, setDetectingLocation] = useState(false)
   const [ordering, setOrdering] = useState(false)
+  const [feeMultipliers, setFeeMultipliers] = useState({ motorcycle:1, tuktuk:1.5, van:3, car:1.5 })
   const [orders, setOrders] = useState([])
   const [tab, setTab] = useState("browse")
   const [chatItem, setChatItem] = useState(null)
@@ -103,6 +104,20 @@ export default function CustomerPartsMarketplace() {
   }
 
   async function load() {
+    // Delivery fee varies by predicted vehicle type - a large order needing a van genuinely
+    // costs more to fulfill than a small one a bike can handle, matching real platforms like
+    // Lalamove where vans charge roughly 3-4x a motorcycle's base fare for the same route.
+    const { data: multRows } = await supabase.from("app_settings").select("key,value").in("key", [
+      "marketplace_delivery_fee_multiplier_motorcycle",
+      "marketplace_delivery_fee_multiplier_tuktuk",
+      "marketplace_delivery_fee_multiplier_van",
+      "marketplace_delivery_fee_multiplier_car",
+    ])
+    if (multRows?.length) {
+      const m = {}
+      multRows.forEach(r => { m[r.key.replace("marketplace_delivery_fee_multiplier_","")] = Number(r.value) })
+      setFeeMultipliers(prev => ({ ...prev, ...m }))
+    }
     const { data: inv } = await supabase.from("inventory")
       .select("*, profiles!inventory_provider_id_fkey(id,business_name,first_name,last_name,city,provider_type,is_verified)")
       .eq("is_active", true)
@@ -179,7 +194,8 @@ export default function CustomerPartsMarketplace() {
   }
   const cartTotal = cart.reduce((s,c)=>s+Number(c.price)*c.qty, 0)
   const platformFeeDisplay = Math.min(Math.round(cartTotal * 0.02), 200)
-  const deliveryFee = selectedZone && zones.length > 0 ? Number(zones.find(z=>z.id===selectedZone)?.base_fee||0) : 0
+  const predictedVehicleType = (() => { const n = cart.reduce((s,i)=>s+i.qty,0); return n<=3?"motorcycle":n<=6?"tuktuk":"van" })()
+  const deliveryFee = selectedZone && zones.length > 0 ? Math.round(Number(zones.find(z=>z.id===selectedZone)?.base_fee||0) * (feeMultipliers[predictedVehicleType]||1)) : 0
   const orderTotal = cartTotal + (fulfillment==="delivery"?deliveryFee:0) + platformFeeDisplay
   // Group cart by provider
   const cartByProvider = cart.reduce((acc,item)=>{
@@ -204,7 +220,9 @@ export default function CustomerPartsMarketplace() {
     setOrdering(true)
     try {
       const zone = zones.find(z => z.id === selectedZone)
-      const deliveryFee = fulfillment === "delivery" && zone ? Number(zone.base_fee) : 0
+      const cartItemCount = cart.reduce((s,i)=>s+i.qty,0)
+      const predictedVehicleType = cartItemCount<=3?"motorcycle":cartItemCount<=6?"tuktuk":"van"
+      const deliveryFee = fulfillment === "delivery" && zone ? Math.round(Number(zone.base_fee) * (feeMultipliers[predictedVehicleType]||1)) : 0
       const { data: rateRow } = await supabase.from("commission_rates").select("platform_rate,platform_fee_rate,platform_fee_cap").eq("provider_type","parts_dealer").maybeSingle()
       const commissionRate = rateRow ? Number(rateRow.platform_rate) : 0.05
       const platformFeeRate = rateRow ? Number(rateRow.platform_fee_rate) : 0.02
