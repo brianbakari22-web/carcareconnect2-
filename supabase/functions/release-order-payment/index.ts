@@ -57,7 +57,13 @@ serve(async (req) => {
     const claimAgainstProvider = (openClaims || []).some((c: any) => c.against_type === "provider" || !c.against_type)
     const claimAgainstDriver = (openClaims || []).some((c: any) => c.against_type === "driver")
     const providerAmount = Number(order.provider_earnings || 0)
-    const driverAmount = Number(order.delivery_fee || 0)
+    // The driver only earns a commission of the delivery fee, not the full amount - CCC keeps
+    // the rest (matching the same admin-editable rate the frontend already displays to drivers).
+    // This was previously paying out the FULL delivery_fee, meaning the platform earned zero
+    // commission from marketplace deliveries despite the UI showing an 85% driver share.
+    const { data: rateSetting } = await supabase.from("app_settings").select("value").eq("key", "marketplace_driver_commission_rate").maybeSingle()
+    const driverCommissionRate = Number(rateSetting?.value || 85) / 100
+    const driverAmount = Math.round(Number(order.delivery_fee || 0) * driverCommissionRate)
     const hasDriver = !!order.delivery_driver_id && driverAmount > 0
     let providerDone = !!order.provider_payment_released
     let driverDone = !!order.driver_payment_released || !hasDriver
