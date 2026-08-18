@@ -70,6 +70,14 @@ serve(async (req) => {
         // never touch status for the initial callout (let assign-go-provider do real dispatch),
         // never revert a completed service-fee booking back to confirmed.
         const { data: bk } = await supabase.from("bookings").select("is_emergency, status, go_service_fee_paid").eq("id", booking_id).maybeSingle()
+    if (!bk) {
+      const { data: order } = await supabase.from("orders").select("id, customer_id, provider_id").eq("id", booking_id).maybeSingle()
+      if (order) {
+        await supabase.from("orders").update({ payment_status: "paid", payment_held: true, status: "pending" }).eq("id", order.id)
+        await supabase.from("notifications").insert({ user_id: order.provider_id, title: "New order received! 📦", message: "A customer has paid for their order. Check your Orders dashboard.", type: "success" })
+        await supabase.from("notifications").insert({ user_id: order.customer_id, title: "Order placed! 🛒", message: "Your payment was successful and your order has been placed.", type: "success" })
+      }
+    } else {
         const isGoServiceFeePayment = bk?.is_emergency && bk?.status === "completed" && !bk?.go_service_fee_paid
         const isGoCalloutPayment = bk?.is_emergency && bk?.status === "pending"
         if (isGoServiceFeePayment) {
@@ -93,6 +101,7 @@ serve(async (req) => {
             auto_release_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
           }).eq("id", booking_id)
         }
+    }
 
         // Get booking for notifications
         const { data: booking } = await supabase.from("bookings")
