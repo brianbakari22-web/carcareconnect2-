@@ -278,7 +278,7 @@ export default function DriverEarnings() {
           { icon:"locked", label:"Payment security", desc:"Both are released only after you complete the delivery and file the dropoff report" },
           { icon:"warning", label:"No-show penalty", desc:"If you accept a job and don't show up, you lose both the commission and allowance" },
         ] : [
-          { icon:"payments", label:"Delivery earnings", desc:`${Math.round(marketplaceRate*100)}% of the delivery fee — paid automatically once the customer confirms receipt` },
+          { icon:"payments", label:"Delivery earnings", desc:`${Math.round(marketplaceRate)}% of the delivery fee — paid automatically once the customer confirms receipt` },
           { icon:"locked", label:"Payment security", desc:"Released only after the customer provides the delivery verification code to you in person" },
           { icon:"warning", label:"Decline policy", desc:"Declining or missing deliveries too often may affect your ability to receive new job offers" },
         ]).map(item=>(
