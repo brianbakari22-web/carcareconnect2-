@@ -126,15 +126,22 @@ export default function ProviderOrders() {
     // completely silent - it just sat in the unassigned pool until a driver happened to open
     // the app and check. Notify eligible marketplace drivers directly instead.
     if (status==="ready" && order?.fulfillment_type==="delivery" && !order?.delivery_driver_id) {
+      // Match the same size-based vehicle preference assignDriver() already uses, so a tiny
+      // one-item order preferentially reaches bike riders rather than paging every van driver
+      // too. Falls back to notifying everyone if nobody of the ideal type is currently active.
+      const notifyItemCount = order?.order_items?.length || 1
+      const notifyPreferredType = notifyItemCount<=3?"motorcycle":notifyItemCount<=6?"tuktuk":"van"
       const { data: eligibleDrivers } = await supabase.from("profiles")
-        .select("id")
+        .select("id,driver_vehicle_type")
         .eq("role","driver")
         .eq("is_active",true)
         .eq("documents_verified",true)
         .eq("driver_category","marketplace")
-      if (eligibleDrivers?.length) {
+      const preferredDrivers = (eligibleDrivers||[]).filter(d=>d.driver_vehicle_type===notifyPreferredType)
+      const driversToNotify = preferredDrivers.length>0 ? preferredDrivers : (eligibleDrivers||[])
+      if (driversToNotify?.length) {
         await supabase.from("notifications").insert(
-          eligibleDrivers.map(d => ({
+          driversToNotify.map(d => ({
             user_id: d.id,
             title: "🚚 New delivery available!",
             message: `A new delivery is ready for pickup${order.delivery_zone ? " in " + order.delivery_zone : ""}. Check the Available tab.`,
