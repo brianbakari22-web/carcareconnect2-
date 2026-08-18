@@ -56,10 +56,17 @@ export default function DriverDeliveries() {
 
   async function acceptDelivery(orderId) {
     try {
-    await supabase.from("orders").update({
+    // This delivery was broadcast to every eligible driver at once, not offered to one at a
+    // time - the plain update below had no guard against two drivers tapping Accept within
+    // moments of each other, letting the second silently overwrite the first with both seeing
+    // a success toast. The .is() check makes this an atomic claim: only succeeds if nobody
+    // else has already taken it.
+    const { data: claimed, error: claimError } = await supabase.from("orders").update({
       delivery_driver_id: user.id,
       delivery_status: "driver_assigned"
-    }).eq("id", orderId)
+    }).eq("id", orderId).is("delivery_driver_id", null).select().maybeSingle()
+    if (claimError) { toast.error("Failed to accept delivery"); return }
+    if (!claimed) { toast.error("Sorry, another driver already accepted this delivery"); load(); return }
     const order = available.find(o=>o.id===orderId)
     if (order?.customer_id) {
       await supabase.from("notifications").insert({
