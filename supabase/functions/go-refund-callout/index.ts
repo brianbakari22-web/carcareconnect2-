@@ -25,6 +25,16 @@ serve(async (req) => {
 
     if (!booking) throw new Error("Booking not found")
 
+    // Prevent duplicate refunds/strikes - the frontend button had no guard against repeated
+    // taps, and each call issued a genuine new B2C payout plus a new strike against the
+    // provider for what was really the same single incident.
+    if (booking.status === "cancelled") {
+      return new Response(JSON.stringify({ success: false, error: "This booking was already refunded/cancelled - no further action taken." }), {
+        status: 409,
+        headers: { ...corsHeaders, "Content-Type": "application/json" }
+      })
+    }
+
     // Check strike count for provider
     const { count } = await supabase
       .from("go_provider_strikes")
