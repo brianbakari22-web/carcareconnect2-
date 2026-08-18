@@ -72,7 +72,6 @@ import PrivacyPolicy from "./components/legal/PrivacyPolicy"
 import TermsOfService from "./components/legal/TermsOfService"
 import AdminAuthPage from "./components/auth/AdminAuthPage"
 import ResetPassword from "./components/auth/ResetPassword"
-import PaymentCallback from "./components/shared/PaymentCallback"
 import Layout from "./components/shared/Layout"
 import CustomerDashboard from "./components/customer/CustomerDashboard"
 import CustomerBookings from "./components/customer/CustomerBookings"
@@ -511,7 +510,6 @@ export default function App() {
               <Route path="/mechanic-login" element={<MechanicLogin/>}/>
               <Route path="/mechanic-dashboard" element={<MechanicDashboard/>}/>
               <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/payment/callback" element={<PaymentCallback />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<TermsOfService />} />
               <Route path={`/${ADMIN_SECRET}`} element={<AdminAuthPage />} />
