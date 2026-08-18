@@ -15,6 +15,10 @@ export default function DriverDeliveries() {
   const [marketplaceRate, setMarketplaceRate] = useState(0.85)
   const [tab, setTab] = useState("available")
   const [now, setNow] = useState(Date.now())
+  const [arrivedOrder, setArrivedOrder] = useState(null)
+  const [otpInput, setOtpInput] = useState({})
+  const [otpVerifying, setOtpVerifying] = useState(null)
+  const [generatingOtp, setGeneratingOtp] = useState(null)
 
   useEffect(() => {
     const interval = setInterval(()=>setNow(Date.now()), 1000)
@@ -83,6 +87,39 @@ export default function DriverDeliveries() {
     toast.success("Delivery declined")
     load()
     } catch(e) { toast.error("Failed to decline delivery") }
+  }
+  async function generateDeliveryOTP(orderId) {
+    setGeneratingOtp(orderId)
+    try {
+      const { data, error } = await supabase.functions.invoke("marketplace-generate-delivery-otp", { body: { order_id: orderId, driver_id: user.id } })
+      if (error || data?.error) throw new Error(data?.error || error.message)
+      setArrivedOrder(orderId)
+      toast.success("OTP sent to customer! Ask them for the code.")
+    } catch(e) { toast.error(e.message || "Failed to generate OTP") }
+    finally { setGeneratingOtp(null) }
+  }
+  async function verifyDeliveryOTP(order) {
+    const entered = otpInput[order.id]
+    if (!entered || entered.length !== 4) return toast.error("Enter 4-digit OTP")
+    setOtpVerifying(order.id)
+    try {
+      const { data, error } = await supabase.rpc("verify_delivery_otp", { p_order_id: order.id, p_otp: entered })
+      if (error) throw error
+      if (!data?.success) throw new Error(data?.error || "Verification failed")
+      if (order.customer_id) {
+        await supabase.from("notifications").insert({
+          user_id: order.customer_id,
+          title: "Order delivered! 🎉",
+          message: "Your order has been delivered and confirmed. Thank you for shopping with CCC!",
+          type: "success"
+        })
+      }
+      setArrivedOrder(null)
+      setOtpInput(prev => ({ ...prev, [order.id]: "" }))
+      toast.success("Delivery confirmed! 🎉")
+      load()
+    } catch(e) { toast.error(e.message || "Verification failed") }
+    finally { setOtpVerifying(null) }
   }
 
   function formatCountdown(expiresAt) {
@@ -225,10 +262,20 @@ export default function DriverDeliveries() {
                     </button>
                   </>
                 )}
-                {o.delivery_status==="picked_up"&&(
-                  <button onClick={()=>updateDeliveryStatus(o.id,"delivered",o.customer_id)} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 14px", cursor:"pointer", fontWeight:600 }}>
-                    <><CheckIcon size={13} color="#1d9e75"/> Confirm delivery</>
+                {o.delivery_status==="picked_up"&&arrivedOrder!==o.id&&(
+                  <button onClick={()=>generateDeliveryOTP(o.id)} disabled={generatingOtp===o.id} style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:11, padding:"6px 14px", cursor:"pointer", fontWeight:600 }}>
+                    {generatingOtp===o.id?"...":"📍 I have Arrived"}
                   </button>
+                )}
+                {o.delivery_status==="picked_up"&&arrivedOrder===o.id&&(
+                  <div style={{ display:"flex", gap:6, alignItems:"center" }}>
+                    <input type="text" maxLength={4} placeholder="OTP" value={otpInput[o.id]||""}
+                      onChange={e=>setOtpInput(prev=>({...prev,[o.id]:e.target.value.replace(/\D/g,"")}))}
+                      style={{ width:60, padding:"6px", borderRadius:7, border:"1px solid #ddd", fontSize:14, textAlign:"center", letterSpacing:4 }}/>
+                    <button onClick={()=>verifyDeliveryOTP(o)} disabled={otpVerifying===o.id} style={{ background:"#1d9e75", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"7px 12px", cursor:"pointer" }}>
+                      {otpVerifying===o.id?"...":"Verify OTP"}
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
