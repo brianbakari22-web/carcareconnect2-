@@ -252,6 +252,9 @@ export default function DriverDeliveries() {
                   {o.profiles?.latitude&&o.profiles?.longitude&&(
                     <a href={`https://www.google.com/maps/dir/?api=1&destination=${o.profiles.latitude},${o.profiles.longitude}`} target="_blank" rel="noreferrer" style={{ fontSize:11, color:"#378add", textDecoration:"none" }}>🗺️ Navigate to customer →</a>
                   )}
+                  {o.customer_phone&&(
+                    <a href={"tel:"+o.customer_phone} style={{ fontSize:11, color:"#1d9e75", textDecoration:"none", display:"block", marginTop:2 }}>📞 Call customer</a>
+                  )}
                   <span style={{ fontSize:10, padding:"2px 8px", borderRadius:8, background:(SC[o.delivery_status]||"#888")+"20", color:SC[o.delivery_status]||"#888", display:"inline-block", marginTop:4 }}>
                     {o.delivery_status?.replace(/_/g," ")||"assigned"}
                   </span>
