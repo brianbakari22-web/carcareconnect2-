@@ -64,10 +64,18 @@ serve(async (req) => {
             })
             console.log("GO service fee release triggered:", txn.booking_id, releaseRes.status)
           } else if (isGoCalloutPayment) {
-            // Initial GO Service callout fee payment - the booking must stay "pending" so the
-            // provider-matching system (assign-go-provider / check-expired-go-requests) can
-            // still work. Only mark payment as held, do not touch status here at all.
+            // Initial GO Service callout fee payment. Only NOW that payment has genuinely been
+            // confirmed do we trigger provider dispatch - previously the frontend called
+            // assign-go-provider immediately after booking creation, before payment even
+            // confirmed, meaning a provider could be notified for a request the customer might
+            // cancel or never actually pay for.
             await supabase.from("bookings").update({ payment_held: true }).eq("id", txn.booking_id)
+            const assignRes = await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/assign-go-provider`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}` },
+              body: JSON.stringify({ booking_id: txn.booking_id })
+            })
+            console.log("assign-go-provider triggered after confirmed callout payment:", txn.booking_id, assignRes.status)
             console.log("GO callout fee payment held (status stays pending):", txn.booking_id)
           } else {
             await supabase.from("bookings").update({

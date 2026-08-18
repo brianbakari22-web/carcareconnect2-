@@ -362,13 +362,9 @@ export default function CustomerGoService() {
       if (error) throw error
       Sentry.captureMessage("GO_CREATE_PROOF: booking created", { level: "info", extra: { bookingId: bk?.id, bookingNumber: bk?.booking_number, actualStatus: bk?.status, actualProviderId: bk?.provider_id } })
       console.log("GO CREATE PROOF - booking returned from DB:", { id: bk?.id, status: bk?.status, provider_id: bk?.provider_id })
-      // Trigger automatic nearest-provider matching (system dispatch, not manual selection)
-      const { data: assignData, error: assignError } = await supabase.functions.invoke("assign-go-provider", { body: { booking_id: bk.id } })
-      console.log("GO DISPATCH RESULT:", { bookingId: bk.id, bookingNumber: bk.booking_number, assignData, assignError })
-      if (assignError) {
-        console.error("Failed to start provider matching:", assignError.message)
-        toast.error("Something went wrong finding a provider. Please contact support with booking " + bk.booking_number)
-      }
+      // Provider matching now happens ONLY after the callout fee payment genuinely confirms
+      // (triggered from daraja-callback), not here - dispatching before payment even completes
+      // meant a provider could be notified for a request the customer might never actually pay for.
       // Show Daraja payment modal
       setPendingGoBooking({ id: bk.id, amount: calloutFee })
       setShowDepositPayment(false)
