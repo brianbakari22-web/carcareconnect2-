@@ -106,6 +106,9 @@ export default function DriverDeliveries() {
       const { data, error } = await supabase.rpc("verify_delivery_otp", { p_order_id: order.id, p_otp: entered })
       if (error) throw error
       if (!data?.success) throw new Error(data?.error || "Verification failed")
+      // Trigger the actual payout release now that delivery is genuinely confirmed - both
+      // provider and driver shares get checked and released as far as each is eligible
+      await supabase.functions.invoke("release-order-payment", { body: { order_id: order.id } })
       if (order.customer_id) {
         await supabase.from("notifications").insert({
           user_id: order.customer_id,
