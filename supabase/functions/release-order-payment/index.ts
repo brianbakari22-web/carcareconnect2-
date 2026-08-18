@@ -66,7 +66,7 @@ serve(async (req) => {
     // Provider is paid once delivery (or pickup) is genuinely confirmed - for delivery orders
     // that means the dual-confirmation delivery OTP, matching the exact same reasoning GO
     // Service uses: the provider shouldn't be paid until the customer genuinely has their item.
-    const deliveryConfirmed = hasDriver ? !!order.delivery_otp_verified : order.status === "completed"
+    const deliveryConfirmed = hasDriver ? !!order.delivery_otp_verified : (order.status === "delivered" || order.status === "completed")
     if (!providerDone) {
       if (!deliveryConfirmed) {
         blockedReasons.push("Provider payout on hold - delivery/pickup not yet confirmed")

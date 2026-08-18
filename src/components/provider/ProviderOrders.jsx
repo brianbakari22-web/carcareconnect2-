@@ -116,6 +116,12 @@ export default function ProviderOrders() {
     const order = orders.find(o=>o.id===orderId)
     const { error } = await supabase.from("orders").update({ status, updated_at:new Date().toISOString() }).eq("id", orderId)
     if (error) { toast.error("Failed to update order: "+error.message); return }
+    // For pickup orders (no driver involved), the provider marking it delivered/complete
+    // themselves is the confirmation - trigger the payout release right here. Delivery
+    // orders release separately, only once the customer's OTP genuinely confirms receipt.
+    if (status==="delivered" && order?.fulfillment_type!=="delivery") {
+      await supabase.functions.invoke("release-order-payment", { body: { order_id: orderId } })
+    }
     if (order?.customer_id) {
       const messages = {
         confirmed: "Your order has been confirmed! We are preparing your items.",
