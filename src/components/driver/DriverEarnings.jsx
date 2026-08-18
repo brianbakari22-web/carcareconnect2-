@@ -272,12 +272,16 @@ export default function DriverEarnings() {
       {/* How earnings work */}
       <div style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"0.9rem", marginBottom:"1.5rem" }}>
         <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#000000", marginBottom:8 }}>How your earnings work</div>
-        {[
+        {(isConcierge ? [
           { icon:"payments", label:"Commission", desc:`${commissionRate}% of service fee — paid after delivery complete` },
           { icon:"delivery", label:"Transport allowance", desc:"KES 200 per job — covers your travel costs" },
           { icon:"locked", label:"Payment security", desc:"Both are released only after you complete the delivery and file the dropoff report" },
           { icon:"warning", label:"No-show penalty", desc:"If you accept a job and don't show up, you lose both the commission and allowance" },
-        ].map(item=>(
+        ] : [
+          { icon:"payments", label:"Delivery earnings", desc:`${Math.round(marketplaceRate*100)}% of the delivery fee — paid automatically once the customer confirms receipt` },
+          { icon:"locked", label:"Payment security", desc:"Released only after the customer provides the delivery verification code to you in person" },
+          { icon:"warning", label:"Decline policy", desc:"Declining or missing deliveries too often may affect your ability to receive new job offers" },
+        ]).map(item=>(
           <div key={item.label} style={{ display:"flex", gap:10, alignItems:"flex-start", marginBottom:8 }}>
             <span style={{flexShrink:0,display:"flex"}}>{item.icon==="payments"?<PaymentsIcon size={16} color="#e6821e"/>:item.icon==="delivery"?<DeliveryIcon size={16} color="#378add"/>:item.icon==="locked"?<LockedIcon size={16} color="#1d9e75"/>:<WarningIcon size={16} color="#e6821e"/>}</span>
             <div>
@@ -290,7 +294,8 @@ export default function DriverEarnings() {
 
       {/* History list */}
       {loading&&<div style={{ color:"#777777", fontSize:13 }}>Loading...</div>}
-      {!loading&&filtered.length===0&&(
+      {!loading&&isConcierge&&(<>
+      {filtered.length===0&&(
         <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>
           <div style={{ marginBottom:10, display:"flex", justifyContent:"center" }}><WalletIcon size={32} color="#ccc"/></div>
           No completed jobs for this period
@@ -342,6 +347,29 @@ export default function DriverEarnings() {
           </div>
         )
       })}
+      </>)}
+      {!loading&&!isConcierge&&(<>
+        {filteredOrders.length===0&&(
+          <div style={{ color:"#888888", fontSize:13, textAlign:"center", padding:"2rem" }}>
+            <div style={{ marginBottom:10, display:"flex", justifyContent:"center" }}><WalletIcon size={32} color="#ccc"/></div>
+            No completed deliveries for this period
+          </div>
+        )}
+        {filteredOrders.map(o=>(
+          <div key={o.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8 }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+              <div style={{ flex:1, minWidth:0 }}>
+                <div style={{ fontSize:13, fontWeight:600, color:"#000000", marginBottom:2 }}>#{o.order_number}</div>
+                <div style={{ fontSize:11, color:"#777777" }}>{new Date(o.created_at).toLocaleDateString()}</div>
+              </div>
+              <div style={{ textAlign:"right", flexShrink:0 }}>
+                <div style={{ fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#1d9e75" }}>KES {(Number(o.delivery_fee||0)*marketplaceRate).toFixed(0)}</div>
+                <div style={{ fontSize:10, color:o.driver_payment_released?"#1d9e75":"#e6821e", marginTop:2 }}>{o.driver_payment_released?"paid":"pending payout"}</div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </>)}
     </div>
   )
 }
