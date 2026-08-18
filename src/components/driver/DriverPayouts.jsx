@@ -30,7 +30,13 @@ export default function DriverPayouts() {
   }, [user, profile?.driver_category])
 
   async function load() {
-    supabase.from("app_settings").select("value").eq("key","marketplace_driver_commission_rate").maybeSingle().then(({data}) => { if (data) setMarketplaceRate(Number(data.value)/100) })
+    (async () => {
+      const vt = profile?.driver_vehicle_type || "car"
+      const { data: vtRate } = await supabase.from("app_settings").select("value").eq("key",`marketplace_driver_commission_rate_${vt}`).maybeSingle()
+      if (vtRate) { setMarketplaceRate(Number(vtRate.value)/100); return }
+      const { data: fallback } = await supabase.from("app_settings").select("value").eq("key","marketplace_driver_commission_rate").maybeSingle()
+      if (fallback) setMarketplaceRate(Number(fallback.value)/100)
+    })()
 
     const [{ data: bks }, { data: pts }, { data: sens }, { data: ords }] = await Promise.all([
       supabase.from("bookings").select("driver_earnings,transport_allowance").eq("driver_id", user.id).eq("status", "completed"),

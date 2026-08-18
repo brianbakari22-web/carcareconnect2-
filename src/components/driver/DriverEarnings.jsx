@@ -28,7 +28,14 @@ export default function DriverEarnings() {
 
   async function load() {
     supabase.from("app_settings").select("value").eq("key","concierge_surcharge_rate").maybeSingle().then(({data}) => { if (data) setCommissionRate(Number(data.value)) })
-    supabase.from("app_settings").select("value").eq("key","marketplace_driver_commission_rate").maybeSingle().then(({data}) => { if (data) setMarketplaceRate(Number(data.value)) })
+    (async () => {
+      // Commission now varies by the driver\'s own vehicle type, not one flat global rate
+      const vt = profile?.driver_vehicle_type || "car"
+      const { data: vtRate } = await supabase.from("app_settings").select("value").eq("key",`marketplace_driver_commission_rate_${vt}`).maybeSingle()
+      if (vtRate) { setMarketplaceRate(Number(vtRate.value)); return }
+      const { data: fallback } = await supabase.from("app_settings").select("value").eq("key","marketplace_driver_commission_rate").maybeSingle()
+      if (fallback) setMarketplaceRate(Number(fallback.value))
+    })()
     const [{ data }, { data: exps }, { data: ords }] = await Promise.all([
       supabase.from("bookings")
         .select("*, vehicles(make,model,license_plate)")

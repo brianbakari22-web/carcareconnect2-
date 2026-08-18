@@ -61,8 +61,18 @@ serve(async (req) => {
     // the rest (matching the same admin-editable rate the frontend already displays to drivers).
     // This was previously paying out the FULL delivery_fee, meaning the platform earned zero
     // commission from marketplace deliveries despite the UI showing an 85% driver share.
-    const { data: rateSetting } = await supabase.from("app_settings").select("value").eq("key", "marketplace_driver_commission_rate").maybeSingle()
-    const driverCommissionRate = Number(rateSetting?.value || 85) / 100
+    // Commission rate now varies by the driver's own vehicle type (van drivers have real
+    // higher operating costs than bike riders) - fetch their actual vehicle type first, then
+    // the matching admin-editable rate, falling back to the old single global rate if a
+    // vehicle-specific one hasn't been configured for some reason.
+    let driverVehicleType = "car"
+    if (order.delivery_driver_id) {
+      const { data: driverProfile } = await supabase.from("profiles").select("driver_vehicle_type").eq("id", order.delivery_driver_id).maybeSingle()
+      driverVehicleType = driverProfile?.driver_vehicle_type || "car"
+    }
+    const { data: rateSetting } = await supabase.from("app_settings").select("value").eq("key", `marketplace_driver_commission_rate_${driverVehicleType}`).maybeSingle()
+    const { data: fallbackRateSetting } = rateSetting ? { data: null } : await supabase.from("app_settings").select("value").eq("key", "marketplace_driver_commission_rate").maybeSingle()
+    const driverCommissionRate = Number(rateSetting?.value || fallbackRateSetting?.value || 85) / 100
     const driverAmount = Math.round(Number(order.delivery_fee || 0) * driverCommissionRate)
     const hasDriver = !!order.delivery_driver_id && driverAmount > 0
     let providerDone = !!order.provider_payment_released

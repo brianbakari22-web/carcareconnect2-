@@ -36,7 +36,13 @@ export default function DriverDeliveries() {
   }, [user])
 
   async function load() {
-    supabase.from("app_settings").select("value").eq("key","marketplace_driver_commission_rate").maybeSingle().then(({data}) => { if (data) setMarketplaceRate(Number(data.value)/100) })
+    (async () => {
+      const vt = profile?.driver_vehicle_type || "car"
+      const { data: vtRate } = await supabase.from("app_settings").select("value").eq("key",`marketplace_driver_commission_rate_${vt}`).maybeSingle()
+      if (vtRate) { setMarketplaceRate(Number(vtRate.value)/100); return }
+      const { data: fallback } = await supabase.from("app_settings").select("value").eq("key","marketplace_driver_commission_rate").maybeSingle()
+      if (fallback) setMarketplaceRate(Number(fallback.value)/100)
+    })()
     const [{ data: mine }, { data: avail }] = await Promise.all([
       supabase.from("orders")
         .select("*, order_items(name,quantity), profiles!orders_customer_id_fkey(first_name,last_name,city,latitude,longitude), provider:profiles!orders_provider_id_fkey(first_name,last_name,business_name,city,address,latitude,longitude)")
