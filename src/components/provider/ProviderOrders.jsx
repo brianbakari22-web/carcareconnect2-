@@ -122,6 +122,27 @@ export default function ProviderOrders() {
     if (status==="delivered" && order?.fulfillment_type!=="delivery") {
       await supabase.functions.invoke("release-order-payment", { body: { order_id: orderId } })
     }
+    // A delivery order becoming "ready" with no driver manually assigned yet was previously
+    // completely silent - it just sat in the unassigned pool until a driver happened to open
+    // the app and check. Notify eligible marketplace drivers directly instead.
+    if (status==="ready" && order?.fulfillment_type==="delivery" && !order?.delivery_driver_id) {
+      const { data: eligibleDrivers } = await supabase.from("profiles")
+        .select("id")
+        .eq("role","driver")
+        .eq("is_active",true)
+        .eq("documents_verified",true)
+        .eq("driver_category","marketplace")
+      if (eligibleDrivers?.length) {
+        await supabase.from("notifications").insert(
+          eligibleDrivers.map(d => ({
+            user_id: d.id,
+            title: "🚚 New delivery available!",
+            message: `A new delivery is ready for pickup${order.delivery_zone ? " in " + order.delivery_zone : ""}. Check the Available tab.`,
+            type: "info"
+          }))
+        )
+      }
+    }
     if (order?.customer_id) {
       const messages = {
         confirmed: "Your order has been confirmed! We are preparing your items.",
