@@ -36,7 +36,7 @@ export default function DriverPayouts() {
       supabase.from("bookings").select("driver_earnings,transport_allowance").eq("driver_id", user.id).eq("status", "completed"),
       supabase.from("payout_requests").select("*").eq("user_id", user.id).order("created_at", { ascending:false }),
       supabase.from("profile_sensitive").select("bank_name,bank_account_name,bank_account_number,mpesa_number,id_number,kra_pin").eq("id", user.id).single(),
-      supabase.from("orders").select("delivery_fee").eq("delivery_driver_id", user.id).eq("status","delivered")
+      supabase.from("orders").select("delivery_fee").eq("delivery_driver_id", user.id).eq("status","delivered").eq("driver_payment_released",false)
     ])
     const conciergeEarned = (bks||[]).reduce((s,b)=>s+Number(b.driver_earnings||0)+Number(b.transport_allowance||0),0)
     const marketplaceEarned = (ords||[]).reduce((s,o)=>s+Number(o.delivery_fee||0)*marketplaceRate,0)

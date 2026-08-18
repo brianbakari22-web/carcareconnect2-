@@ -35,7 +35,7 @@ export default function DriverEarnings() {
         .eq("driver_id", user.id)
         .eq("status", "completed").eq("is_archived", false).order("created_at", { ascending:false }),
       supabase.from("driver_expenses").select("*").eq("driver_id", user.id).order("expense_date",{ascending:false}),
-      supabase.from("orders").select("*").eq("delivery_driver_id", user.id).eq("status","delivered").order("created_at",{ascending:false})
+      supabase.from("orders").select("*").eq("delivery_driver_id", user.id).eq("status","delivered").eq("driver_payment_released",true).order("created_at",{ascending:false})
     ])
     setBookings(data||[])
     setExpenses(exps||[])
