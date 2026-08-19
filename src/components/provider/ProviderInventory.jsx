@@ -50,6 +50,7 @@ export default function ProviderInventory() {
   const [saving, setSaving] = useState(false)
   const [uploadingPhoto, setUploadingPhoto] = useState(false)
   const [uploadingVideo, setUploadingVideo] = useState(false)
+  const [videoUploadProgress, setVideoUploadProgress] = useState(0)
   const [photoPreview, setPhotoPreview] = useState(null)
   const photoRef = useRef(null)
   const [search, setSearch] = useState("")
@@ -284,22 +285,38 @@ export default function ProviderInventory() {
                 </div>
               )}
               <label style={{ display:"block", width:"100%", background:"#f8f8f8", border:"2px dashed #e5e5e5", borderRadius:10, padding:"12px", color:"#888", fontSize:12, cursor:"pointer", textAlign:"center" }}>
-                {uploadingVideo?"⏳ Uploading video...":"🎥 " +(form.video_url?"Tap to change video":"Tap to upload video (max 200MB)")}
+                {uploadingVideo?`⏳ Uploading... ${videoUploadProgress}%`:"🎥 " +(form.video_url?"Tap to change video":"Tap to upload video (max 200MB)")}
                 <input type="file" accept="video/*" style={{ display:"none" }} onChange={async e=>{
                   const file = e.target.files[0]
                   if (!file) return
                   if (file.size > 200*1024*1024) return toast.error("Video must be under 200MB")
                   setUploadingVideo(true)
+                  setVideoUploadProgress(0)
                   try {
                     const ext = file.name.split(".").pop()
                     const path = user.id + "/video-" + Date.now() + "." + ext
-                    const { error } = await supabase.storage.from("provider-photos").upload(path, file, { upsert:true })
-                    if (error) throw error
+                    // supabase-js's own upload() gives no progress feedback at all, so a large
+                    // video looked identical whether it was 5% done or about to finish - genuinely
+                    // indistinguishable from being stuck. Upload directly via XMLHttpRequest instead,
+                    // which supports real upload progress events.
+                    const { data: { session } } = await supabase.auth.getSession()
+                    await new Promise((resolve, reject) => {
+                      const xhr = new XMLHttpRequest()
+                      xhr.open("POST", `${import.meta.env.VITE_SUPABASE_URL || "https://gcnefnqtjxtqbhynyoxe.supabase.co"}/storage/v1/object/provider-photos/${path}`)
+                      xhr.setRequestHeader("Authorization", `Bearer ${session?.access_token}`)
+                      xhr.setRequestHeader("x-upsert", "true")
+                      xhr.upload.onprogress = (evt) => {
+                        if (evt.lengthComputable) setVideoUploadProgress(Math.round((evt.loaded / evt.total) * 100))
+                      }
+                      xhr.onload = () => xhr.status >= 200 && xhr.status < 300 ? resolve() : reject(new Error("Upload failed: " + xhr.responseText))
+                      xhr.onerror = () => reject(new Error("Network error during upload"))
+                      xhr.send(file)
+                    })
                     const { data } = supabase.storage.from("provider-photos").getPublicUrl(path)
                     setForm(f=>({...f,video_url:data.publicUrl}))
                     toast.success("Video uploaded!")
                   } catch(e) { toast.error(e.message) }
-                  finally { setUploadingVideo(false) }
+                  finally { setUploadingVideo(false); setVideoUploadProgress(0) }
                 }}/>
               </label>
             </div>
