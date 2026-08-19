@@ -284,11 +284,11 @@ export default function ProviderInventory() {
                 </div>
               )}
               <label style={{ display:"block", width:"100%", background:"#f8f8f8", border:"2px dashed #e5e5e5", borderRadius:10, padding:"12px", color:"#888", fontSize:12, cursor:"pointer", textAlign:"center" }}>
-                {uploadingVideo?"⏳ Uploading video...":"🎥 " +(form.video_url?"Tap to change video":"Tap to upload video (max 50MB)")}
+                {uploadingVideo?"⏳ Uploading video...":"🎥 " +(form.video_url?"Tap to change video":"Tap to upload video (max 200MB)")}
                 <input type="file" accept="video/*" style={{ display:"none" }} onChange={async e=>{
                   const file = e.target.files[0]
                   if (!file) return
-                  if (file.size > 50*1024*1024) return toast.error("Video must be under 50MB")
+                  if (file.size > 200*1024*1024) return toast.error("Video must be under 200MB")
                   setUploadingVideo(true)
                   try {
                     const ext = file.name.split(".").pop()
