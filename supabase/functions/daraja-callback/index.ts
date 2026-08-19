@@ -63,7 +63,16 @@ serve(async (req) => {
               await supabase.from("notifications").insert({ user_id: order.customer_id, title: "Order placed! 🛒", message: "Your payment was successful and your order has been placed.", type: "success" })
               console.log("Order payment confirmed:", order.id)
             } else {
-              console.error("Payment confirmed but no matching booking or order found:", txn.booking_id)
+              // Not an order either - check if this is a new car dealer listing fee. Same gap that
+              // existed for orders before: real payment confirms with Safaricom but the listing
+              // itself never activates since nothing ever tells it the money arrived.
+              const { data: carListing } = await supabase.from("new_car_listings").select("id, dealer_id, brand, model").eq("id", txn.booking_id).maybeSingle()
+              if (carListing) {
+                await supabase.from("new_car_listings").update({ listing_fee_paid: true, listing_paid_at: new Date().toISOString(), status: "active" }).eq("id", carListing.id)
+                await supabase.from("notifications").insert({ user_id: carListing.dealer_id, title: "Listing activated! \uD83D\uDE97", message: `Your listing for ${carListing.brand} ${carListing.model} is now live.`, type: "success" })
+              } else {
+                console.error("Payment confirmed but no matching booking, order, or car listing found:", txn.booking_id)
+              }
             }
           } else {
           const isGoServiceFeePayment = bk?.is_emergency && bk?.status === "completed" && !bk?.go_service_fee_paid

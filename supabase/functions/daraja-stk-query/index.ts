@@ -76,6 +76,14 @@ serve(async (req) => {
         await supabase.from("orders").update({ payment_status: "paid", payment_held: true, status: "pending" }).eq("id", order.id)
         await supabase.from("notifications").insert({ user_id: order.provider_id, title: "New order received! 📦", message: "A customer has paid for their order. Check your Orders dashboard.", type: "success" })
         await supabase.from("notifications").insert({ user_id: order.customer_id, title: "Order placed! 🛒", message: "Your payment was successful and your order has been placed.", type: "success" })
+      } else {
+        // Not a booking or order - check if this is a new car dealer listing fee, same gap
+        // that existed for orders before this fix.
+        const { data: carListing } = await supabase.from("new_car_listings").select("id, dealer_id, brand, model").eq("id", booking_id).maybeSingle()
+        if (carListing) {
+          await supabase.from("new_car_listings").update({ listing_fee_paid: true, listing_paid_at: new Date().toISOString(), status: "active" }).eq("id", carListing.id)
+          await supabase.from("notifications").insert({ user_id: carListing.dealer_id, title: "Listing activated! \uD83D\uDE97", message: `Your listing for ${carListing.brand} ${carListing.model} is now live.`, type: "success" })
+        }
       }
     } else {
         const isGoServiceFeePayment = bk?.is_emergency && bk?.status === "completed" && !bk?.go_service_fee_paid
