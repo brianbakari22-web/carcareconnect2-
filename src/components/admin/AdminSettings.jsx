@@ -94,7 +94,7 @@ export default function AdminSettings() {
     <div>
       <div style={{ fontFamily:"Syne", fontSize:isMobile?16:20, fontWeight:800, color:"#000", marginBottom:4 }}>Platform Settings</div>
       <div style={{ fontSize:12, color:"#888", marginBottom:"1.5rem" }}>Configure platform branding, fees, rates and settings</div>
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8, marginBottom:"1.5rem" }}>
+      <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"1fr 1fr 1fr", gap:8, marginBottom:"1.5rem" }}>
         {[
           { label:"Total settings", value:settings.length, color:"#000" },
           { label:"Last updated", value:lastUpdated, color:"#378add" },
@@ -134,13 +134,13 @@ export default function AdminSettings() {
               <div style={{ borderTop:"1px solid #eee" }}>
                 {catSettings.map(s=>(
                   <div key={s.id} style={{ padding:"0.75rem 1rem", borderBottom:"1px solid #eee", background:editing===s.id?"#fffbf7":"#fff" }}>
-                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                      <div style={{ flex:1, minWidth:0, marginRight:8 }}>
-                        <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#000" }}>{s.label}</div>
-                        {s.description&&<div style={{ fontSize:11, color:"#888", marginTop:1 }}>{s.description}</div>}
+                    <div style={{ display:"flex", flexDirection:isMobile?"column":"row", justifyContent:"space-between", alignItems:isMobile?"flex-start":"center", gap:isMobile?8:0 }}>
+                      <div style={{ flex:1, minWidth:0, marginRight:isMobile?0:8, wordBreak:"break-word" }}>
+                        <div style={{ fontFamily:"Syne", fontSize:12, fontWeight:700, color:"#000", wordBreak:"break-word" }}>{s.label}</div>
+                        {s.description&&<div style={{ fontSize:11, color:"#888", marginTop:1, wordBreak:"break-word" }}>{s.description}</div>}
                       </div>
-                      <div style={{ display:"flex", alignItems:"center", gap:8, flexShrink:0 }}>
-                        <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:catConfig.color }}>{formatValue(s)}</div>
+                      <div style={{ display:"flex", alignItems:"center", gap:8, flexShrink:0, width:isMobile?"100%":"auto", justifyContent:isMobile?"space-between":"flex-start" }}>
+                        <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:catConfig.color, wordBreak:"break-word", maxWidth:isMobile?"60%":"none" }}>{formatValue(s)}</div>
                         {editing===s.id?(
                           <button onClick={()=>setEditing(null)} style={{ background:"none", border:"1px solid #ddd", borderRadius:6, color:"#888", fontSize:11, padding:"4px 8px", cursor:"pointer" }}>Cancel</button>
                         ):(
