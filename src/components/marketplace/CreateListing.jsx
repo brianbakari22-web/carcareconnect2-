@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { MarketplaceIcon, VehicleIcon, ServicesIcon, WarningIcon } from "../../lib/cccIcons"
+import { MarketplaceIcon, VehicleIcon, ServicesIcon, WarningIcon, WrenchBoltIcon, AccessoryIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
@@ -125,11 +125,11 @@ export default function CreateListing() {
         <div style={{ marginBottom:16 }}>
           <label style={lbl}>What are you selling? *</label>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:8 }}>
-            {[{k:"vehicle",l:"🚗 Vehicle",d:"Cars, trucks"},{k:"part",l:"⚙️ Part",d:"Engine, brakes"},{k:"accessory",l:"✨ Accessory",d:"Mats, covers"}].map(t=>(
+            {[{k:"vehicle",l:"Vehicle",d:"Cars, trucks",Icon:VehicleIcon},{k:"part",l:"Part",d:"Engine, brakes",Icon:WrenchBoltIcon},{k:"accessory",l:"Accessory",d:"Mats, covers",Icon:AccessoryIcon}].map(t=>(
               <button key={t.k} type="button" onClick={()=>f("listing_type",t.k)}
                 style={{ background:form.listing_type===t.k?"#fff8f0":"#ffffff", border:`1px solid ${form.listing_type===t.k?"#e6821e":"#f5f5f5"}`, borderRadius:10, padding:"0.75rem", cursor:"pointer", textAlign:"left" }}>
-                <div style={{ fontSize:16, marginBottom:4 }}>{t.l.split(" ")[0]}</div>
-                <div style={{ fontSize:11, fontWeight:600, color:form.listing_type===t.k?"#e6821e":"#666" }}>{t.l.split(" ").slice(1).join(" ")}</div>
+                <div style={{ marginBottom:4 }}><t.Icon size={18} color={form.listing_type===t.k?"#e6821e":"#64748B"}/></div>
+                <div style={{ fontSize:11, fontWeight:600, color:form.listing_type===t.k?"#e6821e":"#666" }}>{t.l}</div>
                 <div style={{ fontSize:9, color:"#888888", marginTop:2 }}>{t.d}</div>
               </button>
             ))}
