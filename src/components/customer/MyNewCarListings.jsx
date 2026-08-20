@@ -176,22 +176,28 @@ export default function MyNewCarListings() {
     const tierDays = { day: 1, week: 7, month: 30 }
     const amount = tierAmounts[tier]
     try {
+      // Create the payment record FIRST and use ITS id as the payment reference, not the
+      // listing's own id - the listing fee, feature fee, and lead fee all reference the same
+      // listing otherwise, making it impossible for the payment callback to tell which one a
+      // given confirmation is actually for. Also stopped marking is_featured true immediately
+      // after merely sending the STK push - a customer could cancel or never enter their PIN
+      // and still get the featured boost for free, since nothing had confirmed the money moved.
+      const { data: payRecord, error: payRecErr } = await supabase.from("featured_payments").insert({
+        listing_id: listing.id, seller_id: user.id, amount, weeks: tierDays[tier]/7, status: "pending"
+      }).select("id").single()
+      if (payRecErr) throw payRecErr
       const { data, error } = await supabase.functions.invoke("daraja-stk-push", {
         body: {
           amount,
-          booking_id: listing.id,
+          booking_id: payRecord.id,
           customer_id: user.id,
           phone: listing.showroom_phone||profile?.phone||"",
           service_name: `Feature listing (${tier}) - ${listing.brand} ${listing.model}`
         }
       })
       if(error) throw error
-      if(data?.success) {
-        toast.success("STK Push sent! Check your phone for M-Pesa prompt.")
-        const featuredUntil = new Date(Date.now() + tierDays[tier]*24*60*60*1000).toISOString()
-        await supabase.from("new_car_listings").update({ is_featured: true, featured_until: featuredUntil }).eq("id", listing.id)
-        load()
-      } else toast.error("Payment initiation failed. Please try again.")
+      if(data?.success) toast.success("STK Push sent! Check your phone for M-Pesa prompt.")
+      else toast.error("Payment initiation failed. Please try again.")
     } catch(e) { toast.error(e.message) }
   }
     toast.success("Status updated")
@@ -210,12 +216,10 @@ export default function MyNewCarListings() {
         }
       })
       if(error) throw error
-      if(data?.success) {
-        toast.success("STK Push sent! Check your phone 📱")
-        // Mark lead fee as paid after payment
-        await supabase.from("car_enquiries").update({ lead_fee_paid: true }).eq("id", enquiry.id)
-        load()
-      } else toast.error("Payment failed. Try again.")
+      // No longer marking lead_fee_paid here - only the real payment callback should do
+      // that, once Safaricom genuinely confirms the money moved, not just because a prompt was sent.
+      if(data?.success) toast.success("STK Push sent! Check your phone 📱")
+      else toast.error("Payment failed. Try again.")
     } catch(e) { toast.error(e.message) }
   }
   async function deleteListing(id) {

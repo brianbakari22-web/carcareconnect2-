@@ -71,7 +71,22 @@ serve(async (req) => {
                 await supabase.from("new_car_listings").update({ listing_fee_paid: true, listing_paid_at: new Date().toISOString(), status: "active" }).eq("id", carListing.id)
                 await supabase.from("notifications").insert({ user_id: carListing.dealer_id, title: "Listing activated! \uD83D\uDE97", message: `Your listing for ${carListing.brand} ${carListing.model} is now live.`, type: "success" })
               } else {
-                console.error("Payment confirmed but no matching booking, order, or car listing found:", txn.booking_id)
+                // Not the initial listing fee either - check if this is a feature-fee payment
+                // (its own dedicated featured_payments record, separate from the listing fee,
+                // so the two can genuinely be told apart) or a lead fee (car_enquiries).
+                const { data: featPayment } = await supabase.from("featured_payments").select("id, listing_id, weeks").eq("id", txn.booking_id).maybeSingle()
+                if (featPayment) {
+                  const featuredUntil = new Date(Date.now() + (featPayment.weeks||1) * 7 * 24 * 60 * 60 * 1000).toISOString()
+                  await supabase.from("new_car_listings").update({ is_featured: true, featured_until: featuredUntil }).eq("id", featPayment.listing_id)
+                  await supabase.from("featured_payments").update({ status: "paid" }).eq("id", featPayment.id)
+                } else {
+                  const { data: enquiry } = await supabase.from("car_enquiries").select("id").eq("id", txn.booking_id).maybeSingle()
+                  if (enquiry) {
+                    await supabase.from("car_enquiries").update({ lead_fee_paid: true }).eq("id", enquiry.id)
+                  } else {
+                    console.error("Payment confirmed but no matching booking, order, car listing, feature payment, or enquiry found:", txn.booking_id)
+                  }
+                }
               }
             }
           } else {
