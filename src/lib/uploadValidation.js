@@ -12,7 +12,7 @@ const ALLOWED_TYPES = {
 const MAX_SIZES = {
   image: 5 * 1024 * 1024,    // 5MB
   document: 10 * 1024 * 1024, // 10MB
-  video: 50 * 1024 * 1024,    // 50MB
+  video: 200 * 1024 * 1024,   // 200MB
 }
 
 // Validate file before upload
