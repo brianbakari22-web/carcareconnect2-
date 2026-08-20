@@ -237,13 +237,13 @@ export default function AdminMarketplace() {
         // Create refund payout request for buyer
         await supabase.from("payout_requests").insert({
           user_id: tx.buyer_id,
-          amount: tx.amount,
+          amount: tx.sale_price,
           status: "pending",
         })
         await supabase.from("notifications").insert({
           user_id: tx.buyer_id,
           title: "Dispute resolved — Refund incoming 💰",
-          message: `The dispute has been resolved in your favour. KES ${Number(tx?.amount||0).toLocaleString()} refund has been requested.`,
+          message: `The dispute has been resolved in your favour. KES ${Number(tx?.sale_price||0).toLocaleString()} refund has been requested.`,
           type: "success",
         })
         await supabase.from("notifications").insert({
