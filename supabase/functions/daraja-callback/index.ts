@@ -94,10 +94,20 @@ serve(async (req) => {
                     // purchase. Real money genuinely moves via M-Pesa here too, but nothing
                     // ever told the transaction it had been paid, leaving the buyer stuck
                     // with no way to ever reach the "Confirm Receipt" step.
-                    const { data: mpTxn } = await supabase.from("marketplace_transactions").select("id, seller_id, listing_id").eq("id", txn.booking_id).maybeSingle()
+                    const { data: mpTxn } = await supabase.from("marketplace_transactions").select("id, seller_id, listing_id, payment_status").eq("id", txn.booking_id).maybeSingle()
                     if (mpTxn) {
-                      await supabase.from("marketplace_transactions").update({ payment_status: "paid" }).eq("id", mpTxn.id)
-                      await supabase.from("notifications").insert({ user_id: mpTxn.seller_id, title: "Payment received! \uD83D\uDCB0", message: "The buyer has paid for your listing. Arrange handover to receive your payout once they confirm receipt.", type: "success" })
+                      if (mpTxn.payment_status === "awaiting_facilitation_fee") {
+                        // This is a large sale (above Safaricom's B2C ceiling) - this payment was
+                        // only ever the seller's small facilitation fee, not the buyer's full
+                        // sale amount. Mark the fee paid, which unlocks the handover step -
+                        // the real money for large sales still moves directly between the two
+                        // parties themselves, CCC was never going to hold it.
+                        await supabase.from("marketplace_transactions").update({ facilitation_fee_paid: true }).eq("id", mpTxn.id)
+                        await supabase.from("notifications").insert({ user_id: mpTxn.seller_id, title: "Facilitation fee received! \uD83D\uDCB0", message: "You can now arrange handover directly with the buyer and confirm the sale.", type: "success" })
+                      } else {
+                        await supabase.from("marketplace_transactions").update({ payment_status: "paid" }).eq("id", mpTxn.id)
+                        await supabase.from("notifications").insert({ user_id: mpTxn.seller_id, title: "Payment received! \uD83D\uDCB0", message: "The buyer has paid for your listing. Arrange handover to receive your payout once they confirm receipt.", type: "success" })
+                      }
                     } else {
                       const { data: insp } = await supabase.from("inspection_requests").select("id, seller_id").eq("id", txn.booking_id).maybeSingle()
                       if (insp) {

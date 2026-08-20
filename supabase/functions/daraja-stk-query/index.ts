@@ -97,10 +97,15 @@ serve(async (req) => {
             if (enquiry) {
               await supabase.from("car_enquiries").update({ lead_fee_paid: true }).eq("id", enquiry.id)
             } else {
-              const { data: mpTxn } = await supabase.from("marketplace_transactions").select("id, seller_id").eq("id", booking_id).maybeSingle()
+              const { data: mpTxn } = await supabase.from("marketplace_transactions").select("id, seller_id, payment_status").eq("id", booking_id).maybeSingle()
               if (mpTxn) {
-                await supabase.from("marketplace_transactions").update({ payment_status: "paid" }).eq("id", mpTxn.id)
-                await supabase.from("notifications").insert({ user_id: mpTxn.seller_id, title: "Payment received! \uD83D\uDCB0", message: "The buyer has paid for your listing. Arrange handover to receive your payout once they confirm receipt.", type: "success" })
+                if (mpTxn.payment_status === "awaiting_facilitation_fee") {
+                  await supabase.from("marketplace_transactions").update({ facilitation_fee_paid: true }).eq("id", mpTxn.id)
+                  await supabase.from("notifications").insert({ user_id: mpTxn.seller_id, title: "Facilitation fee received! \uD83D\uDCB0", message: "You can now arrange handover directly with the buyer and confirm the sale.", type: "success" })
+                } else {
+                  await supabase.from("marketplace_transactions").update({ payment_status: "paid" }).eq("id", mpTxn.id)
+                  await supabase.from("notifications").insert({ user_id: mpTxn.seller_id, title: "Payment received! \uD83D\uDCB0", message: "The buyer has paid for your listing. Arrange handover to receive your payout once they confirm receipt.", type: "success" })
+                }
               } else {
                 const { data: insp } = await supabase.from("inspection_requests").select("id, seller_id").eq("id", booking_id).maybeSingle()
                 if (insp) {
