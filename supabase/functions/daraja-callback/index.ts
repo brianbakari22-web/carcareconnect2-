@@ -104,6 +104,18 @@ serve(async (req) => {
                         // parties themselves, CCC was never going to hold it.
                         await supabase.from("marketplace_transactions").update({ facilitation_fee_paid: true }).eq("id", mpTxn.id)
                         await supabase.from("notifications").insert({ user_id: mpTxn.seller_id, title: "Facilitation fee received! \uD83D\uDCB0", message: "You can now arrange handover directly with the buyer and confirm the sale.", type: "success" })
+                        // Large sales are higher-risk (bigger sums, CCC never holds the money
+                        // directly) - alert admin so they have visibility into these even
+                        // without being directly involved in the money movement.
+                        const { data: mpTxnFull } = await supabase.from("marketplace_transactions").select("sale_price, buyer_id").eq("id", mpTxn.id).maybeSingle()
+                        const { data: admins } = await supabase.from("profiles").select("id").eq("role", "admin")
+                        if (admins?.length) {
+                          await supabase.from("notifications").insert(admins.map((a: any) => ({
+                            user_id: a.id, title: "Large sale in progress \uD83D\uDD14",
+                            message: `A KES ${Number(mpTxnFull?.sale_price||0).toLocaleString()} sale is proceeding directly between buyer and seller - facilitation fee paid, handover pending.`,
+                            type: "info"
+                          })))
+                        }
                       } else {
                         await supabase.from("marketplace_transactions").update({ payment_status: "paid" }).eq("id", mpTxn.id)
                         await supabase.from("notifications").insert({ user_id: mpTxn.seller_id, title: "Payment received! \uD83D\uDCB0", message: "The buyer has paid for your listing. Arrange handover to receive your payout once they confirm receipt.", type: "success" })
