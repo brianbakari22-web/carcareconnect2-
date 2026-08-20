@@ -68,7 +68,7 @@ serve(async (req) => {
               // itself never activates since nothing ever tells it the money arrived.
               const { data: carListing } = await supabase.from("new_car_listings").select("id, dealer_id, brand, model").eq("id", txn.booking_id).maybeSingle()
               if (carListing) {
-                await supabase.from("new_car_listings").update({ listing_fee_paid: true, listing_paid_at: new Date().toISOString(), status: "active" }).eq("id", carListing.id)
+                await supabase.from("new_car_listings").update({ listing_fee_paid: true, listing_paid_at: new Date().toISOString(), is_active: true, listing_expires_at: new Date(Date.now() + 30*24*60*60*1000).toISOString() }).eq("id", carListing.id)
                 await supabase.from("notifications").insert({ user_id: carListing.dealer_id, title: "Listing activated! \uD83D\uDE97", message: `Your listing for ${carListing.brand} ${carListing.model} is now live.`, type: "success" })
               } else {
                 // Not the initial listing fee either - check if this is a feature-fee payment
