@@ -18,6 +18,10 @@ export default function EscrowManager() {
   const [submittingReview, setSubmittingReview] = useState(false)
   const [disputeReason, setDisputeReason] = useState("")
   const [disputeDesc, setDisputeDesc] = useState("")
+  const [generatedOtp, setGeneratedOtp] = useState({})
+  const [otpGenerating, setOtpGenerating] = useState(null)
+  const [otpInput, setOtpInput] = useState({})
+  const [otpVerifying, setOtpVerifying] = useState(null)
 
   useEffect(() => { if (user) load() }, [user])
 
@@ -40,39 +44,34 @@ export default function EscrowManager() {
     setLoading(false)
   }
 
-  async function confirmReceipt(txId) {
-    if (!confirm("Confirm you have received the item in the described condition?")) return
+  // The buyer generates the code deliberately, on their own device, only once they have
+  // genuinely received and are satisfied with the item - the seller can never fake or rush
+  // this moment, since they can only enter what the buyer chooses to give them in person.
+  async function generateOtp(txId) {
+    setOtpGenerating(txId)
     try {
-      const tx = transactions.buying.find(t=>t.id===txId)
-
-      await supabase.from("marketplace_transactions").update({
-        buyer_confirmed: true,
-        buyer_confirmed_at: new Date().toISOString(),
-        payment_status: "released",
-        escrow_released: true,
-        escrow_released_at: new Date().toISOString(),
-      }).eq("id",txId)
-
-      // Create a real payout request so admin can actually pay the seller
-      await supabase.from("payout_requests").insert({
-        user_id: tx.seller_id,
-        amount: tx.seller_earnings,
-        status: "pending",
-      })
-
-      await supabase.from("notifications").insert({
-        user_id: tx.seller_id,
-        title: "Payment released! 🎉",
-        message: `The buyer has confirmed receipt of "${tx.marketplace_listings?.title}". KES ${Number(tx.seller_earnings).toLocaleString()} payout has been requested — add your bank details under Payouts to receive it.`,
-        type: "success",
-      })
-
-      toast.success("Receipt confirmed — payout requested for seller!")
-      // Prompt buyer to review seller
-      const reviewableTx = transactions.buying.find(t=>t.id===txId)
+      const { data, error } = await supabase.rpc("generate_handover_otp", { p_transaction_id: txId, p_buyer_id: user.id })
+      if (error) throw error
+      if (!data?.success) throw new Error(data?.error || "Failed to generate code")
+      setGeneratedOtp(prev => ({ ...prev, [txId]: data.otp }))
+      toast.success("Code generated - read it to the seller once you're satisfied")
+    } catch(err) { toast.error(err.message) }
+    finally { setOtpGenerating(null) }
+  }
+  async function verifyOtp(tx) {
+    const entered = otpInput[tx.id]
+    if (!entered || entered.length !== 4) return toast.error("Enter the 4-digit code")
+    setOtpVerifying(tx.id)
+    try {
+      const { data, error } = await supabase.rpc("verify_handover_otp", { p_transaction_id: tx.id, p_otp: entered })
+      if (error) throw error
+      if (!data?.success) throw new Error(data?.error || "Verification failed")
+      toast.success("Handover confirmed - payout requested!")
+      const reviewableTx = transactions.selling.find(t=>t.id===tx.id)
       if (reviewableTx) setReviewTx(reviewableTx)
       load()
     } catch(err) { toast.error(err.message) }
+    finally { setOtpVerifying(null) }
   }
 
   async function raiseDispute(tx) {
@@ -207,10 +206,17 @@ export default function EscrowManager() {
                       </div>
                     )}
                   <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
-                    <button onClick={()=>confirmReceipt(tx.id)}
-                      style={{ background:"#1d9e75", border:"none", borderRadius:7, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"6px 14px", cursor:"pointer" }}>
-                      ✓ Confirm receipt
-                    </button>
+                    {!generatedOtp[tx.id] ? (
+                      <button onClick={()=>generateOtp(tx.id)} disabled={otpGenerating===tx.id}
+                        style={{ background:"#1d9e75", border:"none", borderRadius:7, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:11, fontWeight:700, padding:"6px 14px", cursor:"pointer" }}>
+                        {otpGenerating===tx.id?"...":"✓ I've received it - generate code"}
+                      </button>
+                    ) : (
+                      <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7550", borderRadius:8, padding:"10px 12px" }}>
+                        <div style={{ fontSize:11, color:"#555", marginBottom:4 }}>Read this code to the seller to release their payment:</div>
+                        <div style={{ fontFamily:"Syne", fontSize:24, fontWeight:800, color:"#1d9e75", letterSpacing:6, textAlign:"center" }}>{generatedOtp[tx.id]}</div>
+                      </div>
+                    )}
                     {!tx.dispute_raised&&(
                       <button onClick={()=>setDisputing(disputing===tx.id?null:tx.id)}
                         style={{ background:"none", border:"1px solid #e24b4a40", borderRadius:7, color:"#e24b4a", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>
@@ -221,7 +227,18 @@ export default function EscrowManager() {
                   </div>
                 )}
                 {tab==="selling"&&(
-                  <div style={{ fontSize:11, color:"#777777" }}>Waiting for buyer to confirm receipt</div>
+                  <div>
+                    <div style={{ fontSize:11, color:"#777777", marginBottom:6 }}>Ask the buyer for their 4-digit code once you've handed over the item, to release your payment.</div>
+                    <div style={{ display:"flex", gap:6 }}>
+                      <input type="text" maxLength={4} placeholder="Code" value={otpInput[tx.id]||""}
+                        onChange={e=>setOtpInput(prev=>({...prev,[tx.id]:e.target.value.replace(/\D/g,"")}))}
+                        style={{ width:70, padding:"7px", borderRadius:7, border:"1px solid #ddd", fontSize:14, textAlign:"center", letterSpacing:4 }}/>
+                      <button onClick={()=>verifyOtp(tx)} disabled={otpVerifying===tx.id}
+                        style={{ background:"#1d9e75", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"7px 14px", cursor:"pointer" }}>
+                        {otpVerifying===tx.id?"...":"Verify & release"}
+                      </button>
+                    </div>
+                  </div>
                 )}
               </div>
             )}
