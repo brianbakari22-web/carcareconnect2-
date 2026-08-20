@@ -105,7 +105,13 @@ export default function EscrowManager() {
       const { data, error } = await supabase.rpc("verify_handover_otp", { p_transaction_id: tx.id, p_otp: entered })
       if (error) throw error
       if (!data?.success) throw new Error(data?.error || "Verification failed")
-      toast.success("Handover confirmed - payout requested!")
+      // verify_handover_otp no longer creates the payout_requests entry itself - it only
+      // confirms the handover and returns who to pay. Trigger the actual payout here so it
+      // can genuinely go out automatically when possible, rather than always sitting manual.
+      await supabase.functions.invoke("process-payout-request", {
+        body: { user_id: data.seller_id, amount: data.seller_earnings, source_label: "Marketplace sale payout" }
+      })
+      toast.success("Handover confirmed - payout sent!")
       const reviewableTx = transactions.selling.find(t=>t.id===tx.id)
       if (reviewableTx) setReviewTx(reviewableTx)
       load()
