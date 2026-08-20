@@ -84,16 +84,14 @@ export default function DriverPayouts() {
     if (amt < minPayout) return toast.error(`Minimum payout is KES ${minPayout.toLocaleString()}`)
     if (amt > available) return toast.error(`Maximum available is KES ${available.toLocaleString()}`)
     setSubmitting(true)
-    const { error } = await supabase.from("payout_requests").insert({
-      user_id: user.id,
-      amount: amt,
-      bank_name: bankInfo.bank_name,
-      bank_account_name: bankInfo.bank_account_name,
-      bank_account_number: bankInfo.bank_account_number,
-      status: "pending"
+    // Routine driver payouts should send automatically wherever possible - only genuinely
+    // falls back to the manual admin queue if the amount exceeds Safaricom's own B2C ceiling
+    // or the automatic attempt itself fails for some reason.
+    const { data, error } = await supabase.functions.invoke("process-payout-request", {
+      body: { user_id: user.id, amount: amt, source_label: "Driver payout" }
     })
-    if (error) { toast.error(error.message); setSubmitting(false); return }
-    toast.success("Payout request submitted!")
+    if (error || !data?.success) { toast.error(error?.message || "Payout request failed"); setSubmitting(false); return }
+    toast.success(data.automatic ? "Payout sent! Check your M-Pesa." : "Payout request submitted for review")
     setAmount("")
     setSubmitting(false)
     load()
