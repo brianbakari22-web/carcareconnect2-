@@ -26,17 +26,12 @@ export default function MarketplacePayment({ offer, listing, onSuccess, onCancel
   async function initPayment() {
     setPaying(true)
     try {
-      const { data: txn, error: txnError } = await supabase.from("marketplace_transactions").insert({
-        listing_id: listing.id,
-        offer_id: offer.id,
-        buyer_id: user.id,
-        seller_id: listing.seller_id,
-        sale_price: salePrice,
-        platform_commission: commission,
-        seller_earnings: sellerEarnings,
-        payment_status: "pending"
-      }).select("id").single()
+      // acceptOffer() in MyListings.jsx already creates the marketplace_transactions record the
+      // moment the seller accepts - inserting a second one here would leave two records for the
+      // same sale (one permanently stuck "pending"). Look up the existing one instead.
+      const { data: txn, error: txnError } = await supabase.from("marketplace_transactions").select("id").eq("offer_id", offer.id).maybeSingle()
       if (txnError) throw txnError
+      if (!txn) throw new Error("No transaction found for this offer - please contact support")
       setTxnId(txn.id)
       setShowPayment(true)
     } catch(e) {
