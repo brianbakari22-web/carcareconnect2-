@@ -82,7 +82,7 @@ export default function AdminPaymentTracking() {
 
   async function releaseEscrow(txnId) {
     if (!confirm("Release escrow to seller?")) return
-    await supabase.from("marketplace_transactions").update({ status:"completed", escrow_released_at:new Date().toISOString() }).eq("id", txnId)
+    await supabase.from("marketplace_transactions").update({ payment_status:"released", escrow_released:true, escrow_released_at:new Date().toISOString() }).eq("id", txnId)
     toast.success("Escrow released to seller")
     load()
   }
@@ -91,7 +91,7 @@ export default function AdminPaymentTracking() {
   const totalRevenue = bookings.filter(b=>b.payment_status==="paid").reduce((s,b)=>s+Number(b.platform_commission||0),0)
   const pendingRevenue = bookings.filter(b=>b.status==="completed"&&b.payment_status!=="paid").reduce((s,b)=>s+Number(b.platform_commission||0),0)
   const goRevenue = goPayments.filter(b=>b.go_callout_paid).length * 75
-  const escrowTotal = marketplace.filter(m=>m.status==="pending"||m.status==="processing").reduce((s,m)=>s+Number(m.amount||0),0)
+  const escrowTotal = marketplace.filter(m=>m.payment_status==="pending"||m.payment_status==="processing"||m.payment_status==="paid").reduce((s,m)=>s+Number(m.sale_price||0),0)
   const bookingEscrowTotal = escrowBookings.reduce((s,b)=>s+Number(b.provider_earnings||0),0)
   const autoReleaseToday = escrowBookings.filter(b=>b.auto_release_at&&new Date(b.auto_release_at)<new Date(Date.now()+24*60*60*1000)).length
   const partsRevenue = bookings.filter(b=>b.parts_approved).reduce((s,b)=>s+Number(b.parts_commission||0),0)
