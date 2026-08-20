@@ -287,8 +287,8 @@ export default function MyNewCarListings() {
               <input placeholder="Average monthly stock" value={dealerForm.monthly_stock} onChange={e=>setDealerForm(f=>({...f,monthly_stock:e.target.value}))}
                 style={{ width:"100%", padding:"10px 12px", borderRadius:8, border:"1px solid #ddd", fontSize:13, marginBottom:12, boxSizing:"border-box" }}/>
               <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:8, padding:"10px 12px", marginBottom:12, fontSize:12, color:"#666" }}>
-                <div style={{ fontWeight:700, color:"#e6821e", marginBottom:4, display:"flex", alignItems:"center", gap:6 }}><PaymentsIcon size={14} color="#e6821e"/> Listing fee: KES 2,000/month</div>
-                <div>After approval, you will pay KES 2,000/month to list unlimited cars. Our team will contact you within 24 hours to complete onboarding.</div>
+                <div style={{ fontWeight:700, color:"#e6821e", marginBottom:4, display:"flex", alignItems:"center", gap:6 }}><PaymentsIcon size={14} color="#e6821e"/> Listing fee: KES {fees.listing_fee.toLocaleString()}/month</div>
+                <div>After approval, you will pay KES {fees.listing_fee.toLocaleString()}/month to list unlimited cars. Our team will contact you within 24 hours to complete onboarding.</div>
               </div>
               <div style={{ display:"flex", gap:8 }}>
                 <button onClick={submitDealerApplication} disabled={submittingDealer}

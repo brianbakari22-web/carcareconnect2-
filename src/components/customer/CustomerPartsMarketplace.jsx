@@ -44,6 +44,7 @@ export default function CustomerPartsMarketplace() {
   const [detectingLocation, setDetectingLocation] = useState(false)
   const [ordering, setOrdering] = useState(false)
   const [feeMultipliers, setFeeMultipliers] = useState({ motorcycle:1, tuktuk:1.5, van:3, car:1.5 })
+  const [platformFeeRateDisplay, setPlatformFeeRateDisplay] = useState({ rate:0.02, cap:200 })
   const [orders, setOrders] = useState([])
   const [tab, setTab] = useState("browse")
   const [chatItem, setChatItem] = useState(null)
@@ -118,6 +119,10 @@ export default function CustomerPartsMarketplace() {
       multRows.forEach(r => { m[r.key.replace("marketplace_delivery_fee_multiplier_","")] = Number(r.value) })
       setFeeMultipliers(prev => ({ ...prev, ...m }))
     }
+    // Fetch the real platform fee rate for display so it always matches what placeOrder()
+    // actually charges - previously hardcoded to 0.02/200 separately from the real rate.
+    const { data: rateRow } = await supabase.from("commission_rates").select("platform_fee_rate,platform_fee_cap").eq("provider_type","parts_dealer").maybeSingle()
+    if (rateRow) setPlatformFeeRateDisplay({ rate: Number(rateRow.platform_fee_rate), cap: Number(rateRow.platform_fee_cap) })
     const { data: inv } = await supabase.from("inventory")
       .select("*, profiles!inventory_provider_id_fkey(id,business_name,first_name,last_name,city,provider_type,is_verified)")
       .eq("is_active", true)
@@ -193,7 +198,7 @@ export default function CustomerPartsMarketplace() {
     setCart(prev=>prev.map(c=>c.id===id?{...c,qty}:c))
   }
   const cartTotal = cart.reduce((s,c)=>s+Number(c.price)*c.qty, 0)
-  const platformFeeDisplay = Math.min(Math.round(cartTotal * 0.02), 200)
+  const platformFeeDisplay = Math.min(Math.round(cartTotal * platformFeeRateDisplay.rate), platformFeeRateDisplay.cap)
   const predictedVehicleType = (() => { const n = cart.reduce((s,i)=>s+i.qty,0); return n<=3?"motorcycle":n<=6?"tuktuk":"van" })()
   const deliveryFee = selectedZone && zones.length > 0 ? Math.round(Number(zones.find(z=>z.id===selectedZone)?.base_fee||0) * (feeMultipliers[predictedVehicleType]||1)) : 0
   const orderTotal = cartTotal + (fulfillment==="delivery"?deliveryFee:0) + platformFeeDisplay
@@ -666,7 +671,7 @@ export default function CustomerPartsMarketplace() {
                     </div>
                   )}
                   <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#888", marginBottom:8, paddingBottom:8, borderBottom:"1px dashed #eee" }}>
-                    <span>Platform fee <span style={{ fontSize:10, color:"#bbb" }}>(2%, max KES 200)</span></span>
+                    <span>Platform fee <span style={{ fontSize:10, color:"#bbb" }}>({Math.round(platformFeeRateDisplay.rate*100)}%, max KES {platformFeeRateDisplay.cap})</span></span>
                     <span>KES {platformFeeDisplay.toLocaleString()}</span>
                   </div>
                   <div style={{ display:"flex", justifyContent:"space-between", fontFamily:"Syne", fontSize:15, fontWeight:800, color:"#e6821e", marginBottom:"1rem" }}>

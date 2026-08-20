@@ -231,7 +231,7 @@ export default function MyListings() {
                   <div style={{ fontSize:11, color:"#e6821e", marginBottom:6 }}>⏳ CCC inspection required before approval</div>
                   <button onClick={()=>setShowInspection(showInspection===l.id?null:l.id)}
                     style={{ background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontSize:11, padding:"6px 14px", cursor:"pointer", fontWeight:600, width:"100%" }}>
-                    {showInspection===l.id?"Close":"Schedule and Pay Inspection (KES 500)"}
+                    {showInspection===l.id?"Close":"Schedule and Pay Inspection"}
                   </button>
                   {showInspection===l.id&&<div style={{ marginTop:8 }}><InspectionRequest listing={l} onSuccess={()=>{ setShowInspection(null); loadListings() }}/></div>}
                 </div>
