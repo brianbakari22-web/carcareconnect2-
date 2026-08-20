@@ -496,7 +496,7 @@ export default function MyNewCarListings() {
                     <div style={{ textAlign:"right" }}>
                       <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>KES {Number(l.price).toLocaleString()}</div>
                       <span style={{ fontSize:10, padding:"2px 7px", borderRadius:10, background:l.is_active?"#f0fdf4":l.listing_fee_paid?"#fff8f0":"#f5f5f5", color:l.is_active?"#1d9e75":l.listing_fee_paid?"#e6821e":"#888" }}>
-                        {l.is_active?"✅ Active":l.listing_fee_paid?"⏳ Pending approval":"💳 Fee required"}
+                        {l.is_active?`✅ Active until ${l.listing_expires_at?new Date(l.listing_expires_at).toLocaleDateString():"—"}`:l.listing_fee_paid?"⏳ Pending approval":"💳 Fee required"}
                       </span>
                     </div>
                   </div>
