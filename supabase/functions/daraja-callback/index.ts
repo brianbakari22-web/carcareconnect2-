@@ -99,7 +99,13 @@ serve(async (req) => {
                       await supabase.from("marketplace_transactions").update({ payment_status: "paid" }).eq("id", mpTxn.id)
                       await supabase.from("notifications").insert({ user_id: mpTxn.seller_id, title: "Payment received! \uD83D\uDCB0", message: "The buyer has paid for your listing. Arrange handover to receive your payout once they confirm receipt.", type: "success" })
                     } else {
-                      console.error("Payment confirmed but no matching booking, order, car listing, feature payment, enquiry, or marketplace transaction found:", txn.booking_id)
+                      const { data: insp } = await supabase.from("inspection_requests").select("id, seller_id").eq("id", txn.booking_id).maybeSingle()
+                      if (insp) {
+                        await supabase.from("inspection_requests").update({ status: "scheduled" }).eq("id", insp.id)
+                        await supabase.from("notifications").insert({ user_id: insp.seller_id, title: "Inspection payment received", message: "Your vehicle inspection has been scheduled. A CCC mechanic will contact you.", type: "success" })
+                      } else {
+                        console.error("Payment confirmed but no matching booking, order, car listing, feature payment, enquiry, marketplace transaction, or inspection request found:", txn.booking_id)
+                      }
                     }
                   }
                 }

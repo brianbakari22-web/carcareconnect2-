@@ -47,15 +47,19 @@ export default function InspectionRequest({ listing, onSuccess }) {
           customerName: (profile?.first_name||"") + " " + (profile?.last_name||"")
         }
       })
-
-      const order = await res.json()
-      if (order.redirect_url) {
-        window.location.href = order.redirect_url
+      if (resErr) throw resErr
+      // daraja-stk-push sends a real M-Pesa STK prompt, it never returns a redirect_url (that was
+      // leftover from the old, already-removed Pesapal integration), and res is already parsed
+      // JSON from supabase.functions.invoke() - calling .json() on it crashes immediately.
+      if (res?.success) {
+        toast.success("STK Push sent! Check your phone for the M-Pesa prompt.")
+        onSuccess && onSuccess()
       } else {
-        throw new Error(order.error || "Payment failed")
+        throw new Error(res?.error || "Payment failed")
       }
     } catch(e) {
       toast.error(e.message || "Failed to initiate payment")
+    } finally {
       setPaying(false)
     }
   }
