@@ -31,10 +31,10 @@ export default function MarketplacePayment({ offer, listing, onSuccess, onCancel
         offer_id: offer.id,
         buyer_id: user.id,
         seller_id: listing.seller_id,
-        amount: salePrice,
-        commission: commission,
+        sale_price: salePrice,
+        platform_commission: commission,
         seller_earnings: sellerEarnings,
-        status: "pending"
+        payment_status: "pending"
       }).select("id").single()
       if (txnError) throw txnError
       setTxnId(txn.id)
@@ -52,7 +52,9 @@ export default function MarketplacePayment({ offer, listing, onSuccess, onCancel
         bookingId={txnId}
         description={`Marketplace - ${listing.title}`}
         onSuccess={async () => {
-          await supabase.from("marketplace_transactions").update({ status: "processing" }).eq("id", txnId)
+          // No longer updating the transaction here - this only fires once the STK push was
+          // merely sent, not once payment genuinely confirmed. The real payment callback
+          // (daraja-callback / daraja-stk-query) now handles marking this paid.
           onSuccess && onSuccess()
         }}
         onClose={() => setShowPayment(false)}

@@ -91,7 +91,15 @@ serve(async (req) => {
             await supabase.from("featured_payments").update({ status: "paid" }).eq("id", featPayment.id)
           } else {
             const { data: enquiry } = await supabase.from("car_enquiries").select("id").eq("id", booking_id).maybeSingle()
-            if (enquiry) await supabase.from("car_enquiries").update({ lead_fee_paid: true }).eq("id", enquiry.id)
+            if (enquiry) {
+              await supabase.from("car_enquiries").update({ lead_fee_paid: true }).eq("id", enquiry.id)
+            } else {
+              const { data: mpTxn } = await supabase.from("marketplace_transactions").select("id, seller_id").eq("id", booking_id).maybeSingle()
+              if (mpTxn) {
+                await supabase.from("marketplace_transactions").update({ payment_status: "paid" }).eq("id", mpTxn.id)
+                await supabase.from("notifications").insert({ user_id: mpTxn.seller_id, title: "Payment received! \uD83D\uDCB0", message: "The buyer has paid for your listing. Arrange handover to receive your payout once they confirm receipt.", type: "success" })
+              }
+            }
           }
         }
       }

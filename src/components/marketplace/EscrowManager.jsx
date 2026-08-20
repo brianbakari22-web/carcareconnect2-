@@ -23,13 +23,17 @@ export default function EscrowManager() {
 
   async function load() {
     const [{ data: buying }, { data: selling }] = await Promise.all([
+      // Only show transactions that genuinely reached a paid state or beyond - a purely
+      // pending, unpaid transaction shouldn't offer a "Confirm Receipt" option at all.
       supabase.from("marketplace_transactions")
         .select("*, marketplace_listings(title,listing_type,make,model)")
         .eq("buyer_id", user.id)
+        .neq("payment_status", "pending")
         .order("created_at",{ascending:false}),
       supabase.from("marketplace_transactions")
         .select("*, marketplace_listings(title,listing_type,make,model)")
         .eq("seller_id", user.id)
+        .neq("payment_status", "pending")
         .order("created_at",{ascending:false}),
     ])
     setTransactions({ buying:buying||[], selling:selling||[] })

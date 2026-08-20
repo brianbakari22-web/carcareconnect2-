@@ -84,7 +84,17 @@ serve(async (req) => {
                   if (enquiry) {
                     await supabase.from("car_enquiries").update({ lead_fee_paid: true }).eq("id", enquiry.id)
                   } else {
-                    console.error("Payment confirmed but no matching booking, order, car listing, feature payment, or enquiry found:", txn.booking_id)
+                    // Not any of the above - check if this is a peer-to-peer vehicle escrow
+                    // purchase. Real money genuinely moves via M-Pesa here too, but nothing
+                    // ever told the transaction it had been paid, leaving the buyer stuck
+                    // with no way to ever reach the "Confirm Receipt" step.
+                    const { data: mpTxn } = await supabase.from("marketplace_transactions").select("id, seller_id, listing_id").eq("id", txn.booking_id).maybeSingle()
+                    if (mpTxn) {
+                      await supabase.from("marketplace_transactions").update({ payment_status: "paid" }).eq("id", mpTxn.id)
+                      await supabase.from("notifications").insert({ user_id: mpTxn.seller_id, title: "Payment received! \uD83D\uDCB0", message: "The buyer has paid for your listing. Arrange handover to receive your payout once they confirm receipt.", type: "success" })
+                    } else {
+                      console.error("Payment confirmed but no matching booking, order, car listing, feature payment, enquiry, or marketplace transaction found:", txn.booking_id)
+                    }
                   }
                 }
               }
