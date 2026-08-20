@@ -163,16 +163,23 @@ export default function Marketplace() {
     if (!user) return toast.error("Please sign in to like listings")
     const isLiked = userLikes.has(listingId)
     if (isLiked) {
-      await supabase.from("marketplace_likes").delete()
+      const { error } = await supabase.from("marketplace_likes").delete()
         .eq("user_id", user.id).eq("listing_id", listingId)
+      if (error) return toast.error("Couldn't unlike - try again")
       setUserLikes(prev => { const n = new Set(prev); n.delete(listingId); return n })
       setListings(ls => ls.map(l => l.id===listingId ? {...l, likes_count:(l.likes_count||1)-1} : l))
       if (selected?.id===listingId) setSelected(s => ({...s, likes_count:(s.likes_count||1)-1}))
     } else {
-      await supabase.from("marketplace_likes").insert({ user_id: user.id, listing_id: listingId })
+      const { error } = await supabase.from("marketplace_likes").insert({ user_id: user.id, listing_id: listingId })
+      // 23505 = already liked (a race with loadUserLikes still loading, or stale local state) -
+      // the database already reflects "liked", so just sync local state to match instead of
+      // surfacing a confusing error for something that isn't really a failure.
+      if (error && error.code !== "23505") return toast.error("Couldn't like - try again")
       setUserLikes(prev => new Set([...prev, listingId]))
-      setListings(ls => ls.map(l => l.id===listingId ? {...l, likes_count:(l.likes_count||0)+1} : l))
-      if (selected?.id===listingId) setSelected(s => ({...s, likes_count:(s.likes_count||0)+1}))
+      if (!error) {
+        setListings(ls => ls.map(l => l.id===listingId ? {...l, likes_count:(l.likes_count||0)+1} : l))
+        if (selected?.id===listingId) setSelected(s => ({...s, likes_count:(s.likes_count||0)+1}))
+      }
     }
   }
 

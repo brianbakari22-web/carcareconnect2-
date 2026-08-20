@@ -189,6 +189,18 @@ serve(async (req) => {
       return new Response(JSON.stringify({ success: false, status: "cancelled", result: queryData }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" }
       })
+    } else if (queryData.ResultCode !== undefined && queryData.ResultCode !== null) {
+      // A definitive, terminal Safaricom result that isn't success or a plain user cancel
+      // (e.g. "1037" DS timeout, insufficient funds, etc.) - this payment genuinely failed,
+      // not merely still-in-progress. Mark it failed so it stops being treated as pending
+      // forever and the dealer can cleanly retry, rather than silently aging out of
+      // check-stuck-payments' recovery window with no resolution ever recorded.
+      await supabase.from("payment_transactions")
+        .update({ status: "failed", result_desc: queryData.ResultDesc || null, completed_at: new Date().toISOString() })
+        .eq("checkout_request_id", checkout_request_id)
+      return new Response(JSON.stringify({ success: false, status: "failed", result: queryData }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" }
+      })
     } else {
       return new Response(JSON.stringify({ success: false, status: "pending", result: queryData }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" }
