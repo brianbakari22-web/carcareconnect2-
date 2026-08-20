@@ -6,7 +6,7 @@ import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
 export default function EscrowManager() {
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const isMobile = useIsMobile()
   const [transactions, setTransactions] = useState([])
   const [loading, setLoading] = useState(true)
@@ -22,6 +22,7 @@ export default function EscrowManager() {
   const [otpGenerating, setOtpGenerating] = useState(null)
   const [otpInput, setOtpInput] = useState({})
   const [otpVerifying, setOtpVerifying] = useState(null)
+  const [payingFee, setPayingFee] = useState(null)
 
   useEffect(() => { if (user) load() }, [user])
 
@@ -47,6 +48,44 @@ export default function EscrowManager() {
   // The buyer generates the code deliberately, on their own device, only once they have
   // genuinely received and are satisfied with the item - the seller can never fake or rush
   // this moment, since they can only enter what the buyer chooses to give them in person.
+  async function payFacilitationFee(tx) {
+    setPayingFee(tx.id)
+    try {
+      const { data, error } = await supabase.functions.invoke("daraja-stk-push", {
+        body: {
+          amount: tx.facilitation_fee_amount,
+          bookingId: tx.id,
+          customerEmail: user.email,
+          customerPhone: profile?.phone || "",
+          customerName: (profile?.first_name||"") + " " + (profile?.last_name||""),
+          description: `Facilitation fee for large sale (KES ${Number(tx.sale_price).toLocaleString()})`
+        }
+      })
+      if (error) throw error
+      if (data?.success) toast.success("STK Push sent! Check your phone for the M-Pesa prompt.")
+      else throw new Error(data?.error || "Payment initiation failed")
+    } catch(err) { toast.error(err.message) }
+    finally { setPayingFee(null) }
+  }
+  async function payFacilitationFee(tx) {
+    setPayingFee(tx.id)
+    try {
+      const { data, error } = await supabase.functions.invoke("daraja-stk-push", {
+        body: {
+          amount: tx.facilitation_fee_amount,
+          bookingId: tx.id,
+          customerEmail: user.email,
+          customerPhone: profile?.phone || "",
+          customerName: (profile?.first_name||"") + " " + (profile?.last_name||""),
+          description: `Facilitation fee for large sale (KES ${Number(tx.sale_price).toLocaleString()})`
+        }
+      })
+      if (error) throw error
+      if (data?.success) toast.success("STK Push sent! Check your phone for the M-Pesa prompt.")
+      else throw new Error(data?.error || "Payment initiation failed")
+    } catch(err) { toast.error(err.message) }
+    finally { setPayingFee(null) }
+  }
   async function generateOtp(txId) {
     setOtpGenerating(txId)
     try {
