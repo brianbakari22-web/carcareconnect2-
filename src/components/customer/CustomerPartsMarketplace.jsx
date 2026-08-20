@@ -665,7 +665,7 @@ export default function CustomerPartsMarketplace() {
                   <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#666", marginBottom:4 }}>
                     <span>Subtotal</span><span>KES {cartTotal.toLocaleString()}</span>
                   </div>
-                  {fulfillment==="delivery"&&zone&&(
+                  {fulfillment==="delivery"&&selectedZone&&(
                     <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#666", marginBottom:4 }}>
                       <span>Delivery fee</span><span>KES {deliveryFee.toLocaleString()}</span>
                     </div>
