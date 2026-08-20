@@ -67,25 +67,6 @@ export default function EscrowManager() {
     } catch(err) { toast.error(err.message) }
     finally { setPayingFee(null) }
   }
-  async function payFacilitationFee(tx) {
-    setPayingFee(tx.id)
-    try {
-      const { data, error } = await supabase.functions.invoke("daraja-stk-push", {
-        body: {
-          amount: tx.facilitation_fee_amount,
-          bookingId: tx.id,
-          customerEmail: user.email,
-          customerPhone: profile?.phone || "",
-          customerName: (profile?.first_name||"") + " " + (profile?.last_name||""),
-          description: `Facilitation fee for large sale (KES ${Number(tx.sale_price).toLocaleString()})`
-        }
-      })
-      if (error) throw error
-      if (data?.success) toast.success("STK Push sent! Check your phone for the M-Pesa prompt.")
-      else throw new Error(data?.error || "Payment initiation failed")
-    } catch(err) { toast.error(err.message) }
-    finally { setPayingFee(null) }
-  }
   async function generateOtp(txId) {
     setOtpGenerating(txId)
     try {
