@@ -156,6 +156,7 @@ export default function MyNewCarListings() {
       setShowForm(false); setEditing(null); setForm(EMPTY); load()
     } catch(e) { toast.error(e.message) }
     finally { setSaving(false) }
+  }
   async function payListingFee(listing) {
     try {
       const { data, error } = await supabase.functions.invoke("daraja-stk-push", {
@@ -200,9 +201,6 @@ export default function MyNewCarListings() {
       if(data?.success) toast.success("STK Push sent! Check your phone for M-Pesa prompt.")
       else toast.error("Payment initiation failed. Please try again.")
     } catch(e) { toast.error(e.message) }
-  }
-    toast.success("Status updated")
-    load()
   }
 
   async function payLeadFee(enquiry) {
