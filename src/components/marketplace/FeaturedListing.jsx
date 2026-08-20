@@ -64,12 +64,12 @@ export default function FeaturedListing({ listingId, onSuccess }) {
         status: "pending",
       }).select("id").single()
       if (paymentError) throw paymentError
-
-      // Store tier and days in sessionStorage for callback
-      sessionStorage.setItem("featured_tier", tier)
-      sessionStorage.setItem("featured_days", days)
-
-      const { data: { session } } = await supabase.auth.getSession()
+      // daraja-stk-push sends a real M-Pesa STK prompt to the customer's phone - it never
+      // returns a redirect_url (that was leftover from the old, since-removed Pesapal-based
+      // integration). Calling res.json() on it was also wrong - supabase.functions.invoke()
+      // already returns parsed JSON directly, not a raw fetch Response. Both together meant
+      // this payment flow would crash immediately, every single time, for every peer seller
+      // trying to feature their own listing.
       const { data: res, error: resErr } = await supabase.functions.invoke("daraja-stk-push", {
         body: {
           amount,
@@ -80,17 +80,15 @@ export default function FeaturedListing({ listingId, onSuccess }) {
           description: `${tier==="premium"?"⭐ PREMIUM":"Standard"} Featured listing for ${days} day(s): "${listing.title}"`
         }
       })
-      const order = await res.json()
-      if (order.redirect_url) {
-        await supabase.from("featured_payments").update({
-          mpesa_code: order.CheckoutRequestID,
-          status: "processing"
-        }).eq("id", payment.id)
-        window.location.href = order.redirect_url
+      if (resErr) throw resErr
+      if (res?.success) {
+        toast.success("STK Push sent! Check your phone for the M-Pesa prompt.")
+        onClose && onClose()
       } else {
-        throw new Error(order.error || "Payment initiation failed")
+        throw new Error(res?.error || "Payment initiation failed")
       }
-    } catch(err) { toast.error(err.message); setPaying(false) }
+    } catch(err) { toast.error(err.message) }
+    finally { setPaying(false) }
   }
 
   if (!listing) return <div style={{ color:"#888", fontSize:13 }}>Loading...</div>

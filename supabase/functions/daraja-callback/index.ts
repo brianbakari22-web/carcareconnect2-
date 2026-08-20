@@ -76,8 +76,14 @@ serve(async (req) => {
                 // so the two can genuinely be told apart) or a lead fee (car_enquiries).
                 const { data: featPayment } = await supabase.from("featured_payments").select("id, listing_id, weeks").eq("id", txn.booking_id).maybeSingle()
                 if (featPayment) {
+                  // A featured_payments record can point to either a dealer's new_car_listings
+                  // or a peer seller's marketplace_listings - try dealer cars first, and if that
+                  // genuinely affects nothing, it must be a peer listing instead.
                   const featuredUntil = new Date(Date.now() + (featPayment.weeks||1) * 7 * 24 * 60 * 60 * 1000).toISOString()
-                  await supabase.from("new_car_listings").update({ is_featured: true, featured_until: featuredUntil }).eq("id", featPayment.listing_id)
+                  const { data: updatedCar } = await supabase.from("new_car_listings").update({ is_featured: true, featured_until: featuredUntil }).eq("id", featPayment.listing_id).select("id")
+                  if (!updatedCar?.length) {
+                    await supabase.from("marketplace_listings").update({ is_featured: true, featured_until: featuredUntil }).eq("id", featPayment.listing_id)
+                  }
                   await supabase.from("featured_payments").update({ status: "paid" }).eq("id", featPayment.id)
                 } else {
                   const { data: enquiry } = await supabase.from("car_enquiries").select("id").eq("id", txn.booking_id).maybeSingle()
