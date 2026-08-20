@@ -41,11 +41,15 @@ export default function MyOffers() {
       const { data: rateRow } = await supabase.from("commission_rates").select("platform_rate").eq("provider_type", rateKey).maybeSingle()
       const rate = rateRow ? Number(rateRow.platform_rate) : (offer.marketplace_listings?.listing_type==="vehicle" ? 0.02 : 0.08)
       const commission = Number(offer.counter_price) * rate
+      // Same B2C ceiling logic as acceptOffer() in MyListings.jsx - above KES 250,000, CCC can
+      // never hold the full amount via M-Pesa, only the seller's facilitation fee.
+      const isLargeSale = Number(offer.counter_price) > 250000
       await supabase.from("marketplace_transactions").insert({
         listing_id:offer.listing_id, offer_id:offer.id, buyer_id:user.id,
         seller_id:offer.seller_id, sale_price:offer.counter_price,
         platform_commission:commission, seller_earnings:Number(offer.counter_price)-commission,
-        payment_status:"pending",
+        payment_status: isLargeSale ? "awaiting_facilitation_fee" : "pending",
+        facilitation_fee_amount: isLargeSale ? commission : null,
       })
       await supabase.from("notifications").insert({
         user_id:offer.seller_id, title:"Counter offer accepted! 🎉",

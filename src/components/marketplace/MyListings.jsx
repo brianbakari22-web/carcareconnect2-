@@ -68,9 +68,15 @@ export default function MyListings() {
       const { data: rateRow } = await supabase.from("commission_rates").select("platform_rate").eq("provider_type", rateKey).maybeSingle()
       const rate = rateRow ? Number(rateRow.platform_rate) : (offer.marketplace_listings?.listing_type==="vehicle" ? 0.02 : 0.08)
       const commission = Number(offer.offered_price) * rate
+      // Above Safaricom's own KES 250,000 B2C ceiling, CCC can never actually hold the full sale
+      // amount via M-Pesa - only the seller's facilitation fee gets collected, and the buyer
+      // and seller exchange the real sum directly between themselves once that's paid.
+      const isLargeSale = Number(offer.offered_price) > 250000
       await supabase.from("marketplace_transactions").insert({
         listing_id:offer.listing_id, offer_id:offer.id, buyer_id:offer.buyer_id, seller_id:user.id,
-        sale_price:offer.offered_price, platform_commission:commission, seller_earnings:Number(offer.offered_price)-commission, payment_status:"pending"
+        sale_price:offer.offered_price, platform_commission:commission, seller_earnings:Number(offer.offered_price)-commission,
+        payment_status: isLargeSale ? "awaiting_facilitation_fee" : "pending",
+        facilitation_fee_amount: isLargeSale ? commission : null
       })
       await supabase.from("notifications").insert({
         user_id:offer.buyer_id, title:"Offer accepted! 🎉",
