@@ -125,7 +125,7 @@ export default function CreateListing() {
         <div style={{ marginBottom:16 }}>
           <label style={lbl}>What are you selling? *</label>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:8 }}>
-            {[{k:"vehicle",l:"vehicle",d:"Cars, trucks"},{k:"part",l:"part",d:"Engine, brakes"},{k:"accessory",l:"accessory",d:"Mats, covers"}].map(t=>(
+            {[{k:"vehicle",l:"🚗 Vehicle",d:"Cars, trucks"},{k:"part",l:"⚙️ Part",d:"Engine, brakes"},{k:"accessory",l:"✨ Accessory",d:"Mats, covers"}].map(t=>(
               <button key={t.k} type="button" onClick={()=>f("listing_type",t.k)}
                 style={{ background:form.listing_type===t.k?"#fff8f0":"#ffffff", border:`1px solid ${form.listing_type===t.k?"#e6821e":"#f5f5f5"}`, borderRadius:10, padding:"0.75rem", cursor:"pointer", textAlign:"left" }}>
                 <div style={{ fontSize:16, marginBottom:4 }}>{t.l.split(" ")[0]}</div>
