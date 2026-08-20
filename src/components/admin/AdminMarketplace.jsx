@@ -176,6 +176,15 @@ export default function AdminMarketplace() {
       const { error } = await supabase.from("marketplace_listings").update({ status:"rejected", admin_notes:adminNotes }).eq("id",id)
       if (error) throw error
       const listing = listings.find(l=>l.id===id)
+      // This same "Mark as failed" action doubles as a real inspection-fail path (the button in
+      // the inspection section calls this directly, no dedicated fail function existed before).
+      // Close out the stale inspection_status/inspection_requests so the seller can cleanly
+      // request a fresh inspection if they edit and resubmit, rather than leaving both stuck
+      // forever at "requested" with no result ever recorded.
+      if (listing?.listing_type==="vehicle" && listing?.inspection_status==="requested") {
+        await supabase.from("marketplace_listings").update({ inspection_status:"failed" }).eq("id",id)
+        await supabase.from("inspection_requests").update({ status:"completed", result:"failed" }).eq("listing_id",id).eq("status","scheduled")
+      }
       await supabase.from("notifications").insert({
         user_id: listing.seller_id,
         title: "Listing not approved",
