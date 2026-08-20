@@ -79,12 +79,22 @@ export default function CustomerPartsMarketplace() {
   useEffect(() => {
     const itemId = searchParams.get("item")
     if (!itemId || items.length === 0) return
+    // "Add to Cart" from the unified Marketplace browse screen navigates here with this flag,
+    // since that screen has no cart state of its own to add into directly - this skips the
+    // second, redundant manual "Add to Cart" tap the customer would otherwise need on arrival.
+    const shouldAutoAdd = searchParams.get("autoadd") === "1"
     const found = items.find(i => i.id === itemId)
     if (found) {
       setSelectedItem(found)
+      if (shouldAutoAdd) addToCart(found)
     } else {
       supabase.from("inventory").select("*").eq("id", itemId).single()
-        .then(({ data }) => { if (data) setSelectedItem(data) })
+        .then(({ data }) => {
+          if (data) {
+            setSelectedItem(data)
+            if (shouldAutoAdd) addToCart(data)
+          }
+        })
     }
   }, [searchParams, items])
 

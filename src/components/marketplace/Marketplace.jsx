@@ -651,7 +651,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
             <HeartIcon size={16} color="#e24b4a" active={userLikes?.has(listing.id)} /> {listing.likes_count||0}
           </button>
           {listing._source==="inventory" ? (
-            <button onClick={()=>navigate(`/dashboard/parts?item=${listing.id}`)} style={{ flex:2, background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"10px", cursor:"pointer" }}>
+            <button onClick={()=>navigate(`/dashboard/parts?item=${listing.id}&autoadd=1`)} style={{ flex:2, background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"10px", cursor:"pointer" }}>
               🛒 Add to Cart
             </button>
           ) : (
@@ -902,7 +902,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
           {listing.seller_id!==user?.id&&(
             <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
               {listing._source==="inventory" ? (
-                <button onClick={()=>navigate(`/dashboard/parts?item=${listing.id}`)}
+                <button onClick={()=>navigate(`/dashboard/parts?item=${listing.id}&autoadd=1`)}
                   style={{ width:"100%", background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:"pointer" }}>
                   🛒 Add to Cart
                 </button>
