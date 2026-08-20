@@ -231,7 +231,10 @@ export default function EscrowManager() {
                 <div style={{ fontSize:11, color:"#378add", marginBottom:4 }}>
                   🔒 Funds in escrow{days!==null?` · ${days} days left to confirm or dispute`:""}
                 </div>
-                {tab==="buying"&&(
+                {tab==="buying"&&tx.payment_status==="awaiting_facilitation_fee"&&(
+                  <div style={{ fontSize:11, color:"#777777" }}>Waiting for the seller to pay their facilitation fee before handover can be arranged.</div>
+                )}
+                {tab==="buying"&&tx.payment_status!=="awaiting_facilitation_fee"&&(
                   <div>
                     {!tx.buyer_confirmed&&(
                       <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:8, padding:"10px 12px", marginBottom:10 }}>
@@ -265,7 +268,16 @@ export default function EscrowManager() {
                   </div>
                   </div>
                 )}
-                {tab==="selling"&&(
+                {tab==="selling"&&tx.payment_status==="awaiting_facilitation_fee"&&(
+                  <div>
+                    <div style={{ fontSize:11, color:"#777777", marginBottom:6 }}>This is a large sale - CCC can't hold the full amount, so pay your facilitation fee to unlock the handover step. You and the buyer exchange the sale amount directly between yourselves.</div>
+                    <button onClick={()=>payFacilitationFee(tx)} disabled={payingFee===tx.id}
+                      style={{ background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontSize:11, fontWeight:700, padding:"7px 14px", cursor:"pointer" }}>
+                      {payingFee===tx.id?"...":`Pay facilitation fee - KES ${Number(tx.facilitation_fee_amount||0).toLocaleString()}`}
+                    </button>
+                  </div>
+                )}
+                {tab==="selling"&&tx.payment_status!=="awaiting_facilitation_fee"&&(
                   <div>
                     <div style={{ fontSize:11, color:"#777777", marginBottom:6 }}>Ask the buyer for their 4-digit code once you've handed over the item, to release your payment.</div>
                     <div style={{ display:"flex", gap:6 }}>
