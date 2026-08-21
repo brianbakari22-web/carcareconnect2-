@@ -18,6 +18,8 @@ export default function AdminOrders() {
   const [showZones, setShowZones] = useState(false)
   const [search, setSearch] = useState("")
   const [zoneForm, setZoneForm] = useState({ name:"", base_fee:"", per_km_fee:"" })
+  const [editingZoneId, setEditingZoneId] = useState(null)
+  const [editZoneForm, setEditZoneForm] = useState({ base_fee:"", per_km_fee:"" })
 
   useEffect(() => { load(); loadZones() }, [])
 
@@ -48,6 +50,19 @@ export default function AdminOrders() {
 
   async function toggleZone(id, active) {
     await supabase.from("delivery_zones").update({ is_active:!active }).eq("id", id)
+    loadZones()
+  }
+  function startEditZone(z) {
+    setEditingZoneId(z.id)
+    setEditZoneForm({ base_fee: String(z.base_fee), per_km_fee: String(z.per_km_fee) })
+  }
+  async function saveEditZone(id) {
+    await supabase.from("delivery_zones").update({
+      base_fee: Number(editZoneForm.base_fee),
+      per_km_fee: Number(editZoneForm.per_km_fee),
+    }).eq("id", id)
+    toast.success("Zone fees updated")
+    setEditingZoneId(null)
     loadZones()
   }
 
@@ -129,9 +144,25 @@ export default function AdminOrders() {
               <div key={z.id} style={{ background:"#ffffff", borderRadius:8, padding:"0.75rem", border:"1px solid "+(z.is_active?"#1d9e7530":"#eeeeee"), opacity:z.is_active?1:0.6 }}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                   <div style={{ fontSize:12, fontWeight:600, color:"#000000" }}>{z.name}</div>
-                  <button onClick={()=>toggleZone(z.id,z.is_active)} style={{ background:"none", border:"none", fontSize:10, color:z.is_active?"#e24b4a":"#1d9e75", cursor:"pointer" }}>{z.is_active?"Disable":"Enable"}</button>
+                  <div style={{ display:"flex", gap:8 }}>
+                    {editingZoneId!==z.id&&<button onClick={()=>startEditZone(z)} style={{ background:"none", border:"none", fontSize:10, color:"#378add", cursor:"pointer" }}>Edit</button>}
+                    <button onClick={()=>toggleZone(z.id,z.is_active)} style={{ background:"none", border:"none", fontSize:10, color:z.is_active?"#e24b4a":"#1d9e75", cursor:"pointer" }}>{z.is_active?"Disable":"Enable"}</button>
+                  </div>
                 </div>
-                <div style={{ fontSize:11, color:"#888", marginTop:4 }}>Base: KES {Number(z.base_fee).toLocaleString()} · Per km: KES {Number(z.per_km_fee).toLocaleString()}</div>
+                {editingZoneId===z.id ? (
+                  <div style={{ marginTop:6 }}>
+                    <div style={{ display:"flex", gap:6, marginBottom:6 }}>
+                      <input type="number" style={{ ...inp, fontSize:11, padding:"5px 8px" }} value={editZoneForm.base_fee} onChange={e=>setEditZoneForm(f=>({...f,base_fee:e.target.value}))} placeholder="Base fee"/>
+                      <input type="number" style={{ ...inp, fontSize:11, padding:"5px 8px" }} value={editZoneForm.per_km_fee} onChange={e=>setEditZoneForm(f=>({...f,per_km_fee:e.target.value}))} placeholder="Per km"/>
+                    </div>
+                    <div style={{ display:"flex", gap:6 }}>
+                      <button onClick={()=>saveEditZone(z.id)} style={{ flex:1, background:"#8b5cf6", border:"none", borderRadius:6, color:"#fff", fontSize:11, fontWeight:700, padding:"6px", cursor:"pointer" }}>Save</button>
+                      <button onClick={()=>setEditingZoneId(null)} style={{ flex:1, background:"none", border:"1px solid #ddd", borderRadius:6, color:"#888", fontSize:11, padding:"6px", cursor:"pointer" }}>Cancel</button>
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ fontSize:11, color:"#888", marginTop:4 }}>Base: KES {Number(z.base_fee).toLocaleString()} · Per km: KES {Number(z.per_km_fee).toLocaleString()}</div>
+                )}
               </div>
             ))}
           </div>
