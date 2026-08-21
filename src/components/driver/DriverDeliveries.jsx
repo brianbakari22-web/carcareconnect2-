@@ -251,9 +251,17 @@ export default function DriverDeliveries() {
                     <a href={`https://www.google.com/maps/dir/?api=1&destination=${o.provider.latitude},${o.provider.longitude}`} target="_blank" rel="noreferrer" style={{ fontSize:11, color:"#e6821e", textDecoration:"none" }}>🗺️ Navigate to provider →</a>
                   )}
                   <div style={{ fontSize:11, color:"#777777", display:"flex", alignItems:"center", gap:3 }}><LocationIcon size={11} color="#777777"/> Deliver to: {o.delivery_address}</div>
-                  {o.profiles?.latitude&&o.profiles?.longitude&&(
-                    <a href={`https://www.google.com/maps/dir/?api=1&destination=${o.profiles.latitude},${o.profiles.longitude}`} target="_blank" rel="noreferrer" style={{ fontSize:11, color:"#378add", textDecoration:"none" }}>🗺️ Navigate to customer →</a>
-                  )}
+                  {(() => {
+                    // The order's own delivery_latitude/longitude (captured at checkout for
+                    // this specific delivery) is the genuinely correct destination - the
+                    // customer's general profile location is a stale, often-unset fallback,
+                    // not where they actually asked this order to be delivered.
+                    const destLat = o.delivery_latitude || o.profiles?.latitude
+                    const destLng = o.delivery_longitude || o.profiles?.longitude
+                    return destLat && destLng && (
+                      <a href={`https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}`} target="_blank" rel="noreferrer" style={{ fontSize:11, color:"#378add", textDecoration:"none" }}>🗺️ Navigate to customer →</a>
+                    )
+                  })()}
                   {o.customer_phone&&(
                     <a href={"tel:"+o.customer_phone} style={{ fontSize:11, color:"#1d9e75", textDecoration:"none", display:"block", marginTop:2 }}>📞 Call customer</a>
                   )}
