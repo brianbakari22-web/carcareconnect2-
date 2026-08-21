@@ -73,7 +73,7 @@ serve(async (req) => {
     if (!bk) {
       const { data: groupOrders } = await supabase.from("orders").select("id, customer_id, provider_id").eq("group_order_id", booking_id)
       if (groupOrders && groupOrders.length > 0) {
-        await supabase.from("orders").update({ payment_status: "paid", payment_held: true, status: "pending" }).eq("group_order_id", booking_id)
+        await supabase.from("orders").update({ payment_status: "paid", payment_held: true, status: "pending" }).eq("group_order_id", booking_id).eq("status", "pending_payment")
         for (const o of groupOrders) {
           await supabase.from("notifications").insert({ user_id: o.provider_id, title: "New order received! 📦", message: "A customer has paid for their order. Check your Orders dashboard.", type: "success" })
         }

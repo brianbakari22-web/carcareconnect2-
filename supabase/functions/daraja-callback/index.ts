@@ -58,7 +58,7 @@ serve(async (req) => {
             // since nothing ever told it the money had actually arrived.
             const { data: groupOrders } = await supabase.from("orders").select("id, customer_id, provider_id, order_number").eq("group_order_id", txn.booking_id)
             if (groupOrders && groupOrders.length > 0) {
-              await supabase.from("orders").update({ payment_status: "paid", payment_held: true, status: "pending" }).eq("group_order_id", txn.booking_id)
+              await supabase.from("orders").update({ payment_status: "paid", payment_held: true, status: "pending" }).eq("group_order_id", txn.booking_id).eq("status", "pending_payment")
               for (const order of groupOrders) {
                 await supabase.from("notifications").insert({ user_id: order.provider_id, title: "New order received! 📦", message: "A customer has paid for their order. Check your Orders dashboard.", type: "success" })
               }
