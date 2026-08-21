@@ -51,13 +51,16 @@ export default function EscrowManager() {
   async function payFacilitationFee(tx) {
     setPayingFee(tx.id)
     try {
+      const { data: sens } = await supabase.from("profile_sensitive").select("mpesa_number, phone").eq("id", user.id).maybeSingle()
+      const facFee = tx.facilitation_fee_amount
+      const facPhone = sens?.mpesa_number || sens?.phone || profile?.mpesa_phone
+      if (!facPhone) { toast.error("Please add your M-Pesa number in Profile settings"); setPayingFee(null); return }
       const { data, error } = await supabase.functions.invoke("daraja-stk-push", {
         body: {
-          amount: tx.facilitation_fee_amount,
-          bookingId: tx.id,
-          customerEmail: user.email,
-          customerPhone: profile?.phone || "",
-          customerName: (profile?.first_name||"") + " " + (profile?.last_name||""),
+          amount: facFee,
+          booking_id: tx.id,
+          phone: facPhone,
+          account_ref: tx.id.substring(0,12),
           description: `Facilitation fee for large sale (KES ${Number(tx.sale_price).toLocaleString()})`
         }
       })
