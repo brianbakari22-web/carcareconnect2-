@@ -27,7 +27,8 @@ export default function DriverEarnings() {
   useEffect(() => { if (user) load() }, [user])
 
   async function load() {
-    supabase.from("app_settings").select("value").eq("key","concierge_surcharge_rate").maybeSingle().then(({data}) => { if (data) setCommissionRate(Number(data.value)) })
+    const { data: surchargeData } = await supabase.from("app_settings").select("value").eq("key","concierge_surcharge_rate").maybeSingle()
+    if (surchargeData) setCommissionRate(Number(surchargeData.value))
     (async () => {
       // Commission now varies by the driver\'s own vehicle type, not one flat global rate
       const vt = profile?.driver_vehicle_type || "car"
