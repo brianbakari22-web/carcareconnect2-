@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { pushNotify } from "../../lib/pushNotify"
-import { MarketplaceIcon, VehicleIcon, ServicesIcon, LocationIcon, HeartIcon, ChatIcon, ShareIcon, EyeIcon, MyListingsIcon, ShieldIcon, WarningIcon, FilterIcon, SearchIcon, PartsIcon, NoteIcon, CrownIcon, StarIcon, CheckIcon, NewIcon, AccessoryIcon, SettingsIcon, HomeIcon } from "../../lib/cccIcons"
+import { MarketplaceIcon, VehicleIcon, ServicesIcon, LocationIcon, HeartIcon, ChatIcon, ShareIcon, EyeIcon, MyListingsIcon, ShieldIcon, WarningIcon, FilterIcon, SearchIcon, PartsIcon, NoteIcon, CrownIcon, StarIcon, CheckIcon, NewIcon, AccessoryIcon, SettingsIcon, HomeIcon, ReceiptIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import SellerProfile from "./SellerProfile"
 import NewCarMarketplace from "../customer/NewCarMarketplace"
@@ -24,6 +24,7 @@ export default function Marketplace() {
   const [listings, setListings] = useState([])
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState("all")
+  const [orders, setOrders] = useState([])
   const [search, setSearch] = useState("")
   const [filters, setFilters] = useState({ minPrice:"", maxPrice:"", condition:"", city:"", make:"", fuelType:"", transmission:"" })
   const [showFilters, setShowFilters] = useState(false)
@@ -47,7 +48,7 @@ export default function Marketplace() {
   const [replyText, setReplyText] = useState("")
   const [loadingComments, setLoadingComments] = useState(false)
 
-  useEffect(() => { load(); loadUserLikes() }, [tab])
+  useEffect(() => { load(); loadUserLikes(); if(tab==="my_orders") loadOrders() }, [tab])
 
   useEffect(() => {
     const listingId = searchParams.get("listing")
@@ -66,6 +67,14 @@ export default function Marketplace() {
     }
   }, [searchParams, listings])
 
+  async function loadOrders() {
+    if (!user) return
+    const { data } = await supabase.from("orders")
+      .select("*, order_items(*, inventory(name,unit)), profiles!orders_provider_id_fkey(business_name,first_name,last_name)")
+      .eq("customer_id", user.id)
+      .order("created_at", { ascending:false })
+    setOrders(data||[])
+  }
   async function load() {
     setLoading(true)
     try {
@@ -321,6 +330,46 @@ export default function Marketplace() {
 
   // new_cars now handled inline
   // parts_shop now handled inline
+  if (tab==="my_orders") {
+    const SC = { pending:"#e6821e", confirmed:"#378add", preparing:"#378add", ready:"#8b5cf6", delivered:"#1d9e75", cancelled:"#e24b4a" }
+    return (
+      <div>
+        <div style={{ fontFamily:"Syne", fontSize:18, fontWeight:800, marginBottom:"1rem", display:"flex", alignItems:"center", gap:8 }}><ReceiptIcon size={20} color="#e6821e" /> My Orders</div>
+        {orders.length===0 ? (
+          <div style={{ textAlign:"center", padding:"3rem", color:"#888" }}>
+            <div style={{ marginBottom:12, display:"flex", justifyContent:"center" }}><ReceiptIcon size={48} color="#e6821e"/></div>
+            <div style={{ fontWeight:700, marginBottom:6 }}>No orders yet</div>
+            <div style={{ fontSize:13, marginBottom:16 }}>Orders from shop parts & accessories will show up here</div>
+            <button onClick={()=>setTab("parts_shop")} style={{ background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:"pointer" }}>
+              Browse Parts & Accessories
+            </button>
+          </div>
+        ) : (
+          orders.map(o=>(
+            <div key={o.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:"1rem", marginBottom:8 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
+                <div>
+                  <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>#{o.order_number}</div>
+                  <div style={{ fontSize:11, color:"#777777" }}>{o.profiles?.business_name||o.profiles?.first_name} · {o.fulfillment_type}</div>
+                  <div style={{ fontSize:10, color:"#888888" }}>{new Date(o.created_at).toLocaleString()}</div>
+                </div>
+                <div style={{ textAlign:"right" }}>
+                  <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:"#e6821e" }}>KES {Number(o.subtotal||0).toLocaleString()}</div>
+                  <span style={{ fontSize:10, padding:"3px 10px", borderRadius:20, background:(SC[o.status]||"#888")+"20", color:SC[o.status]||"#888", fontWeight:600, border:"1px solid "+(SC[o.status]||"#888")+"30" }}>{o.status?.toUpperCase()}</span>
+                </div>
+              </div>
+              {o.order_items?.map(oi=>(
+                <div key={oi.id} style={{ display:"flex", justifyContent:"space-between", fontSize:11, color:"#666", padding:"4px 0", borderTop:"1px solid #eeeeee" }}>
+                  <span>{oi.name} x{oi.quantity}</span>
+                  <span>KES {Number(oi.unit_price*oi.quantity).toLocaleString()}</span>
+                </div>
+              ))}
+            </div>
+          ))
+        )}
+      </div>
+    )
+  }
   if (tab==="my_listings") {
     // Filter listings belonging to current user
     const myListings = listings.filter(l => l.user_id === user?.id || l.dealer_id === user?.id)
@@ -406,10 +455,10 @@ export default function Marketplace() {
       </div>
 
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
-        {[{k:"all",l:"All",icon:"marketplace"},{k:"vehicle",l:"Vehicles",icon:"vehicle"},{k:"new_cars",l:"New Cars",icon:"new"},{k:"parts_shop",l:"Parts& Accessories",icon:"settings"},{k:"my_listings",l:"My Listings",icon:"home"},{k:"saved",l:"Saved",icon:"heart"}].map(t=>(
+        {[{k:"all",l:"All",icon:"marketplace"},{k:"vehicle",l:"Vehicles",icon:"vehicle"},{k:"new_cars",l:"New Cars",icon:"new"},{k:"parts_shop",l:"Parts& Accessories",icon:"settings"},{k:"my_orders",l:"My Orders",icon:"receipt"},{k:"my_listings",l:"My Listings",icon:"home"},{k:"saved",l:"Saved",icon:"heart"}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
             style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#f0f0f0", color:tab===t.k?"#fff":"#555", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t.k?700:400, display:"inline-flex", alignItems:"center", gap:5 }}>
-            {t.icon==="marketplace"?<MarketplaceIcon size={13} color="currentColor"/>:t.icon==="vehicle"?<VehicleIcon size={13} color="currentColor"/>:t.icon==="new"?<NewIcon size={13} color="currentColor"/>:t.icon==="settings"?<SettingsIcon size={13} color="currentColor"/>:t.icon==="home"?<HomeIcon size={13} color="currentColor"/>:<HeartIcon size={13} color="currentColor"/>} {t.l}
+            {t.icon==="marketplace"?<MarketplaceIcon size={13} color="currentColor"/>:t.icon==="vehicle"?<VehicleIcon size={13} color="currentColor"/>:t.icon==="new"?<NewIcon size={13} color="currentColor"/>:t.icon==="settings"?<SettingsIcon size={13} color="currentColor"/>:t.icon==="home"?<HomeIcon size={13} color="currentColor"/>:t.icon==="receipt"?<ReceiptIcon size={13} color="currentColor"/>:<HeartIcon size={13} color="currentColor"/>} {t.l}
           </button>
         ))}
       </div>
