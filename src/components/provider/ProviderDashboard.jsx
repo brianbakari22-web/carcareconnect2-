@@ -111,11 +111,10 @@ export default function ProviderDashboard() {
   }
 
   async function uploadPhoto(e) {
-    const _v = validateFile(file, "image")
-    if (!_v.valid) { toast.error(_v.error); return }
-
     const file = e.target.files[0]
     if (!file) return
+    const _v = validateFile(file, "image")
+    if (!_v.valid) { toast.error(_v.error); return }
     if (file.size > 5*1024*1024) return toast.error("Photo must be under 5MB")
     setUploadingPhoto(true)
     try {
