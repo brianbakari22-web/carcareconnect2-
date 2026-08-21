@@ -264,7 +264,7 @@ export default function CustomerPartsMarketplace() {
           subtotal,
           delivery_fee: orderDeliveryFee,
           platform_commission: commission,
-          platform_fee: platformFee,
+          // No platform_fee column exists on orders.
           provider_earnings: providerEarnings,
           fulfillment_type: fulfillment,
           delivery_zone: zone?.name || null,

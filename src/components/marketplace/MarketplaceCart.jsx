@@ -98,7 +98,8 @@ export default function MarketplaceCart({ cart, setCart, showCart, setShowCart, 
           subtotal,
           delivery_fee: orderDeliveryFee,
           platform_commission: commission,
-          platform_fee: platformFee,
+          // No platform_fee column exists on orders - platformFee is still folded into
+          // firstOrderTotal below so the amount actually charged stays correct.
           provider_earnings: providerEarnings,
           fulfillment_type: fulfillment,
           delivery_zone: zone?.name || null,
