@@ -83,9 +83,13 @@ export default function MarketplaceCart({ cart, setCart, showCart, setShowCart, 
         if (!byProvider[item.provider_id]) byProvider[item.provider_id] = []
         byProvider[item.provider_id].push(item)
       })
-      let firstOrderId = null
+      // All orders from one checkout share this ID, so a single M-Pesa payment can
+      // correctly mark every provider's order as paid at once - not just the first one
+      // created - since one STK push covers the customer's whole cart, not one provider.
+      const groupOrderId = crypto.randomUUID()
       let firstOrderNumber = null
-      let firstOrderTotal = 0
+      let totalOrderCount = 0
+      let combinedTotal = 0
       for (const [providerId, items] of Object.entries(byProvider)) {
         const subtotal = items.reduce((s, i) => s + Number(i.price) * i.qty, 0)
         const commission = subtotal * commissionRate
@@ -95,11 +99,12 @@ export default function MarketplaceCart({ cart, setCart, showCart, setShowCart, 
         const { data: order, error } = await supabase.from("orders").insert({
           customer_id: user.id,
           provider_id: providerId,
+          group_order_id: groupOrderId,
           subtotal,
           delivery_fee: orderDeliveryFee,
           platform_commission: commission,
           // No platform_fee column exists on orders - platformFee is still folded into
-          // firstOrderTotal below so the amount actually charged stays correct.
+          // combinedTotal below so the amount actually charged stays correct.
           provider_earnings: providerEarnings,
           fulfillment_type: fulfillment,
           delivery_zone: zone?.name || null,
@@ -129,11 +134,9 @@ export default function MarketplaceCart({ cart, setCart, showCart, setShowCart, 
           message: customerDetails.name + " ordered " + items.length + " item(s) - KES " + subtotal.toLocaleString() + " (Paid online via M-Pesa)",
           type: "success",
         })
-        if (!firstOrderId) {
-          firstOrderId = order.id
-          firstOrderNumber = order.order_number
-          firstOrderTotal = subtotal + orderDeliveryFee + platformFee
-        }
+        if (!firstOrderNumber) firstOrderNumber = order.order_number
+        totalOrderCount++
+        combinedTotal += subtotal + orderDeliveryFee + platformFee
       }
       setCart([])
       setShowCart(false)
@@ -142,7 +145,7 @@ export default function MarketplaceCart({ cart, setCart, showCart, setShowCart, 
       setDeliveryLat(null)
       setDeliveryLng(null)
       setSelectedZone("")
-      setPendingOrder({ id: firstOrderId, order_number: firstOrderNumber, amount: firstOrderTotal })
+      setPendingOrder({ id: groupOrderId, order_number: totalOrderCount>1?firstOrderNumber+" +"+(totalOrderCount-1):firstOrderNumber, amount: combinedTotal })
       setShowOrderPayment(true)
     } catch(err) { toast.error(err.message) }
     finally { setOrdering(false) }

@@ -56,10 +56,13 @@ serve(async (req) => {
             // previously never recognized here at all: real customer payments confirmed with
             // Safaricom but the order's own payment_status stayed "awaiting_payment" forever,
             // since nothing ever told it the money had actually arrived.
-            const { data: order } = await supabase.from("orders").select("id, customer_id, provider_id, order_number").eq("id", txn.booking_id).maybeSingle()
-            if (order) {
-              await supabase.from("orders").update({ payment_status: "paid", payment_held: true, status: "pending" }).eq("id", order.id)
-              await supabase.from("notifications").insert({ user_id: order.provider_id, title: "New order received! 📦", message: "A customer has paid for their order. Check your Orders dashboard.", type: "success" })
+            const { data: groupOrders } = await supabase.from("orders").select("id, customer_id, provider_id, order_number").eq("group_order_id", txn.booking_id)
+            if (groupOrders && groupOrders.length > 0) {
+              await supabase.from("orders").update({ payment_status: "paid", payment_held: true, status: "pending" }).eq("group_order_id", txn.booking_id)
+              for (const order of groupOrders) {
+                await supabase.from("notifications").insert({ user_id: order.provider_id, title: "New order received! 📦", message: "A customer has paid for their order. Check your Orders dashboard.", type: "success" })
+              }
+              const order = groupOrders[0]
               await supabase.from("notifications").insert({ user_id: order.customer_id, title: "Order placed! 🛒", message: "Your payment was successful and your order has been placed.", type: "success" })
               console.log("Order payment confirmed:", order.id)
             } else {

@@ -71,10 +71,13 @@ serve(async (req) => {
         // never revert a completed service-fee booking back to confirmed.
         const { data: bk } = await supabase.from("bookings").select("is_emergency, status, go_service_fee_paid").eq("id", booking_id).maybeSingle()
     if (!bk) {
-      const { data: order } = await supabase.from("orders").select("id, customer_id, provider_id").eq("id", booking_id).maybeSingle()
-      if (order) {
-        await supabase.from("orders").update({ payment_status: "paid", payment_held: true, status: "pending" }).eq("id", order.id)
-        await supabase.from("notifications").insert({ user_id: order.provider_id, title: "New order received! 📦", message: "A customer has paid for their order. Check your Orders dashboard.", type: "success" })
+      const { data: groupOrders } = await supabase.from("orders").select("id, customer_id, provider_id").eq("group_order_id", booking_id)
+      if (groupOrders && groupOrders.length > 0) {
+        await supabase.from("orders").update({ payment_status: "paid", payment_held: true, status: "pending" }).eq("group_order_id", booking_id)
+        for (const o of groupOrders) {
+          await supabase.from("notifications").insert({ user_id: o.provider_id, title: "New order received! 📦", message: "A customer has paid for their order. Check your Orders dashboard.", type: "success" })
+        }
+        const order = groupOrders[0]
         await supabase.from("notifications").insert({ user_id: order.customer_id, title: "Order placed! 🛒", message: "Your payment was successful and your order has been placed.", type: "success" })
       } else {
         // Not a booking or order - check if this is a new car dealer listing fee, same gap
