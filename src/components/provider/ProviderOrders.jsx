@@ -24,6 +24,10 @@ export default function ProviderOrders() {
   const [search, setSearch] = useState("")
   const [selectedIds, setSelectedIds] = useState([])
   const [newOrderAlert, setNewOrderAlert] = useState(false)
+  const [pickupOtpMode, setPickupOtpMode] = useState(null)
+  const [pickupOtpInput, setPickupOtpInput] = useState("")
+  const [sendingPickupOtp, setSendingPickupOtp] = useState(null)
+  const [verifyingPickupOtp, setVerifyingPickupOtp] = useState(false)
 
   useEffect(() => {
     if (!user) return
@@ -182,6 +186,34 @@ export default function ProviderOrders() {
     setSelectedIds(prev => prev.includes(id) ? prev.filter(i=>i!==id) : [...prev, id])
   }
 
+  async function sendPickupOtp(orderId) {
+    setSendingPickupOtp(orderId)
+    try {
+      const { data, error } = await supabase.rpc("generate_pickup_otp", { p_order_id: orderId, p_provider_id: user.id })
+      if (error) throw error
+      if (!data?.success) throw new Error(data?.error || "Failed to send code")
+      toast.success("Code sent to customer - ask them to read it out")
+      setPickupOtpMode(orderId)
+    } catch(e) { toast.error(e.message) }
+    finally { setSendingPickupOtp(null) }
+  }
+  async function verifyPickupOtp(order) {
+    if (!pickupOtpInput || pickupOtpInput.length !== 4) return toast.error("Enter 4-digit code")
+    setVerifyingPickupOtp(true)
+    try {
+      const { data, error } = await supabase.rpc("verify_pickup_otp", { p_order_id: order.id, p_otp: pickupOtpInput })
+      if (error) throw error
+      if (!data?.success) throw new Error(data?.error || "Verification failed")
+      // Same reasoning as delivery: only release the provider's payout once the customer
+      // has genuinely confirmed receipt via their own code, not just the provider's word.
+      await supabase.functions.invoke("release-order-payment", { body: { order_id: order.id } })
+      setPickupOtpMode(null)
+      setPickupOtpInput("")
+      toast.success("Pickup confirmed! \ud83c\udf89")
+      load()
+    } catch(e) { toast.error(e.message) }
+    finally { setVerifyingPickupOtp(false) }
+  }
   async function assignDriver(orderId) {
     const order = orders.find(o=>o.id===orderId)
     const itemCount = order?.order_items?.length||1
@@ -398,7 +430,20 @@ export default function ProviderOrders() {
                 <button onClick={()=>assignDriver(o.id)} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>🚚 Assign driver</button>
               )}
               {o.status==="ready"&&o.fulfillment_type==="pickup"&&(
-                <button onClick={()=>updateStatus(o.id,"delivered")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>✓ Customer picked up</button>
+                pickupOtpMode===o.id ? (
+                  <div style={{ display:"flex", gap:6, alignItems:"center" }}>
+                    <input value={pickupOtpInput} onChange={e=>setPickupOtpInput(e.target.value.replace(/\\D/g,"").slice(0,4))} placeholder="4-digit code" maxLength={4}
+                      style={{ width:90, padding:"6px 8px", borderRadius:7, border:"1px solid #ddd", fontSize:12 }}/>
+                    <button disabled={verifyingPickupOtp} onClick={()=>verifyPickupOtp(o)} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:verifyingPickupOtp?"not-allowed":"pointer", fontWeight:600 }}>
+                      {verifyingPickupOtp?"Verifying...":"✓ Verify & Complete"}
+                    </button>
+                    <button onClick={()=>{ setPickupOtpMode(null); setPickupOtpInput("") }} style={{ background:"none", border:"1px solid #ddd", borderRadius:7, color:"#888", fontSize:11, padding:"6px 10px", cursor:"pointer" }}>Cancel</button>
+                  </div>
+                ) : (
+                  <button disabled={sendingPickupOtp===o.id} onClick={()=>sendPickupOtp(o.id)} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:sendingPickupOtp===o.id?"not-allowed":"pointer" }}>
+                    {sendingPickupOtp===o.id?"Sending...":"🔔 Customer arrived - Send code"}
+                  </button>
+                )
               )}
               {o.customer_phone&&(
                 <button onClick={()=>callNumber(o.customer_phone)} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"6px 12px", cursor:"pointer" }}>📞 Call</button>
