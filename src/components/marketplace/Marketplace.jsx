@@ -93,7 +93,7 @@ export default function Marketplace() {
     try {
       let usedListings = []
       let newCarListings = []
-      if(tab==="all" || tab==="vehicle" || tab==="part" || tab==="accessory" || tab==="parts_shop") {
+      if(tab==="all" || tab==="vehicle" || tab==="part" || tab==="accessory" || tab==="parts_shop" || tab==="saved") {
         let query = supabase.from("marketplace_listings")
           .select("*, profiles(first_name,last_name,role,business_name), marketplace_photos(photo_url,is_primary), video_url, video_status")
           .eq("status","active")
@@ -108,7 +108,7 @@ export default function Marketplace() {
           primary_photo: l.marketplace_photos?.find(p=>p.is_primary)?.photo_url||l.marketplace_photos?.[0]?.photo_url
         }))
       }
-      if(tab==="all" || tab==="new_cars") {
+      if(tab==="all" || tab==="new_cars" || tab==="saved") {
         const { data: newCars } = await supabase.from("new_car_listings")
           .select("*")
           .eq("is_active", true)
