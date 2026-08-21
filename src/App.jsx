@@ -278,7 +278,7 @@ function DashboardRouter() {
           <Route path="emergency" element={<CustomerGoService />} />
           <Route path="vehicle-reports" element={<CustomerVehicleReports />} />
           <Route path="claims" element={<CustomerClaims />} />
-          <Route path="parts" element={<CustomerPartsMarketplace />} />
+          <Route path="parts" element={<Navigate to="/dashboard/marketplace?tab=parts_shop" replace />} />
           <Route path="marketplace" element={<Marketplace />} />
           <Route path="marketplace/new" element={<CreateListing />} />
           <Route path="marketplace/my-listings" element={<MyListings />} />

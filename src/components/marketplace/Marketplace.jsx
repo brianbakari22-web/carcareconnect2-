@@ -24,7 +24,7 @@ export default function Marketplace() {
   const isMobile = useIsMobile()
   const [listings, setListings] = useState([])
   const [loading, setLoading] = useState(true)
-  const [tab, setTab] = useState("all")
+  const [tab, setTab] = useState(() => searchParams.get("tab") || "all")
   const [orders, setOrders] = useState([])
   const [cart, setCart] = useState([])
   const [showCart, setShowCart] = useState(false)
