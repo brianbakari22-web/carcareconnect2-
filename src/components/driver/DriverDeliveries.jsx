@@ -7,7 +7,7 @@ import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
 export default function DriverDeliveries() {
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const isMobile = useIsMobile()
   const [deliveries, setDeliveries] = useState([])
   const [available, setAvailable] = useState([])
