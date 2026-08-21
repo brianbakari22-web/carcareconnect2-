@@ -148,10 +148,14 @@ export default function MarketplaceCart({ cart, setCart, showCart, setShowCart, 
     finally { setOrdering(false) }
   }
 
-  if (!showCart) return null
+  // showOrderPayment must keep rendering even after placeOrder() closes the cart
+  // (showCart false) to create the order - both modals live in this same component,
+  // so hiding on showCart alone hid the payment popup the instant it was meant to open.
+  if (!showCart && !showOrderPayment) return null
 
   return (
     <>
+      {showCart&&(
       <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.6)", zIndex:200, display:"flex", alignItems:"flex-end", justifyContent:"center" }} onClick={()=>{ setShowCart(false); setCheckoutStep("cart") }}>
         <div style={{ width:"100%", maxWidth:500, background:"#ffffff", borderRadius:"20px 20px 0 0", padding:"1.5rem", maxHeight:"85vh", overflowY:"auto" }} onClick={e=>e.stopPropagation()}>
           <div style={{ display:"flex", justifyContent:"center", marginBottom:8 }}><div style={{ width:36, height:4, borderRadius:2, background:"#e0e0e0" }}/></div>
@@ -261,6 +265,7 @@ export default function MarketplaceCart({ cart, setCart, showCart, setShowCart, 
           )}
         </div>
       </div>
+      )}
       {showOrderPayment&&pendingOrder&&(
         <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.8)", zIndex:210, display:"flex", alignItems:"center", justifyContent:"center", padding:"1rem" }}>
           <div style={{ width:"100%", maxWidth:420, background:"#fff", borderRadius:16, padding:"1.5rem" }}>
