@@ -613,6 +613,7 @@ export default function Marketplace() {
           )
         })}
       </div>
+      <MarketplaceCart cart={cart} setCart={setCart} showCart={showCart} setShowCart={setShowCart} user={user} profile={profile} onOrderComplete={()=>{ setTab("my_orders") }} />
     </div>
   )
 }
@@ -1097,7 +1098,6 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
           </div>
         </div>
       )}
-      <MarketplaceCart cart={cart} setCart={setCart} showCart={showCart} setShowCart={setShowCart} user={user} profile={profile} onOrderComplete={()=>{ setTab("my_orders") }} />
     </div>
   )
 }
