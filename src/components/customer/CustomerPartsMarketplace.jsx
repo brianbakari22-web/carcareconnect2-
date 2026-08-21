@@ -537,7 +537,7 @@ export default function CustomerPartsMarketplace() {
               setPaying(true)
               try {
                 const { data: sens } = await supabase.from("profile_sensitive").select("mpesa_number").eq("id", user.id).maybeSingle()
-                const phone = sens?.mpesa_number || profile?.phone
+                const phone = sens?.mpesa_number || profile?.mpesa_phone
                 if(!phone) { toast.error("Please add your M-Pesa number in Profile settings"); setPaying(false); return }
                 const resp = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/daraja-stk-push", {
                   method:"POST",

@@ -279,7 +279,7 @@ export default function MarketplaceCart({ cart, setCart, showCart, setShowCart, 
               setPaying(true)
               try {
                 const { data: sens } = await supabase.from("profile_sensitive").select("mpesa_number").eq("id", user.id).maybeSingle()
-                const phone = sens?.mpesa_number || profile?.phone
+                const phone = sens?.mpesa_number || profile?.mpesa_phone
                 if(!phone) { toast.error("Please add your M-Pesa number in Profile settings"); setPaying(false); return }
                 const { data, error } = await supabase.functions.invoke("daraja-stk-push", {
                   body: { booking_id: pendingOrder.id, amount: Number(pendingOrder.amount||0), phone, account_ref: pendingOrder.order_number?.substring(0,12)||"CCC", description: "Parts Order #"+pendingOrder.order_number }
