@@ -128,7 +128,7 @@ export default function Marketplace() {
       }
       // Load provider inventory (parts & accessories)
       let inventoryListings = []
-      if(tab==="all" || tab==="part" || tab==="parts_shop" || tab==="accessory") {
+      if(tab==="all" || tab==="part" || tab==="parts_shop" || tab==="accessory" || tab==="saved") {
         const { data: inv } = await supabase.from("inventory")
           .select("*, profiles!inventory_provider_id_fkey(first_name,last_name,business_name,role)")
           .eq("is_active", true)
