@@ -6,6 +6,7 @@ import SellerProfile from "./SellerProfile"
 import NewCarMarketplace from "../customer/NewCarMarketplace"
 import MyNewCarListings from "../customer/MyNewCarListings"
 import CustomerPartsMarketplace from "../customer/CustomerPartsMarketplace"
+import MarketplaceCart from "./MarketplaceCart"
 import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import ChatWindow from "../shared/ChatWindow"
@@ -17,7 +18,7 @@ const TRANSMISSIONS = ["Manual","Automatic"]
 const CONDITIONS = ["New","Used","Refurbished","For parts"]
 
 export default function Marketplace() {
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const isMobile = useIsMobile()
@@ -25,6 +26,8 @@ export default function Marketplace() {
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState("all")
   const [orders, setOrders] = useState([])
+  const [cart, setCart] = useState([])
+  const [showCart, setShowCart] = useState(false)
   const [search, setSearch] = useState("")
   const [filters, setFilters] = useState({ minPrice:"", maxPrice:"", condition:"", city:"", make:"", fuelType:"", transmission:"" })
   const [showFilters, setShowFilters] = useState(false)
@@ -49,6 +52,16 @@ export default function Marketplace() {
   const [loadingComments, setLoadingComments] = useState(false)
 
   useEffect(() => { load(); loadUserLikes(); if(tab==="my_orders") loadOrders() }, [tab])
+  // Directly adds a shop inventory item to the real cart, instead of navigating away to a
+  // separate Parts & Accessories page - the listing card already has everything addToCart needs.
+  function addToCart(listing) {
+    setCart(prev => {
+      const existing = prev.find(c=>c.id===listing.id)
+      if (existing) return prev.map(c=>c.id===listing.id?{...c,qty:c.qty+1}:c)
+      return [...prev, { id:listing.id, name:listing.title, price:listing.price, provider_id:listing.seller_id, stock_quantity:listing.quantity, unit:"unit", qty:1 }]
+    })
+    toast.success(listing.title+" added to cart")
+  }
 
   useEffect(() => {
     const listingId = searchParams.get("listing")
@@ -448,10 +461,15 @@ export default function Marketplace() {
           <div style={{ fontFamily:"Syne", fontSize:isMobile?18:22, fontWeight:800, color:"#000000", display:"flex", alignItems:"center", gap:8 }}><MarketplaceIcon size={22} color="#e6821e" /> Marketplace</div>
           <div style={{ fontSize:12, color:"#777777", marginTop:2 }}>Buy and sell vehicles, parts & accessories</div>
         </div>
-        <button onClick={()=>navigate("/dashboard/marketplace/new")}
-          style={{ background:"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:"pointer" }}>
-          + List item
-        </button>
+        <div style={{ display:"flex", gap:8 }}>
+          <button onClick={()=>setShowCart(true)} style={{ background:cart.length>0?"#e6821e":"#f5f5f5", border:"1px solid #e0e0e0", borderRadius:9, color:cart.length>0?"#fff":"#666", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 16px", cursor:"pointer" }}>
+            Cart {cart.length>0&&`(${cart.length})`}
+          </button>
+          <button onClick={()=>navigate("/dashboard/marketplace/new")}
+            style={{ background:"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:"pointer" }}>
+            + List item
+          </button>
+        </div>
       </div>
 
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
@@ -700,7 +718,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
             <HeartIcon size={16} color="#e24b4a" active={userLikes?.has(listing.id)} /> {listing.likes_count||0}
           </button>
           {listing._source==="inventory" ? (
-            <button onClick={()=>navigate(`/dashboard/parts?item=${listing.id}&autoadd=1`)} style={{ flex:2, background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"10px", cursor:"pointer" }}>
+            <button onClick={()=>addToCart(listing)} style={{ flex:2, background:"#e6821e", border:"none", borderRadius:8, color:"#fff", fontSize:12, fontWeight:700, padding:"10px", cursor:"pointer" }}>
               🛒 Add to Cart
             </button>
           ) : (
@@ -951,7 +969,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
           {listing.seller_id!==user?.id&&(
             <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
               {listing._source==="inventory" ? (
-                <button onClick={()=>navigate(`/dashboard/parts?item=${listing.id}&autoadd=1`)}
+                <button onClick={()=>addToCart(listing)}
                   style={{ width:"100%", background:"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:"pointer" }}>
                   🛒 Add to Cart
                 </button>
@@ -1078,10 +1096,10 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
           </div>
         </div>
       )}
+      <MarketplaceCart cart={cart} setCart={setCart} showCart={showCart} setShowCart={setShowCart} user={user} profile={profile} onOrderComplete={()=>{ setTab("my_orders") }} />
     </div>
   )
 }
-
 
 
 
