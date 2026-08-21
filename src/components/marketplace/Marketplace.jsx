@@ -320,7 +320,12 @@ export default function Marketplace() {
   )
 
   // new_cars now handled inline
-  // parts_shop now handled inline
+  if (tab==="parts_shop") {
+    // Reuses the same, already-working Parts & Accessories screen (cart, checkout, and its
+    // own internal Browse/My Orders tabs) directly inline, instead of navigating the customer
+    // away to a separate page just to shop for shop-stocked parts and accessories.
+    return <CustomerPartsMarketplace />
+  }
   if (tab==="my_listings") {
     // Filter listings belonging to current user
     const myListings = listings.filter(l => l.user_id === user?.id || l.dealer_id === user?.id)
