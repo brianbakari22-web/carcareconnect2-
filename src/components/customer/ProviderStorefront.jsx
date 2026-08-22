@@ -104,20 +104,31 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
         notes: bundleForm.notes,
       }).select().single()
       if(error) throw error
+      let stkFailed = false
       if(bundleForm.payment_method==="mpesa") {
         const { data: cp } = await supabase.from("profile_sensitive").select("mpesa_number").eq("id", user.id).maybeSingle()
         if(cp?.mpesa_number) {
           try {
-            await fetch(import.meta.env.VITE_SUPABASE_URL+"/functions/v1/daraja-stk-push", {
+            // Send totalAmount (bundle price + processing fee) - the booking record's
+            // own total_amount already includes the fee, so charging just "amount" here
+            // would genuinely undercharge the customer relative to what's tracked.
+            const stkRes = await fetch(import.meta.env.VITE_SUPABASE_URL+"/functions/v1/daraja-stk-push", {
               method:"POST",
               headers:{"Content-Type":"application/json","Authorization":"Bearer "+import.meta.env.VITE_SUPABASE_ANON_KEY},
-              body:JSON.stringify({ booking_id:booking.id, amount, phone:cp.mpesa_number, customer_id:user.id, provider_id:provider.id, service_name:bookingBundle.name+" Bundle" })
+              body:JSON.stringify({ booking_id:booking.id, amount:totalAmount, phone:cp.mpesa_number, customer_id:user.id, provider_id:provider.id, service_name:bookingBundle.name+" Bundle" })
             })
-          } catch(e) {}
+            if (!stkRes.ok) stkFailed = true
+          } catch(e) { stkFailed = true }
+        } else {
+          stkFailed = true
         }
       }
       await supabase.from("notifications").insert({ user_id:provider.id, title:"New bundle booking! 📦", message:"New bundle booking: "+bookingBundle.name+" on "+bundleForm.date+" #"+bookingNumber, type:"success" })
-      toast.success("Bundle booked! Check your M-Pesa 📱")
+      if (stkFailed) {
+        toast.error("Booking saved, but we couldn't send the M-Pesa prompt. Please contact support or try paying again from My Bookings.")
+      } else {
+        toast.success("Bundle booked! Check your M-Pesa 📱")
+      }
       setBookingBundle(null)
       setBundleForm({ date:"", time:"", notes:"", payment_method:"mpesa" })
     } catch(err) { toast.error(err.message) }
