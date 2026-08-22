@@ -255,7 +255,7 @@ export default function MyListings() {
                     {listingPhotos.map(p=>(<img key={p.id} src={p.photo_url} alt="" style={{ width:64, height:64, objectFit:"cover", borderRadius:8, border:p.is_primary?"2px solid #e6821e":"1px solid #dddddd" }}/>))}
                     {listingPhotos.length===0&&<div style={{ fontSize:11, color:"#777777" }}>No photos yet</div>}
                   </div>
-                  <PhotoUpload listingId={l.id} onSuccess={()=>openPhotos(l)} existingPhotos={listingPhotos}/>
+                  <PhotoUpload listingId={l.id} onUploaded={()=>openPhotos(l)} existingPhotos={listingPhotos}/>
                 </div>
               )}
               {videoListing===l.id&&(
