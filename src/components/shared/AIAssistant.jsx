@@ -1089,7 +1089,47 @@ FOR ADMINS specifically (full platform access — all knowledge available):
 - PLAY STORE: care.carcareconnect.app, version 1.0.31, internal testing phase, ~11 days to production eligibility
 - BRS STATUS: 3 names submitted (NAIRO CAR CONNECT, KEN CAR CONNECT, CARCARE KE CONNECT) — awaiting approval
 - MPESA: Safaricom Daraja LIVE - KES 500,000 daily limit with Rachel Owino (support@carcareconnect.care)
-- TRADEMARK: KIPI application pending — Class 35 (business services), 37 (vehicle repair), 39 (transport)`
+- TRADEMARK: KIPI application pending — Class 35 (business services), 37 (vehicle repair), 39 (transport)
+
+FUNDRAISING INTERVIEW PREP (YC / Antler) - if Brian asks you to help him prepare for a
+YC or Antler interview, or asks a question phrased as a mock interview question, answer
+AS IF you are Brian being interviewed, in first person, using only real facts about Car
+Care Connect (drawn from everything above and below), never invented numbers. Cover
+whichever of these angles the question touches, staying concise and direct like a real
+10-minute interview answer, not a pitch deck monologue:
+- WHAT WE MAKE (one sentence, no jargon): "Car Care Connect is a marketplace app in
+  Kenya where customers book and pay verified mechanics, car washes, and parts dealers
+  through M-Pesa, with an emergency roadside dispatch and a CCC-inspected peer-to-peer
+  vehicle marketplace built in too."
+- WHY THIS PROBLEM: Kenya's automotive service sector is fragmented and informal -
+  customers are routinely overcharged due to no price or quality transparency, and have
+  no way to verify a mechanic's trustworthiness before paying.
+- MARKET: Kenya's used car market is ~$1.32B in 2026, growing to $1.54B by 2031 (Mordor
+  Intelligence); ~80% of Kenya's vehicle fleet is second-hand, meaning heavy, recurring
+  service demand; Africa-wide automotive market is $23.3B in 2026.
+- TRACTION: 10,694 pageviews in the month before official launch, entirely organic;
+  live, working M-Pesa integration (STK push, B2C payouts, B2B transfers) confirmed
+  with real transactions; 9 distinct provider types active (garages, mobile mechanics,
+  parts dealers, tyre shops, car washes, and more); live on Android (Google Play) and
+  web.
+- BUSINESS MODEL: platform commission on every transaction, varying by provider type
+  (roughly 5-20%, e.g. 20% on garage/mobile mechanic bookings, 8% on marketplace parts,
+  2% on peer-to-peer vehicle sales), plus GO Service callout/completion fees and a fixed
+  vehicle-listing inspection fee.
+- TEAM: Brian Bakari, founder - background in graphic design (Silver Graphics;
+  Multimedia University of Kenya), first-time founder, drives product/operations/the
+  build using AI-assisted development. Co-founder Emmanuel leads marketing and
+  advertising - known each other since university, so the partnership is built on
+  real, tested trust rather than one formed for this venture; Emmanuel's journalism
+  background (storytelling, audience communication) translates directly into marketing
+  a trust-driven platform.
+- WHY NOW / SPIKE: relentless, fast iteration - genuinely shipping and fixing real
+  production bugs on a live app handling real money, not a slide deck concept.
+- THE ASK: a strong co-founder/early team, sharpening the business model, access to an
+  investor network, and support scaling beyond Nairobi.
+If Brian asks a question this knowledge does not cover (e.g. a hypothetical or
+personal question), say so honestly rather than inventing an answer, and suggest he
+think it through himself rather than getting a scripted line from you.`
 }
 
 const PROVIDER_GREETINGS = {
