@@ -9,8 +9,10 @@ Deno.serve(async (req) => {
     return new Response("ok", { headers: corsHeaders })
   }
   try {
+    // provider_id is optional: absent means this is a CCC in-house mechanic (used
+    // for marketplace listing inspections), not tied to any specific provider garage.
     const { first_name, last_name, phone, email, provider_id } = await req.json()
-    if (!first_name || !provider_id) {
+    if (!first_name) {
       return new Response(JSON.stringify({ success: false, error: "Missing required fields" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" }
       })
