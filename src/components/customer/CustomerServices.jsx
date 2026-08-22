@@ -181,6 +181,7 @@ export default function CustomerServices() {
         customer_id: user.id,
         provider_id: booking.provider_id,
         bundle_id: booking.bundle_id,
+        service_id: booking.service_ids?.[0] || null,
         service_name: booking.name,
         service_category: "bundle",
         booking_date: bookForm.date,
@@ -418,7 +419,7 @@ export default function CustomerServices() {
                       {provider&&<span style={{ fontSize:11, color:"#777777", display:"flex", alignItems:"center", gap:3 }}><MarketplaceIcon size={11} color="#777777"/> {provider.business_name||`${provider.first_name} ${provider.last_name}`}{provider.city?` · ${provider.city}`:""}</span>}
                     </div>
                   </div>
-                  <button onClick={()=>{ setBooking({ id:b.id, name:b.name, price:b.bundle_price, provider_id:b.provider_id, category:"shop_standard", is_bundle:true, bundle_id:b.id, platform_commission_rate:b.platform_commission_rate }); setBookForm({ date:"", time:"", notes:"", payment_method:"mpesa", is_concierge:false }) }}
+                  <button onClick={()=>{ setBooking({ id:b.id, name:b.name, price:b.bundle_price, provider_id:b.provider_id, category:"shop_standard", is_bundle:true, bundle_id:b.id, service_ids:b.service_ids, platform_commission_rate:b.platform_commission_rate }); setBookForm({ date:"", time:"", notes:"", payment_method:"mpesa", is_concierge:false }) }}
                     style={{ background:"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"9px 16px", cursor:"pointer", flexShrink:0 }}>
                     Book bundle
                   </button>

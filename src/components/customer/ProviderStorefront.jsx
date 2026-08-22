@@ -91,6 +91,7 @@ export default function ProviderStorefront({ provider, onClose, onBook }) {
       const { data: booking, error } = await supabase.from("bookings").insert({
         customer_id: user.id, provider_id: provider.id,
         bundle_id: bookingBundle.id,
+        service_id: bookingBundle.service_ids?.[0] || null,
         service_name: bookingBundle.name+" (Bundle)",
         booking_date: bundleForm.date, booking_time: bundleForm.time,
         booking_number: bookingNumber,
