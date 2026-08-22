@@ -49,6 +49,10 @@ export default function InspectionRequest({ listing, onSuccess }) {
       }).select("id").single()
 
       if (error) throw error
+      // Mirrors what the admin-triggered path already sets, so the admin's own listing
+      // review card correctly hides its redundant "Request inspection" button once a
+      // seller has genuinely already requested and paid for one themselves.
+      await supabase.from("marketplace_listings").update({ inspection_status: "requested" }).eq("id", listing.id)
 
       const { data: sens } = await supabase.from("profile_sensitive").select("mpesa_number, phone").eq("id", user.id).maybeSingle()
       const payPhone = sens?.mpesa_number || sens?.phone || profile?.mpesa_phone

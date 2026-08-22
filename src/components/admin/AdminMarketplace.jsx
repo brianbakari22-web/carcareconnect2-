@@ -124,7 +124,7 @@ export default function AdminMarketplace() {
       await supabase.from("notifications").insert({
         user_id: listing.seller_id,
         title: "Vehicle inspection required 🔍",
-        message: "Your listing " + listing.title + " requires a CCC inspection (KES 500) before it can go live. Please go to My Listings to schedule and pay.",
+        message: "Your listing " + listing.title + " requires a CCC inspection (KES " + currentFee.toLocaleString() + ") before it can go live. Please go to My Listings to schedule and pay.",
         type: "warning"
       })
       toast.success("Inspection requested — seller notified")
