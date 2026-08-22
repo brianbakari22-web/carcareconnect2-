@@ -25,6 +25,9 @@ export default function AdminMarketplace() {
   const [showAddMech, setShowAddMech] = useState(false)
   const [mechForm, setMechForm] = useState({ first_name:"", last_name:"", phone:"", specialization:"" })
   const [addingMech, setAddingMech] = useState(false)
+  const [pinPanel, setPinPanel] = useState(null)
+  const [pin, setPin] = useState("")
+  const [settingPin, setSettingPin] = useState(false)
 
   useEffect(() => {
     load()
@@ -102,6 +105,30 @@ export default function AdminMarketplace() {
       setMechanics(data||[])
     } catch(err) { toast.error(err.message) }
     finally { setAddingMech(false) }
+  }
+  async function setMechanicPin(mechanicId) {
+    if (!pin||pin.length<4) return toast.error("PIN must be at least 4 digits")
+    setSettingPin(true)
+    try {
+      const { error } = await supabase.rpc("set_mechanic_pin", { p_mechanic_id: mechanicId, p_pin: pin })
+      if (error) throw error
+      toast.success("PIN set! Mechanic can now login at carcareconnect.care/mechanic-login")
+      setPinPanel(null)
+      setPin("")
+    } catch(err) { toast.error(err.message) }
+    finally { setSettingPin(false) }
+  }
+  async function setMechanicPin(mechanicId) {
+    if (!pin||pin.length<4) return toast.error("PIN must be at least 4 digits")
+    setSettingPin(true)
+    try {
+      const { error } = await supabase.rpc("set_mechanic_pin", { p_mechanic_id: mechanicId, p_pin: pin })
+      if (error) throw error
+      toast.success("PIN set! Mechanic can now login at carcareconnect.care/mechanic-login")
+      setPinPanel(null)
+      setPin("")
+    } catch(err) { toast.error(err.message) }
+    finally { setSettingPin(false) }
   }
   async function loadDisputes() {
     const { data } = await supabase.from("marketplace_disputes")
@@ -657,6 +684,26 @@ export default function AdminMarketplace() {
                 <input placeholder="Specialization (optional)" value={mechForm.specialization} onChange={e=>setMechForm(f=>({...f,specialization:e.target.value}))} style={{ fontSize:12, border:"1px solid #ddd", borderRadius:6, padding:"7px 10px", outline:"none" }}/>
                 <button type="submit" disabled={addingMech} style={{ gridColumn:"span 2", background:"#1d9e75", border:"none", borderRadius:7, color:"#fff", fontSize:12, fontWeight:700, padding:"8px", cursor:addingMech?"not-allowed":"pointer" }}>{addingMech?"Creating...":"Create mechanic account"}</button>
               </form>
+            )}
+            {mechanics.length>0&&(
+              <div style={{ marginTop:10, display:"grid", gap:6 }}>
+                {mechanics.map(m=>(
+                  <div key={m.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:8, padding:"0.5rem 0.75rem" }}>
+                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                      <div style={{ fontSize:12, color:"#000" }}>{m.first_name} {m.last_name}{m.specialization?" - "+m.specialization:""}</div>
+                      <button onClick={()=>{ setPinPanel(pinPanel===m.id?null:m.id); setPin("") }} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:6, color:"#378add", fontSize:10, padding:"4px 10px", cursor:"pointer" }}>
+                        🔑 {m.mechanic_code?"Reset PIN":"Set PIN"}
+                      </button>
+                    </div>
+                    {pinPanel===m.id&&(
+                      <div style={{ display:"flex", gap:6, marginTop:8 }}>
+                        <input type="password" value={pin} onChange={e=>setPin(e.target.value.replace(/\D/g,"").slice(0,6))} placeholder="e.g. 1234" maxLength={6} style={{ flex:1, background:"#f8f8f8", border:"1px solid #ddd", borderRadius:6, padding:"7px 10px", fontSize:13, letterSpacing:3, outline:"none" }}/>
+                        <button onClick={()=>setMechanicPin(m.id)} disabled={settingPin||pin.length<4} style={{ background:pin.length>=4?"#378add":"#ccc", border:"none", borderRadius:6, color:"#fff", fontSize:11, fontWeight:700, padding:"7px 14px", cursor:"pointer", whiteSpace:"nowrap" }}>{settingPin?"Saving...":"Save PIN"}</button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             )}
           </div>
           {inspections.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No inspection requests</div>}
