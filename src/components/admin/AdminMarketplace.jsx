@@ -34,7 +34,7 @@ export default function AdminMarketplace() {
 
   async function load() {
     await Promise.all([loadListings(), loadOffers(), loadTransactions(), loadDisputes(), loadInspections()])
-    supabase.from("mechanics").select("id,first_name,last_name,specialization").eq("is_active",true)
+    supabase.from("mechanics").select("id,first_name,last_name,specialization").eq("is_active",true).is("provider_id", null)
       .then(({ data }) => setMechanics(data||[]))
     setLoading(false)
   }
