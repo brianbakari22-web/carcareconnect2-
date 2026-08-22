@@ -1,4 +1,5 @@
 import { LocationIcon, EyeIcon, VehicleIcon, WarningIcon } from "../../lib/cccIcons"
+import { jsPDF } from "jspdf"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
@@ -170,6 +171,65 @@ export default function AdminMarketplace() {
       loadAllCCCMechanics()
     } catch(err) { toast.error(err.message) }
     finally { setSavingEdit(false) }
+  }
+  async function downloadJobSheet(insp) {
+    try {
+      const { data: sellerSensitive } = await supabase.from("profile_sensitive").select("phone,mpesa_number").eq("id", insp.seller_id).maybeSingle()
+      const sellerPhone = sellerSensitive?.phone || sellerSensitive?.mpesa_number || "Not on file"
+      let mechName = "Not yet assigned", mechPhone = "N/A"
+      if (insp.mechanic_id) {
+        const { data: mech } = await supabase.from("mechanics").select("first_name,last_name,phone").eq("id", insp.mechanic_id).maybeSingle()
+        if (mech) { mechName = mech.first_name + " " + (mech.last_name||""); mechPhone = mech.phone || "Not on file" }
+      }
+      const doc = new jsPDF()
+      const pageWidth = doc.internal.pageSize.getWidth()
+      const margin = 15
+      let y = 0
+      doc.setFillColor(230, 130, 30)
+      doc.rect(0, 0, pageWidth, 28, "F")
+      doc.setTextColor(255, 255, 255)
+      doc.setFontSize(18)
+      doc.setFont(undefined, "bold")
+      doc.text("Car Care Connect", margin, 14)
+      doc.setFontSize(11)
+      doc.setFont(undefined, "normal")
+      doc.text("Vehicle Inspection - Job Sheet", margin, 22)
+      y = 40
+      doc.setTextColor(0, 0, 0)
+      function row(label, value) {
+        doc.setFontSize(10)
+        doc.setFont(undefined, "bold")
+        doc.text(label, margin, y)
+        doc.setFont(undefined, "normal")
+        doc.text(String(value||"-"), margin + 55, y)
+        y += 9
+      }
+      row("Listing:", insp.marketplace_listings?.title)
+      row("Seller:", (insp.profiles?.first_name||"") + " " + (insp.profiles?.last_name||""))
+      row("Seller phone:", sellerPhone)
+      row("Scheduled date:", insp.scheduled_date)
+      y += 3
+      doc.setFont(undefined, "bold")
+      doc.text("Vehicle location", margin, y)
+      y += 9
+      if (insp.latitude && insp.longitude) {
+        row("Coordinates:", insp.latitude.toFixed(6) + ", " + insp.longitude.toFixed(6))
+        doc.setFontSize(9)
+        doc.setTextColor(55, 138, 221)
+        doc.textWithLink("Open in Google Maps", margin, y, { url: "https://www.google.com/maps?q=" + insp.latitude + "," + insp.longitude })
+        doc.setTextColor(0, 0, 0)
+        y += 12
+      } else {
+        row("Coordinates:", "Not shared by seller")
+      }
+      y += 3
+      doc.setFont(undefined, "bold")
+      doc.text("Assigned mechanic", margin, y)
+      y += 9
+      row("Name:", mechName)
+      row("Phone:", mechPhone)
+      doc.save("CCC-Inspection-" + insp.id.slice(0,8) + ".pdf")
+    } catch(err) { toast.error(err.message) }
   }
   async function loadDisputes() {
     const { data } = await supabase.from("marketplace_disputes")
@@ -803,6 +863,13 @@ export default function AdminMarketplace() {
                     </button>
                   </div>
                   )}
+                  {(insp.status==="assigned"||insp.status==="pending")&&(
+                    <button onClick={()=>downloadJobSheet(insp)}
+                      style={{ background:"#f5f3ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:10, padding:"4px 10px", cursor:"pointer", marginTop:6, display:"block" }}>
+                      📄 Download job sheet
+                    </button>
+                  )}
+
                   {insp.status==="assigned"&&(
                     <button onClick={async()=>{
                       const result = prompt("Inspection result (passed/failed/conditional):")
