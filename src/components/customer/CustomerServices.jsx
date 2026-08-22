@@ -168,9 +168,10 @@ export default function CustomerServices() {
       const promoDiscount = promoData?Number(promoData.discount):0
       const finalAmount = Math.max(0, baseAmount - voucherDiscount - promoDiscount)
 
-      // Validate amount against service price from DB
-    const { data: svcCheck } = await supabase.from("services").select("price").eq("id", selectedService?.id).maybeSingle()
-    const validatedAmount = svcCheck ? sanitizeAmount(svcCheck.price) : sanitizeAmount(baseAmount)
+      // Validate amount against the bundle's real price in the DB (a bundle, not a
+      // regular service, so this checks service_bundles.bundle_price via the bundle's own id)
+    const { data: svcCheck } = await supabase.from("service_bundles").select("bundle_price").eq("id", booking.id).maybeSingle()
+    const validatedAmount = svcCheck ? sanitizeAmount(svcCheck.bundle_price) : sanitizeAmount(baseAmount)
     if (validatedAmount <= 0 || validatedAmount > 500000) {
       toast.error("Invalid service amount")
       setLoading(false)
