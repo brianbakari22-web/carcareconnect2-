@@ -135,7 +135,7 @@ export default function AdminMarketplace() {
     // Deliberately no is_active filter here, unlike the mechanics state used for the
     // Assign dropdown - admin needs to see (and reactivate) deactivated mechanics too,
     // not just currently-active ones.
-    const { data } = await supabase.from("mechanics").select("id,first_name,last_name,specialization,is_active,is_available").is("provider_id", null).order("first_name")
+    const { data } = await supabase.from("mechanics").select("id,first_name,last_name,phone,specialization,is_active,is_available,mechanic_code").is("provider_id", null).order("first_name")
     setAllCCCMechanics(data||[])
   }
   async function toggleMechActive(m) {
@@ -148,6 +148,25 @@ export default function AdminMarketplace() {
   async function toggleMechAvailable(m) {
     await supabase.from("mechanics").update({ is_available: !m.is_available }).eq("id", m.id)
     loadAllCCCMechanics()
+  }
+  function startEditMech(m) {
+    setEditingMech(m.id)
+    setEditForm({ first_name: m.first_name||"", last_name: m.last_name||"", phone: m.phone||"", specialization: m.specialization||"" })
+  }
+  async function saveEditMech(mechanicId) {
+    if (!editForm.first_name) return toast.error("First name required")
+    setSavingEdit(true)
+    try {
+      const { error } = await supabase.from("mechanics").update({
+        first_name: editForm.first_name, last_name: editForm.last_name,
+        phone: editForm.phone, specialization: editForm.specialization,
+      }).eq("id", mechanicId)
+      if (error) throw error
+      toast.success("Mechanic details updated")
+      setEditingMech(null)
+      loadAllCCCMechanics()
+    } catch(err) { toast.error(err.message) }
+    finally { setSavingEdit(false) }
   }
   async function loadDisputes() {
     const { data } = await supabase.from("marketplace_disputes")
@@ -709,8 +728,14 @@ export default function AdminMarketplace() {
                 {allCCCMechanics.map(m=>(
                   <div key={m.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:8, padding:"0.5rem 0.75rem", opacity:m.is_active?1:0.55 }}>
                     <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:4 }}>
-                      <div style={{ fontSize:12, color:"#000" }}>{m.first_name} {m.last_name}{m.specialization?" - "+m.specialization:""}{!m.is_active&&<span style={{ marginLeft:6, fontSize:10, color:"#e24b4a" }}>(inactive)</span>}</div>
-                      <div style={{ display:"flex", gap:6 }}>
+                      <div>
+                        <div style={{ fontSize:12, color:"#000" }}>{m.first_name} {m.last_name}{m.specialization?" - "+m.specialization:""}{!m.is_active&&<span style={{ marginLeft:6, fontSize:10, color:"#e24b4a" }}>(inactive)</span>}</div>
+                        <div style={{ fontSize:10, color:"#888" }}>{m.phone||"No phone on file"}</div>
+                      </div>
+                      <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                        <button onClick={()=>startEditMech(m)} style={{ background:"none", border:"1px solid #ddd", borderRadius:6, color:"#555", fontSize:10, padding:"4px 10px", cursor:"pointer" }}>
+                          Edit
+                        </button>
                         <button onClick={()=>toggleMechAvailable(m)} style={{ background:m.is_available?"#f0fdf4":"#fff8f0", border:"1px solid "+(m.is_available?"#1d9e7540":"#e6821e40"), borderRadius:6, color:m.is_available?"#1d9e75":"#e6821e", fontSize:10, padding:"4px 10px", cursor:"pointer" }}>
                           {m.is_available?"Available":"Unavailable"}
                         </button>
@@ -722,6 +747,15 @@ export default function AdminMarketplace() {
                         </button>
                       </div>
                     </div>
+                    {editingMech===m.id&&(
+                      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:6, marginTop:8 }}>
+                        <input placeholder="First name" value={editForm.first_name} onChange={e=>setEditForm(f=>({...f,first_name:e.target.value}))} style={{ fontSize:12, border:"1px solid #ddd", borderRadius:6, padding:"6px 9px", outline:"none" }}/>
+                        <input placeholder="Last name" value={editForm.last_name} onChange={e=>setEditForm(f=>({...f,last_name:e.target.value}))} style={{ fontSize:12, border:"1px solid #ddd", borderRadius:6, padding:"6px 9px", outline:"none" }}/>
+                        <input placeholder="Phone" value={editForm.phone} onChange={e=>setEditForm(f=>({...f,phone:e.target.value}))} style={{ fontSize:12, border:"1px solid #ddd", borderRadius:6, padding:"6px 9px", outline:"none" }}/>
+                        <input placeholder="Specialization" value={editForm.specialization} onChange={e=>setEditForm(f=>({...f,specialization:e.target.value}))} style={{ fontSize:12, border:"1px solid #ddd", borderRadius:6, padding:"6px 9px", outline:"none" }}/>
+                        <button onClick={()=>saveEditMech(m.id)} disabled={savingEdit} style={{ gridColumn:"span 2", background:"#1d9e75", border:"none", borderRadius:6, color:"#fff", fontSize:11, fontWeight:700, padding:"7px", cursor:"pointer" }}>{savingEdit?"Saving...":"Save changes"}</button>
+                      </div>
+                    )}
                     {pinPanel===m.id&&(
                       <div style={{ display:"flex", gap:6, marginTop:8 }}>
                         <input type="password" value={pin} onChange={e=>setPin(e.target.value.replace(/\D/g,"").slice(0,6))} placeholder="e.g. 1234" maxLength={6} style={{ flex:1, background:"#f8f8f8", border:"1px solid #ddd", borderRadius:6, padding:"7px 10px", fontSize:13, letterSpacing:3, outline:"none" }}/>
