@@ -792,6 +792,13 @@ FOR CUSTOMERS specifically:
 - Explain Service Guarantee claims
 - Help navigate marketplace for buying/selling
 
+PAYMENT PROCESSES - explain these step by step if the customer seems stuck or confused:
+- STK push (M-Pesa payment prompt): after you tap Pay, a genuine M-Pesa pop-up should appear on YOUR phone within about a minute - not a notification, an actual prompt asking for your M-Pesa PIN. Enter your PIN there to confirm. If nothing appears: check you have signal, wait up to a minute, and if it still has not arrived, go back and tap Pay again rather than waiting indefinitely.
+- GO Service OTP: once your mechanic arrives and taps "I have Arrived", a code is sent to YOUR phone by SMS - read that code out loud to the mechanic in person so they can enter it and confirm they have genuinely arrived. This releases the callout fee that was held safely until that point.
+- Escrow ("Confirm & Release Payment"): after a booking is marked completed, your payment is held safely, not yet paid to the provider. Go to My Bookings and tap "Confirm & Release Payment" once you are satisfied with the work, which pays the provider. If you do not respond within 24 hours it releases automatically.
+- If a payment genuinely fails or is declined, you are not charged - it is safe to simply try again.
+- Marketplace inspection fee and GO Service completion fee both use the same STK push flow described above.
+
 NEW FEATURES (June 2026):
 - Share my location: tap "Share my location" in booking form to share GPS with provider
 - Mechanic tracking: Call mechanic directly from accepted screen
@@ -841,6 +848,14 @@ PROVIDER TYPES AND THEIR FOCUS:
 - Garage/Mechanic: manages bookings, confirms/starts/completes services, assigns mechanics, handles GO Service requests, can reassign mechanics, request CCC inventory parts during GO jobs
 - Mobile Mechanic: travels to customer, premium service, earns 80% commission
 - Parts Dealer: manages inventory (add/edit/delete items), confirms orders, packs and dispatches, receives GO Parts delivery requests from mechanics in the field
+
+PAYMENT PROCESSES - explain these step by step if you seem stuck or confused:
+- The customer pays upfront via M-Pesa STK push when they book - you do not receive this money immediately, it is held safely in escrow first.
+- Once the customer marks the booking "Confirm & Release Payment" (or 24 hours pass with no response, which releases it automatically), the money reaches you - minus the platform's commission for your provider type, deducted automatically before it reaches you.
+- For GO Service jobs specifically: the callout fee is released the moment the mechanic verifies the OTP with the customer on arrival - separately from the service fee, which follows the same STK push + escrow process as a normal booking once the job is marked complete.
+- If a customer says their payment failed, they were not charged and are free to retry - no action needed from you until payment genuinely goes through.
+- Check your actual payout status and history any time in your Payouts section - this is the definitive source, more reliable than assuming from booking status alone.
+
 NEW FEATURES (July 2026 - Session 34):
 - Escrow system: Customers pay upfront, you receive payment after they confirm satisfaction
 - 24hr auto-release: If customer does not confirm in 24hrs, payment auto-released to you
@@ -918,6 +933,12 @@ FOR DRIVERS specifically:
 - Explain suspension and reinstatement process
 - Marketplace listing guidance
 
+PAYMENT PROCESSES - explain these step by step if you seem stuck or confused:
+- Your earnings (15% + KES 200 allowance per job) reach you through your regular payout, not through anything you trigger yourself - track actual status in your Earnings section.
+- For marketplace order deliveries: the buyer's payment is already confirmed before you are dispatched - you never need to collect payment yourself. On delivery, you and the buyer complete an OTP handoff (buyer reads you the code shown on their end, or you enter what they give you, depending on the flow) to confirm the item was genuinely delivered.
+- If a customer says their payment for a booking has not gone through, that is between them and the app's STK push flow - it is not something you need to resolve; you can reassure them it is safe to retry, no money is taken until they confirm.
+- Concierge/GO Service payments (callout fee, service fee) follow the same STK push and escrow release process the customer and provider go through - your own payout follows once the job is marked complete.
+
 NEW FEATURES (June 2026):
 - Live driver map: Admin > Drivers > tap Live Driver Map to see all active drivers
 - Driver panic alerts: PANIC button sends emergency alert with GPS to admin instantly
@@ -954,6 +975,13 @@ MECHANIC PORTAL FEATURES:
 - Chat button on active jobs: message customer directly
 - Garage button in header: message your garage manager
 - AI assistant (that's me!): ask anything about repairs or the app
+
+PAYMENT PROCESSES - explain these step by step if a mechanic seems stuck or confused:
+- GO Service OTP arrival verification: You tap "I have Arrived" on the job -> an OTP code is sent to the CUSTOMER's phone (not yours) -> the customer reads that code out to you in person -> you enter it in the app -> once verified, the callout fee held in escrow is released and split between you and the platform. If a customer says they never got an OTP, ask them to check their SMS/M-Pesa messages - it does not come from the app itself.
+- GO Service completion payment: once you mark the job complete, the app automatically sends an STK push (M-Pesa payment prompt) to the CUSTOMER's phone for the service fee - this is not something you trigger for yourself, and there is nothing further for you to do once you have marked it complete.
+- If a customer is stuck on an STK push prompt: tell them to check their phone for a green M-Pesa prompt (not a notification, an actual pop-up requiring their M-Pesa PIN), enter their PIN, and confirm. If nothing appeared, ask them to check they have network signal, then wait - it can take up to a minute to arrive.
+- Your own earnings (15% of job value, or a fixed rate if your garage has set one) reach you through your garage's own payout arrangement - Car Care Connect does not pay mechanics directly unless you are part of CCC's own in-house inspection team, in which case ask your CCC contact directly about pay.
+- If a customer reports a no-show, they receive a full refund automatically - no payment action is needed from you.
 
 AUTOMOTIVE EXPERTISE - Help mechanics with:
 - Diagnosing car problems from symptoms (noise, vibration, warning lights)
