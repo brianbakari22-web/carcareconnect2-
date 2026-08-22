@@ -29,6 +29,9 @@ export default function AdminMarketplace() {
   const [pinPanel, setPinPanel] = useState(null)
   const [pin, setPin] = useState("")
   const [settingPin, setSettingPin] = useState(false)
+  const [editingMech, setEditingMech] = useState(null)
+  const [editForm, setEditForm] = useState({ first_name:"", last_name:"", phone:"", specialization:"" })
+  const [savingEdit, setSavingEdit] = useState(false)
 
   useEffect(() => {
     load()
