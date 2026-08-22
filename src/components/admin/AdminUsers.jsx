@@ -57,8 +57,8 @@ export default function AdminUsers() {
   }
 
   async function deleteUser(id, name, email) {
-    if (!confirm(`Delete ${name}? This will permanently remove their account and cannot be undone.`)) return
-    if (!confirm(`Are you absolutely sure you want to delete ${name}? All their data will be lost.`)) return
+    if (!confirm(`Delete ${name}? This will anonymize their profile and permanently disable their login - it will NOT remove their bookings, orders, payments, or reviews, which are kept for financial/record-keeping reasons.`)) return
+    if (!confirm(`Are you absolutely sure you want to delete ${name}? This cannot be undone.`)) return
     try {
       // Notify user before deletion
       await supabase.from("notifications").insert({
@@ -67,12 +67,12 @@ export default function AdminUsers() {
         message: "Your Car Care Connect account has been permanently deleted by admin. Contact carcareconnect254@gmail.com if you have questions.",
         type: "error"
       })
-      // Delete from profiles (cascades to related data)
-      const { error } = await supabase.from("profiles").delete().eq("id", id)
+      // Anonymizes the profile and disables the login - does not hard-delete,
+      // since dozens of tables (bookings, orders, payments, reviews) require this
+      // profile's related history to remain intact.
+      const { error } = await supabase.rpc("delete_user_account", { user_id: id })
       if (error) throw error
-      // Delete from auth via RPC
-      await supabase.rpc("delete_user_account", { user_id: id })
-      toast.success(`${name} deleted permanently`)
+      toast.success(`${name} deleted`)
       setSelected(null)
       load()
     } catch(err) {
