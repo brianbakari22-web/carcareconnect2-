@@ -6,9 +6,9 @@ import useIsMobile from "../../lib/useIsMobile"
 import toast from "react-hot-toast"
 
 const CATEGORIES = {
-  shop_standard: { label:"Shop Standard", icon:"marketplace", color:"#378add", bg:"#eff6ff" },
-  shop_premium: { label:"Shop Premium", icon:"home", color:"#8b5cf6", bg:"#f5f3ff" },
-  go_service: { label:"GO Service", icon:"emergency", color:"#e24b4a", bg:"#fff5f5" },
+  shop_standard: { label:"Shop Standard", icon:MarketplaceIcon, color:"#378add", bg:"#eff6ff" },
+  shop_premium: { label:"Shop Premium", icon:HomeIcon, color:"#8b5cf6", bg:"#f5f3ff" },
+  go_service: { label:"GO Service", icon:GOServiceIcon, color:"#e24b4a", bg:"#fff5f5" },
 }
 
 const EICONS = { flat_tire:"🛞", dead_battery:"🔋", out_of_fuel:"⛽", car_wont_start:"🔑", overheating:"🌡️", towing:"🚚", other:"🆘" }
@@ -192,7 +192,7 @@ export default function AdminMechanics() {
         {Object.entries(CATEGORIES).map(([key, cat])=>(
           <div key={key} style={{ background:cat.bg, border:`1px solid ${cat.color}30`, borderRadius:12, padding:"1rem" }}>
             <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
-              <span style={{ fontSize:20 }}>{cat.icon}</span>
+              <cat.icon size={20} color={cat.color}/>
               <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:800, color:cat.color }}>{cat.label}</div>
             </div>
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
@@ -337,7 +337,7 @@ export default function AdminMechanics() {
                   <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:8 }}>
                     <div style={{ flex:1, minWidth:0 }}>
                       <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:4, flexWrap:"wrap" }}>
-                        <span style={{ fontSize:16 }}>{cat.icon}</span>
+                        <cat.icon size={16} color={cat.color}/>
                         <div style={{ fontSize:13, fontWeight:700, color:"#000" }}>{s.name}</div>
                         <span style={{ fontSize:9, padding:"1px 6px", borderRadius:8, background:cat.bg, color:cat.color }}>{cat.label}</span>
                         {!s.is_active&&<span style={{ fontSize:9, color:"#888", background:"#f0f0f0", padding:"1px 6px", borderRadius:8 }}>Inactive</span>}
@@ -378,7 +378,7 @@ export default function AdminMechanics() {
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10 }}>
                   <div style={{ flex:1, minWidth:0 }}>
                     <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:4, flexWrap:"wrap" }}>
-                      <span>{cat.icon}</span>
+                      <cat.icon size={16} color={cat.color}/>
                       <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{b.service_name}</div>
                       <span style={{ fontSize:10, padding:"1px 7px", borderRadius:10, background:cat.bg, color:cat.color }}>{cat.label}</span>
                       <span style={{ fontSize:10, padding:"1px 7px", borderRadius:10, background:`${SC[b.status]||"#888"}20`, color:SC[b.status]||"#888" }}>{b.status}</span>
