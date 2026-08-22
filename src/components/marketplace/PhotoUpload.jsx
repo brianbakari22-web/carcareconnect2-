@@ -11,9 +11,6 @@ export default function PhotoUpload({ listingId, existingPhotos=[], onUploaded }
   const [dragOver, setDragOver] = useState(false)
 
   async function uploadFiles(files) {
-    const _v = validateFile(file, "image")
-    if (!_v.valid) { toast.error(_v.error); return }
-
     if (!files?.length) return
     if (photos.length + files.length > 10) return toast.error("Maximum 10 photos allowed")
     setUploading(true)
