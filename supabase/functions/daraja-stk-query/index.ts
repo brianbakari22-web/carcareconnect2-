@@ -123,6 +123,14 @@ serve(async (req) => {
                 if (insp) {
                   await supabase.from("inspection_requests").update({ status: "scheduled" }).eq("id", insp.id)
                   await supabase.from("notifications").insert({ user_id: insp.seller_id, title: "Inspection payment received", message: "Your vehicle inspection has been scheduled. A CCC mechanic will contact you.", type: "success" })
+                  const { data: inspAdmins } = await supabase.from("profiles").select("id").eq("role", "admin")
+                  if (inspAdmins?.length) {
+                    await supabase.from("notifications").insert(inspAdmins.map((a: any) => ({
+                      user_id: a.id, title: "New paid inspection request 🔍",
+                      message: "A seller has paid for a vehicle inspection - assign a mechanic in Marketplace.",
+                      type: "info"
+                    })))
+                  }
                 }
               }
             }
