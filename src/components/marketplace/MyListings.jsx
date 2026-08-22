@@ -9,6 +9,7 @@ import toast from "react-hot-toast"
 import InspectionRequest from "./InspectionRequest"
 import PhotoUpload from "./PhotoUpload"
 import VideoUpload from "./VideoUpload"
+import CreateListing from "./CreateListing"
 import FeaturedListing from "./FeaturedListing"
 
 export default function MyListings() {
@@ -22,6 +23,7 @@ export default function MyListings() {
   const [expanded, setExpanded] = useState(null)
   const [photoListing, setPhotoListing] = useState(null)
   const [videoListing, setVideoListing] = useState(null)
+  const [editingListing, setEditingListing] = useState(null)
   const [featureListing, setFeatureListing] = useState(null)
   const [inspectListing, setInspectListing] = useState(null)
   const [listingPhotos, setListingPhotos] = useState([])
@@ -249,6 +251,11 @@ export default function MyListings() {
 
               {inspectListing===l.id&&<div style={{ borderTop:"1px solid #eeeeee", padding:"0.75rem" }}><InspectionRequest listing={l} onSuccess={()=>{ setInspectListing(null); loadListings() }}/></div>}
               {featureListing===l.id&&<div style={{ borderTop:"1px solid #eeeeee", padding:"0.75rem" }}><FeaturedListing listingId={l.id} onSuccess={()=>{ setFeatureListing(null); loadListings() }}/></div>}
+              {editingListing===l.id&&(
+                <div style={{ borderTop:"1px solid #eeeeee", padding:"0.75rem" }}>
+                  <CreateListing editListing={l} onSaved={()=>{ setEditingListing(null); loadListings() }}/>
+                </div>
+              )}
               {photoListing===l.id&&(
                 <div style={{ borderTop:"1px solid #eeeeee", padding:"0.75rem" }}>
                   <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:8 }}>
@@ -279,6 +286,7 @@ export default function MyListings() {
 
               <div style={{ borderTop:"1px solid #eeeeee", padding:"0.5rem 0.75rem", display:"flex", gap:6, flexWrap:"wrap" }}>
                 <button onClick={()=>navigate("/dashboard/marketplace?listing=" + l.id)} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>View</button>
+                <button onClick={()=>setEditingListing(editingListing===l.id?null:l.id)} style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>Edit</button>
                 <button onClick={()=>openPhotos(l)} style={{ background:"#ffffff", border:"1px solid #dddddd", borderRadius:7, color:"#555555", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>Photos {l.marketplace_photos?.length>0?"("+l.marketplace_photos.length+")":""}</button>
                 {l.listing_type==="vehicle"&&<button onClick={()=>setFeatureListing(featureListing===l.id?null:l.id)} style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:7, color:"#e6821e", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>Feature</button>}
                 <button onClick={()=>setInspectListing(inspectListing===l.id?null:l.id)} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:10, padding:"5px 10px", cursor:"pointer" }}>Inspect</button>

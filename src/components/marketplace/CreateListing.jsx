@@ -12,15 +12,25 @@ const PART_CATEGORIES = ["Engine","Brakes","Suspension","Electrical","Body & Pan
 const MAKES = ["Toyota","Nissan","Honda","Mitsubishi","Subaru","Mazda","BMW","Mercedes","Volkswagen","Ford","Chevrolet","Isuzu","Suzuki","Hyundai","Kia","Peugeot","Renault","Other"]
 const BODY_TYPES = ["Sedan","SUV","Hatchback","Pickup","Van","Coupe","Convertible","Wagon","Bus","Truck"]
 
-export default function CreateListing() {
+export default function CreateListing({ editListing, onSaved } = {}) {
   const { user } = useAuth()
   const navigate = useNavigate()
   const isMobile = useIsMobile()
+  const isEditing = !!editListing
   const [saving, setSaving] = useState(false)
   const [listingId, setListingId] = useState(null)
   const [step, setStep] = useState("form")
-  const [agreed, setAgreed] = useState(false)
-  const [form, setForm] = useState({
+  const [agreed, setAgreed] = useState(isEditing)
+  const [form, setForm] = useState(() => editListing ? {
+    listing_type: editListing.listing_type||"vehicle", title: editListing.title||"", description: editListing.description||"",
+    price: editListing.price||"", negotiable: editListing.negotiable??true, condition: editListing.condition||"used",
+    city: editListing.city||"", location: editListing.location||"", make: editListing.make||"", model: editListing.model||"",
+    year: editListing.year||"", mileage: editListing.mileage||"", color: editListing.color||"",
+    transmission: editListing.transmission||"manual", fuel_type: editListing.fuel_type||"petrol",
+    engine_size: editListing.engine_size||"", body_type: editListing.body_type||"", drive_type: editListing.drive_type||"2wd",
+    part_category: editListing.part_category||"", compatible_makes: editListing.compatible_makes||[],
+    part_number: editListing.part_number||"", quantity: editListing.quantity||"1",
+  } : {
     listing_type:"vehicle", title:"", description:"", price:"", negotiable:true,
     condition:"used", city:"", location:"", make:"", model:"", year:"", mileage:"",
     color:"", transmission:"manual", fuel_type:"petrol", engine_size:"", body_type:"",
@@ -69,12 +79,19 @@ export default function CreateListing() {
           compatible_makes:form.compatible_makes,
         })
       }
-      const { data, error } = await supabase.from("marketplace_listings").insert(payload).select().single()
-      if (error) throw error
-      if (!data?.id) throw new Error("Failed to create listing")
-      setListingId(data.id)
-      setStep("photos")
-      toast.success("Listing created! Now add photos.")
+      if (isEditing) {
+        const { error } = await supabase.from("marketplace_listings").update(payload).eq("id", editListing.id)
+        if (error) throw error
+        toast.success("Listing updated!")
+        if (onSaved) onSaved()
+      } else {
+        const { data, error } = await supabase.from("marketplace_listings").insert(payload).select().single()
+        if (error) throw error
+        if (!data?.id) throw new Error("Failed to create listing")
+        setListingId(data.id)
+        setStep("photos")
+        toast.success("Listing created! Now add photos.")
+      }
     } catch(err) { toast.error(err.message) }
     finally { setSaving(false) }
   }
@@ -111,8 +128,8 @@ export default function CreateListing() {
   return (
     <div style={{ maxWidth:600 }}>
       <button onClick={()=>navigate("/dashboard/marketplace")} style={{ background:"none", border:"none", color:"#e6821e", cursor:"pointer", fontSize:13, marginBottom:"1rem", fontFamily:"'DM Sans',sans-serif", padding:0 }}>← Back</button>
-      <div style={{ fontFamily:"Syne", fontSize:isMobile?18:22, fontWeight:800, color:"#000000", marginBottom:4 }}>List an item</div>
-      <div style={{ fontSize:12, color:"#777777", marginBottom:"1.5rem" }}>Reviewed within 24 hours before going live</div>
+      <div style={{ fontFamily:"Syne", fontSize:isMobile?18:22, fontWeight:800, color:"#000000", marginBottom:4 }}>{isEditing?"Edit listing":"List an item"}</div>
+      <div style={{ fontSize:12, color:"#777777", marginBottom:"1.5rem" }}>{isEditing?"Changes are re-reviewed before going live":"Reviewed within 24 hours before going live"}</div>
 
       <div style={{ background:"#fff5f5", border:"1px solid #e24b4a30", borderRadius:10, padding:"0.9rem", marginBottom:"1.5rem" }}>
         <div style={{ fontSize:12, color:"#e24b4a", fontWeight:600, marginBottom:4, display:"flex", alignItems:"center", gap:4 }}><WarningIcon size={12} color="#e24b4a"/> Important rules</div>
@@ -242,9 +259,9 @@ export default function CreateListing() {
 
         <button type="submit" disabled={saving||!agreed}
           style={{ width:"100%", background:saving||!agreed?"#555555":"#e6821e", border:"none", borderRadius:10, color:saving||!agreed?"#555":"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"14px", cursor:saving||!agreed?"not-allowed":"pointer" }}>
-          {saving?"Submitting...":"Submit listing for review →"}
+          {saving?(isEditing?"Saving...":"Submitting..."):(isEditing?"Save changes":"Submit listing for review →")}
         </button>
-        <div style={{ fontSize:11, color:"#888888", textAlign:"center", marginTop:8 }}>Listings reviewed within 24 hours</div>
+        {!isEditing&&<div style={{ fontSize:11, color:"#888888", textAlign:"center", marginTop:8 }}>Listings reviewed within 24 hours</div>}
       </form>
     </div>
   )
