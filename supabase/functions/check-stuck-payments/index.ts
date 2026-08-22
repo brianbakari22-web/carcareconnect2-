@@ -31,8 +31,14 @@ serve(async (req) => {
       .limit(20)
 
     const results = []
+    // Small deliberate gap between each sequential Safaricom call - up to 20 transactions
+    // could otherwise fire back-to-back in the same instant, which is exactly the kind of
+    // burst pattern that trips Safaricom's own rate limiting (a real "Spike arrest
+    // violation" was already hit once during earlier testing). Adds a few seconds at most
+    // to a job that only runs every 2 minutes, which is genuinely negligible.
     for (const txn of stuck || []) {
       try {
+        if (results.length > 0) await new Promise(r => setTimeout(r, 300))
         const res = await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/daraja-stk-query`, {
           method: "POST",
           headers: { "Content-Type": "application/json", "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}` },
