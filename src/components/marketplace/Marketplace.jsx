@@ -989,7 +989,7 @@ function ListingDetail({ listing, photos, activePhoto, setActivePhoto, sellerInf
                   <HeartIcon size={18} color="#e24b4a" active={userLikes?.has(listing.id)} />
                   <span style={{ fontSize:12, fontWeight:700, color:userLikes?.has(listing.id)?"#e24b4a":"#666" }}>{listing.likes_count||0}</span>
                 </button>
-                <button onClick={()=>document.getElementById("comment-input").focus()}
+                <button onClick={()=>{ setShowChat(true); setTimeout(()=>document.getElementById("comment-input")?.focus(), 100) }}
                   style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:6, background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:10, padding:"10px", cursor:"pointer" }}>
                   <ChatIcon size={18} color="#8b5cf6" />
                   <span style={{ fontSize:12, fontWeight:700, color:"#666" }}>{listing.comments_count||0}</span>
