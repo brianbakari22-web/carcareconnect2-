@@ -7,6 +7,8 @@ export default function InspectionRequest({ listing, onSuccess }) {
   const { user, profile } = useAuth()
   const [paying, setPaying] = useState(false)
   const [scheduled, setScheduled] = useState("")
+  const [location, setLocation] = useState(null)
+  const [detecting, setDetecting] = useState(false)
   const [existing, setExisting] = useState(null)
   const [inspectionFee, setInspectionFee] = useState(500)
 
@@ -20,6 +22,15 @@ export default function InspectionRequest({ listing, onSuccess }) {
     })
   }, [listing.id])
 
+  function detectLocation() {
+    if (!navigator.geolocation) return toast.error("Location not supported")
+    setDetecting(true)
+    navigator.geolocation.getCurrentPosition(pos => {
+      setLocation({ latitude: pos.coords.latitude, longitude: pos.coords.longitude })
+      setDetecting(false)
+      toast.success("Location detected!")
+    }, () => { setDetecting(false); toast.error("Could not detect location") })
+  }
   const processingFee = Math.round(inspectionFee * 0.025)
   const totalFee = inspectionFee + processingFee
 
@@ -33,6 +44,8 @@ export default function InspectionRequest({ listing, onSuccess }) {
         status: "pending_payment",
         fee: inspectionFee,
         scheduled_date: scheduled,
+        latitude: location.latitude,
+        longitude: location.longitude,
       }).select("id").single()
 
       if (error) throw error
@@ -100,6 +113,20 @@ export default function InspectionRequest({ listing, onSuccess }) {
         <input type="date" value={scheduled} onChange={e=>setScheduled(e.target.value)}
           min={new Date().toISOString().split("T")[0]}
           style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"9px 12px", color:"#000000", fontSize:12, outline:"none" }}/>
+      </div>
+      <div style={{ marginBottom:16 }}>
+        <label style={{ fontSize:11, color:"#666", display:"block", marginBottom:4 }}>Vehicle location</label>
+        {location ? (
+          <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7550", borderRadius:8, padding:"9px 12px", fontSize:12, color:"#1d9e75", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+            <span>✓ Location detected</span>
+            <span onClick={detectLocation} style={{ cursor:"pointer", fontSize:11, color:"#888" }}>Redetect</span>
+          </div>
+        ) : (
+          <button type="button" onClick={detectLocation} disabled={detecting}
+            style={{ width:"100%", background:"#ffffff", border:"1px solid #e5e5e5", borderRadius:8, padding:"9px 12px", color:"#666", fontSize:12, cursor:detecting?"not-allowed":"pointer" }}>
+            {detecting?"Detecting...":"📍 Share vehicle's current location"}
+          </button>
+        )}
       </div>
 
       <button onClick={requestInspection} disabled={paying||!scheduled}
