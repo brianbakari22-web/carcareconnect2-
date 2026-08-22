@@ -22,6 +22,9 @@ export default function AdminMarketplace() {
   const [adminNotes, setAdminNotes] = useState("")
   const [processing, setProcessing] = useState(false)
   const [search, setSearch] = useState("")
+  const [showAddMech, setShowAddMech] = useState(false)
+  const [mechForm, setMechForm] = useState({ first_name:"", last_name:"", phone:"", specialization:"" })
+  const [addingMech, setAddingMech] = useState(false)
 
   useEffect(() => {
     load()
@@ -67,6 +70,39 @@ export default function AdminMarketplace() {
     setInspections(data||[])
   }
 
+  async function addCCCMechanic(e) {
+    e.preventDefault()
+    if (!mechForm.first_name) return toast.error("First name required")
+    setAddingMech(true)
+    try {
+      // CCC's own in-house inspection mechanic - no provider_id at all, since these
+      // aren't tied to any provider's own garage/team.
+      const accountRes = await fetch("https://gcnefnqtjxtqbhynyoxe.supabase.co/functions/v1/create-mechanic-account", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbmVmbnF0anh0cWJoeW55b3hlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDg0MzIsImV4cCI6MjA5NTE4NDQzMn0.Ybyce3psBj2I-hdoF95H5UAklr6hsgQi-mciI9uMIgc" },
+        body: JSON.stringify({ first_name: mechForm.first_name, last_name: mechForm.last_name, phone: mechForm.phone })
+      })
+      const accountData = await accountRes.json()
+      if (!accountData.success) throw new Error(accountData.error || "Failed to create mechanic account")
+      const { error: mechError } = await supabase.from("mechanics").insert({
+        provider_id: null,
+        user_id: accountData.user_id,
+        first_name: mechForm.first_name,
+        last_name: mechForm.last_name,
+        phone: mechForm.phone,
+        specialization: mechForm.specialization || "Vehicle Inspection",
+        is_active: true,
+        is_available: true,
+      })
+      if (mechError) throw mechError
+      toast.success("CCC mechanic added!")
+      setMechForm({ first_name:"", last_name:"", phone:"", specialization:"" })
+      setShowAddMech(false)
+      const { data } = await supabase.from("mechanics").select("id,first_name,last_name,specialization").eq("is_active",true).is("provider_id", null)
+      setMechanics(data||[])
+    } catch(err) { toast.error(err.message) }
+    finally { setAddingMech(false) }
+  }
   async function loadDisputes() {
     const { data } = await supabase.from("marketplace_disputes")
       .select("*, marketplace_transactions(sale_price), profiles(first_name,last_name)")
@@ -608,6 +644,21 @@ export default function AdminMarketplace() {
 
       {tab==="inspections"&&(
         <div>
+          <div style={{ background:"#f8f8f8", border:"1px solid #eeeeee", borderRadius:10, padding:"0.75rem", marginBottom:16 }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom: showAddMech?10:0 }}>
+              <div style={{ fontSize:12, fontWeight:700, color:"#000" }}>CCC Inspection Mechanics ({mechanics.length})</div>
+              <button onClick={()=>setShowAddMech(!showAddMech)} style={{ background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontSize:11, padding:"5px 12px", cursor:"pointer" }}>{showAddMech?"Cancel":"+ Add mechanic"}</button>
+            </div>
+            {showAddMech&&(
+              <form onSubmit={addCCCMechanic} style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:8, marginTop:8 }}>
+                <input placeholder="First name" value={mechForm.first_name} onChange={e=>setMechForm(f=>({...f,first_name:e.target.value}))} required style={{ fontSize:12, border:"1px solid #ddd", borderRadius:6, padding:"7px 10px", outline:"none" }}/>
+                <input placeholder="Last name" value={mechForm.last_name} onChange={e=>setMechForm(f=>({...f,last_name:e.target.value}))} style={{ fontSize:12, border:"1px solid #ddd", borderRadius:6, padding:"7px 10px", outline:"none" }}/>
+                <input placeholder="Phone" value={mechForm.phone} onChange={e=>setMechForm(f=>({...f,phone:e.target.value}))} style={{ fontSize:12, border:"1px solid #ddd", borderRadius:6, padding:"7px 10px", outline:"none" }}/>
+                <input placeholder="Specialization (optional)" value={mechForm.specialization} onChange={e=>setMechForm(f=>({...f,specialization:e.target.value}))} style={{ fontSize:12, border:"1px solid #ddd", borderRadius:6, padding:"7px 10px", outline:"none" }}/>
+                <button type="submit" disabled={addingMech} style={{ gridColumn:"span 2", background:"#1d9e75", border:"none", borderRadius:7, color:"#fff", fontSize:12, fontWeight:700, padding:"8px", cursor:addingMech?"not-allowed":"pointer" }}>{addingMech?"Creating...":"Create mechanic account"}</button>
+              </form>
+            )}
+          </div>
           {inspections.length===0&&<div style={{ color:"#888", fontSize:13, textAlign:"center", padding:"2rem" }}>No inspection requests</div>}
           {inspections.map(insp=>(
             <div key={insp.id} style={{ background:"#f8f8f8", border:`1px solid ${insp.status==="pending"?"#e6821e20":"#eeeeee"}`, borderRadius:10, padding:"1rem", marginBottom:8 }}>
