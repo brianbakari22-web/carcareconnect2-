@@ -121,7 +121,7 @@ serve(async (req) => {
               } else {
                 const { data: insp } = await supabase.from("inspection_requests").select("id, seller_id").eq("id", booking_id).maybeSingle()
                 if (insp) {
-                  await supabase.from("inspection_requests").update({ status: "scheduled" }).eq("id", insp.id)
+                  await supabase.from("inspection_requests").update({ status: "pending" }).eq("id", insp.id)
                   await supabase.from("notifications").insert({ user_id: insp.seller_id, title: "Inspection payment received", message: "Your vehicle inspection has been scheduled. A CCC mechanic will contact you.", type: "success" })
                   const { data: inspAdmins } = await supabase.from("profiles").select("id").eq("role", "admin")
                   if (inspAdmins?.length) {
