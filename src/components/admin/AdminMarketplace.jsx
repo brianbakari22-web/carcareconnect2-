@@ -15,6 +15,7 @@ export default function AdminMarketplace() {
   const [transactions, setTransactions] = useState([])
   const [disputes, setDisputes] = useState([])
   const [mechanics, setMechanics] = useState([])
+  const [allCCCMechanics, setAllCCCMechanics] = useState([])
   const [inspections, setInspections] = useState([])
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState("pending")
@@ -39,7 +40,7 @@ export default function AdminMarketplace() {
   }, [])
 
   async function load() {
-    await Promise.all([loadListings(), loadOffers(), loadTransactions(), loadDisputes(), loadInspections()])
+    await Promise.all([loadListings(), loadOffers(), loadTransactions(), loadDisputes(), loadInspections(), loadAllCCCMechanics()])
     supabase.from("mechanics").select("id,first_name,last_name,specialization").eq("is_active",true).is("provider_id", null)
       .then(({ data }) => setMechanics(data||[]))
     setLoading(false)
@@ -129,6 +130,24 @@ export default function AdminMarketplace() {
       setPin("")
     } catch(err) { toast.error(err.message) }
     finally { setSettingPin(false) }
+  }
+  async function loadAllCCCMechanics() {
+    // Deliberately no is_active filter here, unlike the mechanics state used for the
+    // Assign dropdown - admin needs to see (and reactivate) deactivated mechanics too,
+    // not just currently-active ones.
+    const { data } = await supabase.from("mechanics").select("id,first_name,last_name,specialization,is_active,is_available").is("provider_id", null).order("first_name")
+    setAllCCCMechanics(data||[])
+  }
+  async function toggleMechActive(m) {
+    await supabase.from("mechanics").update({ is_active: !m.is_active }).eq("id", m.id)
+    toast.success(m.is_active?"Mechanic deactivated":"Mechanic activated")
+    loadAllCCCMechanics()
+    const { data } = await supabase.from("mechanics").select("id,first_name,last_name,specialization").eq("is_active",true).is("provider_id", null)
+    setMechanics(data||[])
+  }
+  async function toggleMechAvailable(m) {
+    await supabase.from("mechanics").update({ is_available: !m.is_available }).eq("id", m.id)
+    loadAllCCCMechanics()
   }
   async function loadDisputes() {
     const { data } = await supabase.from("marketplace_disputes")
@@ -685,15 +704,23 @@ export default function AdminMarketplace() {
                 <button type="submit" disabled={addingMech} style={{ gridColumn:"span 2", background:"#1d9e75", border:"none", borderRadius:7, color:"#fff", fontSize:12, fontWeight:700, padding:"8px", cursor:addingMech?"not-allowed":"pointer" }}>{addingMech?"Creating...":"Create mechanic account"}</button>
               </form>
             )}
-            {mechanics.length>0&&(
+            {allCCCMechanics.length>0&&(
               <div style={{ marginTop:10, display:"grid", gap:6 }}>
-                {mechanics.map(m=>(
-                  <div key={m.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:8, padding:"0.5rem 0.75rem" }}>
-                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                      <div style={{ fontSize:12, color:"#000" }}>{m.first_name} {m.last_name}{m.specialization?" - "+m.specialization:""}</div>
-                      <button onClick={()=>{ setPinPanel(pinPanel===m.id?null:m.id); setPin("") }} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:6, color:"#378add", fontSize:10, padding:"4px 10px", cursor:"pointer" }}>
-                        🔑 {m.mechanic_code?"Reset PIN":"Set PIN"}
-                      </button>
+                {allCCCMechanics.map(m=>(
+                  <div key={m.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:8, padding:"0.5rem 0.75rem", opacity:m.is_active?1:0.55 }}>
+                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:4 }}>
+                      <div style={{ fontSize:12, color:"#000" }}>{m.first_name} {m.last_name}{m.specialization?" - "+m.specialization:""}{!m.is_active&&<span style={{ marginLeft:6, fontSize:10, color:"#e24b4a" }}>(inactive)</span>}</div>
+                      <div style={{ display:"flex", gap:6 }}>
+                        <button onClick={()=>toggleMechAvailable(m)} style={{ background:m.is_available?"#f0fdf4":"#fff8f0", border:"1px solid "+(m.is_available?"#1d9e7540":"#e6821e40"), borderRadius:6, color:m.is_available?"#1d9e75":"#e6821e", fontSize:10, padding:"4px 10px", cursor:"pointer" }}>
+                          {m.is_available?"Available":"Unavailable"}
+                        </button>
+                        <button onClick={()=>toggleMechActive(m)} style={{ background:"none", border:"1px solid "+(m.is_active?"#e24b4a40":"#1d9e7540"), borderRadius:6, color:m.is_active?"#e24b4a":"#1d9e75", fontSize:10, padding:"4px 10px", cursor:"pointer" }}>
+                          {m.is_active?"Deactivate":"Activate"}
+                        </button>
+                        <button onClick={()=>{ setPinPanel(pinPanel===m.id?null:m.id); setPin("") }} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:6, color:"#378add", fontSize:10, padding:"4px 10px", cursor:"pointer" }}>
+                          🔑 {m.mechanic_code?"Reset PIN":"Set PIN"}
+                        </button>
+                      </div>
                     </div>
                     {pinPanel===m.id&&(
                       <div style={{ display:"flex", gap:6, marginTop:8 }}>
