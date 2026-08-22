@@ -131,7 +131,8 @@ export default function MyListings() {
 
   async function deleteListing(id) {
     if (!confirm("Delete this listing?")) return
-    await supabase.from("marketplace_listings").delete().eq("id",id).eq("seller_id",user.id)
+    const { error } = await supabase.from("marketplace_listings").delete().eq("id",id).eq("seller_id",user.id)
+    if (error) { toast.error("Failed to delete listing: "+error.message); return }
     toast.success("Listing deleted")
     loadListings()
   }
