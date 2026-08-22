@@ -37,14 +37,16 @@ export default function InspectionRequest({ listing, onSuccess }) {
 
       if (error) throw error
 
-      const { data: { session } } = await supabase.auth.getSession()
+      const { data: sens } = await supabase.from("profile_sensitive").select("mpesa_number, phone").eq("id", user.id).maybeSingle()
+      const payPhone = sens?.mpesa_number || sens?.phone || profile?.mpesa_phone
+      if (!payPhone) throw new Error("Please add your M-Pesa number in Profile settings")
       const { data: res, error: resErr } = await supabase.functions.invoke("daraja-stk-push", {
         body: {
           amount: totalFee,
-          bookingId: insp.id,
-          customerEmail: user.email,
-          customerPhone: profile?.phone || "",
-          customerName: (profile?.first_name||"") + " " + (profile?.last_name||"")
+          booking_id: insp.id,
+          phone: payPhone,
+          account_ref: insp.id.substring(0,12),
+          description: "Listing inspection fee"
         }
       })
       if (resErr) throw resErr
