@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { VehicleIcon, ServicesIcon, LocationIcon, EyeIcon, VideoIcon, MarketplaceIcon, HeartIcon, ChatIcon, ShareIcon } from "../../lib/cccIcons"
+import { VehicleIcon, ServicesIcon, LocationIcon, EyeIcon, VideoIcon, MarketplaceIcon, HeartIcon, ChatIcon, ShareIcon, WalletIcon } from "../../lib/cccIcons"
 import { pushNotify } from "../../lib/pushNotify"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
