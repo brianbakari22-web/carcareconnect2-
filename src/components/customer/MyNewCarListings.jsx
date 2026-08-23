@@ -221,6 +221,14 @@ export default function MyNewCarListings() {
       else toast.error("Payment failed. Try again.")
     } catch(e) { toast.error(e.message) }
   }
+  async function updateEnquiryStatus(id, status) {
+    try {
+      const { error } = await supabase.from("car_enquiries").update({ status }).eq("id", id).eq("dealer_id", user.id)
+      if (error) throw error
+      toast.success("Status updated to " + status)
+      load()
+    } catch (e) { toast.error(e.message) }
+  }
   async function deleteListing(id) {
     if (!confirm("Delete this listing?")) return
     await supabase.from("new_car_listings").delete().eq("id",id).eq("dealer_id",user.id)
