@@ -6,7 +6,6 @@ import { jsPDF } from "jspdf"
 
 export default function AdminAIMonitor() {
   const { user, profile } = useAuth()
-  if (!user || profile?.role !== "admin") return null
   const [report, setReport] = useState(null)
   const [codeScan, setCodeScan] = useState(null)
   const [scanning, setScanning] = useState(false)
@@ -20,7 +19,8 @@ export default function AdminAIMonitor() {
   const [chatMessages, setChatMessages] = useState([])
   const [chatLoading, setChatLoading] = useState(false)
 
-  useEffect(() => { scanPlatform() }, [])
+  useEffect(() => { if (user && profile?.role === "admin") scanPlatform() }, [user, profile])
+  if (!user || profile?.role !== "admin") return null
 
   async function loadErrorLogs() {
     setLoadingErrors(true)
