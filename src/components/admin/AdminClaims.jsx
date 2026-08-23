@@ -27,6 +27,10 @@ export default function AdminClaims() {
   const [claimMessages, setClaimMessages] = useState([])
   useEffect(() => {
     if(!user) return
+    // Genuinely load data on mount - the realtime subscription below only refreshes
+    // on live database changes, it was never actually fetching the initial page load,
+    // which left this page stuck on "Loading..." forever until a change happened to fire.
+    load()
     // Remove stale channels first
     supabase.getChannels().forEach(ch => {
       if(ch.topic === "realtime:admin-claims-live") supabase.removeChannel(ch)
@@ -48,6 +52,7 @@ export default function AdminClaims() {
 
 
   async function load() {
+    try {
     const [{ data: cls }, { data: pens }] = await Promise.all([
       supabase.from("service_claims")
         .select("*, bookings(service_name,booking_number,booking_date,total_amount,provider_id), orders(order_number,subtotal,created_at,provider_id), customer:profiles!service_claims_customer_id_fkey(first_name,last_name), provider:profiles!service_claims_provider_id_fkey(first_name,last_name,business_name), driver:profiles!service_claims_driver_id_fkey(first_name,last_name), claimant:profiles!service_claims_claimant_id_fkey(first_name,last_name,role), against:profiles!service_claims_against_id_fkey(first_name,last_name,role)")
@@ -56,6 +61,7 @@ export default function AdminClaims() {
     ])
     setClaims(cls||[])
     setPenalties(pens||[])
+    } catch(e) { console.error("AdminClaims load error:", e) }
     setLoading(false)
   }
 
