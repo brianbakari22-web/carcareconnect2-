@@ -5,6 +5,7 @@ import { useLanguage } from "../../contexts/LanguageContext"
 import useIsMobile from "../../lib/useIsMobile"
 import ChatWindow from "../shared/ChatWindow"
 import { useSearchParams } from "react-router-dom"
+import toast from "react-hot-toast"
 
 export default function CustomerChat() {
   const { user } = useAuth()
@@ -31,8 +32,8 @@ export default function CustomerChat() {
     supabase.from("chat_messages").delete().eq(col, val).then(({error}) => { if(error) console.error("Delete failed:", error.message) })
     const hidePayload = { user_id: user.id }
     hidePayload[col] = val
-    } catch(e) { toast.error("Failed: "+e.message) }
     supabase.from("hidden_conversations").upsert(hidePayload, { onConflict: "user_id,"+col }).then(({error}) => { if(error) console.error("Hide failed:", error.message) })
+    } catch(e) { toast.error("Failed: "+e.message) }
   }
 
   async function markAllRead(c) {
