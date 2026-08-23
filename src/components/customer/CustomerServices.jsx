@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
-import { MarketplaceIcon, HomeIcon, GOServiceIcon, LocationIcon, ServicesIcon } from "../../lib/cccIcons"
+import { MarketplaceIcon, HomeIcon, GOServiceIcon, LocationIcon, ServicesIcon, DiscoverIcon } from "../../lib/cccIcons"
 import { pushNotify } from "../../lib/pushNotify"
 import { sanitizeAmount } from "../../lib/sanitize"
 import { useSearchParams } from "react-router-dom"
@@ -833,6 +833,7 @@ export default function CustomerServices() {
               customerName={profile?.first_name+" "+profile?.last_name}
               onSuccess={async ()=>{
               try {
+                let bk = null
                 if (pendingBooking?.id) {
                   // Update booking payment status
                   await supabase.from("bookings").update({
@@ -841,9 +842,10 @@ export default function CustomerServices() {
                   }).eq("id", pendingBooking.id)
 
                   // Fetch booking to get provider_id
-                  const { data: bk } = await supabase.from("bookings")
+                  const { data: bkData } = await supabase.from("bookings")
                     .select("provider_id, service_name, booking_number")
                     .eq("id", pendingBooking.id).single()
+                  bk = bkData
 
                   // Notify provider
                   if (bk?.provider_id) {
