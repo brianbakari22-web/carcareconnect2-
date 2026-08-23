@@ -105,6 +105,10 @@ export default function AdminLiveMap() {
   function initMap() {
     if (!mapRef.current) return
     function buildMap() {
+      // Genuinely, always re-check here, not just in initMap before this - this can
+      // run much later via a script "load" listener, by which point the admin may have
+      // already navigated away and mapRef.current is genuinely null again.
+      if (!mapRef.current) return
       if (!window.google?.maps?.Map) return
       const online = drivers.filter(d=>d.current_lat&&d.current_lng)
       if (!online.length) return
