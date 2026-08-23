@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { PaymentsIcon, ShieldIcon, MarketplaceIcon, WalletIcon } from "../../lib/cccIcons"
+import { PaymentsIcon, ShieldIcon, MarketplaceIcon, WalletIcon, VehicleIcon, ServicesIcon, RefreshIcon } from "../../lib/cccIcons"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
