@@ -13,6 +13,10 @@ export default function AdminRevenue() {
   const [heatmap, setHeatmap] = useState({ byDay:{}, byService:{}, byHour:{} })
   const [gaps, setGaps] = useState([])
   const [loading, setLoading] = useState(true)
+  const [totalWithdrawn, setTotalWithdrawn] = useState(0)
+  const [showWithdrawForm, setShowWithdrawForm] = useState(false)
+  const [withdrawAmount, setWithdrawAmount] = useState("")
+  const [withdrawNotes, setWithdrawNotes] = useState("")
   if (!user || profile?.role !== "admin") return null
 
   useEffect(() => {
@@ -24,12 +28,14 @@ export default function AdminRevenue() {
   }, [])
 
   async function load() {
-    const [{ data }, { data: allBookings }, { data: allDemandBookings }] = await Promise.all([
+    const [{ data }, { data: allBookings }, { data: allDemandBookings }, { data: withdrawals }] = await Promise.all([
+      supabase.from("admin_withdrawals").select("amount"),
       supabase.from("bookings").select("*").eq("status","completed").order("created_at",{ascending:false}),
       supabase.from("bookings").select("customer_id, total_amount, booking_date, status").eq("status","completed"),
       supabase.from("bookings").select("booking_date, booking_time, service_name, service_category")
     ])
     setBookings(data||[])
+    setTotalWithdrawn((withdrawals||[]).reduce((s,w)=>s+Number(w.amount||0),0))
     const clvMap = {}
     ;(allBookings||[]).forEach(b => {
       if (!clvMap[b.customer_id]) clvMap[b.customer_id] = { total:0, count:0, lastDate:null }
@@ -151,8 +157,28 @@ export default function AdminRevenue() {
         <>
           <div style={{background:"#f0fdf4",border:"1px solid #1d9e7540",borderRadius:12,padding:"1.25rem",marginBottom:"1.5rem"}}>
             <div style={{fontFamily:"Syne",fontSize:14,fontWeight:700,marginBottom:4,color:"#000000"}}>💰 Safe to withdraw right now</div>
-            <div style={{fontFamily:"Syne",fontSize:28,fontWeight:800,color:"#1d9e75"}}>KES {commission.toLocaleString()}</div>
-            <div style={{fontSize:13,color:"#555"}}>Your platform commission - money never sent to a provider or driver, safe to withdraw from your Paybill anytime.</div>
+            <div style={{fontFamily:"Syne",fontSize:28,fontWeight:800,color:"#1d9e75"}}>KES {Math.max(0, commission-totalWithdrawn).toLocaleString()}</div>
+            <div style={{fontSize:13,color:"#555",marginBottom:10}}>Platform commission (KES {commission.toLocaleString()}) minus what you've already logged as withdrawn (KES {totalWithdrawn.toLocaleString()}).</div>
+            {!showWithdrawForm?(
+              <button onClick={()=>setShowWithdrawForm(true)} style={{background:"#1d9e75",border:"none",borderRadius:8,color:"#fff",fontFamily:"Syne,sans-serif",fontSize:12,fontWeight:700,padding:"8px 16px",cursor:"pointer"}}>Log a withdrawal</button>
+            ):(
+              <div style={{marginTop:8}}>
+                <input type="number" value={withdrawAmount} onChange={e=>setWithdrawAmount(e.target.value)} placeholder="Amount withdrawn (KES)"
+                  style={{width:"100%",background:"#fff",border:"1px solid #ddd",borderRadius:7,padding:"8px 10px",fontSize:13,outline:"none",marginBottom:8,boxSizing:"border-box"}}/>
+                <input value={withdrawNotes} onChange={e=>setWithdrawNotes(e.target.value)} placeholder="Notes (optional)"
+                  style={{width:"100%",background:"#fff",border:"1px solid #ddd",borderRadius:7,padding:"8px 10px",fontSize:13,outline:"none",marginBottom:8,boxSizing:"border-box"}}/>
+                <div style={{display:"flex",gap:8}}>
+                  <button onClick={async()=>{
+                    const amt = Number(withdrawAmount)
+                    if(!amt||amt<=0){ return }
+                    await supabase.from("admin_withdrawals").insert({ amount:amt, notes:withdrawNotes, withdrawn_by:user.id })
+                    setWithdrawAmount(""); setWithdrawNotes(""); setShowWithdrawForm(false)
+                    load()
+                  }} style={{background:"#1d9e75",border:"none",borderRadius:7,color:"#fff",fontFamily:"Syne,sans-serif",fontSize:12,fontWeight:700,padding:"8px 16px",cursor:"pointer"}}>Save</button>
+                  <button onClick={()=>{setShowWithdrawForm(false);setWithdrawAmount("");setWithdrawNotes("")}} style={{background:"none",border:"1px solid #ddd",borderRadius:7,color:"#888",fontSize:12,padding:"8px 16px",cursor:"pointer"}}>Cancel</button>
+                </div>
+              </div>
+            )}
           </div>
           <div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)",gap:10,marginBottom:"1.5rem"}}>
             {[
