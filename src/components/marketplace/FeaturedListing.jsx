@@ -10,7 +10,7 @@ const DURATIONS = [
   { key:"month", label:"1 Month", days:30 },
 ]
 
-export default function FeaturedListing({ listingId, onSuccess }) {
+export default function FeaturedListing({ listingId, onSuccess, onClose }) {
   const { user, profile } = useAuth()
   const [duration, setDuration] = useState("week")
   const [tier, setTier] = useState("standard")
