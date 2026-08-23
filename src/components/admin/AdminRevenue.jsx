@@ -99,7 +99,7 @@ export default function AdminRevenue() {
   }
 
   const total = bookings.reduce((s,b)=>s+Number(b.total_amount),0)
-  const heldEscrow = bookings.filter(b=>b.payment_held&&!b.payment_released).reduce((s,b)=>s+Number(b.provider_earnings||0),0)
+  const heldEscrow = bookings.filter(b=>b.payment_held&&!b.payment_released).reduce((s,b)=>s+Number(b.provider_earnings||0)+Number(b.driver_earnings||0),0)
   const commission = bookings.reduce((s,b)=>s+Number(b.platform_commission||0),0)
   const providerPaid = bookings.reduce((s,b)=>s+Number(b.provider_earnings||0),0)
   const driverPaid = bookings.reduce((s,b)=>s+Number(b.driver_earnings||0),0)
@@ -155,6 +155,7 @@ export default function AdminRevenue() {
               {label:"Platform commission",value:`KES ${commission.toLocaleString()}`,color:"#e6821e"},
               {label:"Paid to providers",value:`KES ${providerPaid.toLocaleString()}`},
               {label:"Paid to drivers",value:`KES ${driverPaid.toLocaleString()}`},
+              {label:"Held / not yet withdrawable",value:`KES ${heldEscrow.toLocaleString()}`,color:"#e24b4a"},
             ].map(s=>(
               <div key={s.label} style={{background:"#f8f8f8",borderRadius:10,padding:"1rem",border:"1px solid #eeeeee"}}>
                 <div style={{fontSize:11,color:"#888",textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:6}}>{s.label}</div>
