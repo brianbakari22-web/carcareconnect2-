@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { SplashScreen } from "@capacitor/splash-screen"
+import { Capacitor } from "@capacitor/core"
+import { App as CapApp } from "@capacitor/app"
 import PublicServicePage from "./components/public/PublicServicePage"
 import PublicItemPage from "./components/public/PublicItemPage"
 import { initPushNotifications } from "./lib/pushNotifications"
