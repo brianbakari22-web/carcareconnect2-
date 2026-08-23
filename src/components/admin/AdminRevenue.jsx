@@ -29,10 +29,10 @@ export default function AdminRevenue() {
 
   async function load() {
     const [{ data }, { data: allBookings }, { data: allDemandBookings }, { data: withdrawals }] = await Promise.all([
-      supabase.from("admin_withdrawals").select("amount"),
       supabase.from("bookings").select("*").eq("status","completed").order("created_at",{ascending:false}),
       supabase.from("bookings").select("customer_id, total_amount, booking_date, status").eq("status","completed"),
-      supabase.from("bookings").select("booking_date, booking_time, service_name, service_category")
+      supabase.from("bookings").select("booking_date, booking_time, service_name, service_category"),
+      supabase.from("admin_withdrawals").select("amount")
     ])
     setBookings(data||[])
     setTotalWithdrawn((withdrawals||[]).reduce((s,w)=>s+Number(w.amount||0),0))
