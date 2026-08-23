@@ -149,6 +149,11 @@ export default function AdminRevenue() {
 
       {tab==="revenue"&&(
         <>
+          <div style={{background:"#f0fdf4",border:"1px solid #1d9e7540",borderRadius:12,padding:"1.25rem",marginBottom:"1.5rem"}}>
+            <div style={{fontFamily:"Syne",fontSize:14,fontWeight:700,marginBottom:4,color:"#000000"}}>💰 Safe to withdraw right now</div>
+            <div style={{fontFamily:"Syne",fontSize:28,fontWeight:800,color:"#1d9e75"}}>KES {commission.toLocaleString()}</div>
+            <div style={{fontSize:13,color:"#555"}}>Your platform commission - money never sent to a provider or driver, safe to withdraw from your Paybill anytime.</div>
+          </div>
           <div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)",gap:10,marginBottom:"1.5rem"}}>
             {[
               {label:"Total revenue",value:`KES ${total.toLocaleString()}`},
