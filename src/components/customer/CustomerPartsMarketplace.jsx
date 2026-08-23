@@ -241,6 +241,7 @@ export default function CustomerPartsMarketplace() {
       const { data: rateRow } = await supabase.from("commission_rates").select("platform_rate,platform_fee_rate,platform_fee_cap").eq("provider_type","parts_dealer").maybeSingle()
       const commissionRate = rateRow ? Number(rateRow.platform_rate) : 0.05
       const platformFeeRate = rateRow ? Number(rateRow.platform_fee_rate) : 0.02
+      const platformFeeCap = rateRow ? Number(rateRow.platform_fee_cap) : 200
 
       const byProvider = {}
       cart.forEach(item => {
