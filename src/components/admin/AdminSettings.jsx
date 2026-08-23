@@ -73,9 +73,21 @@ export default function AdminSettings() {
     finally { setSaving(false) }
   }
 
+  async function toggleBoolean(s) {
+    setSaving(true)
+    try {
+      const newValue = s.value==="true" ? "false" : "true"
+      const { error } = await supabase.from("app_settings").update({ value:newValue, updated_at:new Date().toISOString() }).eq("id", s.id)
+      if (error) throw error
+      toast.success(s.label+": "+(newValue==="true"?"enabled":"disabled"))
+      load()
+    } catch(e) { toast.error(e.message) }
+    finally { setSaving(false) }
+  }
   function formatValue(s) {
     if (s.type==="currency") return "KES "+Number(s.value).toLocaleString()
     if (s.type==="percentage") return s.value+"%"
+    if (s.type==="boolean") return s.value==="true"?"Enabled":"Disabled"
     return s.value
   }
 
@@ -141,7 +153,12 @@ export default function AdminSettings() {
                       </div>
                       <div style={{ display:"flex", alignItems:"center", gap:8, flexShrink:0, width:isMobile?"100%":"auto", justifyContent:isMobile?"space-between":"flex-start" }}>
                         <div style={{ fontFamily:"Syne", fontSize:13, fontWeight:700, color:catConfig.color, wordBreak:"break-word", maxWidth:isMobile?"60%":"none" }}>{formatValue(s)}</div>
-                        {editing===s.id?(
+                        {s.type==="boolean" ? (
+                          <button onClick={()=>toggleBoolean(s)} disabled={saving}
+                            style={{ background:s.value==="true"?"#1d9e75":"#e5e5e5", border:"none", borderRadius:20, width:44, height:24, position:"relative", cursor:saving?"not-allowed":"pointer", transition:"background 0.2s", flexShrink:0 }}>
+                            <div style={{ position:"absolute", top:2, left:s.value==="true"?22:2, width:20, height:20, borderRadius:"50%", background:"#fff", transition:"left 0.2s", boxShadow:"0 1px 3px rgba(0,0,0,0.3)" }}/>
+                          </button>
+                        ) : editing===s.id?(
                           <button onClick={()=>setEditing(null)} style={{ background:"none", border:"1px solid #ddd", borderRadius:6, color:"#888", fontSize:11, padding:"4px 8px", cursor:"pointer" }}>Cancel</button>
                         ):(
                           <button onClick={()=>startEdit(s)} style={{ background:"#f0f0f0", border:"none", borderRadius:6, color:"#555", fontSize:11, padding:"4px 8px", cursor:"pointer" }}>Edit</button>
