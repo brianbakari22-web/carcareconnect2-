@@ -30,6 +30,7 @@ export default function CustomerTracking() {
   const driverMarkerRef = useRef(null)
   const mechanicMarkerRef = useRef(null)
   const trackerMarkerRef = useRef(null)
+  const providerMarkerRef = useRef(null)
   const [trackerLocation, setTrackerLocation] = useState(null)
   const [divergenceAlert, setDivergenceAlert] = useState(false)
 
