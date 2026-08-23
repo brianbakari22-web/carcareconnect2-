@@ -58,6 +58,7 @@ export default function CustomerGoService() {
   const [sharingLive, setSharingLive] = useState(false)
   const [liveInterval, setLiveInterval] = useState(null)
   const [submitting, setSubmitting] = useState(false)
+  const [reportingNoShow, setReportingNoShow] = useState(false)
   const [booking, setBooking] = useState(null)
   const [goRequest, setGoRequest] = useState(null)
   const [attemptNumber, setAttemptNumber] = useState(1)
