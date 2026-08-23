@@ -1,4 +1,5 @@
 import { ShieldIcon } from "../../lib/cccIcons"
+import { useAuth } from "../../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
 import useIsMobile from "../../lib/useIsMobile"
 
