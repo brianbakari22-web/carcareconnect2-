@@ -9,6 +9,19 @@ serve(async (req) => {
   try {
     const { phone, amount, booking_id, provider_id, narrative, payment_method, account_reference } = await req.json()
     if (!phone || !amount || !booking_id) throw new Error("phone, amount and booking_id required")
+
+    // Genuinely optional static-IP proxy, toggled via app_settings.daraja_b2c_use_proxy -
+    // an admin can flip this off instantly if the proxy server ever has issues, reverting
+    // to calling Safaricom directly with zero code change or redeploy needed.
+    const earlySupabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
+      auth: { autoRefreshToken: false, persistSession: false }
+    })
+    const { data: proxySetting } = await earlySupabase.from("app_settings").select("value").eq("key", "daraja_b2c_use_proxy").maybeSingle()
+    const useProxy = proxySetting?.value === "true"
+    const proxyUrl = Deno.env.get("DARAJA_PROXY_URL")
+    const httpClient = (useProxy && proxyUrl) ? Deno.createHttpClient({ proxy: { url: proxyUrl } }) : undefined
+    console.log("Daraja B2C proxy routing:", useProxy ? "ENABLED" : "disabled (calling Safaricom directly)")
+
     const CONSUMER_KEY = Deno.env.get("DARAJA_CONSUMER_KEY")!
     const CONSUMER_SECRET = Deno.env.get("DARAJA_CONSUMER_SECRET")!
     const SHORTCODE = Deno.env.get("DARAJA_SHORTCODE") || "4326921"
@@ -25,7 +38,8 @@ serve(async (req) => {
     const credentials = btoa(`${CONSUMER_KEY}:${CONSUMER_SECRET}`)
     const authResp = await fetch(`${BASE_URL}/oauth/v1/generate?grant_type=client_credentials`, {
       method: "GET",
-      headers: { "Authorization": `Basic ${credentials}` }
+      headers: { "Authorization": `Basic ${credentials}` },
+      client: httpClient
     })
     const authData = await authResp.json()
     if (!authData.access_token) throw new Error("Auth failed: " + JSON.stringify(authData))
@@ -94,7 +108,8 @@ serve(async (req) => {
         "Authorization": `Bearer ${authData.access_token}`,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(payBody)
+      body: JSON.stringify(payBody),
+      client: httpClient
     })
     const payData = await payResp.json()
     console.log("Payout response:", JSON.stringify(payData))
