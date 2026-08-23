@@ -215,7 +215,7 @@ export default function AdminPenalties() {
                   {selectedUser.first_name[0]}{selectedUser.last_name[0]}
                 </div>
                 <div>
-                  <div style={{ fontSize:13, fontWeight:600, color:"#ffffff" }}>{selectedUser.first_name} {selectedUser.last_name}</div>
+                  <div style={{ fontSize:13, fontWeight:600, color:"#000000" }}>{selectedUser.first_name} {selectedUser.last_name}</div>
                   <div style={{ fontSize:11, color:"#888" }}>{selectedUser.role} · {selectedUser.violation_count||0} past violations</div>
                 </div>
               </div>
