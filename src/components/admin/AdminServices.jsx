@@ -6,7 +6,6 @@ import useIsMobile from "../../lib/useIsMobile"
 
 export default function AdminServices() {
   const { user, profile } = useAuth()
-  if(!user || profile?.role !== "admin") return null
   const [services, setServices] = useState([])
   const [loading, setLoading] = useState(true)
   const isMobile = useIsMobile()
@@ -15,6 +14,7 @@ export default function AdminServices() {
   const [providerFilter, setProviderFilter] = useState("all")
   const [tab, setTab] = useState("services")
   const [bundles, setBundles] = useState([])
+  if(!user || profile?.role !== "admin") return null
 
   useEffect(() => {
     load()

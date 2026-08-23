@@ -6,10 +6,10 @@ import toast from "react-hot-toast"
 
 export default function AdminFailedJobs() {
   const { user, profile } = useAuth()
-  if (!user || profile?.role !== "admin") return null
   const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState("failed")
+  if (!user || profile?.role !== "admin") return null
 
   useEffect(() => { load() }, [filter])
 

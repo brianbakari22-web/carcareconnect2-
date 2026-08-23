@@ -9,7 +9,6 @@ const RC = { customer:"#e6821e", provider:"#378add", driver:"#1d9e75", admin:"#8
 
 export default function AdminUserDetail({ userId, onBack }) {
   const { user, profile: adminProfile } = useAuth()
-  if (!user || adminProfile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [profile, setProfile] = useState(null)
   const [sensitive, setSensitive] = useState(null)
@@ -21,6 +20,7 @@ export default function AdminUserDetail({ userId, onBack }) {
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState("overview")
   const [exporting, setExporting] = useState(false)
+  if (!user || adminProfile?.role !== "admin") return null
 
   useEffect(() => { if (userId) load() }, [userId])
 

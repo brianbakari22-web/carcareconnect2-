@@ -53,7 +53,6 @@ function NetworkCanvas() {
 
 export default function AdminDashboard() {
   const { user, profile } = useAuth()
-  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [stats, setStats] = useState({ users:0, providers:0, drivers:0, customers:0, bookings:0, revenue:0, pending:0, completed:0 })
   const [onlineDrivers, setOnlineDrivers] = useState(0)
@@ -66,6 +65,7 @@ export default function AdminDashboard() {
   const [userGrowth, setUserGrowth] = useState([])
   const [loading, setLoading] = useState(true)
   const [time, setTime] = useState(new Date())
+  if (!user || profile?.role !== "admin") return null
 
   useEffect(() => {
     load()

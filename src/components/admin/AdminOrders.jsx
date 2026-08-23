@@ -9,7 +9,6 @@ const SC = { pending:"#e6821e", confirmed:"#378add", processing:"#8b5cf6", ready
 
 export default function AdminOrders() {
   const { user, profile } = useAuth()
-  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
@@ -20,6 +19,7 @@ export default function AdminOrders() {
   const [zoneForm, setZoneForm] = useState({ name:"", base_fee:"", per_km_fee:"" })
   const [editingZoneId, setEditingZoneId] = useState(null)
   const [editZoneForm, setEditZoneForm] = useState({ base_fee:"", per_km_fee:"" })
+  if (!user || profile?.role !== "admin") return null
 
   useEffect(() => { load(); loadZones() }, [])
 

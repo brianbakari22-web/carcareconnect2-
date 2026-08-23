@@ -5,7 +5,6 @@ import { supabase } from "../../lib/supabase"
 
 export default function AdminLiveMap() {
   const { user, profile } = useAuth()
-  if (!user || profile?.role !== "admin") return null
   const [drivers, setDrivers] = useState([])
   const [goRequests, setGoRequests] = useState([])
   const [sosAlerts, setSosAlerts] = useState([])
@@ -18,6 +17,7 @@ export default function AdminLiveMap() {
   const mapInstanceRef = useRef(null)
   const markersRef = useRef({})
   const sosMarkersRef = useRef({})
+  if (!user || profile?.role !== "admin") return null
 
   useEffect(() => {
     load()

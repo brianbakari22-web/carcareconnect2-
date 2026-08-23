@@ -6,7 +6,6 @@ import { supabase } from "../../lib/supabase"
 
 export default function AdminRevenue() {
   const { user, profile } = useAuth()
-  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [bookings, setBookings] = useState([])
   const [clvData, setClvData] = useState([])
@@ -14,6 +13,7 @@ export default function AdminRevenue() {
   const [heatmap, setHeatmap] = useState({ byDay:{}, byService:{}, byHour:{} })
   const [gaps, setGaps] = useState([])
   const [loading, setLoading] = useState(true)
+  if (!user || profile?.role !== "admin") return null
 
   useEffect(() => {
     load()

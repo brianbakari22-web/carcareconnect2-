@@ -28,13 +28,13 @@ const PROVIDER_TYPES = [
 
 export default function AdminCommissions() {
   const { user, profile } = useAuth()
-  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [rates, setRates] = useState([])
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState(null)
   const [saving, setSaving] = useState(false)
   const [form, setForm] = useState({ platform_rate:"", provider_rate:"", description:"" })
+  if (!user || profile?.role !== "admin") return null
 
   useEffect(() => { load() }, [])
 

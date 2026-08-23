@@ -8,7 +8,6 @@ import { validateFile } from "../../lib/uploadValidation"
 
 export default function AdminDrivers() {
   const { user, profile } = useAuth()
-  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [drivers, setDrivers] = useState([])
   const [driverDocs, setDriverDocs] = useState({})
@@ -27,6 +26,7 @@ export default function AdminDrivers() {
   const [rejectReason, setRejectReason] = useState("")
   const [viewingDocs, setViewingDocs] = useState(null)
   const [probations, setProbations] = useState([])
+  if (!user || profile?.role !== "admin") return null
     
   useEffect(() => {
     load()

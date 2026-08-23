@@ -8,7 +8,6 @@ import { sendPayoutProcessed } from "../../lib/email"
 
 export default function AdminPayouts() {
   const { user, profile } = useAuth()
-  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [payouts, setPayouts] = useState([])
   const [filter, setFilter] = useState("pending")
@@ -20,6 +19,7 @@ export default function AdminPayouts() {
   const [failedPayouts, setFailedPayouts] = useState([])
   const [totalCommission, setTotalCommission] = useState(0)
   const [withdrawing, setWithdrawing] = useState(false)
+  if (!user || profile?.role !== "admin") return null
 
   useEffect(() => {
     loadWalletData()

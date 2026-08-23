@@ -7,13 +7,13 @@ import toast from "react-hot-toast"
 
 export default function AdminLoyalty() {
   const { user, profile } = useAuth()
-  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [loyalty, setLoyalty] = useState([])
   const [leaderboard, setLeaderboard] = useState([])
   const [loading, setLoading] = useState(true)
   const [adjusting, setAdjusting] = useState(null)
   const [adjustForm, setAdjustForm] = useState({ points:"", reason:"" })
+  if (!user || profile?.role !== "admin") return null
 
   useEffect(() => { load() }, [])
 

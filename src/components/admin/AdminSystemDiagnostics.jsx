@@ -18,13 +18,13 @@ const ROUTES = [
 
 export default function AdminSystemDiagnostics() {
   const { user, profile } = useAuth()
-  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [running, setRunning] = useState(false)
   const [results, setResults] = useState(null)
   const [errorLogs, setErrorLogs] = useState([])
   const [loadingLogs, setLoadingLogs] = useState(false)
   const [tab, setTab] = useState("diagnostics")
+  if (!user || profile?.role !== "admin") return null
 
   useEffect(() => { loadErrorLogs() }, [])
 

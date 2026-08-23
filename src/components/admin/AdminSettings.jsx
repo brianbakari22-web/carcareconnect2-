@@ -15,7 +15,6 @@ const SETTING_CATEGORIES = {
 
 export default function AdminSettings() {
   const { user, profile } = useAuth()
-  if(!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [settings, setSettings] = useState([])
   const [loading, setLoading] = useState(true)
@@ -26,6 +25,7 @@ export default function AdminSettings() {
   const [uploadingLogo, setUploadingLogo] = useState(false)
   const [expandedCat, setExpandedCat] = useState("Commissions & Fees")
   const logoInputRef = useRef(null)
+  if(!user || profile?.role !== "admin") return null
 
   useEffect(() => { load(); loadLogo() }, [])
 

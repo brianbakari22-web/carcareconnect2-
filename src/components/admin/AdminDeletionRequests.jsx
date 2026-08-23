@@ -6,10 +6,10 @@ import toast from "react-hot-toast"
 
 export default function AdminDeletionRequests() {
   const { user, profile } = useAuth()
-  if (!user || profile?.role !== "admin") return null
   const [requests, setRequests] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState("pending")
+  if (!user || profile?.role !== "admin") return null
 
   useEffect(() => { load() }, [filter])
 

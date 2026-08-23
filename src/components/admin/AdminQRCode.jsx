@@ -4,8 +4,8 @@ import useIsMobile from "../../lib/useIsMobile"
 
 export default function AdminQRCode() {
   const { user, profile } = useAuth()
-  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
+  if (!user || profile?.role !== "admin") return null
   const platformUrl = "https://carcareconnect.care"
 
   return (

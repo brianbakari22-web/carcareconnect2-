@@ -12,7 +12,6 @@ const PC = { paid:"#1d9e75", pending:"#e6821e", partial:"#378add", refunded:"#8b
 
 export default function AdminBookings() {
   const { user, profile } = useAuth()
-  if(!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [bookings, setBookings] = useState([])
   const [filter, setFilter] = useState("all")
@@ -26,6 +25,7 @@ export default function AdminBookings() {
   const [refundReason, setRefundReason] = useState("")
   const [refundPhone, setRefundPhone] = useState("")
   const [processingRefund, setProcessingRefund] = useState(false)
+  if(!user || profile?.role !== "admin") return null
 
   useEffect(() => {
     load()

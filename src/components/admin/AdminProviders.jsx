@@ -7,7 +7,6 @@ import toast from "react-hot-toast"
 
 export default function AdminProviders() {
   const { user, profile } = useAuth()
-  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [providers, setProviders] = useState([])
   const [services, setServices] = useState({})
@@ -18,6 +17,7 @@ export default function AdminProviders() {
   const [typeFilter, setTypeFilter] = useState("all")
   const [rejectingId, setRejectingId] = useState(null)
   const [rejectReason, setRejectReason] = useState("")
+  if (!user || profile?.role !== "admin") return null
 
   useEffect(() => {
     load()

@@ -5,9 +5,9 @@ import useIsMobile from "../../lib/useIsMobile"
 
 export default function AdminRefunds() {
   const { user, profile } = useAuth()
-  if(!user || profile?.role !== "admin") return null
   const navigate = useNavigate()
   const isMobile = useIsMobile()
+  if(!user || profile?.role !== "admin") return null
 
   return (
     <div style={{ maxWidth:600, margin:"0 auto", textAlign:"center", padding:"3rem 1rem" }}>

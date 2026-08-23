@@ -6,7 +6,6 @@ import useIsMobile from "../../lib/useIsMobile"
 
 export default function AdminInventory() {
   const { user, profile } = useAuth()
-  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
@@ -14,6 +13,7 @@ export default function AdminInventory() {
   const [catFilter, setCatFilter] = useState("all")
   const [providerFilter, setProviderFilter] = useState("all")
   const [providers, setProviders] = useState([])
+  if (!user || profile?.role !== "admin") return null
 
   useEffect(() => { load() }, [])
 

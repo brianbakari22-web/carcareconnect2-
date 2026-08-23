@@ -53,7 +53,6 @@ function getItemUrl(item) {
 
 export default function AdminContentHub() {
   const { user, profile } = useAuth()
-  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const studioRef = useRef(null)
   const [tab, setTab] = useState("new_cars")
@@ -80,6 +79,7 @@ export default function AdminContentHub() {
   const [calendarView, setCalendarView] = useState(false)
   const [showScheduleForm, setShowScheduleForm] = useState(false)
   const [scheduleForm, setScheduleForm] = useState({ date:"", time:"" })
+  if (!user || profile?.role !== "admin") return null
 
   useEffect(() => { load() }, [tab])
 

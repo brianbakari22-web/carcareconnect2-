@@ -17,7 +17,6 @@ const GC = { pending:"#e6821e", accepted:"#1d9e75", declined:"#e24b4a", timeout:
 
 export default function AdminMechanics() {
   const { user, profile } = useAuth()
-  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [mechanics, setMechanics] = useState([])
   const [providers, setProviders] = useState([])
@@ -34,6 +33,7 @@ export default function AdminMechanics() {
   const mapRef = useRef(null)
   const mapInstanceRef = useRef(null)
   const markersRef = useRef({})
+  if (!user || profile?.role !== "admin") return null
 
   useEffect(() => {
     load()

@@ -5,13 +5,13 @@ import { supabase } from "../../lib/supabase"
 
 export default function AdminTripReports() {
   const { user, profile } = useAuth()
-  if (!user || profile?.role !== "admin") return null
   const [bookings, setBookings] = useState([])
   const [selected, setSelected] = useState(null)
   const [logs, setLogs] = useState([])
   const [loading, setLoading] = useState(true)
   const [loadingLogs, setLoadingLogs] = useState(false)
   const [search, setSearch] = useState("")
+  if (!user || profile?.role !== "admin") return null
 
   useEffect(() => { load() }, [])
 

@@ -7,7 +7,6 @@ import toast from "react-hot-toast"
 import { useAuth } from "../../contexts/AuthContext"
 export default function AdminPaymentTracking() {
   const { user, profile } = useAuth()
-  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [bookings, setBookings] = useState([])
   const [goPayments, setGoPayments] = useState([])
@@ -17,6 +16,7 @@ export default function AdminPaymentTracking() {
   const [escrowBookings, setEscrowBookings] = useState([])
   const [tab, setTab] = useState("overview")
   const [filter, setFilter] = useState("all")
+  if (!user || profile?.role !== "admin") return null
 
   useEffect(() => { load() }, [])
 

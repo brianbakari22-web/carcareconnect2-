@@ -31,7 +31,6 @@ function Badge({ label, color, bg, icon }) {
 
 export default function AdminPenalties() {
   const { user, profile } = useAuth()
-  if (!user || profile?.role !== "admin") return null
   const [users, setUsers] = useState([])
   const [violations, setViolations] = useState([])
   const [penalties, setPenalties] = useState([])
@@ -44,6 +43,7 @@ export default function AdminPenalties() {
   const [selectedUser, setSelectedUser] = useState(null)
   const [form, setForm] = useState({ user_id:"", role:"", violation_type:"no_show", description:"" })
   const [suspendHours, setSuspendHours] = useState(24)
+  if (!user || profile?.role !== "admin") return null
 
   useEffect(() => { load() }, [])
   useEffect(() => {

@@ -7,7 +7,6 @@ import toast from "react-hot-toast"
 
 export default function AdminPromos() {
   const { user, profile } = useAuth()
-  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [promos, setPromos] = useState([])
   const [form, setForm] = useState({ code:"", description:"", discount_type:"percentage", discount_value:"", min_purchase:"0", usage_limit:"100", valid_until:"" })
@@ -16,6 +15,7 @@ export default function AdminPromos() {
   const [audience, setAudience] = useState("all")
   const [searchPhone, setSearchPhone] = useState("")
   const [sending, setSending] = useState(false)
+  if (!user || profile?.role !== "admin") return null
 
   useEffect(() => { load() }, [])
 

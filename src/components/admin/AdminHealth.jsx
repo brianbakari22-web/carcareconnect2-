@@ -210,7 +210,6 @@ function DiagnosticPanel({ checkKey, onResolved }) {
 
 export default function AdminHealth() {
   const { user, profile } = useAuth()
-  if (!user || profile?.role !== "admin") return null
   const isMobile = useIsMobile()
   const [results, setResults] = useState({})
   const [loading, setLoading] = useState(true)
@@ -218,6 +217,7 @@ export default function AdminHealth() {
   const [running, setRunning] = useState(false)
   const [logs, setLogs] = useState([])
   const [tab, setTab] = useState("dashboard")
+  if (!user || profile?.role !== "admin") return null
 
   useEffect(() => { runChecks(); loadLogs() }, [])
 
