@@ -1,7 +1,7 @@
 import useIsMobile from "../../lib/useIsMobile"
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
-import { SearchIcon, ServicesIcon, PartsIcon, MarketplaceIcon, VehicleIcon, PowerIcon, DiscoverIcon, MechanicIcon, ShieldIcon, LocationIcon, ClockIcon, ChatIcon } from "../../lib/cccIcons"
+import { SearchIcon, ServicesIcon, PartsIcon, MarketplaceIcon, VehicleIcon, PowerIcon, DiscoverIcon, MechanicIcon, ShieldIcon, LocationIcon, ClockIcon, ChatIcon, OrdersIcon } from "../../lib/cccIcons"
 import { useSearchParams } from "react-router-dom"
 import { getCurrentPosition } from "../../lib/geolocation"
 import { useAuth } from "../../contexts/AuthContext"
