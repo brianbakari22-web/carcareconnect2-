@@ -1,4 +1,4 @@
-import { TripReportIcon, VehicleIcon, LocationIcon, SuccessIcon, ErrorIcon, MovingCarIcon } from "../../lib/cccIcons";
+import { TripReportIcon, VehicleIcon, LocationIcon, SuccessIcon, ErrorIcon, MovingCarIcon, SignalIcon } from "../../lib/cccIcons";
 import { useEffect, useState, useRef } from "react"
 import { supabase } from "../../lib/supabase"
 import { useAuth } from "../../contexts/AuthContext"
