@@ -239,13 +239,15 @@ export default function AdminMarketplace() {
   }
 
   async function requestInspection(listing) {
+    const { data: feeRow } = await supabase.from("app_settings").select("value").eq("key","inspection_fee").maybeSingle()
+    const currentFee = feeRow ? Number(feeRow.value) : 500
     setProcessing(true)
     try {
       await supabase.from("inspection_requests").insert({
         listing_id: listing.id,
         seller_id: listing.seller_id,
         status: "pending",
-        fee: 500,
+        fee: currentFee,
         notes: adminNotes||""
       })
       await supabase.from("marketplace_listings").update({ inspection_status:"requested" }).eq("id", listing.id)
