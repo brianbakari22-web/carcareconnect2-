@@ -6,6 +6,7 @@ const corsHeaders = {
 }
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders })
+  let proxyFallbackHappened = false
   try {
     const { phone, amount, booking_id, provider_id, narrative, payment_method, account_reference } = await req.json()
     if (!phone || !amount || !booking_id) throw new Error("phone, amount and booking_id required")
@@ -21,6 +22,19 @@ serve(async (req) => {
     const proxyUrl = Deno.env.get("DARAJA_PROXY_URL")
     const httpClient = (useProxy && proxyUrl) ? Deno.createHttpClient({ proxy: { url: proxyUrl } }) : undefined
     console.log("Daraja B2C proxy routing:", useProxy ? "ENABLED" : "disabled (calling Safaricom directly)")
+    // Tries the proxy first (when enabled). If that fails at the network level - proxy
+    // server down, unreachable, etc, NOT a Safaricom-side error response - falls back
+    // to a direct call so a temporary proxy issue doesn't block a real payout outright.
+    async function fetchWithFallback(url: string, options: RequestInit) {
+      if (!httpClient) return fetch(url, options)
+      try {
+        return await fetch(url, { ...options, client: httpClient } as any)
+      } catch (proxyErr) {
+        console.error("Proxy call failed, falling back to direct:", proxyErr)
+        proxyFallbackHappened = true
+        return await fetch(url, options)
+      }
+    }
 
     const CONSUMER_KEY = Deno.env.get("DARAJA_CONSUMER_KEY")!
     const CONSUMER_SECRET = Deno.env.get("DARAJA_CONSUMER_SECRET")!
@@ -36,10 +50,9 @@ serve(async (req) => {
 
     // Get OAuth token
     const credentials = btoa(`${CONSUMER_KEY}:${CONSUMER_SECRET}`)
-    const authResp = await fetch(`${BASE_URL}/oauth/v1/generate?grant_type=client_credentials`, {
+    const authResp = await fetchWithFallback(`${BASE_URL}/oauth/v1/generate?grant_type=client_credentials`, {
       method: "GET",
-      headers: { "Authorization": `Basic ${credentials}` },
-      client: httpClient
+      headers: { "Authorization": `Basic ${credentials}` }
     })
     const authData = await authResp.json()
     if (!authData.access_token) throw new Error("Auth failed: " + JSON.stringify(authData))
@@ -102,14 +115,13 @@ serve(async (req) => {
     }
 
     console.log("Payout body:", JSON.stringify({ ...payBody, SecurityCredential: "[redacted]" }))
-    const payResp = await fetch(endpoint, {
+    const payResp = await fetchWithFallback(endpoint, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${authData.access_token}`,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(payBody),
-      client: httpClient
+      body: JSON.stringify(payBody)
     })
     const payData = await payResp.json()
     console.log("Payout response:", JSON.stringify(payData))
@@ -130,6 +142,18 @@ serve(async (req) => {
       type: "payout"
     })
 
+    if (proxyFallbackHappened) {
+      const { data: admins } = await supabase.from("profiles").select("id").eq("role", "admin")
+      for (const admin of admins || []) {
+        await supabase.from("notifications").insert({
+          user_id: admin.id,
+          title: "Daraja proxy fallback used ⚠️",
+          message: "A B2C payout succeeded, but the static-IP proxy was unreachable and the call fell back to a direct connection. Check the proxy server.",
+          type: "warning"
+        })
+      }
+    }
+
     return new Response(JSON.stringify({
       success: true,
       conversation_id: payData.ConversationID,
@@ -149,6 +173,17 @@ serve(async (req) => {
         payload: body,
         status: "failed"
       })
+      if (proxyFallbackHappened) {
+        const { data: admins } = await supabase.from("profiles").select("id").eq("role", "admin")
+        for (const admin of admins || []) {
+          await supabase.from("notifications").insert({
+            user_id: admin.id,
+            title: "Daraja proxy fallback + payout failed ⚠️",
+            message: "A B2C payout failed after the static-IP proxy was unreachable and fell back to a direct connection, which also failed. Check the proxy server and the error in Failed Jobs.",
+            type: "error"
+          })
+        }
+      }
     } catch (logErr) { console.error("Failed to log to failed_jobs:", logErr) }
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
