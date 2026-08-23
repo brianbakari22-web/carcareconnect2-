@@ -83,6 +83,11 @@ export default function AdminClaims() {
       const penaltyCount = existingPenalties?.length||0
 
       let penaltyType = "warning"
+      // The party being penalized is whoever the claim was filed against - and
+      // isProviderClaim ("is this a claim against a provider") mirrors the exact same
+      // claimant_type logic already used by the claimDirection filter above.
+      const penalizedId = claim.against_id
+      const isProviderClaim = !claim.claimant_type || claim.claimant_type === "customer"
       let suspendUntil = null
       let suspendProvider = false
       if (penaltyCount===1) { penaltyType="suspension_7d"; suspendUntil=new Date(Date.now()+7*24*60*60*1000).toISOString(); suspendProvider=true }
