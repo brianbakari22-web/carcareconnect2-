@@ -19,3 +19,6 @@ carcareconnect.keystore
 
 dist/
 eslint-report.json
+
+build-output.txt
+*.cjs
