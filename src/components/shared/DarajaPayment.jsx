@@ -29,10 +29,15 @@ export default function DarajaPayment({ amount, bookingId, orderId, providerId, 
       const checkoutRequestId = data.checkout_request_id
       setStep("waiting")
       toast.success("Check your phone for M-Pesa prompt!")
-      // Poll for payment status every 5 seconds
+      // Poll for payment status every 5 seconds. The cheap DB check runs on every poll so a
+      // fast webhook confirmation is still caught immediately - the expensive daraja-stk-query
+      // fallback (which scans up to 7 tables) only runs every 3rd poll (~15s) since it exists
+      // purely as a backup for when the webhook itself is delayed, not the primary path.
+      let pollCount = 0
       const interval = setInterval(async () => {
         try {
-          // First check DB
+          pollCount++
+          // First check DB (cheap, indexed, catches the fast webhook path immediately)
           const { data: txn } = await supabase
             .from("payment_transactions")
             .select("status, mpesa_code")
@@ -45,7 +50,9 @@ export default function DarajaPayment({ amount, bookingId, orderId, providerId, 
             setTimeout(() => onSuccess && onSuccess(), 2000)
             return
           }
-          // Also query Daraja directly
+          // Also query Daraja directly - only every 3rd poll, since this is the expensive
+          // fallback path and the DB check above already catches the common case
+          if (pollCount % 3 !== 0) return
           const { data: queryData } = await supabase.functions.invoke("daraja-stk-query", {
             body: { checkout_request_id: checkoutRequestId, booking_id: bookingId }
           })
