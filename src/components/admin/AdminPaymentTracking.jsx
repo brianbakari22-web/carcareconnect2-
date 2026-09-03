@@ -95,7 +95,7 @@ export default function AdminPaymentTracking() {
   const bookingEscrowTotal = escrowBookings.reduce((s,b)=>s+Number(b.provider_earnings||0),0)
   const autoReleaseToday = escrowBookings.filter(b=>b.auto_release_at&&new Date(b.auto_release_at)<new Date(Date.now()+24*60*60*1000)).length
   const partsRevenue = bookings.filter(b=>b.parts_approved).reduce((s,b)=>s+Number(b.parts_commission||0),0)
-  const transportAllowanceDue = bookings.filter(b=>b.is_concierge&&!b.transport_allowance_paid&&b.status==="completed").length * 200
+  const transportAllowanceDue = bookings.filter(b=>b.is_concierge&&!b.transport_allowance_paid&&b.status==="completed").reduce((s,b)=>s+Number(b.transport_allowance||0),0)
   const anticipatedRevenue = bookings.filter(b=>b.status!=="cancelled").reduce((s,b)=>s+Number(b.platform_commission||0),0)
   const mpesaCollected = mpesaTransactions.filter(t=>t.status==="completed").reduce((s,t)=>s+Number(t.amount_paid||t.amount||0),0)
   const mpesaPending = mpesaTransactions.filter(t=>t.status==="pending").length

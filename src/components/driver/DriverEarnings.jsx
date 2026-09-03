@@ -14,6 +14,7 @@ export default function DriverEarnings() {
   const [loading, setLoading] = useState(true)
   const [commissionRate, setCommissionRate] = useState(15)
   const [marketplaceRate, setMarketplaceRate] = useState(85)
+  const [transportAllowanceAmt, setTransportAllowanceAmt] = useState(200)
   const [period, setPeriod] = useState("week")
   const [expanded, setExpanded] = useState(null)
   const [goalInput, setGoalInput] = useState("")
@@ -29,6 +30,8 @@ export default function DriverEarnings() {
   async function load() {
     const { data: surchargeData } = await supabase.from("app_settings").select("value").eq("key","concierge_surcharge_rate").maybeSingle()
     if (surchargeData) setCommissionRate(Number(surchargeData.value));
+    const { data: allowanceData } = await supabase.from("app_settings").select("value").eq("key","driver_transport_allowance").maybeSingle()
+    if (allowanceData) setTransportAllowanceAmt(Number(allowanceData.value));
     (async () => {
       // Commission now varies by the driver\'s own vehicle type, not one flat global rate
       const vt = profile?.driver_vehicle_type || "car"
@@ -111,7 +114,7 @@ export default function DriverEarnings() {
   const totalCommission = isConcierge
     ? filtered.reduce((s,b)=>s+Number(b.total_amount||0)*0.15, 0)
     : filteredOrders.reduce((s,o)=>s+Number(o.delivery_fee||0)*(marketplaceRate/100), 0)
-  const totalAllowance = isConcierge ? filtered.reduce((s,b)=>s+Number(b.transport_allowance||200), 0) : 0
+  const totalAllowance = isConcierge ? filtered.reduce((s,b)=>s+Number(b.transport_allowance||transportAllowanceAmt), 0) : 0
   const totalEarnings = totalCommission + totalAllowance
   const totalJobs = isConcierge ? filtered.length : filteredOrders.length
   const avgPerJob = totalJobs ? (totalEarnings/totalJobs).toFixed(0) : 0
@@ -311,8 +314,8 @@ export default function DriverEarnings() {
       )}
 
       {filtered.map(b=>{
-        const commission = Number(b.driver_earnings||0) - Number(b.transport_allowance||200)
-        const allowance = Number(b.transport_allowance||200)
+        const commission = Number(b.driver_earnings||0) - Number(b.transport_allowance||transportAllowanceAmt)
+        const allowance = Number(b.transport_allowance||transportAllowanceAmt)
         const total = Number(b.driver_earnings||0)
         return (
           <div key={b.id} style={{ background:"#ffffff", border:"1px solid #eeeeee", borderRadius:10, padding:isMobile?"0.75rem":"1rem", marginBottom:8 }}>

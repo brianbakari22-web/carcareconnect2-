@@ -293,7 +293,7 @@ export default function DriverOverview() {
               </div>
               <div style={{ background:"#fff", borderRadius:8, padding:"0.6rem", textAlign:"center" }}>
                 <div style={{ fontSize:10, color:"#888" }}>Allowance</div>
-                <div style={{ fontSize:13, color:"#e6821e", fontWeight:700 }}>KES {Number(activeJob.transport_allowance||200).toLocaleString()}</div>
+                <div style={{ fontSize:13, color:"#e6821e", fontWeight:700 }}>KES {Number(activeJob.transport_allowance||transportAllowanceAmt).toLocaleString()}</div>
               </div>
             </div>
             <div style={{ fontSize:11, color:"#378add", marginTop:8, textAlign:"center" }}>Go to Active Delivery to continue →</div>
