@@ -198,7 +198,14 @@ export default function AuthPage() {
         checkProfile()
       }
     } catch(err) {
-      const friendlyMessage = (err.message||"").toLowerCase().includes("fetch")
+      // Distinguish "our servers are having a temporary issue" from "your own connection
+      // is down" - these need different, honest messages rather than one generic
+      // catch-all that could wrongly blame the user's own internet for our own outage.
+      const errText = (err.message||"").toLowerCase()
+      const looksLikeOurBackend = ["retryable","503","504","gateway","timeout","unavailable","temporarily"].some(k=>errText.includes(k))
+      const friendlyMessage = looksLikeOurBackend
+        ? "We're having a temporary issue connecting to our servers. This usually resolves within a few minutes - please try again shortly."
+        : errText.includes("fetch")
         ? "Could not connect. Please check your internet connection and try again."
         : (err.message || "Something went wrong")
       toast.error(friendlyMessage)
