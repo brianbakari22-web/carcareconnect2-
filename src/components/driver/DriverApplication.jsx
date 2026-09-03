@@ -48,6 +48,7 @@ export default function DriverApplication() {
   const [appointmentDate, setAppointmentDate] = useState("")
   const [appointmentTime, setAppointmentTime] = useState("")
   const [location, setLocation] = useState("")
+  const [duration, setDuration] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [existingApp, setExistingApp] = useState(null)
 
@@ -59,6 +60,8 @@ export default function DriverApplication() {
     // Load appointment location from settings
     supabase.from("app_settings").select("value").eq("key","vetting_appointment_location").maybeSingle()
       .then(({ data }) => { if (data) setLocation(data.value) })
+    supabase.from("app_settings").select("value").eq("key","vetting_appointment_duration").maybeSingle()
+      .then(({ data }) => { if (data) setDuration(data.value) })
     // Load existing documents
     supabase.from("driver_documents").select("*").eq("driver_id", user.id)
       .then(({ data }) => {
@@ -125,7 +128,7 @@ export default function DriverApplication() {
       await supabase.from("notifications").insert({
         user_id: user.id,
         title: "Application submitted! ✅",
-        message: `Your driver application has been submitted. Your vetting appointment is scheduled for ${appointmentDate} at ${appointmentTime} at ${location}. We will confirm shortly.`,
+        message: `Your driver application has been submitted. Your vetting appointment is scheduled for ${appointmentDate} at ${appointmentTime} at ${location}${duration?` (expect about ${duration} minutes)`:``}. We will confirm shortly.`,
         type: "success",
       })
 
@@ -250,6 +253,7 @@ export default function DriverApplication() {
           <div style={{ background:"#fff8f0", border:"1px solid #e6821e30", borderRadius:10, padding:"0.75rem", marginBottom:"1.25rem" }}>
             <div style={{ fontSize:12, fontWeight:600, color:"#e6821e", marginBottom:4 }}>📍 Appointment Location</div>
             <div style={{ fontSize:12, color:"#555" }}>{location}</div>
+            {duration&&<div style={{ fontSize:11, color:"#888", marginTop:2 }}>Expect it to take about {duration} minutes</div>}
             <div style={{ fontSize:11, color:"#888", marginTop:4 }}>Please bring original copies of all uploaded documents</div>
           </div>
           <div style={{ marginBottom:16 }}>
