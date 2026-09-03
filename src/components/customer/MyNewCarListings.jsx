@@ -34,7 +34,7 @@ export default function MyNewCarListings() {
   const [uploadingPhoto, setUploadingPhoto] = useState(false)
   const [uploadingVideo, setUploadingVideo] = useState(false)
   const [videoUploadProgress, setVideoUploadProgress] = useState(0)
-  const [fees, setFees] = useState({ listing_fee:2000, duration_days:30 })
+  const [fees, setFees] = useState({ listing_fee:2000, duration_days:30, lead_fee:500, featured_day:100, featured_week:500, featured_month:1500 })
   const [isDealer, setIsDealer] = useState(false)
   const [dealerStatus, setDealerStatus] = useState(null)
   const [showDealerForm, setShowDealerForm] = useState(false)
