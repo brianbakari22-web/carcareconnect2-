@@ -114,6 +114,12 @@ export default function CustomerReviews() {
       })
       if (error) throw error
 
+      // Feed this rating into probation tracking (no-op while the probation system
+      // toggle is off, or if this driver isn\'t currently on probation)
+      if (reviewing.is_concierge && reviewing.driver_id && form.driver_rating>0) {
+        supabase.rpc("record_driver_probation_job", { p_driver_id: reviewing.driver_id, p_rating: form.driver_rating }).then(()=>{})
+      }
+
       // Send push notification to provider
       try {
         await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-push`, {

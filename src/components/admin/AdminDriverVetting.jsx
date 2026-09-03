@@ -109,7 +109,12 @@ export default function AdminDriverVetting() {
         ])
         toast.success("Driver marked conditional — notified")
       } else if (passed) {
-        // Approve driver — create probation record
+        // Approve driver — create probation record. Job count and rating threshold read
+        // from settings so this stays in sync if admin ever adjusts them.
+        const { data: jobsSetting } = await supabase.from("app_settings").select("value").eq("key","driver_probation_jobs").maybeSingle()
+        const { data: ratingSetting } = await supabase.from("app_settings").select("value").eq("key","driver_probation_min_rating").maybeSingle()
+        const jobsRequired = jobsSetting ? Number(jobsSetting.value) : 10
+        const minRating = ratingSetting ? Number(ratingSetting.value) : 4.5
         await Promise.all([
           supabase.from("profiles").update({
             is_verified: true,
@@ -122,13 +127,13 @@ export default function AdminDriverVetting() {
             driver_id: selected.driver_id,
             status: "probation",
             jobs_completed: 0,
-            jobs_required: 10,
+            jobs_required: jobsRequired,
             started_at: new Date().toISOString(),
           }, { onConflict: "driver_id" }),
           supabase.from("notifications").insert({
             user_id: selected.driver_id,
             title: "🎉 Application Approved!",
-            message: "Congratulations! You have been approved as a CCC Driver. You are now on probation for your first 10 jobs — maintain a 4.5+ star rating to complete probation successfully.",
+            message: `Congratulations! You have been approved as a CCC Driver. You are now on probation for your first ${jobsRequired} jobs — maintain a ${minRating}+ star rating to complete probation successfully.`,
             type: "success",
           })
         ])
