@@ -185,7 +185,7 @@ export default function MyNewCarListings() {
       // after merely sending the STK push - a customer could cancel or never enter their PIN
       // and still get the featured boost for free, since nothing had confirmed the money moved.
       const { data: payRecord, error: payRecErr } = await supabase.from("featured_payments").insert({
-        listing_id: listing.id, seller_id: user.id, amount, weeks: tierDays[tier]/7, status: "pending"
+        listing_id: listing.id, seller_id: user.id, amount, weeks: tierDays[tier], status: "pending"
       }).select("id").single()
       if (payRecErr) throw payRecErr
       const { data, error } = await supabase.functions.invoke("daraja-stk-push", {

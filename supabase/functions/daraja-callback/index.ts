@@ -82,7 +82,7 @@ serve(async (req) => {
                   // A featured_payments record can point to either a dealer's new_car_listings
                   // or a peer seller's marketplace_listings - try dealer cars first, and if that
                   // genuinely affects nothing, it must be a peer listing instead.
-                  const featuredUntil = new Date(Date.now() + (featPayment.weeks||1) * 7 * 24 * 60 * 60 * 1000).toISOString()
+                  const featuredUntil = new Date(Date.now() + (featPayment.weeks||1) * 24 * 60 * 60 * 1000).toISOString()
                   const { data: updatedCar } = await supabase.from("new_car_listings").update({ is_featured: true, featured_until: featuredUntil }).eq("id", featPayment.listing_id).select("id")
                   if (!updatedCar?.length) {
                     await supabase.from("marketplace_listings").update({ is_featured: true, featured_until: featuredUntil }).eq("id", featPayment.listing_id)

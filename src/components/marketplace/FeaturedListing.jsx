@@ -60,7 +60,7 @@ export default function FeaturedListing({ listingId, onSuccess, onClose }) {
         listing_id: listing.id,
         seller_id: user.id,
         amount,
-        weeks: Math.ceil(days/7),
+        weeks: days,
         status: "pending",
       }).select("id").single()
       if (paymentError) throw paymentError

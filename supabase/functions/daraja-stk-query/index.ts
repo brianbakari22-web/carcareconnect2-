@@ -89,7 +89,7 @@ serve(async (req) => {
         } else {
           const { data: featPayment } = await supabase.from("featured_payments").select("id, listing_id, weeks").eq("id", booking_id).maybeSingle()
           if (featPayment) {
-            const featuredUntil = new Date(Date.now() + (featPayment.weeks||1) * 7 * 24 * 60 * 60 * 1000).toISOString()
+            const featuredUntil = new Date(Date.now() + (featPayment.weeks||1) * 24 * 60 * 60 * 1000).toISOString()
             const { data: updatedCar } = await supabase.from("new_car_listings").update({ is_featured: true, featured_until: featuredUntil }).eq("id", featPayment.listing_id).select("id")
             if (!updatedCar?.length) {
               await supabase.from("marketplace_listings").update({ is_featured: true, featured_until: featuredUntil }).eq("id", featPayment.listing_id)
