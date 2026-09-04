@@ -560,6 +560,8 @@ export default function MyNewCarListings() {
               <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
                 {e.status==="new"&&<button onClick={()=>updateEnquiryStatus(e.id,"contacted")} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"4px 10px", cursor:"pointer" }}>✓ Mark contacted</button>}
                 {e.status==="contacted"&&<button onClick={()=>updateEnquiryStatus(e.id,"converted")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"4px 10px", cursor:"pointer" }}>🎉 Mark sold</button>}
+                {e.status==="converted"&&!e.lead_fee_paid&&<button onClick={()=>payLeadFee(e)} style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, fontWeight:700, padding:"4px 10px", cursor:"pointer" }}>Pay lead fee - KES {fees.lead_fee.toLocaleString()}</button>}
+                {e.lead_fee_paid&&<span style={{ fontSize:10, color:"#1d9e75", padding:"4px 8px" }}>✓ Lead fee paid</span>}
                 {e.customer_phone&&<a href={`tel:${e.customer_phone}`} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"4px 10px", textDecoration:"none" }}>📞 Call</a>}
                 {e.customer_phone&&<a href={`https://wa.me/254${e.customer_phone.replace(/^0/,"")}`} target="_blank" rel="noreferrer" style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"4px 10px", textDecoration:"none" }}>💚 WhatsApp</a>}
               </div>
