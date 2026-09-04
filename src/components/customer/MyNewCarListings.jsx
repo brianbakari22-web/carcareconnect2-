@@ -61,7 +61,7 @@ export default function MyNewCarListings() {
   async function load() {
     const [{ data: lst }, { data: enq }] = await Promise.all([
       supabase.from("new_car_listings").select("*").eq("dealer_id", user.id).order("created_at",{ascending:false}),
-      supabase.from("car_enquiries").select("*, new_car_listings(brand,model,year)").eq("dealer_id", user.id).order("created_at",{ascending:false})
+      supabase.from("car_enquiries_view").select("*, new_car_listings(brand,model,year)").eq("dealer_id", user.id).order("created_at",{ascending:false})
     ])
     setListings(lst||[])
     setEnquiries(enq||[])
@@ -547,7 +547,11 @@ export default function MyNewCarListings() {
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
                 <div>
                   <div style={{ fontSize:13, fontWeight:600, color:"#000" }}>{e.customer_name}</div>
+                  {e.lead_fee_paid ? (
                   <div style={{ fontSize:11, color:"#888" }}>📞 {e.customer_phone} {e.customer_email?`· ✉️ ${e.customer_email}`:""}</div>
+                ) : (
+                  <div style={{ fontSize:11, color:"#aaa", fontStyle:"italic" }}>🔒 Contact details hidden until lead fee is paid</div>
+                )}
                   <div style={{ fontSize:11, color:"#888", display:"flex", alignItems:"center", gap:3 }}><VehicleIcon size={11} color="#888"/> {e.new_car_listings?.year} {e.new_car_listings?.brand} {e.new_car_listings?.model}</div>
                   <div style={{ fontSize:10, color:"#888" }}>{e.enquiry_type?.replace(/_/g," ")} · Prefers: {e.preferred_contact}</div>
                   {e.message&&<div style={{ fontSize:11, color:"#555", marginTop:4, fontStyle:"italic" }}>&quot;{e.message}&quot;</div>}
@@ -560,10 +564,10 @@ export default function MyNewCarListings() {
               <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
                 {e.status==="new"&&<button onClick={()=>updateEnquiryStatus(e.id,"contacted")} style={{ background:"#eff6ff", border:"1px solid #378add40", borderRadius:7, color:"#378add", fontSize:11, padding:"4px 10px", cursor:"pointer" }}>✓ Mark contacted</button>}
                 {e.status==="contacted"&&<button onClick={()=>updateEnquiryStatus(e.id,"converted")} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"4px 10px", cursor:"pointer" }}>🎉 Mark sold</button>}
-                {e.status==="converted"&&!e.lead_fee_paid&&<button onClick={()=>payLeadFee(e)} style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, fontWeight:700, padding:"4px 10px", cursor:"pointer" }}>Pay lead fee - KES {fees.lead_fee.toLocaleString()}</button>}
+                {!e.lead_fee_paid&&<button onClick={()=>payLeadFee(e)} style={{ background:"#faf5ff", border:"1px solid #8b5cf640", borderRadius:7, color:"#8b5cf6", fontSize:11, fontWeight:700, padding:"4px 10px", cursor:"pointer" }}>🔓 Pay KES {fees.lead_fee.toLocaleString()} to unlock contact</button>}
                 {e.lead_fee_paid&&<span style={{ fontSize:10, color:"#1d9e75", padding:"4px 8px" }}>✓ Lead fee paid</span>}
-                {e.customer_phone&&<a href={`tel:${e.customer_phone}`} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"4px 10px", textDecoration:"none" }}>📞 Call</a>}
-                {e.customer_phone&&<a href={`https://wa.me/254${e.customer_phone.replace(/^0/,"")}`} target="_blank" rel="noreferrer" style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"4px 10px", textDecoration:"none" }}>💚 WhatsApp</a>}
+                {e.lead_fee_paid&&e.customer_phone&&<a href={`tel:${e.customer_phone}`} style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"4px 10px", textDecoration:"none" }}>📞 Call</a>}
+                {e.lead_fee_paid&&e.customer_phone&&<a href={`https://wa.me/254${e.customer_phone.replace(/^0/,"")}`} target="_blank" rel="noreferrer" style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:7, color:"#1d9e75", fontSize:11, padding:"4px 10px", textDecoration:"none" }}>💚 WhatsApp</a>}
               </div>
             </div>
           ))}

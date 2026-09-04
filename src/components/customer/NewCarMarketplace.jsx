@@ -72,7 +72,7 @@ export default function NewCarMarketplace() {
       await supabase.from("notifications").insert({
         user_id: selected.dealer_id,
         title: "New car enquiry! 🚗",
-        message: `${enquiryForm.name} is interested in your ${selected.year} ${selected.brand} ${selected.model}. Phone: ${enquiryForm.phone}`,
+        message: `${enquiryForm.name} is interested in your ${selected.year} ${selected.brand} ${selected.model}. Pay the lead fee to unlock their contact details.`,
         type: "success"
       })
       // Increment enquiry count
