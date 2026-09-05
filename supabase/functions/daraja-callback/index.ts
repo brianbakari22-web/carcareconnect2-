@@ -107,7 +107,7 @@ serve(async (req) => {
                         // sale amount. Mark the fee paid, which unlocks the handover step -
                         // the real money for large sales still moves directly between the two
                         // parties themselves, CCC was never going to hold it.
-                        await supabase.from("marketplace_transactions").update({ facilitation_fee_paid: true }).eq("id", mpTxn.id)
+                        await supabase.from("marketplace_transactions").update({ facilitation_fee_paid: true, payment_status: "facilitation_fee_paid" }).eq("id", mpTxn.id)
                         await supabase.from("notifications").insert({ user_id: mpTxn.seller_id, title: "Facilitation fee received! \uD83D\uDCB0", message: "You can now arrange handover directly with the buyer and confirm the sale.", type: "success" })
                         // Large sales are higher-risk (bigger sums, CCC never holds the money
                         // directly) - alert admin so they have visibility into these even

@@ -105,7 +105,7 @@ serve(async (req) => {
               const { data: mpTxn } = await supabase.from("marketplace_transactions").select("id, seller_id, payment_status").eq("id", booking_id).maybeSingle()
               if (mpTxn) {
                 if (mpTxn.payment_status === "awaiting_facilitation_fee") {
-                  await supabase.from("marketplace_transactions").update({ facilitation_fee_paid: true }).eq("id", mpTxn.id)
+                  await supabase.from("marketplace_transactions").update({ facilitation_fee_paid: true, payment_status: "facilitation_fee_paid" }).eq("id", mpTxn.id)
                   await supabase.from("notifications").insert({ user_id: mpTxn.seller_id, title: "Facilitation fee received! \uD83D\uDCB0", message: "You can now arrange handover directly with the buyer and confirm the sale.", type: "success" })
                   const { data: mpTxnFull } = await supabase.from("marketplace_transactions").select("sale_price").eq("id", mpTxn.id).maybeSingle()
                   const { data: admins } = await supabase.from("profiles").select("id").eq("role", "admin")
