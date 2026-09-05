@@ -83,10 +83,16 @@ export default function MarketplacePayment({ offer, listing, onSuccess, onCancel
       <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:8, padding:"0.75rem", marginBottom:16, fontSize:11, color:"#1d9e75", lineHeight:1.6 }}>
         <><LockedIcon size={12} color="#1d9e75"/> Funds held in escrow</> until you confirm receipt. 7-day dispute window after delivery.
       </div>
-      <button onClick={initPayment} disabled={paying||commissionRate==null}
+      {totalAmount > 250000 ? (
+        <div style={{ background:"#fff8f0", border:"1px solid #e6821e40", borderRadius:10, padding:"0.9rem", marginBottom:8, fontSize:12, color:"#e6821e", lineHeight:1.6 }}>
+          This amount (KES {totalAmount.toLocaleString()}) is above M-Pesa's KES 250,000 single-transaction limit. Please contact CCC support to arrange an alternative payment method for this purchase.
+        </div>
+      ) : (
+        <button onClick={initPayment} disabled={paying||commissionRate==null}
         style={{ width:"100%", background:paying?"#ccc":"#e6821e", border:"none", borderRadius:10, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:paying?"not-allowed":"pointer", marginBottom:8 }}>
         {paying ? "Processing..." : `Pay KES ${totalAmount.toLocaleString()} via M-Pesa →`}
       </button>
+      )}
       <button onClick={onCancel}
         style={{ width:"100%", background:"none", border:"1px solid #dddddd", borderRadius:10, color:"#666", fontSize:13, padding:"11px", cursor:"pointer" }}>
         Cancel
