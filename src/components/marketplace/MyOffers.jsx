@@ -26,7 +26,7 @@ export default function MyOffers() {
 
   async function load() {
     const { data } = await supabase.from("marketplace_offers")
-      .select("*, marketplace_listings(title,price,listing_type,make,model,year,status), seller:profiles!marketplace_offers_seller_id_fkey(first_name,last_name,business_name)")
+      .select("*, marketplace_listings(title,price,listing_type,make,model,year,status), seller:profiles!marketplace_offers_seller_id_fkey(first_name,last_name,business_name), marketplace_transactions(payment_status,facilitation_fee_amount)")
       .eq("buyer_id", user.id)
       .order("created_at", { ascending:false })
     setOffers(data||[])
@@ -133,9 +133,18 @@ export default function MyOffers() {
           )}
 
           {/* Accepted — proceed to payment */}
-          {o.status==="accepted"&&o.marketplace_listings?.status!=="sold"&&(
+          {o.status==="accepted"&&(() => {
+            const txn = o.marketplace_transactions?.[0]
+            const awaitingFacFee = txn?.payment_status === "awaiting_facilitation_fee"
+            const alreadyHandled = txn && txn.payment_status !== "pending" && !awaitingFacFee
+            if (alreadyHandled) return null
+            return (
             <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:8, padding:"0.75rem" }}>
-              <div style={{ fontSize:12, color:"#1d9e75", fontWeight:600, marginBottom:6 }}>✓ Offer accepted — proceed to payment</div>
+              <div style={{ fontSize:12, color:"#1d9e75", fontWeight:600, marginBottom:6 }}>✓ Offer accepted{awaitingFacFee?"":" — proceed to payment"}</div>
+              {awaitingFacFee ? (
+                <div style={{ fontSize:11, color:"#777777" }}>This is a large sale - waiting for the seller to pay their facilitation fee before you can proceed. You'll settle the sale amount directly with the seller once that's done.</div>
+              ) : (
+              <>
               {/* Buyer protection notice */}
               <div style={{ background:"#f0fdf4", border:"1px solid #1d9e7540", borderRadius:8, padding:"10px 12px", marginBottom:8 }}>
                 <div style={{ fontSize:11, fontWeight:700, color:"#1d9e75", marginBottom:4, display:"flex", alignItems:"center", gap:4 }}><ShieldIcon size={12} color="#1d9e75"/> Buyer Protection</div>
@@ -147,8 +156,11 @@ export default function MyOffers() {
                 style={{ background:"#e6821e", border:"none", borderRadius:7, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:12, fontWeight:700, padding:"8px 16px", cursor:"pointer" }}>
                 <><PaymentsIcon size={14} color="currentColor"/> Pay now</>
               </button>
+              </>
+              )}
             </div>
-          )}
+            )
+          })()}
           {payingOffer===o.id&&o.status==="accepted"&&(
             <div style={{ marginTop:10 }}>
               <MarketplacePayment
