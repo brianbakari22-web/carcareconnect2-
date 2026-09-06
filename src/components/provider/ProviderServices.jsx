@@ -27,7 +27,7 @@ function getCategories(providerType) {
   return GARAGE_CATEGORIES
 }
 
-const EMPTY = { name:"", description:"", price:"", discounted_price:"", duration_minutes:"", category:"shop_standard", service_category_id:"", photos:[] }
+const getEmpty = (categories) => ({ name:"", description:"", price:"", discounted_price:"", duration_minutes:"", category:categories?.[0]?.key||"shop_standard", service_category_id:"", photos:[] })
 
 export default function ProviderServices() {
   const { user, profile } = useAuth()
@@ -41,7 +41,7 @@ export default function ProviderServices() {
   const [tierRates, setTierRates] = useState({})
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState(null)
-  const [form, setForm] = useState(EMPTY)
+  const [form, setForm] = useState(getEmpty(getCategories(profile?.provider_type||"garage")))
   const [saving, setSaving] = useState(false)
   const [activeCategory, setActiveCategory] = useState("all")
   const [serviceCategories, setServiceCategories] = useState([])
@@ -117,7 +117,7 @@ export default function ProviderServices() {
         if (error) throw error
         toast.success("Service added")
       }
-      setForm(EMPTY)
+      setForm(getEmpty(CATEGORIES))
       setShowForm(false)
       setEditing(null)
       load()
@@ -236,7 +236,7 @@ export default function ProviderServices() {
             </button>
           ))}
         </div>
-        <button onClick={()=>{ setShowForm(true); setEditing(null); setForm(EMPTY) }}
+        <button onClick={()=>{ setShowForm(true); setEditing(null); setForm(getEmpty(CATEGORIES)) }}
           style={{ background:"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"9px 18px", cursor:"pointer" }}>
           + Add service
         </button>
@@ -341,7 +341,7 @@ export default function ProviderServices() {
                 style={{ background:saving?"#555555":"#e6821e", border:"none", borderRadius:9, color:"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 24px", cursor:saving?"not-allowed":"pointer" }}>
                 {saving?"Saving...":editing?"Update service":"Add service"}
               </button>
-              <button type="button" onClick={()=>{ setShowForm(false); setEditing(null); setForm(EMPTY) }}
+              <button type="button" onClick={()=>{ setShowForm(false); setEditing(null); setForm(getEmpty(CATEGORIES)) }}
                 style={{ background:"none", border:"1px solid #dddddd", borderRadius:9, color:"#666", fontSize:13, padding:"10px 18px", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
                 Cancel
               </button>
