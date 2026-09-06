@@ -460,7 +460,7 @@ export default function AuthPage() {
             )}
 
             <button type="submit" disabled={loading||(mode==="signup"&&!agreed)}
-              style={{ width:"100%", background:loading||(mode==="signup"&&!agreed)?"#555555":"#e6821e", border:"none", borderRadius:9, color:loading||(mode==="signup"&&!agreed)?"#666":"#fff", fontFamily:"Syne,sans-serif", fontSize:16, fontWeight:700, padding:"15px", cursor:loading||(mode==="signup"&&!agreed)?"not-allowed":"pointer", transition:"all 0.15s" }}>
+              style={{ width:"100%", background:loading||(mode==="signup"&&!agreed)?"#555555":"#e6821e", border:"none", borderRadius:9, color:loading||(mode==="signup"&&!agreed)?"#ccc":"#fff", fontFamily:"Syne,sans-serif", fontSize:16, fontWeight:700, padding:"15px", cursor:loading||(mode==="signup"&&!agreed)?"not-allowed":"pointer", transition:"all 0.15s" }}>
               {loading ? "Please wait..." : mode==="signin" ? "Sign in →" : "Create account →"}
             </button>
           </form>

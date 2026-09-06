@@ -178,7 +178,7 @@ export default function CustomerProfile() {
           {k:"account",l:"Account"},
         ].map(tab2=>(
           <button key={tab2.k} onClick={()=>{ setTab(tab2.k); if(tab2.k==="data"&&!exportData) loadExportData() }}
-            style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===tab2.k?"#e6821e":"#555555", color:tab===tab2.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===tab2.k?700:400 }}>
+            style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===tab2.k?"#e6821e":"#555555", color:tab===tab2.k?"#fff":"#ccc", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===tab2.k?700:400 }}>
             {tab2.l}
           </button>
         ))}

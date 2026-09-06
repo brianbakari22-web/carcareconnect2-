@@ -176,7 +176,7 @@ export default function DriverChat() {
           <div style={{ display:"flex", gap:6, marginBottom:4 }}>
           {(isConcierge ? [{k:"all",l:"All"},{k:"jobs",l:"Jobs"}] : [{k:"all",l:"All"},{k:"jobs",l:"Jobs"},{k:"marketplace",l:"Marketplace"}]).map(t=>(
               <button key={t.k} onClick={()=>setTab(t.k)}
-                style={{ padding:"5px 12px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:tab===t.k?"#1d9e75":"#555555", color:tab===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif" }}>
+                style={{ padding:"5px 12px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:tab===t.k?"#1d9e75":"#555555", color:tab===t.k?"#fff":"#ccc", fontFamily:"'DM Sans',sans-serif" }}>
                 {t.l}
               </button>
             ))}

@@ -201,7 +201,7 @@ export default function DriverDeliveries() {
       <div style={{ display:"flex", gap:6, marginBottom:"1rem" }}>
         {[{k:"available",l:"Available jobs"},{k:"active",l:"My deliveries"},{k:"completed",l:"Completed"}].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#1d9e75":"#555555", color:tab===t.k?"#fff":"#666", fontWeight:tab===t.k?700:400 }}>
+            style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#1d9e75":"#555555", color:tab===t.k?"#fff":"#ccc", fontWeight:tab===t.k?700:400 }}>
             {t.l}
           </button>
         ))}

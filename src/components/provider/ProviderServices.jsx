@@ -231,7 +231,7 @@ export default function ProviderServices() {
         <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
           {["all",...CATEGORIES.map(c=>c.key)].map(k=>(
             <button key={k} onClick={()=>setActiveCategory(k)}
-              style={{ padding:"6px 12px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:activeCategory===k?"#e6821e":"#555555", color:activeCategory===k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif" }}>
+              style={{ padding:"6px 12px", borderRadius:7, border:"none", fontSize:11, cursor:"pointer", background:activeCategory===k?"#e6821e":"#555555", color:activeCategory===k?"#fff":"#ccc", fontFamily:"'DM Sans',sans-serif" }}>
               {k==="all"?"All":CATEGORIES.find(c=>c.key===k)?.label}
             </button>
           ))}

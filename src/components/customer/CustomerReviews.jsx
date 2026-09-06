@@ -203,7 +203,7 @@ export default function CustomerReviews() {
           { k:"received", l:`Reviews about me (${receivedReviews.length})` },
         ].map(t2=>(
           <button key={t2.k} onClick={()=>setTab(t2.k)}
-            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t2.k?"#e6821e":"#555555", color:tab===t2.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t2.k?700:400 }}>
+            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t2.k?"#e6821e":"#555555", color:tab===t2.k?"#fff":"#ccc", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===t2.k?700:400 }}>
             {t2.l}
           </button>
         ))}
@@ -281,7 +281,7 @@ export default function CustomerReviews() {
                 )}
               </div>
               <button type="submit" disabled={submitting||form.provider_rating===0||uploading}
-                style={{ width:"100%", background:form.provider_rating>0?"#e6821e":"#555555", border:"none", borderRadius:9, color:form.provider_rating>0?"#fff":"#666", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:form.provider_rating>0?"pointer":"not-allowed" }}>
+                style={{ width:"100%", background:form.provider_rating>0?"#e6821e":"#555555", border:"none", borderRadius:9, color:form.provider_rating>0?"#fff":"#ccc", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"13px", cursor:form.provider_rating>0?"pointer":"not-allowed" }}>
                 {submitting?t("loading"):t("submit")}
               </button>
             </form>

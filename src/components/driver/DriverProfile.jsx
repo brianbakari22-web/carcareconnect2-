@@ -267,7 +267,7 @@ export default function DriverProfile() {
       <div style={{ display:"flex", gap:6, marginBottom:"1.25rem", flexWrap:"wrap" }}>
         {TABS.map(tb=>(
           <button key={tb.k} onClick={()=>setTab(tb.k)}
-            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===tb.k?"#1d9e75":"#555555", color:tab===tb.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===tb.k?700:400 }}>
+            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===tb.k?"#1d9e75":"#555555", color:tab===tb.k?"#fff":"#ccc", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===tb.k?700:400 }}>
             {tb.l}
           </button>
         ))}

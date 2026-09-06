@@ -180,7 +180,7 @@ export default function ProviderProfile() {
       <div style={{ display:"flex", gap:6, marginBottom:"1.5rem", flexWrap:"wrap" }}>
         {TABS.map(tb=>(
           <button key={tb.k} onClick={()=>{ setTab(tb.k); if(tb.k==="data"&&!exportData) loadExportData() }}
-            style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===tb.k?"#378add":"#555555", color:tab===tb.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===tb.k?700:400 }}>
+            style={{ padding:"8px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===tb.k?"#378add":"#555555", color:tab===tb.k?"#fff":"#ccc", fontFamily:"'DM Sans',sans-serif", fontWeight:tab===tb.k?700:400 }}>
             {tb.l}
           </button>
         ))}

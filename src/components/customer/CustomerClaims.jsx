@@ -261,7 +261,7 @@ export default function CustomerClaims() {
           { k:"vouchers", l:"Vouchers ("+vouchers.length+")" },
         ].map(t=>(
           <button key={t.k} onClick={()=>setTab(t.k)}
-            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#555555", color:tab===t.k?"#fff":"#666", fontWeight:tab===t.k?700:400 }}>
+            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:tab===t.k?"#e6821e":"#555555", color:tab===t.k?"#fff":"#ccc", fontWeight:tab===t.k?700:400 }}>
             {t.l}
           </button>
         ))}

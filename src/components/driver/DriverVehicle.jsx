@@ -100,7 +100,7 @@ export default function DriverVehicle() {
             <div><label style={lbl}>Year</label><input style={inp} type="number" min="1990" max="2026" placeholder="2020" value={form.vehicle_year} onChange={e=>setForm(f=>({...f,vehicle_year:e.target.value}))}/></div>
           </div>
           <button type="submit" disabled={saving}
-            style={{ background:saving?"#555555":"#e6821e", border:"none", borderRadius:8, color:saving?"#666":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:saving?"not-allowed":"pointer" }}>
+            style={{ background:saving?"#555555":"#e6821e", border:"none", borderRadius:8, color:saving?"#ccc":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:saving?"not-allowed":"pointer" }}>
             {saving?"Saving...":"Save vehicle info"}
           </button>
         </form>

@@ -232,7 +232,7 @@ export default function CreateListing({ editListing, onSaved } = {}) {
               {MAKES.filter(m=>m!=="Other").map(m=>(
                 <button key={m} type="button"
                   onClick={()=>f("compatible_makes",form.compatible_makes.includes(m)?form.compatible_makes.filter(x=>x!==m):[...form.compatible_makes,m])}
-                  style={{ padding:"4px 10px", borderRadius:6, border:"none", fontSize:11, cursor:"pointer", background:form.compatible_makes.includes(m)?"#e6821e":"#555555", color:form.compatible_makes.includes(m)?"#fff":"#666" }}>
+                  style={{ padding:"4px 10px", borderRadius:6, border:"none", fontSize:11, cursor:"pointer", background:form.compatible_makes.includes(m)?"#e6821e":"#555555", color:form.compatible_makes.includes(m)?"#fff":"#ccc" }}>
                   {m}
                 </button>
               ))}

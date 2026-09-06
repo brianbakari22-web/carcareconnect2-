@@ -169,7 +169,7 @@ export default function CustomerLoyalty() {
               </div>
             </div>
             <button type="submit" disabled={redeeming||!redeemAmount||parseInt(redeemAmount)<redemptionRate}
-              style={{ width:"100%", marginTop:12, background: redeemAmount&&parseInt(redeemAmount)>=redemptionRate?"#e6821e":"#555555", border:"none", borderRadius:9, color: redeemAmount&&parseInt(redeemAmount)>=redemptionRate?"#fff":"#666", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px", cursor: redeemAmount&&parseInt(redeemAmount)>=redemptionRate?"pointer":"not-allowed" }}>
+              style={{ width:"100%", marginTop:12, background: redeemAmount&&parseInt(redeemAmount)>=redemptionRate?"#e6821e":"#555555", border:"none", borderRadius:9, color: redeemAmount&&parseInt(redeemAmount)>=redemptionRate?"#fff":"#ccc", fontFamily:"Syne,sans-serif", fontSize:14, fontWeight:700, padding:"12px", cursor: redeemAmount&&parseInt(redeemAmount)>=redemptionRate?"pointer":"not-allowed" }}>
               {redeeming ? "Redeeming..." : `Redeem ${redeemAmount||0} points for KES ${Math.floor(parseInt(redeemAmount||0)/redemptionRate).toLocaleString()}`}
             </button>
           </form>

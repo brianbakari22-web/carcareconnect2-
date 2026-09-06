@@ -376,7 +376,7 @@ export default function CustomerDiscover() {
           { key:"drivers", label:`${t("drivers")} (${filteredDrivers.filter(d=>d.is_online).length} ${t("online").toLowerCase()})` },
         ].map(tab2=>(
           <button key={tab2.key} onClick={()=>{ setTab(tab2.key); setSearch(""); setSelectedProvider(null) }}
-            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", fontFamily:"'DM Sans',sans-serif", background:tab===tab2.key?"#e6821e":"#555555", color:tab===tab2.key?"#fff":"#666", fontWeight:tab===tab2.key?700:400 }}>
+            style={{ padding:"8px 16px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", fontFamily:"'DM Sans',sans-serif", background:tab===tab2.key?"#e6821e":"#555555", color:tab===tab2.key?"#fff":"#ccc", fontWeight:tab===tab2.key?700:400 }}>
             {tab2.label}
           </button>
         ))}

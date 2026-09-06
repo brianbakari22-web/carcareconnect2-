@@ -58,7 +58,7 @@ export default function ProviderEarnings() {
       <div style={{ display:"flex", gap:6, marginBottom:"1.25rem", flexWrap:"wrap" }}>
         {[{k:t("today"),l:t("today")},{k:"week",l:language==="sw"?"Wiki hii":"This week"},{k:"month",l:language==="sw"?"Mwezi huu":"This month"},{k:"all",l:language==="sw"?"Wakati wote":"All time"}].map(t=>(
           <button key={t.k} onClick={()=>setPeriod(t.k)}
-            style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:period===t.k?"#e6821e":"#555555", color:period===t.k?"#fff":"#666", fontFamily:"'DM Sans',sans-serif", fontWeight:period===t.k?700:400 }}>
+            style={{ padding:"7px 14px", borderRadius:8, border:"none", fontSize:12, cursor:"pointer", background:period===t.k?"#e6821e":"#555555", color:period===t.k?"#fff":"#ccc", fontFamily:"'DM Sans',sans-serif", fontWeight:period===t.k?700:400 }}>
             {t.l}
           </button>
         ))}

@@ -214,7 +214,7 @@ export default function CustomerPayments() {
                   <label style={{ fontSize:11, color:"#666", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:4 }}>Reason</label>
                   <textarea value={refundForm.reason} onChange={e=>setRefundForm(f=>({...f,reason:e.target.value}))} rows={3} placeholder="Explain why you are requesting a refund..." style={{...inp,resize:"vertical"}} required/>
                 </div>
-                <button type="submit" disabled={submitting} style={{ background:submitting?"#555555":"#e6821e", border:"none", borderRadius:8, color:submitting?"#666":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:submitting?"not-allowed":"pointer" }}>
+                <button type="submit" disabled={submitting} style={{ background:submitting?"#555555":"#e6821e", border:"none", borderRadius:8, color:submitting?"#ccc":"#fff", fontFamily:"Syne,sans-serif", fontSize:13, fontWeight:700, padding:"10px 20px", cursor:submitting?"not-allowed":"pointer" }}>
                   {submitting?t("loading"):t("submit")}
                 </button>
               </form>

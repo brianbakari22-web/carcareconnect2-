@@ -258,7 +258,7 @@ export default function ProviderBookings() {
       <div style={{ display:"flex", gap:6, marginBottom:"1rem", flexWrap:"wrap" }}>
         {["all","pending","confirmed","in-progress","completed","cancelled"].map(s=>(
           <button key={s} onClick={()=>setFilter(s)}
-            style={{ padding:isMobile?"5px 10px":"6px 14px", borderRadius:6, border:"none", fontSize:isMobile?11:12, cursor:"pointer", background:filter===s?"#378add":"#555555", color:filter===s?"#fff":"#666", fontFamily:"'DM Sans',sans-serif" }}>
+            style={{ padding:isMobile?"5px 10px":"6px 14px", borderRadius:6, border:"none", fontSize:isMobile?11:12, cursor:"pointer", background:filter===s?"#378add":"#555555", color:filter===s?"#fff":"#ccc", fontFamily:"'DM Sans',sans-serif" }}>
             {s==="all"?"All":s.charAt(0).toUpperCase()+s.slice(1)}
           </button>
         ))}
