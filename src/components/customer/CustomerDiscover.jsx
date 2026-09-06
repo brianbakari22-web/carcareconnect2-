@@ -146,7 +146,7 @@ export default function CustomerDiscover() {
     if (!query && !car) { setPartResults([]); return }
     setSearchingParts(true)
     try {
-      let q = supabase.from("inventory").select("*, profiles!inventory_provider_id_fkey(business_name,first_name,last_name,city,is_verified)").eq("is_active",true).gt("stock_quantity",0)
+      let q = supabase.from("inventory").select("*, profiles!inventory_provider_id_fkey!inner(business_name,first_name,last_name,city,is_verified)").eq("is_active",true).eq("profiles.is_verified",true).gt("stock_quantity",0)
       if (query) q = q.ilike("name", `%${query}%`)
       if (car) q = q.contains("compatible_cars", [car])
       const { data } = await q.limit(20)
