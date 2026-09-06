@@ -89,9 +89,11 @@ export default function ProviderServices() {
           name: form.name,
           description: form.description,
           price: parseFloat(form.price),
+          discounted_price: form.discounted_price ? parseFloat(form.discounted_price) : null,
           duration_minutes: parseInt(form.duration_minutes)||60,
           category: form.category,
           service_category_id: form.service_category_id||null,
+          platform_commission_rate: platformRate,
           provider_commission_rate: providerRate,
           photos: form.photos||[],
         }).eq("id", editing).eq("provider_id", user.id)
@@ -103,10 +105,13 @@ export default function ProviderServices() {
           name: form.name,
           description: form.description,
           price: parseFloat(form.price),
+          discounted_price: form.discounted_price ? parseFloat(form.discounted_price) : null,
           category: form.category||"shop_standard",
+          service_category_id: form.service_category_id||null,
           duration_minutes: parseInt(form.duration_minutes)||60,
           photos: form.photos||[],
           platform_commission_rate: platformRate,
+          provider_commission_rate: providerRate,
           is_active: true,
         })
         if (error) throw error
@@ -160,7 +165,6 @@ export default function ProviderServices() {
     } else {
       toast.success("Service deactivated")
     }
-    toast.success("Service deleted")
     load()
   }
 
@@ -213,7 +217,7 @@ export default function ProviderServices() {
               <div style={{ fontFamily:"Syne", fontSize:14, fontWeight:800, color:c.color }}>{c.label}</div>
             </div>
             <div style={{ fontSize:11, color:"#666", marginBottom:4 }}>{c.desc}</div>
-            <div style={{ fontSize:10, color:c.color, fontWeight:600 }}>{c.commission}</div>
+            <div style={{ fontSize:10, color:c.color, fontWeight:600 }}>{tierRates[c.key]?`You keep ${Math.round(tierRates[c.key].provider*100)}% · Platform ${Math.round(tierRates[c.key].platform*100)}%`:"Loading rate..."}</div>
             <div style={{ fontSize:10, color:"#888888", marginTop:4 }}>
               {services.filter(s=>s.category===c.key).length} service{services.filter(s=>s.category===c.key).length!==1?"s":""}
             </div>
@@ -276,7 +280,7 @@ export default function ProviderServices() {
                    <ServicesIcon size={16} color={c.color}/>}
                 </div>
                   <div style={{ fontSize:12, fontWeight:600, color:form.category===c.key?c.color:"#666", marginBottom:2 }}>{c.label}</div>
-                  <div style={{ fontSize:10, color:"#888888" }}>{c.commission}</div>
+                  <div style={{ fontSize:10, color:"#888888" }}>{tierRates[c.key]?`You keep ${Math.round(tierRates[c.key].provider*100)}% · Platform ${Math.round(tierRates[c.key].platform*100)}%`:"Loading rate..."}</div>
                 </button>
               ))}
             </div>
