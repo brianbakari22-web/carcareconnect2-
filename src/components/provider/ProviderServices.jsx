@@ -250,7 +250,7 @@ export default function ProviderServices() {
           </div>
 
           {/* Service type selector (admin-managed categories like Oil Change, Brake Repair) */}
-          {serviceCategories.length>0&&(
+          {serviceCategories.length>0&&providerType!=="car_wash"&&!"panel_beater,auto_glass,auto_electrician".split(",").includes(providerType)&&(
             <div style={{ marginBottom:16 }}>
               <label style={lbl}>What type of service is this?</label>
               <select value={form.service_category_id} onChange={e=>setForm(f=>({...f,service_category_id:e.target.value}))}
