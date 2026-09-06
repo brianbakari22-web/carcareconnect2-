@@ -84,15 +84,16 @@ serve(async (req) => {
         } catch(refErr) { console.error("Referral error:", refErr) }
       }
 
-      // Notify admin of new verified user
+      // Notify every admin (not just the first one) - providers/drivers get a message
+      // that actually points at needing review/vetting, customers get a lighter FYI.
+      const isProviderOrDriver = meta.role === "provider" || meta.role === "driver"
       const { data: admins } = await supabase.from("profiles").select("id").eq("role","admin")
-      if(admins?.length) {
-        await supabase.from("notifications").insert({
-          user_id: admins[0].id,
-          title: "New verified user! 👤",
-          message: (meta.first_name||"") + " " + (meta.last_name||"") + " joined as " + (meta.role||"customer") + " (" + user.email + ")",
-          type: "success"
-        })
+      if (admins?.length) {
+        const title = isProviderOrDriver ? "New " + meta.role + " signup - needs review ⚠️" : "New user signed up 👤"
+        const message = (meta.first_name||"") + " " + (meta.last_name||"") + " joined as " + (meta.role||"customer") + " (" + user.email + ")" + (isProviderOrDriver ? " - review and verify their application." : "")
+        await supabase.from("notifications").insert(
+          admins.map(a => ({ user_id: a.id, title, message, type: isProviderOrDriver ? "warning" : "success" }))
+        )
       }
 
       console.log("Profile created for verified user:", user.email)
