@@ -747,6 +747,7 @@ export default function Layout({ children }) {
                item.icon==="reviews" ? <StarIcon size={18} active={isActive(item)} /> :
                item.icon==="helpTicket" ? <HelpIcon size={18} active={isActive(item)} /> :
                item.icon==="profile" ? <ProfileIcon size={18} active={isActive(item)} /> :
+               item.icon==="discover" ? <DiscoverIcon size={18} active={isActive(item)} /> :
                <span style={{fontSize:16}}>{item.icon}</span>}
             </span>
               {!collapsed&&<span style={{ overflow:"hidden", textOverflow:"ellipsis" }}>{getLabel(item)}</span>}
