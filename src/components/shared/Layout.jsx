@@ -257,7 +257,6 @@ export default function Layout({ children }) {
     { path:"/dashboard/support", label:"Support", icon:"helpTicket" },
     ...( ["car_wash"].includes(providerType) ? [
       { path:"/dashboard/wash-queue", label:"Wash Queue", icon:"discover" },
-      { path:"/dashboard/wash-packages", label:"Wash Packages", icon:"star" },
       { path:"/dashboard/staff", label:"Staff Management", icon:"team" },
     ] : []),
     { path:"/dashboard/chat", key:"messages", icon:"✉️" },
