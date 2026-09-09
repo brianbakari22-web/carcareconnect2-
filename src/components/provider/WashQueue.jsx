@@ -9,10 +9,22 @@ export default function WashQueue() {
   const [bookings, setBookings] = useState([])
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(null)
+  const [staff, setStaff] = useState([])
+  const [assigning, setAssigning] = useState(null)
   useEffect(() => { if (user) { load(); const sub = supabase.channel("wash-queue").on("postgres_changes",{event:"*",schema:"public",table:"bookings",filter:`provider_id=eq.${user.id}`},()=>load()).subscribe(); return ()=>supabase.removeChannel(sub) } }, [user])
   async function load() {
-    const { data } = await supabase.from("bookings").select("*, profiles!bookings_customer_id_fkey(first_name,last_name), vehicles(make,model,color,license_plate)").eq("provider_id",user.id).in("status",["pending","confirmed","in-progress"]).eq("is_archived",false).order("booking_date",{ascending:true})
+    const { data } = await supabase.from("bookings").select("*, profiles!bookings_customer_id_fkey(first_name,last_name), vehicles(make,model,color,license_plate), provider_staff!bookings_assigned_staff_id_fkey(name)").eq("provider_id",user.id).in("status",["pending","confirmed","in-progress"]).eq("is_archived",false).order("booking_date",{ascending:true})
     setBookings(data||[]); setLoading(false)
+    const { data: staffData } = await supabase.from("provider_staff").select("id,name").eq("provider_id",user.id).eq("is_active",true).order("name")
+    setStaff(staffData||[])
+  }
+  async function assignStaff(bookingId, staffId) {
+    setAssigning(bookingId)
+    try {
+      await supabase.from("bookings").update({ assigned_staff_id: staffId || null }).eq("id", bookingId)
+      load()
+    } catch(err) { toast.error(err.message) }
+    finally { setAssigning(null) }
   }
   async function updateStatus(id, status) {
     await supabase.from("bookings").update({status}).eq("id",id)
@@ -46,6 +58,14 @@ export default function WashQueue() {
               <div style={{fontSize:11,color:"#888",display:"flex",alignItems:"center",gap:4}}><ClockIcon size={11} color="#888"/> {b.booking_date} · {b.booking_time}</div>
             </div>
             <span style={{fontSize:11,padding:"3px 10px",borderRadius:20,background:`${STATUS_COLORS[b.status]}20`,color:STATUS_COLORS[b.status],fontWeight:600}}>{b.status}</span>
+          </div>
+          <div style={{marginBottom:10,display:"flex",alignItems:"center",gap:6}}>
+            <ProfileIcon size={12} color="#888"/>
+            <select value={b.assigned_staff_id||""} onChange={e=>assignStaff(b.id,e.target.value)} disabled={assigning===b.id}
+              style={{ fontSize:11, color:"#555", border:"1px solid #eee", borderRadius:6, padding:"4px 8px", background:"#fafafa", flex:1 }}>
+              <option value="">Unassigned</option>
+              {staff.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}
+            </select>
           </div>
           <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:10}}>
             {b.status==="pending"&&<button onClick={()=>updateStatus(b.id,"confirmed")} style={{background:"#378add",border:"none",borderRadius:8,color:"#fff",fontSize:12,fontWeight:600,padding:"7px 14px",cursor:"pointer"}}><span style={{display:"inline-flex",alignItems:"center",gap:4}}><CheckIcon size={13} color="#fff"/> Confirm</span></button>}
